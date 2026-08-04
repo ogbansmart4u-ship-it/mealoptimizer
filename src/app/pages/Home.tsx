@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import {
   Camera, Sparkles, TrendingUp, MapPin, Globe, AlertCircle, ChevronDown, ChevronUp, X,
   Activity, Clock, Flame, Calendar, Bell, ChevronRight, Heart,
-  Droplet, Minus, Plus, Upload, Zap, Target, BarChart3, ScanBarcode, Shield, Moon, Search, FlaskConical
+  Droplet, Minus, Plus, Upload, Zap, Target, BarChart3, ScanBarcode, Shield, Moon, Search, FlaskConical, BookOpen
 } from "lucide-react";
 import BottomNav from "../components/BottomNav";
 import { useNavigate } from "react-router";
