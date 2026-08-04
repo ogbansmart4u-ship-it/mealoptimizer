@@ -87,7 +87,7 @@ export default function HyperPersonalizedPlan() {
       <div className="bg-gradient-to-r from-[#1f7a8c] to-[#4ecdc4] px-6 pt-12 pb-8 rounded-b-3xl shadow-lg">
         <div className="flex items-center justify-between mb-4">
           <button
-            onClick={() => navigate(-1)}
+            onClick={() => navigate('/home')}
             className="p-2 hover:bg-white/20 rounded-full transition"
           >
             <ArrowLeft className="h-6 w-6 text-white" />

@@ -399,7 +399,7 @@ export default function SymptomTracker() {
     <div className="min-h-screen bg-gradient-to-br from-red-50 via-orange-50 to-yellow-50 pb-20">
       <div className="bg-gradient-to-r from-red-500 to-orange-500 text-white p-6 rounded-b-3xl shadow-lg">
         <div className="flex items-center justify-between mb-4">
-          <button onClick={() => navigate(-1)} className="p-2 hover:bg-white/20 rounded-full transition">
+          <button onClick={() => navigate("/home")} className="p-2 hover:bg-white/20 rounded-full transition">
             <ArrowLeft className="h-6 w-6" />
           </button>
           <h1 className="flex-1 text-center text-2xl font-bold">Symptom Tracker</h1>

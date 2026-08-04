@@ -1,10 +1,12 @@
 import { useState } from 'react';
-import { Trophy, Award, Flame, Lock, CheckCircle2, Star, TrendingUp, Calendar } from 'lucide-react';
+import { Trophy, Award, Flame, Lock, CheckCircle2, Star, TrendingUp, Calendar, ArrowLeft } from 'lucide-react';
+import { useNavigate } from 'react-router';
 import { useAchievements } from '../contexts/AchievementContext';
 import BottomNav from '../components/BottomNav';
 import ProfilePictureUpload from '../components/ProfilePictureUpload';
 
 export default function Achievements() {
+  const navigate = useNavigate();
   const { achievements, unlockedAchievements, streaks } = useAchievements();
   const [activeTab, setActiveTab] = useState<'all' | 'unlocked' | 'locked'>('all');
 
@@ -25,9 +27,18 @@ export default function Achievements() {
       {/* Header */}
       <div className="bg-gradient-to-r from-[#1f7a8c] to-[#4ecdc4] px-6 pt-12 pb-8">
         <div className="flex items-center justify-between mb-6">
-          <div>
-            <h1 className="text-3xl text-white mb-1">Achievements</h1>
-            <p className="text-white/80 text-sm">Track your progress & badges</p>
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => navigate(-1)}
+              className="p-2 -ml-2 hover:bg-white/10 rounded-full transition-colors"
+              aria-label="Go back"
+            >
+              <ArrowLeft className="h-6 w-6 text-white" />
+            </button>
+            <div>
+              <h1 className="text-3xl text-white mb-1">Achievements</h1>
+              <p className="text-white/80 text-sm">Track your progress & badges</p>
+            </div>
           </div>
           <ProfilePictureUpload />
         </div>
