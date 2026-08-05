@@ -23,6 +23,7 @@ import { Button } from "../components/ui/button";
 import { Label } from "../components/ui/label";
 import { Input } from "../components/ui/input";
 import { toast } from "sonner";
+import { getCollection, createCollectionItem, updateCollectionItem, deleteCollectionItem } from "../../lib/api";
 
 type MedicationType = 'medication' | 'supplement' | 'vitamin';
 type Frequency = 'daily' | 'twice-daily' | 'three-times-daily' | 'weekly' | 'as-needed';
@@ -97,90 +98,9 @@ const calculateAdherence = (logs: DoseLog[], days: number = 7): number => {
 export default function MedicationTracker() {
   const navigate = useNavigate();
 
-  const [medications, setMedications] = useState<Medication[]>(() => {
-    const stored = localStorage.getItem('medications');
-    if (stored) return JSON.parse(stored);
-
-    // Mock data
-    return [
-      {
-        id: '1',
-        name: 'Vitamin D3',
-        type: 'vitamin',
-        dosage: '5000 IU',
-        frequency: 'daily',
-        times: ['08:00'],
-        pillsRemaining: 45,
-        pillsPerDose: 1,
-        refillThreshold: 10,
-        startDate: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-        notes: 'Take with food for better absorption',
-      },
-      {
-        id: '2',
-        name: 'Omega-3 Fish Oil',
-        type: 'supplement',
-        dosage: '1000mg',
-        frequency: 'twice-daily',
-        times: ['08:00', '20:00'],
-        pillsRemaining: 8,
-        pillsPerDose: 1,
-        refillThreshold: 15,
-        startDate: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-        notes: 'Supports heart health',
-      },
-      {
-        id: '3',
-        name: 'Magnesium',
-        type: 'supplement',
-        dosage: '400mg',
-        frequency: 'daily',
-        times: ['20:00'],
-        pillsRemaining: 25,
-        pillsPerDose: 1,
-        refillThreshold: 10,
-        startDate: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-        notes: 'Helps with sleep and muscle recovery',
-      },
-    ];
-  });
-
-  const [doseLogs, setDoseLogs] = useState<DoseLog[]>(() => {
-    const stored = localStorage.getItem('dose-logs');
-    if (stored) return JSON.parse(stored);
-
-    // Generate last 7 days of logs with realistic adherence
-    const logs: DoseLog[] = [];
-    const now = new Date();
-
-    for (let i = 6; i >= 0; i--) {
-      const date = new Date(now);
-      date.setDate(date.getDate() - i);
-      const dateStr = date.toISOString().split('T')[0];
-
-      medications.forEach(med => {
-        if (med.frequency === 'as-needed') return;
-
-        med.times.forEach(time => {
-          const isTaken = Math.random() > 0.15; // 85% adherence
-          logs.push({
-            id: `${med.id}-${dateStr}-${time}`,
-            medicationId: med.id,
-            scheduledTime: time,
-            takenTime: isTaken ? time : undefined,
-            status: isTaken ? 'taken' : 'missed',
-            date: dateStr,
-          });
-        });
-      });
-    }
-
-    return logs;
-  });
-
-  const [todaySchedule, setTodaySchedule] = useState<DoseLog[]>(() =>
-    generateTodaySchedule(medications)
-  );
+  const [medications, setMedications] = useState<Medication[]>([]);
+  const [doseLogs, setDoseLogs] = useState<DoseLog[]>([]);
+  const [todaySchedule, setTodaySchedule] = useState<DoseLog[]>([]);
 
   const [showAddDialog, setShowAddDialog] = useState(false);
   const [editingMed, setEditingMed] = useState<Medication | null>(null);
@@ -196,14 +116,30 @@ export default function MedicationTracker() {
     notes: '',
   });
 
+  // Load this account's medications and dose history from the backend on mount.
   useEffect(() => {
-    localStorage.setItem('medications', JSON.stringify(medications));
-    setTodaySchedule(generateTodaySchedule(medications));
-  }, [medications]);
+    Promise.all([getCollection('medications'), getCollection('doseLogs')])
+      .then(([meds, logs]) => {
+        setMedications(Array.isArray(meds) ? (meds as Medication[]) : []);
+        setDoseLogs(Array.isArray(logs) ? (logs as DoseLog[]) : []);
+      })
+      .catch((e) => console.error('Failed to load medications', e));
+  }, []);
 
+  // Rebuild today's schedule whenever meds or logs change, marking doses that
+  // are already recorded as taken today so they persist across reloads.
   useEffect(() => {
-    localStorage.setItem('dose-logs', JSON.stringify(doseLogs));
-  }, [doseLogs]);
+    const today = new Date().toISOString().split('T')[0];
+    const base = generateTodaySchedule(medications);
+    setTodaySchedule(base.map((item) => {
+      const log = doseLogs.find(
+        (l) => l.medicationId === item.medicationId &&
+               l.scheduledTime === item.scheduledTime &&
+               l.date === today && l.status === 'taken'
+      );
+      return log ? { ...item, status: 'taken', takenTime: log.takenTime } : item;
+    }));
+  }, [medications, doseLogs]);
 
   // Check for refill alerts
   useEffect(() => {
@@ -240,9 +176,13 @@ export default function MedicationTracker() {
     if (editingMed) {
       setMedications(prev => prev.map(m => m.id === editingMed.id ? newMed : m));
       toast.success('Medication updated!');
+      updateCollectionItem('medications', newMed.id, newMed)
+        .catch((e) => console.error('Failed to update medication', e));
     } else {
       setMedications(prev => [...prev, newMed]);
       toast.success('Medication added!');
+      createCollectionItem('medications', newMed)
+        .catch((e) => console.error('Failed to save medication', e));
     }
 
     resetForm();
@@ -284,6 +224,8 @@ export default function MedicationTracker() {
     if (confirm('Are you sure you want to delete this medication?')) {
       setMedications(prev => prev.filter(m => m.id !== id));
       toast.success('Medication deleted');
+      deleteCollectionItem('medications', id)
+        .catch((e) => console.error('Failed to delete medication', e));
     }
   };
 
@@ -291,27 +233,33 @@ export default function MedicationTracker() {
     const med = medications.find(m => m.id === scheduleItem.medicationId);
     if (!med) return;
 
+    const takenTime = new Date().toTimeString().slice(0, 5);
+
     // Update schedule
     setTodaySchedule(prev => prev.map(item =>
       item.id === scheduleItem.id
-        ? { ...item, status: 'taken', takenTime: new Date().toTimeString().slice(0, 5) }
+        ? { ...item, status: 'taken', takenTime }
         : item
     ));
 
-    // Add to logs
+    // One dose record per scheduled slot per day (stable id so re-taking updates it)
     const newLog: DoseLog = {
       ...scheduleItem,
+      id: `${scheduleItem.medicationId}-${scheduleItem.date}-${scheduleItem.scheduledTime}`,
       status: 'taken',
-      takenTime: new Date().toTimeString().slice(0, 5),
+      takenTime,
     };
-    setDoseLogs(prev => [...prev, newLog]);
+    setDoseLogs(prev => [...prev.filter(l => l.id !== newLog.id), newLog]);
+    createCollectionItem('doseLogs', newLog)
+      .catch((e) => console.error('Failed to log dose', e));
 
     // Update pill count
+    const newRemaining = Math.max(0, med.pillsRemaining - med.pillsPerDose);
     setMedications(prev => prev.map(m =>
-      m.id === med.id
-        ? { ...m, pillsRemaining: Math.max(0, m.pillsRemaining - m.pillsPerDose) }
-        : m
+      m.id === med.id ? { ...m, pillsRemaining: newRemaining } : m
     ));
+    updateCollectionItem('medications', med.id, { pillsRemaining: newRemaining })
+      .catch((e) => console.error('Failed to update pill count', e));
 
     toast.success(`${med.name} logged!`);
   };
