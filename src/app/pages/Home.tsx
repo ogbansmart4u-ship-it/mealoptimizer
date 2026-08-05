@@ -888,13 +888,13 @@ export default function Home() {
             </button>
           </div>
           <div className="bg-gradient-to-br from-white via-[#FFF9F5] to-[#FFE5D9] rounded-3xl shadow-lg p-5">
-            <div className="flex justify-between gap-2">
+            <div className="grid grid-cols-7 gap-1">
               {nutritionBlueprintCalendar.map((day, index) => {
                 const isToday = index === currentDayIndex; // Dynamically determine today
                 return (
                   <button
                     key={day.day}
-                    className={`flex-1 flex flex-col items-center py-3 px-2 rounded-xl transition-all ${
+                    className={`flex flex-col items-center py-3 px-1 rounded-xl transition-all ${
                       isToday
                         ? "bg-[#1f7a8c] text-white scale-105 shadow-md"
                         : `${day.color} hover:scale-105`
