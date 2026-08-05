@@ -14,6 +14,7 @@ import { LocationProfileSync } from "./components/LocationProfileSync";
 import { AuthErrorBanner } from "./components/AuthErrorBanner";
 import { EnvironmentCheck } from "./components/EnvironmentCheck";
 import { AchievementNotification } from "./components/AchievementNotification";
+import AppErrorBoundary from "./components/AppErrorBoundary";
 
 function AchievementListener() {
   const { pendingNotification, dismissNotification } = useAchievements();
@@ -36,6 +37,7 @@ Object.keys(localStorage)
 // MealOptimiza - Nutrition app with personalized meal planning
 export default function App() {
   return (
+    <AppErrorBoundary>
     <AuthProvider>
       <ThemeProvider>
         <UnitsProvider>
@@ -61,5 +63,6 @@ export default function App() {
         </UnitsProvider>
       </ThemeProvider>
     </AuthProvider>
+    </AppErrorBoundary>
   );
 }

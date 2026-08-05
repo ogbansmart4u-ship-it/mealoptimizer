@@ -42,11 +42,6 @@ import AppLayout from "./components/AppLayout";
 import RouteErrorBoundary from "./components/RouteErrorBoundary";
 
 export const router = createBrowserRouter([
-  {
-    // Root wrapper: any screen error shows a friendly fallback, not a stack trace
-    element: <Outlet />,
-    errorElement: <RouteErrorBoundary />,
-    children: [
   // ============================================================
   // Public / auth / legal pages — intentionally NO bottom nav
   // ============================================================
@@ -315,8 +310,6 @@ export const router = createBrowserRouter([
           </ProtectedRoute>
         ),
       },
-    ],
-  },
     ],
   },
 ]);
