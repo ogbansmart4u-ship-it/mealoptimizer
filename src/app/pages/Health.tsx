@@ -133,7 +133,7 @@ export default function Health() {
         {/* My Health Profile */}
         <div className="bg-gradient-to-br from-white via-[#F0F9FA] to-[#E0F2F4] rounded-3xl shadow-lg p-6 mb-6">
           <h3 className="text-center text-[#e63946] mb-4">My Health Profile</h3>
-          <div className="flex justify-around">
+          <div className="grid grid-cols-4 gap-2">
             <button
               onClick={() => navigate("/location")}
               className="flex flex-col items-center hover:scale-110 transition-transform cursor-pointer"
