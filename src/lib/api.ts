@@ -142,6 +142,10 @@ export async function createMealLog(logData: any) {
   });
 }
 
+export async function deleteMealLog(logId: string) {
+  return apiCall(`/logs/${logId}`, { method: 'DELETE' });
+}
+
 // ============================================
 // RECIPES API
 // ============================================

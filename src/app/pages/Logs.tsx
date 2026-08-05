@@ -6,6 +6,7 @@ import { useUser } from "../contexts/UserContext";
 import ProfilePictureUpload from "../components/ProfilePictureUpload";
 import AddMealLog from "../components/AddMealLog";
 import { BulkActionsBar } from "../components/BulkActionsBar";
+import { getMealLogs, createMealLog, deleteMealLog } from "../../lib/api";
 
 type MealType = "breakfast" | "lunch" | "dinner" | "snack";
 
@@ -34,80 +35,18 @@ export default function Logs() {
   const [selectedLogs, setSelectedLogs] = useState<string[]>([]);
   const [selectionMode, setSelectionMode] = useState(false);
 
-  // Load logs from localStorage
-  const [logs, setLogs] = useState<MealLog[]>(() => {
-    const savedLogs = localStorage.getItem('meal-logs');
-    if (savedLogs) {
-      return JSON.parse(savedLogs);
-    }
-    // Default mock data
-    return [
-    {
-      id: "1",
-      date: "2026-03-18",
-      time: "07:30",
-      mealType: "breakfast",
-      foodName: "Akara & Pap with Milk",
-      calories: 420,
-      protein: 18,
-      carbs: 48,
-      fats: 16,
-      energyRating: 5,
-      digestiveComfort: 4,
-      bloodSugarImpact: "medium",
-    },
-    {
-      id: "2",
-      date: "2026-03-18",
-      time: "13:00",
-      mealType: "lunch",
-      foodName: "Jollof Rice with Grilled Chicken & Vegetables",
-      calories: 580,
-      protein: 35,
-      carbs: 65,
-      fats: 18,
-      energyRating: 4,
-      digestiveComfort: 5,
-      bloodSugarImpact: "medium",
-    },
-    {
-      id: "3",
-      date: "2026-03-18",
-      time: "16:30",
-      mealType: "snack",
-      foodName: "Groundnuts & Banana",
-      calories: 220,
-      protein: 8,
-      carbs: 28,
-      fats: 10,
-      energyRating: 4,
-      digestiveComfort: 5,
-      bloodSugarImpact: "low",
-    },
-    {
-      id: "4",
-      date: "2026-03-18",
-      time: "19:30",
-      mealType: "dinner",
-      foodName: "Efo Riro with Poundo Yam",
-      calories: 520,
-      protein: 28,
-      carbs: 58,
-      fats: 20,
-      energyRating: 4,
-      digestiveComfort: 4,
-      bloodSugarImpact: "high",
-    },
-  ];
-  });
+  const [logs, setLogs] = useState<MealLog[]>([]);
 
-  // Save logs to localStorage whenever they change
+  // Load this user's meal logs from the backend on mount
   useEffect(() => {
-    localStorage.setItem('meal-logs', JSON.stringify(logs));
-  }, [logs]);
+    getMealLogs()
+      .then((data) => setLogs(Array.isArray(data) ? data : []))
+      .catch((e) => { console.error("Failed to load meal logs", e); setLogs([]); });
+  }, []);
 
-  const handleAddMeal = (newLog: MealLog) => {
-    setLogs([...logs, newLog]);
+  const handleAddMeal = async (newLog: MealLog) => {
+    setLogs((prev) => [...prev, newLog]);
+    try { await createMealLog(newLog); } catch (e) { console.error("Failed to save meal log", e); }
   };
 
   const toggleLogSelection = (logId: string) => {
@@ -122,11 +61,13 @@ export default function Logs() {
     setSelectedLogs(filteredLogs.map((log) => log.id));
   };
 
-  const handleBulkDelete = () => {
+  const handleBulkDelete = async () => {
     if (confirm(`Delete ${selectedLogs.length} meal log(s)?`)) {
-      setLogs((prev) => prev.filter((log) => !selectedLogs.includes(log.id)));
+      const ids = [...selectedLogs];
+      setLogs((prev) => prev.filter((log) => !ids.includes(log.id)));
       setSelectedLogs([]);
       setSelectionMode(false);
+      await Promise.all(ids.map((id) => deleteMealLog(id).catch((e) => console.error("Failed to delete meal log", e))));
     }
   };
 
