@@ -185,7 +185,7 @@ TIMING: ${mealPlan.plan_json.circadianAnchor}
   if (error || !mealPlan) {
     return (
       <div className="min-h-screen bg-gradient-to-b from-[#B8E5E5] to-[#E8F5F5]">
-        <div className="bg-gradient-to-r from-[#1f7a8c] to-[#4ecdc4] px-6 pt-12 pb-6">
+        <div className="bg-[#1f7a8c] px-6 pt-12 pb-6">
           <div className="flex items-center">
             <button
               onClick={() => navigate(-1)}

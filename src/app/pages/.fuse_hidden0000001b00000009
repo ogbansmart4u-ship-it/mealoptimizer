@@ -397,7 +397,7 @@ export default function SymptomTracker() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-red-50 via-orange-50 to-yellow-50 pb-20">
-      <div className="bg-gradient-to-r from-[#1f7a8c] to-[#4ecdc4] text-white p-6 rounded-b-3xl shadow-lg">
+      <div className="bg-gradient-to-r from-red-500 to-orange-500 text-white p-6 rounded-b-3xl shadow-lg">
         <div className="flex items-center justify-between mb-4">
           <button onClick={() => navigate(-1)} className="p-2 hover:bg-white/20 rounded-full transition">
             <ArrowLeft className="h-6 w-6" />
@@ -655,7 +655,7 @@ export default function SymptomTracker() {
       {/* Add Button */}
       <button
         onClick={() => setShowAddDialog(true)}
-        className="fixed bottom-24 right-6 w-16 h-16 bg-gradient-to-r from-[#1f7a8c] to-[#4ecdc4] text-white rounded-full shadow-2xl flex items-center justify-center hover:scale-110 active:scale-95 transition-transform"
+        className="fixed bottom-24 right-6 w-16 h-16 bg-gradient-to-r from-red-500 to-orange-500 text-white rounded-full shadow-2xl flex items-center justify-center hover:scale-110 active:scale-95 transition-transform"
       >
         <Plus className="h-8 w-8" />
       </button>
@@ -831,7 +831,7 @@ export default function SymptomTracker() {
                   !formData.symptom ||
                   (formData.symptom === "custom" && !formData.customSymptom.trim())
                 }
-                className="flex-1 px-6 py-3 bg-gradient-to-r from-[#1f7a8c] to-[#4ecdc4] text-white rounded-xl hover:shadow-lg transition font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex-1 px-6 py-3 bg-gradient-to-r from-red-500 to-orange-500 text-white rounded-xl hover:shadow-lg transition font-medium disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {saving ? "Saving…" : editingSymptom ? "Update" : "Log Symptom"}
               </button>

@@ -18,7 +18,7 @@ export default function PageHeader({
   showHome = false,
   onBack,
   actions,
-  className = "bg-gradient-to-r from-[#1f7a8c] to-[#4ecdc4]",
+  className = "bg-[#1f7a8c]",
   titleClassName = "text-white",
 }: PageHeaderProps) {
   const navigate = useNavigate();
