@@ -289,12 +289,12 @@ export default function Recipe() {
               {/* Recipe Header */}
               <div className="p-5">
                 <div className="flex items-start gap-4 mb-4">
-                  <div className="bg-gradient-to-br from-[#E8F5F5] to-[#B8E5E5] rounded-2xl p-4 text-4xl">
+                  <div className="bg-gradient-to-br from-[#E8F5F5] to-[#B8E5E5] rounded-2xl p-3 text-3xl flex-shrink-0">
                     {recipe.image}
                   </div>
-                  <div className="flex-1">
+                  <div className="flex-1 min-w-0">
                     <div className="flex items-start justify-between mb-2">
-                      <h3 className="text-lg text-gray-800 flex-1">{recipe.name}</h3>
+                      <h3 className="text-lg text-gray-800 flex-1 min-w-0 break-words">{recipe.name}</h3>
                       <button
                         onClick={() => toggleFavorite(recipe.id)}
                         className="text-gray-400 hover:text-red-500 transition-colors ml-2"
@@ -304,7 +304,7 @@ export default function Recipe() {
                         />
                       </button>
                     </div>
-                    <div className="flex items-center gap-2 mb-2">
+                    <div className="flex flex-wrap items-center gap-2 mb-2">
                       <div className="flex items-center gap-1">
                         <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
                         <span className="text-sm text-gray-700">{recipe.rating}</span>
@@ -316,7 +316,7 @@ export default function Recipe() {
                         {recipe.difficulty}
                       </span>
                     </div>
-                    <div className="flex items-center gap-3 text-xs text-gray-600">
+                    <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-gray-600">
                       <span className="flex items-center gap-1">
                         <Clock className="h-3 w-3" />
                         {recipe.prepTime + recipe.cookTime}m
