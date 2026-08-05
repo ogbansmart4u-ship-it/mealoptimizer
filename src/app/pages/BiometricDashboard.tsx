@@ -125,6 +125,14 @@ export default function BiometricDashboard() {
       />
 
       <div className="px-6 mt-6 space-y-6">
+        {/* Simulated data notice — honest labeling until real wearable sync exists */}
+        <div className={`flex items-start gap-2 px-4 py-2.5 rounded-xl border ${darkMode ? 'bg-amber-900/20 border-amber-800' : 'bg-amber-50 border-amber-200'}`}>
+          <Info className={`h-4 w-4 flex-shrink-0 mt-0.5 ${darkMode ? 'text-amber-400' : 'text-amber-600'}`} />
+          <span className={`text-xs ${darkMode ? 'text-amber-300' : 'text-amber-800'}`}>
+            <strong>Simulated preview.</strong> These readings are demo data, not your real biometrics. Live wearable sync (Apple Health / Google Fit) is coming soon.
+          </span>
+        </div>
+
         {/* Sync Status */}
         <div className={`flex items-center justify-between px-4 py-2 rounded-xl ${darkMode ? 'bg-gray-800' : 'bg-white/50'}`}>
           <div className="flex items-center gap-2">

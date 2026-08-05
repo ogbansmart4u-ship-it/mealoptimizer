@@ -391,3 +391,35 @@ export async function unlockAchievement(achievementKey: string) {
   });
   return result.item;
 }
+
+// ============================================
+// UNIVERSAL COLLECTIONS API
+// Stores full JSON objects per account (no fixed schema).
+// Used for richer models that don't fit the narrow relational tables
+// (e.g. custom reminders, recipe favorites, medications).
+// ============================================
+
+export async function getCollection(name: string) {
+  const data = await apiCall(`/collections/${name}`);
+  return data.items as any[];
+}
+
+export async function createCollectionItem(name: string, item: any) {
+  const result = await apiCall(`/collections/${name}`, {
+    method: 'POST',
+    body: JSON.stringify(item),
+  });
+  return result.item;
+}
+
+export async function updateCollectionItem(name: string, id: string, patch: any) {
+  const result = await apiCall(`/collections/${name}/${id}`, {
+    method: 'PUT',
+    body: JSON.stringify(patch),
+  });
+  return result.item;
+}
+
+export async function deleteCollectionItem(name: string, id: string) {
+  return apiCall(`/collections/${name}/${id}`, { method: 'DELETE' });
+}

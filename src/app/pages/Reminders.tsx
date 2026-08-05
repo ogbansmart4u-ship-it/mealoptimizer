@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router';
 import { ArrowLeft, Plus, Bell, Clock, Calendar, Trash2, Edit, BellOff } from 'lucide-react';
-import { getReminders, saveReminders, requestNotificationPermission, Reminder } from '../utils/reminderManager';
+import { saveReminders, requestNotificationPermission, Reminder } from '../utils/reminderManager';
+import { getCollection, createCollectionItem, updateCollectionItem, deleteCollectionItem } from '../../lib/api';
 import { Button } from '../components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../components/ui/dialog';
 
@@ -9,7 +10,7 @@ const DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
 export default function Reminders() {
   const navigate = useNavigate();
-  const [reminders, setReminders] = useState<Reminder[]>(getReminders());
+  const [reminders, setReminders] = useState<Reminder[]>([]);
   const [showAddDialog, setShowAddDialog] = useState(false);
   const [editingReminder, setEditingReminder] = useState<Reminder | null>(null);
   const [notificationPermission, setNotificationPermission] = useState<NotificationPermission>('default');
@@ -27,28 +28,46 @@ export default function Reminders() {
     }
   }, []);
 
+  // Load this account's reminders from the backend, and mirror them into
+  // local storage so the on-device notification scheduler keeps firing.
+  useEffect(() => {
+    getCollection('reminders')
+      .then((data) => {
+        const list = Array.isArray(data) ? (data as Reminder[]) : [];
+        setReminders(list);
+        saveReminders(list);
+      })
+      .catch((e) => { console.error('Failed to load reminders', e); setReminders([]); });
+  }, []);
+
   const handleRequestPermission = async () => {
     const permission = await requestNotificationPermission();
     setNotificationPermission(permission);
   };
 
-  const toggleReminder = (id: string) => {
+  const toggleReminder = async (id: string) => {
+    const target = reminders.find((r) => r.id === id);
+    const nextEnabled = !target?.enabled;
     const updated = reminders.map((r) =>
-      r.id === id ? { ...r, enabled: !r.enabled } : r
+      r.id === id ? { ...r, enabled: nextEnabled } : r
     );
     setReminders(updated);
     saveReminders(updated);
+    try { await updateCollectionItem('reminders', id, { enabled: nextEnabled }); }
+    catch (e) { console.error('Failed to update reminder', e); }
   };
 
-  const deleteReminder = (id: string) => {
+  const deleteReminder = async (id: string) => {
     if (confirm('Delete this reminder?')) {
       const updated = reminders.filter((r) => r.id !== id);
       setReminders(updated);
       saveReminders(updated);
+      try { await deleteCollectionItem('reminders', id); }
+      catch (e) { console.error('Failed to delete reminder', e); }
     }
   };
 
-  const handleAddReminder = () => {
+  const handleAddReminder = async () => {
     const newReminder: Reminder = {
       id: `reminder-${Date.now()}`,
       trackerId: formData.trackerName.toLowerCase(),
@@ -64,13 +83,16 @@ export default function Reminders() {
     saveReminders(updated);
     setShowAddDialog(false);
     resetForm();
+    try { await createCollectionItem('reminders', newReminder); }
+    catch (e) { console.error('Failed to save reminder', e); }
   };
 
-  const handleEditReminder = () => {
+  const handleEditReminder = async () => {
     if (!editingReminder) return;
 
+    const id = editingReminder.id;
     const updated = reminders.map((r) =>
-      r.id === editingReminder.id
+      r.id === id
         ? { ...editingReminder, ...formData }
         : r
     );
@@ -78,6 +100,8 @@ export default function Reminders() {
     saveReminders(updated);
     setEditingReminder(null);
     resetForm();
+    try { await updateCollectionItem('reminders', id, { ...formData }); }
+    catch (e) { console.error('Failed to update reminder', e); }
   };
 
   const resetForm = () => {

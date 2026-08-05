@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ChefHat, Search, Filter, Heart, Clock, Flame, Users, ChevronRight, Star, Bookmark, MapPin, ShoppingCart, AlertCircle, Leaf, Globe } from "lucide-react";
+import { getCollection, createCollectionItem, deleteCollectionItem } from "../../lib/api";
 import BottomNav from "../components/BottomNav";
 import { useAppMode } from "../contexts/AppModeContext";
 import { useLocation } from "../contexts/LocationContext";
@@ -187,14 +188,29 @@ export default function Recipe() {
     },
   ]);
 
+  // Load this account's saved favorites and apply them to the recipe list.
+  useEffect(() => {
+    getCollection('recipeFavorites')
+      .then((items) => {
+        const favIds = new Set((Array.isArray(items) ? items : []).map((i: any) => i.id));
+        setRecipes((prev) => prev.map((r) => ({ ...r, isFavorite: favIds.has(r.id) })));
+      })
+      .catch((e) => console.error('Failed to load recipe favorites', e));
+  }, []);
+
   const filteredRecipes = recipes.filter((recipe) => {
     const matchesSearch = recipe.name.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesCategory = selectedCategory === "all" || recipe.category === selectedCategory;
     return matchesSearch && matchesCategory;
   });
 
-  const toggleFavorite = (id: string) => {
-    setRecipes(recipes.map(r => r.id === id ? { ...r, isFavorite: !r.isFavorite } : r));
+  const toggleFavorite = async (id: string) => {
+    const willFavorite = !recipes.find((r) => r.id === id)?.isFavorite;
+    setRecipes(recipes.map(r => r.id === id ? { ...r, isFavorite: willFavorite } : r));
+    try {
+      if (willFavorite) await createCollectionItem('recipeFavorites', { id });
+      else await deleteCollectionItem('recipeFavorites', id);
+    } catch (e) { console.error('Failed to update favorite', e); }
   };
 
   const difficultyColors = {
