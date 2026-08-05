@@ -11,6 +11,7 @@ import { Button } from "../components/ui/button";
 import { CelebrationAnimation } from "../components/CelebrationAnimation";
 import { UndoNotification } from "../components/UndoNotification";
 import { SkeletonGoalList } from "../components/SkeletonLoader";
+import { getGoals, createGoal, updateGoal } from "../../lib/api";
 
 type GoalCategory = "weight" | "nutrition" | "health" | "lifestyle";
 type GoalStatus = "active" | "completed" | "paused";
@@ -52,60 +53,7 @@ export default function Goals() {
     unit: "",
     deadline: "",
   });
-  const [goals, setGoals] = useState<Goal[]>([
-    {
-      id: "1",
-      title: "Reach Target Weight",
-      category: "weight",
-      targetValue: 70,
-      currentValue: 75,
-      unit: "kg",
-      deadline: "2026-06-30",
-      status: "active",
-      icon: "⚖️",
-      color: "#1f7a8c",
-      bgColor: "#E8F5F5",
-    },
-    {
-      id: "2",
-      title: "Daily Water Intake",
-      category: "nutrition",
-      targetValue: 2500,
-      currentValue: 1800,
-      unit: "ml",
-      deadline: "2026-12-31",
-      status: "active",
-      icon: "💧",
-      color: "#4ecdc4",
-      bgColor: "#B8E5E5",
-    },
-    {
-      id: "3",
-      title: "Lower Blood Sugar (HbA1c)",
-      category: "health",
-      targetValue: 5.7,
-      currentValue: 6.8,
-      unit: "%",
-      deadline: "2026-09-30",
-      status: "active",
-      icon: "🩺",
-      color: "#e63946",
-      bgColor: "#ffe5e5",
-    },
-    {
-      id: "4",
-      title: "Exercise 3x Per Week",
-      category: "lifestyle",
-      targetValue: 3,
-      currentValue: 2,
-      unit: "days/week",
-      deadline: "2026-12-31",
-      status: "active",
-      icon: "💪",
-      color: "#f77f00",
-      bgColor: "#fff4e5",
-    },
-  ]);
+  const [goals, setGoals] = useState<Goal[]>([]);
 
   const calculateProgress = (current: number, target: number) => {
     // Handle reverse goals (like weight loss)
@@ -116,7 +64,7 @@ export default function Goals() {
     return Math.max(0, Math.min(100, (current / target) * 100));
   };
 
-  const handleAddGoal = () => {
+  const handleAddGoal = async () => {
     if (!newGoal.title || !newGoal.targetValue || !newGoal.currentValue || !newGoal.unit || !newGoal.deadline) {
       return;
     }
@@ -130,21 +78,26 @@ export default function Goals() {
 
     const config = categoryConfig[newGoal.category];
 
-    const goal: Goal = {
-      id: Date.now().toString(),
+    const goalData = {
       title: newGoal.title,
       category: newGoal.category,
       targetValue: parseFloat(newGoal.targetValue),
       currentValue: parseFloat(newGoal.currentValue),
       unit: newGoal.unit,
       deadline: newGoal.deadline,
-      status: "active",
+      status: "active" as GoalStatus,
       icon: config.icon,
       color: config.color,
       bgColor: config.bgColor,
     };
 
-    setGoals([...goals, goal]);
+    try {
+      const res = await createGoal(goalData);
+      const created: Goal = res && res.goal ? res.goal : { ...goalData, id: Date.now().toString() };
+      setGoals((prev) => [...prev, created]);
+    } catch {
+      setGoals((prev) => [...prev, { ...goalData, id: Date.now().toString() }]);
+    }
     setShowAddGoal(false);
     setNewGoal({
       title: "",
@@ -169,22 +122,20 @@ export default function Goals() {
     setShowEditGoal(true);
   };
 
-  const handleSaveEdit = () => {
+  const handleSaveEdit = async () => {
     if (!selectedGoal) return;
 
-    setGoals(goals.map(g =>
-      g.id === selectedGoal.id
-        ? {
-            ...g,
-            title: newGoal.title,
-            category: newGoal.category,
-            targetValue: parseFloat(newGoal.targetValue),
-            currentValue: parseFloat(newGoal.currentValue),
-            unit: newGoal.unit,
-            deadline: newGoal.deadline,
-          }
-        : g
-    ));
+    const updates = {
+      title: newGoal.title,
+      category: newGoal.category,
+      targetValue: parseFloat(newGoal.targetValue),
+      currentValue: parseFloat(newGoal.currentValue),
+      unit: newGoal.unit,
+      deadline: newGoal.deadline,
+    };
+
+    setGoals(goals.map(g => (g.id === selectedGoal.id ? { ...g, ...updates } : g)));
+    try { await updateGoal(selectedGoal.id, updates); } catch (e) { console.error("Failed to save goal edit", e); }
 
     setShowEditGoal(false);
     setSelectedGoal(null);
@@ -198,7 +149,7 @@ export default function Goals() {
     });
   };
 
-  const handleDeleteGoal = (goalId: string) => {
+  const handleDeleteGoal = async (goalId: string) => {
     const goalToDelete = goals.find(g => g.id === goalId);
     if (!goalToDelete) return;
 
@@ -207,12 +158,16 @@ export default function Goals() {
       goal: goalToDelete,
       message: `"${goalToDelete.title}" deleted`,
     });
+    // Soft-delete on the backend (hidden because status is neither active nor completed)
+    try { await updateGoal(goalId, { status: "deleted" }); } catch (e) { console.error("Failed to delete goal", e); }
   };
 
-  const handleUndoDelete = () => {
+  const handleUndoDelete = async () => {
     if (undoState) {
-      setGoals(prev => [...prev, undoState.goal]);
+      const restored = undoState.goal;
+      setGoals(prev => [...prev, restored]);
       setUndoState(null);
+      try { await updateGoal(restored.id, { status: restored.status }); } catch (e) { console.error("Failed to restore goal", e); }
     }
   };
 
@@ -222,7 +177,7 @@ export default function Goals() {
     setShowUpdateProgress(true);
   };
 
-  const handleSaveProgress = () => {
+  const handleSaveProgress = async () => {
     if (!selectedGoal || !updateValue) return;
 
     const newValue = parseFloat(updateValue);
@@ -233,6 +188,7 @@ export default function Goals() {
         ? { ...g, currentValue: newValue }
         : g
     ));
+    try { await updateGoal(selectedGoal.id, { currentValue: newValue }); } catch (e) { console.error("Failed to update progress", e); }
 
     // Check if goal reached 100%
     if (progress >= 100 && calculateProgress(selectedGoal.currentValue, selectedGoal.targetValue) < 100) {
@@ -245,7 +201,7 @@ export default function Goals() {
     setUpdateValue("");
   };
 
-  const handleMarkComplete = (goalId: string) => {
+  const handleMarkComplete = async (goalId: string) => {
     const goal = goals.find(g => g.id === goalId);
     if (!goal) return;
 
@@ -254,6 +210,7 @@ export default function Goals() {
         ? { ...g, status: "completed" as GoalStatus }
         : g
     ));
+    try { await updateGoal(goalId, { status: "completed" }); } catch (e) { console.error("Failed to mark goal complete", e); }
 
     // Show celebration
     setCelebrationMessage(`${goal.title} Completed!`);
@@ -269,25 +226,14 @@ export default function Goals() {
     }
   };
 
-  // Load goals from localStorage on mount
+  // Load this user's goals from the backend on mount
   useEffect(() => {
     setIsLoading(true);
-    // Simulate loading delay for skeleton
-    setTimeout(() => {
-      const stored = localStorage.getItem("goalsData");
-      if (stored) {
-        setGoals(JSON.parse(stored));
-      }
-      setIsLoading(false);
-    }, 800);
+    getGoals()
+      .then((data) => setGoals(Array.isArray(data) ? data.filter((g: Goal) => g.status !== "deleted") : []))
+      .catch((e) => { console.error("Failed to load goals", e); setGoals([]); })
+      .finally(() => setIsLoading(false));
   }, []);
-
-  // Save goals to localStorage whenever they change
-  useEffect(() => {
-    if (goals.length > 0) {
-      localStorage.setItem("goalsData", JSON.stringify(goals));
-    }
-  }, [goals]);
 
   const allActiveGoals = goals.filter((g) => g.status === "active");
   const allCompletedGoals = goals.filter((g) => g.status === "completed");
