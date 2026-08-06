@@ -109,7 +109,7 @@ export default function Weight() {
               type="number"
               value={weight}
               onChange={(e) => setWeight(e.target.value)}
-              className="flex-1 text-4xl text-center text-[#1f7a8c] bg-gray-50 rounded-2xl p-4 outline-none focus:ring-2 focus:ring-[#4ecdc4]"
+              className="flex-1 min-w-0 w-full text-4xl text-center text-[#1f7a8c] bg-gray-50 rounded-2xl p-4 outline-none focus:ring-2 focus:ring-[#4ecdc4]"
               placeholder="70"
             />
             <div className="flex flex-col gap-2">
@@ -145,7 +145,7 @@ export default function Weight() {
               type="number"
               value={height}
               onChange={(e) => setHeight(e.target.value)}
-              className="flex-1 text-4xl text-center text-[#1f7a8c] bg-gray-50 rounded-2xl p-4 outline-none focus:ring-2 focus:ring-[#4ecdc4]"
+              className="flex-1 min-w-0 w-full text-4xl text-center text-[#1f7a8c] bg-gray-50 rounded-2xl p-4 outline-none focus:ring-2 focus:ring-[#4ecdc4]"
               placeholder="170"
             />
             <div className="flex flex-col gap-2">

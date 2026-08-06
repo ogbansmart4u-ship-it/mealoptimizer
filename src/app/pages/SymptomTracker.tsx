@@ -529,7 +529,7 @@ export default function SymptomTracker() {
               className="w-full pl-10 pr-4 py-3 rounded-xl border-2 border-gray-200 focus:border-red-400 focus:outline-none"
             />
           </div>
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-2">
             <button
               onClick={() => setFilterSeverity("all")}
               className={`px-4 py-2 rounded-xl text-sm font-medium transition ${
