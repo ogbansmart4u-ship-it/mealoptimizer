@@ -1,6 +1,7 @@
 import { Link } from "react-router";
 import { Utensils, TrendingUp, Heart, Leaf } from "lucide-react";
 import { motion, useReducedMotion } from "motion/react";
+import { useLanguage } from "../contexts/LanguageContext";
 
 function Wordmark() {
   return (
@@ -19,33 +20,16 @@ function Wordmark() {
 }
 
 const FEATURES = [
-  {
-    icon: Utensils,
-    label: "Smart Meal Planning",
-    desc: "AI-powered meal suggestions tailored to your health profile and local food culture.",
-    bg: "bg-[#CCFBF1]",
-    iconColor: "text-[#0F766E]",
-  },
-  {
-    icon: TrendingUp,
-    label: "Track Progress",
-    desc: "Log weight, sleep, hydration, and workouts. See your trajectory over time.",
-    bg: "bg-[#E0F2FE]",
-    iconColor: "text-[#0369A1]",
-  },
-  {
-    icon: Heart,
-    label: "Health Focused",
-    desc: "Recommendations that respect your medical condition, age, BMI, and local context.",
-    bg: "bg-[#FCE7F3]",
-    iconColor: "text-[#BE185D]",
-  },
+  { icon: Utensils, labelKey: "landing.f1.label", descKey: "landing.f1.desc", bg: "bg-[#CCFBF1]", iconColor: "text-[#0F766E]" },
+  { icon: TrendingUp, labelKey: "landing.f2.label", descKey: "landing.f2.desc", bg: "bg-[#E0F2FE]", iconColor: "text-[#0369A1]" },
+  { icon: Heart, labelKey: "landing.f3.label", descKey: "landing.f3.desc", bg: "bg-[#FCE7F3]", iconColor: "text-[#BE185D]" },
 ];
 
 const ease = [0, 0, 0.2, 1] as const;
 
 export default function Landing() {
   const reduced = useReducedMotion();
+  const { t } = useLanguage();
 
   return (
     <div className="min-h-screen bg-[#F7F9F8] flex flex-col">
@@ -66,14 +50,14 @@ export default function Landing() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3, delay: 0.05, ease }}
         >
-          Personalized nutrition based on your health condition, age, BMI, and where you live.
+          {t('landing.subtitle')}
         </motion.p>
 
         {/* Feature cards */}
         <div className="mt-12 w-full max-w-sm space-y-3">
-          {FEATURES.map(({ icon: Icon, label, desc, bg, iconColor }, i) => (
+          {FEATURES.map(({ icon: Icon, labelKey, descKey, bg, iconColor }, i) => (
             <motion.div
-              key={label}
+              key={labelKey}
               initial={{ opacity: 0, y: reduced ? 0 : 8 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3, delay: 0.1 + i * 0.05, ease }}
@@ -89,9 +73,9 @@ export default function Landing() {
                   className="font-semibold text-[#0F172A] text-base"
                   style={{ fontFamily: "Manrope, sans-serif" }}
                 >
-                  {label}
+                  {t(labelKey)}
                 </p>
-                <p className="text-sm text-[#475569] mt-0.5 leading-relaxed">{desc}</p>
+                <p className="text-sm text-[#475569] mt-0.5 leading-relaxed">{t(descKey)}</p>
               </div>
             </motion.div>
           ))}
@@ -109,21 +93,21 @@ export default function Landing() {
             className="block w-full bg-[#0F766E] hover:bg-[#115E59] text-white rounded-xl py-3.5 text-center font-semibold transition-all duration-200 ease-out shadow-sm hover:shadow-md hover:-translate-y-px active:scale-[0.97] motion-reduce:hover:translate-y-0 motion-reduce:active:scale-100"
             style={{ fontFamily: "Manrope, sans-serif" }}
           >
-            Get Started — it&apos;s free
+            {t('landing.getStarted')}
           </Link>
           <Link
             to="/login"
             className="block w-full bg-[#ffffff] text-[#0F766E] border border-[#0F766E] rounded-xl py-3.5 text-center font-semibold hover:bg-[#F0FDFA] transition-all duration-200 ease-out active:scale-[0.97] motion-reduce:active:scale-100"
             style={{ fontFamily: "Manrope, sans-serif" }}
           >
-            Log In
+            {t('auth.login')}
           </Link>
         </motion.div>
       </div>
 
       {/* Footer */}
       <div className="pb-8 text-center text-xs text-[#94A3B8]">
-        © 2026 MealOptimiza. All rights reserved.
+        {t('landing.rights')}
       </div>
     </div>
   );
