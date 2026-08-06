@@ -132,10 +132,10 @@ Prioritized features, each addressing a pain point Yazio doesn't solve for this 
 
 1. **West African food database** — DONE (data layer). Fixes accuracy + local coverage + offline. Next: search/logging UI, and let AI photo analysis map to real DB entries the user can correct and save.
 2. **Condition-first nutrient tracking** — **meal → post-meal glucose correlation view DONE** (`GlucoseInsights.tsx`, route `/glucose-insights`, linked from the biometrics dashboard): matches each meal to glucose readings 30 min–3 h afterwards vs a pre-meal baseline, ranks foods by average spike, with empty/insufficient-data states and a not-medical-advice disclaimer. Remaining: surface sodium/potassium prominently for hypertension; store per-food carbs/GI on meal logs for richer analysis.
-3. **Doctor-ready report** — generate a shareable PDF (glucose trend, BP, meds adherence, recent meals) from Medical Vault + biometrics + med + meal logs.
+3. **Doctor-ready report** — DONE (`HealthReport.tsx`, route `/health-report`, entry point on the Health page grid). Print-optimized page (native "Print / Save as PDF", `@media print` hides chrome; works on mobile) aggregating patient details, glucose readings + average, blood pressure, latest weight, medications, and recent meals — no PDF dependency added. Remaining (optional): attach the generated report into the Medical Vault, include the glucose-impact ranking.
 4. **Medication–food awareness** — flag interactions/timing (metformin, warfarin + vitamin-K greens, antihypertensives + high-sodium dishes) using a curated rules table.
 5. **Local, affordable meal plans** — extend AI plans to respect local market ingredients, seasonality, and a Naira budget.
 6. **Real barcode DB** — swap the Gemini-guess flow for OpenFoodFacts, AI fallback only; save user corrections.
 7. **Streaks/adherence + local languages** (Yoruba, Hausa, Igbo, Pidgin).
 
-Top 3 to build next: finish the foods UI (#1), meal-to-glucose correlation (#2), doctor report (#3).
+Top 3 (foods UI #1, meal-to-glucose correlation #2, doctor report #3) — all DONE. Next candidates: medication–food interaction flags (#4), local/affordable AI meal plans (#5), OpenFoodFacts barcode (#6), streaks + local languages (#7).

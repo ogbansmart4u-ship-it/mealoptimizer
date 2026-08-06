@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import {
   Activity, MapPin, Scale, Calendar, Pill, Stethoscope,
   Lightbulb, BookOpen, Heart, ChevronRight,
-  Shield, Droplet, Moon, Dumbbell, Clock, AlertCircle,
+  Shield, Droplet, Moon, Dumbbell, Clock, AlertCircle, FileText,
 } from "lucide-react";
 import BottomNav from "../components/BottomNav";
 import { useNavigate } from "react-router";
@@ -113,6 +113,7 @@ export default function Health() {
               { label: "Workout",       icon: Dumbbell,    gradient: "from-orange-500 to-red-500",    border: "border-orange-400", route: "/workout" },
               { label: "Fasting",       icon: Clock,       gradient: "from-purple-600 to-pink-600",   border: "border-purple-400", route: "/fasting" },
               { label: "Symptoms",      icon: AlertCircle, gradient: "from-red-500 to-orange-500",    border: "border-red-400",    route: "/symptoms" },
+              { label: "Doctor Report", icon: FileText,    gradient: "from-teal-500 to-cyan-500",     border: "border-teal-400",   route: "/health-report" },
             ].map(({ label, icon: Icon, gradient, border, route }) => (
               <button
                 key={route}
