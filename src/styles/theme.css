@@ -30,6 +30,15 @@
   --accent-foreground: #0F766E;
   --destructive: #d4183d;
   --destructive-foreground: #ffffff;
+  /* Secondary accent (blueprint): amber — badges, alerts, notifications */
+  --secondary-accent: #F59E0B;
+  --secondary-accent-foreground: #ffffff;
+  /* Semantic status tokens */
+  --success: #10B981;
+  --warning: #F59E0B;
+  --danger: #EF4444;
+  /* Neutral dark text (blueprint: never pure black) */
+  --ink: #1E293B;
   --border: #E2E8F0;
   --input: transparent;
   --input-background: #ffffff;
@@ -102,6 +111,12 @@
   --color-accent-foreground: var(--accent-foreground);
   --color-destructive: var(--destructive);
   --color-destructive-foreground: var(--destructive-foreground);
+  --color-secondary-accent: var(--secondary-accent);
+  --color-secondary-accent-foreground: var(--secondary-accent-foreground);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-danger: var(--danger);
+  --color-ink: var(--ink);
   --color-border: var(--border);
   --color-input: var(--input);
   --color-input-background: var(--input-background);

@@ -79,6 +79,7 @@ Secure storage for sensitive medical documents (lab reports, prescriptions, scan
 - **Confirm remaining pages are fully wired, not local:** Personalization, Achievements display, meal-plan history, grocery-list flows.
 
 ### B. Mobile / UI polish
+- **Design system foundation (new).** Added `DESIGN_GUIDELINES.md` (adapted from the uploaded UI/UX Master Blueprint — 8pt grid, type scale, colour, component specs, motion, a11y, QA checklist). Added missing tokens to `src/styles/theme.css`: `--secondary-accent` (amber `#F59E0B`), `--success`, `--warning`, `--danger`, `--ink` (`#1E293B`), exposed as Tailwind utilities (`bg-secondary-accent`, `text-warning`, etc.). **Open item flagged:** two brand teals in the codebase (`#1f7a8c` app-wide vs `#0F766E` token/auth pages) — canonical is `#1f7a8c`; migrate over time. Next UI phases: standardize Button/Input/Card/nav to spec, then unify the teal.
 - **Full responsive sweep across every page at phone + tablet widths** (only a handful of pages verified so far). ← _next up_
 - Touch animations: many effects are hover-based (don't fire on phones); decide whether to add tap-based animations. (Pending owner decision.)
 - Add loading skeletons and empty-state designs; consistent spacing/typography scale.
