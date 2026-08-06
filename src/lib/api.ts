@@ -184,10 +184,11 @@ export async function generateMealPlan(days: number, preferences: string) {
   });
 }
 
-export async function generateSingleMeal(mealType: string, currentGoal: string) {
+export async function generateSingleMeal(mealType: string, currentGoal: string, budget?: number | string) {
+  const b = budget === undefined || budget === null || `${budget}`.trim() === '' ? undefined : Number(budget);
   return apiCall('/ai/generate-single-meal', {
     method: 'POST',
-    body: JSON.stringify({ mealType, currentGoal }),
+    body: JSON.stringify({ mealType, currentGoal, budget: b }),
   });
 }
 

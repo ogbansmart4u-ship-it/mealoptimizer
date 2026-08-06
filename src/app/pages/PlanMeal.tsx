@@ -40,6 +40,7 @@ export default function PlanMeal() {
   const [selectedMeal, setSelectedMeal] = useState<MealType | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
   const [currentGoal, setCurrentGoal] = useState("General Health & Nutrition");
+  const [budget, setBudget] = useState("");
 
   const mealOptions: MealOption[] = [
     {
@@ -215,7 +216,7 @@ export default function PlanMeal() {
         console.warn('Profile sync failed, proceeding anyway:', profileSyncError);
       }
 
-      const response = await generateSingleMeal(selectedMeal, currentGoal);
+      const response = await generateSingleMeal(selectedMeal, currentGoal, budget);
       toast.success(`✅ ${selectedMeal.charAt(0).toUpperCase() + selectedMeal.slice(1)} plan generated!`);
       navigate(`/meal-plan?id=${response.planId}`);
     } catch (error: any) {
@@ -362,6 +363,31 @@ export default function PlanMeal() {
               </button>
             );
           })}
+        </div>
+
+        {/* Budget (optional) */}
+        <div className="bg-white rounded-2xl shadow-lg p-5 mb-6">
+          <label htmlFor="budget" className="text-sm font-medium text-gray-800 flex items-center gap-2 mb-2">
+            <Target className="h-4 w-4 text-[#1f7a8c]" />
+            Budget per serving (optional)
+          </label>
+          <div className="relative">
+            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">₦</span>
+            <input
+              id="budget"
+              type="number"
+              inputMode="numeric"
+              min="0"
+              step="50"
+              value={budget}
+              onChange={(e) => setBudget(e.target.value)}
+              placeholder="e.g. 800"
+              className="w-full h-12 pl-8 pr-4 rounded-xl border-2 border-gray-200 focus:border-[#1f7a8c] focus:outline-none"
+            />
+          </div>
+          <p className="text-xs text-gray-500 mt-2">
+            We'll tailor the meal to affordable, in-season Nigerian market ingredients within your budget.
+          </p>
         </div>
 
         {/* Generate Button */}

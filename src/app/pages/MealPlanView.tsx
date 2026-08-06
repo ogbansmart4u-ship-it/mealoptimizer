@@ -40,6 +40,7 @@ interface MealPlanData {
   clinicalIndication: string;
   engineeringMethod: string;
   postPrandialNote: string;
+  estimatedCostNaira?: number;
 }
 
 interface MealPlan {
@@ -318,6 +319,13 @@ TIMING: ${mealPlan.plan_json.circadianAnchor}
               <p className="text-xs text-gray-500">grams</p>
             </div>
           </div>
+
+          {mealPlan.plan_json.estimatedCostNaira ? (
+            <div className="bg-gradient-to-br from-teal-50 to-cyan-100 rounded-2xl p-4 mb-4 flex items-center justify-between">
+              <p className="text-sm text-gray-700">Est. ingredient cost per serving</p>
+              <p className="text-xl font-semibold text-[#1f7a8c]">₦{mealPlan.plan_json.estimatedCostNaira.toLocaleString()}</p>
+            </div>
+          ) : null}
 
           <div className="bg-teal-50 rounded-2xl p-4">
             <div className="flex items-center gap-2 mb-2">
