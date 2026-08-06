@@ -13,10 +13,10 @@ function Wordmark() {
   return (
     <div className="flex items-center gap-2.5 justify-center">
       <div className="w-9 h-9 rounded-xl bg-[#CCFBF1] flex items-center justify-center flex-shrink-0">
-        <Leaf className="h-5 w-5 text-[#1f7a8c]" />
+        <Leaf className="h-5 w-5 text-[#0F766E]" />
       </div>
       <span
-        className="font-bold text-2xl text-[#1f7a8c] tracking-tight"
+        className="font-bold text-2xl text-[#0F766E] tracking-tight"
         style={{ fontFamily: "Manrope, sans-serif" }}
       >
         MealOptimiza
@@ -62,7 +62,7 @@ export default function ForgotPassword() {
           transition={{ duration: 0.3, ease }}
         >
           <div className="w-14 h-14 rounded-full bg-[#CCFBF1] flex items-center justify-center mx-auto mb-4">
-            <CheckCircle className="h-7 w-7 text-[#1f7a8c]" />
+            <CheckCircle className="h-7 w-7 text-[#0F766E]" />
           </div>
           <h2
             className="text-xl font-bold mb-3 text-[#0F172A]"
@@ -87,7 +87,7 @@ export default function ForgotPassword() {
             </Button>
             <Button
               onClick={() => navigate("/login")}
-              className="w-full bg-[#1f7a8c] hover:bg-[#1a6273] text-white rounded-xl font-semibold"
+              className="w-full bg-[#0F766E] hover:bg-[#115E59] text-white rounded-xl font-semibold"
               style={{ fontFamily: "Manrope, sans-serif" }}
             >
               Back to Login
@@ -104,7 +104,7 @@ export default function ForgotPassword() {
       <div className="px-6 pt-10">
         <button
           onClick={() => navigate("/login")}
-          className="flex items-center gap-1.5 text-[#1f7a8c] text-sm font-medium hover:text-[#1a6273] transition-colors"
+          className="flex items-center gap-1.5 text-[#0F766E] text-sm font-medium hover:text-[#115E59] transition-colors"
         >
           <ArrowLeft className="h-4 w-4" />
           <span>Back to Login</span>
@@ -153,7 +153,7 @@ export default function ForgotPassword() {
                   placeholder="you@example.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="pl-10 h-12 bg-[#ffffff] border-[#CBD5E1] rounded-xl focus-visible:ring-[#1f7a8c] focus-visible:border-[#1f7a8c]"
+                  className="pl-10 h-12 bg-[#ffffff] border-[#CBD5E1] rounded-xl focus-visible:ring-[#0F766E] focus-visible:border-[#0F766E]"
                   required
                 />
               </div>
@@ -162,7 +162,7 @@ export default function ForgotPassword() {
             {/* Submit Button */}
             <Button
               type="submit"
-              className="w-full bg-[#1f7a8c] hover:bg-[#1a6273] text-white h-12 rounded-xl shadow-sm font-semibold transition-all duration-200 ease-out hover:shadow-md hover:-translate-y-px active:scale-[0.97] motion-reduce:hover:translate-y-0 motion-reduce:active:scale-100 disabled:opacity-60 disabled:pointer-events-none"
+              className="w-full bg-[#0F766E] hover:bg-[#115E59] text-white h-12 rounded-xl shadow-sm font-semibold transition-all duration-200 ease-out hover:shadow-md hover:-translate-y-px active:scale-[0.97] motion-reduce:hover:translate-y-0 motion-reduce:active:scale-100 disabled:opacity-60 disabled:pointer-events-none"
               style={{ fontFamily: "Manrope, sans-serif" }}
               disabled={loading}
             >
@@ -178,7 +178,7 @@ export default function ForgotPassword() {
           {/* Back to Login */}
           <p className="text-center mt-6 text-sm text-[#475569]">
             Remember your password?{" "}
-            <Link to="/login" className="text-[#1f7a8c] font-medium hover:underline">
+            <Link to="/login" className="text-[#0F766E] font-medium hover:underline">
               Log In
             </Link>
           </p>

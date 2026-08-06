@@ -12,10 +12,10 @@ function Wordmark() {
   return (
     <div className="flex items-center gap-2.5 justify-center">
       <div className="w-9 h-9 rounded-xl bg-[#CCFBF1] flex items-center justify-center flex-shrink-0">
-        <Leaf className="h-5 w-5 text-[#1f7a8c]" />
+        <Leaf className="h-5 w-5 text-[#0F766E]" />
       </div>
       <span
-        className="font-bold text-2xl text-[#1f7a8c] tracking-tight"
+        className="font-bold text-2xl text-[#0F766E] tracking-tight"
         style={{ fontFamily: "Manrope, sans-serif" }}
       >
         MealOptimiza
@@ -127,7 +127,7 @@ export default function Login() {
       <div className="px-6 pt-10">
         <button
           onClick={() => navigate("/")}
-          className="flex items-center gap-1.5 text-[#1f7a8c] text-sm font-medium hover:text-[#1a6273] transition-colors"
+          className="flex items-center gap-1.5 text-[#0F766E] text-sm font-medium hover:text-[#115E59] transition-colors"
         >
           <ArrowLeft className="h-4 w-4" />
           <span>{t('common.back')}</span>
@@ -174,7 +174,7 @@ export default function Login() {
                   placeholder="you@example.com"
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  className="pl-10 h-12 bg-[#ffffff] border-[#CBD5E1] rounded-xl focus-visible:ring-[#1f7a8c] focus-visible:border-[#1f7a8c]"
+                  className="pl-10 h-12 bg-[#ffffff] border-[#CBD5E1] rounded-xl focus-visible:ring-[#0F766E] focus-visible:border-[#0F766E]"
                   required
                 />
               </div>
@@ -193,7 +193,7 @@ export default function Login() {
                   placeholder={t('auth.passwordPlaceholder')}
                   value={formData.password}
                   onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                  className="pl-10 pr-10 h-12 bg-[#ffffff] border-[#CBD5E1] rounded-xl focus-visible:ring-[#1f7a8c] focus-visible:border-[#1f7a8c]"
+                  className="pl-10 pr-10 h-12 bg-[#ffffff] border-[#CBD5E1] rounded-xl focus-visible:ring-[#0F766E] focus-visible:border-[#0F766E]"
                   required
                 />
                 <button
@@ -210,7 +210,7 @@ export default function Login() {
             <div className="text-right -mt-1">
               <Link
                 to="/forgot-password"
-                className="text-xs text-[#1f7a8c] hover:text-[#1a6273] hover:underline transition-colors"
+                className="text-xs text-[#0F766E] hover:text-[#115E59] hover:underline transition-colors"
               >
                 {t('auth.forgot')}
               </Link>
@@ -219,7 +219,7 @@ export default function Login() {
             {/* Submit Button */}
             <Button
               type="submit"
-              className="w-full bg-[#1f7a8c] hover:bg-[#1a6273] text-white h-12 rounded-xl shadow-sm font-semibold transition-all duration-200 ease-out hover:shadow-md hover:-translate-y-px active:scale-[0.97] motion-reduce:hover:translate-y-0 motion-reduce:active:scale-100 disabled:opacity-60 disabled:pointer-events-none"
+              className="w-full bg-[#0F766E] hover:bg-[#115E59] text-white h-12 rounded-xl shadow-sm font-semibold transition-all duration-200 ease-out hover:shadow-md hover:-translate-y-px active:scale-[0.97] motion-reduce:hover:translate-y-0 motion-reduce:active:scale-100 disabled:opacity-60 disabled:pointer-events-none"
               style={{ fontFamily: "Manrope, sans-serif" }}
               disabled={loading}
             >
@@ -273,7 +273,7 @@ export default function Login() {
           {/* Sign Up Link */}
           <p className="text-center mt-6 text-sm text-[#475569]">
             {t('auth.noAccount')}{" "}
-            <Link to="/signup" className="text-[#1f7a8c] font-medium hover:underline">
+            <Link to="/signup" className="text-[#0F766E] font-medium hover:underline">
               {t('auth.signUp')}
             </Link>
           </p>
@@ -301,7 +301,7 @@ export default function Login() {
                 </Link>
                 <Link
                   to="/signup"
-                  className="block bg-[#F0FDFA] border border-[#CCFBF1] text-[#1f7a8c] px-3 py-2 rounded text-center hover:bg-[#CCFBF1]"
+                  className="block bg-[#F0FDFA] border border-[#CCFBF1] text-[#0F766E] px-3 py-2 rounded text-center hover:bg-[#CCFBF1]"
                 >
                   ✨ Normal Signup (With Onboarding)
                 </Link>

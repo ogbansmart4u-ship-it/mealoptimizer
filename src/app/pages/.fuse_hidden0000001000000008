@@ -16,10 +16,10 @@ function Wordmark() {
   return (
     <div className="flex items-center gap-2.5 justify-center">
       <div className="w-9 h-9 rounded-xl bg-[#CCFBF1] flex items-center justify-center flex-shrink-0">
-        <Leaf className="h-5 w-5 text-[#1f7a8c]" />
+        <Leaf className="h-5 w-5 text-[#0F766E]" />
       </div>
       <span
-        className="font-bold text-2xl text-[#1f7a8c] tracking-tight"
+        className="font-bold text-2xl text-[#0F766E] tracking-tight"
         style={{ fontFamily: "Manrope, sans-serif" }}
       >
         MealOptimiza
@@ -177,7 +177,7 @@ export default function SignUp() {
       <div className="px-6 pt-10">
         <button
           onClick={() => navigate("/")}
-          className="flex items-center gap-1.5 text-[#1f7a8c] text-sm font-medium hover:text-[#1a6273] transition-colors"
+          className="flex items-center gap-1.5 text-[#0F766E] text-sm font-medium hover:text-[#115E59] transition-colors"
         >
           <ArrowLeft className="h-4 w-4" />
           <span>Back</span>
@@ -231,7 +231,7 @@ export default function SignUp() {
                   placeholder="Enter your full name"
                   value={formData.fullName}
                   onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
-                  className="pl-10 h-12 bg-[#ffffff] border-[#CBD5E1] rounded-xl focus-visible:ring-[#1f7a8c] focus-visible:border-[#1f7a8c]"
+                  className="pl-10 h-12 bg-[#ffffff] border-[#CBD5E1] rounded-xl focus-visible:ring-[#0F766E] focus-visible:border-[#0F766E]"
                   required
                 />
               </div>
@@ -253,7 +253,7 @@ export default function SignUp() {
                     setFormData({ ...formData, email: e.target.value });
                     if (fieldErrors.email) setFieldErrors(prev => ({ ...prev, email: undefined }));
                   }}
-                  className={`pl-10 h-12 bg-[#ffffff] rounded-xl focus-visible:ring-[#1f7a8c] focus-visible:border-[#1f7a8c] ${fieldErrors.email ? 'border-red-400' : 'border-[#CBD5E1]'}`}
+                  className={`pl-10 h-12 bg-[#ffffff] rounded-xl focus-visible:ring-[#0F766E] focus-visible:border-[#0F766E] ${fieldErrors.email ? 'border-red-400' : 'border-[#CBD5E1]'}`}
                   required
                 />
               </div>
@@ -278,7 +278,7 @@ export default function SignUp() {
                     setFormData({ ...formData, password: e.target.value });
                     if (fieldErrors.password) setFieldErrors(prev => ({ ...prev, password: undefined }));
                   }}
-                  className={`pl-10 pr-10 h-12 bg-[#ffffff] rounded-xl focus-visible:ring-[#1f7a8c] focus-visible:border-[#1f7a8c] ${fieldErrors.password ? 'border-red-400' : 'border-[#CBD5E1]'}`}
+                  className={`pl-10 pr-10 h-12 bg-[#ffffff] rounded-xl focus-visible:ring-[#0F766E] focus-visible:border-[#0F766E] ${fieldErrors.password ? 'border-red-400' : 'border-[#CBD5E1]'}`}
                   required
                 />
                 <button
@@ -311,7 +311,7 @@ export default function SignUp() {
                     setFormData({ ...formData, confirmPassword: e.target.value });
                     if (fieldErrors.confirmPassword) setFieldErrors(prev => ({ ...prev, confirmPassword: undefined }));
                   }}
-                  className={`pl-10 pr-10 h-12 bg-[#ffffff] rounded-xl focus-visible:ring-[#1f7a8c] focus-visible:border-[#1f7a8c] ${fieldErrors.confirmPassword ? 'border-red-400' : 'border-[#CBD5E1]'}`}
+                  className={`pl-10 pr-10 h-12 bg-[#ffffff] rounded-xl focus-visible:ring-[#0F766E] focus-visible:border-[#0F766E] ${fieldErrors.confirmPassword ? 'border-red-400' : 'border-[#CBD5E1]'}`}
                   required
                 />
                 <button
@@ -333,15 +333,15 @@ export default function SignUp() {
                 id="terms"
                 checked={agreedToTerms}
                 onCheckedChange={(checked) => setAgreedToTerms(checked as boolean)}
-                className="mt-0.5 border-[#CBD5E1] data-[state=checked]:bg-[#1f7a8c] data-[state=checked]:border-[#1f7a8c]"
+                className="mt-0.5 border-[#CBD5E1] data-[state=checked]:bg-[#0F766E] data-[state=checked]:border-[#0F766E]"
               />
               <label htmlFor="terms" className="text-sm text-[#64748B] leading-snug cursor-pointer">
                 I agree to the{" "}
-                <Link to="/terms" className="text-[#1f7a8c] hover:underline font-medium">
+                <Link to="/terms" className="text-[#0F766E] hover:underline font-medium">
                   Terms &amp; Conditions
                 </Link>{" "}
                 and{" "}
-                <Link to="/privacy" className="text-[#1f7a8c] hover:underline font-medium">
+                <Link to="/privacy" className="text-[#0F766E] hover:underline font-medium">
                   Privacy Policy
                 </Link>
               </label>
@@ -351,7 +351,7 @@ export default function SignUp() {
             <Button
               type="submit"
               disabled={loading}
-              className="w-full bg-[#1f7a8c] hover:bg-[#1a6273] text-white h-12 rounded-xl shadow-sm font-semibold transition-all duration-200 ease-out hover:shadow-md hover:-translate-y-px active:scale-[0.97] motion-reduce:hover:translate-y-0 motion-reduce:active:scale-100 disabled:opacity-60 disabled:pointer-events-none"
+              className="w-full bg-[#0F766E] hover:bg-[#115E59] text-white h-12 rounded-xl shadow-sm font-semibold transition-all duration-200 ease-out hover:shadow-md hover:-translate-y-px active:scale-[0.97] motion-reduce:hover:translate-y-0 motion-reduce:active:scale-100 disabled:opacity-60 disabled:pointer-events-none"
               style={{ fontFamily: "Manrope, sans-serif" }}
             >
               {loading ? (
@@ -404,7 +404,7 @@ export default function SignUp() {
           {/* Login Link */}
           <p className="text-center mt-6 text-sm text-[#475569]">
             Already have an account?{" "}
-            <Link to="/login" className="text-[#1f7a8c] font-medium hover:underline">
+            <Link to="/login" className="text-[#0F766E] font-medium hover:underline">
               Log In
             </Link>
           </p>

@@ -20,14 +20,14 @@
   --card-foreground: #0F172A;
   --popover: #ffffff;
   --popover-foreground: #0F172A;
-  --primary: #1f7a8c;
+  --primary: #0F766E;
   --primary-foreground: #ffffff;
   --secondary: #F0FDFA;
-  --secondary-foreground: #1f7a8c;
+  --secondary-foreground: #0F766E;
   --muted: #F1F5F9;
   --muted-foreground: #64748B;
   --accent: #CCFBF1;
-  --accent-foreground: #1f7a8c;
+  --accent-foreground: #0F766E;
   --destructive: #d4183d;
   --destructive-foreground: #ffffff;
   /* Secondary accent (blueprint): amber — badges, alerts, notifications */
@@ -45,7 +45,7 @@
   --switch-background: #CBD5E1;
   --font-weight-medium: 500;
   --font-weight-normal: 400;
-  --ring: #1f7a8c;
+  --ring: #0F766E;
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
   --chart-3: oklch(0.398 0.07 227.392);
