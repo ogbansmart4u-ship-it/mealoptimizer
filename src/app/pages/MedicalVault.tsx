@@ -35,6 +35,9 @@ import {
   getMedicalDocumentDownloadUrl,
   deleteMedicalDocument,
   type MedicalDocument,
+  getCollection,
+  createCollectionItem,
+  deleteCollectionItem,
 } from "../../lib/api";
 
 type BiomarkerStatus = 'low' | 'normal' | 'high';
@@ -121,74 +124,67 @@ export default function MedicalVault() {
     return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
   };
 
-  // Load biomarkers from localStorage on mount
+  // Biomarkers now persist per-account in the universal collections store.
+  const [biomarkersLoading, setBiomarkersLoading] = useState(true);
+
+  const iconForCategory = (category: Biomarker['category']) =>
+    category === 'cardiovascular' ? Heart : category === 'nutritional' ? Zap : Activity;
+  const colorForStatus = (status: BiomarkerStatus) =>
+    status === 'high' ? '#ef4444' : status === 'low' ? '#3b82f6' : '#10b981';
+
+  // Stored biomarkers are plain JSON; rebuild the non-serializable fields
+  // (icon component, color, derived status) from the saved values.
+  const hydrateBiomarker = (item: any): Biomarker => {
+    const nr = item.normalRange || { min: 0, max: 0 };
+    const status: BiomarkerStatus =
+      item.value < nr.min ? 'low' : item.value > nr.max ? 'high' : 'normal';
+    return { ...item, normalRange: nr, status, icon: iconForCategory(item.category), color: colorForStatus(status) };
+  };
+
   useEffect(() => {
-    const saved = localStorage.getItem('medical-biomarkers');
-    if (saved) {
-      setBiomarkers(JSON.parse(saved));
-    } else {
-      // Initialize with mock data
-      const mockBiomarkers: Biomarker[] = [
-        {
-          id: '1',
-          name: 'HbA1c',
-          value: 6.2,
-          unit: '%',
-          normalRange: { min: 4.0, max: 5.6 },
-          status: 'high',
-          icon: Activity,
-          color: '#ef4444',
-          category: 'metabolic',
-          lastUpdated: new Date().toISOString(),
-        },
-        {
-          id: '2',
-          name: 'Fasting Glucose',
-          value: 105,
-          unit: 'mg/dL',
-          normalRange: { min: 70, max: 100 },
-          status: 'high',
-          icon: Droplet,
-          color: '#f59e0b',
-          category: 'metabolic',
-          lastUpdated: new Date().toISOString(),
-        },
-        {
-          id: '3',
-          name: 'LDL Cholesterol',
-          value: 130,
-          unit: 'mg/dL',
-          normalRange: { min: 0, max: 100 },
-          status: 'high',
-          icon: Heart,
-          color: '#ef4444',
-          category: 'cardiovascular',
-          lastUpdated: new Date().toISOString(),
-        },
-        {
-          id: '4',
-          name: 'Ferritin (Iron)',
-          value: 45,
-          unit: 'ng/mL',
-          normalRange: { min: 30, max: 200 },
-          status: 'normal',
-          icon: Zap,
-          color: '#10b981',
-          category: 'nutritional',
-          lastUpdated: new Date().toISOString(),
-        },
-      ];
-      setBiomarkers(mockBiomarkers);
-      localStorage.setItem('medical-biomarkers', JSON.stringify(mockBiomarkers));
-    }
+    getCollection('biomarkers')
+      .then((items) => setBiomarkers((items || []).map(hydrateBiomarker)))
+      .catch((err) => {
+        console.error('Failed to load biomarkers:', err);
+        toast.error("Couldn't load your biomarkers", {
+          description: err instanceof Error ? err.message : 'Please try again.',
+        });
+      })
+      .finally(() => setBiomarkersLoading(false));
   }, []);
 
-  // Save biomarkers to localStorage whenever they change
-  useEffect(() => {
-    if (biomarkers.length > 0) {
-      localStorage.setItem('medical-biomarkers', JSON.stringify(biomarkers));
+  const handleAddBiomarker = async (b: Omit<Biomarker, 'id'>) => {
+    // Persist only serializable fields (icon is a component, status/color are derived)
+    const payload = {
+      name: b.name,
+      value: b.value,
+      unit: b.unit,
+      normalRange: b.normalRange,
+      category: b.category,
+      lastUpdated: b.lastUpdated,
+    };
+    try {
+      const created = await createCollectionItem('biomarkers', payload);
+      setBiomarkers((prev) => [...prev, hydrateBiomarker(created)]);
+      toast.success("Biomarker added");
+    } catch (err) {
+      toast.error("Couldn't save biomarker", {
+        description: err instanceof Error ? err.message : 'Please try again.',
+      });
     }
-  }, [biomarkers]);
+  };
+
+  const handleDeleteBiomarker = async (id: string) => {
+    try {
+      await deleteCollectionItem('biomarkers', id);
+      setBiomarkers((prev) => prev.filter((b) => b.id !== id));
+      toast.success("Biomarker removed");
+    } catch (err) {
+      toast.error("Couldn't remove biomarker", {
+        description: err instanceof Error ? err.message : 'Please try again.',
+      });
+    }
+  };
 
   const getBiomarkerStatus = (value: number, normalRange: { min: number; max: number }): BiomarkerStatus => {
     if (value < normalRange.min) return 'low';
@@ -417,7 +413,11 @@ export default function MedicalVault() {
 
         {/* Biomarker List */}
         <div className="space-y-3">
-          {filteredBiomarkers.length === 0 ? (
+          {biomarkersLoading ? (
+            <div className="bg-white rounded-2xl p-8 flex items-center justify-center">
+              <Loader2 className="h-6 w-6 animate-spin text-gray-400" />
+            </div>
+          ) : filteredBiomarkers.length === 0 ? (
             <div className="bg-white rounded-2xl p-8 text-center">
               <FileText className="h-12 w-12 text-gray-300 mx-auto mb-3" />
               <p className="text-gray-600 mb-4">No biomarkers in this category yet</p>
@@ -469,15 +469,22 @@ export default function MedicalVault() {
                         </div>
                       </div>
                     </div>
-                    {biomarker.status !== 'normal' && (
-                      <div>
-                        {biomarker.status === 'high' ? (
+                    <div className="flex flex-col items-end gap-2">
+                      {biomarker.status !== 'normal' && (
+                        biomarker.status === 'high' ? (
                           <TrendingUp className="h-6 w-6 text-red-500" />
                         ) : (
                           <TrendingDown className="h-6 w-6 text-blue-500" />
-                        )}
-                      </div>
-                    )}
+                        )
+                      )}
+                      <button
+                        onClick={() => handleDeleteBiomarker(biomarker.id)}
+                        className="p-1 text-gray-400 hover:text-red-600"
+                        aria-label={`Delete ${biomarker.name}`}
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </button>
+                    </div>
                   </div>
                 </div>
               );
@@ -525,10 +532,7 @@ export default function MedicalVault() {
       <AddBiomarkerDialog
         isOpen={showAddBiomarker}
         onClose={() => setShowAddBiomarker(false)}
-        onAdd={(newBiomarker) => {
-          setBiomarkers([...biomarkers, { ...newBiomarker, id: Date.now().toString() }]);
-          toast.success("Biomarker added successfully!");
-        }}
+        onAdd={handleAddBiomarker}
       />
 
       <BottomNav />

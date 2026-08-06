@@ -52,6 +52,7 @@ Secure storage for sensitive medical documents (lab reports, prescriptions, scan
 - Recipe favorites (catalog stays built-in; favorites persist per account).
 - Medication Tracker (medication list + dose-taken history).
 - **Medical Vault — secure documents, backend + UI (new).** Upload / list / view (signed link) / delete, backed by the private bucket + metadata table.
+- **Medical Vault biomarkers now persist per-account (new).** Moved off `localStorage` to the universal collections store (`biomarkers`); load / add / delete, with icon/color/status derived at render so stored data stays JSON-safe. No mock seed.
 
 ### Features
 - AI Food Analyzer working with real Gemini analysis (tightened prompt, numeric cleanup, timeout handling).
@@ -73,7 +74,6 @@ Secure storage for sensitive medical documents (lab reports, prescriptions, scan
 ## 3. What's LEFT to reach "professional" 🔧
 
 ### A. Data & features still incomplete
-- **Biomarkers on the Medical Vault page are still `localStorage`.** The *documents* feature is real, but the biomarker cards don't sync across devices. Follow-up: move biomarkers to a real table (or the biometric_data table / a collection).
 - **Biometrics dashboard** — still simulated. Needs real wearable integration (Apple Health / Google Fit) or manual-entry wiring to a real endpoint.
 - **Confirm remaining pages are fully wired, not local:** Personalization, Achievements display, meal-plan history, grocery-list flows.
 
@@ -106,10 +106,10 @@ Secure storage for sensitive medical documents (lab reports, prescriptions, scan
 
 ## 4. Suggested next priorities (in order)
 
-1. **Full responsive sweep** (finish the mobile pass everywhere). ← _in progress next_
-2. Move biomarkers to real backend storage (finish the Medical Vault page).
-3. PWA manifest + service worker (metadata already done).
-4. Real biometrics (wearable or manual entry).
+1. ~~Full responsive sweep~~ — DONE (all 40 routes checked at 360px; fixed Weight input rows + Symptoms filter wrap).
+2. ~~Move biomarkers to real backend storage~~ — DONE (collections store).
+3. PWA manifest + service worker (metadata already done). ← _next_
+4. Real biometrics dashboard (wearable or manual entry).
 5. Tests + error monitoring + bundle splitting.
 
 ---
