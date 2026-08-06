@@ -1,6 +1,7 @@
 import { Home, Target, FileText, Utensils, User, HeartPulse } from "lucide-react";
 import { Link, useLocation } from "react-router";
 import { useEffect, useState } from "react";
+import { useLanguage } from "../contexts/LanguageContext";
 
 type NavBadge = {
   count: number;
@@ -9,6 +10,7 @@ type NavBadge = {
 
 export default function BottomNav() {
   const location = useLocation();
+  const { t } = useLanguage();
   const [badges, setBadges] = useState<Record<string, NavBadge>>({});
 
   useEffect(() => {
@@ -58,12 +60,12 @@ export default function BottomNav() {
   }, [location.pathname]);
 
   const navItems = [
-    { path: "/home", icon: Home, label: "Home" },
-    { path: "/goals", icon: Target, label: "Goals" },
-    { path: "/logs", icon: FileText, label: "Logs" },
-    { path: "/health", icon: HeartPulse, label: "Health" },
-    { path: "/recipe", icon: Utensils, label: "Recipe" },
-    { path: "/profile", icon: User, label: "Profile" },
+    { path: "/home", icon: Home, label: t("nav.home") },
+    { path: "/goals", icon: Target, label: t("nav.goals") },
+    { path: "/logs", icon: FileText, label: t("nav.logs") },
+    { path: "/health", icon: HeartPulse, label: t("nav.health") },
+    { path: "/recipe", icon: Utensils, label: t("nav.recipe") },
+    { path: "/profile", icon: User, label: t("nav.profile") },
   ];
 
   return (

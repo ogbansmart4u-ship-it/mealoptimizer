@@ -265,6 +265,20 @@ export default function ScanBarcode() {
               {productInfo.brand && (
                 <p className="text-lg opacity-90 mt-1">{productInfo.brand}</p>
               )}
+              {productInfo.source && (
+                <span className="inline-block mt-2 text-xs px-2 py-0.5 rounded-full bg-white/20">
+                  {productInfo.source === 'openfoodfacts'
+                    ? '✓ Verified product data'
+                    : productInfo.source === 'ai_estimate'
+                    ? 'AI estimate — verify the label'
+                    : productInfo.source === 'not_found'
+                    ? 'Not found in database'
+                    : ''}
+                </span>
+              )}
+              {productInfo.per && (
+                <span className="block text-xs opacity-80 mt-1">Nutrition {productInfo.per}</span>
+              )}
             </div>
 
             {/* Nutrition Facts */}
