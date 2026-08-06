@@ -74,7 +74,7 @@ Secure storage for sensitive medical documents (lab reports, prescriptions, scan
 ## 3. What's LEFT to reach "professional" 🔧
 
 ### A. Data & features still incomplete
-- **Biometrics dashboard** — still simulated. Needs real wearable integration (Apple Health / Google Fit) or manual-entry wiring to a real endpoint.
+- **Biometrics dashboard — now real (manual entry).** Rewrote `BiometricDashboard.tsx` off the mock generators onto the `/biometrics` table: add readings (glucose, heart rate, blood pressure, steps, calories, SpO2) with date/time, latest-value cards, a real glucose trend chart, a delete-able readings list, and honest empty states. _Remaining: optional wearable sync (Apple Health / Google Fit) for automatic import._ Needs real wearable integration (Apple Health / Google Fit) or manual-entry wiring to a real endpoint.
 - **Confirm remaining pages are fully wired, not local:** Personalization, Achievements display, meal-plan history, grocery-list flows.
 
 ### B. Mobile / UI polish
@@ -109,8 +109,8 @@ Secure storage for sensitive medical documents (lab reports, prescriptions, scan
 1. ~~Full responsive sweep~~ — DONE (all 40 routes checked at 360px; fixed Weight input rows + Symptoms filter wrap).
 2. ~~Move biomarkers to real backend storage~~ — DONE (collections store).
 3. ~~PWA manifest + service worker~~ — DONE (installable + offline shell).
-4. Real biometrics dashboard (wearable or manual entry). ← _next_
-5. Tests + error monitoring + bundle splitting.
+4. ~~Real biometrics dashboard (manual entry)~~ — DONE. (Wearable sync still optional.)
+5. Tests + error monitoring + bundle splitting. ← _next_
 
 ---
 
