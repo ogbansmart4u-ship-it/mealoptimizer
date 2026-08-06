@@ -423,3 +423,97 @@ export async function updateCollectionItem(name: string, id: string, patch: any)
 export async function deleteCollectionItem(name: string, id: string) {
   return apiCall(`/collections/${name}/${id}`, { method: 'DELETE' });
 }
+
+// ============================================
+// MEDICAL VAULT API (secure documents)
+// Files live in a private Storage bucket ('medical-vault'); this table
+// stores only metadata. Bytes upload straight to Storage via a signed URL,
+// never through the edge function.
+// ============================================
+
+export interface MedicalDocument {
+  id: string;
+  user_id: string;
+  title: string;
+  category: string | null;
+  provider: string | null;
+  notes: string | null;
+  issued_date: string | null; // 'YYYY-MM-DD'
+  file_path: string | null;
+  file_name: string | null;
+  mime_type: string | null;
+  file_size: number | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface MedicalDocumentMeta {
+  title: string;
+  category?: string;
+  provider?: string;
+  notes?: string;
+  issuedDate?: string; // 'YYYY-MM-DD'
+}
+
+const MEDVAULT_BUCKET = 'medical-vault';
+
+export async function getMedicalDocuments(): Promise<MedicalDocument[]> {
+  const data = await apiCall('/medical-vault');
+  return data.items ?? [];
+}
+
+// Upload a file + save its metadata in one call.
+export async function uploadMedicalDocument(
+  file: File,
+  meta: MedicalDocumentMeta,
+): Promise<MedicalDocument> {
+  // 1) get a signed upload URL scoped to this user's folder
+  const { path, token } = await apiCall('/medical-vault/upload-url', {
+    method: 'POST',
+    body: JSON.stringify({ fileName: file.name }),
+  });
+
+  // 2) upload the raw file straight to Storage using the signed token
+  const { error: upErr } = await supabase.storage
+    .from(MEDVAULT_BUCKET)
+    .uploadToSignedUrl(path, token, file, { contentType: file.type || undefined });
+  if (upErr) throw new Error(`Upload failed: ${upErr.message}`);
+
+  // 3) save the metadata row
+  const result = await apiCall('/medical-vault', {
+    method: 'POST',
+    body: JSON.stringify({
+      title: meta.title,
+      category: meta.category ?? null,
+      provider: meta.provider ?? null,
+      notes: meta.notes ?? null,
+      issuedDate: meta.issuedDate ?? null,
+      filePath: path,
+      fileName: file.name,
+      mimeType: file.type,
+      fileSize: file.size,
+    }),
+  });
+  return result.item;
+}
+
+// Short-lived (~2 min) URL to view/download a document's file.
+export async function getMedicalDocumentDownloadUrl(id: string): Promise<string> {
+  const data = await apiCall(`/medical-vault/${id}/download-url`);
+  return data.url;
+}
+
+export async function updateMedicalDocument(
+  id: string,
+  patch: Partial<MedicalDocumentMeta>,
+): Promise<MedicalDocument> {
+  const result = await apiCall(`/medical-vault/${id}`, {
+    method: 'PUT',
+    body: JSON.stringify(patch),
+  });
+  return result.item;
+}
+
+export async function deleteMedicalDocument(id: string): Promise<void> {
+  await apiCall(`/medical-vault/${id}`, { method: 'DELETE' });
+}

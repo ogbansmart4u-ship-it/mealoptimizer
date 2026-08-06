@@ -17,6 +17,9 @@ import {
   ChevronRight,
   Sparkles,
   ChefHat,
+  Trash2,
+  Eye,
+  Loader2,
 } from "lucide-react";
 import PageHeader from "../components/PageHeader";
 import BottomNav from "../components/BottomNav";
@@ -26,6 +29,13 @@ import { Label } from "../components/ui/label";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "../components/ui/dialog";
 import { toast } from "sonner";
 import { useUser } from "../contexts/UserContext";
+import {
+  getMedicalDocuments,
+  uploadMedicalDocument,
+  getMedicalDocumentDownloadUrl,
+  deleteMedicalDocument,
+  type MedicalDocument,
+} from "../../lib/api";
 
 type BiomarkerStatus = 'low' | 'normal' | 'high';
 
@@ -49,6 +59,67 @@ export default function MedicalVault() {
   const [showAddBiomarker, setShowAddBiomarker] = useState(false);
   const [showUploadDialog, setShowUploadDialog] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<'all' | 'metabolic' | 'cardiovascular' | 'nutritional'>('all');
+
+  // Secure documents (real backend: private Storage bucket + metadata table)
+  const [documents, setDocuments] = useState<MedicalDocument[]>([]);
+  const [docsLoading, setDocsLoading] = useState(true);
+  const [openingId, setOpeningId] = useState<string | null>(null);
+
+  const loadDocuments = async () => {
+    try {
+      const docs = await getMedicalDocuments();
+      setDocuments(docs);
+    } catch (err) {
+      console.error('Failed to load documents:', err);
+      toast.error("Couldn't load your documents", {
+        description: err instanceof Error ? err.message : 'Please try again.',
+      });
+    } finally {
+      setDocsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadDocuments();
+  }, []);
+
+  const handleViewDocument = async (doc: MedicalDocument) => {
+    if (!doc.file_path) {
+      toast.error("This document has no file attached");
+      return;
+    }
+    setOpeningId(doc.id);
+    try {
+      const url = await getMedicalDocumentDownloadUrl(doc.id);
+      window.open(url, '_blank', 'noopener,noreferrer');
+    } catch (err) {
+      toast.error("Couldn't open the file", {
+        description: err instanceof Error ? err.message : 'Please try again.',
+      });
+    } finally {
+      setOpeningId(null);
+    }
+  };
+
+  const handleDeleteDocument = async (doc: MedicalDocument) => {
+    if (!window.confirm(`Delete "${doc.title}"? This permanently removes the file.`)) return;
+    try {
+      await deleteMedicalDocument(doc.id);
+      setDocuments((prev) => prev.filter((d) => d.id !== doc.id));
+      toast.success("Document deleted");
+    } catch (err) {
+      toast.error("Couldn't delete the document", {
+        description: err instanceof Error ? err.message : 'Please try again.',
+      });
+    }
+  };
+
+  const formatFileSize = (bytes: number | null) => {
+    if (!bytes) return '';
+    if (bytes < 1024) return `${bytes} B`;
+    if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(0)} KB`;
+    return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+  };
 
   // Load biomarkers from localStorage on mount
   useEffect(() => {
@@ -182,30 +253,86 @@ export default function MedicalVault() {
             <div>
               <div className="font-semibold mb-1">Secure & Private</div>
               <div className="text-sm text-white/90">
-                Your medical data is encrypted and stored locally on your device. Only you have access.
+                Your documents are stored in a private, encrypted vault tied to your account. Only you can access them, on any device.
               </div>
             </div>
           </div>
         </div>
 
-        {/* Upload Lab Results */}
+        {/* Documents */}
         <div className="bg-white rounded-2xl shadow-lg p-5">
-          <h3 className="text-lg font-semibold text-gray-800 mb-3 flex items-center gap-2">
-            <Upload className="h-5 w-5 text-[#1f7a8c]" />
-            Upload Lab Results
-          </h3>
-          <button
-            onClick={() => setShowUploadDialog(true)}
-            className="w-full border-2 border-dashed border-gray-300 rounded-xl p-8 hover:border-[#1f7a8c] hover:bg-[#E8F5F5] transition-all group"
-          >
-            <FileText className="h-12 w-12 text-gray-400 mx-auto mb-3 group-hover:text-[#1f7a8c]" />
-            <div className="text-sm font-semibold text-gray-700 group-hover:text-[#1f7a8c]">
-              Upload PDF Lab Report
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="text-lg font-semibold text-gray-800 flex items-center gap-2">
+              <FileText className="h-5 w-5 text-[#1f7a8c]" />
+              My Documents
+            </h3>
+            <button
+              onClick={() => setShowUploadDialog(true)}
+              className="flex items-center gap-2 px-4 py-2 bg-[#1f7a8c] text-white rounded-xl hover:bg-[#1a6273] transition-colors"
+            >
+              <Upload className="h-4 w-4" />
+              <span className="text-sm font-medium">Upload</span>
+            </button>
+          </div>
+
+          {docsLoading ? (
+            <div className="py-8 flex items-center justify-center text-gray-400">
+              <Loader2 className="h-6 w-6 animate-spin" />
             </div>
-            <div className="text-xs text-gray-500 mt-1">
-              Or manually enter biomarkers below
+          ) : documents.length === 0 ? (
+            <button
+              onClick={() => setShowUploadDialog(true)}
+              className="w-full border-2 border-dashed border-gray-300 rounded-xl p-8 hover:border-[#1f7a8c] hover:bg-[#E8F5F5] transition-all group"
+            >
+              <FileText className="h-12 w-12 text-gray-400 mx-auto mb-3 group-hover:text-[#1f7a8c]" />
+              <div className="text-sm font-semibold text-gray-700 group-hover:text-[#1f7a8c]">
+                Upload a lab report or medical file
+              </div>
+              <div className="text-xs text-gray-500 mt-1">
+                PDF, image or Word document, up to 15 MB
+              </div>
+            </button>
+          ) : (
+            <div className="space-y-2">
+              {documents.map((doc) => (
+                <div
+                  key={doc.id}
+                  className="flex items-center gap-3 p-3 rounded-xl border border-gray-100 hover:bg-gray-50 transition-colors"
+                >
+                  <div className="rounded-lg bg-[#E8F5F5] p-2 flex-shrink-0">
+                    <FileText className="h-5 w-5 text-[#1f7a8c]" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="text-sm font-semibold text-gray-800 truncate">{doc.title}</div>
+                    <div className="text-xs text-gray-500 truncate">
+                      {[doc.category, doc.provider, formatFileSize(doc.file_size)]
+                        .filter(Boolean)
+                        .join(' · ')}
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => handleViewDocument(doc)}
+                    disabled={openingId === doc.id}
+                    className="p-2 text-gray-500 hover:text-[#1f7a8c] disabled:opacity-50"
+                    aria-label={`View ${doc.title}`}
+                  >
+                    {openingId === doc.id ? (
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                    ) : (
+                      <Eye className="h-4 w-4" />
+                    )}
+                  </button>
+                  <button
+                    onClick={() => handleDeleteDocument(doc)}
+                    className="p-2 text-gray-500 hover:text-red-600"
+                    aria-label={`Delete ${doc.title}`}
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </button>
+                </div>
+              ))}
             </div>
-          </button>
+          )}
         </div>
 
         {/* Biomarker Summary */}
@@ -384,30 +511,15 @@ export default function MedicalVault() {
         )}
       </div>
 
-      {/* Upload Dialog */}
-      <Dialog open={showUploadDialog} onOpenChange={setShowUploadDialog}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Upload Lab Results</DialogTitle>
-            <DialogDescription>Upload your lab results PDF to automatically extract biomarker values.</DialogDescription>
-          </DialogHeader>
-          <div className="space-y-4 py-4">
-            <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 text-sm text-blue-800">
-              <div className="font-semibold mb-2">Feature Coming Soon!</div>
-              <p>PDF parsing will automatically extract biomarker values from your lab reports. For now, please add biomarkers manually.</p>
-            </div>
-            <Button
-              onClick={() => {
-                setShowUploadDialog(false);
-                setShowAddBiomarker(true);
-              }}
-              className="w-full bg-[#1f7a8c] hover:bg-[#1a6273]"
-            >
-              Add Biomarker Manually
-            </Button>
-          </div>
-        </DialogContent>
-      </Dialog>
+      {/* Upload Document Dialog */}
+      <DocumentUploadDialog
+        isOpen={showUploadDialog}
+        onClose={() => setShowUploadDialog(false)}
+        onUploaded={(doc) => {
+          setDocuments((prev) => [doc, ...prev]);
+          toast.success("Document uploaded securely");
+        }}
+      />
 
       {/* Add Biomarker Dialog */}
       <AddBiomarkerDialog
@@ -421,6 +533,152 @@ export default function MedicalVault() {
 
       <BottomNav />
     </div>
+  );
+}
+
+// Document Upload Dialog Component
+function DocumentUploadDialog({
+  isOpen,
+  onClose,
+  onUploaded,
+}: {
+  isOpen: boolean;
+  onClose: () => void;
+  onUploaded: (doc: MedicalDocument) => void;
+}) {
+  const [title, setTitle] = useState('');
+  const [category, setCategory] = useState('Lab Result');
+  const [provider, setProvider] = useState('');
+  const [file, setFile] = useState<File | null>(null);
+  const [uploading, setUploading] = useState(false);
+
+  const MAX_BYTES = 15 * 1024 * 1024;
+  const ACCEPT = '.pdf,.jpg,.jpeg,.png,.webp,.heic,.doc,.docx';
+
+  const reset = () => {
+    setTitle('');
+    setCategory('Lab Result');
+    setProvider('');
+    setFile(null);
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const f = e.target.files?.[0] ?? null;
+    if (f && f.size > MAX_BYTES) {
+      toast.error("File is too large", { description: "Maximum size is 15 MB." });
+      e.target.value = '';
+      return;
+    }
+    setFile(f);
+    // Default the title to the file name (without extension) if empty
+    if (f && !title) setTitle(f.name.replace(/\.[^.]+$/, ''));
+  };
+
+  const handleSubmit = async () => {
+    if (!file) {
+      toast.error("Please choose a file to upload");
+      return;
+    }
+    if (!title.trim()) {
+      toast.error("Please give the document a title");
+      return;
+    }
+    setUploading(true);
+    try {
+      const doc = await uploadMedicalDocument(file, {
+        title: title.trim(),
+        category: category || undefined,
+        provider: provider.trim() || undefined,
+      });
+      onUploaded(doc);
+      reset();
+      onClose();
+    } catch (err) {
+      toast.error("Upload failed", {
+        description: err instanceof Error ? err.message : 'Please try again.',
+      });
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  return (
+    <Dialog open={isOpen} onOpenChange={(open) => { if (!open && !uploading) { reset(); onClose(); } }}>
+      <DialogContent className="max-w-md max-h-[90vh] overflow-y-auto">
+        <DialogHeader>
+          <DialogTitle>Upload Document</DialogTitle>
+          <DialogDescription>
+            Add a lab report, prescription, scan or other medical file to your private vault.
+          </DialogDescription>
+        </DialogHeader>
+
+        <div className="space-y-4 py-4">
+          {/* File picker */}
+          <div>
+            <Label htmlFor="doc-file">File</Label>
+            <Input id="doc-file" type="file" accept={ACCEPT} onChange={handleFileChange} />
+            <p className="text-xs text-gray-500 mt-1">PDF, image or Word document, up to 15 MB.</p>
+          </div>
+
+          {/* Title */}
+          <div>
+            <Label htmlFor="doc-title">Title</Label>
+            <Input
+              id="doc-title"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              placeholder="e.g., HbA1c blood test — Aug 2026"
+            />
+          </div>
+
+          {/* Category */}
+          <div>
+            <Label htmlFor="doc-category">Category</Label>
+            <select
+              id="doc-category"
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg"
+            >
+              <option value="Lab Result">Lab Result</option>
+              <option value="Prescription">Prescription</option>
+              <option value="Imaging / Scan">Imaging / Scan</option>
+              <option value="Doctor's Note">Doctor's Note</option>
+              <option value="Insurance">Insurance</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+
+          {/* Provider */}
+          <div>
+            <Label htmlFor="doc-provider">Provider / Hospital (optional)</Label>
+            <Input
+              id="doc-provider"
+              value={provider}
+              onChange={(e) => setProvider(e.target.value)}
+              placeholder="e.g., Lagoon Hospital"
+            />
+          </div>
+
+          {/* Actions */}
+          <div className="flex gap-3">
+            <Button onClick={() => { reset(); onClose(); }} variant="outline" className="flex-1" disabled={uploading}>
+              Cancel
+            </Button>
+            <Button onClick={handleSubmit} className="flex-1 bg-[#1f7a8c] hover:bg-[#1a6273]" disabled={uploading}>
+              {uploading ? (
+                <span className="flex items-center gap-2">
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  Uploading…
+                </span>
+              ) : (
+                'Upload'
+              )}
+            </Button>
+          </div>
+        </div>
+      </DialogContent>
+    </Dialog>
   );
 }
 
