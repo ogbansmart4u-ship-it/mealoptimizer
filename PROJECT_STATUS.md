@@ -4,7 +4,7 @@ A nutrition & health app for Nigerians / West Africans managing medical conditio
 
 Paste this into a new chat to continue development. It captures where the app stands and what's left to reach a professional standard.
 
-_Last updated: 6 Aug 2026 — after the Medical Vault (backend + UI), app-metadata/branding, and backend-hardening work. Live edge version: **56**._
+_Last updated: 6 Aug 2026 — after Medical Vault, metadata/PWA, biometrics rewrite, bundle code-splitting, and the West African foods database. Live edge version: **57**._
 
 ---
 
@@ -53,6 +53,7 @@ Secure storage for sensitive medical documents (lab reports, prescriptions, scan
 - Medication Tracker (medication list + dose-taken history).
 - **Medical Vault — secure documents, backend + UI (new).** Upload / list / view (signed link) / delete, backed by the private bucket + metadata table.
 - **Medical Vault biomarkers now persist per-account (new).** Moved off `localStorage` to the universal collections store (`biomarkers`); load / add / delete, with icon/color/status derived at render so stored data stays JSON-safe. No mock seed.
+- **West African foods database (new — backend/data layer).** `public.foods` table (per-serving nutrition + local portions + sodium/potassium + GI) with RLS: curated public foods readable by all, custom foods per-user. Seeded ~54 Nigerian/West African foods across 8 categories. Edge endpoints `GET /foods?q=&category=` (search name + aliases), `POST /foods` (custom), `DELETE /foods/:id`. Helpers in `api.ts`: `searchFoods`, `createFood`, `deleteFood` (+ `FoodItem` type). **Food-search logging UI DONE:** the Add-Meal-Log dialog now has a "Search Food Database" method — search by name/alias, pick servings, and it prefills the meal form (macros scaled) and saves through the existing `createMealLog` path. _Remaining (optional): store a `food_id` reference on meal logs; user custom-food management screen._
 
 ### Features
 - AI Food Analyzer working with real Gemini analysis (tightened prompt, numeric cleanup, timeout handling).
@@ -120,3 +121,21 @@ Secure storage for sensitive medical documents (lab reports, prescriptions, scan
 - **Backend deploys:** fetch live edge source → inject → `deploy_edge_function` → confirm `ACTIVE` + version bump. Run `get_advisors` after DDL.
 - **Frontend "is it live?":** hard-refresh or add `?cb=` (CDN caches). Confirm the deployed asset hashes match a local `vite build` of the same source, and/or check the tab title / meta tags.
 - **Local build check:** copy the repo to a scratch dir, `npm install`, `npm run build` — Vercel runs `vite build`, so a green local build means a green deploy.
+
+---
+
+## 6. Competitive roadmap (vs Yazio)
+
+Yazio is a polished, general-purpose calorie/macro tracker: 4M+ item food database, real barcode scanner, deep intermittent-fasting integration, 2,900+ recipes, AI photo logging, Apple Health / Google Fit sync — but Western-centric and condition-agnostic. MealOptimizer already beats it on Medical Vault, medication + dose tracking, symptom logging, a glucose/biometrics dashboard, and its West African + medical-condition focus. The strategy is NOT to out-track Yazio generically, but to win on the two things it ignores: **local food** and **medical management**. Yazio's one clear edge today is data accuracy (curated DB vs our Gemini estimates) — closing that is priority #1 below.
+
+Prioritized features, each addressing a pain point Yazio doesn't solve for this audience:
+
+1. **West African food database** — DONE (data layer). Fixes accuracy + local coverage + offline. Next: search/logging UI, and let AI photo analysis map to real DB entries the user can correct and save.
+2. **Condition-first nutrient tracking** — surface carbs/GI/glucose for diabetes and sodium/potassium for hypertension; build a **meal → post-meal glucose correlation** view from the data already logged.
+3. **Doctor-ready report** — generate a shareable PDF (glucose trend, BP, meds adherence, recent meals) from Medical Vault + biometrics + med + meal logs.
+4. **Medication–food awareness** — flag interactions/timing (metformin, warfarin + vitamin-K greens, antihypertensives + high-sodium dishes) using a curated rules table.
+5. **Local, affordable meal plans** — extend AI plans to respect local market ingredients, seasonality, and a Naira budget.
+6. **Real barcode DB** — swap the Gemini-guess flow for OpenFoodFacts, AI fallback only; save user corrections.
+7. **Streaks/adherence + local languages** (Yoruba, Hausa, Igbo, Pidgin).
+
+Top 3 to build next: finish the foods UI (#1), meal-to-glucose correlation (#2), doctor report (#3).

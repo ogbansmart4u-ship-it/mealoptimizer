@@ -3,7 +3,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
-import { Camera, Utensils, Coffee, Apple, Zap, Plus, X, Sparkles, Save } from 'lucide-react';
+import { Camera, Utensils, Coffee, Apple, Zap, Plus, X, Sparkles, Save, Search, Loader2 } from 'lucide-react';
+import { searchFoods, type FoodItem } from '../../lib/api';
 import CameraCapture from './CameraCapture';
 import SmartPlateAdvisor from './SmartPlateAdvisor';
 import { findMatchingPairings } from '../data/nutrientPairings';
@@ -38,13 +39,56 @@ type AddMealLogProps = {
 };
 
 export default function AddMealLog({ isOpen, onClose, onSave, selectedDate }: AddMealLogProps) {
-  const [step, setStep] = useState<'method' | 'manual' | 'camera'>('method');
+  const [step, setStep] = useState<'method' | 'manual' | 'camera' | 'search'>('method');
   const [showCameraCapture, setShowCameraCapture] = useState(false);
   const [capturedImage, setCapturedImage] = useState<string | null>(null);
   const [showSmartPlate, setShowSmartPlate] = useState(false);
   const [currentFoodForPairing, setCurrentFoodForPairing] = useState('');
   const [autoSaveIndicator, setAutoSaveIndicator] = useState(false);
   const [notes, setNotes] = useState('');
+
+  // Food database search
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchResults, setSearchResults] = useState<FoodItem[]>([]);
+  const [searching, setSearching] = useState(false);
+  const [selectedFood, setSelectedFood] = useState<FoodItem | null>(null);
+  const [servings, setServings] = useState('1');
+
+  // Debounced search whenever the search step is active
+  useEffect(() => {
+    if (step !== 'search') return;
+    let active = true;
+    setSearching(true);
+    const t = setTimeout(async () => {
+      try {
+        const results = await searchFoods(searchQuery.trim());
+        if (active) setSearchResults(results);
+      } catch {
+        if (active) setSearchResults([]);
+      } finally {
+        if (active) setSearching(false);
+      }
+    }, 300);
+    return () => { active = false; clearTimeout(t); };
+  }, [searchQuery, step]);
+
+  const applySelectedFood = () => {
+    if (!selectedFood) return;
+    const mult = Math.max(parseFloat(servings) || 1, 0.25);
+    const scale = (v: number | null) => (v == null ? '' : String(Math.round(v * mult)));
+    setFormData((prev) => ({
+      ...prev,
+      foodName: mult !== 1 ? `${servings} × ${selectedFood.name}` : selectedFood.name,
+      calories: scale(selectedFood.calories),
+      protein: scale(selectedFood.protein_g),
+      carbs: scale(selectedFood.carbs_g),
+      fats: scale(selectedFood.fat_g),
+    }));
+    setSelectedFood(null);
+    setServings('1');
+    setStep('manual');
+    toast.success('Food added — review and save');
+  };
 
   const [formData, setFormData] = useState({
     mealType: 'breakfast' as MealType,
@@ -161,6 +205,10 @@ export default function AddMealLog({ isOpen, onClose, onSave, selectedDate }: Ad
     setStep('method');
     setCapturedImage(null);
     setNotes('');
+    setSearchQuery('');
+    setSearchResults([]);
+    setSelectedFood(null);
+    setServings('1');
     setFormData({
       mealType: 'breakfast',
       foodName: '',
@@ -219,6 +267,20 @@ export default function AddMealLog({ isOpen, onClose, onSave, selectedDate }: Ad
                   </div>
                 </button>
 
+                {/* Search Food Database */}
+                <button
+                  onClick={() => setStep('search')}
+                  className="w-full flex items-center gap-4 p-5 bg-white border-2 border-gray-200 hover:border-[#1f7a8c] rounded-xl transition-all"
+                >
+                  <div className="bg-[#E8F5F5] rounded-full p-3">
+                    <Search className="h-6 w-6 text-[#1f7a8c]" />
+                  </div>
+                  <div className="text-left flex-1">
+                    <div className="font-semibold text-gray-800">Search Food Database</div>
+                    <div className="text-sm text-gray-600">Nigerian & West African foods with nutrition</div>
+                  </div>
+                </button>
+
                 {/* Manual Entry */}
                 <button
                   onClick={() => setStep('manual')}
@@ -231,6 +293,105 @@ export default function AddMealLog({ isOpen, onClose, onSave, selectedDate }: Ad
                     <div className="font-semibold text-gray-800">Enter Manually</div>
                     <div className="text-sm text-gray-600">Type food details yourself</div>
                   </div>
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Food Database Search */}
+          {step === 'search' && (
+            <div>
+              <DialogHeader>
+                <div className="flex items-center justify-between">
+                  <DialogTitle className="text-2xl text-[#1f7a8c]">Search Foods</DialogTitle>
+                  <button onClick={handleClose} className="p-2 hover:bg-gray-100 rounded-full">
+                    <X className="h-5 w-5 text-gray-600" />
+                  </button>
+                </div>
+                <DialogDescription>Find a Nigerian / West African food and add it to your meal.</DialogDescription>
+              </DialogHeader>
+
+              <div className="mt-4">
+                <div className="relative">
+                  <Search className="h-5 w-5 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                  <Input
+                    autoFocus
+                    type="text"
+                    placeholder="Search e.g. jollof, egusi, garri, moi moi…"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="h-12 pl-10"
+                  />
+                </div>
+
+                {/* Selected food → choose servings */}
+                {selectedFood && (
+                  <div className="mt-4 p-4 rounded-xl border-2 border-[#1f7a8c] bg-[#E8F5F5]">
+                    <div className="font-semibold text-gray-800">{selectedFood.name}</div>
+                    <div className="text-xs text-gray-600 mb-3">
+                      {selectedFood.serving_label} · {selectedFood.calories} kcal · C {selectedFood.carbs_g}g · P {selectedFood.protein_g}g
+                      {selectedFood.glycemic_index != null ? ` · GI ${selectedFood.glycemic_index}` : ''}
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <Label htmlFor="servings" className="text-sm text-gray-700">Servings</Label>
+                      <Input
+                        id="servings"
+                        type="number"
+                        min="0.25"
+                        step="0.25"
+                        value={servings}
+                        onChange={(e) => setServings(e.target.value)}
+                        className="h-10 w-24"
+                      />
+                      <Button onClick={applySelectedFood} className="flex-1 bg-[#1f7a8c] hover:bg-[#1a6273]">
+                        Add to meal
+                      </Button>
+                    </div>
+                    <button
+                      onClick={() => setSelectedFood(null)}
+                      className="mt-2 text-xs text-gray-500 hover:text-gray-700"
+                    >
+                      ← Back to results
+                    </button>
+                  </div>
+                )}
+
+                {/* Results */}
+                {!selectedFood && (
+                  <div className="mt-3 max-h-80 overflow-y-auto space-y-2">
+                    {searching ? (
+                      <div className="py-8 flex items-center justify-center text-gray-400">
+                        <Loader2 className="h-6 w-6 animate-spin" />
+                      </div>
+                    ) : searchResults.length === 0 ? (
+                      <div className="py-8 text-center text-sm text-gray-500">
+                        No foods found. Try another name, or use Manual Entry.
+                      </div>
+                    ) : (
+                      searchResults.map((food) => (
+                        <button
+                          key={food.id}
+                          onClick={() => { setSelectedFood(food); setServings('1'); }}
+                          className="w-full text-left p-3 rounded-xl border border-gray-100 hover:bg-gray-50 hover:border-[#1f7a8c] transition-all"
+                        >
+                          <div className="flex items-center justify-between gap-2">
+                            <span className="font-medium text-gray-800 truncate">{food.name}</span>
+                            <span className="text-sm text-gray-500 flex-shrink-0">{food.calories} kcal</span>
+                          </div>
+                          <div className="text-xs text-gray-500 truncate">
+                            {[food.category, food.serving_label].filter(Boolean).join(' · ')}
+                          </div>
+                        </button>
+                      ))
+                    )}
+                  </div>
+                )}
+
+                <button
+                  onClick={() => setStep('method')}
+                  className="mt-4 text-sm text-gray-500 hover:text-gray-700"
+                >
+                  ← Back
                 </button>
               </div>
             </div>

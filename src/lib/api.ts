@@ -517,3 +517,48 @@ export async function updateMedicalDocument(
 export async function deleteMedicalDocument(id: string): Promise<void> {
   await apiCall(`/medical-vault/${id}`, { method: 'DELETE' });
 }
+
+// ============================================
+// FOODS DATABASE API
+// Curated West African foods (public) + a user's own custom foods.
+// Nutrition is per serving; local portions in serving_label.
+// ============================================
+
+export interface FoodItem {
+  id: string;
+  name: string;
+  aliases: string[] | null;
+  category: string | null;
+  serving_label: string | null;
+  serving_grams: number | null;
+  calories: number | null;
+  protein_g: number | null;
+  carbs_g: number | null;
+  fat_g: number | null;
+  fiber_g: number | null;
+  sodium_mg: number | null;
+  potassium_mg: number | null;
+  glycemic_index: number | null;
+  is_public: boolean;
+  created_by: string | null;
+  created_at: string;
+}
+
+export async function searchFoods(query = '', category = ''): Promise<FoodItem[]> {
+  const params = new URLSearchParams();
+  if (query) params.set('q', query);
+  if (category) params.set('category', category);
+  const qs = params.toString();
+  const data = await apiCall(`/foods${qs ? `?${qs}` : ''}`);
+  return data.items ?? [];
+}
+
+// Create a custom food (private to the user). Accepts snake_case or camelCase keys.
+export async function createFood(food: Record<string, any>): Promise<FoodItem> {
+  const result = await apiCall('/foods', { method: 'POST', body: JSON.stringify(food) });
+  return result.item;
+}
+
+export async function deleteFood(id: string): Promise<void> {
+  await apiCall(`/foods/${id}`, { method: 'DELETE' });
+}
