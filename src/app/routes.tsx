@@ -1,50 +1,73 @@
+import { lazy, Suspense } from "react";
 import { createBrowserRouter, Outlet } from "react-router";
-import Landing from "./pages/Landing";
-import Login from "./pages/Login";
-import SignUp from "./pages/SignUp";
-import DirectSignup from "./pages/DirectSignup";
-import ForgotPassword from "./pages/ForgotPassword";
-import ResetPassword from "./pages/ResetPassword";
-import Onboarding from "./pages/Onboarding";
-import Home from "./pages/Home";
-import Goals from "./pages/Goals";
-import Logs from "./pages/Logs";
-import Recipe from "./pages/Recipe";
-import Profile from "./pages/Profile";
-import Location from "./pages/Location";
-import Weight from "./pages/Weight";
-import Age from "./pages/Age";
-import Medications from "./pages/Medications";
-import MedicalCondition from "./pages/MedicalCondition";
-import PrivacyPolicy from "./pages/PrivacyPolicy";
-import TermsAndConditions from "./pages/TermsAndConditions";
-import PlanMeal from "./pages/PlanMeal";
-import MealPlanView from "./pages/MealPlanView";
-import MyMealPlans from "./pages/MyMealPlans";
-import GroceryList from "./pages/GroceryList";
-import ScanBarcode from "./pages/ScanBarcode";
-import BiometricDashboard from "./pages/BiometricDashboard";
-import MedicalVault from "./pages/MedicalVault";
-import HydrationTracker from "./pages/HydrationTracker";
-import SleepTracker from "./pages/SleepTracker";
-import MedicationTracker from "./pages/MedicationTracker";
-import WorkoutLogger from "./pages/WorkoutLogger";
-import FastingTimer from "./pages/FastingTimer";
-import SymptomTracker from "./pages/SymptomTracker";
-import About from "./pages/About";
-import HyperPersonalizedPlan from "./pages/HyperPersonalizedPlan";
-import Personalization from "./pages/Personalization";
-import Reminders from "./pages/Reminders";
-import Achievements from "./pages/Achievements";
-import Health from "./pages/Health";
+
+// Structural components stay eager — they're small and needed to render the shell.
 import ProtectedRoute from "./components/ProtectedRoute";
 import AppLayout from "./components/AppLayout";
 import RouteErrorBoundary from "./components/RouteErrorBoundary";
 
+// Pages are code-split: each becomes its own chunk, loaded on demand.
+const Landing = lazy(() => import("./pages/Landing"));
+const Login = lazy(() => import("./pages/Login"));
+const SignUp = lazy(() => import("./pages/SignUp"));
+const DirectSignup = lazy(() => import("./pages/DirectSignup"));
+const ForgotPassword = lazy(() => import("./pages/ForgotPassword"));
+const ResetPassword = lazy(() => import("./pages/ResetPassword"));
+const Onboarding = lazy(() => import("./pages/Onboarding"));
+const Home = lazy(() => import("./pages/Home"));
+const Goals = lazy(() => import("./pages/Goals"));
+const Logs = lazy(() => import("./pages/Logs"));
+const Recipe = lazy(() => import("./pages/Recipe"));
+const Profile = lazy(() => import("./pages/Profile"));
+const Location = lazy(() => import("./pages/Location"));
+const Weight = lazy(() => import("./pages/Weight"));
+const Age = lazy(() => import("./pages/Age"));
+const Medications = lazy(() => import("./pages/Medications"));
+const MedicalCondition = lazy(() => import("./pages/MedicalCondition"));
+const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy"));
+const TermsAndConditions = lazy(() => import("./pages/TermsAndConditions"));
+const PlanMeal = lazy(() => import("./pages/PlanMeal"));
+const MealPlanView = lazy(() => import("./pages/MealPlanView"));
+const MyMealPlans = lazy(() => import("./pages/MyMealPlans"));
+const GroceryList = lazy(() => import("./pages/GroceryList"));
+const ScanBarcode = lazy(() => import("./pages/ScanBarcode"));
+const BiometricDashboard = lazy(() => import("./pages/BiometricDashboard"));
+const MedicalVault = lazy(() => import("./pages/MedicalVault"));
+const HydrationTracker = lazy(() => import("./pages/HydrationTracker"));
+const SleepTracker = lazy(() => import("./pages/SleepTracker"));
+const MedicationTracker = lazy(() => import("./pages/MedicationTracker"));
+const WorkoutLogger = lazy(() => import("./pages/WorkoutLogger"));
+const FastingTimer = lazy(() => import("./pages/FastingTimer"));
+const SymptomTracker = lazy(() => import("./pages/SymptomTracker"));
+const About = lazy(() => import("./pages/About"));
+const HyperPersonalizedPlan = lazy(() => import("./pages/HyperPersonalizedPlan"));
+const Personalization = lazy(() => import("./pages/Personalization"));
+const Reminders = lazy(() => import("./pages/Reminders"));
+const Achievements = lazy(() => import("./pages/Achievements"));
+const Health = lazy(() => import("./pages/Health"));
+
+// Lightweight fallback shown while a page chunk loads.
+function PageLoader() {
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-[#B8E5E5] to-[#E8F5F5]">
+      <div className="h-10 w-10 rounded-full border-4 border-[#1f7a8c]/30 border-t-[#1f7a8c] animate-spin" />
+    </div>
+  );
+}
+
+// Root wrapper: Suspense catches every lazily-loaded page chunk.
+function RootLayout() {
+  return (
+    <Suspense fallback={<PageLoader />}>
+      <Outlet />
+    </Suspense>
+  );
+}
+
 export const router = createBrowserRouter([
   {
     // Root wrapper: any screen error shows a friendly fallback, not a stack trace
-    element: <Outlet />,
+    element: <RootLayout />,
     errorElement: <RouteErrorBoundary />,
     children: [
   // ============================================================

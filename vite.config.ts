@@ -33,4 +33,23 @@ export default defineConfig({
 
   // File types to support raw imports. Never add .css, .tsx, or .ts files to this.
   assetsInclude: ['**/*.svg', '**/*.csv'],
+
+  build: {
+    rollupOptions: {
+      output: {
+        // Split large leaf-library vendors into their own long-cached chunks.
+        // (React/react-dom intentionally stay in the main chunk to avoid any
+        // module init-order surprises.)
+        manualChunks(id) {
+          if (!id.includes('node_modules')) return;
+          if (id.includes('recharts') || id.includes('d3-')) return 'charts';
+          if (id.includes('@mui') || id.includes('@emotion')) return 'mui';
+          if (id.includes('@radix-ui')) return 'radix';
+          if (id.includes('@supabase')) return 'supabase';
+          if (id.includes('lucide-react')) return 'icons';
+          if (id.includes('framer-motion') || id.includes('/motion/')) return 'motion';
+        },
+      },
+    },
+  },
 })
