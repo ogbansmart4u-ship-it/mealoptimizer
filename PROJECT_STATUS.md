@@ -92,7 +92,7 @@ Secure storage for sensitive medical documents (lab reports, prescriptions, scan
 - Resolve the condensed-vs-disk edge-function divergence (make disk the source of truth again).
 
 ### D. Product & distribution
-- Make it an installable **PWA** (manifest, offline support, add-to-home-screen); push notifications (reminders currently use the browser Notification API only). _Metadata groundwork is done; manifest + service worker remain._
+- **PWA — installable + offline (new/done).** `public/manifest.webmanifest` (standalone, theme/bg colors, 192/512 + maskable PNG icons), linked from `index.html`; `public/sw.js` service worker (network-first navigations with offline shell fallback, cache-first hashed assets, cross-origin API always live), registered in `main.tsx` for production only. _Remaining: push notifications (reminders still use the browser Notification API only)._
 - Onboarding polish; profile completeness prompts; data export.
 - Medical disclaimer + reviewed Privacy Policy / Terms (pages exist; content should be reviewed).
 - Optional: package as a native app via Capacitor for the app stores.
@@ -108,8 +108,8 @@ Secure storage for sensitive medical documents (lab reports, prescriptions, scan
 
 1. ~~Full responsive sweep~~ — DONE (all 40 routes checked at 360px; fixed Weight input rows + Symptoms filter wrap).
 2. ~~Move biomarkers to real backend storage~~ — DONE (collections store).
-3. PWA manifest + service worker (metadata already done). ← _next_
-4. Real biometrics dashboard (wearable or manual entry).
+3. ~~PWA manifest + service worker~~ — DONE (installable + offline shell).
+4. Real biometrics dashboard (wearable or manual entry). ← _next_
 5. Tests + error monitoring + bundle splitting.
 
 ---
