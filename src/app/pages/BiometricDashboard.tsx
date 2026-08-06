@@ -1,4 +1,5 @@
 import { useState, useEffect, useId } from "react";
+import { useNavigate } from "react-router";
 import {
   Activity,
   Heart,
@@ -14,6 +15,7 @@ import {
   Plus,
   Trash2,
   Loader2,
+  ChevronRight,
 } from "lucide-react";
 import { XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Area, AreaChart } from "recharts";
 import PageHeader from "../components/PageHeader";
@@ -46,6 +48,7 @@ const METRICS = [
 const metricInfo = (key: string) => METRICS.find((m) => m.key === key);
 
 export default function BiometricDashboard() {
+  const navigate = useNavigate();
   const uniqueId = useId();
   const [readings, setReadings] = useState<Reading[]>([]);
   const [loading, setLoading] = useState(true);
@@ -160,6 +163,21 @@ export default function BiometricDashboard() {
             <Plus className="h-4 w-4" /> Add reading
           </button>
         </div>
+
+        {/* Link to meal ↔ glucose insights */}
+        <button
+          onClick={() => navigate("/glucose-insights")}
+          className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left transition-colors ${darkMode ? "bg-gray-800 border border-gray-700 hover:bg-gray-700" : "bg-white shadow-sm hover:bg-gray-50"}`}
+        >
+          <div className="rounded-lg p-2" style={{ backgroundColor: "#1f7a8c20" }}>
+            <TrendingUp className="h-5 w-5 text-[#1f7a8c]" />
+          </div>
+          <div className="flex-1">
+            <div className={`text-sm font-semibold ${darkMode ? "text-gray-200" : "text-gray-800"}`}>Meal &amp; glucose insights</div>
+            <div className={`text-xs ${subText}`}>See which meals spike your blood sugar</div>
+          </div>
+          <ChevronRight className={`h-5 w-5 ${darkMode ? "text-gray-500" : "text-gray-400"}`} />
+        </button>
 
         {loading ? (
           <div className={`rounded-3xl p-10 flex items-center justify-center ${cardClass}`}>

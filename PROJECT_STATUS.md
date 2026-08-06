@@ -131,7 +131,7 @@ Yazio is a polished, general-purpose calorie/macro tracker: 4M+ item food databa
 Prioritized features, each addressing a pain point Yazio doesn't solve for this audience:
 
 1. **West African food database** — DONE (data layer). Fixes accuracy + local coverage + offline. Next: search/logging UI, and let AI photo analysis map to real DB entries the user can correct and save.
-2. **Condition-first nutrient tracking** — surface carbs/GI/glucose for diabetes and sodium/potassium for hypertension; build a **meal → post-meal glucose correlation** view from the data already logged.
+2. **Condition-first nutrient tracking** — **meal → post-meal glucose correlation view DONE** (`GlucoseInsights.tsx`, route `/glucose-insights`, linked from the biometrics dashboard): matches each meal to glucose readings 30 min–3 h afterwards vs a pre-meal baseline, ranks foods by average spike, with empty/insufficient-data states and a not-medical-advice disclaimer. Remaining: surface sodium/potassium prominently for hypertension; store per-food carbs/GI on meal logs for richer analysis.
 3. **Doctor-ready report** — generate a shareable PDF (glucose trend, BP, meds adherence, recent meals) from Medical Vault + biometrics + med + meal logs.
 4. **Medication–food awareness** — flag interactions/timing (metformin, warfarin + vitamin-K greens, antihypertensives + high-sodium dishes) using a curated rules table.
 5. **Local, affordable meal plans** — extend AI plans to respect local market ingredients, seasonality, and a Naira budget.

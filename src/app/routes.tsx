@@ -32,6 +32,7 @@ const MyMealPlans = lazy(() => import("./pages/MyMealPlans"));
 const GroceryList = lazy(() => import("./pages/GroceryList"));
 const ScanBarcode = lazy(() => import("./pages/ScanBarcode"));
 const BiometricDashboard = lazy(() => import("./pages/BiometricDashboard"));
+const GlucoseInsights = lazy(() => import("./pages/GlucoseInsights"));
 const MedicalVault = lazy(() => import("./pages/MedicalVault"));
 const HydrationTracker = lazy(() => import("./pages/HydrationTracker"));
 const SleepTracker = lazy(() => import("./pages/SleepTracker"));
@@ -183,6 +184,14 @@ export const router = createBrowserRouter([
     element: (
       <ProtectedRoute>
         <BiometricDashboard />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/glucose-insights",
+    element: (
+      <ProtectedRoute>
+        <GlucoseInsights />
       </ProtectedRoute>
     ),
   },
