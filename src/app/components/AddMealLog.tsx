@@ -3,8 +3,9 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
-import { Camera, Utensils, Coffee, Apple, Zap, Plus, X, Sparkles, Save, Search, Loader2 } from 'lucide-react';
-import { searchFoods, type FoodItem } from '../../lib/api';
+import { Camera, Utensils, Coffee, Apple, Zap, Plus, X, Sparkles, Save, Search, Loader2, AlertTriangle } from 'lucide-react';
+import { searchFoods, getMedications, type FoodItem } from '../../lib/api';
+import { getMedicationFoodFlags, type InteractionFlag } from '../data/medicationInteractions';
 import CameraCapture from './CameraCapture';
 import SmartPlateAdvisor from './SmartPlateAdvisor';
 import { findMatchingPairings } from '../data/nutrientPairings';
@@ -53,6 +54,36 @@ export default function AddMealLog({ isOpen, onClose, onSave, selectedDate }: Ad
   const [searching, setSearching] = useState(false);
   const [selectedFood, setSelectedFood] = useState<FoodItem | null>(null);
   const [servings, setServings] = useState('1');
+
+  // Active medications, for food-interaction flags
+  const [activeMeds, setActiveMeds] = useState<string[]>([]);
+  useEffect(() => {
+    if (!isOpen) return;
+    getMedications()
+      .then((items: any[]) => setActiveMeds((items || []).filter((m) => m.active !== false).map((m) => m.name).filter(Boolean)))
+      .catch(() => {});
+  }, [isOpen]);
+
+  const renderInteractionFlags = (flags: InteractionFlag[]) =>
+    flags.length ? (
+      <div className="space-y-2">
+        {flags.map((f, i) => (
+          <div
+            key={i}
+            className={`flex items-start gap-2 p-3 rounded-xl border text-xs ${
+              f.severity === 'high'
+                ? 'bg-red-50 border-red-200 text-red-800'
+                : f.severity === 'moderate'
+                ? 'bg-amber-50 border-amber-200 text-amber-800'
+                : 'bg-blue-50 border-blue-200 text-blue-800'
+            }`}
+          >
+            <AlertTriangle className="h-4 w-4 flex-shrink-0 mt-0.5" />
+            <span><strong>{f.label}:</strong> {f.message}</span>
+          </div>
+        ))}
+      </div>
+    ) : null;
 
   // Debounced search whenever the search step is active
   useEffect(() => {
@@ -347,6 +378,10 @@ export default function AddMealLog({ isOpen, onClose, onSave, selectedDate }: Ad
                         Add to meal
                       </Button>
                     </div>
+                    {(() => {
+                      const fl = getMedicationFoodFlags(activeMeds, { name: selectedFood.name, sodium_mg: selectedFood.sodium_mg, potassium_mg: selectedFood.potassium_mg });
+                      return fl.length ? <div className="mt-3">{renderInteractionFlags(fl)}</div> : null;
+                    })()}
                     <button
                       onClick={() => setSelectedFood(null)}
                       className="mt-2 text-xs text-gray-500 hover:text-gray-700"
@@ -601,6 +636,12 @@ export default function AddMealLog({ isOpen, onClose, onSave, selectedDate }: Ad
                     </div>
                   </div>
                 )}
+
+                {/* Medication–food interaction flags */}
+                {(() => {
+                  const fl = getMedicationFoodFlags(activeMeds, { name: formData.foodName });
+                  return fl.length ? <div className="pt-2">{renderInteractionFlags(fl)}</div> : null;
+                })()}
 
                 {/* Action Buttons */}
                 <div className="flex gap-3 pt-4">
