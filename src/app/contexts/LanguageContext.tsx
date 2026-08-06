@@ -37,6 +37,19 @@ const translations: Translations = {
   'theme.dark':  { en: 'Dark',  es: 'Oscuro', fr: 'Sombre', yo: 'Dúdú',   ig: 'Ọchịchịrị',  ha: 'Duhu',  pcm: 'Dark' },
   'units.metric':   { en: 'Metric',   es: 'Métrico',  fr: 'Métrique', yo: 'Metric',   ig: 'Metric',   ha: 'Metric',   pcm: 'Metric' },
   'units.imperial': { en: 'Imperial', es: 'Imperial', fr: 'Impérial', yo: 'Imperial', ig: 'Imperial', ha: 'Imperial', pcm: 'Imperial' },
+  // Auth / login
+  'common.back': { en: 'Back', es: 'Atrás', fr: 'Retour', yo: 'Padà', ig: 'Laghachi', ha: 'Koma', pcm: 'Go back' },
+  'common.or':   { en: 'or', es: 'o', fr: 'ou', yo: 'tàbí', ig: 'maọbụ', ha: 'ko', pcm: 'or' },
+  'auth.welcomeBack':  { en: 'Welcome back', es: 'Bienvenido de nuevo', fr: 'Bon retour', yo: 'Kú àbọ̀', ig: 'Nnọọ ọzọ', ha: 'Barka da dawowa', pcm: 'Welcome back' },
+  'auth.loginSubtitle':{ en: 'Log in to your account', es: 'Inicia sesión en tu cuenta', fr: 'Connectez-vous à votre compte', yo: 'Wọlé sí àkàntì rẹ', ig: 'Banye na akaụntụ gị', ha: 'Shiga cikin asusunka', pcm: 'Log in to your account' },
+  'auth.email':    { en: 'Email Address', es: 'Correo electrónico', fr: 'Adresse e-mail', yo: 'Àdírẹ́sì Ímeèlì', ig: 'Adreesị Email', ha: 'Adireshin Imel', pcm: 'Email Address' },
+  'auth.password': { en: 'Password', es: 'Contraseña', fr: 'Mot de passe', yo: 'Ọ̀rọ̀ àṣínà', ig: 'Okwuntughe', ha: 'Kalmar sirri', pcm: 'Password' },
+  'auth.passwordPlaceholder': { en: 'Enter your password', es: 'Ingresa tu contraseña', fr: 'Entrez votre mot de passe', yo: 'Tẹ ọ̀rọ̀ àṣínà rẹ', ig: 'Tinye okwuntughe gị', ha: 'Shigar da kalmar sirrinka', pcm: 'Enter your password' },
+  'auth.forgot':   { en: 'Forgot Password?', es: '¿Olvidaste tu contraseña?', fr: 'Mot de passe oublié ?', yo: 'Ṣé o gbàgbé ọ̀rọ̀ àṣínà?', ig: 'Chefuru okwuntughe?', ha: 'Ka manta kalmar sirri?', pcm: 'You forget password?' },
+  'auth.loggingIn':{ en: 'Logging in...', es: 'Iniciando sesión...', fr: 'Connexion...', yo: 'Ń wọlé...', ig: 'Na-abanye...', ha: 'Ana shiga...', pcm: 'Dey log in...' },
+  'auth.login':    { en: 'Log In', es: 'Iniciar sesión', fr: 'Se connecter', yo: 'Wọlé', ig: 'Banye', ha: 'Shiga', pcm: 'Log In' },
+  'auth.noAccount':{ en: "Don't have an account?", es: '¿No tienes una cuenta?', fr: "Vous n'avez pas de compte ?", yo: 'Kò ní àkàntì?', ig: 'Enweghị akaụntụ?', ha: 'Ba ku da asusu?', pcm: 'You no get account?' },
+  'auth.signUp':   { en: 'Sign Up', es: 'Regístrate', fr: "S'inscrire", yo: 'Forúkọsílẹ̀', ig: 'Debanye aha', ha: 'Yi rajista', pcm: 'Sign Up' },
 };
 
 interface LanguageContextType {

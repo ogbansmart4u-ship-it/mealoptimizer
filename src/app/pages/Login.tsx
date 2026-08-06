@@ -4,6 +4,7 @@ import { Eye, EyeOff, Mail, Lock, ArrowLeft, Leaf, Loader2 } from "lucide-react"
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { useAuth } from "../contexts/AuthContext";
+import { useLanguage } from "../contexts/LanguageContext";
 import { toast } from "sonner";
 import { motion, useReducedMotion } from "motion/react";
 
@@ -27,6 +28,7 @@ const ease = [0, 0, 0.2, 1] as const;
 
 export default function Login() {
   const navigate = useNavigate();
+  const { t } = useLanguage();
   const { signIn, signInWithGoogle, signInWithApple } = useAuth();
   const reduced = useReducedMotion();
   const [showPassword, setShowPassword] = useState(false);
@@ -128,7 +130,7 @@ export default function Login() {
           className="flex items-center gap-1.5 text-[#0F766E] text-sm font-medium hover:text-[#115E59] transition-colors"
         >
           <ArrowLeft className="h-4 w-4" />
-          <span>Back</span>
+          <span>{t('common.back')}</span>
         </button>
       </div>
 
@@ -154,15 +156,15 @@ export default function Login() {
             className="text-xl font-bold text-center mb-1 text-[#0F172A]"
             style={{ fontFamily: "Manrope, sans-serif" }}
           >
-            Welcome back
+            {t('auth.welcomeBack')}
           </h2>
-          <p className="text-sm text-[#475569] text-center mb-7">Log in to your account</p>
+          <p className="text-sm text-[#475569] text-center mb-7">{t('auth.loginSubtitle')}</p>
 
           <form onSubmit={handleSubmit} className="space-y-5">
             {/* Email */}
             <div className="space-y-1.5">
               <label htmlFor="email" className="text-sm font-medium text-[#1E293B]">
-                Email Address
+                {t('auth.email')}
               </label>
               <div className="relative">
                 <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-[#94A3B8]" />
@@ -181,14 +183,14 @@ export default function Login() {
             {/* Password */}
             <div className="space-y-1.5">
               <label htmlFor="password" className="text-sm font-medium text-[#1E293B]">
-                Password
+                {t('auth.password')}
               </label>
               <div className="relative">
                 <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-[#94A3B8]" />
                 <Input
                   id="password"
                   type={showPassword ? "text" : "password"}
-                  placeholder="Enter your password"
+                  placeholder={t('auth.passwordPlaceholder')}
                   value={formData.password}
                   onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                   className="pl-10 pr-10 h-12 bg-[#ffffff] border-[#CBD5E1] rounded-xl focus-visible:ring-[#0F766E] focus-visible:border-[#0F766E]"
@@ -210,7 +212,7 @@ export default function Login() {
                 to="/forgot-password"
                 className="text-xs text-[#0F766E] hover:text-[#115E59] hover:underline transition-colors"
               >
-                Forgot Password?
+                {t('auth.forgot')}
               </Link>
             </div>
 
@@ -224,9 +226,9 @@ export default function Login() {
               {loading ? (
                 <span className="flex items-center justify-center gap-2">
                   <Loader2 className="h-4 w-4 animate-spin" />
-                  Logging in...
+                  {t('auth.loggingIn')}
                 </span>
-              ) : "Log In"}
+              ) : t('auth.login')}
             </Button>
           </form>
 
@@ -236,7 +238,7 @@ export default function Login() {
               <div className="w-full border-t border-[#E2E8F0]"></div>
             </div>
             <div className="relative flex justify-center text-xs">
-              <span className="px-3 bg-[#ffffff] text-[#94A3B8] uppercase tracking-wide">or</span>
+              <span className="px-3 bg-[#ffffff] text-[#94A3B8] uppercase tracking-wide">{t('common.or')}</span>
             </div>
           </div>
 
@@ -270,9 +272,9 @@ export default function Login() {
 
           {/* Sign Up Link */}
           <p className="text-center mt-6 text-sm text-[#475569]">
-            Don&apos;t have an account?{" "}
+            {t('auth.noAccount')}{" "}
             <Link to="/signup" className="text-[#0F766E] font-medium hover:underline">
-              Sign Up
+              {t('auth.signUp')}
             </Link>
           </p>
 
