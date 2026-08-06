@@ -5,6 +5,7 @@ import {
   Droplet, Minus, Plus, Upload, Zap, Target, BarChart3, ScanBarcode, Shield, Moon, Search, FlaskConical, BookOpen
 } from "lucide-react";
 import BottomNav from "../components/BottomNav";
+import StreakCard from "../components/StreakCard";
 import { useNavigate } from "react-router";
 import { motion, useReducedMotion } from "motion/react";
 import { useAppMode } from "../contexts/AppModeContext";
@@ -738,6 +739,11 @@ export default function Home() {
       
       {/* Main Content */}
       <div className="px-6">
+        {/* Daily logging streak */}
+        <div className="mb-5">
+          <StreakCard />
+        </div>
+
         {/* Market Update + Grocery List */}
         <div className="mb-5">
           <div className="bg-white rounded-2xl shadow-md p-4 mb-3">

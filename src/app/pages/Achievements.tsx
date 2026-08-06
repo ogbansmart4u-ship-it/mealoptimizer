@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router';
 import { useAchievements } from '../contexts/AchievementContext';
 import BottomNav from '../components/BottomNav';
 import ProfilePictureUpload from '../components/ProfilePictureUpload';
+import StreakCard from '../components/StreakCard';
 
 export default function Achievements() {
   const navigate = useNavigate();
@@ -67,6 +68,11 @@ export default function Achievements() {
 
       {/* Content */}
       <div className="px-6 mt-6">
+        {/* Daily logging streak */}
+        <div className="mb-6">
+          <StreakCard />
+        </div>
+
         {/* Tabs */}
         <div className="bg-white rounded-2xl shadow-md p-1 mb-6 flex">
           <button
