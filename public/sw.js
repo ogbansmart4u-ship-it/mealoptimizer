@@ -1,65 +1,30 @@
-/* MealOptimizer service worker — offline shell + runtime asset caching.
-   Bump CACHE when you want every client to drop old cached files. */
-const CACHE = 'mealoptimizer-v2';
-const APP_SHELL = ['/', '/index.html', '/favicon.svg', '/manifest.webmanifest', '/icon-192.png', '/icon-512.png'];
+/*
+ * Self-destructing service worker.
+ *
+ * This app previously cached assets for offline/PWA support, but that caused
+ * stale-version issues ("won't load / won't refresh") that are risky for a
+ * health app. This worker removes itself and clears all caches, so every device
+ * loads the latest deploy directly from the network. New visitors never register
+ * a worker at all (see src/main.tsx).
+ */
+self.addEventListener("install", () => {
+  self.skipWaiting();
+});
 
-self.addEventListener('install', (event) => {
+self.addEventListener("activate", (event) => {
   event.waitUntil(
-    caches.open(CACHE)
-      .then((c) => c.addAll(APP_SHELL))
-      .then(() => self.skipWaiting())
+    (async () => {
+      try {
+        const keys = await caches.keys();
+        await Promise.all(keys.map((k) => caches.delete(k)));
+      } catch (e) { /* ignore */ }
+      try {
+        await self.registration.unregister();
+      } catch (e) { /* ignore */ }
+      try {
+        const clients = await self.clients.matchAll({ type: "window" });
+        clients.forEach((c) => c.navigate(c.url));
+      } catch (e) { /* ignore */ }
+    })(),
   );
-});
-
-self.addEventListener('activate', (event) => {
-  event.waitUntil(
-    caches.keys()
-      .then((keys) => Promise.all(keys.filter((k) => k !== CACHE).map((k) => caches.delete(k))))
-      .then(() => self.clients.claim())
-  );
-});
-
-self.addEventListener('message', (event) => {
-  if (event.data === 'SKIP_WAITING') self.skipWaiting();
-});
-
-self.addEventListener('fetch', (event) => {
-  const req = event.request;
-  if (req.method !== 'GET') return;
-
-  const url = new URL(req.url);
-  // Only handle our own origin. Cross-origin calls (Supabase API, Gemini,
-  // auth) must always hit the network so data is never served stale.
-  if (url.origin !== self.location.origin) return;
-
-  // Page navigations: network-first so HTML stays fresh; fall back to the
-  // cached app shell when offline.
-  if (req.mode === 'navigate') {
-    event.respondWith(
-      fetch(req)
-        .then((res) => {
-          const copy = res.clone();
-          caches.open(CACHE).then((c) => c.put('/', copy));
-          return res;
-        })
-        .catch(() => caches.match('/').then((r) => r || caches.match('/index.html')))
-    );
-    return;
-  }
-
-  // Static build assets are content-hashed, so cache-first is safe and fast.
-  if (url.pathname.startsWith('/assets/') || APP_SHELL.includes(url.pathname)) {
-    event.respondWith(
-      caches.match(req).then((cached) =>
-        cached ||
-        fetch(req).then((res) => {
-          if (res.ok) {
-            const copy = res.clone();
-            caches.open(CACHE).then((c) => c.put(req, copy));
-          }
-          return res;
-        })
-      )
-    );
-  }
 });
