@@ -88,6 +88,7 @@ Secure storage for sensitive medical documents (lab reports, prescriptions, scan
 ### C. Quality & reliability
 - No automated tests yet — add unit/integration tests + basic CI.
 - ~~Reduce the frontend bundle (~1.7 MB) via code-splitting~~ **DONE.** All routes are `React.lazy` (Suspense fallback at the router root in `routes.tsx`); `vite.config.ts` `manualChunks` splits leaf vendors (charts/recharts, supabase, radix, motion, icons). Initial JS chunk dropped from 1,708 kB (452 kB gz) to ~162 kB (52 kB gz); recharts (~400 kB) now loads only on the biometrics page. No more >500 kB chunk warning.
+  - **Stale-chunk auto-recovery (fix):** after a redeploy, a browser on the old build could fail to load a renamed route chunk ("Failed to fetch dynamically imported module …") and hit the error screen. Now `main.tsx` listens for `vite:preloadError` and `RouteErrorBoundary` detects chunk-load errors — both reload once to fetch the fresh build (10s guard prevents reload loops). Service-worker cache bumped to `mealoptimizer-v2` so stale caches purge on deploy.
 - Error monitoring (e.g., Sentry) and basic analytics.
 - Verify RLS on every table; audit input validation on the edge function.
 - Enable Supabase Auth leaked-password protection (advisor warning; one toggle in Auth settings).
