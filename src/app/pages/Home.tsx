@@ -27,6 +27,8 @@ import logoImage from "figma:asset/efbe2a1ac833b032474ac203bb52c6fe4e93cfbb.png"
 import { initializeSampleData } from "../../utils/sampleData";
 import { projectId } from '/utils/supabase/info';
 import { getAccessToken } from '../../lib/supabase';
+import { createMealLog } from "../../lib/api";
+import { toast } from "sonner";
 
 const FOOD_API_URL = `https://${projectId}.supabase.co/functions/v1/make-server-ba6f1f45/ai/analyze-food`;
 
@@ -501,6 +503,65 @@ export default function Home() {
   const handleQuickMealSelect = (mealType: "breakfast" | "lunch" | "dinner") => {
     setSelectedQuickMeal(mealType);
     setShowQuickMealLog(true);
+  };
+
+  // Common Nigerian / West African presets for one-tap logging, per meal type.
+  const quickMealOptions: Record<
+    "breakfast" | "lunch" | "dinner",
+    { emoji: string; name: string; calories: number; protein: number; carbs: number; fats: number; label: string; impact: "low" | "medium" | "high" }[]
+  > = {
+    breakfast: [
+      { emoji: "🥣", name: "Akamu & Moi Moi", calories: 350, protein: 14, carbs: 52, fats: 8, label: "Low Glycemic", impact: "low" },
+      { emoji: "🍞", name: "Bread & Eggs", calories: 280, protein: 15, carbs: 30, fats: 11, label: "Moderate Glycemic", impact: "medium" },
+      { emoji: "🥗", name: "Ugu Vegetable Bowl", calories: 220, protein: 9, carbs: 24, fats: 7, label: "Low Glycemic", impact: "low" },
+    ],
+    lunch: [
+      { emoji: "🍛", name: "Jollof Rice with Chicken", calories: 520, protein: 32, carbs: 62, fats: 16, label: "Moderate Glycemic", impact: "medium" },
+      { emoji: "🍲", name: "Ewedu Soup with Amala", calories: 480, protein: 18, carbs: 70, fats: 12, label: "Low Glycemic", impact: "low" },
+      { emoji: "🍚", name: "Ofada Rice & Ayamase", calories: 550, protein: 20, carbs: 68, fats: 20, label: "Medium Glycemic", impact: "medium" },
+    ],
+    dinner: [
+      { emoji: "🥘", name: "Edikang Ikong Soup", calories: 380, protein: 24, carbs: 18, fats: 22, label: "Low Glycemic", impact: "low" },
+      { emoji: "🍜", name: "Vegetable Stir-fry", calories: 310, protein: 14, carbs: 28, fats: 15, label: "Low Glycemic", impact: "low" },
+      { emoji: "🐟", name: "Grilled Fish & Salad", calories: 290, protein: 34, carbs: 10, fats: 13, label: "Low Glycemic", impact: "low" },
+    ],
+  };
+
+  const [quickLogging, setQuickLogging] = useState(false);
+
+  const handleQuickLog = async (meal: { name: string; calories: number; protein: number; carbs: number; fats: number; impact: "low" | "medium" | "high" }) => {
+    if (!selectedQuickMeal || quickLogging) return;
+    const now = new Date();
+    const newLog = {
+      id: Date.now().toString(),
+      date: now.toISOString().split("T")[0],
+      time: now.toTimeString().slice(0, 5),
+      mealType: selectedQuickMeal,
+      foodName: meal.name,
+      calories: meal.calories,
+      protein: meal.protein,
+      carbs: meal.carbs,
+      fats: meal.fats,
+      energyRating: 4,
+      digestiveComfort: 4,
+      bloodSugarImpact: meal.impact,
+    };
+    setQuickLogging(true);
+    try {
+      await createMealLog(newLog);
+      toast.success(`${meal.name} logged!`);
+      setShowQuickMealLog(false);
+    } catch (e) {
+      console.error("Failed to quick-log meal", e);
+      toast.error("Couldn't log meal. Please try again.");
+    } finally {
+      setQuickLogging(false);
+    }
+  };
+
+  const handleCustomEntry = () => {
+    setShowQuickMealLog(false);
+    navigate("/logs", { state: { openAdd: true } });
   };
 
   const handleTakePhoto = async () => {
@@ -1504,105 +1565,41 @@ export default function Home() {
           </DialogHeader>
 
           <div className="space-y-4 py-4">
-            {/* Common Nigerian meals based on meal type */}
-            {selectedQuickMeal === "breakfast" && (
+            {/* Common Nigerian meals based on meal type — one tap to log */}
+            {selectedQuickMeal && (
               <div className="space-y-3">
-                <button className="w-full bg-gradient-to-r from-yellow-50 to-orange-50 border-2 border-yellow-200 rounded-xl p-4 text-left hover:border-[#1f7a8c] transition-colors">
-                  <div className="flex items-center gap-3">
-                    <span className="text-3xl">🥣</span>
-                    <div>
-                      <div className="font-semibold text-gray-800">Akamu & Moi Moi</div>
-                      <div className="text-xs text-gray-600">~350 kcal • Low Glycemic</div>
+                {quickMealOptions[selectedQuickMeal].map((meal) => (
+                  <button
+                    key={meal.name}
+                    onClick={() => handleQuickLog(meal)}
+                    disabled={quickLogging}
+                    className={`w-full bg-gradient-to-r border-2 rounded-xl p-4 text-left hover:border-[#1f7a8c] transition-colors disabled:opacity-60 disabled:cursor-not-allowed ${
+                      selectedQuickMeal === "breakfast"
+                        ? "from-yellow-50 to-orange-50 border-yellow-200"
+                        : selectedQuickMeal === "lunch"
+                        ? "from-green-50 to-emerald-50 border-green-200"
+                        : "from-purple-50 to-pink-50 border-purple-200"
+                    }`}
+                  >
+                    <div className="flex items-center gap-3">
+                      <span className="text-3xl">{meal.emoji}</span>
+                      <div className="flex-1">
+                        <div className="font-semibold text-gray-800">{meal.name}</div>
+                        <div className="text-xs text-gray-600">~{meal.calories} kcal • {meal.label}</div>
+                      </div>
+                      <Plus className="h-5 w-5 text-[#1f7a8c] flex-shrink-0" />
                     </div>
-                  </div>
-                </button>
-                <button className="w-full bg-gradient-to-r from-yellow-50 to-orange-50 border-2 border-yellow-200 rounded-xl p-4 text-left hover:border-[#1f7a8c] transition-colors">
-                  <div className="flex items-center gap-3">
-                    <span className="text-3xl">🍞</span>
-                    <div>
-                      <div className="font-semibold text-gray-800">Bread & Eggs</div>
-                      <div className="text-xs text-gray-600">~280 kcal • Moderate Glycemic</div>
-                    </div>
-                  </div>
-                </button>
-                <button className="w-full bg-gradient-to-r from-yellow-50 to-orange-50 border-2 border-yellow-200 rounded-xl p-4 text-left hover:border-[#1f7a8c] transition-colors">
-                  <div className="flex items-center gap-3">
-                    <span className="text-3xl">🥗</span>
-                    <div>
-                      <div className="font-semibold text-gray-800">Ugu Vegetable Bowl</div>
-                      <div className="text-xs text-gray-600">~220 kcal • Low Glycemic</div>
-                    </div>
-                  </div>
-                </button>
-              </div>
-            )}
-            
-            {selectedQuickMeal === "lunch" && (
-              <div className="space-y-3">
-                <button className="w-full bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-200 rounded-xl p-4 text-left hover:border-[#1f7a8c] transition-colors">
-                  <div className="flex items-center gap-3">
-                    <span className="text-3xl">🍛</span>
-                    <div>
-                      <div className="font-semibold text-gray-800">Jollof Rice with Chicken</div>
-                      <div className="text-xs text-gray-600">~520 kcal • Moderate Glycemic</div>
-                    </div>
-                  </div>
-                </button>
-                <button className="w-full bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-200 rounded-xl p-4 text-left hover:border-[#1f7a8c] transition-colors">
-                  <div className="flex items-center gap-3">
-                    <span className="text-3xl">🍲</span>
-                    <div>
-                      <div className="font-semibold text-gray-800">Ewedu Soup with Amala</div>
-                      <div className="text-xs text-gray-600">~480 kcal • Low Glycemic</div>
-                    </div>
-                  </div>
-                </button>
-                <button className="w-full bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-200 rounded-xl p-4 text-left hover:border-[#1f7a8c] transition-colors">
-                  <div className="flex items-center gap-3">
-                    <span className="text-3xl">🍚</span>
-                    <div>
-                      <div className="font-semibold text-gray-800">Ofada Rice & Ayamase</div>
-                      <div className="text-xs text-gray-600">~550 kcal • Medium Glycemic</div>
-                    </div>
-                  </div>
-                </button>
-              </div>
-            )}
-            
-            {selectedQuickMeal === "dinner" && (
-              <div className="space-y-3">
-                <button className="w-full bg-gradient-to-r from-purple-50 to-pink-50 border-2 border-purple-200 rounded-xl p-4 text-left hover:border-[#1f7a8c] transition-colors">
-                  <div className="flex items-center gap-3">
-                    <span className="text-3xl">🥘</span>
-                    <div>
-                      <div className="font-semibold text-gray-800">Edikang Ikong Soup</div>
-                      <div className="text-xs text-gray-600">~380 kcal • Low Glycemic</div>
-                    </div>
-                  </div>
-                </button>
-                <button className="w-full bg-gradient-to-r from-purple-50 to-pink-50 border-2 border-purple-200 rounded-xl p-4 text-left hover:border-[#1f7a8c] transition-colors">
-                  <div className="flex items-center gap-3">
-                    <span className="text-3xl">🍜</span>
-                    <div>
-                      <div className="font-semibold text-gray-800">Vegetable Stir-fry</div>
-                      <div className="text-xs text-gray-600">~310 kcal • Low Glycemic</div>
-                    </div>
-                  </div>
-                </button>
-                <button className="w-full bg-gradient-to-r from-purple-50 to-pink-50 border-2 border-purple-200 rounded-xl p-4 text-left hover:border-[#1f7a8c] transition-colors">
-                  <div className="flex items-center gap-3">
-                    <span className="text-3xl">🐟</span>
-                    <div>
-                      <div className="font-semibold text-gray-800">Grilled Fish & Salad</div>
-                      <div className="text-xs text-gray-600">~290 kcal • Low Glycemic</div>
-                    </div>
-                  </div>
-                </button>
+                  </button>
+                ))}
               </div>
             )}
 
             {/* Custom Entry Option */}
-            <button className="w-full bg-white border-2 border-dashed border-[#1f7a8c] rounded-xl p-4 text-center hover:bg-[#E8F5F5] transition-colors">
+            <button
+              onClick={handleCustomEntry}
+              disabled={quickLogging}
+              className="w-full bg-white border-2 border-dashed border-[#1f7a8c] rounded-xl p-4 text-center hover:bg-[#E8F5F5] transition-colors disabled:opacity-60"
+            >
               <div className="flex items-center justify-center gap-2 text-[#1f7a8c] font-semibold">
                 <Plus className="h-5 w-5" />
                 Custom Entry
@@ -1611,14 +1608,14 @@ export default function Home() {
 
             {/* Action Buttons */}
             <div className="flex gap-3 pt-4">
-              <Button 
+              <Button
                 onClick={() => setShowQuickMealLog(false)}
                 variant="outline"
                 className="flex-1"
               >
                 Cancel
               </Button>
-              <Button 
+              <Button
                 onClick={() => {
                   setShowQuickMealLog(false);
                   navigate("/logs");

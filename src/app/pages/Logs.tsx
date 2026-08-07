@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useLocation } from "react-router";
 import { Calendar, Clock, Camera, TrendingUp, Filter, ChevronDown, ChevronLeft, ChevronRight, Apple, Utensils, Coffee, Moon, Activity, Zap, Heart, Droplet, Plus, CheckCircle, Circle } from "lucide-react";
 import BottomNav from "../components/BottomNav";
 import { useAppMode } from "../contexts/AppModeContext";
@@ -29,6 +30,7 @@ type MealLog = {
 
 export default function Logs() {
   const { mode } = useAppMode();
+  const location = useLocation();
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [filterMealType, setFilterMealType] = useState<MealType | "all">("all");
   const [showFilters, setShowFilters] = useState(false);
@@ -46,6 +48,15 @@ export default function Logs() {
       .catch((e) => { console.error("Failed to load meal logs", e); setLogs([]); })
       .finally(() => setLogsLoading(false));
   }, []);
+
+  // Auto-open the Add Meal dialog when arriving from Home's "Custom Entry".
+  useEffect(() => {
+    if ((location.state as { openAdd?: boolean } | null)?.openAdd) {
+      setShowAddMeal(true);
+      // Clear the flag so it doesn't reopen on back/refresh
+      window.history.replaceState({}, document.title);
+    }
+  }, [location.state]);
 
   const handleAddMeal = async (newLog: MealLog) => {
     setLogs((prev) => [...prev, newLog]);
