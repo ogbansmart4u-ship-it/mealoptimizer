@@ -169,9 +169,42 @@ export default function Home() {
     };
   }, [dailyProgress]);
 
-  // Water tracker state
-  const [waterGlasses, setWaterGlasses] = useState(5);
+  // Water tracker — persisted per calendar day so it auto-resets each new day
+  // and keeps the day's count across reloads.
   const waterGoal = 8; // 8 glasses per day
+  const waterKeyFor = (d = new Date()) => `water-glasses-${d.toISOString().split("T")[0]}`;
+  const [waterGlasses, setWaterGlasses] = useState<number>(() => {
+    try {
+      return parseInt(localStorage.getItem(waterKeyFor()) || "0", 10) || 0;
+    } catch {
+      return 0;
+    }
+  });
+  // Persist whenever it changes
+  useEffect(() => {
+    try {
+      localStorage.setItem(waterKeyFor(), String(waterGlasses));
+    } catch {
+      /* ignore */
+    }
+  }, [waterGlasses]);
+  // If the tab is left open past midnight, roll over to the new day's count on refocus
+  useEffect(() => {
+    const onFocus = () => {
+      try {
+        const stored = parseInt(localStorage.getItem(waterKeyFor()) || "0", 10) || 0;
+        setWaterGlasses(stored);
+      } catch {
+        /* ignore */
+      }
+    };
+    window.addEventListener("focus", onFocus);
+    document.addEventListener("visibilitychange", onFocus);
+    return () => {
+      window.removeEventListener("focus", onFocus);
+      document.removeEventListener("visibilitychange", onFocus);
+    };
+  }, []);
 
   // New state for enhanced features
   const [selectedMeal, setSelectedMeal] = useState<MealMetadata | null>(null);
@@ -754,9 +787,26 @@ export default function Home() {
               <div className="flex-1">
                 <p className="text-sm text-gray-800">Market Update</p>
                 <p className="text-xs text-gray-600">
-                  {getRegionalKey() === "lagos"
-                    ? `Local Ugu is fresh at markets in ${selectedLocation.name} today!`
-                    : `Check your local African food markets for fresh ingredients`}
+                  {(() => {
+                    const loc = selectedLocation?.name || "your area";
+                    const tips = [
+                      `Local Ugu is fresh at markets in ${loc} today!`,
+                      `Tomatoes and peppers are in good supply — great for a fresh stew.`,
+                      `Look out for fresh catfish today — perfect for a light pepper soup.`,
+                      `Beans (oloyin) are budget-friendly now — try moi moi or ewa.`,
+                      `Plantain is plentiful — firm ones for boiling, ripe for dodo.`,
+                      `Fresh ugu, water leaf and spinach are great buys for efo riro.`,
+                      `Yam and sweet potato are steady-energy swaps for white rice.`,
+                      `Garden eggs are in season — a great low-calorie snack.`,
+                      `Okra is fresh — perfect for a quick draw soup.`,
+                      `Oranges and pawpaw are in season — vitamin C on a budget.`,
+                      `Ofada (brown) rice is a lower-GI pick — look for it in ${loc}.`,
+                      `Bitter leaf and oha are fresh — great for a nutrient-rich soup.`,
+                    ];
+                    const start = new Date(new Date().getFullYear(), 0, 0).getTime();
+                    const dayOfYear = Math.floor((Date.now() - start) / 86400000);
+                    return tips[dayOfYear % tips.length];
+                  })()}
                 </p>
               </div>
             </div>
