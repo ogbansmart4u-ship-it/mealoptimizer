@@ -45,10 +45,28 @@ if (typeof navigator !== "undefined" && typeof navigator.vibrate === "function")
 }
 
 // Register the service worker in production for offline support + installability.
+// Also make deploys propagate cleanly: check for a new worker on load and when
+// the tab regains focus, and reload once when a new worker takes control so the
+// app never gets stuck on a stale cached version.
 if (import.meta.env.PROD && "serviceWorker" in navigator) {
+  let reloadedForSW = false;
+  navigator.serviceWorker.addEventListener("controllerchange", () => {
+    if (reloadedForSW) return;
+    reloadedForSW = true;
+    window.location.reload();
+  });
+
   window.addEventListener("load", () => {
-    navigator.serviceWorker.register("/sw.js").catch(() => {
-      /* registration failures are non-fatal */
-    });
+    navigator.serviceWorker
+      .register("/sw.js")
+      .then((reg) => {
+        reg.update?.();
+        document.addEventListener("visibilitychange", () => {
+          if (document.visibilityState === "visible") reg.update?.();
+        });
+      })
+      .catch(() => {
+        /* registration failures are non-fatal */
+      });
   });
 }
