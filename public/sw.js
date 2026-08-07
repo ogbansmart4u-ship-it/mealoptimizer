@@ -1,6 +1,6 @@
 /* MealOptimizer service worker — offline shell + runtime asset caching.
    Bump CACHE when you want every client to drop old cached files. */
-const CACHE = 'mealoptimizer-v1';
+const CACHE = 'mealoptimizer-v2';
 const APP_SHELL = ['/', '/index.html', '/favicon.svg', '/manifest.webmanifest', '/icon-192.png', '/icon-512.png'];
 
 self.addEventListener('install', (event) => {

@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useRouteError, isRouteErrorResponse, useNavigate } from "react-router";
 import { AlertTriangle, RefreshCw, Home } from "lucide-react";
 
@@ -17,6 +18,23 @@ export default function RouteErrorBoundary() {
     : error instanceof Error
     ? error.message
     : "An unexpected error occurred";
+
+  // A stale-chunk error after a new deploy — the browser is running an old build
+  // and asked for a route chunk that no longer exists. Reload once to get the
+  // fresh build (10s guard avoids a reload loop if it's genuinely broken).
+  const isChunkError = /dynamically imported module|module script failed|importing a module|failed to fetch/i.test(detail);
+  useEffect(() => {
+    if (!isChunkError) return;
+    try {
+      const last = Number(sessionStorage.getItem("chunkReloadAt") || 0);
+      if (Date.now() - last > 10000) {
+        sessionStorage.setItem("chunkReloadAt", String(Date.now()));
+        window.location.reload();
+      }
+    } catch {
+      /* ignore */
+    }
+  }, [isChunkError]);
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#B8E5E5] to-[#E8F5F5] flex flex-col items-center justify-center px-6 text-center">
