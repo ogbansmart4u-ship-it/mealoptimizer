@@ -2,7 +2,6 @@ import { useState, useEffect, useId } from "react";
 import { ArrowLeft, Plus, TrendingUp, AlertCircle, Calendar, Search, X } from "lucide-react";
 import { useNavigate } from "react-router";
 import { getSymptomLogs, createSymptomLog, updateSymptomLog, deleteSymptomLog } from "../../lib/api";
-import { SkeletonList } from "../components/SkeletonLoader";
 import {
   Dialog,
   DialogContent,
@@ -419,7 +418,12 @@ export default function SymptomTracker() {
         )}
 
         {/* Loading state */}
-        {logsLoading && <SkeletonList count={2} />}
+        {logsLoading && (
+          <div className="bg-white rounded-2xl p-8 text-center shadow-lg border-2 border-gray-100">
+            <AlertCircle className="h-8 w-8 text-gray-300 mx-auto mb-2 animate-pulse" />
+            <p className="text-gray-400 text-sm">Loading symptom data…</p>
+          </div>
+        )}
 
         {/* Stats Cards */}
         <div className="grid grid-cols-2 gap-4">

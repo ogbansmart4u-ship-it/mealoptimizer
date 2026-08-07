@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router";
 import OnboardingProgress from "../components/OnboardingProgress";
 import { getWeightLogs, createWeightLog, deleteWeightLog } from "../../lib/api";
+import { SkeletonRows } from "../components/SkeletonLoader";
 
 interface WeightLog {
   id: string;
@@ -206,7 +207,7 @@ export default function Weight() {
         <div className="bg-white rounded-3xl shadow-lg p-6 mb-6">
           <h2 className="text-lg text-[#1f7a8c] mb-4">Weight History</h2>
           {logsLoading ? (
-            <div className="text-center py-6 text-gray-400">Loading history…</div>
+            <SkeletonRows count={3} />
           ) : logsError ? (
             <div className="text-center py-4 text-red-500 text-sm">{logsError}</div>
           ) : weightLogs.length === 0 ? (

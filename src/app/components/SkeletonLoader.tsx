@@ -42,6 +42,20 @@ export function SkeletonGoalCard() {
   );
 }
 
+// Compact list rows — for loading history/log lists inside an existing card.
+export function SkeletonRows({ count = 3 }: { count?: number }) {
+  return (
+    <div className="space-y-2 animate-pulse">
+      {[...Array(count)].map((_, i) => (
+        <div key={i} className="flex items-center justify-between bg-gray-50 rounded-2xl px-4 py-3">
+          <div className="h-4 bg-gray-200 rounded w-24" />
+          <div className="h-3 bg-gray-200 rounded w-16" />
+        </div>
+      ))}
+    </div>
+  );
+}
+
 export function SkeletonList({ count = 3 }: { count?: number }) {
   return (
     <div className="space-y-4">

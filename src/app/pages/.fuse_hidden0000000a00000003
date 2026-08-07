@@ -17,7 +17,6 @@ import {
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import PageHeader from "../components/PageHeader";
 import BottomNav from "../components/BottomNav";
-import { SkeletonList } from '../components/SkeletonLoader';
 import { Button } from "../components/ui/button";
 import { toast } from "sonner";
 import { getHydrationLogs, createHydrationLog, deleteHydrationLog } from "../../lib/api";
@@ -228,7 +227,12 @@ export default function HydrationTracker() {
         )}
 
         {/* Loading state */}
-        {logsLoading && <SkeletonList count={2} />}
+        {logsLoading && (
+          <div className="bg-white rounded-3xl shadow-xl p-8 flex items-center justify-center gap-3 text-gray-400">
+            <Droplet className="h-5 w-5 animate-pulse" />
+            <span className="text-sm">Loading hydration data…</span>
+          </div>
+        )}
 
         {/* Smart Reminder */}
         {showReminder && (
