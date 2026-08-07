@@ -25,6 +25,25 @@ window.addEventListener("vite:preloadError", (e) => {
   recoverFromStaleChunk();
 });
 
+// Light tactile feedback on taps (Android/Chrome only — iOS Safari has no web
+// haptics, and the feature check simply no-ops there). Fires once per tap on
+// buttons/links; skips disabled controls and respects reduced-motion.
+if (typeof navigator !== "undefined" && typeof navigator.vibrate === "function") {
+  const reduceMotion = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+  if (!reduceMotion) {
+    window.addEventListener(
+      "pointerdown",
+      (e) => {
+        const el = (e.target as HTMLElement)?.closest?.('button, [role="button"], a');
+        if (el && !el.hasAttribute("disabled") && el.getAttribute("aria-disabled") !== "true") {
+          try { navigator.vibrate(8); } catch { /* ignore */ }
+        }
+      },
+      { passive: true },
+    );
+  }
+}
+
 // Register the service worker in production for offline support + installability.
 if (import.meta.env.PROD && "serviceWorker" in navigator) {
   window.addEventListener("load", () => {

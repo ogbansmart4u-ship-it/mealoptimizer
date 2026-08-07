@@ -1,5 +1,6 @@
 import { lazy, Suspense } from "react";
-import { createBrowserRouter, Outlet } from "react-router";
+import { createBrowserRouter, Outlet, useLocation } from "react-router";
+import { motion, useReducedMotion } from "motion/react";
 
 // Structural components stay eager — they're small and needed to render the shell.
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -57,11 +58,22 @@ function PageLoader() {
   );
 }
 
-// Root wrapper: Suspense catches every lazily-loaded page chunk.
+// Root wrapper: Suspense catches every lazily-loaded page chunk, and a subtle
+// cross-fade plays on each navigation. Opacity-only (no transform) so it never
+// changes the containing block for `position: fixed` elements (bottom nav, FABs).
 function RootLayout() {
+  const location = useLocation();
+  const reduced = useReducedMotion();
   return (
     <Suspense fallback={<PageLoader />}>
-      <Outlet />
+      <motion.div
+        key={location.pathname}
+        initial={{ opacity: reduced ? 1 : 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.22, ease: [0, 0, 0.2, 1] }}
+      >
+        <Outlet />
+      </motion.div>
     </Suspense>
   );
 }
