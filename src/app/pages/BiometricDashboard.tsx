@@ -20,6 +20,7 @@ import {
 import { XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Area, AreaChart } from "recharts";
 import PageHeader from "../components/PageHeader";
 import BottomNav from "../components/BottomNav";
+import { SkeletonDashboard } from "../components/SkeletonLoader";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
@@ -180,9 +181,7 @@ export default function BiometricDashboard() {
         </button>
 
         {loading ? (
-          <div className={`rounded-3xl p-10 flex items-center justify-center ${cardClass}`}>
-            <Loader2 className="h-7 w-7 animate-spin text-gray-400" />
-          </div>
+          <SkeletonDashboard />
         ) : readings.length === 0 ? (
           <div className={`rounded-3xl p-8 text-center ${cardClass}`}>
             <Activity className="h-12 w-12 text-gray-300 mx-auto mb-3" />

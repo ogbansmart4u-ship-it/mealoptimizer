@@ -3,6 +3,7 @@ import { useNavigate } from "react-router";
 import { TrendingUp, Utensils, Droplet, Info, Loader2, AlertCircle } from "lucide-react";
 import PageHeader from "../components/PageHeader";
 import BottomNav from "../components/BottomNav";
+import { SkeletonList } from "../components/SkeletonLoader";
 import { toast } from "sonner";
 import { getMealLogs, getBiometrics } from "../../lib/api";
 
@@ -112,9 +113,7 @@ export default function GlucoseInsights() {
         </div>
 
         {loading ? (
-          <div className="bg-white rounded-2xl p-10 flex items-center justify-center">
-            <Loader2 className="h-7 w-7 animate-spin text-gray-400" />
-          </div>
+          <SkeletonList count={3} />
         ) : !hasMeals || !hasGlucose ? (
           <div className="bg-white rounded-2xl p-8 text-center">
             <AlertCircle className="h-12 w-12 text-gray-300 mx-auto mb-3" />

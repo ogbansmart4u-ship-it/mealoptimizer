@@ -5,6 +5,7 @@ import { projectId } from '/utils/supabase/info';
 import { getAccessToken } from '../../lib/supabase';
 import PageHeader from '../components/PageHeader';
 import Breadcrumbs from '../components/Breadcrumbs';
+import { SkeletonList } from '../components/SkeletonLoader';
 
 interface GroceryItem {
   id: string;
@@ -200,10 +201,7 @@ export default function GroceryList() {
       {/* Content */}
       <div className="p-4 pb-24">
         {loading ? (
-          <div className="flex flex-col items-center justify-center py-12">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mb-4"></div>
-            <p className="text-white text-center">Loading grocery list...</p>
-          </div>
+          <SkeletonList count={4} />
         ) : error ? (
           <div className="bg-red-500/20 backdrop-blur-sm rounded-2xl p-6 text-white text-center">
             <p className="mb-4">{error}</p>
