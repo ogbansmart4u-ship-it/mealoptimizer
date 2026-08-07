@@ -4,7 +4,9 @@ import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
 import { Camera, Utensils, Coffee, Apple, Zap, Plus, X, Sparkles, Save, Search, Loader2, AlertTriangle } from 'lucide-react';
-import { searchFoods, getMedications, type FoodItem } from '../../lib/api';
+import { searchFoods, getMedications, analyzeFoodImage, type FoodItem } from '../../lib/api';
+import { useUser } from '../contexts/UserContext';
+import { useLocation } from '../contexts/LocationContext';
 import { getMedicationFoodFlags, type InteractionFlag } from '../data/medicationInteractions';
 import CameraCapture from './CameraCapture';
 import SmartPlateAdvisor from './SmartPlateAdvisor';
@@ -40,9 +42,12 @@ type AddMealLogProps = {
 };
 
 export default function AddMealLog({ isOpen, onClose, onSave, selectedDate }: AddMealLogProps) {
+  const { profile } = useUser();
+  const { selectedLocation } = useLocation();
   const [step, setStep] = useState<'method' | 'manual' | 'camera' | 'search'>('method');
   const [showCameraCapture, setShowCameraCapture] = useState(false);
   const [capturedImage, setCapturedImage] = useState<string | null>(null);
+  const [analyzing, setAnalyzing] = useState(false);
   const [showSmartPlate, setShowSmartPlate] = useState(false);
   const [currentFoodForPairing, setCurrentFoodForPairing] = useState('');
   const [autoSaveIndicator, setAutoSaveIndicator] = useState(false);
@@ -175,21 +180,38 @@ export default function AddMealLog({ isOpen, onClose, onSave, selectedDate }: Ad
     { id: 'snack' as MealType, label: 'Snack', icon: Zap, color: 'bg-blue-50 text-blue-600' },
   ];
 
-  const handleCameraCapture = (imageData: string, source: 'camera' | 'upload') => {
+  const handleCameraCapture = async (imageData: string, _source: 'camera' | 'upload') => {
     setCapturedImage(imageData);
     setShowCameraCapture(false);
-
-    // Mock AI analysis - in production, send to API
-    toast.success('Food analyzed! Review and save.');
-    setFormData({
-      ...formData,
-      foodName: 'Jollof Rice with Chicken',
-      calories: '520',
-      protein: '35',
-      carbs: '58',
-      fats: '18',
-    });
     setStep('manual');
+    setAnalyzing(true);
+    const toastId = toast.loading('Analyzing your food photo…');
+    try {
+      const base64 = imageData.replace(/^data:[^;]+;base64,/, '');
+      const data: any = await analyzeFoodImage(base64, {
+        medicalCondition: profile?.medicalCondition || 'None',
+        age: profile?.age ?? 0,
+        bmi: profile?.bmi ?? 0,
+        location: selectedLocation?.displayName || 'Nigeria',
+      });
+      // Edge fn returns { analysis: {...} }; tolerate a flat shape too.
+      const a = (data?.analysis ?? data) || {};
+      const num = (v: any) => (v == null || v === '' ? '' : String(v));
+      setFormData((prev) => ({
+        ...prev,
+        foodName: a.foodName || a.food_name || prev.foodName || '',
+        calories: num(a.calories) || prev.calories,
+        protein: num(a.protein) || prev.protein,
+        carbs: num(a.carbs) || prev.carbs,
+        fats: num(a.fats) || prev.fats,
+      }));
+      toast.success('Food analyzed — review and save.', { id: toastId });
+    } catch (err: any) {
+      console.error('Food analysis failed', err);
+      toast.error("Couldn't analyze the photo. Enter the details manually.", { id: toastId });
+    } finally {
+      setAnalyzing(false);
+    }
   };
 
   const handleManualSave = () => {
@@ -235,6 +257,7 @@ export default function AddMealLog({ isOpen, onClose, onSave, selectedDate }: Ad
   const handleClose = () => {
     setStep('method');
     setCapturedImage(null);
+    setAnalyzing(false);
     setNotes('');
     setSearchQuery('');
     setSearchResults([]);
@@ -454,6 +477,13 @@ export default function AddMealLog({ isOpen, onClose, onSave, selectedDate }: Ad
               </DialogHeader>
 
               <div className="space-y-4 mt-6">
+                {/* AI analysis in progress */}
+                {analyzing && (
+                  <div className="flex items-center gap-2 rounded-xl bg-[#E8F5F5] p-3 text-sm text-[#1f7a8c]">
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    Analyzing your food photo…
+                  </div>
+                )}
                 {/* Template Manager */}
                 <div className="pb-3 border-b">
                   <TemplateManager
