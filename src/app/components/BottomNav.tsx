@@ -25,7 +25,7 @@ export default function BottomNav() {
           const goals = JSON.parse(goalsData);
           const incompleteCount = goals.filter((g: any) => !g.completed).length;
           if (incompleteCount > 0) {
-            newBadges["/goals"] = { count: incompleteCount, color: "bg-orange-500" };
+            newBadges["/goals"] = { count: incompleteCount, color: "bg-red-500" };
           }
         } catch (e) {
           console.error("Error parsing goals data:", e);
@@ -41,7 +41,7 @@ export default function BottomNav() {
           const todayLogs = logs.filter((log: any) => log.date === today);
           const pendingMeals = 3 - todayLogs.length; // Assuming 3 meals per day
           if (pendingMeals > 0) {
-            newBadges["/logs"] = { count: pendingMeals, color: "bg-yellow-500" };
+            newBadges["/logs"] = { count: pendingMeals, color: "bg-red-500" };
           }
         } catch (e) {
           console.error("Error parsing logs data:", e);
