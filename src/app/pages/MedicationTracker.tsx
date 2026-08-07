@@ -23,6 +23,7 @@ import { Button } from "../components/ui/button";
 import { Label } from "../components/ui/label";
 import { Input } from "../components/ui/input";
 import { toast } from "sonner";
+import { SkeletonRows } from "../components/SkeletonLoader";
 import { getCollection, createCollectionItem, updateCollectionItem, deleteCollectionItem } from "../../lib/api";
 
 type MedicationType = 'medication' | 'supplement' | 'vitamin';
@@ -101,6 +102,7 @@ export default function MedicationTracker() {
   const [medications, setMedications] = useState<Medication[]>([]);
   const [doseLogs, setDoseLogs] = useState<DoseLog[]>([]);
   const [todaySchedule, setTodaySchedule] = useState<DoseLog[]>([]);
+  const [loading, setLoading] = useState(true);
 
   const [showAddDialog, setShowAddDialog] = useState(false);
   const [editingMed, setEditingMed] = useState<Medication | null>(null);
@@ -123,7 +125,8 @@ export default function MedicationTracker() {
         setMedications(Array.isArray(meds) ? (meds as Medication[]) : []);
         setDoseLogs(Array.isArray(logs) ? (logs as DoseLog[]) : []);
       })
-      .catch((e) => console.error('Failed to load medications', e));
+      .catch((e) => console.error('Failed to load medications', e))
+      .finally(() => setLoading(false));
   }, []);
 
   // Rebuild today's schedule whenever meds or logs change, marking doses that
@@ -365,7 +368,9 @@ export default function MedicationTracker() {
             Today's Schedule
           </h3>
 
-          {todaySchedule.length === 0 ? (
+          {loading ? (
+            <SkeletonRows count={3} />
+          ) : todaySchedule.length === 0 ? (
             <div className="text-center py-8 text-gray-500">
               <Pill className="h-12 w-12 mx-auto mb-2 text-gray-300" />
               <p>No scheduled doses for today</p>
@@ -430,7 +435,9 @@ export default function MedicationTracker() {
             Active Medications ({medications.length})
           </h3>
 
-          {medications.length === 0 ? (
+          {loading ? (
+            <SkeletonRows count={3} />
+          ) : medications.length === 0 ? (
             <div className="text-center py-8 text-gray-500">
               <Pill className="h-12 w-12 mx-auto mb-2 text-gray-300" />
               <p>No medications added yet</p>

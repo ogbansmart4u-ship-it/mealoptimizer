@@ -6,6 +6,7 @@ import { useUser } from "../contexts/UserContext";
 import ProfilePictureUpload from "../components/ProfilePictureUpload";
 import AddMealLog from "../components/AddMealLog";
 import { BulkActionsBar } from "../components/BulkActionsBar";
+import { SkeletonList } from "../components/SkeletonLoader";
 import { getMealLogs, createMealLog, deleteMealLog } from "../../lib/api";
 
 type MealType = "breakfast" | "lunch" | "dinner" | "snack";
@@ -36,12 +37,14 @@ export default function Logs() {
   const [selectionMode, setSelectionMode] = useState(false);
 
   const [logs, setLogs] = useState<MealLog[]>([]);
+  const [logsLoading, setLogsLoading] = useState(true);
 
   // Load this user's meal logs from the backend on mount
   useEffect(() => {
     getMealLogs()
       .then((data) => setLogs(Array.isArray(data) ? data : []))
-      .catch((e) => { console.error("Failed to load meal logs", e); setLogs([]); });
+      .catch((e) => { console.error("Failed to load meal logs", e); setLogs([]); })
+      .finally(() => setLogsLoading(false));
   }, []);
 
   const handleAddMeal = async (newLog: MealLog) => {
@@ -255,7 +258,9 @@ export default function Logs() {
 
         {/* Meal Logs */}
         <div className="space-y-4">
-          {filteredLogs.length === 0 ? (
+          {logsLoading ? (
+            <SkeletonList count={3} />
+          ) : filteredLogs.length === 0 ? (
             <div className="bg-white rounded-3xl shadow-lg p-12 text-center">
               <Camera className="h-16 w-16 text-gray-300 mx-auto mb-4" />
               <h3 className="text-gray-800 mb-2">No Meals Logged</h3>

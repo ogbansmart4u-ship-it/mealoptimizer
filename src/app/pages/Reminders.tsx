@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router';
 import { ArrowLeft, Plus, Bell, Clock, Calendar, Trash2, Edit, BellOff } from 'lucide-react';
 import { saveReminders, requestNotificationPermission, Reminder } from '../utils/reminderManager';
 import { getCollection, createCollectionItem, updateCollectionItem, deleteCollectionItem } from '../../lib/api';
+import { SkeletonRows } from '../components/SkeletonLoader';
 import { Button } from '../components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../components/ui/dialog';
 
@@ -11,6 +12,7 @@ const DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 export default function Reminders() {
   const navigate = useNavigate();
   const [reminders, setReminders] = useState<Reminder[]>([]);
+  const [loading, setLoading] = useState(true);
   const [showAddDialog, setShowAddDialog] = useState(false);
   const [editingReminder, setEditingReminder] = useState<Reminder | null>(null);
   const [notificationPermission, setNotificationPermission] = useState<NotificationPermission>('default');
@@ -37,7 +39,8 @@ export default function Reminders() {
         setReminders(list);
         saveReminders(list);
       })
-      .catch((e) => { console.error('Failed to load reminders', e); setReminders([]); });
+      .catch((e) => { console.error('Failed to load reminders', e); setReminders([]); })
+      .finally(() => setLoading(false));
   }, []);
 
   const handleRequestPermission = async () => {
@@ -170,7 +173,8 @@ export default function Reminders() {
 
         {/* Reminders List */}
         <div className="space-y-3">
-          {reminders.map((reminder) => (
+          {loading && <SkeletonRows count={3} />}
+          {!loading && reminders.map((reminder) => (
             <div
               key={reminder.id}
               className={`bg-white rounded-2xl shadow-lg p-5 transition-all ${
@@ -246,7 +250,7 @@ export default function Reminders() {
             </div>
           ))}
 
-          {reminders.length === 0 && (
+          {!loading && reminders.length === 0 && (
             <div className="bg-white rounded-2xl shadow-lg p-12 text-center">
               <Bell className="h-16 w-16 text-gray-300 mx-auto mb-4" />
               <h3 className="text-gray-800 mb-2">No Reminders Yet</h3>
