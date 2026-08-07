@@ -51,5 +51,51 @@
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
+
+    <!--
+      Self-heal watchdog. This runs from index.html (always served fresh, never
+      part of the hashed bundle), so it can recover a device that is stuck on a
+      broken/old service worker or cached bundle — a state a normal hard-refresh
+      cannot fix on mobile. If the app has not mounted a few seconds after load,
+      it unregisters the service worker, clears caches, and reloads ONCE.
+    -->
+    <script>
+      (function () {
+        try {
+          var HEAL_KEY = "__mo_selfheal_at";
+          window.addEventListener("load", function () {
+            setTimeout(function () {
+              var root = document.getElementById("root");
+              var mounted = root && root.childElementCount > 0;
+              var last = 0;
+              try { last = Number(sessionStorage.getItem(HEAL_KEY) || 0); } catch (e) {}
+              // Only act if the app clearly failed to mount, and not more than once per 60s.
+              if (!mounted && Date.now() - last > 60000) {
+                try { sessionStorage.setItem(HEAL_KEY, String(Date.now())); } catch (e) {}
+                var done = function () { location.reload(); };
+                try {
+                  var jobs = [];
+                  if ("serviceWorker" in navigator) {
+                    jobs.push(
+                      navigator.serviceWorker.getRegistrations().then(function (rs) {
+                        return Promise.all(rs.map(function (r) { return r.unregister(); }));
+                      }).catch(function () {})
+                    );
+                  }
+                  if (window.caches && caches.keys) {
+                    jobs.push(
+                      caches.keys().then(function (ks) {
+                        return Promise.all(ks.map(function (k) { return caches.delete(k); }));
+                      }).catch(function () {})
+                    );
+                  }
+                  Promise.all(jobs).then(done, done);
+                } catch (e) { done(); }
+              }
+            }, 8000);
+          });
+        } catch (e) {}
+      })();
+    </script>
   </body>
 </html>
