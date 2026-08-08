@@ -6,6 +6,7 @@ import {
 } from "lucide-react";
 import BottomNav from "../components/BottomNav";
 import { useNavigate } from "react-router";
+import { useLanguage } from "../contexts/LanguageContext";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "../components/ui/dialog";
 
 type EducationalTopic = {
@@ -68,6 +69,7 @@ const educationalTopics: EducationalTopic[] = [
 
 export default function Health() {
   const navigate = useNavigate();
+  const { t } = useLanguage();
   const [selectedTopic, setSelectedTopic] = useState<EducationalTopic | null>(null);
   const [showEducationalDialog, setShowEducationalDialog] = useState(false);
 
@@ -80,7 +82,7 @@ export default function Health() {
     <div className="min-h-screen bg-gradient-to-b from-[#B8E5E5] to-[#E8F5F5] pb-24">
       {/* Header */}
       <div className="bg-[#B8E5E5] px-6 pt-12 pb-6">
-        <h1 className="text-2xl font-bold text-gray-800 text-center">Health</h1>
+        <h1 className="text-2xl font-bold text-gray-800 text-center">{t('nav.health')}</h1>
       </div>
 
       <div className="px-6 mt-4">
@@ -94,8 +96,8 @@ export default function Health() {
               <Activity className="h-8 w-8 text-white" />
             </div>
             <div className="text-left flex-1">
-              <span className="text-base text-red-700 uppercase tracking-wide font-semibold block">My Body Profile</span>
-              <span className="text-sm text-gray-600">View your biometric data and health metrics</span>
+              <span className="text-base text-red-700 uppercase tracking-wide font-semibold block">{t('health.bodyProfile')}</span>
+              <span className="text-sm text-gray-600">{t('health.bodyProfileDesc')}</span>
             </div>
             <ChevronRight className="h-5 w-5 text-red-400 flex-shrink-0" />
           </button>
@@ -103,18 +105,18 @@ export default function Health() {
 
         {/* Health Trackers Grid */}
         <div className="mb-6">
-          <h3 className="text-lg mb-3 text-gray-800">Health Trackers</h3>
+          <h3 className="text-lg mb-3 text-gray-800">{t('health.trackers')}</h3>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
             {[
-              { label: "Medical Vault", icon: Shield,      gradient: "from-purple-500 to-pink-500",   border: "border-purple-400", route: "/medical-vault" },
-              { label: "Hydration",     icon: Droplet,     gradient: "from-blue-500 to-cyan-500",     border: "border-blue-400",   route: "/hydration" },
-              { label: "Sleep",         icon: Moon,        gradient: "from-indigo-500 to-purple-500", border: "border-indigo-400", route: "/sleep" },
-              { label: "Medication",    icon: Pill,        gradient: "from-emerald-500 to-teal-500",  border: "border-emerald-400",route: "/medications" },
-              { label: "Workout",       icon: Dumbbell,    gradient: "from-orange-500 to-red-500",    border: "border-orange-400", route: "/workout" },
-              { label: "Fasting",       icon: Clock,       gradient: "from-purple-600 to-pink-600",   border: "border-purple-400", route: "/fasting" },
-              { label: "Symptoms",      icon: AlertCircle, gradient: "from-red-500 to-orange-500",    border: "border-red-400",    route: "/symptoms" },
-              { label: "Doctor Report", icon: FileText,    gradient: "from-teal-500 to-cyan-500",     border: "border-teal-400",   route: "/health-report" },
-            ].map(({ label, icon: Icon, gradient, border, route }) => (
+              { tKey: "health.tracker.vault",      icon: Shield,      gradient: "from-purple-500 to-pink-500",   border: "border-purple-400", route: "/medical-vault" },
+              { tKey: "health.tracker.hydration",  icon: Droplet,     gradient: "from-blue-500 to-cyan-500",     border: "border-blue-400",   route: "/hydration" },
+              { tKey: "health.tracker.sleep",      icon: Moon,        gradient: "from-indigo-500 to-purple-500", border: "border-indigo-400", route: "/sleep" },
+              { tKey: "health.tracker.medication", icon: Pill,        gradient: "from-emerald-500 to-teal-500",  border: "border-emerald-400",route: "/medications" },
+              { tKey: "health.tracker.workout",    icon: Dumbbell,    gradient: "from-orange-500 to-red-500",    border: "border-orange-400", route: "/workout" },
+              { tKey: "health.tracker.fasting",    icon: Clock,       gradient: "from-purple-600 to-pink-600",   border: "border-purple-400", route: "/fasting" },
+              { tKey: "health.tracker.symptoms",   icon: AlertCircle, gradient: "from-red-500 to-orange-500",    border: "border-red-400",    route: "/symptoms" },
+              { tKey: "health.tracker.report",     icon: FileText,    gradient: "from-teal-500 to-cyan-500",     border: "border-teal-400",   route: "/health-report" },
+            ].map(({ tKey, icon: Icon, gradient, border, route }) => (
               <button
                 key={route}
                 onClick={() => navigate(route)}
@@ -124,7 +126,7 @@ export default function Health() {
                   <Icon className="h-7 w-7 text-white" />
                 </div>
                 <span className="text-xs font-semibold text-gray-700 text-center leading-tight">
-                  {label}
+                  {t(tKey)}
                 </span>
               </button>
             ))}
@@ -133,7 +135,7 @@ export default function Health() {
 
         {/* My Health Profile */}
         <div className="bg-gradient-to-br from-white via-[#F0F9FA] to-[#E0F2F4] rounded-3xl shadow-lg p-6 mb-6">
-          <h3 className="text-center text-[#e63946] mb-4">My Health Profile</h3>
+          <h3 className="text-center text-[#e63946] mb-4">{t('health.myHealthProfile')}</h3>
           <div className="grid grid-cols-4 gap-2">
             <button
               onClick={() => navigate("/location")}
@@ -142,7 +144,7 @@ export default function Health() {
               <div className="bg-[#1f7a8c] rounded-full p-3 mb-2 hover:bg-[#4ecdc4] transition-colors">
                 <MapPin className="h-5 w-5 text-white" />
               </div>
-              <span className="text-xs text-gray-700">Location</span>
+              <span className="text-xs text-gray-700">{t('health.link.location')}</span>
             </button>
             <button
               onClick={() => navigate("/weight")}
@@ -151,7 +153,7 @@ export default function Health() {
               <div className="bg-[#1f7a8c] rounded-full p-3 mb-2 hover:bg-[#4ecdc4] transition-colors">
                 <Scale className="h-5 w-5 text-white" />
               </div>
-              <span className="text-xs text-gray-700">Weight</span>
+              <span className="text-xs text-gray-700">{t('health.link.weight')}</span>
             </button>
             <button
               onClick={() => navigate("/age")}
@@ -160,7 +162,7 @@ export default function Health() {
               <div className="bg-[#1f7a8c] rounded-full p-3 mb-2 hover:bg-[#4ecdc4] transition-colors">
                 <Calendar className="h-5 w-5 text-white" />
               </div>
-              <span className="text-xs text-gray-700">Age</span>
+              <span className="text-xs text-gray-700">{t('health.link.age')}</span>
             </button>
             <button
               onClick={() => navigate("/medications")}
@@ -169,7 +171,7 @@ export default function Health() {
               <div className="bg-[#1f7a8c] rounded-full p-3 mb-2 hover:bg-[#4ecdc4] transition-colors">
                 <Pill className="h-5 w-5 text-white" />
               </div>
-              <span className="text-xs text-gray-700">Drugs</span>
+              <span className="text-xs text-gray-700">{t('health.link.drugs')}</span>
             </button>
             <button
               onClick={() => navigate("/medical-condition")}
@@ -178,7 +180,7 @@ export default function Health() {
               <div className="bg-[#1f7a8c] rounded-full p-3 mb-2 hover:bg-[#4ecdc4] transition-colors">
                 <Stethoscope className="h-5 w-5 text-white" />
               </div>
-              <span className="text-xs text-gray-700 text-center">Medical<br />condition</span>
+              <span className="text-xs text-gray-700 text-center">{t('health.link.condition')}</span>
             </button>
           </div>
         </div>
@@ -186,10 +188,10 @@ export default function Health() {
         {/* Health Education */}
         <div className="mb-6">
           <div className="flex items-center justify-between mb-3">
-            <h3 className="text-lg text-gray-800">Health Education</h3>
+            <h3 className="text-lg text-gray-800">{t('health.education')}</h3>
             <div className="flex items-center gap-1 text-[#1f7a8c]">
               <Lightbulb className="h-4 w-4" />
-              <span className="text-sm">Learn More</span>
+              <span className="text-sm">{t('health.learnMore')}</span>
             </div>
           </div>
           <div className="space-y-3">
@@ -232,7 +234,7 @@ export default function Health() {
                   {selectedTopic.title}
                 </DialogTitle>
                 <DialogDescription className="text-center text-gray-600">
-                  Learn more about this health topic
+                  {t('health.dialogSubtitle')}
                 </DialogDescription>
               </DialogHeader>
 
@@ -244,7 +246,7 @@ export default function Health() {
                 <div>
                   <div className="flex items-center gap-2 mb-3">
                     <Heart className={`h-5 w-5 ${selectedTopic.color}`} />
-                    <h3 className={`text-lg ${selectedTopic.color}`}>Key Tips</h3>
+                    <h3 className={`text-lg ${selectedTopic.color}`}>{t('health.keyTips')}</h3>
                   </div>
                   <div className="space-y-3">
                     {selectedTopic.tips.map((tip, index) => (
@@ -264,10 +266,10 @@ export default function Health() {
                 <div className={`${selectedTopic.bgColor} rounded-2xl p-4 border-2 ${selectedTopic.color.replace("text", "border")}`}>
                   <div className="flex items-center gap-2 mb-2">
                     <BookOpen className={`h-4 w-4 ${selectedTopic.color}`} />
-                    <p className={`text-sm ${selectedTopic.color}`}>Want to learn more?</p>
+                    <p className={`text-sm ${selectedTopic.color}`}>{t('health.wantMore')}</p>
                   </div>
                   <p className="text-xs text-gray-600">
-                    Consult with a healthcare professional for personalized advice tailored to your specific needs.
+                    {t('health.consult')}
                   </p>
                 </div>
 
@@ -275,7 +277,7 @@ export default function Health() {
                   onClick={() => setShowEducationalDialog(false)}
                   className="w-full bg-gradient-to-r from-[#1f7a8c] to-[#4ecdc4] text-white rounded-2xl py-4 hover:shadow-lg transition-all"
                 >
-                  Got It!
+                  {t('health.gotIt')}
                 </button>
               </div>
             </>

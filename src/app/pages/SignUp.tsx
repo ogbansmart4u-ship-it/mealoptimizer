@@ -6,6 +6,7 @@ import { Input } from "../components/ui/input";
 import { Checkbox } from "../components/ui/checkbox";
 import { toast } from "sonner";
 import { useAuth } from "../contexts/AuthContext";
+import { useLanguage } from "../contexts/LanguageContext";
 import { signUp as apiSignUp } from "../../lib/api";
 import { supabase } from "../../lib/supabase";
 import { motion, useReducedMotion } from "motion/react";
@@ -31,6 +32,7 @@ function Wordmark() {
 export default function SignUp() {
   const navigate = useNavigate();
   const { signInWithGoogle, signInWithApple } = useAuth();
+  const { t } = useLanguage();
   const reduced = useReducedMotion();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -57,20 +59,20 @@ export default function SignUp() {
     const errors: typeof fieldErrors = {};
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
-      errors.email = "Enter a valid email address (e.g. you@example.com)";
+      errors.email = t('auth.invalidEmail');
     }
     if (password.length < 6) {
-      errors.password = "Password must be at least 6 characters";
+      errors.password = t('auth.passwordMin');
     }
     if (password !== formData.confirmPassword) {
-      errors.confirmPassword = "Passwords do not match";
+      errors.confirmPassword = t('auth.passwordMismatch');
     }
     if (Object.keys(errors).length > 0) {
       setFieldErrors(errors);
       return;
     }
     if (!agreedToTerms) {
-      toast.error("Please agree to the terms and conditions");
+      toast.error(t('auth.agreeError'));
       return;
     }
 
@@ -96,23 +98,23 @@ export default function SignUp() {
       if (signInError) {
         console.error('❌ signInWithPassword after signup failed:', signInError);
         // Account was created — tell the user to log in manually
-        toast.success("Account created! Please log in.", { duration: 6000 });
+        toast.success(t('auth.accountCreatedLogin'), { duration: 6000 });
         navigate("/login");
         return;
       }
 
       console.log('✅ Session created for', data.user?.email);
       localStorage.setItem("onboardingComplete", "true");
-      toast.success("Welcome to MealOptimiza! 🎉");
+      toast.success(t('auth.welcomeToast'));
       navigate("/home");
     } catch (err: any) {
       console.error('❌ Signup error:', err);
-      const msg: string = err.message ?? "Sign up failed. Please try again.";
+      const msg: string = err.message ?? t('auth.signUpFailed');
       // Surface specific server messages inline
       if (msg.toLowerCase().includes("email") && msg.toLowerCase().includes("exist")) {
-        setFieldErrors({ email: "This email is already registered. Try logging in." });
+        setFieldErrors({ email: t('auth.emailExists') });
       } else if (msg.toLowerCase().includes("already registered") || msg.toLowerCase().includes("already exists")) {
-        setFieldErrors({ email: "This email is already registered. Try logging in." });
+        setFieldErrors({ email: t('auth.emailExists') });
       } else if (msg.toLowerCase().includes("password")) {
         setFieldErrors({ password: msg });
       } else {
@@ -125,7 +127,7 @@ export default function SignUp() {
 
   const handleGoogleSignUp = async () => {
     if (!agreedToTerms) {
-      toast.error("Please agree to the terms and conditions");
+      toast.error(t('auth.agreeError'));
       return;
     }
     setOauthLoading('google');
@@ -149,7 +151,7 @@ export default function SignUp() {
 
   const handleAppleSignUp = async () => {
     if (!agreedToTerms) {
-      toast.error("Please agree to the terms and conditions");
+      toast.error(t('auth.agreeError'));
       return;
     }
     setOauthLoading('apple');
@@ -180,7 +182,7 @@ export default function SignUp() {
           className="flex items-center gap-1.5 text-[#1f7a8c] text-sm font-medium hover:text-[#1a6273] transition-colors"
         >
           <ArrowLeft className="h-4 w-4" />
-          <span>Back</span>
+          <span>{t('common.back')}</span>
         </button>
       </div>
 
@@ -206,9 +208,9 @@ export default function SignUp() {
             className="text-xl font-bold text-center mb-1 text-[#0F172A]"
             style={{ fontFamily: "Manrope, sans-serif" }}
           >
-            Create your account
+            {t('auth.createAccountTitle')}
           </h2>
-          <p className="text-sm text-[#64748B] text-center mb-7">Join MealOptimiza today</p>
+          <p className="text-sm text-[#64748B] text-center mb-7">{t('auth.signUpSubtitle')}</p>
 
           <form onSubmit={handleSubmit} className="space-y-5">
             {/* General error */}
@@ -221,14 +223,14 @@ export default function SignUp() {
             {/* Full Name */}
             <div className="space-y-1.5">
               <label htmlFor="fullName" className="text-sm font-medium text-[#374151]">
-                Full Name
+                {t('auth.fullName')}
               </label>
               <div className="relative">
                 <User className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-[#94A3B8]" />
                 <Input
                   id="fullName"
                   type="text"
-                  placeholder="Enter your full name"
+                  placeholder={t('auth.fullNamePlaceholder')}
                   value={formData.fullName}
                   onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
                   className="pl-10 h-12 bg-[#ffffff] border-[#CBD5E1] rounded-xl focus-visible:ring-[#1f7a8c] focus-visible:border-[#1f7a8c]"
@@ -240,7 +242,7 @@ export default function SignUp() {
             {/* Email */}
             <div className="space-y-1.5">
               <label htmlFor="email" className="text-sm font-medium text-[#374151]">
-                Email Address
+                {t('auth.email')}
               </label>
               <div className="relative">
                 <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-[#94A3B8]" />
@@ -265,14 +267,14 @@ export default function SignUp() {
             {/* Password */}
             <div className="space-y-1.5">
               <label htmlFor="password" className="text-sm font-medium text-[#374151]">
-                Password
+                {t('auth.password')}
               </label>
               <div className="relative">
                 <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-[#94A3B8]" />
                 <Input
                   id="password"
                   type={showPassword ? "text" : "password"}
-                  placeholder="Create a password"
+                  placeholder={t('auth.createPasswordPlaceholder')}
                   value={formData.password}
                   onChange={(e) => {
                     setFormData({ ...formData, password: e.target.value });
@@ -291,21 +293,21 @@ export default function SignUp() {
               </div>
               {fieldErrors.password
                 ? <p className="text-xs text-red-600">{fieldErrors.password}</p>
-                : <p className="text-xs text-[#94A3B8]">Must be at least 6 characters</p>
+                : <p className="text-xs text-[#94A3B8]">{t('auth.passwordHint')}</p>
               }
             </div>
 
             {/* Confirm Password */}
             <div className="space-y-1.5">
               <label htmlFor="confirmPassword" className="text-sm font-medium text-[#374151]">
-                Confirm Password
+                {t('auth.confirmPassword')}
               </label>
               <div className="relative">
                 <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-[#94A3B8]" />
                 <Input
                   id="confirmPassword"
                   type={showConfirmPassword ? "text" : "password"}
-                  placeholder="Re-enter your password"
+                  placeholder={t('auth.confirmPasswordPlaceholder')}
                   value={formData.confirmPassword}
                   onChange={(e) => {
                     setFormData({ ...formData, confirmPassword: e.target.value });
@@ -336,13 +338,13 @@ export default function SignUp() {
                 className="mt-0.5 border-[#CBD5E1] data-[state=checked]:bg-[#1f7a8c] data-[state=checked]:border-[#1f7a8c]"
               />
               <label htmlFor="terms" className="text-sm text-[#64748B] leading-snug cursor-pointer">
-                I agree to the{" "}
+                {t('auth.agreeStart')}{" "}
                 <Link to="/terms" className="text-[#1f7a8c] hover:underline font-medium">
-                  Terms &amp; Conditions
+                  {t('auth.terms')}
                 </Link>{" "}
-                and{" "}
+                {t('auth.and')}{" "}
                 <Link to="/privacy" className="text-[#1f7a8c] hover:underline font-medium">
-                  Privacy Policy
+                  {t('auth.privacy')}
                 </Link>
               </label>
             </div>
@@ -357,9 +359,9 @@ export default function SignUp() {
               {loading ? (
                 <span className="flex items-center justify-center gap-2">
                   <Loader2 className="h-4 w-4 animate-spin" />
-                  Creating account…
+                  {t('auth.creatingAccount')}
                 </span>
-              ) : "Create Account"}
+              ) : t('auth.createAccountBtn')}
             </Button>
           </form>
 
@@ -369,7 +371,7 @@ export default function SignUp() {
               <div className="w-full border-t border-[#E2E8F0]"></div>
             </div>
             <div className="relative flex justify-center text-xs">
-              <span className="px-3 bg-[#ffffff] text-[#94A3B8] uppercase tracking-wide">or</span>
+              <span className="px-3 bg-[#ffffff] text-[#94A3B8] uppercase tracking-wide">{t('common.or')}</span>
             </div>
           </div>
 
@@ -386,7 +388,7 @@ export default function SignUp() {
                 <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
                 <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
               </svg>
-              Sign up with Google
+              {t('auth.signUpGoogle')}
             </button>
 
             <button
@@ -397,15 +399,15 @@ export default function SignUp() {
               <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09l.01-.01zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z" />
               </svg>
-              Sign up with Apple
+              {t('auth.signUpApple')}
             </button>
           </div>
 
           {/* Login Link */}
           <p className="text-center mt-6 text-sm text-[#475569]">
-            Already have an account?{" "}
+            {t('auth.haveAccount')}{" "}
             <Link to="/login" className="text-[#1f7a8c] font-medium hover:underline">
-              Log In
+              {t('auth.login')}
             </Link>
           </p>
         </motion.div>

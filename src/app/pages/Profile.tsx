@@ -35,6 +35,7 @@ import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
 import { Textarea } from "../components/ui/textarea";
 import { useAuth } from "../contexts/AuthContext";
+import { useLanguage } from "../contexts/LanguageContext";
 import { useUser } from "../contexts/UserContext";
 import { useLocation } from "../contexts/LocationContext";
 import { updateUserProfile } from "../../lib/api";
@@ -45,6 +46,7 @@ import { AuthDebug } from "../components/AuthDebug";
 export default function Profile() {
   const navigate = useNavigate();
   const { signOut } = useAuth();
+  const { t } = useLanguage();
   const { profile, loading: profileLoading, refreshProfile, updateProfile } = useUser();
   const { selectedLocation, setSelectedLocation } = useLocation();
   
@@ -119,10 +121,10 @@ export default function Profile() {
   const handleLogout = async () => {
     try {
       await signOut();
-      toast.success("Logged out successfully");
+      toast.success(t('profile.logoutSuccess'));
       navigate("/");
     } catch (error) {
-      toast.error("Failed to log out");
+      toast.error(t('profile.logoutFailed'));
       console.error("Logout error:", error);
     }
   };
@@ -136,13 +138,13 @@ export default function Profile() {
       const bmi = parseFloat(formData.bmi);
 
       if (isNaN(age) || age <= 0) {
-        toast.error("Please enter a valid age");
+        toast.error(t('profile.invalidAge'));
         setSaving(false);
         return;
       }
 
       if (isNaN(bmi) || bmi <= 0) {
-        toast.error("Please enter a valid BMI");
+        toast.error(t('profile.invalidBmi'));
         setSaving(false);
         return;
       }
@@ -177,13 +179,13 @@ export default function Profile() {
         setSelectedLocation(matchingRegion);
       }
 
-      toast.success("Profile updated successfully! 🎉");
+      toast.success(t('profile.updateSuccess'));
       setEditingProfile(false);
       
       // Refresh profile to get latest data
       await refreshProfile();
     } catch (error) {
-      toast.error("Failed to update profile. Please try again.");
+      toast.error(t('profile.updateFailed'));
       console.error("Error updating profile:", error);
     } finally {
       setSaving(false);
@@ -196,14 +198,14 @@ export default function Profile() {
 
     // Check file type
     if (!file.type.startsWith("image/")) {
-      setUploadError("Please select an image file");
+      setUploadError(t('profile.selectImage'));
       return;
     }
 
     // Check file size (limit to 5MB)
     const maxSize = 5 * 1024 * 1024; // 5MB in bytes
     if (file.size > maxSize) {
-      setUploadError("Image size must be less than 5MB");
+      setUploadError(t('profile.imageTooLarge'));
       return;
     }
 
@@ -224,9 +226,9 @@ export default function Profile() {
         location: profile!.location,
         profilePicture: base64Image,
       }).then(() => {
-        toast.success("Profile picture updated!");
+        toast.success(t('profile.pictureUpdated'));
       }).catch(() => {
-        toast.error("Failed to upload picture");
+        toast.error(t('profile.pictureFailed'));
       });
     };
     reader.readAsDataURL(file);
@@ -256,11 +258,11 @@ export default function Profile() {
       }
 
       updateProfile(updates);
-      toast.success("Personal information updated!");
+      toast.success(t('profile.personalUpdated'));
       setEditingPersonalInfo(false);
       await refreshProfile();
     } catch (error) {
-      toast.error("Failed to update personal information");
+      toast.error(t('profile.personalFailed'));
       console.error("Error:", error);
     } finally {
       setSaving(false);
@@ -268,20 +270,20 @@ export default function Profile() {
   };
 
   const handleSaveEmailPrefs = () => {
-    toast.success("Email preferences saved!");
+    toast.success(t('profile.prefsSaved'));
     setEditingEmailPrefs(false);
   };
 
   const handleChangePassword = () => {
     if (passwordForm.newPassword !== passwordForm.confirmPassword) {
-      toast.error("Passwords do not match");
+      toast.error(t('auth.passwordMismatch'));
       return;
     }
     if (passwordForm.newPassword.length < 8) {
-      toast.error("Password must be at least 8 characters");
+      toast.error(t('profile.passwordMin8'));
       return;
     }
-    toast.success("Password changed successfully!");
+    toast.success(t('profile.passwordChanged'));
     setPasswordForm({
       currentPassword: "",
       newPassword: "",
@@ -293,7 +295,7 @@ export default function Profile() {
   if (profileLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-b from-[#B8E5E5] to-[#E8F5F5] flex items-center justify-center">
-        <div className="text-[#1f7a8c] text-lg">Loading profile...</div>
+        <div className="text-[#1f7a8c] text-lg">{t('profile.loading')}</div>
       </div>
     );
   }
@@ -302,9 +304,9 @@ export default function Profile() {
     return (
       <div className="min-h-screen bg-gradient-to-b from-[#B8E5E5] to-[#E8F5F5] flex items-center justify-center p-6">
         <div className="text-center">
-          <div className="text-red-600 text-lg mb-4">Failed to load profile</div>
+          <div className="text-red-600 text-lg mb-4">{t('profile.loadFailed')}</div>
           <div className="text-gray-600 text-sm mb-4">
-            Please check the browser console for detailed error information.
+            {t('profile.loadFailedDesc')}
           </div>
           <Button 
             onClick={() => {
@@ -314,7 +316,7 @@ export default function Profile() {
             variant="outline"
             className="border-[#1f7a8c] text-[#1f7a8c] hover:bg-[#1f7a8c] hover:text-white"
           >
-            Retry
+            {t('profile.retry')}
           </Button>
         </div>
       </div>
@@ -329,7 +331,7 @@ export default function Profile() {
     <div className="min-h-screen bg-gradient-to-b from-[#B8E5E5] to-[#E8F5F5] pb-24">
       {/* Header */}
       <div className="bg-gradient-to-r from-[#1f7a8c] to-[#4ecdc4] px-6 pt-12 pb-8">
-        <h1 className="text-2xl text-white mb-6">Profile</h1>
+        <h1 className="text-2xl text-white mb-6">{t('profile.title')}</h1>
 
         {/* Avatar Section */}
         <div className="flex flex-col items-center">
@@ -374,25 +376,24 @@ export default function Profile() {
         {/* Health Profile Card */}
         <div className="bg-white rounded-3xl shadow-lg p-6 mb-6">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg text-gray-800">Health Profile</h3>
+            <h3 className="text-lg text-gray-800">{t('profile.healthProfile')}</h3>
             <Dialog open={editingProfile} onOpenChange={setEditingProfile}>
               <DialogTrigger asChild>
                 <button className="text-[#1f7a8c] flex items-center gap-1 text-sm hover:underline">
                   <Edit2 className="h-4 w-4" />
-                  Edit
+                  {t('profile.edit')}
                 </button>
               </DialogTrigger>
               <DialogContent className="max-w-md max-h-[90vh] overflow-y-auto">
                 <DialogHeader>
-                  <DialogTitle>Edit Health Profile</DialogTitle>
+                  <DialogTitle>{t('profile.editHealthProfile')}</DialogTitle>
                   <DialogDescription>
-                    Update your health information to get personalized nutrition
-                    recommendations.
+                    {t('profile.editHealthDesc')}
                   </DialogDescription>
                 </DialogHeader>
                 <div className="space-y-4 py-4">
                   <div className="space-y-2">
-                    <Label htmlFor="name">Full Name</Label>
+                    <Label htmlFor="name">{t('auth.fullName')}</Label>
                     <Input
                       id="name"
                       value={formData.name}
@@ -402,7 +403,7 @@ export default function Profile() {
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="location">Location</Label>
+                    <Label htmlFor="location">{t('health.link.location')}</Label>
                     <select
                       id="location"
                       value={formData.location}
@@ -420,7 +421,7 @@ export default function Profile() {
                   </div>
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <Label htmlFor="age">Age</Label>
+                      <Label htmlFor="age">{t('health.link.age')}</Label>
                       <Input
                         id="age"
                         type="number"
@@ -431,7 +432,7 @@ export default function Profile() {
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="bmi">BMI</Label>
+                      <Label htmlFor="bmi">{t('profile.bmi')}</Label>
                       <Input
                         id="bmi"
                         type="number"
@@ -444,7 +445,7 @@ export default function Profile() {
                     </div>
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="medicalCondition">Medical Condition</Label>
+                    <Label htmlFor="medicalCondition">{t('profile.medicalCondition')}</Label>
                     <Textarea
                       id="medicalCondition"
                       value={formData.medicalCondition}
@@ -455,7 +456,7 @@ export default function Profile() {
                         })
                       }
                       rows={3}
-                      placeholder="e.g., Type 2 Diabetes, Hypertension"
+                      placeholder={t('profile.conditionPlaceholder')}
                     />
                   </div>
                 </div>
@@ -466,14 +467,14 @@ export default function Profile() {
                     className="flex-1"
                     disabled={saving}
                   >
-                    Cancel
+                    {t('common.cancel')}
                   </Button>
                   <Button
                     onClick={handleSaveProfile}
                     className="flex-1 bg-[#1f7a8c] hover:bg-[#1a6273]"
                     disabled={saving}
                   >
-                    {saving ? "Saving..." : "Save Changes"}
+                    {saving ? t('profile.saving') : t('profile.saveChanges')}
                   </Button>
                 </div>
               </DialogContent>
@@ -486,7 +487,7 @@ export default function Profile() {
                 <MapPin className="h-4 w-4 text-white" />
               </div>
               <div className="flex-1">
-                <p className="text-xs text-gray-600">Location</p>
+                <p className="text-xs text-gray-600">{t('health.link.location')}</p>
                 <p className="text-sm text-gray-800">{profile.location}</p>
               </div>
             </div>
@@ -497,8 +498,8 @@ export default function Profile() {
                   <Calendar className="h-4 w-4 text-white" />
                 </div>
                 <div className="flex-1">
-                  <p className="text-xs text-gray-600">Age</p>
-                  <p className="text-sm text-gray-800">{profile.age} years</p>
+                  <p className="text-xs text-gray-600">{t('health.link.age')}</p>
+                  <p className="text-sm text-gray-800">{profile.age} {t('profile.years')}</p>
                 </div>
               </div>
 
@@ -507,7 +508,7 @@ export default function Profile() {
                   <Scale className="h-4 w-4 text-white" />
                 </div>
                 <div className="flex-1">
-                  <p className="text-xs text-gray-600">Weight</p>
+                  <p className="text-xs text-gray-600">{t('profile.weight')}</p>
                   <p className="text-sm text-gray-800">~{estimatedWeight} kg</p>
                 </div>
               </div>
@@ -519,7 +520,7 @@ export default function Profile() {
                   <Ruler className="h-4 w-4 text-white" />
                 </div>
                 <div className="flex-1">
-                  <p className="text-xs text-gray-600">Height</p>
+                  <p className="text-xs text-gray-600">{t('profile.height')}</p>
                   <p className="text-sm text-gray-800">~{estimatedHeight} cm</p>
                 </div>
               </div>
@@ -529,7 +530,7 @@ export default function Profile() {
                   <Scale className="h-4 w-4 text-white" />
                 </div>
                 <div className="flex-1">
-                  <p className="text-xs text-gray-600">BMI</p>
+                  <p className="text-xs text-gray-600">{t('profile.bmi')}</p>
                   <p className="text-sm text-gray-800">{profile.bmi.toFixed(1)}</p>
                 </div>
               </div>
@@ -540,9 +541,9 @@ export default function Profile() {
                 <Stethoscope className="h-4 w-4 text-white" />
               </div>
               <div className="flex-1">
-                <p className="text-xs text-gray-600">Medical Condition</p>
+                <p className="text-xs text-gray-600">{t('profile.medicalCondition')}</p>
                 <p className="text-sm text-gray-800">
-                  {profile.medicalCondition || "None"}
+                  {profile.medicalCondition || t('profile.none')}
                 </p>
               </div>
             </div>
@@ -551,7 +552,7 @@ export default function Profile() {
 
         {/* Account Settings */}
         <div className="bg-white rounded-3xl shadow-lg p-6 mb-6">
-          <h3 className="text-lg text-gray-800 mb-4">Account Settings</h3>
+          <h3 className="text-lg text-gray-800 mb-4">{t('profile.accountSettings')}</h3>
 
           <div className="space-y-3">
             {/* Personalization Link */}
@@ -561,7 +562,7 @@ export default function Profile() {
             >
               <div className="flex items-center gap-3">
                 <Palette className="h-5 w-5 text-gray-600" />
-                <span className="text-sm text-gray-800">Personalization</span>
+                <span className="text-sm text-gray-800">{t('profile.personalization')}</span>
               </div>
               <ChevronRight className="h-5 w-5 text-gray-400" />
             </button>
@@ -573,7 +574,7 @@ export default function Profile() {
             >
               <div className="flex items-center gap-3">
                 <Trophy className="h-5 w-5 text-yellow-600" />
-                <span className="text-sm text-gray-800">Achievements & Badges</span>
+                <span className="text-sm text-gray-800">{t('profile.achievements')}</span>
               </div>
               <ChevronRight className="h-5 w-5 text-gray-400" />
             </button>
@@ -583,21 +584,21 @@ export default function Profile() {
                 <button className="w-full flex items-center justify-between p-3 hover:bg-gray-50 rounded-xl transition-colors">
                   <div className="flex items-center gap-3">
                     <User className="h-5 w-5 text-gray-600" />
-                    <span className="text-sm text-gray-800">Personal Information</span>
+                    <span className="text-sm text-gray-800">{t('profile.personalInfo')}</span>
                   </div>
                   <ChevronRight className="h-5 w-5 text-gray-400" />
                 </button>
               </DialogTrigger>
               <DialogContent>
                 <DialogHeader>
-                  <DialogTitle>Personal Information</DialogTitle>
+                  <DialogTitle>{t('profile.personalInfo')}</DialogTitle>
                   <DialogDescription>
-                    Update your name and contact details
+                    {t('profile.personalInfoDesc')}
                   </DialogDescription>
                 </DialogHeader>
                 <div className="space-y-4 py-4">
                   <div className="space-y-2">
-                    <Label htmlFor="pi-name">Full Name</Label>
+                    <Label htmlFor="pi-name">{t('auth.fullName')}</Label>
                     <Input
                       id="pi-name"
                       value={personalInfoForm.name}
@@ -607,7 +608,7 @@ export default function Profile() {
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="pi-email">Email Address</Label>
+                    <Label htmlFor="pi-email">{t('auth.email')}</Label>
                     <Input
                       id="pi-email"
                       type="email"
@@ -618,10 +619,10 @@ export default function Profile() {
                       disabled
                       className="bg-gray-100 cursor-not-allowed"
                     />
-                    <p className="text-xs text-gray-500">Email cannot be changed</p>
+                    <p className="text-xs text-gray-500">{t('profile.emailReadonly')}</p>
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="pi-phone">Phone Number (Optional)</Label>
+                    <Label htmlFor="pi-phone">{t('profile.phone')}</Label>
                     <Input
                       id="pi-phone"
                       type="tel"
@@ -640,14 +641,14 @@ export default function Profile() {
                     className="flex-1"
                     disabled={saving}
                   >
-                    Cancel
+                    {t('common.cancel')}
                   </Button>
                   <Button
                     onClick={handleSavePersonalInfo}
                     className="flex-1 bg-[#1f7a8c] hover:bg-[#1a6273]"
                     disabled={saving}
                   >
-                    {saving ? "Saving..." : "Save Changes"}
+                    {saving ? t('profile.saving') : t('profile.saveChanges')}
                   </Button>
                 </div>
               </DialogContent>
@@ -658,23 +659,23 @@ export default function Profile() {
                 <button className="w-full flex items-center justify-between p-3 hover:bg-gray-50 rounded-xl transition-colors">
                   <div className="flex items-center gap-3">
                     <Mail className="h-5 w-5 text-gray-600" />
-                    <span className="text-sm text-gray-800">Email Preferences</span>
+                    <span className="text-sm text-gray-800">{t('profile.emailPrefs')}</span>
                   </div>
                   <ChevronRight className="h-5 w-5 text-gray-400" />
                 </button>
               </DialogTrigger>
               <DialogContent>
                 <DialogHeader>
-                  <DialogTitle>Email Preferences</DialogTitle>
+                  <DialogTitle>{t('profile.emailPrefs')}</DialogTitle>
                   <DialogDescription>
-                    Choose which emails you'd like to receive
+                    {t('profile.emailPrefsDesc')}
                   </DialogDescription>
                 </DialogHeader>
                 <div className="space-y-4 py-4">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-sm font-medium text-gray-800">Weekly Recipes</p>
-                      <p className="text-xs text-gray-500">Get new recipe ideas every week</p>
+                      <p className="text-sm font-medium text-gray-800">{t('profile.weeklyRecipes')}</p>
+                      <p className="text-xs text-gray-500">{t('profile.weeklyRecipesDesc')}</p>
                     </div>
                     <Switch
                       checked={emailPrefsForm.weeklyRecipes}
@@ -685,8 +686,8 @@ export default function Profile() {
                   </div>
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-sm font-medium text-gray-800">Meal Reminders</p>
-                      <p className="text-xs text-gray-500">Helpful meal planning reminders</p>
+                      <p className="text-sm font-medium text-gray-800">{t('profile.mealReminders')}</p>
+                      <p className="text-xs text-gray-500">{t('profile.mealRemindersDesc')}</p>
                     </div>
                     <Switch
                       checked={emailPrefsForm.mealReminders}
@@ -697,8 +698,8 @@ export default function Profile() {
                   </div>
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-sm font-medium text-gray-800">Health Tips</p>
-                      <p className="text-xs text-gray-500">Personalized health advice</p>
+                      <p className="text-sm font-medium text-gray-800">{t('profile.healthTips')}</p>
+                      <p className="text-xs text-gray-500">{t('profile.healthTipsDesc')}</p>
                     </div>
                     <Switch
                       checked={emailPrefsForm.healthTips}
@@ -709,8 +710,8 @@ export default function Profile() {
                   </div>
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-sm font-medium text-gray-800">Product Updates</p>
-                      <p className="text-xs text-gray-500">News about new features</p>
+                      <p className="text-sm font-medium text-gray-800">{t('profile.productUpdates')}</p>
+                      <p className="text-xs text-gray-500">{t('profile.productUpdatesDesc')}</p>
                     </div>
                     <Switch
                       checked={emailPrefsForm.productUpdates}
@@ -726,13 +727,13 @@ export default function Profile() {
                     onClick={() => setEditingEmailPrefs(false)}
                     className="flex-1"
                   >
-                    Cancel
+                    {t('common.cancel')}
                   </Button>
                   <Button
                     onClick={handleSaveEmailPrefs}
                     className="flex-1 bg-[#1f7a8c] hover:bg-[#1a6273]"
                   >
-                    Save Preferences
+                    {t('profile.savePrefs')}
                   </Button>
                 </div>
               </DialogContent>
@@ -743,21 +744,21 @@ export default function Profile() {
                 <button className="w-full flex items-center justify-between p-3 hover:bg-gray-50 rounded-xl transition-colors">
                   <div className="flex items-center gap-3">
                     <Lock className="h-5 w-5 text-gray-600" />
-                    <span className="text-sm text-gray-800">Change Password</span>
+                    <span className="text-sm text-gray-800">{t('profile.changePassword')}</span>
                   </div>
                   <ChevronRight className="h-5 w-5 text-gray-400" />
                 </button>
               </DialogTrigger>
               <DialogContent>
                 <DialogHeader>
-                  <DialogTitle>Change Password</DialogTitle>
+                  <DialogTitle>{t('profile.changePassword')}</DialogTitle>
                   <DialogDescription>
-                    Enter your current password and choose a new one
+                    {t('profile.changePasswordDesc')}
                   </DialogDescription>
                 </DialogHeader>
                 <div className="space-y-4 py-4">
                   <div className="space-y-2">
-                    <Label htmlFor="current-password">Current Password</Label>
+                    <Label htmlFor="current-password">{t('profile.currentPassword')}</Label>
                     <Input
                       id="current-password"
                       type="password"
@@ -768,7 +769,7 @@ export default function Profile() {
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="new-password">New Password</Label>
+                    <Label htmlFor="new-password">{t('profile.newPassword')}</Label>
                     <Input
                       id="new-password"
                       type="password"
@@ -777,10 +778,10 @@ export default function Profile() {
                         setPasswordForm({ ...passwordForm, newPassword: e.target.value })
                       }
                     />
-                    <p className="text-xs text-gray-500">Minimum 8 characters</p>
+                    <p className="text-xs text-gray-500">{t('profile.min8')}</p>
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="confirm-password">Confirm New Password</Label>
+                    <Label htmlFor="confirm-password">{t('profile.confirmNewPassword')}</Label>
                     <Input
                       id="confirm-password"
                       type="password"
@@ -804,7 +805,7 @@ export default function Profile() {
                     }}
                     className="flex-1"
                   >
-                    Cancel
+                    {t('common.cancel')}
                   </Button>
                   <Button
                     onClick={handleChangePassword}
@@ -815,7 +816,7 @@ export default function Profile() {
                       !passwordForm.confirmPassword
                     }
                   >
-                    Change Password
+                    {t('profile.changePassword')}
                   </Button>
                 </div>
               </DialogContent>
@@ -825,16 +826,16 @@ export default function Profile() {
 
         {/* Notifications */}
         <div className="bg-white rounded-3xl shadow-lg p-6 mb-6">
-          <h3 className="text-lg text-gray-800 mb-4">Notifications</h3>
+          <h3 className="text-lg text-gray-800 mb-4">{t('profile.notifications')}</h3>
 
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <Bell className="h-5 w-5 text-gray-600" />
                 <div>
-                  <p className="text-sm text-gray-800">Push Notifications</p>
+                  <p className="text-sm text-gray-800">{t('profile.pushNotifications')}</p>
                   <p className="text-xs text-gray-500">
-                    Get meal reminders and health tips
+                    {t('profile.pushNotificationsDesc')}
                   </p>
                 </div>
               </div>
@@ -848,9 +849,9 @@ export default function Profile() {
               <div className="flex items-center gap-3">
                 <MapPin className="h-5 w-5 text-gray-600" />
                 <div>
-                  <p className="text-sm text-gray-800">Market Updates</p>
+                  <p className="text-sm text-gray-800">{t('profile.marketUpdates')}</p>
                   <p className="text-xs text-gray-500">
-                    Local food availability alerts
+                    {t('profile.marketUpdatesDesc')}
                   </p>
                 </div>
               </div>
@@ -861,11 +862,11 @@ export default function Profile() {
 
         {/* Support & Info */}
         <div className="bg-white rounded-3xl shadow-lg p-6 mb-6">
-          <h3 className="text-lg text-gray-800 mb-4">Support & Information</h3>
+          <h3 className="text-lg text-gray-800 mb-4">{t('profile.support')}</h3>
 
           <div className="space-y-3">
             <button className="w-full flex items-center justify-between p-3 hover:bg-gray-50 rounded-xl transition-colors">
-              <span className="text-sm text-gray-800">Help Center</span>
+              <span className="text-sm text-gray-800">{t('profile.helpCenter')}</span>
               <ChevronRight className="h-5 w-5 text-gray-400" />
             </button>
 
@@ -873,7 +874,7 @@ export default function Profile() {
               onClick={() => navigate("/privacy-policy")}
               className="w-full flex items-center justify-between p-3 hover:bg-gray-50 rounded-xl transition-colors"
             >
-              <span className="text-sm text-gray-800">Privacy Policy</span>
+              <span className="text-sm text-gray-800">{t('auth.privacy')}</span>
               <ChevronRight className="h-5 w-5 text-gray-400" />
             </button>
 
@@ -881,7 +882,7 @@ export default function Profile() {
               onClick={() => navigate("/terms-and-conditions")}
               className="w-full flex items-center justify-between p-3 hover:bg-gray-50 rounded-xl transition-colors"
             >
-              <span className="text-sm text-gray-800">Terms & Conditions</span>
+              <span className="text-sm text-gray-800">{t('auth.terms')}</span>
               <ChevronRight className="h-5 w-5 text-gray-400" />
             </button>
 
@@ -889,7 +890,7 @@ export default function Profile() {
               onClick={() => navigate("/about")}
               className="w-full flex items-center justify-between p-3 hover:bg-gray-50 rounded-xl transition-colors"
             >
-              <span className="text-sm text-gray-800">About MealOptimiza</span>
+              <span className="text-sm text-gray-800">{t('profile.about')}</span>
               <ChevronRight className="h-5 w-5 text-gray-400" />
             </button>
           </div>
@@ -901,7 +902,7 @@ export default function Profile() {
           className="w-full bg-white border-2 border-[#e63946] text-[#e63946] rounded-2xl py-4 shadow-md hover:bg-[#e63946] hover:text-white transition-colors flex items-center justify-center gap-3 mb-6"
         >
           <LogOut className="h-5 w-5" />
-          <span>Log Out</span>
+          <span>{t('profile.logout')}</span>
         </button>
 
         {/* App Version */}
