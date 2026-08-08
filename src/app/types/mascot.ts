@@ -1,15 +1,14 @@
-// Mascot ("Avo") gesture system — shared types + per-gesture motion config.
+// Mascot ("Avo") gesture system — shared types + per-gesture animation config.
 //
 // The app ships with a single mascot image (`/assets/mascot.png`) animated with
-// motion/react (Framer Motion). This file defines the gesture vocabulary and the
-// motion each gesture uses, so the whole app drives the mascot through one small,
-// typed API instead of ad-hoc CSS in every component.
+// plain CSS keyframes — the same dependency-free approach used by MascotLoader,
+// which is proven to work here. Each gesture maps to a CSS `animation` shorthand;
+// the keyframes themselves live in MASCOT_KEYFRAMES below and are injected once by
+// the Mascot component.
 //
 // LOTTIE-READY: if you later export real Lottie animations, add a JSON path per
-// gesture in `lottieSources` below and wire `lottie-react` inside Mascot.tsx —
-// the rest of the system (context, hook, triggers) needs no changes.
-
-import type { Transition, TargetAndTransition } from "motion/react";
+// gesture in `lottieSources` and wire `lottie-react` inside Mascot.tsx — the rest
+// of the system (context, hook, triggers) needs no changes.
 
 export type MascotGesture =
   | "idle"
@@ -21,10 +20,8 @@ export type MascotGesture =
   | "running";
 
 export interface GestureConfig {
-  /** motion/react `animate` target for the mascot image. */
-  animate: TargetAndTransition;
-  /** motion/react transition (timing/repeat) for the gesture. */
-  transition: Transition;
+  /** CSS `animation` shorthand applied to the mascot image for this gesture. */
+  css: string;
   /**
    * How the gesture behaves after it fires:
    *  - "persistent": stays until something changes it (idle, running, scratching, dancing)
@@ -33,62 +30,60 @@ export interface GestureConfig {
   hold: "persistent" | number;
 }
 
-const EASE_OUT = [0, 0, 0.2, 1] as const;
-
-// Per-gesture motion. Kept subtle and on-brand — the mascot reacts, it doesn't
-// distract. Every gesture is expressed purely as transform (no layout shift), so
-// it never disturbs surrounding content or `position: fixed` nav/FABs.
+// Per-gesture animation. Subtle but clearly visible; every gesture is transform-only
+// (no layout shift) so it never disturbs surrounding content or fixed nav/FABs.
 export const GESTURES: Record<MascotGesture, GestureConfig> = {
-  // Default: a gentle breathing sway with an occasional lean. Loops forever.
-  idle: {
-    animate: { rotate: [-2, 2, -2], y: [0, -2, 0] },
-    transition: { duration: 4, repeat: Infinity, ease: "easeInOut" },
-    hold: "persistent",
-  },
-
-  // Greeting: a friendly two-part wave, then settle back to idle.
-  waving: {
-    animate: { rotate: [0, -18, 12, -14, 10, 0] },
-    transition: { duration: 1.1, ease: EASE_OUT, times: [0, 0.2, 0.4, 0.6, 0.8, 1] },
-    hold: 1200,
-  },
-
-  // Error / confusion: a small nervous shake. Loops while the error is present.
-  scratching: {
-    animate: { x: [0, -3, 3, -3, 3, 0], rotate: [0, -3, 3, -2, 2, 0] },
-    transition: { duration: 0.9, repeat: Infinity, ease: "easeInOut" },
-    hold: "persistent",
-  },
-
-  // Small win (meal logged, goal saved): a quick approving pop.
-  thumbsup: {
-    animate: { scale: [1, 1.22, 0.96, 1.06, 1], rotate: [0, 6, -4, 2, 0] },
-    transition: { duration: 0.7, ease: EASE_OUT },
-    hold: 1000,
-  },
-
-  // Task finished / daily goal met: an excited celebratory clap-bounce.
-  clapping: {
-    animate: { scale: [1, 1.14, 1, 1.14, 1], y: [0, -6, 0, -6, 0] },
-    transition: { duration: 1, ease: "easeInOut" },
-    hold: 1600,
-  },
-
-  // Big celebration (streak milestone, reward): a happy dance. Loops during the
-  // celebration modal until dismissed.
-  dancing: {
-    animate: { rotate: [-10, 10, -10], x: [-4, 4, -4], y: [0, -6, 0] },
-    transition: { duration: 0.9, repeat: Infinity, ease: "easeInOut" },
-    hold: "persistent",
-  },
-
-  // Working / loading: an eager forward-leaning bob. Loops while busy.
-  running: {
-    animate: { y: [0, -8, 0], rotate: [-4, 2, -4] },
-    transition: { duration: 0.7, repeat: Infinity, ease: "easeInOut" },
-    hold: "persistent",
-  },
+  idle:       { css: "avoIdle 3.5s ease-in-out infinite",     hold: "persistent" },
+  waving:     { css: "avoWave 0.9s ease-in-out infinite",     hold: 1400 },
+  scratching: { css: "avoScratch 0.5s ease-in-out infinite",  hold: "persistent" },
+  thumbsup:   { css: "avoPop 0.6s ease-out infinite",         hold: 1000 },
+  clapping:   { css: "avoClap 0.5s ease-in-out infinite",     hold: 1600 },
+  dancing:    { css: "avoDance 0.8s ease-in-out infinite",    hold: "persistent" },
+  running:    { css: "avoRun 0.6s ease-in-out infinite",      hold: "persistent" },
 };
+
+// Keyframes for every gesture, plus a reduced-motion opt-out. Injected once.
+export const MASCOT_KEYFRAMES = `
+@keyframes avoIdle {
+  0%, 100% { transform: rotate(-2deg) translateY(0); }
+  50%      { transform: rotate(2deg) translateY(-3px); }
+}
+@keyframes avoWave {
+  0%, 100% { transform: rotate(0deg); }
+  15%      { transform: rotate(-18deg); }
+  30%      { transform: rotate(14deg); }
+  45%      { transform: rotate(-14deg); }
+  60%      { transform: rotate(10deg); }
+  75%      { transform: rotate(-6deg); }
+}
+@keyframes avoScratch {
+  0%, 100% { transform: translateX(0) rotate(0deg); }
+  25%      { transform: translateX(-3px) rotate(-4deg); }
+  75%      { transform: translateX(3px) rotate(4deg); }
+}
+@keyframes avoPop {
+  0%   { transform: scale(1) rotate(0deg); }
+  40%  { transform: scale(1.22) rotate(7deg); }
+  70%  { transform: scale(0.95) rotate(-3deg); }
+  100% { transform: scale(1) rotate(0deg); }
+}
+@keyframes avoClap {
+  0%, 100% { transform: scale(1) translateY(0); }
+  50%      { transform: scale(1.14) translateY(-7px); }
+}
+@keyframes avoDance {
+  0%   { transform: rotate(-11deg) translateX(-5px) translateY(0); }
+  50%  { transform: rotate(11deg) translateX(5px) translateY(-7px); }
+  100% { transform: rotate(-11deg) translateX(-5px) translateY(0); }
+}
+@keyframes avoRun {
+  0%, 100% { transform: translateY(0) rotate(-5deg); }
+  50%      { transform: translateY(-9px) rotate(3deg); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .avo-mascot { animation: none !important; }
+}
+`;
 
 // LOTTIE-READY seam. Fill these in (e.g. "/mascot/waving.json") once you have real
 // Lottie exports; Mascot.tsx will prefer a Lottie source when one is present.
