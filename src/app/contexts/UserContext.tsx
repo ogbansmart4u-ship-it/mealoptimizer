@@ -13,6 +13,8 @@ export type UserProfile = {
   email: string;
   name: string;
   age: number;
+  gender?: "male" | "female" | "other";
+  birthDate?: string; // "YYYY-MM-DD"
   bmi: number;
   weight?: string;
   medicalCondition: string;

@@ -1,12 +1,22 @@
 import { Calendar, ChevronLeft } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import OnboardingProgress from "../components/OnboardingProgress";
+import { useUser } from "../contexts/UserContext";
+import { updateUserProfile } from "../../lib/api";
 
 export default function Age() {
   const navigate = useNavigate();
+  const { profile, updateProfile } = useUser();
   const [birthDate, setBirthDate] = useState("1990-01-01");
   const [gender, setGender] = useState<"male" | "female" | "other">("female");
+  const [saving, setSaving] = useState(false);
+
+  // Prefill from the saved profile so returning users see their real data.
+  useEffect(() => {
+    if (profile?.birthDate) setBirthDate(profile.birthDate);
+    if (profile?.gender) setGender(profile.gender);
+  }, [profile?.birthDate, profile?.gender]);
 
   const calculateAge = () => {
     const today = new Date();
@@ -31,6 +41,29 @@ export default function Age() {
 
   const age = calculateAge();
   const lifeStage = getLifeStage(age);
+
+  const handleContinue = async () => {
+    setSaving(true);
+    // Update local context immediately (persists to localStorage, survives reload).
+    updateProfile({ age, gender, birthDate });
+    // Best-effort backend sync of the age biometric.
+    if (profile) {
+      try {
+        await updateUserProfile({
+          name: profile.name,
+          age,
+          bmi: profile.bmi,
+          medicalCondition: profile.medicalCondition,
+          location: profile.location,
+          profilePicture: profile.profilePicture,
+        });
+      } catch (e) {
+        console.warn("Age backend sync failed; kept locally", e);
+      }
+    }
+    setSaving(false);
+    navigate("/medications");
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#B8E5E5] to-[#E8F5F5] pb-8">
@@ -197,10 +230,11 @@ export default function Age() {
             Skip
           </button>
           <button
-            onClick={() => navigate("/medications")}
-            className="flex-1 bg-gradient-to-r from-[#1f7a8c] to-[#4ecdc4] text-white rounded-2xl py-4 shadow-lg hover:shadow-xl transition-all"
+            onClick={handleContinue}
+            disabled={saving}
+            className="flex-1 bg-gradient-to-r from-[#1f7a8c] to-[#4ecdc4] text-white rounded-2xl py-4 shadow-lg hover:shadow-xl transition-all disabled:opacity-60"
           >
-            Continue
+            {saving ? "Saving…" : "Continue"}
           </button>
         </div>
       </div>
