@@ -11,6 +11,7 @@ import { motion, useReducedMotion } from "motion/react";
 import { useAppMode } from "../contexts/AppModeContext";
 import { useLocation } from "../contexts/LocationContext";
 import { useUser } from "../contexts/UserContext";
+import { useLanguage } from "../contexts/LanguageContext";
 import ModeToggle from "../components/ModeToggle";
 import LocationSelector from "../components/LocationSelector";
 import ProfilePictureUpload from "../components/ProfilePictureUpload";
@@ -73,6 +74,7 @@ export default function Home() {
   const { selectedLocation, getRegionalKey } = useLocation();
   const { userName, profilePicture, profile } = useUser();
   const { mode } = useAppMode();
+  const { t } = useLanguage();
   const currentDate = new Date().toLocaleDateString("en-US", { 
     weekday: "long", 
     year: "numeric", 
@@ -458,13 +460,13 @@ export default function Home() {
     const currentHour = new Date().getHours();
 
     if (currentHour >= 5 && currentHour < 12) {
-      return "Good morning";
+      return t('home.goodMorning');
     } else if (currentHour >= 12 && currentHour < 17) {
-      return "Good afternoon";
+      return t('home.goodAfternoon');
     } else if (currentHour >= 17 && currentHour < 21) {
-      return "Good evening";
+      return t('home.goodEvening');
     } else {
-      return "Good night";
+      return t('home.goodNight');
     }
   };
 
@@ -716,7 +718,7 @@ export default function Home() {
           </div>
 
           <h3 className="text-center text-sm tracking-wider mb-4 text-gray-700">
-            TODAY'S CALORIES
+            {t('home.todaysCalories')}
           </h3>
           
           {/* Make gauge clickable for details */}
@@ -774,7 +776,7 @@ export default function Home() {
                 </div>
               ) : (
                 <div className="text-[10px] text-gray-600 tracking-widest uppercase mt-1">
-                  Daily Nutrition Optimization
+                  {t('home.dailyNutritionOpt')}
                 </div>
               )}
             </div>
@@ -920,13 +922,13 @@ export default function Home() {
             className="w-full bg-gradient-to-r from-[#1f7a8c] to-[#4ecdc4] text-white rounded-2xl py-3.5 flex items-center justify-center gap-2 hover:shadow-md active:scale-[0.98] transition-all font-semibold"
           >
             <span className="text-lg">🛒</span>
-            View Grocery List
+            {t('home.viewGroceryList')}
           </button>
         </div>
 
         {/* Analyser & Planner */}
         <div className="mb-6">
-          <h3 className="text-lg mb-3 text-gray-800">Analyser & Planner</h3>
+          <h3 className="text-lg mb-3 text-gray-800">{t('home.analyserPlanner')}</h3>
           <div className="grid grid-cols-2 gap-4">
             {/* Nigerian Food Guide Card */}
             <motion.button
@@ -941,7 +943,7 @@ export default function Home() {
                 <Sparkles className="h-8 w-8 text-white" />
               </div>
               <span className="text-sm text-teal-700 text-center uppercase tracking-wide font-semibold">
-                Nigerian<br />Food Guide
+                {t('home.foodGuide')}
               </span>
             </motion.button>
 
@@ -958,7 +960,7 @@ export default function Home() {
                 <Camera className="h-8 w-8 text-white" />
               </div>
               <span className="text-sm text-[#1f7a8c] text-center uppercase tracking-wide font-semibold">
-                Analyse<br />Food
+                {t('home.analyseFood')}
               </span>
             </motion.button>
 
@@ -976,7 +978,7 @@ export default function Home() {
                 <span className="text-3xl">🍽️</span>
               </div>
               <span className="text-sm text-[#1f7a8c] text-center uppercase tracking-wide font-semibold">
-                Plan My Meal
+                {t('home.planMyMeal')}
               </span>
             </motion.button>
           </div>
@@ -998,7 +1000,7 @@ export default function Home() {
                     <FlaskConical className="h-8 w-8 text-white" />
                   </div>
                   <div className="text-left">
-                    <h3 className="text-white font-bold text-xl">Your Custom Meal Plan</h3>
+                    <h3 className="text-white font-bold text-xl">{t('home.customMealPlan')}</h3>
                   </div>
                 </div>
                 <ChevronRight className="h-6 w-6 text-white group-hover:translate-x-1 transition-transform" />
@@ -1006,7 +1008,7 @@ export default function Home() {
 
               <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-4">
                 <p className="text-white/90 text-sm leading-relaxed">
-                  Small meals built around your goals and the foods you actually eat.
+                  {t('home.customMealPlanDesc')}
                 </p>
                 <div className="mt-3 flex flex-wrap gap-2">
                   <span className="px-3 py-1 bg-white/20 text-white text-xs rounded-full">Pre-Workout Snack</span>
@@ -1022,12 +1024,12 @@ export default function Home() {
         
         {/* Location & Market Sync */}
         <div className="mb-6">
-          <h3 className="text-lg mb-3 text-gray-800">Your Location</h3>
+          <h3 className="text-lg mb-3 text-gray-800">{t('home.yourLocation')}</h3>
           <LocationSelector />
           
           <div className="bg-white rounded-2xl shadow-md p-4 mt-3 mb-3">
             <p className="text-sm text-gray-800 mb-3">
-              <span className="text-gray-600">Today's Recommended Meal:</span> Savory Oat-Swallow
+              <span className="text-gray-600">{t('home.recommendedMeal')}</span> Savory Oat-Swallow
             </p>
           </div>
         </div>
@@ -1036,7 +1038,7 @@ export default function Home() {
         <div className="mb-6">
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-2">
-              <h3 className="text-lg text-gray-800">This Week's Meals</h3>
+              <h3 className="text-lg text-gray-800">{t('home.thisWeeksMeals')}</h3>
               <span className="flex items-center gap-1 px-2 py-0.5 bg-[#E8F5F5] text-[#1f7a8c] text-xs rounded-full">
                 {weekRangeLabel}
               </span>
@@ -1045,7 +1047,7 @@ export default function Home() {
               onClick={() => navigate("/logs")}
               className="text-sm text-[#1f7a8c] flex items-center gap-1 hover:underline"
             >
-              <span>View All</span>
+              <span>{t('home.viewAll')}</span>
               <ChevronRight className="h-4 w-4" />
             </button>
           </div>
@@ -1084,7 +1086,7 @@ export default function Home() {
               })}
             </div>
             <p className="text-xs text-gray-500 text-center mt-3">
-              Tap a day to view or add meals · 🍽️ = meals logged
+              {t('home.tapDayHint')}
             </p>
           </div>
         </div>
