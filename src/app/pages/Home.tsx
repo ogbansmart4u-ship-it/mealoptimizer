@@ -139,6 +139,7 @@ export default function Home() {
   }, []);
 
   // Load this account's real meal logs (used by the weekly Food Calendar).
+  const [weekLogs, setWeekLogs] = useState<any[]>([]);
   useEffect(() => {
     getMealLogs()
       .then((d) => setWeekLogs(Array.isArray(d) ? d : []))
@@ -244,7 +245,6 @@ export default function Home() {
   // New state for enhanced features
   const [selectedMeal, setSelectedMeal] = useState<MealMetadata | null>(null);
   const [showMealPrescription, setShowMealPrescription] = useState(false);
-  const [weekLogs, setWeekLogs] = useState<any[]>([]);
   const [showPostMealLog, setShowPostMealLog] = useState(false);
   const [hoveredDay, setHoveredDay] = useState<string | null>(null);
   const [postMealData, setPostMealData] = useState<PostMealLog>({
