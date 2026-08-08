@@ -12,6 +12,9 @@ import { useAppMode } from "../contexts/AppModeContext";
 import { useLocation } from "../contexts/LocationContext";
 import { useUser } from "../contexts/UserContext";
 import { useLanguage } from "../contexts/LanguageContext";
+import { useMascot } from "../hooks/useMascot";
+import Mascot from "../components/Mascot";
+import ActiveStreakCard from "../components/ActiveStreakCard";
 import ModeToggle from "../components/ModeToggle";
 import LocationSelector from "../components/LocationSelector";
 import ProfilePictureUpload from "../components/ProfilePictureUpload";
@@ -75,6 +78,13 @@ export default function Home() {
   const { userName, profilePicture, profile } = useUser();
   const { mode } = useAppMode();
   const { t } = useLanguage();
+  const mascot = useMascot();
+
+  // Greet the user with a wave when the dashboard loads (then Avo settles to idle).
+  useEffect(() => {
+    mascot.wave();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   const currentDate = new Date().toLocaleDateString("en-US", { 
     weekday: "long", 
     year: "numeric", 
@@ -586,6 +596,7 @@ export default function Home() {
     setQuickLogging(true);
     try {
       await createMealLog(newLog);
+      mascot.thumbsUp(); // Avo approves the logged meal
       celebrate(`${meal.name} logged! 🎉`, "Nice one — keep your streak going!");
       setShowQuickMealLog(false);
     } catch (e) {
@@ -695,18 +706,16 @@ export default function Home() {
         
         {/* Greeting */}
         <div className="flex items-center justify-center gap-3 mb-6">
-          <img
-            src="/assets/mascot.png"
-            alt=""
-            aria-hidden="true"
-            className="w-12 h-12 object-contain flex-shrink-0 drop-shadow-sm"
-          />
+          <Mascot size={48} className="flex-shrink-0" />
           <div className="text-left">
             <h2 className="text-2xl text-gray-800">{getTimeBasedGreeting()}, {userName}</h2>
             <p className="text-sm text-gray-600">{currentDate}</p>
           </div>
         </div>
-        
+
+        {/* Streak hero — shown once a logging streak is going (milestone motivation) */}
+        {trackingStreak >= 3 && <ActiveStreakCard streakDays={trackingStreak} />}
+
         {/* Daily Fuel Gauge - Enhanced */}
         <div className="bg-gradient-to-br from-white via-[#E8F5F5] to-[#B8E5E5] rounded-3xl shadow-lg p-6 mb-6">
           {/* Streak Counter */}

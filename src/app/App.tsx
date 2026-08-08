@@ -7,6 +7,7 @@ import { AuthProvider } from "./contexts/AuthContext";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import { UnitsProvider } from "./contexts/UnitsContext";
 import { LanguageProvider } from "./contexts/LanguageContext";
+import { MascotProvider } from "./contexts/MascotContext";
 import { DashboardProvider } from "./contexts/DashboardContext";
 import { AchievementProvider, useAchievements } from "./contexts/AchievementContext";
 import { Toaster } from "./components/ui/sonner";
@@ -42,6 +43,7 @@ export default function App() {
       <ThemeProvider>
         <UnitsProvider>
           <LanguageProvider>
+            <MascotProvider>
             <DashboardProvider>
               <AchievementProvider>
                 <AppModeProvider>
@@ -59,6 +61,7 @@ export default function App() {
                 </AppModeProvider>
               </AchievementProvider>
             </DashboardProvider>
+            </MascotProvider>
           </LanguageProvider>
         </UnitsProvider>
       </ThemeProvider>
