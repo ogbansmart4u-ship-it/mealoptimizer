@@ -29,6 +29,7 @@ import { projectId } from '/utils/supabase/info';
 import { getAccessToken } from '../../lib/supabase';
 import { createMealLog, getMealLogs } from "../../lib/api";
 import { toast } from "sonner";
+import { celebrate } from "../components/celebrate";
 
 const FOOD_API_URL = `https://${projectId}.supabase.co/functions/v1/make-server-ba6f1f45/ai/analyze-food`;
 
@@ -583,7 +584,7 @@ export default function Home() {
     setQuickLogging(true);
     try {
       await createMealLog(newLog);
-      toast.success(`${meal.name} logged!`);
+      celebrate(`${meal.name} logged! 🎉`, "Nice one — keep your streak going!");
       setShowQuickMealLog(false);
     } catch (e) {
       console.error("Failed to quick-log meal", e);
@@ -691,9 +692,17 @@ export default function Home() {
         </div>
         
         {/* Greeting */}
-        <div className="text-center mb-6">
-          <h2 className="text-2xl text-gray-800">{getTimeBasedGreeting()}, {userName}</h2>
-          <p className="text-sm text-gray-600">{currentDate}</p>
+        <div className="flex items-center justify-center gap-3 mb-6">
+          <img
+            src="/assets/mascot.png"
+            alt=""
+            aria-hidden="true"
+            className="w-12 h-12 object-contain flex-shrink-0 drop-shadow-sm"
+          />
+          <div className="text-left">
+            <h2 className="text-2xl text-gray-800">{getTimeBasedGreeting()}, {userName}</h2>
+            <p className="text-sm text-gray-600">{currentDate}</p>
+          </div>
         </div>
         
         {/* Daily Fuel Gauge - Enhanced */}

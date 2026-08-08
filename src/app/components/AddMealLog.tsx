@@ -15,6 +15,8 @@ import { toast } from 'sonner';
 import { useAutoSave, getAutoSavedData, clearAutoSavedData } from '../hooks/useAutoSave';
 import { VoiceInput } from './VoiceInput';
 import { TemplateManager } from './TemplateManager';
+import MealOptimizingLoader from './MealOptimizingLoader';
+import { celebrate } from './celebrate';
 
 type MealType = 'breakfast' | 'lunch' | 'dinner' | 'snack';
 
@@ -250,7 +252,7 @@ export default function AddMealLog({ isOpen, onClose, onSave, selectedDate }: Ad
     // Clear the auto-saved draft
     clearAutoSavedData('meal-log-draft');
 
-    toast.success('Meal logged successfully!');
+    celebrate('Meal logged! 🎉', 'Great job tracking your nutrition.');
     handleClose();
   };
 
@@ -479,10 +481,10 @@ export default function AddMealLog({ isOpen, onClose, onSave, selectedDate }: Ad
               <div className="space-y-4 mt-6">
                 {/* AI analysis in progress */}
                 {analyzing && (
-                  <div className="flex items-center gap-2 rounded-xl bg-[#E8F5F5] p-3 text-sm text-[#1f7a8c]">
-                    <Loader2 className="h-4 w-4 animate-spin" />
-                    Analyzing your food photo…
-                  </div>
+                  <MealOptimizingLoader
+                    message="Analyzing your food photo..."
+                    subMessage="Identifying the meal and estimating calories & macros..."
+                  />
                 )}
                 {/* Template Manager */}
                 <div className="pb-3 border-b">

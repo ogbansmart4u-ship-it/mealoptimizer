@@ -50,8 +50,12 @@ export function CelebrationAnimation({ onComplete, message = 'Goal Achieved!' }:
 
         {/* Center content */}
         <div className="bg-white rounded-3xl p-12 shadow-2xl text-center animate-bounce">
-          <div className="mb-6 relative">
-            <Trophy className="h-24 w-24 text-yellow-500 mx-auto animate-pulse" />
+          <div className="mb-6 relative inline-block">
+            <img
+              src="/assets/mascot.png"
+              alt="MealOptimiza mascot celebrating"
+              className="h-28 w-28 object-contain mx-auto drop-shadow-md"
+            />
             <div className="absolute -top-2 -right-2">
               <Sparkles className="h-8 w-8 text-yellow-400 animate-spin" />
             </div>

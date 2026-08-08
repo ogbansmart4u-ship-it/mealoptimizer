@@ -99,6 +99,14 @@ export default function StreakCard() {
           ))}
         </div>
       </div>
+      {loaded && current > 0 && (
+        <img
+          src="/assets/mascot.png"
+          alt=""
+          aria-hidden="true"
+          className="w-14 h-14 object-contain flex-shrink-0 self-center drop-shadow-sm"
+        />
+      )}
     </div>
   );
 }

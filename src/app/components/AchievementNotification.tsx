@@ -33,12 +33,15 @@ export function AchievementNotification({ achievement, onDismiss }: AchievementN
           borderColor: achievement.color,
         }}
       >
-        {/* Sparkle effects */}
+        {/* Mascot accent + sparkle */}
+        <img
+          src="/assets/mascot.png"
+          alt=""
+          aria-hidden="true"
+          className="absolute -bottom-1 right-1 w-12 h-12 object-contain opacity-90 pointer-events-none drop-shadow-sm"
+        />
         <div className="absolute top-2 left-2 animate-pulse">
           <Sparkles className="h-4 w-4" style={{ color: achievement.color }} />
-        </div>
-        <div className="absolute bottom-2 right-2 animate-pulse delay-75">
-          <Sparkles className="h-3 w-3" style={{ color: achievement.color }} />
         </div>
 
         {/* Close button */}
