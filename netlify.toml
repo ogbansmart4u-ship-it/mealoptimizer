@@ -6,3 +6,16 @@
   from = "/*"
   to = "/index.html"
   status = 200
+
+# Never cache the HTML app shell, so a refresh always fetches an index.html that
+# points at the current build's hashed chunks (prevents blank page after deploy).
+[[headers]]
+  for = "/*"
+  [headers.values]
+    Cache-Control = "no-store, max-age=0, must-revalidate"
+
+# Hashed build assets are content-addressed and safe to cache forever.
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"

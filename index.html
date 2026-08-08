@@ -46,6 +46,49 @@
     <meta name="twitter:image" content="/favicon.svg" />
 
     <style>html, body { height: 100%; margin: 0; } #root { height: 100%; }</style>
+
+    <!--
+      Stale-shell recovery. If the entry bundle (a hashed /assets/*.js or *.css)
+      fails to load — which happens when a cached index.html points at chunks from
+      an OLDER deploy — the page would otherwise stay permanently blank on refresh.
+      This capture-phase listener (resource load errors do not bubble) detects that
+      failure, clears any service worker + caches, and reloads ONCE to fetch the
+      current build. Registered in <head> so it is active before the entry loads.
+    -->
+    <script>
+      (function () {
+        var RELOAD_KEY = "__mo_chunk_reload_at";
+        function recover() {
+          var last = 0;
+          try { last = Number(sessionStorage.getItem(RELOAD_KEY) || 0); } catch (e) {}
+          if (Date.now() - last < 20000) return; // already tried within the last 20s
+          try { sessionStorage.setItem(RELOAD_KEY, String(Date.now())); } catch (e) {}
+          var done = function () { location.reload(); };
+          try {
+            var jobs = [];
+            if ("serviceWorker" in navigator) {
+              jobs.push(navigator.serviceWorker.getRegistrations().then(function (rs) {
+                return Promise.all(rs.map(function (r) { return r.unregister(); }));
+              }).catch(function () {}));
+            }
+            if (window.caches && caches.keys) {
+              jobs.push(caches.keys().then(function (ks) {
+                return Promise.all(ks.map(function (k) { return caches.delete(k); }));
+              }).catch(function () {}));
+            }
+            Promise.all(jobs).then(done, done);
+          } catch (e) { done(); }
+        }
+        window.addEventListener("error", function (e) {
+          var t = e && e.target;
+          if (!t) return;
+          var url = (t.src || t.href || "");
+          if ((t.tagName === "SCRIPT" || t.tagName === "LINK") && url.indexOf("/assets/") !== -1) {
+            recover();
+          }
+        }, true);
+      })();
+    </script>
   </head>
 
   <body>
