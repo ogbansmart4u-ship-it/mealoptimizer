@@ -49,11 +49,14 @@ export default function Logs() {
       .finally(() => setLogsLoading(false));
   }, []);
 
-  // Auto-open the Add Meal dialog when arriving from Home's "Custom Entry".
+  // Honor navigation state from Home: preselect a date and/or open Add Meal.
   useEffect(() => {
-    if ((location.state as { openAdd?: boolean } | null)?.openAdd) {
-      setShowAddMeal(true);
-      // Clear the flag so it doesn't reopen on back/refresh
+    const st = location.state as { openAdd?: boolean; date?: string } | null;
+    if (!st) return;
+    if (st.date) setSelectedDate(new Date(`${st.date}T12:00:00Z`));
+    if (st.openAdd) setShowAddMeal(true);
+    if (st.date || st.openAdd) {
+      // Clear the flag so it doesn't re-fire on back/refresh
       window.history.replaceState({}, document.title);
     }
   }, [location.state]);

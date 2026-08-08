@@ -27,7 +27,7 @@ import logoImage from "figma:asset/efbe2a1ac833b032474ac203bb52c6fe4e93cfbb.png"
 import { initializeSampleData } from "../../utils/sampleData";
 import { projectId } from '/utils/supabase/info';
 import { getAccessToken } from '../../lib/supabase';
-import { createMealLog } from "../../lib/api";
+import { createMealLog, getMealLogs } from "../../lib/api";
 import { toast } from "sonner";
 
 const FOOD_API_URL = `https://${projectId}.supabase.co/functions/v1/make-server-ba6f1f45/ai/analyze-food`;
@@ -138,6 +138,39 @@ export default function Home() {
     initializeSampleData();
   }, []);
 
+  // Load this account's real meal logs (used by the weekly Food Calendar).
+  useEffect(() => {
+    getMealLogs()
+      .then((d) => setWeekLogs(Array.isArray(d) ? d : []))
+      .catch((e) => { console.error('Failed to load meal logs', e); setWeekLogs([]); });
+  }, []);
+
+  // The 7 days of the current week (Mon–Sun), keyed in UTC to match how logs
+  // store their `date` (new Date().toISOString().split('T')[0]).
+  const todayKey = new Date().toISOString().split('T')[0];
+  const weekBase = new Date(`${todayKey}T12:00:00Z`);
+  const weekMondayOffset = (weekBase.getUTCDay() + 6) % 7; // Mon=0 … Sun=6
+  const weekDayLabels = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+  const weekDays = Array.from({ length: 7 }, (_, i) => {
+    const d = new Date(weekBase);
+    d.setUTCDate(weekBase.getUTCDate() - weekMondayOffset + i);
+    const key = d.toISOString().split('T')[0];
+    const dayLogs = weekLogs.filter((l) => l?.date === key);
+    return {
+      key,
+      label: weekDayLabels[i],
+      dateNum: d.getUTCDate(),
+      isToday: key === todayKey,
+      count: dayLogs.length,
+      calories: dayLogs.reduce((s, l) => s + (Number(l?.calories) || 0), 0),
+    };
+  });
+  const weekRangeLabel = (() => {
+    const first = weekDays[0], last = weekDays[6];
+    const mk = (key: string) => new Date(`${key}T12:00:00Z`).toLocaleDateString('en-US', { month: 'short', day: 'numeric', timeZone: 'UTC' });
+    return `${mk(first.key)} – ${mk(last.key)}`;
+  })();
+
   // Nutritional tracking data (mock data - would come from backend/state management in production)
   const caloriesConsumed = 1450;
   const caloriesTarget = 2000;
@@ -211,6 +244,7 @@ export default function Home() {
   // New state for enhanced features
   const [selectedMeal, setSelectedMeal] = useState<MealMetadata | null>(null);
   const [showMealPrescription, setShowMealPrescription] = useState(false);
+  const [weekLogs, setWeekLogs] = useState<any[]>([]);
   const [showPostMealLog, setShowPostMealLog] = useState(false);
   const [hoveredDay, setHoveredDay] = useState<string | null>(null);
   const [postMealData, setPostMealData] = useState<PostMealLog>({
@@ -993,52 +1027,56 @@ export default function Home() {
         <div className="mb-6">
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-2">
-              <h3 className="text-lg text-gray-800">Food Calendar</h3>
-              <span className="flex items-center gap-1 px-2 py-0.5 bg-green-100 text-green-700 text-xs rounded-full">
-                <span className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></span>
-                Auto-updates daily
+              <h3 className="text-lg text-gray-800">This Week's Meals</h3>
+              <span className="flex items-center gap-1 px-2 py-0.5 bg-[#E8F5F5] text-[#1f7a8c] text-xs rounded-full">
+                {weekRangeLabel}
               </span>
             </div>
-            <button className="text-sm text-[#1f7a8c] flex items-center gap-1 hover:underline">
+            <button
+              onClick={() => navigate("/logs")}
+              className="text-sm text-[#1f7a8c] flex items-center gap-1 hover:underline"
+            >
               <span>View All</span>
               <ChevronRight className="h-4 w-4" />
             </button>
           </div>
           <div className="bg-gradient-to-br from-white via-[#FFF9F5] to-[#FFE5D9] rounded-3xl shadow-lg p-5">
             <div className="grid grid-cols-7 gap-1">
-              {nutritionBlueprintCalendar.map((day, index) => {
-                const isToday = index === currentDayIndex; // Dynamically determine today
+              {weekDays.map((day) => {
+                const logged = day.count > 0;
                 return (
                   <button
-                    key={day.day}
-                    className={`flex flex-col items-center py-3 px-1 rounded-xl transition-all ${
-                      isToday
+                    key={day.key}
+                    onClick={() => navigate("/logs", { state: { date: day.key } })}
+                    title={logged ? `${day.count} meal${day.count > 1 ? 's' : ''} · ${day.calories} kcal` : 'No meals logged'}
+                    className={`flex flex-col items-center py-3 px-1 rounded-xl transition-all hover:scale-105 ${
+                      day.isToday
                         ? "bg-[#1f7a8c] text-white scale-105 shadow-md"
-                        : `${day.color} hover:scale-105`
+                        : logged
+                        ? "bg-green-100"
+                        : "bg-gray-50"
                     }`}
-                    onMouseEnter={() => setHoveredDay(day.dayFull)}
-                    onMouseLeave={() => setHoveredDay(null)}
-                    onClick={() => {
-                      setSelectedMeal(day);
-                      setShowMealPrescription(true);
-                    }}
                   >
-                    <span className={`text-xs mb-2 ${isToday ? "text-white" : "text-gray-600"}`}>
-                      {day.day}
+                    <span className={`text-xs mb-2 ${day.isToday ? "text-white" : "text-gray-600"}`}>
+                      {day.label}
                     </span>
-                    <span className="text-2xl mb-1">{day.meal}</span>
-                    {isToday && (
-                      <div className="w-1.5 h-1.5 bg-white rounded-full mt-1"></div>
+                    <span className="text-2xl mb-1 leading-none">{logged ? "🍽️" : "·"}</span>
+                    {logged ? (
+                      <span className={`text-[10px] leading-none ${day.isToday ? "text-white" : "text-gray-600"}`}>
+                        {day.count}
+                      </span>
+                    ) : (
+                      <span className={`text-[10px] leading-none ${day.isToday ? "text-white/80" : "text-gray-400"}`}>
+                        {day.dateNum}
+                      </span>
                     )}
                   </button>
                 );
               })}
             </div>
-            {hoveredDay && (
-              <div className="absolute bottom-0 left-0 right-0 bg-white/90 text-gray-700 text-sm p-2 text-center">
-                {hoveredDay}
-              </div>
-            )}
+            <p className="text-xs text-gray-500 text-center mt-3">
+              Tap a day to view or add meals · 🍽️ = meals logged
+            </p>
           </div>
         </div>
 
