@@ -14,7 +14,6 @@ import { useUser } from "../contexts/UserContext";
 import { useLanguage } from "../contexts/LanguageContext";
 import { useMascot } from "../hooks/useMascot";
 import Mascot from "../components/Mascot";
-import ActiveStreakCard from "../components/ActiveStreakCard";
 import ModeToggle from "../components/ModeToggle";
 import LocationSelector from "../components/LocationSelector";
 import ProfilePictureUpload from "../components/ProfilePictureUpload";
@@ -757,9 +756,6 @@ export default function Home() {
             <p className="text-sm text-gray-600">{currentDate}</p>
           </div>
         </div>
-
-        {/* Streak hero — shown once a logging streak is going (milestone motivation) */}
-        {trackingStreak >= 3 && <ActiveStreakCard streakDays={trackingStreak} />}
 
         {/* Daily Fuel Gauge - Enhanced */}
         <div className="bg-gradient-to-br from-white via-[#E8F5F5] to-[#B8E5E5] rounded-3xl shadow-lg p-6 mb-6">
