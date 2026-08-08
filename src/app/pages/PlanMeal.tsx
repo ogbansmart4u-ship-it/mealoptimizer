@@ -5,6 +5,7 @@ import { generateSingleMeal, updateUserProfile } from "../../lib/api";
 import { toast } from "sonner";
 import PageHeader from "../components/PageHeader";
 import TutorialTooltip from "../components/TutorialTooltip";
+import MealOptimizingLoader from "../components/MealOptimizingLoader";
 import {
   Coffee,
   Sun,
@@ -389,6 +390,14 @@ export default function PlanMeal() {
             We'll tailor the meal to affordable, in-season Nigerian market ingredients within your budget.
           </p>
         </div>
+
+        {/* Mascot loader while the plan is being generated */}
+        {isGenerating && (
+          <MealOptimizingLoader
+            message="Optimizing your meal..."
+            subMessage="Tailoring local, in-season ingredients to your goals and budget..."
+          />
+        )}
 
         {/* Generate Button */}
         <button

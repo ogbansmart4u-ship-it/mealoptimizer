@@ -8,6 +8,7 @@ import ProfilePictureUpload from "../components/ProfilePictureUpload";
 import AddMealLog from "../components/AddMealLog";
 import { BulkActionsBar } from "../components/BulkActionsBar";
 import { SkeletonList } from "../components/SkeletonLoader";
+import MascotEmptyState from "../components/MascotEmptyState";
 import { getMealLogs, createMealLog, deleteMealLog } from "../../lib/api";
 
 type MealType = "breakfast" | "lunch" | "dinner" | "snack";
@@ -275,18 +276,19 @@ export default function Logs() {
           {logsLoading ? (
             <SkeletonList count={3} />
           ) : filteredLogs.length === 0 ? (
-            <div className="bg-white rounded-3xl shadow-lg p-12 text-center">
-              <Camera className="h-16 w-16 text-gray-300 mx-auto mb-4" />
-              <h3 className="text-gray-800 mb-2">No Meals Logged</h3>
-              <p className="text-sm text-gray-600 mb-4">
-                Start tracking your meals to see your nutrition data
-              </p>
-              <button
-                onClick={() => setShowAddMeal(true)}
-                className="bg-gradient-to-r from-[#1f7a8c] to-[#4ecdc4] text-white rounded-2xl px-6 py-3 shadow-lg hover:shadow-xl transition-all"
-              >
-                Log First Meal
-              </button>
+            <div className="bg-white rounded-3xl shadow-lg p-8">
+              <MascotEmptyState
+                title="No Meals Logged"
+                subtitle="Start tracking your meals to see your nutrition data"
+                action={
+                  <button
+                    onClick={() => setShowAddMeal(true)}
+                    className="bg-gradient-to-r from-[#1f7a8c] to-[#4ecdc4] text-white rounded-2xl px-6 py-3 shadow-lg hover:shadow-xl transition-all"
+                  >
+                    Log First Meal
+                  </button>
+                }
+              />
             </div>
           ) : (
             filteredLogs.map((log) => {
