@@ -4,7 +4,32 @@ A nutrition & health app for Nigerians / West Africans managing medical conditio
 
 Paste this into a new chat to continue development. It captures where the app stands and what's left to reach a professional standard.
 
-_Last updated: 6 Aug 2026 — after Medical Vault, metadata/PWA, biometrics rewrite, bundle code-splitting, and the West African foods database. Live edge version: **57**._
+_Last updated: 8 Aug 2026 — after the mascot ("Avo") system, real Food Calendar, quick-log & camera-analysis fixes. Frontend-only session; live edge version unchanged: **59**._
+
+---
+
+## 0. Session log — 8 Aug 2026
+
+Frontend-only (no edge-function changes). Everything below committed & pushed to `main`, deployed on Vercel.
+
+### Brand mascot "Avo"
+- Final asset: `public/assets/mascot.png` (404×550, real transparency, tight crop). Cleaned from an uploaded PNG that had a checkerboard baked in + a 1px dark edge line (removed via edge flood-fill + auto-crop). **Delete the two dead files** `public/assets/mascot-running.png` and `public/assets/mascot-avo.png` (OneDrive blocked overwrite; only `mascot.png` is referenced).
+- New components (Vite `<img>`, not next/image): `MealOptimizingLoader.tsx`, `MascotEmptyState.tsx`, `MascotLoader.tsx`, `celebrate.tsx`.
+- Empty states (MascotEmptyState): Logs, MedicationTracker, Reminders, MyMealPlans, GroceryList, Medications, Achievements, Recipe, GlucoseInsights. (BiometricDashboard skipped — dark mode.)
+- Loading states (MascotLoader): MyMealPlans, MealPlanView, ScanBarcode, MedicalVault (docs + biomarkers). Also MealOptimizingLoader on PlanMeal (generating) and AddMealLog (analyzing). Auth screens left on plain spinners.
+- Placements: Home greeting, StreakCard (streak>0 only), CelebrationAnimation (goal complete), AchievementNotification, meal-logged celebrate() toast, Home water card + HydrationTracker goal-reached.
+
+### Feature fixes
+- **Food Calendar → real weekly logs.** Was a static "nutrition blueprint" with a misleading "Auto-updates daily" badge. Now "This Week's Meals": live Mon–Sun strip from `getMealLogs` (UTC-keyed), 🍽️+count per logged day, today highlighted, week-range badge, tiles → `/logs?date`. "View All" (was dead) → `/logs`. Old `nutritionBlueprintCalendar` + prescription/post-meal dialogs are now dead code in `Home.tsx` (removable). Uses meal *logs* (dated), not meal *plans* (no day assignment).
+- **Quick Log Meal (Home)** was decorative; presets + Custom Entry had no handlers. Presets now log real meals via `createMealLog`; Custom Entry → `/logs` with `{state:{openAdd:true}}`; `quickLogging` guard added.
+- **Camera "Analyze Food"** was a hardcoded mock; now calls real `analyzeFoodImage` (`/ai/analyze-food`) with profile+location context, prefills from `data.analysis`, mascot loader while analyzing, manual fallback on error.
+- **Logs navigation state:** honors `location.state.date` (preselect) and `.openAdd` (auto-open Add Meal).
+- Loading skeletons added earlier this session to MedicationTracker, Logs, Reminders (SkeletonRows/List).
+
+### Cautions
+- Sandbox can't finish `npm install`; changes verified by esbuild **parse** only (misses runtime bugs). A TDZ crash shipped once (`weekLogs` used before declaration in `Home.tsx`) — fixed. **Get a real build/CI check before pushing.**
+- `git` "lock file already exists" → delete `.git/index.lock` via File Explorer, retry.
+- Stale-chunk blank page after deploy = CDN cache; hard-refresh / `?cb=`. Consider `index.html` cache headers in `vercel.json`.
 
 ---
 

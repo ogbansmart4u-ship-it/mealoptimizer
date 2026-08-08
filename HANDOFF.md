@@ -1,6 +1,36 @@
 # MealOptimizer — Handoff & Continuation Sheet
 
-_Last updated: 7 Aug 2026. Paste this into a new chat to continue development from where we stopped. A living, more granular version also lives in `PROJECT_STATUS.md` in the repo._
+_Last updated: 8 Aug 2026. Paste this into a new chat to continue development from where we stopped. A living, more granular version also lives in `PROJECT_STATUS.md` in the repo._
+
+---
+
+## 0. Session update — 8 Aug 2026 (mascot system, real Food Calendar, quick-log & food-analysis fixes)
+
+Frontend-only session (no edge-function changes; live edge version still **59**). All work committed & pushed to `main` → deployed on Vercel.
+
+### Brand mascot "Avo" — introduced app-wide
+- **Asset:** `public/assets/mascot.png` — the final, cleaned, truly-transparent, tightly-cropped mascot (404×550). The uploaded original had a checkerboard baked in as real pixels + a 1px dark edge line; both were removed programmatically (edge flood-fill + auto-crop). **Two dead files remain in `public/assets/` and should be deleted** (OneDrive blocked overwrite): `mascot-running.png` (baked checkerboard) and `mascot-avo.png` (had the stray line). Only `mascot.png` is referenced.
+- **New reusable components** (all use a plain `<img src="/assets/mascot.png">`, NOT next/image — the app is Vite, not Next):
+  - `src/app/components/MealOptimizingLoader.tsx` — big block loader (mascot + message + progress bar). Used on PlanMeal (meal generating) and AddMealLog (food-photo analysis).
+  - `src/app/components/MascotEmptyState.tsx` — friendly empty-state block (title/subtitle/action props).
+  - `src/app/components/MascotLoader.tsx` — compact bobbing-mascot loader for popups/loading screens.
+  - `src/app/components/celebrate.tsx` — `celebrate(message, sub?)` mascot-branded sonner toast for success moments.
+- **Empty states using MascotEmptyState (9):** Logs, MedicationTracker, Reminders, MyMealPlans, GroceryList (wrapped in white card for contrast), Medications, Achievements, Recipe, GlucoseInsights. _(BiometricDashboard skipped — it has dark-mode theming the component doesn't handle.)_
+- **Loading states using MascotLoader:** MyMealPlans, MealPlanView, ScanBarcode, MedicalVault (docs + biomarkers). _(Auth screens intentionally left on plain spinners.)_
+- **Strategic placements:** Home greeting header (small Avo beside "Good morning, {name}"); StreakCard (Avo shows only when streak > 0); CelebrationAnimation (goal completed — Avo replaces the trophy); AchievementNotification (Avo accent); meal-logged celebration toast (Home quick-log + AddMealLog); Home water card + HydrationTracker (Avo appears when the daily water goal is reached).
+
+### Feature fixes this session
+- **Food Calendar → real data.** The Home "Food Calendar" was a static hardcoded 7-day "nutrition blueprint" (with a misleading "Auto-updates daily" badge). Rebuilt as **"This Week's Meals"**: a live Mon–Sun strip from the user's real meal logs (`getMealLogs`, UTC-keyed to match how logs store `date`), tiles show 🍽️ + count when a day has logs, tapping a day navigates to `/logs` with that date preselected, badge now shows the real week range. "View All" (previously a dead button) now opens `/logs`. **Note:** the old `nutritionBlueprintCalendar` array + Meal Prescription / Post-Meal dialogs are now unreferenced dead code in `Home.tsx` (harmless; can be removed later). Chosen source is meal *logs* (dated) not meal *plans* (plans carry only a `createdAt`, no day assignment).
+- **Quick Log Meal (Home) was decorative — now works.** The preset meal buttons and "Custom Entry" had no onClick. Presets now log a real meal via `createMealLog` (with macros + glycemic impact) and toast; "Custom Entry" navigates to `/logs` with `{ state: { openAdd: true } }` and Logs auto-opens the Add Meal dialog. Added a `quickLogging` guard against double-submits.
+- **Camera "Analyze Food" was a mock** (always returned "Jollof Rice with Chicken"). Now calls the real `analyzeFoodImage` (`/ai/analyze-food`, same Gemini endpoint Home uses) with the user's profile + location context, prefills the form from `data.analysis`, shows the mascot loader while analyzing, and falls back to manual entry on error.
+- **Logs date/open-dialog navigation:** `Logs.tsx` now honors `location.state.date` (preselect day) and `location.state.openAdd` (auto-open Add Meal), used by the calendar tiles and quick-log Custom Entry.
+
+### Known cautions added this session
+- **Verification gap:** the assistant's sandbox can't finish `npm install`, so changes are validated with an esbuild **parse** check only — this catches syntax errors but NOT runtime issues. One such bug shipped and broke production: a temporal-dead-zone crash ("Cannot access 'as' before initialization") from using `weekLogs` before its declaration in `Home.tsx`; fixed by moving the declaration up. **Recommend getting a real `npm run build` (or a Vercel build check) working before pushing.**
+- **Recurring `git`/OneDrive lock:** committing sometimes fails with "A lock file already exists" — delete `.git/index.lock` via File Explorer (paste the `.git` path in the address bar) then retry. The sandbox cannot delete it (OneDrive permissions).
+- **Stale-chunk on deploy:** blank/old page right after a deploy is CDN cache — hard-refresh (`Ctrl+Shift+R`) or `?cb=`. Worth adding cache-control headers on `index.html` in `vercel.json` to stop this recurring.
+
+---
 
 MealOptimizer is a nutrition & health app for Nigerians / West Africans managing medical conditions (diabetes, hypertension, etc.): personalized meal plans, AI food-photo analysis, a curated West African food database, and a wellness suite (weight, hydration, sleep, symptoms, workouts, medications, reminders, goals, meal logs, achievements, biometrics, a secure Medical Vault, glucose insights, and a doctor report).
 
