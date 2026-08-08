@@ -286,7 +286,16 @@ export default function HydrationTracker() {
 
             {/* Center content */}
             <div className="absolute inset-0 flex flex-col items-center justify-center">
-              <Droplet className="h-12 w-12 text-cyan-500 mb-2" />
+              {progressPercentage >= 100 ? (
+                <img
+                  src="/assets/mascot.png"
+                  alt="Hydration goal reached!"
+                  className="h-16 w-16 object-contain mb-1 drop-shadow-sm"
+                  title="You hit your hydration goal!"
+                />
+              ) : (
+                <Droplet className="h-12 w-12 text-cyan-500 mb-2" />
+              )}
               <div className="text-4xl font-bold text-gray-800">
                 {hydrationData.totalIntake}
               </div>

@@ -4,6 +4,7 @@ import { Camera, Info, Clock, Trash2 } from 'lucide-react';
 import { projectId } from '/utils/supabase/info';
 import CameraCapture from '../components/CameraCapture';
 import PageHeader from '../components/PageHeader';
+import MascotLoader from '../components/MascotLoader';
 import { getAccessToken } from '../../lib/supabase';
 
 interface ScanHistoryItem {
@@ -232,9 +233,8 @@ export default function ScanBarcode() {
 
         {/* Loading State */}
         {loading && (
-          <div className="bg-white rounded-2xl p-8 shadow-lg text-center">
-            <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-[#1f7a8c] mx-auto mb-4"></div>
-            <p className="text-gray-600">Analyzing barcode...</p>
+          <div className="bg-white rounded-2xl p-8 shadow-lg">
+            <MascotLoader label="Analyzing barcode..." size={84} />
           </div>
         )}
 

@@ -23,6 +23,7 @@ import {
 } from "lucide-react";
 import PageHeader from "../components/PageHeader";
 import BottomNav from "../components/BottomNav";
+import MascotLoader from "../components/MascotLoader";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
@@ -272,9 +273,7 @@ export default function MedicalVault() {
           </div>
 
           {docsLoading ? (
-            <div className="py-8 flex items-center justify-center text-gray-400">
-              <Loader2 className="h-6 w-6 animate-spin" />
-            </div>
+            <MascotLoader label="Loading your documents..." size={72} />
           ) : documents.length === 0 ? (
             <button
               onClick={() => setShowUploadDialog(true)}
@@ -414,8 +413,8 @@ export default function MedicalVault() {
         {/* Biomarker List */}
         <div className="space-y-3">
           {biomarkersLoading ? (
-            <div className="bg-white rounded-2xl p-8 flex items-center justify-center">
-              <Loader2 className="h-6 w-6 animate-spin text-gray-400" />
+            <div className="bg-white rounded-2xl p-8">
+              <MascotLoader label="Loading biomarkers..." size={72} />
             </div>
           ) : filteredBiomarkers.length === 0 ? (
             <div className="bg-white rounded-2xl p-8 text-center">

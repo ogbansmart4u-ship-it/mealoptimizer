@@ -1103,9 +1103,16 @@ export default function Home() {
                   <p className="text-xl text-gray-800">{waterGlasses} / {waterGoal} glasses</p>
                 </div>
               </div>
-              <div className="text-3xl">
-                {waterGlasses >= waterGoal ? "🎉" : "💧"}
-              </div>
+              {waterGlasses >= waterGoal ? (
+                <img
+                  src="/assets/mascot.png"
+                  alt="Goal reached!"
+                  className="w-12 h-12 object-contain drop-shadow-sm"
+                  title="Daily water goal reached!"
+                />
+              ) : (
+                <div className="text-3xl">💧</div>
+              )}
             </div>
 
             {/* Water Progress Bar */}

@@ -6,6 +6,7 @@ import { getAccessToken } from '../../lib/supabase';
 import { toast } from "sonner";
 import PageHeader from "../components/PageHeader";
 import Breadcrumbs from "../components/Breadcrumbs";
+import MascotLoader from "../components/MascotLoader";
 import {
   Calendar,
   Clock,
@@ -175,10 +176,7 @@ TIMING: ${mealPlan.plan_json.circadianAnchor}
   if (isLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-b from-[#B8E5E5] to-[#E8F5F5] flex items-center justify-center">
-        <div className="text-center">
-          <div className="w-16 h-16 border-4 border-[#1f7a8c] border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-[#1f7a8c] text-lg">Loading meal plan...</p>
-        </div>
+        <MascotLoader label="Loading meal plan..." size={96} />
       </div>
     );
   }
