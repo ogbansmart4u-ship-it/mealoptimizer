@@ -16,6 +16,7 @@ import { AuthErrorBanner } from "./components/AuthErrorBanner";
 import { EnvironmentCheck } from "./components/EnvironmentCheck";
 import { AchievementNotification } from "./components/AchievementNotification";
 import AppErrorBoundary from "./components/AppErrorBoundary";
+import GoalSetup from "./components/GoalSetup";
 
 function AchievementListener() {
   const { pendingNotification, dismissNotification } = useAchievements();
@@ -55,6 +56,7 @@ export default function App() {
                       <LocationProfileSync />
                       <AchievementListener />
                       <RouterProvider router={router} />
+                      <GoalSetup />
                       <Toaster />
                     </UserProvider>
                   </LocationProvider>
