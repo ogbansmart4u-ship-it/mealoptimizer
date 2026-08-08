@@ -28,7 +28,7 @@ export default function MealOptimizingLoader({
         style={{ animation: "avoRun 0.9s ease-in-out infinite" }}
       >
         <img
-          src="/assets/mascot-running.png"
+          src="/assets/mascot-avo.png"
           alt="MealOptimiza mascot running"
           className="w-full h-full object-contain drop-shadow-md"
           loading="eager"
