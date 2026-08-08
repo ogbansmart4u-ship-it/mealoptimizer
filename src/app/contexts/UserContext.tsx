@@ -54,6 +54,24 @@ export function UserProvider({
   const [loading, setLoading] = useState(false); // Changed to false initially
   const [isFetching, setIsFetching] = useState(false); // Prevent duplicate fetches
 
+  // Read a durably-saved profile picture for this user. Base64 photos are large
+  // and can be dropped by the backend profile record, so we keep a dedicated
+  // local copy and re-attach it whenever the loaded profile is missing one.
+  const readSavedPicture = (uid: string): string => {
+    try {
+      const direct = localStorage.getItem(`profile-picture-${uid}`);
+      if (direct) return direct;
+      const sp = localStorage.getItem(`user-profile-${uid}`);
+      if (sp) {
+        const p = JSON.parse(sp);
+        if (p?.profilePicture) return p.profilePicture;
+      }
+    } catch {
+      /* ignore */
+    }
+    return "";
+  };
+
   // Fetch user profile from backend
   const refreshProfile = async () => {
     // Early return if no user - don't show loading or make API calls
@@ -79,7 +97,21 @@ export function UserProvider({
       try {
         const profileData = await getUserProfile();
         console.log("✅ Profile loaded successfully from backend:", profileData);
-        setProfile(profileData);
+        // Re-attach the locally-saved picture if the backend copy has none, so a
+        // profile photo doesn't vanish on the next login.
+        const savedPic = readSavedPicture(user.id);
+        const merged: UserProfile = {
+          ...profileData,
+          profilePicture: profileData?.profilePicture || savedPic || "",
+        };
+        setProfile(merged);
+        if (merged.profilePicture) {
+          try {
+            localStorage.setItem(`profile-picture-${user.id}`, merged.profilePicture);
+          } catch {
+            /* ignore */
+          }
+        }
         setLoading(false);
         setIsFetching(false);
         return; // Success! Exit early
@@ -104,6 +136,7 @@ export function UserProvider({
       const storedProfile = localStorage.getItem(`user-profile-${user.id}`);
       if (storedProfile) {
         const parsed = JSON.parse(storedProfile);
+        if (!parsed.profilePicture) parsed.profilePicture = readSavedPicture(user.id);
         console.log("✅ Profile loaded from localStorage");
         setProfile(parsed);
       } else {
@@ -124,7 +157,7 @@ export function UserProvider({
           location: user.user_metadata?.location ||
                    localStorage.getItem('userLocation') ||
                    "Nigeria",
-          profilePicture: user.user_metadata?.profilePicture || "",
+          profilePicture: user.user_metadata?.profilePicture || readSavedPicture(user.id) || "",
         };
 
         setProfile(fallbackProfile);
@@ -164,6 +197,15 @@ export function UserProvider({
       // Save to localStorage for offline use
       if (user) {
         localStorage.setItem(`user-profile-${user.id}`, JSON.stringify(updatedProfile));
+        // Keep a durable, dedicated copy of the picture so it survives even if the
+        // backend profile record drops it on the next login.
+        if (updates.profilePicture) {
+          try {
+            localStorage.setItem(`profile-picture-${user.id}`, updates.profilePicture);
+          } catch {
+            /* ignore */
+          }
+        }
         console.log("✅ Profile updated in localStorage");
       }
     }
