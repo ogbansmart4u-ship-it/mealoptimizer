@@ -476,30 +476,30 @@ export default function Home() {
     
     if (currentHour >= 6 && currentHour < 10) {
       return {
-        greeting: "Ẹ káàárọ̀! (Good morning!)",
-        recommendation: "Break your fast with Akamu & Moi Moi for sustained energy",
-        metabolicWindow: "Cortisol Peak - Your body needs protein to manage morning glucose spike",
+        greeting: getTimeBasedGreeting(),
+        recommendation: t('rec.morningRec'),
+        metabolicWindow: t('rec.morningWindow'),
         icon: "🌅"
       };
     } else if (currentHour >= 10 && currentHour < 15) {
       return {
-        greeting: "Ẹ káàsán! (Good afternoon!)",
-        recommendation: "Lunch time! Try Ofada rice with Ayamase or Ewedu soup",
-        metabolicWindow: "Glycogen Replenishment - Complex carbs for sustained afternoon energy",
+        greeting: getTimeBasedGreeting(),
+        recommendation: t('rec.afternoonRec'),
+        metabolicWindow: t('rec.afternoonWindow'),
         icon: "☀️"
       };
     } else if (currentHour >= 15 && currentHour < 19) {
       return {
-        greeting: "Ẹ kú ìrọ̀lẹ́! (Good evening!)",
-        recommendation: "Light dinner approaching. Opt for vegetable soup with minimal swallow",
-        metabolicWindow: "Insulin Sensitivity Peak - Best time for moderate carb intake",
+        greeting: getTimeBasedGreeting(),
+        recommendation: t('rec.eveningRec'),
+        metabolicWindow: t('rec.eveningWindow'),
         icon: "🌆"
       };
     } else {
       return {
-        greeting: "Good night!",
-        recommendation: "Late evening - Choose light protein-rich meals if needed",
-        metabolicWindow: "Melatonin Support - Avoid heavy carbs for better sleep quality",
+        greeting: getTimeBasedGreeting(),
+        recommendation: t('rec.nightRec'),
+        metabolicWindow: t('rec.nightWindow'),
         icon: "🌙"
       };
     }
@@ -512,27 +512,27 @@ export default function Home() {
         color: "from-green-500 to-emerald-500",
         bgColor: "bg-green-50",
         textColor: "text-green-700",
-        message: "Excellent! You're meeting your nutrition goals 💪",
+        message: t('gauge.msgOnTrack'),
         emoji: "💪",
-        status: "On Track"
+        status: t('gauge.onTrack')
       };
     } else if (dailyProgress >= 50) {
       return {
         color: "from-yellow-500 to-orange-500",
         bgColor: "bg-yellow-50",
         textColor: "text-yellow-700",
-        message: "Good progress! Add one more balanced meal 🤔",
+        message: t('gauge.msgModerate'),
         emoji: "🤔",
-        status: "Moderate"
+        status: t('gauge.moderate')
       };
     } else {
       return {
         color: "from-red-500 to-pink-500",
         bgColor: "bg-red-50",
         textColor: "text-red-700",
-        message: "You need more fuel! Plan your next meal now ⚠️",
+        message: t('gauge.msgNeedsAttention'),
         emoji: "⚠️",
-        status: "Needs Attention"
+        status: t('gauge.needsAttention')
       };
     }
   };
@@ -764,8 +764,8 @@ export default function Home() {
                 <div className="text-[#1f7a8c] text-[20px] font-bold transition-all duration-300 animate-pulse" style={{ animationDuration: "2s" }}>
                   {animatedPercentage}%
                 </div>
-                <div className="text-xs text-gray-500 uppercase">of daily goal</div>
-                <div className="text-[10px] text-[#1f7a8c] mt-1">Tap for details</div>
+                <div className="text-xs text-gray-500 uppercase">{t('home.ofDailyGoal')}</div>
+                <div className="text-[10px] text-[#1f7a8c] mt-1">{t('home.tapForDetails')}</div>
               </div>
               
               {/* Text below gauge - Simple vs Expert Mode */}
@@ -818,28 +818,28 @@ export default function Home() {
           
           {/* Quick Meal Logging Buttons */}
           <div className="mt-4 mb-4">
-            <h4 className="text-xs text-gray-700 mb-2 text-center">Quick Log Meal</h4>
+            <h4 className="text-xs text-gray-700 mb-2 text-center">{t('home.quickLogMeal')}</h4>
             <div className="grid grid-cols-3 gap-2">
               <button
                 onClick={() => handleQuickMealSelect("breakfast")}
                 className="bg-gradient-to-r from-yellow-100 to-orange-100 border-2 border-yellow-300 rounded-xl p-3 hover:scale-105 transition-transform shadow-sm cursor-pointer"
               >
                 <div className="text-2xl mb-1">🍳</div>
-                <div className="text-[10px] text-gray-700">Breakfast</div>
+                <div className="text-[10px] text-gray-700">{t('home.breakfast')}</div>
               </button>
               <button
                 onClick={() => handleQuickMealSelect("lunch")}
                 className="bg-gradient-to-r from-green-100 to-emerald-100 border-2 border-green-300 rounded-xl p-3 hover:scale-105 transition-transform shadow-sm cursor-pointer"
               >
                 <div className="text-2xl mb-1">🍛</div>
-                <div className="text-[10px] text-gray-700">Lunch</div>
+                <div className="text-[10px] text-gray-700">{t('home.lunch')}</div>
               </button>
               <button
                 onClick={() => handleQuickMealSelect("dinner")}
                 className="bg-gradient-to-r from-purple-100 to-pink-100 border-2 border-purple-300 rounded-xl p-3 hover:scale-105 transition-transform shadow-sm cursor-pointer"
               >
                 <div className="text-2xl mb-1">🍲</div>
-                <div className="text-[10px] text-gray-700">Dinner</div>
+                <div className="text-[10px] text-gray-700">{t('home.dinner')}</div>
               </button>
             </div>
           </div>
@@ -849,7 +849,7 @@ export default function Home() {
             <div className="flex items-center gap-2 mb-2">
               <Clock className="h-4 w-4 text-[#1f7a8c]" />
               <h4 className="text-xs text-gray-700 tracking-wide">
-                {mode === "simple" ? "MEAL SUGGESTION" : "TODAY'S METABOLIC FOCUS"}
+                {mode === "simple" ? t('home.mealSuggestion') : t('home.metabolicFocus')}
               </h4>
               <span className="text-lg">{getTimeBasedRecommendation().icon}</span>
             </div>
