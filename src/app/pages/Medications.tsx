@@ -1,5 +1,5 @@
 import { Pill, ChevronLeft, Plus, X, Clock, AlertCircle } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router";
 import OnboardingProgress from "../components/OnboardingProgress";
 import MascotEmptyState from "../components/MascotEmptyState";
@@ -30,6 +30,7 @@ export default function Medications() {
   const [logsError, setLogsError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
   const [showAddForm, setShowAddForm] = useState(false);
+  const formRef = useRef<HTMLDivElement>(null);
   const [newMed, setNewMed] = useState({
     name: "",
     dosage: "",
@@ -45,8 +46,21 @@ export default function Medications() {
       .finally(() => setLogsLoading(false));
   }, []);
 
+  // Open the add form and scroll it into view (so it's never "invisible" below the fold).
+  const openAddForm = () => {
+    setLogsError(null);
+    setShowAddForm(true);
+  };
+  useEffect(() => {
+    if (showAddForm) formRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+  }, [showAddForm]);
+
   const addMedication = async () => {
-    if (!newMed.name || !newMed.dosage) return;
+    // Only the name is required; dosage is optional (many users won't know it).
+    if (!newMed.name.trim()) {
+      setLogsError("Please enter the medication name.");
+      return;
+    }
     setSaving(true);
     setLogsError(null);
     try {
@@ -122,7 +136,9 @@ export default function Medications() {
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-lg text-[#1f7a8c]">Current Medications</h2>
             <button
-              onClick={() => setShowAddForm(!showAddForm)}
+              type="button"
+              onClick={openAddForm}
+              aria-label="Add medication"
               className="bg-gradient-to-r from-[#1f7a8c] to-[#4ecdc4] text-white rounded-full p-2 hover:shadow-lg transition-all"
             >
               <Plus className="h-5 w-5" />
