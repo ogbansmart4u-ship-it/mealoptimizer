@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { ChefHat, Search, Filter, Heart, Clock, Flame, Users, ChevronRight, Star, Bookmark, MapPin, ShoppingCart, AlertCircle, Leaf, Globe } from "lucide-react";
 import { getCollection, createCollectionItem, deleteCollectionItem } from "../../lib/api";
 import BottomNav from "../components/BottomNav";
+import MascotEmptyState from "../components/MascotEmptyState";
 import { useAppMode } from "../contexts/AppModeContext";
 import { useLocation } from "../contexts/LocationContext";
 import { useUser } from "../contexts/UserContext";
@@ -432,12 +433,11 @@ export default function Recipe() {
 
         {/* No Results */}
         {filteredRecipes.length === 0 && (
-          <div className="bg-white rounded-3xl shadow-lg p-12 text-center">
-            <ChefHat className="h-16 w-16 text-gray-300 mx-auto mb-4" />
-            <h3 className="text-gray-800 mb-2">No Recipes Found</h3>
-            <p className="text-sm text-gray-600">
-              Try adjusting your search or filters
-            </p>
+          <div className="bg-white rounded-3xl shadow-lg p-8">
+            <MascotEmptyState
+              title="No Recipes Found"
+              subtitle="Try adjusting your search or filters"
+            />
           </div>
         )}
 

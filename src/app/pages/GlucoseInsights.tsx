@@ -4,6 +4,7 @@ import { TrendingUp, Utensils, Droplet, Info, Loader2, AlertCircle } from "lucid
 import PageHeader from "../components/PageHeader";
 import BottomNav from "../components/BottomNav";
 import { SkeletonList } from "../components/SkeletonLoader";
+import MascotEmptyState from "../components/MascotEmptyState";
 import { toast } from "sonner";
 import { getMealLogs, getBiometrics } from "../../lib/api";
 
@@ -135,12 +136,11 @@ export default function GlucoseInsights() {
             </div>
           </div>
         ) : correlated.length === 0 ? (
-          <div className="bg-white rounded-2xl p-8 text-center">
-            <Droplet className="h-12 w-12 text-gray-300 mx-auto mb-3" />
-            <h3 className="font-semibold text-gray-800 mb-1">No matches yet</h3>
-            <p className="text-sm text-gray-600">
-              You have meals and glucose readings, but none line up yet. Try logging a glucose reading 1–2 hours after your next meal.
-            </p>
+          <div className="bg-white rounded-2xl p-8">
+            <MascotEmptyState
+              title="No matches yet"
+              subtitle="You have meals and glucose readings, but none line up yet. Try logging a glucose reading 1–2 hours after your next meal."
+            />
           </div>
         ) : (
           <>

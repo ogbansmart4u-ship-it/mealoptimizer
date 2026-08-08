@@ -2,6 +2,7 @@ import { Pill, ChevronLeft, Plus, X, Clock, AlertCircle } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router";
 import OnboardingProgress from "../components/OnboardingProgress";
+import MascotEmptyState from "../components/MascotEmptyState";
 import { getMedications, createMedication, deleteMedication } from "../../lib/api";
 
 interface Medication {
@@ -134,11 +135,10 @@ export default function Medications() {
               <p className="text-sm">Loading medications…</p>
             </div>
           ) : medications.length === 0 ? (
-            <div className="text-center py-8 text-gray-500">
-              <Pill className="h-12 w-12 mx-auto mb-3 text-gray-300" />
-              <p>No medications added yet</p>
-              <p className="text-sm">Tap the + button to add</p>
-            </div>
+            <MascotEmptyState
+              title="No medications added yet"
+              subtitle="Tap the + button to add your medications."
+            />
           ) : (
             <div className="space-y-3">
               {medications.map((med) => (

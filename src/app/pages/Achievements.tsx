@@ -5,6 +5,7 @@ import { useAchievements } from '../contexts/AchievementContext';
 import BottomNav from '../components/BottomNav';
 import ProfilePictureUpload from '../components/ProfilePictureUpload';
 import StreakCard from '../components/StreakCard';
+import MascotEmptyState from '../components/MascotEmptyState';
 
 export default function Achievements() {
   const navigate = useNavigate();
@@ -146,18 +147,13 @@ export default function Achievements() {
 
         <div className="space-y-4">
           {displayAchievements.length === 0 ? (
-            <div className="bg-white rounded-3xl shadow-lg p-12 text-center">
-              <Award className="h-16 w-16 text-gray-300 mx-auto mb-4" />
-              <h3 className="text-gray-800 mb-2">
-                {activeTab === 'unlocked'
-                  ? 'No Achievements Yet'
-                  : 'No Locked Achievements'}
-              </h3>
-              <p className="text-sm text-gray-600">
-                {activeTab === 'unlocked'
+            <div className="bg-white rounded-3xl shadow-lg p-8">
+              <MascotEmptyState
+                title={activeTab === 'unlocked' ? 'No Achievements Yet' : 'No Locked Achievements'}
+                subtitle={activeTab === 'unlocked'
                   ? 'Start tracking your health to unlock achievements!'
                   : "You've unlocked all achievements! Amazing work!"}
-              </p>
+              />
             </div>
           ) : (
             displayAchievements.map(achievement => {

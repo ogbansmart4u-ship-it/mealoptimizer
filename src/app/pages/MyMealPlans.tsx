@@ -5,6 +5,7 @@ import { projectId } from '/utils/supabase/info';
 import { getAccessToken } from '../../lib/supabase';
 import { toast } from "sonner";
 import PageHeader from "../components/PageHeader";
+import MascotEmptyState from "../components/MascotEmptyState";
 import {
   Calendar,
   Clock,
@@ -170,23 +171,22 @@ export default function MyMealPlans() {
       {/* Content */}
       <div className="px-6 mt-6">
         {mealPlans.length === 0 ? (
-          <div className="bg-white rounded-3xl shadow-lg p-8 text-center">
-            <div className="bg-[#B8E5E5] rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-4">
-              <ChefHat className="h-10 w-10 text-[#1f7a8c]" />
-            </div>
-            <h3 className="text-xl text-gray-800 mb-2">No Meal Plans Yet</h3>
-            <p className="text-gray-600 mb-6">
-              Start planning your personalized meals based on your health profile
-            </p>
-            <button
-              onClick={() => navigate("/plan-meal")}
-              className="bg-gradient-to-r from-[#1f7a8c] to-[#4ecdc4] text-white px-8 py-3 rounded-2xl shadow-lg hover:shadow-xl transition-all transform hover:scale-[1.02]"
-            >
-              <div className="flex items-center gap-2">
-                <Plus className="h-5 w-5" />
-                <span>Plan My First Meal</span>
-              </div>
-            </button>
+          <div className="bg-white rounded-3xl shadow-lg p-8">
+            <MascotEmptyState
+              title="No Meal Plans Yet"
+              subtitle="Start planning your personalized meals based on your health profile"
+              action={
+                <button
+                  onClick={() => navigate("/plan-meal")}
+                  className="bg-gradient-to-r from-[#1f7a8c] to-[#4ecdc4] text-white px-8 py-3 rounded-2xl shadow-lg hover:shadow-xl transition-all transform hover:scale-[1.02]"
+                >
+                  <div className="flex items-center gap-2">
+                    <Plus className="h-5 w-5" />
+                    <span>Plan My First Meal</span>
+                  </div>
+                </button>
+              }
+            />
           </div>
         ) : (
           <div className="space-y-4">

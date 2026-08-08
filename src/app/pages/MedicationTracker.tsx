@@ -24,6 +24,7 @@ import { Label } from "../components/ui/label";
 import { Input } from "../components/ui/input";
 import { toast } from "sonner";
 import { SkeletonRows } from "../components/SkeletonLoader";
+import MascotEmptyState from "../components/MascotEmptyState";
 import { getCollection, createCollectionItem, updateCollectionItem, deleteCollectionItem } from "../../lib/api";
 
 type MedicationType = 'medication' | 'supplement' | 'vitamin';
@@ -438,17 +439,19 @@ export default function MedicationTracker() {
           {loading ? (
             <SkeletonRows count={3} />
           ) : medications.length === 0 ? (
-            <div className="text-center py-8 text-gray-500">
-              <Pill className="h-12 w-12 mx-auto mb-2 text-gray-300" />
-              <p>No medications added yet</p>
-              <Button
-                onClick={() => setShowAddDialog(true)}
-                className="mt-4 bg-teal-600 hover:bg-teal-700"
-              >
-                <Plus className="h-4 w-4 mr-2" />
-                Add First Medication
-              </Button>
-            </div>
+            <MascotEmptyState
+              title="No medications added yet"
+              subtitle="Track your medications, supplements and vitamins to get dose reminders and refill alerts."
+              action={
+                <Button
+                  onClick={() => setShowAddDialog(true)}
+                  className="bg-teal-600 hover:bg-teal-700"
+                >
+                  <Plus className="h-4 w-4 mr-2" />
+                  Add First Medication
+                </Button>
+              }
+            />
           ) : (
             <div className="space-y-3">
               {medications.map(med => {

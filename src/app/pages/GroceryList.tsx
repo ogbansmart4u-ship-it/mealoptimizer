@@ -6,6 +6,7 @@ import { getAccessToken } from '../../lib/supabase';
 import PageHeader from '../components/PageHeader';
 import Breadcrumbs from '../components/Breadcrumbs';
 import { SkeletonList } from '../components/SkeletonLoader';
+import MascotEmptyState from '../components/MascotEmptyState';
 
 interface GroceryItem {
   id: string;
@@ -213,18 +214,19 @@ export default function GroceryList() {
             </button>
           </div>
         ) : groceryItems.length === 0 ? (
-          <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 text-white text-center">
-            <ShoppingCart className="h-16 w-16 mx-auto mb-4 opacity-50" />
-            <h2 className="text-xl font-semibold mb-2">Your grocery list is empty</h2>
-            <p className="text-white/80 mb-4">
-              Generate a meal plan to automatically add ingredients to your grocery list!
-            </p>
-            <button
-              onClick={() => navigate('/plan-meal')}
-              className="px-6 py-3 bg-white text-[#1f7a8c] rounded-lg hover:bg-gray-100 transition-colors font-semibold"
-            >
-              Plan a Meal
-            </button>
+          <div className="bg-white rounded-2xl shadow-lg p-8">
+            <MascotEmptyState
+              title="Your grocery list is empty"
+              subtitle="Generate a meal plan to automatically add ingredients to your grocery list!"
+              action={
+                <button
+                  onClick={() => navigate('/plan-meal')}
+                  className="px-6 py-3 bg-gradient-to-r from-[#1f7a8c] to-[#4ecdc4] text-white rounded-lg hover:shadow-lg transition-all font-semibold"
+                >
+                  Plan a Meal
+                </button>
+              }
+            />
           </div>
         ) : (
           <>

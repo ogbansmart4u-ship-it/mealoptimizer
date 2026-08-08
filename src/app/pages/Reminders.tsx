@@ -4,6 +4,7 @@ import { ArrowLeft, Plus, Bell, Clock, Calendar, Trash2, Edit, BellOff } from 'l
 import { saveReminders, requestNotificationPermission, Reminder } from '../utils/reminderManager';
 import { getCollection, createCollectionItem, updateCollectionItem, deleteCollectionItem } from '../../lib/api';
 import { SkeletonRows } from '../components/SkeletonLoader';
+import MascotEmptyState from '../components/MascotEmptyState';
 import { Button } from '../components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../components/ui/dialog';
 
@@ -251,18 +252,19 @@ export default function Reminders() {
           ))}
 
           {!loading && reminders.length === 0 && (
-            <div className="bg-white rounded-2xl shadow-lg p-12 text-center">
-              <Bell className="h-16 w-16 text-gray-300 mx-auto mb-4" />
-              <h3 className="text-gray-800 mb-2">No Reminders Yet</h3>
-              <p className="text-sm text-gray-600 mb-4">
-                Create custom reminders for your health trackers
-              </p>
-              <Button
-                onClick={() => setShowAddDialog(true)}
-                className="bg-gradient-to-r from-[#1f7a8c] to-[#4ecdc4] text-white"
-              >
-                Create First Reminder
-              </Button>
+            <div className="bg-white rounded-2xl shadow-lg p-8">
+              <MascotEmptyState
+                title="No Reminders Yet"
+                subtitle="Create custom reminders for your health trackers"
+                action={
+                  <Button
+                    onClick={() => setShowAddDialog(true)}
+                    className="bg-gradient-to-r from-[#1f7a8c] to-[#4ecdc4] text-white"
+                  >
+                    Create First Reminder
+                  </Button>
+                }
+              />
             </div>
           )}
         </div>
