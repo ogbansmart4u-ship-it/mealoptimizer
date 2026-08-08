@@ -92,8 +92,6 @@ export default function Home() {
     day: "numeric" 
   });
   
-  const dailyProgress = 55; // percentage
-  
   const [showCameraCapture, setShowCameraCapture] = useState(false);
   const [capturedImage, setCapturedImage] = useState<string | null>(null);
   const [isAnalysingFood, setIsAnalysingFood] = useState(false);
@@ -111,7 +109,6 @@ export default function Home() {
   const [showGaugeDetails, setShowGaugeDetails] = useState(false);
   const [showQuickMealLog, setShowQuickMealLog] = useState(false);
   const [selectedQuickMeal, setSelectedQuickMeal] = useState<"breakfast" | "lunch" | "dinner" | null>(null);
-  const [trackingStreak, setTrackingStreak] = useState(7); // Days streak
 
   // Track current day of week for automatic calendar rotation (0 = Mon, 6 = Sun)
   const [currentDayIndex, setCurrentDayIndex] = useState(() => {
@@ -185,15 +182,35 @@ export default function Home() {
     return `${mk(first.key)} – ${mk(last.key)}`;
   })();
 
-  // Nutritional tracking data (mock data - would come from backend/state management in production)
-  const caloriesConsumed = 1450;
+  // Today's nutrition, computed from this account's REAL meal logs (no more mock).
+  const todayLogs = weekLogs.filter((l) => l?.date === todayKey);
+  const sumField = (f: string) => todayLogs.reduce((s, l) => s + (Number(l?.[f]) || 0), 0);
+  const caloriesConsumed = sumField("calories");
   const caloriesTarget = 2000;
-  const proteinConsumed = 75;
+  const proteinConsumed = sumField("protein");
   const proteinTarget = 100;
-  const carbsConsumed = 60;
+  const carbsConsumed = sumField("carbs");
   const carbsTarget = 150;
-  const fatsConsumed = 45;
+  const fatsConsumed = sumField("fats");
   const fatsTarget = 67;
+
+  // Gauge percentage — real share of the daily calorie goal (0–100).
+  const dailyProgress =
+    caloriesTarget > 0 ? Math.min(Math.round((caloriesConsumed / caloriesTarget) * 100), 100) : 0;
+
+  // Real daily logging streak: count back from today over days that have a meal log.
+  const loggedDays = new Set(weekLogs.map((l) => l?.date).filter(Boolean));
+  const trackingStreak = (() => {
+    let c = 0;
+    const d = new Date();
+    const k = (x: Date) => x.toISOString().split("T")[0];
+    if (!loggedDays.has(k(d))) d.setDate(d.getDate() - 1); // today not logged yet — start at yesterday
+    while (loggedDays.has(k(d))) {
+      c++;
+      d.setDate(d.getDate() - 1);
+    }
+    return c;
+  })();
 
   // Animate gauge on mount
   useEffect(() => {
