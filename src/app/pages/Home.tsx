@@ -31,7 +31,7 @@ import logoImage from "figma:asset/efbe2a1ac833b032474ac203bb52c6fe4e93cfbb.png"
 import { initializeSampleData } from "../../utils/sampleData";
 import { projectId } from '/utils/supabase/info';
 import { getAccessToken } from '../../lib/supabase';
-import { createMealLog, getMealLogs } from "../../lib/api";
+import { createMealLog, getMealLogs, getHydrationLogs, createHydrationLog, deleteHydrationLog } from "../../lib/api";
 import { toast } from "sonner";
 import { celebrate } from "../components/celebrate";
 
@@ -218,35 +218,38 @@ export default function Home() {
     };
   }, [dailyProgress]);
 
-  // Water tracker — persisted per calendar day so it auto-resets each new day
-  // and keeps the day's count across reloads.
-  const waterGoal = 8; // 8 glasses per day
-  const waterKeyFor = (d = new Date()) => `water-glasses-${d.toISOString().split("T")[0]}`;
-  const [waterGlasses, setWaterGlasses] = useState<number>(() => {
-    try {
-      return parseInt(localStorage.getItem(waterKeyFor()) || "0", 10) || 0;
-    } catch {
-      return 0;
-    }
-  });
-  // Persist whenever it changes
+  // Water tracker — backed by the SAME hydration logs as the /hydration page, so
+  // the two stay in sync. One Home "glass" = 250 ml. Home shows total daily
+  // hydration (including drinks logged on the Hydration page) as glasses.
+  const waterGoal = 10; // 10 glasses (2,500 ml) per day — matches the Hydration tracker
+  const GLASS_ML = 250;
+  const [waterMl, setWaterMl] = useState(0); // today's total ml across all logs
+  const [homeWaterIds, setHomeWaterIds] = useState<string[]>([]); // 250ml glasses Home can remove
+  const [waterBusy, setWaterBusy] = useState(false);
+  const waterGlasses = Math.round(waterMl / GLASS_ML); // derived count for the UI
+
+  // Load today's hydration from the backend (shared with the Hydration tracker).
+  const loadWater = () => {
+    const today = new Date().toISOString().split("T")[0];
+    getHydrationLogs()
+      .then((items: any[]) => {
+        const todays = (items ?? []).filter((it) => String(it.logged_at ?? "").startsWith(today));
+        const total = todays.reduce((sum, it) => sum + (it.amount_ml ?? 0), 0);
+        setWaterMl(total);
+        // 250ml water logs are the "glasses" Home is allowed to remove.
+        setHomeWaterIds(
+          todays
+            .filter((it) => (it.amount_ml ?? 0) === GLASS_ML && (it.type ?? "water") === "water")
+            .map((it) => String(it.id)),
+        );
+      })
+      .catch(() => {/* offline / not signed in — leave at 0, non-fatal */});
+  };
+  useEffect(() => { loadWater(); }, []);
+  // Refresh when the tab regains focus, so drinks logged on the Hydration page
+  // (or a new day) show up here without a manual reload.
   useEffect(() => {
-    try {
-      localStorage.setItem(waterKeyFor(), String(waterGlasses));
-    } catch {
-      /* ignore */
-    }
-  }, [waterGlasses]);
-  // If the tab is left open past midnight, roll over to the new day's count on refocus
-  useEffect(() => {
-    const onFocus = () => {
-      try {
-        const stored = parseInt(localStorage.getItem(waterKeyFor()) || "0", 10) || 0;
-        setWaterGlasses(stored);
-      } catch {
-        /* ignore */
-      }
-    };
+    const onFocus = () => loadWater();
     window.addEventListener("focus", onFocus);
     document.addEventListener("visibilitychange", onFocus);
     return () => {
@@ -453,15 +456,40 @@ export default function Home() {
     },
   ];
 
-  const handleWaterIncrease = () => {
-    if (waterGlasses < 12) {
-      setWaterGlasses(waterGlasses + 1);
+  // Add a glass (250ml) — creates a real hydration log, so it appears on the
+  // Hydration tracker too.
+  const handleWaterIncrease = async () => {
+    if (waterBusy || waterGlasses >= 12) return;
+    setWaterBusy(true);
+    setWaterMl((ml) => ml + GLASS_ML); // optimistic
+    try {
+      const item = await createHydrationLog({
+        amount_ml: GLASS_ML,
+        type: "water",
+        logged_at: new Date().toISOString(),
+      });
+      if (item?.id) setHomeWaterIds((ids) => [...ids, String(item.id)]);
+    } catch {
+      setWaterMl((ml) => Math.max(0, ml - GLASS_ML)); // roll back
+    } finally {
+      setWaterBusy(false);
     }
   };
 
-  const handleWaterDecrease = () => {
-    if (waterGlasses > 0) {
-      setWaterGlasses(waterGlasses - 1);
+  // Remove a glass — deletes the most recent 250ml glass Home added.
+  const handleWaterDecrease = async () => {
+    if (waterBusy || homeWaterIds.length === 0) return;
+    setWaterBusy(true);
+    const id = homeWaterIds[homeWaterIds.length - 1];
+    setHomeWaterIds((ids) => ids.slice(0, -1)); // optimistic
+    setWaterMl((ml) => Math.max(0, ml - GLASS_ML));
+    try {
+      await deleteHydrationLog(id);
+    } catch {
+      setHomeWaterIds((ids) => [...ids, id]); // roll back
+      setWaterMl((ml) => ml + GLASS_ML);
+    } finally {
+      setWaterBusy(false);
     }
   };
 
@@ -1165,7 +1193,7 @@ export default function Home() {
             <div className="flex gap-3">
               <button
                 onClick={handleWaterDecrease}
-                disabled={waterGlasses === 0}
+                disabled={waterBusy || homeWaterIds.length === 0}
                 className="flex-1 bg-white text-gray-700 rounded-xl py-3 flex items-center justify-center gap-2 hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-sm"
               >
                 <Minus className="h-4 w-4" />
@@ -1173,7 +1201,7 @@ export default function Home() {
               </button>
               <button
                 onClick={handleWaterIncrease}
-                disabled={waterGlasses >= 12}
+                disabled={waterBusy || waterGlasses >= 12}
                 className="flex-1 bg-gradient-to-r from-[#1f7a8c] to-[#4ecdc4] text-white rounded-xl py-3 flex items-center justify-center gap-2 hover:shadow-md transition-all disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <Plus className="h-4 w-4" />
