@@ -153,7 +153,16 @@ export default function Medications() {
           ) : medications.length === 0 ? (
             <MascotEmptyState
               title="No medications added yet"
-              subtitle="Tap the + button to add your medications."
+              subtitle="Add your medications so we can check for food-drug interactions."
+              action={
+                <button
+                  type="button"
+                  onClick={openAddForm}
+                  className="inline-flex items-center gap-2 bg-gradient-to-r from-[#1f7a8c] to-[#4ecdc4] text-white rounded-xl px-5 py-3 font-medium hover:shadow-lg transition-all"
+                >
+                  <Plus className="h-4 w-4" /> Add medication
+                </button>
+              }
             />
           ) : (
             <div className="space-y-3">
@@ -196,7 +205,7 @@ export default function Medications() {
 
         {/* Add Medication Form */}
         {showAddForm && (
-          <div className="bg-white rounded-3xl shadow-lg p-6 mb-6">
+          <div ref={formRef} className="bg-white rounded-3xl shadow-lg p-6 mb-6 scroll-mt-20">
             <h2 className="text-lg text-[#1f7a8c] mb-4">Add New Medication</h2>
             
             <div className="space-y-4">
@@ -266,12 +275,14 @@ export default function Medications() {
 
               <div className="flex gap-3 pt-2">
                 <button
+                  type="button"
                   onClick={() => setShowAddForm(false)}
                   className="flex-1 border-2 border-gray-300 text-gray-700 rounded-xl py-3 hover:bg-gray-50 transition-colors"
                 >
                   Cancel
                 </button>
                 <button
+                  type="button"
                   onClick={addMedication}
                   disabled={saving}
                   className="flex-1 bg-gradient-to-r from-[#1f7a8c] to-[#4ecdc4] text-white rounded-xl py-3 hover:shadow-lg transition-all disabled:opacity-60"
