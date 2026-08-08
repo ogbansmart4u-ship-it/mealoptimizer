@@ -24,6 +24,7 @@ import { Button } from "../components/ui/button";
 import { Label } from "../components/ui/label";
 import { Input } from "../components/ui/input";
 import { toast } from "sonner";
+import { useLanguage } from "../contexts/LanguageContext";
 
 type FastingProtocol = '16:8' | '18:6' | '20:4' | 'omad' | 'custom';
 type FastingPhase = 'anabolic' | 'catabolic' | 'fat-burning' | 'ketosis' | 'autophagy' | 'deep-autophagy';
@@ -40,19 +41,19 @@ type FastingSession = {
 };
 
 const FASTING_PROTOCOLS = [
-  { value: '16:8', label: '16:8', fast: 16, eat: 8, description: 'Beginner friendly' },
-  { value: '18:6', label: '18:6', fast: 18, eat: 6, description: 'Intermediate' },
-  { value: '20:4', label: '20:4', fast: 20, eat: 4, description: 'Advanced' },
-  { value: 'omad', label: 'OMAD', fast: 23, eat: 1, description: 'One meal a day' },
+  { value: '16:8', label: '16:8', fast: 16, eat: 8, descKey: 'fasting.protoBeginner' },
+  { value: '18:6', label: '18:6', fast: 18, eat: 6, descKey: 'fasting.protoIntermediate' },
+  { value: '20:4', label: '20:4', fast: 20, eat: 4, descKey: 'fasting.protoAdvanced' },
+  { value: 'omad', label: 'OMAD', fast: 23, eat: 1, descKey: 'fasting.protoOmad' },
 ];
 
 const FASTING_PHASES = [
-  { phase: 'anabolic', start: 0, end: 4, label: 'Anabolic', color: '#94a3b8', description: 'Digestion & nutrient absorption' },
-  { phase: 'catabolic', start: 4, end: 8, label: 'Catabolic', color: '#06b6d4', description: 'Glycogen depletion begins' },
-  { phase: 'fat-burning', start: 8, end: 12, label: 'Fat Burning', color: '#10b981', description: 'Body switches to fat for fuel' },
-  { phase: 'ketosis', start: 12, end: 16, label: 'Ketosis', color: '#f59e0b', description: 'Ketone production increases' },
-  { phase: 'autophagy', start: 16, end: 24, label: 'Autophagy', color: '#8b5cf6', description: 'Cellular cleanup activated' },
-  { phase: 'deep-autophagy', start: 24, end: 48, label: 'Deep Autophagy', color: '#ec4899', description: 'Peak cellular regeneration' },
+  { phase: 'anabolic', start: 0, end: 4, labelKey: 'fasting.phaseAnabolic', color: '#94a3b8', descKey: 'fasting.descAnabolic' },
+  { phase: 'catabolic', start: 4, end: 8, labelKey: 'fasting.phaseCatabolic', color: '#06b6d4', descKey: 'fasting.descCatabolic' },
+  { phase: 'fat-burning', start: 8, end: 12, labelKey: 'fasting.phaseFatBurning', color: '#10b981', descKey: 'fasting.descFatBurning' },
+  { phase: 'ketosis', start: 12, end: 16, labelKey: 'fasting.phaseKetosis', color: '#f59e0b', descKey: 'fasting.descKetosis' },
+  { phase: 'autophagy', start: 16, end: 24, labelKey: 'fasting.phaseAutophagy', color: '#8b5cf6', descKey: 'fasting.descAutophagy' },
+  { phase: 'deep-autophagy', start: 24, end: 48, labelKey: 'fasting.phaseDeepAutophagy', color: '#ec4899', descKey: 'fasting.descDeepAutophagy' },
 ];
 
 const generateMockSessions = (): FastingSession[] => {
@@ -83,6 +84,7 @@ const generateMockSessions = (): FastingSession[] => {
 
 export default function FastingTimer() {
   const navigate = useNavigate();
+  const { t } = useLanguage();
   const uniqueId = useId();
 
   const [sessions, setSessions] = useState<FastingSession[]>(() => {
@@ -178,7 +180,7 @@ export default function FastingTimer() {
     setElapsedHours(0);
     setIsPaused(false);
     setShowStartDialog(false);
-    toast.success('Fasting started!');
+    toast.success(t('fasting.started'));
   };
 
   const handleEndFast = () => {
@@ -197,7 +199,7 @@ export default function FastingTimer() {
 
     setCurrentSession(null);
     setElapsedHours(0);
-    toast.success(`Fast completed! ${elapsedHours.toFixed(1)} hours`);
+    toast.success(`${t('fasting.completedToast')} ${elapsedHours.toFixed(1)} ${t('fasting.hours')}`);
   };
 
   const formatTime = (hours: number) => {
@@ -235,7 +237,7 @@ export default function FastingTimer() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-purple-50 via-pink-50 to-orange-50 pb-24">
       <PageHeader
-        title="Fasting Timer"
+        title={t('fasting.title')}
         showHome
         className="bg-gradient-to-r from-purple-600 to-pink-600"
         actions={
@@ -255,7 +257,7 @@ export default function FastingTimer() {
             <div className="text-center mb-6">
               <div className="inline-flex items-center gap-2 px-4 py-2 bg-purple-100 rounded-full mb-4">
                 <Flame className="h-5 w-5 text-purple-600 animate-pulse" />
-                <span className="text-sm font-semibold text-purple-700">Fasting in Progress</span>
+                <span className="text-sm font-semibold text-purple-700">{t('fasting.inProgress')}</span>
               </div>
 
               {/* Circular Progress */}
@@ -290,7 +292,7 @@ export default function FastingTimer() {
                     {formatTime(elapsedHours).split(' ').slice(1).join(' ')}
                   </div>
                   <div className="mt-2 text-xs text-gray-500">
-                    Target: {targetHours}h
+                    {t('fasting.targetPrefix')}: {targetHours}h
                   </div>
                 </div>
               </div>
@@ -301,10 +303,10 @@ export default function FastingTimer() {
                   <div className="flex items-center justify-center gap-2 mb-2">
                     <div className="w-3 h-3 rounded-full" style={{ backgroundColor: currentPhase.color }} />
                     <div className="text-lg font-bold" style={{ color: currentPhase.color }}>
-                      {currentPhase.label}
+                      {t(currentPhase.labelKey)}
                     </div>
                   </div>
-                  <div className="text-sm text-gray-600">{currentPhase.description}</div>
+                  <div className="text-sm text-gray-600">{t(currentPhase.descKey)}</div>
                 </div>
               )}
 
@@ -316,14 +318,14 @@ export default function FastingTimer() {
                   className="flex-1 max-w-xs"
                 >
                   {isPaused ? <Play className="h-4 w-4 mr-2" /> : <Pause className="h-4 w-4 mr-2" />}
-                  {isPaused ? 'Resume' : 'Pause'}
+                  {isPaused ? t('fasting.resume') : t('fasting.pause')}
                 </Button>
                 <Button
                   onClick={handleEndFast}
                   className="flex-1 max-w-xs bg-red-600 hover:bg-red-700"
                 >
                   <StopCircle className="h-4 w-4 mr-2" />
-                  End Fast
+                  {t('fasting.endFast')}
                 </Button>
               </div>
             </div>
@@ -331,14 +333,14 @@ export default function FastingTimer() {
         ) : (
           <div className="bg-white rounded-3xl shadow-xl p-8 text-center">
             <Clock className="h-16 w-16 mx-auto mb-4 text-purple-600" />
-            <h3 className="text-2xl font-bold text-gray-800 mb-2">Ready to Start Fasting?</h3>
-            <p className="text-gray-600 mb-6">Choose your protocol and begin your journey</p>
+            <h3 className="text-2xl font-bold text-gray-800 mb-2">{t('fasting.readyTitle')}</h3>
+            <p className="text-gray-600 mb-6">{t('fasting.readySubtitle')}</p>
             <Button
               onClick={() => setShowStartDialog(true)}
               className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
             >
               <Play className="h-4 w-4 mr-2" />
-              Start Fast
+              {t('fasting.startFast')}
             </Button>
           </div>
         )}
@@ -350,10 +352,10 @@ export default function FastingTimer() {
               <div className="bg-orange-100 rounded-full p-2">
                 <Flame className="h-5 w-5 text-orange-600" />
               </div>
-              <span className="text-sm text-gray-600">Streak</span>
+              <span className="text-sm text-gray-600">{t('fasting.streak')}</span>
             </div>
             <div className="text-3xl font-bold text-gray-800">{currentStreak}</div>
-            <div className="text-xs text-gray-500">days</div>
+            <div className="text-xs text-gray-500">{t('fasting.days')}</div>
           </div>
 
           <div className="bg-white rounded-2xl p-5 shadow-lg">
@@ -361,10 +363,10 @@ export default function FastingTimer() {
               <div className="bg-purple-100 rounded-full p-2">
                 <Award className="h-5 w-5 text-purple-600" />
               </div>
-              <span className="text-sm text-gray-600">Total Fasts</span>
+              <span className="text-sm text-gray-600">{t('fasting.totalFasts')}</span>
             </div>
             <div className="text-3xl font-bold text-gray-800">{totalFasts}</div>
-            <div className="text-xs text-gray-500">completed</div>
+            <div className="text-xs text-gray-500">{t('fasting.completed')}</div>
           </div>
 
           <div className="bg-white rounded-2xl p-5 shadow-lg">
@@ -372,10 +374,10 @@ export default function FastingTimer() {
               <div className="bg-blue-100 rounded-full p-2">
                 <Clock className="h-5 w-5 text-blue-600" />
               </div>
-              <span className="text-sm text-gray-600">Avg Fast</span>
+              <span className="text-sm text-gray-600">{t('fasting.avgFast')}</span>
             </div>
             <div className="text-3xl font-bold text-gray-800">{avgFastingHours.toFixed(1)}</div>
-            <div className="text-xs text-gray-500">hours</div>
+            <div className="text-xs text-gray-500">{t('fasting.hours')}</div>
           </div>
 
           <div className="bg-white rounded-2xl p-5 shadow-lg">
@@ -383,7 +385,7 @@ export default function FastingTimer() {
               <div className="bg-green-100 rounded-full p-2">
                 <TrendingDown className="h-5 w-5 text-green-600" />
               </div>
-              <span className="text-sm text-gray-600">Weight</span>
+              <span className="text-sm text-gray-600">{t('fasting.weight')}</span>
             </div>
             <div className="text-3xl font-bold text-gray-800">
               {weightData.length > 0 ? weightData[weightData.length - 1].weight?.toFixed(1) : '--'}
@@ -394,7 +396,7 @@ export default function FastingTimer() {
 
         {/* Fasting Phases Timeline */}
         <div className="bg-white rounded-3xl shadow-xl p-6">
-          <h3 className="text-lg font-semibold text-gray-800 mb-4">Fasting Phases</h3>
+          <h3 className="text-lg font-semibold text-gray-800 mb-4">{t('fasting.phasesTitle')}</h3>
 
           <div className="space-y-3">
             {FASTING_PHASES.map((phase) => (
@@ -409,11 +411,11 @@ export default function FastingTimer() {
                 <div className="flex items-center justify-between mb-1">
                   <div className="flex items-center gap-2">
                     <div className="w-3 h-3 rounded-full" style={{ backgroundColor: phase.color }} />
-                    <span className="text-sm font-semibold text-gray-800">{phase.label}</span>
+                    <span className="text-sm font-semibold text-gray-800">{t(phase.labelKey)}</span>
                   </div>
                   <span className="text-xs text-gray-600">{phase.start}-{phase.end}h</span>
                 </div>
-                <div className="text-xs text-gray-600">{phase.description}</div>
+                <div className="text-xs text-gray-600">{t(phase.descKey)}</div>
               </div>
             ))}
           </div>
@@ -421,7 +423,7 @@ export default function FastingTimer() {
 
         {/* Duration Trend */}
         <div className="bg-white rounded-3xl shadow-xl p-6">
-          <h3 className="text-lg font-semibold text-gray-800 mb-4">Fasting Duration (Last 14 Days)</h3>
+          <h3 className="text-lg font-semibold text-gray-800 mb-4">{t('fasting.durationChart')}</h3>
 
           <ResponsiveContainer width="100%" height={180}>
             <AreaChart data={durationData}>
@@ -456,7 +458,7 @@ export default function FastingTimer() {
         {/* Weight Correlation */}
         {weightData.length > 0 && (
           <div className="bg-white rounded-3xl shadow-xl p-6">
-            <h3 className="text-lg font-semibold text-gray-800 mb-4">Weight Trend</h3>
+            <h3 className="text-lg font-semibold text-gray-800 mb-4">{t('fasting.weightTrend')}</h3>
 
             <ResponsiveContainer width="100%" height={180}>
               <LineChart data={weightData}>
@@ -487,16 +489,16 @@ export default function FastingTimer() {
         <div className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-3xl shadow-xl p-6 border border-purple-200">
           <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
             <Zap className="h-5 w-5 text-purple-600" />
-            Fasting Benefits
+            {t('fasting.benefits')}
           </h3>
 
           <div className="space-y-3">
             <div className="flex items-start gap-3 p-3 bg-white rounded-xl">
               <Droplet className="h-5 w-5 text-blue-600 flex-shrink-0 mt-0.5" />
               <div>
-                <div className="text-sm font-semibold text-gray-800 mb-1">Autophagy Activation</div>
+                <div className="text-sm font-semibold text-gray-800 mb-1">{t('fasting.benefit1Title')}</div>
                 <div className="text-sm text-gray-600">
-                  16+ hours: cellular cleanup and regeneration begins.
+                  {t('fasting.benefit1Body')}
                 </div>
               </div>
             </div>
@@ -504,9 +506,9 @@ export default function FastingTimer() {
             <div className="flex items-start gap-3 p-3 bg-white rounded-xl">
               <Flame className="h-5 w-5 text-orange-600 flex-shrink-0 mt-0.5" />
               <div>
-                <div className="text-sm font-semibold text-gray-800 mb-1">Fat Burning Mode</div>
+                <div className="text-sm font-semibold text-gray-800 mb-1">{t('fasting.benefit2Title')}</div>
                 <div className="text-sm text-gray-600">
-                  12+ hours: body switches from glucose to fat as primary fuel.
+                  {t('fasting.benefit2Body')}
                 </div>
               </div>
             </div>
@@ -514,9 +516,9 @@ export default function FastingTimer() {
             <div className="flex items-start gap-3 p-3 bg-white rounded-xl">
               <CheckCircle className="h-5 w-5 text-green-600 flex-shrink-0 mt-0.5" />
               <div>
-                <div className="text-sm font-semibold text-gray-800 mb-1">Insulin Sensitivity</div>
+                <div className="text-sm font-semibold text-gray-800 mb-1">{t('fasting.benefit3Title')}</div>
                 <div className="text-sm text-gray-600">
-                  Regular fasting improves insulin sensitivity by 20-30%.
+                  {t('fasting.benefit3Body')}
                 </div>
               </div>
             </div>
@@ -528,13 +530,13 @@ export default function FastingTimer() {
       <Dialog open={showStartDialog} onOpenChange={setShowStartDialog}>
         <DialogContent className="max-w-md">
           <DialogHeader>
-            <DialogTitle className="text-2xl text-purple-600">Start New Fast</DialogTitle>
-            <DialogDescription>Choose your fasting protocol and track your weight.</DialogDescription>
+            <DialogTitle className="text-2xl text-purple-600">{t('fasting.startNew')}</DialogTitle>
+            <DialogDescription>{t('fasting.startNewDesc')}</DialogDescription>
           </DialogHeader>
 
           <div className="space-y-4 mt-4">
             <div>
-              <Label className="text-sm font-medium text-gray-700 mb-2 block">Fasting Protocol</Label>
+              <Label className="text-sm font-medium text-gray-700 mb-2 block">{t('fasting.protocol')}</Label>
               <div className="grid grid-cols-2 gap-2">
                 {FASTING_PROTOCOLS.map((p) => (
                   <button
@@ -547,7 +549,7 @@ export default function FastingTimer() {
                     }`}
                   >
                     <div className="text-lg font-bold text-gray-800">{p.label}</div>
-                    <div className="text-xs text-gray-600">{p.description}</div>
+                    <div className="text-xs text-gray-600">{t(p.descKey)}</div>
                   </button>
                 ))}
               </div>
@@ -555,7 +557,7 @@ export default function FastingTimer() {
 
             <div>
               <Label htmlFor="weight" className="text-sm font-medium text-gray-700 mb-2 block">
-                Current Weight (kg) - Optional
+                {t('fasting.currentWeight')}
               </Label>
               <Input
                 id="weight"
@@ -574,13 +576,13 @@ export default function FastingTimer() {
                 variant="outline"
                 className="flex-1"
               >
-                Cancel
+                {t('common.cancel')}
               </Button>
               <Button
                 onClick={handleStartFast}
                 className="flex-1 bg-purple-600 hover:bg-purple-700"
               >
-                Start Fasting
+                {t('fasting.startFasting')}
               </Button>
             </div>
           </div>

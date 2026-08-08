@@ -25,6 +25,7 @@ import { Button } from "../components/ui/button";
 import { Label } from "../components/ui/label";
 import { Input } from "../components/ui/input";
 import { toast } from "sonner";
+import { useLanguage } from "../contexts/LanguageContext";
 import { getWorkoutLogs, createWorkoutLog, updateWorkoutLog, deleteWorkoutLog } from "../../lib/api";
 
 type WorkoutType = 'cardio' | 'strength' | 'yoga' | 'sports' | 'hiit' | 'walking' | 'cycling' | 'swimming';
@@ -44,22 +45,22 @@ type Workout = {
 };
 
 const WORKOUT_TYPES = [
-  { value: 'cardio', label: 'Cardio', icon: Activity, color: '#ef4444', emoji: '🏃' },
-  { value: 'strength', label: 'Strength', icon: Dumbbell, color: '#f59e0b', emoji: '💪' },
-  { value: 'yoga', label: 'Yoga', icon: Target, color: '#8b5cf6', emoji: '🧘' },
-  { value: 'sports', label: 'Sports', icon: Award, color: '#10b981', emoji: '⚽' },
-  { value: 'hiit', label: 'HIIT', icon: Zap, color: '#f43f5e', emoji: '⚡' },
-  { value: 'walking', label: 'Walking', icon: Activity, color: '#06b6d4', emoji: '🚶' },
-  { value: 'cycling', label: 'Cycling', icon: Activity, color: '#14b8a6', emoji: '🚴' },
-  { value: 'swimming', label: 'Swimming', icon: Activity, color: '#3b82f6', emoji: '🏊' },
+  { value: 'cardio', labelKey: 'workout.typeCardio', icon: Activity, color: '#ef4444', emoji: '🏃' },
+  { value: 'strength', labelKey: 'workout.typeStrength', icon: Dumbbell, color: '#f59e0b', emoji: '💪' },
+  { value: 'yoga', labelKey: 'workout.typeYoga', icon: Target, color: '#8b5cf6', emoji: '🧘' },
+  { value: 'sports', labelKey: 'workout.typeSports', icon: Award, color: '#10b981', emoji: '⚽' },
+  { value: 'hiit', labelKey: 'workout.typeHiit', icon: Zap, color: '#f43f5e', emoji: '⚡' },
+  { value: 'walking', labelKey: 'workout.typeWalking', icon: Activity, color: '#06b6d4', emoji: '🚶' },
+  { value: 'cycling', labelKey: 'workout.typeCycling', icon: Activity, color: '#14b8a6', emoji: '🚴' },
+  { value: 'swimming', labelKey: 'workout.typeSwimming', icon: Activity, color: '#3b82f6', emoji: '🏊' },
 ];
 
 const HEART_RATE_ZONES = [
-  { value: 'rest', label: 'Rest', range: '50-60%', color: '#94a3b8' },
-  { value: 'warmup', label: 'Warm-up', range: '60-70%', color: '#06b6d4' },
-  { value: 'fat-burn', label: 'Fat Burn', range: '70-80%', color: '#10b981' },
-  { value: 'cardio', label: 'Cardio', range: '80-90%', color: '#f59e0b' },
-  { value: 'peak', label: 'Peak', range: '90-100%', color: '#ef4444' },
+  { value: 'rest', labelKey: 'workout.zoneRest', range: '50-60%', color: '#94a3b8' },
+  { value: 'warmup', labelKey: 'workout.zoneWarmup', range: '60-70%', color: '#06b6d4' },
+  { value: 'fat-burn', labelKey: 'workout.zoneFatBurn', range: '70-80%', color: '#10b981' },
+  { value: 'cardio', labelKey: 'workout.zoneCardio', range: '80-90%', color: '#f59e0b' },
+  { value: 'peak', labelKey: 'workout.zonePeak', range: '90-100%', color: '#ef4444' },
 ];
 
 const generateMockWorkouts = (): Workout[] => {
@@ -125,6 +126,7 @@ const mapApiItem = (item: any): Workout => ({
 
 export default function WorkoutLogger() {
   const navigate = useNavigate();
+  const { t } = useLanguage();
   const uniqueId = useId();
 
   const [workouts, setWorkouts] = useState<Workout[]>([]);
@@ -153,7 +155,7 @@ export default function WorkoutLogger() {
         mapped.sort((a, b) => a.date.localeCompare(b.date));
         setWorkouts(mapped);
       })
-      .catch((err: any) => setLogsError(err.message ?? 'Failed to load workouts'))
+      .catch((err: any) => setLogsError(err.message ?? t('workout.loadError')))
       .finally(() => setLogsLoading(false));
   }, []);
 
@@ -189,7 +191,7 @@ export default function WorkoutLogger() {
 
   const handleAddWorkout = async () => {
     if (!formData.restDay && (!formData.name.trim() || !formData.duration)) {
-      toast.error('Please enter workout name and duration');
+      toast.error(t('workout.errNameDuration'));
       return;
     }
 
@@ -223,18 +225,18 @@ export default function WorkoutLogger() {
           prev.map(w => w.id === editingWorkout.id ? updated : w)
             .sort((a, b) => a.date.localeCompare(b.date))
         );
-        toast.success(formData.restDay ? 'Rest day updated!' : 'Workout updated!');
+        toast.success(formData.restDay ? t('workout.restUpdated') : t('workout.updated'));
       } else {
         const item = await createWorkoutLog(payload);
         const created = mapApiItem(item);
         setWorkouts(prev =>
           [...prev, created].sort((a, b) => a.date.localeCompare(b.date))
         );
-        toast.success(formData.restDay ? 'Rest day logged!' : 'Workout logged!');
+        toast.success(formData.restDay ? t('workout.restLogged') : t('workout.logged'));
       }
       resetForm();
     } catch (err: any) {
-      toast.error(err.message ?? 'Failed to save workout');
+      toast.error(err.message ?? t('workout.saveError'));
     } finally {
       setSaving(false);
     }
@@ -273,13 +275,13 @@ export default function WorkoutLogger() {
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm('Delete this workout?')) return;
+    if (!confirm(t('workout.confirmDelete'))) return;
     try {
       await deleteWorkoutLog(id);
       setWorkouts(prev => prev.filter(w => w.id !== id));
-      toast.success('Workout deleted');
+      toast.success(t('workout.deleted'));
     } catch (err: any) {
-      toast.error(err.message ?? 'Failed to delete workout');
+      toast.error(err.message ?? t('workout.deleteError'));
     }
   };
 
@@ -309,7 +311,7 @@ export default function WorkoutLogger() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-orange-50 via-red-50 to-pink-50 pb-24">
       <PageHeader
-        title="Workout Logger"
+        title={t('workout.title')}
         showHome
         className="bg-gradient-to-r from-orange-600 to-red-600"
         actions={
@@ -335,7 +337,7 @@ export default function WorkoutLogger() {
         {logsLoading && (
           <div className="bg-white rounded-3xl shadow-xl p-8 flex items-center justify-center gap-3 text-gray-400">
             <Dumbbell className="h-5 w-5 animate-pulse" />
-            <span className="text-sm">Loading workouts…</span>
+            <span className="text-sm">{t('workout.loading')}</span>
           </div>
         )}
 
@@ -346,10 +348,10 @@ export default function WorkoutLogger() {
               <div className="bg-orange-100 rounded-full p-2">
                 <Flame className="h-5 w-5 text-orange-600" />
               </div>
-              <span className="text-sm text-gray-600">Streak</span>
+              <span className="text-sm text-gray-600">{t('workout.streak')}</span>
             </div>
             <div className="text-3xl font-bold text-gray-800">{currentStreak}</div>
-            <div className="text-xs text-gray-500">days</div>
+            <div className="text-xs text-gray-500">{t('workout.days')}</div>
           </div>
 
           <div className="bg-white rounded-2xl p-5 shadow-lg">
@@ -357,10 +359,10 @@ export default function WorkoutLogger() {
               <div className="bg-red-100 rounded-full p-2">
                 <Dumbbell className="h-5 w-5 text-red-600" />
               </div>
-              <span className="text-sm text-gray-600">Workouts</span>
+              <span className="text-sm text-gray-600">{t('workout.workouts')}</span>
             </div>
             <div className="text-3xl font-bold text-gray-800">{totalWorkouts}</div>
-            <div className="text-xs text-gray-500">total sessions</div>
+            <div className="text-xs text-gray-500">{t('workout.totalSessions')}</div>
           </div>
 
           <div className="bg-white rounded-2xl p-5 shadow-lg">
@@ -368,10 +370,10 @@ export default function WorkoutLogger() {
               <div className="bg-blue-100 rounded-full p-2">
                 <Clock className="h-5 w-5 text-blue-600" />
               </div>
-              <span className="text-sm text-gray-600">Avg Duration</span>
+              <span className="text-sm text-gray-600">{t('workout.avgDuration')}</span>
             </div>
             <div className="text-3xl font-bold text-gray-800">{Math.round(avgDuration)}</div>
-            <div className="text-xs text-gray-500">minutes</div>
+            <div className="text-xs text-gray-500">{t('workout.minutes')}</div>
           </div>
 
           <div className="bg-white rounded-2xl p-5 shadow-lg">
@@ -379,16 +381,16 @@ export default function WorkoutLogger() {
               <div className="bg-green-100 rounded-full p-2">
                 <Flame className="h-5 w-5 text-green-600" />
               </div>
-              <span className="text-sm text-gray-600">Calories</span>
+              <span className="text-sm text-gray-600">{t('workout.calories')}</span>
             </div>
             <div className="text-3xl font-bold text-gray-800">{Math.round(totalCalories / 1000)}k</div>
-            <div className="text-xs text-gray-500">total burned</div>
+            <div className="text-xs text-gray-500">{t('workout.totalBurned')}</div>
           </div>
         </div>
 
         {/* Weekly Duration Chart */}
         <div className="bg-white rounded-3xl shadow-xl p-6">
-          <h3 className="text-lg font-semibold text-gray-800 mb-4">Weekly Activity (Last 14 Days)</h3>
+          <h3 className="text-lg font-semibold text-gray-800 mb-4">{t('workout.weeklyActivity')}</h3>
 
           <ResponsiveContainer width="100%" height={200}>
             <BarChart data={chartData}>
@@ -415,7 +417,7 @@ export default function WorkoutLogger() {
 
         {/* Performance Trend */}
         <div className="bg-white rounded-3xl shadow-xl p-6">
-          <h3 className="text-lg font-semibold text-gray-800 mb-4">Calorie Burn Trend</h3>
+          <h3 className="text-lg font-semibold text-gray-800 mb-4">{t('workout.calorieTrend')}</h3>
 
           <ResponsiveContainer width="100%" height={180}>
             <AreaChart data={performanceTrend}>
@@ -449,7 +451,7 @@ export default function WorkoutLogger() {
 
         {/* Recent Workouts */}
         <div className="bg-white rounded-3xl shadow-xl p-6">
-          <h3 className="text-lg font-semibold text-gray-800 mb-4">Recent Workouts</h3>
+          <h3 className="text-lg font-semibold text-gray-800 mb-4">{t('workout.recent')}</h3>
 
           <div className="space-y-3">
             {last7Days.slice().reverse().map(workout => {
@@ -500,7 +502,7 @@ export default function WorkoutLogger() {
                       {workout.restDay && (
                         <div className="flex items-center gap-2 mt-2">
                           <Coffee className="h-4 w-4 text-gray-500" />
-                          <span className="text-xs text-gray-600">Recovery day</span>
+                          <span className="text-xs text-gray-600">{t('workout.recoveryDay')}</span>
                         </div>
                       )}
                     </div>
@@ -530,16 +532,16 @@ export default function WorkoutLogger() {
         <div className="bg-gradient-to-br from-orange-50 to-red-50 rounded-3xl shadow-xl p-6 border border-orange-200">
           <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
             <TrendingUp className="h-5 w-5 text-orange-600" />
-            Performance Tips
+            {t('workout.perfTips')}
           </h3>
 
           <div className="space-y-3">
             <div className="flex items-start gap-3 p-3 bg-white rounded-xl">
               <CheckCircle className="h-5 w-5 text-green-600 flex-shrink-0 mt-0.5" />
               <div>
-                <div className="text-sm font-semibold text-gray-800 mb-1">Rest Days Matter</div>
+                <div className="text-sm font-semibold text-gray-800 mb-1">{t('workout.tip1Title')}</div>
                 <div className="text-sm text-gray-600">
-                  Aim for 1-2 rest days per week for optimal muscle recovery and growth.
+                  {t('workout.tip1Body')}
                 </div>
               </div>
             </div>
@@ -547,9 +549,9 @@ export default function WorkoutLogger() {
             <div className="flex items-start gap-3 p-3 bg-white rounded-xl">
               <Heart className="h-5 w-5 text-red-600 flex-shrink-0 mt-0.5" />
               <div>
-                <div className="text-sm font-semibold text-gray-800 mb-1">Heart Rate Zones</div>
+                <div className="text-sm font-semibold text-gray-800 mb-1">{t('workout.tip2Title')}</div>
                 <div className="text-sm text-gray-600">
-                  Train in different HR zones: 70-80% for fat burn, 80-90% for cardio fitness.
+                  {t('workout.tip2Body')}
                 </div>
               </div>
             </div>
@@ -557,9 +559,9 @@ export default function WorkoutLogger() {
             <div className="flex items-start gap-3 p-3 bg-white rounded-xl">
               <TrendingUp className="h-5 w-5 text-blue-600 flex-shrink-0 mt-0.5" />
               <div>
-                <div className="text-sm font-semibold text-gray-800 mb-1">Progressive Overload</div>
+                <div className="text-sm font-semibold text-gray-800 mb-1">{t('workout.tip3Title')}</div>
                 <div className="text-sm text-gray-600">
-                  Gradually increase duration or intensity by 5-10% each week for continuous improvement.
+                  {t('workout.tip3Body')}
                 </div>
               </div>
             </div>
@@ -572,17 +574,17 @@ export default function WorkoutLogger() {
         <DialogContent className="max-w-md max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle className="text-2xl text-orange-600">
-              {editingWorkout ? 'Edit Workout' : 'Log Workout'}
+              {editingWorkout ? t('workout.editTitle') : t('workout.logTitle')}
             </DialogTitle>
             <DialogDescription>
-              {editingWorkout ? 'Update your workout details.' : 'Record your exercise session.'}
+              {editingWorkout ? t('workout.editDesc') : t('workout.logDesc')}
             </DialogDescription>
           </DialogHeader>
 
           <div className="space-y-4 mt-4">
             <div>
               <Label htmlFor="date" className="text-sm font-medium text-gray-700 mb-2 block">
-                Date
+                {t('sleep.date')}
               </Label>
               <Input
                 id="date"
@@ -602,14 +604,14 @@ export default function WorkoutLogger() {
                 className="w-4 h-4"
               />
               <Label htmlFor="restDay" className="text-sm font-medium text-gray-700 cursor-pointer">
-                This is a rest day
+                {t('workout.restDayLabel')}
               </Label>
             </div>
 
             {!formData.restDay && (
               <>
                 <div>
-                  <Label className="text-sm font-medium text-gray-700 mb-2 block">Workout Type</Label>
+                  <Label className="text-sm font-medium text-gray-700 mb-2 block">{t('workout.workoutType')}</Label>
                   <div className="grid grid-cols-2 gap-2">
                     {WORKOUT_TYPES.slice(0, 4).map((type) => (
                       <button
@@ -622,7 +624,7 @@ export default function WorkoutLogger() {
                         }`}
                       >
                         <span className="text-xl">{type.emoji}</span>
-                        <span>{type.label}</span>
+                        <span>{t(type.labelKey)}</span>
                       </button>
                     ))}
                   </div>
@@ -630,11 +632,11 @@ export default function WorkoutLogger() {
 
                 <div>
                   <Label htmlFor="name" className="text-sm font-medium text-gray-700 mb-2 block">
-                    Workout Name *
+                    {t('workout.workoutName')}
                   </Label>
                   <Input
                     id="name"
-                    placeholder="e.g., Morning Run"
+                    placeholder={t('workout.namePlaceholder')}
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                     className="h-12"
@@ -644,7 +646,7 @@ export default function WorkoutLogger() {
                 <div className="grid grid-cols-2 gap-3">
                   <div>
                     <Label htmlFor="duration" className="text-sm font-medium text-gray-700 mb-2 block">
-                      Duration (min) *
+                      {t('workout.durationLabel')}
                     </Label>
                     <Input
                       id="duration"
@@ -658,7 +660,7 @@ export default function WorkoutLogger() {
 
                   <div>
                     <Label htmlFor="calories" className="text-sm font-medium text-gray-700 mb-2 block">
-                      Calories
+                      {t('workout.calories')}
                     </Label>
                     <Input
                       id="calories"
@@ -674,7 +676,7 @@ export default function WorkoutLogger() {
                 <div className="grid grid-cols-2 gap-3">
                   <div>
                     <Label htmlFor="heartRate" className="text-sm font-medium text-gray-700 mb-2 block">
-                      Avg Heart Rate
+                      {t('workout.avgHeartRate')}
                     </Label>
                     <Input
                       id="heartRate"
@@ -687,7 +689,7 @@ export default function WorkoutLogger() {
                   </div>
 
                   <div>
-                    <Label className="text-sm font-medium text-gray-700 mb-2 block">HR Zone</Label>
+                    <Label className="text-sm font-medium text-gray-700 mb-2 block">{t('workout.hrZone')}</Label>
                     <select
                       value={formData.heartRateZone}
                       onChange={(e) => setFormData({ ...formData, heartRateZone: e.target.value as HeartRateZone })}
@@ -695,7 +697,7 @@ export default function WorkoutLogger() {
                     >
                       {HEART_RATE_ZONES.map(zone => (
                         <option key={zone.value} value={zone.value}>
-                          {zone.label} ({zone.range})
+                          {t(zone.labelKey)} ({zone.range})
                         </option>
                       ))}
                     </select>
@@ -704,11 +706,11 @@ export default function WorkoutLogger() {
 
                 <div>
                   <Label htmlFor="notes" className="text-sm font-medium text-gray-700 mb-2 block">
-                    Notes (Optional)
+                    {t('workout.notesOptional')}
                   </Label>
                   <Input
                     id="notes"
-                    placeholder="e.g., Felt strong today"
+                    placeholder={t('workout.notesPlaceholder')}
                     value={formData.notes}
                     onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
                     className="h-12"
@@ -719,14 +721,14 @@ export default function WorkoutLogger() {
 
             <div className="flex gap-3 pt-4">
               <Button onClick={resetForm} variant="outline" className="flex-1">
-                Cancel
+                {t('common.cancel')}
               </Button>
               <Button
                 onClick={handleAddWorkout}
                 disabled={saving}
                 className="flex-1 bg-orange-600 hover:bg-orange-700 disabled:opacity-60"
               >
-                {saving ? 'Saving…' : editingWorkout ? 'Update' : 'Log Workout'}
+                {saving ? t('common.saving') : editingWorkout ? t('workout.update') : t('workout.logTitle')}
               </Button>
             </div>
           </div>

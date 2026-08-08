@@ -25,6 +25,7 @@ import { Button } from "../components/ui/button";
 import { Label } from "../components/ui/label";
 import { Input } from "../components/ui/input";
 import { toast } from "sonner";
+import { useLanguage } from "../contexts/LanguageContext";
 import { getSleepLogs, createSleepLog } from "../../lib/api";
 
 type SleepStage = 'deep' | 'light' | 'rem' | 'awake';
@@ -47,10 +48,10 @@ type SleepSession = {
 };
 
 const SLEEP_STAGE_INFO = {
-  deep: { label: 'Deep', color: '#3b82f6', description: 'Physical recovery' },
-  light: { label: 'Light', color: '#60a5fa', description: 'Memory consolidation' },
-  rem: { label: 'REM', color: '#a78bfa', description: 'Brain processing' },
-  awake: { label: 'Awake', color: '#f59e0b', description: 'Interruptions' },
+  deep: { labelKey: 'sleep.stageDeep', color: '#3b82f6', descKey: 'sleep.descDeep' },
+  light: { labelKey: 'sleep.stageLight', color: '#60a5fa', descKey: 'sleep.descLight' },
+  rem: { labelKey: 'sleep.stageRem', color: '#a78bfa', descKey: 'sleep.descRem' },
+  awake: { labelKey: 'sleep.stageAwake', color: '#f59e0b', descKey: 'sleep.descAwake' },
 };
 
 const generateMockSleepData = (): SleepSession[] => {
@@ -100,7 +101,7 @@ const calculateBedtimeRecommendation = (sleepSessions: SleepSession[]) => {
       recommendedBedtime: '22:30',
       recommendedWakeTime: '06:30',
       targetHours: 8,
-      reasoning: 'Optimal sleep window for most adults',
+      reasonKey: 'sleep.reasonDefault',
     };
   }
 
@@ -115,9 +116,7 @@ const calculateBedtimeRecommendation = (sleepSessions: SleepSession[]) => {
     recommendedBedtime: '22:30',
     recommendedWakeTime: '06:30',
     targetHours,
-    reasoning: avgQuality >= 70
-      ? 'Your sleep quality is good. Maintain consistency.'
-      : 'Increase sleep duration to improve quality.',
+    reasonKey: avgQuality >= 70 ? 'sleep.reasonGood' : 'sleep.reasonIncrease',
   };
 };
 
@@ -154,6 +153,7 @@ const mapApiItem = (item: any): SleepSession => {
 
 export default function SleepTracker() {
   const navigate = useNavigate();
+  const { t } = useLanguage();
   const uniqueId = useId();
 
   const [sleepSessions, setSleepSessions] = useState<SleepSession[]>([]);
@@ -177,7 +177,7 @@ export default function SleepTracker() {
         sessions.sort((a, b) => a.date.localeCompare(b.date));
         setSleepSessions(sessions);
       })
-      .catch((err: any) => setLogsError(err.message ?? 'Failed to load sleep data'))
+      .catch((err: any) => setLogsError(err.message ?? t('sleep.loadError')))
       .finally(() => setLogsLoading(false));
   }, []);
 
@@ -231,7 +231,7 @@ export default function SleepTracker() {
         const filtered = prev.filter(s => s.date !== newSession.date);
         return [...filtered, newSession].sort((a, b) => a.date.localeCompare(b.date));
       });
-      toast.success('Sleep session logged!');
+      toast.success(t('sleep.logged'));
       setShowAddDialog(false);
       setFormData({
         date: new Date().toISOString().split('T')[0],
@@ -241,7 +241,7 @@ export default function SleepTracker() {
         notes: '',
       });
     } catch (err: any) {
-      toast.error(err.message ?? 'Failed to save sleep session');
+      toast.error(err.message ?? t('sleep.saveError'));
     } finally {
       setSaving(false);
     }
@@ -264,7 +264,7 @@ export default function SleepTracker() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-indigo-50 via-purple-50 to-pink-50 pb-24">
       <PageHeader
-        title="Sleep Tracker"
+        title={t('sleep.title')}
         showHome
         className="bg-gradient-to-r from-indigo-600 to-purple-600"
         actions={
@@ -294,18 +294,18 @@ export default function SleepTracker() {
           <div className="text-center mb-6">
             <div className="inline-flex items-center gap-2 px-4 py-2 bg-purple-100 rounded-full mb-4">
               <Moon className="h-5 w-5 text-purple-600" />
-              <span className="text-sm font-semibold text-purple-700">7-Day Average</span>
+              <span className="text-sm font-semibold text-purple-700">{t('sleep.sevenDayAvg')}</span>
             </div>
 
             <div className="text-6xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600 mb-2">
               {Math.round(avgQuality)}
             </div>
-            <div className="text-gray-600 mb-4">Sleep Quality Score</div>
+            <div className="text-gray-600 mb-4">{t('sleep.qualityScore')}</div>
 
             <div className="flex items-center justify-center gap-6 text-sm">
               <div className="flex items-center gap-2">
                 <Clock className="h-4 w-4 text-gray-500" />
-                <span className="text-gray-700">{(avgDuration / 60).toFixed(1)}h avg</span>
+                <span className="text-gray-700">{(avgDuration / 60).toFixed(1)}h {t('sleep.avgSuffix')}</span>
               </div>
               <div className="flex items-center gap-2">
                 {avgQuality >= 70 ? (
@@ -314,7 +314,7 @@ export default function SleepTracker() {
                   <TrendingDown className="h-4 w-4 text-orange-500" />
                 )}
                 <span className={avgQuality >= 70 ? 'text-green-600' : 'text-orange-600'}>
-                  {avgQuality >= 70 ? 'Good' : 'Needs Improvement'}
+                  {avgQuality >= 70 ? t('sleep.good') : t('sleep.needsImprovement')}
                 </span>
               </div>
             </div>
@@ -323,7 +323,7 @@ export default function SleepTracker() {
           {/* Sleep Stage Breakdown - Last Night */}
           {todaySession && (
             <div className="mt-6 pt-6 border-t border-gray-200">
-              <h4 className="text-sm font-semibold text-gray-700 mb-3 text-center">Last Night's Sleep</h4>
+              <h4 className="text-sm font-semibold text-gray-700 mb-3 text-center">{t('sleep.lastNight')}</h4>
 
               <div className="w-full bg-gray-200 rounded-full h-8 overflow-hidden mb-3">
                 {Object.entries(todaySession.stages).map(([stage, minutes]) => {
@@ -337,7 +337,7 @@ export default function SleepTracker() {
                         width: `${percentage}%`,
                         backgroundColor: stageInfo.color,
                       }}
-                      title={`${stageInfo.label}: ${minutes}min`}
+                      title={`${t(stageInfo.labelKey)}: ${minutes}min`}
                     />
                   );
                 })}
@@ -351,7 +351,7 @@ export default function SleepTracker() {
                     <div key={stage} className="flex items-center gap-2">
                       <div className="w-3 h-3 rounded-full" style={{ backgroundColor: stageInfo.color }} />
                       <div className="flex-1">
-                        <div className="text-xs font-medium text-gray-700">{stageInfo.label}</div>
+                        <div className="text-xs font-medium text-gray-700">{t(stageInfo.labelKey)}</div>
                         <div className="text-xs text-gray-500">{minutes}min</div>
                       </div>
                     </div>
@@ -368,7 +368,7 @@ export default function SleepTracker() {
             <div className="bg-gradient-to-br from-indigo-500 to-purple-500 rounded-xl p-2">
               <Sparkles className="h-5 w-5 text-white" />
             </div>
-            <h3 className="text-lg font-semibold text-gray-800">Personalized Recommendation</h3>
+            <h3 className="text-lg font-semibold text-gray-800">{t('sleep.recommendation')}</h3>
           </div>
 
           <div className="space-y-3">
@@ -376,8 +376,8 @@ export default function SleepTracker() {
               <div className="flex items-center gap-3">
                 <Moon className="h-6 w-6 text-indigo-600" />
                 <div>
-                  <div className="text-sm font-semibold text-gray-700">Bedtime</div>
-                  <div className="text-xs text-gray-500">Optimal sleep onset</div>
+                  <div className="text-sm font-semibold text-gray-700">{t('sleep.bedtime')}</div>
+                  <div className="text-xs text-gray-500">{t('sleep.bedtimeDesc')}</div>
                 </div>
               </div>
               <div className="text-2xl font-bold text-indigo-600">{recommendation.recommendedBedtime}</div>
@@ -387,8 +387,8 @@ export default function SleepTracker() {
               <div className="flex items-center gap-3">
                 <Sun className="h-6 w-6 text-amber-500" />
                 <div>
-                  <div className="text-sm font-semibold text-gray-700">Wake Time</div>
-                  <div className="text-xs text-gray-500">Start your day fresh</div>
+                  <div className="text-sm font-semibold text-gray-700">{t('sleep.wakeTime')}</div>
+                  <div className="text-xs text-gray-500">{t('sleep.wakeTimeDesc')}</div>
                 </div>
               </div>
               <div className="text-2xl font-bold text-amber-600">{recommendation.recommendedWakeTime}</div>
@@ -399,10 +399,10 @@ export default function SleepTracker() {
                 <Info className="h-5 w-5 text-purple-600 flex-shrink-0 mt-0.5" />
                 <div>
                   <div className="text-sm font-semibold text-gray-800 mb-1">
-                    Target: {recommendation.targetHours} hours
+                    {t('sleep.targetPrefix')}: {recommendation.targetHours} {t('sleep.hours')}
                   </div>
                   <div className="text-sm text-gray-600">
-                    {recommendation.reasoning}
+                    {t(recommendation.reasonKey)}
                   </div>
                 </div>
               </div>
@@ -412,7 +412,7 @@ export default function SleepTracker() {
 
         {/* Sleep Duration Chart */}
         <div className="bg-white rounded-3xl shadow-xl p-6">
-          <h3 className="text-lg font-semibold text-gray-800 mb-4">Sleep Duration (7 Days)</h3>
+          <h3 className="text-lg font-semibold text-gray-800 mb-4">{t('sleep.durationChart')}</h3>
 
           <ResponsiveContainer width="100%" height={200}>
             <BarChart data={chartData}>
@@ -439,7 +439,7 @@ export default function SleepTracker() {
 
         {/* Sleep Quality Trend */}
         <div className="bg-white rounded-3xl shadow-xl p-6">
-          <h3 className="text-lg font-semibold text-gray-800 mb-4">Quality Trend</h3>
+          <h3 className="text-lg font-semibold text-gray-800 mb-4">{t('sleep.qualityTrend')}</h3>
 
           <ResponsiveContainer width="100%" height={180}>
             <AreaChart data={chartData}>
@@ -472,7 +472,7 @@ export default function SleepTracker() {
 
           <div className="flex items-center justify-center gap-2 mt-3">
             <div className="w-3 h-3 rounded-full bg-purple-500" />
-            <span className="text-sm text-gray-600">Quality Score (0-100)</span>
+            <span className="text-sm text-gray-600">{t('sleep.qualityLegend')}</span>
           </div>
         </div>
 
@@ -480,16 +480,16 @@ export default function SleepTracker() {
         <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-3xl shadow-xl p-6 border border-blue-200">
           <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
             <Brain className="h-5 w-5 text-indigo-600" />
-            Sleep Science
+            {t('sleep.science')}
           </h3>
 
           <div className="space-y-3">
             <div className="flex items-start gap-3 p-3 bg-white rounded-xl">
               <Zap className="h-5 w-5 text-blue-600 flex-shrink-0 mt-0.5" />
               <div>
-                <div className="text-sm font-semibold text-gray-800 mb-1">Deep Sleep Goal</div>
+                <div className="text-sm font-semibold text-gray-800 mb-1">{t('sleep.tip1Title')}</div>
                 <div className="text-sm text-gray-600">
-                  Aim for 15-20% of total sleep in deep stage for optimal physical recovery.
+                  {t('sleep.tip1Body')}
                 </div>
               </div>
             </div>
@@ -497,9 +497,9 @@ export default function SleepTracker() {
             <div className="flex items-start gap-3 p-3 bg-white rounded-xl">
               <Brain className="h-5 w-5 text-purple-600 flex-shrink-0 mt-0.5" />
               <div>
-                <div className="text-sm font-semibold text-gray-800 mb-1">REM Importance</div>
+                <div className="text-sm font-semibold text-gray-800 mb-1">{t('sleep.tip2Title')}</div>
                 <div className="text-sm text-gray-600">
-                  20-25% REM sleep is critical for memory consolidation and learning.
+                  {t('sleep.tip2Body')}
                 </div>
               </div>
             </div>
@@ -507,9 +507,9 @@ export default function SleepTracker() {
             <div className="flex items-start gap-3 p-3 bg-white rounded-xl">
               <CheckCircle className="h-5 w-5 text-green-600 flex-shrink-0 mt-0.5" />
               <div>
-                <div className="text-sm font-semibold text-gray-800 mb-1">Consistency Wins</div>
+                <div className="text-sm font-semibold text-gray-800 mb-1">{t('sleep.tip3Title')}</div>
                 <div className="text-sm text-gray-600">
-                  Going to bed and waking up at the same time daily improves sleep quality by 30%.
+                  {t('sleep.tip3Body')}
                 </div>
               </div>
             </div>
@@ -517,9 +517,9 @@ export default function SleepTracker() {
             <div className="flex items-start gap-3 p-3 bg-white rounded-xl">
               <Heart className="h-5 w-5 text-red-600 flex-shrink-0 mt-0.5" />
               <div>
-                <div className="text-sm font-semibold text-gray-800 mb-1">Recovery Metric</div>
+                <div className="text-sm font-semibold text-gray-800 mb-1">{t('sleep.tip4Title')}</div>
                 <div className="text-sm text-gray-600">
-                  Less than 5% awake time indicates undisturbed, restorative sleep.
+                  {t('sleep.tip4Body')}
                 </div>
               </div>
             </div>
@@ -528,7 +528,7 @@ export default function SleepTracker() {
 
         {/* Recent Sleep Sessions */}
         <div className="bg-white rounded-3xl shadow-xl p-6">
-          <h3 className="text-lg font-semibold text-gray-800 mb-4">Recent Sessions</h3>
+          <h3 className="text-lg font-semibold text-gray-800 mb-4">{t('sleep.recentSessions')}</h3>
 
           <div className="space-y-3">
             {last7Days.slice().reverse().map((session) => (
@@ -549,7 +549,7 @@ export default function SleepTracker() {
                     session.quality >= 50 ? 'bg-amber-100 text-amber-700' :
                     'bg-red-100 text-red-700'
                   }`}>
-                    {session.quality} score
+                    {session.quality} {t('sleep.scoreSuffix')}
                   </div>
                 </div>
 
@@ -578,14 +578,14 @@ export default function SleepTracker() {
       <Dialog open={showAddDialog} onOpenChange={setShowAddDialog}>
         <DialogContent className="max-w-md">
           <DialogHeader>
-            <DialogTitle className="text-2xl text-indigo-600">Log Sleep Session</DialogTitle>
-            <DialogDescription>Record your sleep data including bedtime, wake time, and how you felt.</DialogDescription>
+            <DialogTitle className="text-2xl text-indigo-600">{t('sleep.logSession')}</DialogTitle>
+            <DialogDescription>{t('sleep.logSessionDesc')}</DialogDescription>
           </DialogHeader>
 
           <div className="space-y-4 mt-4">
             <div>
               <Label htmlFor="date" className="text-sm font-medium text-gray-700 mb-2 block">
-                Date
+                {t('sleep.date')}
               </Label>
               <Input
                 id="date"
@@ -599,7 +599,7 @@ export default function SleepTracker() {
             <div className="grid grid-cols-2 gap-3">
               <div>
                 <Label htmlFor="bedtime" className="text-sm font-medium text-gray-700 mb-2 block">
-                  Bedtime
+                  {t('sleep.bedtime')}
                 </Label>
                 <Input
                   id="bedtime"
@@ -612,7 +612,7 @@ export default function SleepTracker() {
 
               <div>
                 <Label htmlFor="wakeTime" className="text-sm font-medium text-gray-700 mb-2 block">
-                  Wake Time
+                  {t('sleep.wakeTime')}
                 </Label>
                 <Input
                   id="wakeTime"
@@ -626,7 +626,7 @@ export default function SleepTracker() {
 
             <div>
               <Label className="text-sm font-medium text-gray-700 mb-2 block">
-                How did you feel?
+                {t('sleep.howFeel')}
               </Label>
               <div className="grid grid-cols-4 gap-2">
                 {(['excellent', 'good', 'fair', 'poor'] as const).map((mood) => (
@@ -640,7 +640,7 @@ export default function SleepTracker() {
                     }`}
                   >
                     {mood === 'excellent' ? '😄' : mood === 'good' ? '🙂' : mood === 'fair' ? '😐' : '😴'}
-                    <div className="text-xs mt-1 capitalize">{mood}</div>
+                    <div className="text-xs mt-1">{t(mood === 'excellent' ? 'sleep.moodExcellent' : mood === 'good' ? 'sleep.moodGood' : mood === 'fair' ? 'sleep.moodFair' : 'sleep.moodPoor')}</div>
                   </button>
                 ))}
               </div>
@@ -652,14 +652,14 @@ export default function SleepTracker() {
                 variant="outline"
                 className="flex-1"
               >
-                Cancel
+                {t('common.cancel')}
               </Button>
               <Button
                 onClick={handleAddSleep}
                 disabled={saving}
                 className="flex-1 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-60"
               >
-                {saving ? 'Saving…' : 'Save Session'}
+                {saving ? t('common.saving') : t('sleep.saveSession')}
               </Button>
             </div>
           </div>

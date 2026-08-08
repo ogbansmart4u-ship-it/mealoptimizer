@@ -20,6 +20,7 @@ import BottomNav from "../components/BottomNav";
 import { SkeletonList } from '../components/SkeletonLoader';
 import { Button } from "../components/ui/button";
 import { toast } from "sonner";
+import { useLanguage } from "../contexts/LanguageContext";
 import { getHydrationLogs, createHydrationLog, deleteHydrationLog } from "../../lib/api";
 
 type HydrationLog = {
@@ -36,10 +37,10 @@ type HydrationData = {
 };
 
 const CONTAINER_SIZES = [
-  { label: 'Small Cup', amount: 250, icon: Coffee, ml: '250ml' },
-  { label: 'Glass', amount: 350, icon: Droplet, ml: '350ml' },
-  { label: 'Bottle', amount: 500, icon: Wine, ml: '500ml' },
-  { label: 'Large Bottle', amount: 1000, icon: Wine, ml: '1L' },
+  { tKey: 'hydration.smallCup', amount: 250, icon: Coffee, ml: '250ml' },
+  { tKey: 'hydration.glass', amount: 350, icon: Droplet, ml: '350ml' },
+  { tKey: 'hydration.bottle', amount: 500, icon: Wine, ml: '500ml' },
+  { tKey: 'hydration.largeBottle', amount: 1000, icon: Wine, ml: '1L' },
 ];
 
 const generateHourlyData = (logs: HydrationLog[]) => {
@@ -91,6 +92,7 @@ const calculateDailyGoal = () => {
 
 export default function HydrationTracker() {
   const navigate = useNavigate();
+  const { t } = useLanguage();
   const uniqueId = useId();
   const today = new Date().toISOString().split('T')[0];
 
@@ -121,7 +123,7 @@ export default function HydrationTracker() {
         const total = todayLogs.reduce((sum, l) => sum + l.amount, 0);
         setHydrationData({ date: today, logs: todayLogs, totalIntake: total });
       })
-      .catch((err: any) => setLogsError(err.message ?? "Failed to load hydration data"))
+      .catch((err: any) => setLogsError(err.message ?? t('hydration.loadError')))
       .finally(() => setLogsLoading(false));
   }, []);
 
@@ -141,8 +143,8 @@ export default function HydrationTracker() {
 
       // Dehydration alert
       if (hydrationData.totalIntake < dailyGoal * 0.3 && hour >= 14) {
-        toast.warning("Hydration Alert", {
-          description: "You're behind on your hydration goal. Drink some water!",
+        toast.warning(t('hydration.alertTitle'), {
+          description: t('hydration.alertBody'),
         });
       }
     };
@@ -172,9 +174,9 @@ export default function HydrationTracker() {
         totalIntake: prev.totalIntake + newLog.amount,
       }));
       setShowReminder(false);
-      toast.success(`Logged ${amount}ml of ${type}!`);
+      toast.success(`${t('hydration.loggedPrefix')} ${amount}ml (${type})`);
     } catch (err: any) {
-      toast.error(err.message ?? "Failed to log water intake");
+      toast.error(err.message ?? t('hydration.logError'));
     }
   };
 
@@ -189,9 +191,9 @@ export default function HydrationTracker() {
         logs: prev.logs.slice(0, -1),
         totalIntake: prev.totalIntake - lastLog.amount,
       }));
-      toast.info("Last entry removed");
+      toast.info(t('hydration.lastRemoved'));
     } catch (err: any) {
-      toast.error(err.message ?? "Failed to remove entry");
+      toast.error(err.message ?? t('hydration.removeError'));
     }
   };
 
@@ -201,10 +203,10 @@ export default function HydrationTracker() {
   // Hydration status
   const getHydrationStatus = () => {
     const percentage = (hydrationData.totalIntake / dailyGoal) * 100;
-    if (percentage >= 90) return { status: 'Excellent', color: '#10b981', icon: CheckCircle };
-    if (percentage >= 60) return { status: 'Good', color: '#3b82f6', icon: TrendingUp };
-    if (percentage >= 30) return { status: 'Fair', color: '#f59e0b', icon: Clock };
-    return { status: 'Low', color: '#ef4444', icon: AlertCircle };
+    if (percentage >= 90) return { status: t('hydration.excellent'), color: '#10b981', icon: CheckCircle };
+    if (percentage >= 60) return { status: t('hydration.good'), color: '#3b82f6', icon: TrendingUp };
+    if (percentage >= 30) return { status: t('hydration.fair'), color: '#f59e0b', icon: Clock };
+    return { status: t('hydration.low'), color: '#ef4444', icon: AlertCircle };
   };
 
   const hydrationStatus = getHydrationStatus();
@@ -213,7 +215,7 @@ export default function HydrationTracker() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-cyan-50 pb-24">
       <PageHeader
-        title="Hydration Tracker"
+        title={t('hydration.title')}
         showHome
         className="bg-gradient-to-r from-blue-500 to-cyan-500"
       />
@@ -236,10 +238,10 @@ export default function HydrationTracker() {
             <Clock className="h-5 w-5 text-amber-600 flex-shrink-0 mt-0.5" />
             <div className="flex-1">
               <div className="text-sm font-semibold text-amber-900 mb-1">
-                Time to Hydrate! 💧
+                {t('hydration.reminderTitle')}
               </div>
               <div className="text-sm text-amber-800">
-                It's been over 2 hours since your last drink. Your body needs water!
+                {t('hydration.reminderBody')}
               </div>
             </div>
             <button
@@ -317,7 +319,7 @@ export default function HydrationTracker() {
             ></div>
           </div>
           <div className="text-center text-sm text-gray-600">
-            {Math.round(progressPercentage)}% of daily goal
+            {Math.round(progressPercentage)}% {t('hydration.ofDailyGoal')}
           </div>
         </div>
 
@@ -325,7 +327,7 @@ export default function HydrationTracker() {
         <div className="bg-white rounded-3xl shadow-xl p-6">
           <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
             <Plus className="h-5 w-5 text-cyan-600" />
-            Quick Log
+            {t('hydration.quickLog')}
           </h3>
 
           <div className="grid grid-cols-2 gap-3">
@@ -333,12 +335,12 @@ export default function HydrationTracker() {
               const Icon = container.icon;
               return (
                 <button
-                  key={container.label}
+                  key={container.tKey}
                   onClick={() => logWater(container.amount)}
                   className="flex flex-col items-center gap-2 p-4 bg-gradient-to-br from-blue-50 to-cyan-50 hover:from-blue-100 hover:to-cyan-100 rounded-xl border-2 border-blue-200 hover:border-blue-400 transition-all"
                 >
                   <Icon className="h-8 w-8 text-blue-600" />
-                  <div className="text-sm font-semibold text-gray-800">{container.label}</div>
+                  <div className="text-sm font-semibold text-gray-800">{t(container.tKey)}</div>
                   <div className="text-xs text-gray-600">{container.ml}</div>
                 </button>
               );
@@ -351,7 +353,7 @@ export default function HydrationTracker() {
               className="w-full mt-4 flex items-center justify-center gap-2 p-3 bg-red-50 hover:bg-red-100 text-red-700 rounded-xl border border-red-200 transition-all"
             >
               <Minus className="h-4 w-4" />
-              <span className="text-sm font-medium">Undo Last Entry</span>
+              <span className="text-sm font-medium">{t('hydration.undoLast')}</span>
             </button>
           )}
         </div>
@@ -359,7 +361,7 @@ export default function HydrationTracker() {
         {/* Hourly Intake Chart */}
         <div className="bg-white rounded-3xl shadow-xl p-6">
           <h3 className="text-lg font-semibold text-gray-800 mb-4">
-            Intake Pattern (24h)
+            {t('hydration.intakePattern')}
           </h3>
 
           <ResponsiveContainer width="100%" height={200}>
@@ -399,13 +401,13 @@ export default function HydrationTracker() {
         {/* Today's Logs */}
         <div className="bg-white rounded-3xl shadow-xl p-6">
           <h3 className="text-lg font-semibold text-gray-800 mb-4">
-            Today's Log ({hydrationData.logs.length} entries)
+            {t('hydration.todaysLog')} ({hydrationData.logs.length} {t('hydration.entries')})
           </h3>
 
           {hydrationData.logs.length === 0 ? (
             <div className="text-center py-8 text-gray-500">
               <Droplet className="h-12 w-12 mx-auto mb-2 text-gray-300" />
-              <p>No entries yet. Start logging your water intake!</p>
+              <p>{t('hydration.noEntries')}</p>
             </div>
           ) : (
             <div className="space-y-2 max-h-64 overflow-y-auto">
@@ -444,7 +446,7 @@ export default function HydrationTracker() {
         <div className="bg-gradient-to-br from-cyan-50 to-blue-50 rounded-3xl shadow-xl p-6 border border-cyan-200">
           <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
             <Zap className="h-5 w-5 text-cyan-600" />
-            Hydration & Energy Connection
+            {t('hydration.energyTitle')}
           </h3>
 
           <div className="space-y-3">
@@ -452,10 +454,10 @@ export default function HydrationTracker() {
               <Activity className="h-5 w-5 text-blue-600 flex-shrink-0 mt-0.5" />
               <div>
                 <div className="text-sm font-semibold text-gray-800 mb-1">
-                  Peak Performance Window
+                  {t('hydration.tip1Title')}
                 </div>
                 <div className="text-sm text-gray-600">
-                  Drink 500ml within 2 hours of exercise for optimal hydration.
+                  {t('hydration.tip1Body')}
                 </div>
               </div>
             </div>
@@ -464,10 +466,10 @@ export default function HydrationTracker() {
               <Flame className="h-5 w-5 text-orange-600 flex-shrink-0 mt-0.5" />
               <div>
                 <div className="text-sm font-semibold text-gray-800 mb-1">
-                  Metabolism Boost
+                  {t('hydration.tip2Title')}
                 </div>
                 <div className="text-sm text-gray-600">
-                  Drinking 500ml of water can increase metabolism by 30% for 30-40 minutes.
+                  {t('hydration.tip2Body')}
                 </div>
               </div>
             </div>
@@ -476,10 +478,10 @@ export default function HydrationTracker() {
               <CheckCircle className="h-5 w-5 text-green-600 flex-shrink-0 mt-0.5" />
               <div>
                 <div className="text-sm font-semibold text-gray-800 mb-1">
-                  Engineer's Tip
+                  {t('hydration.tip3Title')}
                 </div>
                 <div className="text-sm text-gray-600">
-                  2% dehydration = 20% cognitive decline. Stay sharp, stay hydrated!
+                  {t('hydration.tip3Body')}
                 </div>
               </div>
             </div>

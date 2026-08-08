@@ -2,6 +2,7 @@ import { Scale, ChevronLeft, TrendingDown, TrendingUp, Trash2 } from "lucide-rea
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router";
 import OnboardingProgress from "../components/OnboardingProgress";
+import { useLanguage } from "../contexts/LanguageContext";
 import { getWeightLogs, createWeightLog, deleteWeightLog } from "../../lib/api";
 import { SkeletonRows } from "../components/SkeletonLoader";
 
@@ -14,6 +15,7 @@ interface WeightLog {
 
 export default function Weight() {
   const navigate = useNavigate();
+  const { t } = useLanguage();
   const [weight, setWeight] = useState("70");
   const [unit, setUnit] = useState<"kg" | "lbs">("kg");
   const [height, setHeight] = useState("170");
@@ -27,7 +29,7 @@ export default function Weight() {
   useEffect(() => {
     getWeightLogs()
       .then((items) => setWeightLogs(items ?? []))
-      .catch((err) => setLogsError(err.message ?? "Failed to load weight history"))
+      .catch((err) => setLogsError(err.message ?? t('weight.loadError')))
       .finally(() => setLogsLoading(false));
   }, []);
 
@@ -43,7 +45,7 @@ export default function Weight() {
       });
       setWeightLogs((prev) => [newLog, ...prev]);
     } catch (err: any) {
-      setSaveError(err.message ?? "Failed to save weight entry");
+      setSaveError(err.message ?? t('weight.saveError'));
     } finally {
       setSaving(false);
     }
@@ -70,10 +72,10 @@ export default function Weight() {
   };
 
   const getBMICategory = (bmi: number) => {
-    if (bmi < 18.5) return { text: "Underweight", color: "text-blue-600", bg: "bg-blue-50" };
-    if (bmi < 25) return { text: "Normal", color: "text-green-600", bg: "bg-green-50" };
-    if (bmi < 30) return { text: "Overweight", color: "text-yellow-600", bg: "bg-yellow-50" };
-    return { text: "Obese", color: "text-red-600", bg: "bg-red-50" };
+    if (bmi < 18.5) return { tKey: "weight.underweight", color: "text-blue-600", bg: "bg-blue-50" };
+    if (bmi < 25) return { tKey: "weight.normal", color: "text-green-600", bg: "bg-green-50" };
+    if (bmi < 30) return { tKey: "weight.overweight", color: "text-yellow-600", bg: "bg-yellow-50" };
+    return { tKey: "weight.obese", color: "text-red-600", bg: "bg-red-50" };
   };
 
   const bmi = parseFloat(calculateBMI());
@@ -90,7 +92,7 @@ export default function Weight() {
           >
             <ChevronLeft className="h-6 w-6" />
           </button>
-          <h1 className="text-2xl text-white flex-1">Weight & BMI</h1>
+          <h1 className="text-2xl text-white flex-1">{t('weight.title')}</h1>
           <Scale className="h-6 w-6 text-white" />
         </div>
       </div>
@@ -104,7 +106,7 @@ export default function Weight() {
       <div className="px-6 mt-6">
         {/* Weight Input */}
         <div className="bg-white rounded-3xl shadow-lg p-6 mb-6">
-          <h2 className="text-lg text-[#1f7a8c] mb-4">Current Weight</h2>
+          <h2 className="text-lg text-[#1f7a8c] mb-4">{t('weight.current')}</h2>
           <div className="flex gap-3 items-center mb-4">
             <input
               type="number"
@@ -140,7 +142,7 @@ export default function Weight() {
 
         {/* Height Input */}
         <div className="bg-white rounded-3xl shadow-lg p-6 mb-6">
-          <h2 className="text-lg text-[#1f7a8c] mb-4">Height</h2>
+          <h2 className="text-lg text-[#1f7a8c] mb-4">{t('profile.height')}</h2>
           <div className="flex gap-3 items-center mb-4">
             <input
               type="number"
@@ -176,21 +178,21 @@ export default function Weight() {
 
         {/* BMI Result */}
         <div className="bg-white rounded-3xl shadow-lg p-6 mb-6">
-          <h2 className="text-lg text-[#1f7a8c] mb-4">Your BMI</h2>
+          <h2 className="text-lg text-[#1f7a8c] mb-4">{t('weight.yourBmi')}</h2>
           <div className={`${category.bg} rounded-2xl p-6 mb-4`}>
             <div className="text-center mb-3">
               <div className={`text-5xl ${category.color} mb-2`}>{bmi}</div>
-              <div className={`text-lg ${category.color}`}>{category.text}</div>
+              <div className={`text-lg ${category.color}`}>{t(category.tKey)}</div>
             </div>
           </div>
 
           {/* BMI Scale */}
           <div className="space-y-2">
             <div className="flex justify-between items-center text-xs text-gray-600 mb-2">
-              <span>Underweight</span>
-              <span>Normal</span>
-              <span>Overweight</span>
-              <span>Obese</span>
+              <span>{t('weight.underweight')}</span>
+              <span>{t('weight.normal')}</span>
+              <span>{t('weight.overweight')}</span>
+              <span>{t('weight.obese')}</span>
             </div>
             <div className="h-3 bg-gradient-to-r from-blue-400 via-green-400 via-yellow-400 to-red-400 rounded-full"></div>
             <div className="flex justify-between text-xs text-gray-500">
@@ -205,13 +207,13 @@ export default function Weight() {
 
         {/* Weight History */}
         <div className="bg-white rounded-3xl shadow-lg p-6 mb-6">
-          <h2 className="text-lg text-[#1f7a8c] mb-4">Weight History</h2>
+          <h2 className="text-lg text-[#1f7a8c] mb-4">{t('weight.history')}</h2>
           {logsLoading ? (
             <SkeletonRows count={3} />
           ) : logsError ? (
             <div className="text-center py-4 text-red-500 text-sm">{logsError}</div>
           ) : weightLogs.length === 0 ? (
-            <div className="text-center py-6 text-gray-400 text-sm">No entries yet. Log your first weight below.</div>
+            <div className="text-center py-6 text-gray-400 text-sm">{t('weight.noEntries')}</div>
           ) : (
             <div className="space-y-2">
               {weightLogs.map((log) => (
@@ -243,27 +245,27 @@ export default function Weight() {
 
         {/* Weight Goal */}
         <div className="bg-white rounded-3xl shadow-lg p-6 mb-6">
-          <h2 className="text-lg text-[#e63946] mb-4">Weight Goals</h2>
+          <h2 className="text-lg text-[#e63946] mb-4">{t('weight.goals')}</h2>
           <div className="space-y-3">
             <button className="w-full flex items-center gap-4 p-4 bg-gradient-to-r from-blue-50 to-blue-100 rounded-2xl hover:shadow-md transition-all">
               <TrendingDown className="h-6 w-6 text-blue-600" />
               <div className="flex-1 text-left">
-                <p className="text-gray-800 font-medium">Lose Weight</p>
-                <p className="text-sm text-gray-600">Reduce body fat and reach target weight</p>
+                <p className="text-gray-800 font-medium">{t('weight.lose')}</p>
+                <p className="text-sm text-gray-600">{t('weight.loseDesc')}</p>
               </div>
             </button>
             <button className="w-full flex items-center gap-4 p-4 bg-gradient-to-r from-green-50 to-green-100 rounded-2xl hover:shadow-md transition-all">
               <div className="h-6 w-6 text-green-600 text-xl">⚖️</div>
               <div className="flex-1 text-left">
-                <p className="text-gray-800 font-medium">Maintain Weight</p>
-                <p className="text-sm text-gray-600">Keep your current healthy weight</p>
+                <p className="text-gray-800 font-medium">{t('weight.maintain')}</p>
+                <p className="text-sm text-gray-600">{t('weight.maintainDesc')}</p>
               </div>
             </button>
             <button className="w-full flex items-center gap-4 p-4 bg-gradient-to-r from-purple-50 to-purple-100 rounded-2xl hover:shadow-md transition-all">
               <TrendingUp className="h-6 w-6 text-purple-600" />
               <div className="flex-1 text-left">
-                <p className="text-gray-800 font-medium">Gain Weight</p>
-                <p className="text-sm text-gray-600">Build muscle and increase body mass</p>
+                <p className="text-gray-800 font-medium">{t('weight.gain')}</p>
+                <p className="text-sm text-gray-600">{t('weight.gainDesc')}</p>
               </div>
             </button>
           </div>
@@ -275,14 +277,14 @@ export default function Weight() {
             onClick={() => navigate("/age")}
             className="px-6 py-4 text-gray-600 hover:text-gray-800 transition-colors font-medium"
           >
-            Skip
+            {t('common.skip')}
           </button>
           <button
             onClick={async () => { await handleLogWeight(); navigate("/age"); }}
             disabled={saving}
             className="flex-1 bg-gradient-to-r from-[#1f7a8c] to-[#4ecdc4] text-white rounded-2xl py-4 shadow-lg hover:shadow-xl transition-all disabled:opacity-60"
           >
-            {saving ? "Saving…" : "Continue"}
+            {saving ? t('common.saving') : t('common.continue')}
           </button>
         </div>
       </div>

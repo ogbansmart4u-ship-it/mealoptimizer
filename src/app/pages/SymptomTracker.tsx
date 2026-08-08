@@ -2,6 +2,7 @@ import { useState, useEffect, useId } from "react";
 import { ArrowLeft, Plus, TrendingUp, AlertCircle, Calendar, Search, X } from "lucide-react";
 import { useNavigate } from "react-router";
 import { getSymptomLogs, createSymptomLog, updateSymptomLog, deleteSymptomLog } from "../../lib/api";
+import { useLanguage } from "../contexts/LanguageContext";
 import { SkeletonList } from "../components/SkeletonLoader";
 import {
   Dialog,
@@ -200,7 +201,9 @@ const mapApiItem = (item: any): Symptom => {
 
 export default function SymptomTracker() {
   const navigate = useNavigate();
+  const { t } = useLanguage();
   const uniqueId = useId();
+  const severityLabel = (s: Severity) => t(s === "mild" ? "symptom.mild" : s === "moderate" ? "symptom.moderate" : "symptom.severe");
   const [symptoms, setSymptoms] = useState<Symptom[]>([]);
   const [logsLoading, setLogsLoading] = useState(true);
   const [logsError, setLogsError] = useState<string | null>(null);
@@ -226,7 +229,7 @@ export default function SymptomTracker() {
   useEffect(() => {
     getSymptomLogs()
       .then((items: any[]) => setSymptoms((items ?? []).map(mapApiItem)))
-      .catch((err: any) => setLogsError(err.message ?? "Failed to load symptom data"))
+      .catch((err: any) => setLogsError(err.message ?? t('symptom.loadError')))
       .finally(() => setLogsLoading(false));
   }, []);
 
@@ -258,7 +261,7 @@ export default function SymptomTracker() {
       resetForm();
     } catch (err: any) {
       // Surface the error inline without closing the dialog
-      setLogsError(err.message ?? "Failed to save symptom");
+      setLogsError(err.message ?? t('symptom.saveError'));
     } finally {
       setSaving(false);
     }
@@ -303,7 +306,7 @@ export default function SymptomTracker() {
       await deleteSymptomLog(id);
       setSymptoms((prev) => prev.filter((s) => s.id !== id));
     } catch (err: any) {
-      setLogsError(err.message ?? "Failed to delete symptom");
+      setLogsError(err.message ?? t('symptom.deleteError'));
     }
   };
 
@@ -403,10 +406,10 @@ export default function SymptomTracker() {
           <button onClick={() => navigate(-1)} className="p-2 hover:bg-white/20 rounded-full transition">
             <ArrowLeft className="h-6 w-6" />
           </button>
-          <h1 className="flex-1 text-center text-2xl font-bold">Symptom Tracker</h1>
+          <h1 className="flex-1 text-center text-2xl font-bold">{t('symptom.title')}</h1>
           <div className="w-10"></div>
         </div>
-        <p className="text-center text-red-100 text-sm">Track symptoms and identify patterns</p>
+        <p className="text-center text-red-100 text-sm">{t('symptom.subtitle')}</p>
       </div>
 
       <div className="p-6 space-y-6">
@@ -426,12 +429,12 @@ export default function SymptomTracker() {
           <div className="bg-white rounded-2xl p-4 shadow-lg border-2 border-red-100">
             <AlertCircle className="h-8 w-8 text-red-500 mb-2" />
             <p className="text-2xl font-bold text-gray-800">{symptoms.length}</p>
-            <p className="text-xs text-gray-500">Total Logged</p>
+            <p className="text-xs text-gray-500">{t('symptom.totalLogged')}</p>
           </div>
           <div className="bg-white rounded-2xl p-4 shadow-lg border-2 border-orange-100">
             <TrendingUp className="h-8 w-8 text-orange-500 mb-2" />
             <p className="text-2xl font-bold text-gray-800">{symptomPatterns.length}</p>
-            <p className="text-xs text-gray-500">Unique Symptoms</p>
+            <p className="text-xs text-gray-500">{t('symptom.uniqueSymptoms')}</p>
           </div>
         </div>
 
@@ -439,7 +442,7 @@ export default function SymptomTracker() {
         <div className="bg-white rounded-2xl p-6 shadow-lg border-2 border-red-100">
           <h2 className="font-bold text-gray-800 mb-4 flex items-center gap-2">
             <Calendar className="h-5 w-5 text-red-500" />
-            Severity Trend (14 Days)
+            {t('symptom.severityTrend')}
           </h2>
           <ResponsiveContainer width="100%" height={200}>
             <AreaChart data={severityTrend} key={`area-chart-${uniqueId}`}>
@@ -468,7 +471,7 @@ export default function SymptomTracker() {
         {/* Trigger Frequency */}
         {triggerFrequency.length > 0 && (
           <div className="bg-white rounded-2xl p-6 shadow-lg border-2 border-orange-100">
-            <h2 className="font-bold text-gray-800 mb-4">Common Triggers</h2>
+            <h2 className="font-bold text-gray-800 mb-4">{t('symptom.commonTriggers')}</h2>
             <ResponsiveContainer width="100%" height={200}>
               <BarChart data={triggerFrequency} key={`bar-chart-${uniqueId}`}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#fed7aa" />
@@ -484,7 +487,7 @@ export default function SymptomTracker() {
         {/* Symptom Patterns */}
         {symptomPatterns.length > 0 && (
           <div className="bg-white rounded-2xl p-6 shadow-lg border-2 border-red-100">
-            <h2 className="font-bold text-gray-800 mb-4">Symptom Patterns</h2>
+            <h2 className="font-bold text-gray-800 mb-4">{t('symptom.patterns')}</h2>
             <div className="space-y-3">
               {symptomPatterns.slice(0, 5).map((pattern) => (
                 <div key={pattern.symptom} className="bg-red-50 rounded-xl p-4 border border-red-200">
@@ -493,7 +496,7 @@ export default function SymptomTracker() {
                     <span className="bg-red-500 text-white text-xs px-2 py-1 rounded-full">{pattern.count}x</span>
                   </div>
                   <p className="text-xs text-gray-600 mb-2">
-                    Avg Severity: {pattern.avgSeverity.toFixed(1)}/3
+                    {t('symptom.avgSeverity')}: {pattern.avgSeverity.toFixed(1)}/3
                   </p>
                   {pattern.commonTriggers.length > 0 && (
                     <div className="flex flex-wrap gap-1">
@@ -519,7 +522,7 @@ export default function SymptomTracker() {
             <Search className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
             <input
               type="text"
-              placeholder="Search symptoms, triggers, notes..."
+              placeholder={t('symptom.searchPlaceholder')}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="w-full pl-10 pr-4 py-3 rounded-xl border-2 border-gray-200 focus:border-red-400 focus:outline-none"
@@ -534,7 +537,7 @@ export default function SymptomTracker() {
                   : "bg-gray-100 text-gray-600 hover:bg-gray-200"
               }`}
             >
-              All
+              {t('symptom.filterAll')}
             </button>
             <button
               onClick={() => setFilterSeverity("mild")}
@@ -544,7 +547,7 @@ export default function SymptomTracker() {
                   : "bg-yellow-100 text-yellow-700 hover:bg-yellow-200"
               }`}
             >
-              Mild
+              {t('symptom.mild')}
             </button>
             <button
               onClick={() => setFilterSeverity("moderate")}
@@ -554,7 +557,7 @@ export default function SymptomTracker() {
                   : "bg-orange-100 text-orange-700 hover:bg-orange-200"
               }`}
             >
-              Moderate
+              {t('symptom.moderate')}
             </button>
             <button
               onClick={() => setFilterSeverity("severe")}
@@ -564,18 +567,18 @@ export default function SymptomTracker() {
                   : "bg-red-100 text-red-700 hover:bg-red-200"
               }`}
             >
-              Severe
+              {t('symptom.severe')}
             </button>
           </div>
         </div>
 
         {/* Symptom Log */}
         <div className="space-y-3">
-          <h2 className="font-bold text-gray-800">Recent Symptoms</h2>
+          <h2 className="font-bold text-gray-800">{t('symptom.recent')}</h2>
           {filteredSymptoms.length === 0 ? (
             <div className="bg-white rounded-2xl p-8 text-center shadow-lg border-2 border-gray-100">
               <AlertCircle className="h-12 w-12 text-gray-300 mx-auto mb-2" />
-              <p className="text-gray-500">No symptoms logged yet</p>
+              <p className="text-gray-500">{t('symptom.noneLogged')}</p>
             </div>
           ) : (
             filteredSymptoms.map((symptom) => (
@@ -597,7 +600,7 @@ export default function SymptomTracker() {
                       symptom.severity
                     )}`}
                   >
-                    {symptom.severity}
+                    {severityLabel(symptom.severity)}
                   </span>
                 </div>
 
@@ -621,10 +624,10 @@ export default function SymptomTracker() {
                   symptom.relatedSleep !== undefined ||
                   symptom.relatedStress !== undefined) && (
                   <div className="bg-gray-50 rounded-lg p-2 text-xs text-gray-600 space-y-1">
-                    {symptom.relatedFood && <p>🍽️ Food: {symptom.relatedFood}</p>}
-                    {symptom.relatedActivity && <p>💪 Activity: {symptom.relatedActivity}</p>}
-                    {symptom.relatedSleep !== undefined && <p>😴 Sleep: {symptom.relatedSleep}h</p>}
-                    {symptom.relatedStress !== undefined && <p>😰 Stress: {symptom.relatedStress}/10</p>}
+                    {symptom.relatedFood && <p>🍽️ {t('symptom.food')}: {symptom.relatedFood}</p>}
+                    {symptom.relatedActivity && <p>💪 {t('symptom.activity')}: {symptom.relatedActivity}</p>}
+                    {symptom.relatedSleep !== undefined && <p>😴 {t('symptom.sleepLabel')}: {symptom.relatedSleep}h</p>}
+                    {symptom.relatedStress !== undefined && <p>😰 {t('symptom.stress')}: {symptom.relatedStress}/10</p>}
                   </div>
                 )}
 
@@ -633,13 +636,13 @@ export default function SymptomTracker() {
                     onClick={() => handleEdit(symptom)}
                     className="flex-1 px-4 py-2 bg-orange-100 text-orange-700 rounded-xl hover:bg-orange-200 transition text-sm font-medium"
                   >
-                    Edit
+                    {t('symptom.edit')}
                   </button>
                   <button
                     onClick={() => handleDelete(symptom.id)}
                     className="flex-1 px-4 py-2 bg-red-100 text-red-700 rounded-xl hover:bg-red-200 transition text-sm font-medium"
                   >
-                    Delete
+                    {t('symptom.delete')}
                   </button>
                 </div>
               </div>
@@ -660,27 +663,27 @@ export default function SymptomTracker() {
       <Dialog open={showAddDialog} onOpenChange={(open) => !open && resetForm()}>
         <DialogContent className="max-h-[90vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle>{editingSymptom ? "Edit Symptom" : "Log Symptom"}</DialogTitle>
+            <DialogTitle>{editingSymptom ? t('symptom.editTitle') : t('symptom.logTitle')}</DialogTitle>
             <DialogDescription>
-              Record your symptom and any related factors to help identify patterns.
+              {t('symptom.dialogDesc')}
             </DialogDescription>
           </DialogHeader>
 
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Symptom</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">{t('symptom.symptomLabel')}</label>
               <select
                 value={formData.symptom}
                 onChange={(e) => setFormData({ ...formData, symptom: e.target.value })}
                 className="w-full px-4 py-2 rounded-lg border-2 border-gray-200 focus:border-red-400 focus:outline-none"
               >
-                <option value="">Select symptom</option>
+                <option value="">{t('symptom.selectSymptom')}</option>
                 {COMMON_SYMPTOMS.map((symptom) => (
                   <option key={symptom} value={symptom}>
                     {symptom}
                   </option>
                 ))}
-                <option value="custom">Custom...</option>
+                <option value="custom">{t('symptom.custom')}</option>
               </select>
             </div>
 
@@ -688,7 +691,7 @@ export default function SymptomTracker() {
               <div>
                 <input
                   type="text"
-                  placeholder="Enter custom symptom"
+                  placeholder={t('symptom.customPlaceholder')}
                   value={formData.customSymptom}
                   onChange={(e) => setFormData({ ...formData, customSymptom: e.target.value })}
                   className="w-full px-4 py-2 rounded-lg border-2 border-gray-200 focus:border-red-400 focus:outline-none"
@@ -697,7 +700,7 @@ export default function SymptomTracker() {
             )}
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Severity</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">{t('symptom.severityLabel')}</label>
               <div className="flex gap-2">
                 {(["mild", "moderate", "severe"] as Severity[]).map((severity) => (
                   <button
@@ -709,14 +712,14 @@ export default function SymptomTracker() {
                         : "border-gray-200 text-gray-600 hover:bg-gray-50"
                     }`}
                   >
-                    {severity.charAt(0).toUpperCase() + severity.slice(1)}
+                    {severityLabel(severity)}
                   </button>
                 ))}
               </div>
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Possible Triggers</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">{t('symptom.possibleTriggers')}</label>
               <div className="flex flex-wrap gap-2 mb-2">
                 {COMMON_TRIGGERS.map((trigger) => (
                   <button
@@ -735,7 +738,7 @@ export default function SymptomTracker() {
               <div className="flex gap-2">
                 <input
                   type="text"
-                  placeholder="Add custom trigger"
+                  placeholder={t('symptom.addCustomTrigger')}
                   value={formData.customTrigger}
                   onChange={(e) => setFormData({ ...formData, customTrigger: e.target.value })}
                   onKeyPress={(e) => e.key === "Enter" && addCustomTrigger()}
@@ -745,7 +748,7 @@ export default function SymptomTracker() {
                   onClick={addCustomTrigger}
                   className="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition"
                 >
-                  Add
+                  {t('common.add')}
                 </button>
               </div>
               {formData.triggers.length > 0 && (
@@ -766,29 +769,29 @@ export default function SymptomTracker() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Notes</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">{t('common.notes')}</label>
               <textarea
                 value={formData.notes}
                 onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
-                placeholder="Any additional details..."
+                placeholder={t('symptom.notesPlaceholder')}
                 rows={3}
                 className="w-full px-4 py-2 rounded-lg border-2 border-gray-200 focus:border-red-400 focus:outline-none resize-none"
               />
             </div>
 
             <div className="border-t pt-4">
-              <h3 className="text-sm font-medium text-gray-700 mb-3">Related Factors (Optional)</h3>
+              <h3 className="text-sm font-medium text-gray-700 mb-3">{t('symptom.relatedFactors')}</h3>
               <div className="space-y-3">
                 <input
                   type="text"
-                  placeholder="Related food"
+                  placeholder={t('symptom.relatedFood')}
                   value={formData.relatedFood}
                   onChange={(e) => setFormData({ ...formData, relatedFood: e.target.value })}
                   className="w-full px-4 py-2 rounded-lg border-2 border-gray-200 focus:border-red-400 focus:outline-none"
                 />
                 <input
                   type="text"
-                  placeholder="Related activity"
+                  placeholder={t('symptom.relatedActivity')}
                   value={formData.relatedActivity}
                   onChange={(e) => setFormData({ ...formData, relatedActivity: e.target.value })}
                   className="w-full px-4 py-2 rounded-lg border-2 border-gray-200 focus:border-red-400 focus:outline-none"
@@ -796,7 +799,7 @@ export default function SymptomTracker() {
                 <input
                   type="number"
                   step="0.5"
-                  placeholder="Hours of sleep last night"
+                  placeholder={t('symptom.sleepHours')}
                   value={formData.relatedSleep}
                   onChange={(e) => setFormData({ ...formData, relatedSleep: e.target.value })}
                   className="w-full px-4 py-2 rounded-lg border-2 border-gray-200 focus:border-red-400 focus:outline-none"
@@ -805,7 +808,7 @@ export default function SymptomTracker() {
                   type="number"
                   min="0"
                   max="10"
-                  placeholder="Stress level (0-10)"
+                  placeholder={t('symptom.stressLevel')}
                   value={formData.relatedStress}
                   onChange={(e) => setFormData({ ...formData, relatedStress: e.target.value })}
                   className="w-full px-4 py-2 rounded-lg border-2 border-gray-200 focus:border-red-400 focus:outline-none"
@@ -818,7 +821,7 @@ export default function SymptomTracker() {
                 onClick={resetForm}
                 className="flex-1 px-6 py-3 bg-gray-100 text-gray-700 rounded-xl hover:bg-gray-200 transition font-medium"
               >
-                Cancel
+                {t('common.cancel')}
               </button>
               <button
                 onClick={handleAddSymptom}
@@ -829,7 +832,7 @@ export default function SymptomTracker() {
                 }
                 className="flex-1 px-6 py-3 bg-gradient-to-r from-[#1f7a8c] to-[#4ecdc4] text-white rounded-xl hover:shadow-lg transition font-medium disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {saving ? "Saving…" : editingSymptom ? "Update" : "Log Symptom"}
+                {saving ? t('common.saving') : editingSymptom ? t('symptom.update') : t('symptom.logTitle')}
               </button>
             </div>
           </div>
