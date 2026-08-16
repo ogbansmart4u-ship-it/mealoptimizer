@@ -79,13 +79,20 @@ export default function MealPlanView() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [regenerating, setRegenerating] = useState(false);
+  const [seenMeals, setSeenMeals] = useState<string[]>([]);
+
+  // Remember every meal we've shown for this session so we can ask the AI to avoid them.
+  useEffect(() => {
+    const name = mealPlan?.plan_json?.meal_name;
+    if (name) setSeenMeals((prev) => (prev.includes(name) ? prev : [...prev, name]));
+  }, [mealPlan?.plan_json?.meal_name]);
 
   // Generate a fresh variety of the SAME meal type (different dish, similar calories).
   const handleGenerateAnother = async () => {
     if (!mealPlan || regenerating) return;
     setRegenerating(true);
     try {
-      const res = await generateSingleMeal(mealPlan.mealType, mealPlan.currentGoal, (mealPlan as any).budget);
+      const res = await generateSingleMeal(mealPlan.mealType, mealPlan.currentGoal, (mealPlan as any).budget, seenMeals);
       navigate(`/meal-plan?id=${res.planId}`);
     } catch {
       toast.error("Couldn't generate another. Please try again.");

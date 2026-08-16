@@ -188,11 +188,17 @@ export async function generateMealPlan(days: number, preferences: string) {
   });
 }
 
-export async function generateSingleMeal(mealType: string, currentGoal: string, budget?: number | string) {
+export async function generateSingleMeal(
+  mealType: string,
+  currentGoal: string,
+  budget?: number | string,
+  exclude?: string[], // meal names already shown, so the AI serves something different
+) {
   const b = budget === undefined || budget === null || `${budget}`.trim() === '' ? undefined : Number(budget);
+  const ex = Array.isArray(exclude) ? exclude.filter(Boolean).slice(-15) : undefined;
   return apiCall('/ai/generate-single-meal', {
     method: 'POST',
-    body: JSON.stringify({ mealType, currentGoal, budget: b }),
+    body: JSON.stringify({ mealType, currentGoal, budget: b, exclude: ex && ex.length ? ex : undefined }),
   });
 }
 
