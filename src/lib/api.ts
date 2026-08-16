@@ -98,6 +98,10 @@ export async function updateUserProfile(profileData: {
   medicalCondition: string;
   location: string;
   profilePicture?: string;
+  weight?: string;
+  medications?: string;
+  allergies?: string;
+  gender?: string;
 }) {
   return apiCall('/auth/profile', {
     method: 'PUT',

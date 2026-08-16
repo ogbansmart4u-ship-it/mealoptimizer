@@ -212,6 +212,12 @@ export default function PlanMeal() {
           bmi: profile.bmi,
           medicalCondition: profile.medicalCondition,
           location: profile.location,
+          // Send the full profile so the AI prompt can truly personalize per user.
+          weight: profile.weight,
+          medications: profile.medications,
+          allergies: profile.allergies,
+          gender: profile.gender,
+          profilePicture: profile.profilePicture,
         });
       } catch (profileSyncError) {
         console.warn('Profile sync failed, proceeding anyway:', profileSyncError);
