@@ -3,6 +3,7 @@ import { useNavigate, useSearchParams } from "react-router";
 import { useUser } from "../contexts/UserContext";
 import { projectId, publicAnonKey } from '/utils/supabase/info';
 import { getAccessToken } from '../../lib/supabase';
+import { generateSingleMeal } from "../../lib/api";
 import { toast } from "sonner";
 import PageHeader from "../components/PageHeader";
 import Breadcrumbs from "../components/Breadcrumbs";
@@ -77,6 +78,22 @@ export default function MealPlanView() {
   const [mealPlan, setMealPlan] = useState<MealPlan | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [regenerating, setRegenerating] = useState(false);
+
+  // Generate a fresh variety of the SAME meal type (different dish, similar calories).
+  const handleGenerateAnother = async () => {
+    if (!mealPlan || regenerating) return;
+    setRegenerating(true);
+    try {
+      const res = await generateSingleMeal(mealPlan.mealType, mealPlan.currentGoal, (mealPlan as any).budget);
+      navigate(`/meal-plan?id=${res.planId}`);
+    } catch {
+      toast.error("Couldn't generate another. Please try again.");
+      navigate("/plan-meal");
+    } finally {
+      setRegenerating(false);
+    }
+  };
 
   useEffect(() => {
     if (planId) {
@@ -405,10 +422,18 @@ TIMING: ${mealPlan.plan_json.circadianAnchor}
         {/* Action Buttons */}
         <div className="space-y-3">
           <button
-            onClick={() => navigate("/plan-meal")}
-            className="w-full bg-gradient-to-r from-[#1f7a8c] to-[#4ecdc4] text-white py-4 rounded-2xl shadow-lg hover:shadow-xl transition-all transform hover:scale-[1.02]"
+            onClick={handleGenerateAnother}
+            disabled={regenerating}
+            className="w-full bg-gradient-to-r from-[#1f7a8c] to-[#4ecdc4] text-white py-4 rounded-2xl shadow-lg hover:shadow-xl transition-all transform hover:scale-[1.02] disabled:opacity-60 disabled:hover:scale-100"
           >
-            Plan Another Meal
+            {regenerating ? "Finding another…" : `🍽️ Generate another ${mealPlan.mealType}`}
+          </button>
+
+          <button
+            onClick={() => navigate("/plan-meal")}
+            className="w-full bg-white text-[#1f7a8c] border-2 border-[#1f7a8c] py-4 rounded-2xl shadow-lg hover:shadow-xl transition-all transform hover:scale-[1.02]"
+          >
+            Plan a Different Meal
           </button>
           
           <button
