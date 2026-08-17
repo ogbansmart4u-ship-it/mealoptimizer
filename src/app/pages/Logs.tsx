@@ -4,6 +4,7 @@ import { Calendar, Clock, Camera, TrendingUp, Filter, ChevronDown, ChevronLeft, 
 import BottomNav from "../components/BottomNav";
 import { useAppMode } from "../contexts/AppModeContext";
 import { useUser } from "../contexts/UserContext";
+import { useLanguage } from "../contexts/LanguageContext";
 import ProfilePictureUpload from "../components/ProfilePictureUpload";
 import AddMealLog from "../components/AddMealLog";
 import { BulkActionsBar } from "../components/BulkActionsBar";
@@ -32,6 +33,14 @@ type MealLog = {
 export default function Logs() {
   const { mode } = useAppMode();
   const location = useLocation();
+  const { t } = useLanguage();
+  // Translate a meal type label (breakfast/lunch/dinner via shared keys; snack local).
+  const mealTypeLabel = (type: string) =>
+    type === "snack"
+      ? t("logs.meal.snack")
+      : ["breakfast", "brunch", "lunch", "dinner"].includes(type)
+      ? t(`planmeal.meal.${type}`)
+      : type;
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [filterMealType, setFilterMealType] = useState<MealType | "all">("all");
   const [showFilters, setShowFilters] = useState(false);
@@ -80,7 +89,7 @@ export default function Logs() {
   };
 
   const handleBulkDelete = async () => {
-    if (confirm(`Delete ${selectedLogs.length} meal log(s)?`)) {
+    if (confirm(t("logs.confirmDelete").replace("{n}", String(selectedLogs.length)))) {
       const ids = [...selectedLogs];
       setLogs((prev) => prev.filter((log) => !ids.includes(log.id)));
       setSelectedLogs([]);
@@ -137,8 +146,8 @@ export default function Logs() {
       <div className="bg-gradient-to-r from-[#1f7a8c] to-[#4ecdc4] px-6 pt-12 pb-8">
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h1 className="text-3xl text-white mb-1">My Logs</h1>
-            <p className="text-white/80 text-sm">Track your daily nutrition</p>
+            <h1 className="text-3xl text-white mb-1">{t("logs.title")}</h1>
+            <p className="text-white/80 text-sm">{t("logs.subtitle")}</p>
           </div>
           <ProfilePictureUpload />
         </div>
@@ -155,7 +164,7 @@ export default function Logs() {
             <div className="text-center">
               <p className="text-white text-sm">
                 {selectedDate.toDateString() === new Date().toDateString()
-                  ? "Today"
+                  ? t("logs.today")
                   : formatDate(selectedDate)}
               </p>
               <p className="text-white/60 text-xs mt-1">
@@ -177,26 +186,26 @@ export default function Logs() {
         {/* Daily Summary */}
         <div className="bg-white rounded-3xl shadow-lg p-6 mb-6">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg text-gray-800">Daily Summary</h2>
+            <h2 className="text-lg text-gray-800">{t("logs.dailySummary")}</h2>
             <TrendingUp className="h-5 w-5 text-[#1f7a8c]" />
           </div>
 
           <div className="grid grid-cols-4 gap-3 mb-4">
             <div className="text-center">
               <p className="text-2xl text-[#1f7a8c] mb-1">{totalCalories}</p>
-              <p className="text-xs text-gray-600">Calories</p>
+              <p className="text-xs text-gray-600">{t("mealview.calories")}</p>
             </div>
             <div className="text-center">
               <p className="text-2xl text-[#4ecdc4] mb-1">{totalProtein}g</p>
-              <p className="text-xs text-gray-600">Protein</p>
+              <p className="text-xs text-gray-600">{t("mealview.protein")}</p>
             </div>
             <div className="text-center">
               <p className="text-2xl text-[#f77f00] mb-1">{totalCarbs}g</p>
-              <p className="text-xs text-gray-600">Carbs</p>
+              <p className="text-xs text-gray-600">{t("mealview.carbs")}</p>
             </div>
             <div className="text-center">
               <p className="text-2xl text-[#e63946] mb-1">{totalFats}g</p>
-              <p className="text-xs text-gray-600">Fats</p>
+              <p className="text-xs text-gray-600">{t("mealview.fats")}</p>
             </div>
           </div>
 
@@ -204,7 +213,7 @@ export default function Logs() {
             <div className="pt-4 border-t border-gray-100">
               <div className="grid grid-cols-3 gap-3 text-xs">
                 <div>
-                  <p className="text-gray-500 mb-1">P/C/F Ratio</p>
+                  <p className="text-gray-500 mb-1">{t("logs.pcfRatio")}</p>
                   <p className="text-gray-800">
                     {Math.round((totalProtein * 4 / totalCalories) * 100)}:
                     {Math.round((totalCarbs * 4 / totalCalories) * 100)}:
@@ -212,11 +221,11 @@ export default function Logs() {
                   </p>
                 </div>
                 <div>
-                  <p className="text-gray-500 mb-1">Meals Logged</p>
+                  <p className="text-gray-500 mb-1">{t("logs.mealsLogged")}</p>
                   <p className="text-gray-800">{todayLogs.length}/4</p>
                 </div>
                 <div>
-                  <p className="text-gray-500 mb-1">Adherence</p>
+                  <p className="text-gray-500 mb-1">{t("logs.adherence")}</p>
                   <p className="text-green-600">85%</p>
                 </div>
               </div>
@@ -231,7 +240,7 @@ export default function Logs() {
             className="flex items-center gap-2 text-sm text-gray-700 bg-white rounded-full px-4 py-2 shadow-md hover:shadow-lg transition-all"
           >
             <Filter className="h-4 w-4" />
-            <span>Filter by Meal</span>
+            <span>{t("logs.filterByMeal")}</span>
             <ChevronDown className={`h-4 w-4 transition-transform ${showFilters ? "rotate-180" : ""}`} />
           </button>
 
@@ -248,7 +257,7 @@ export default function Logs() {
               }`}
             >
               <CheckCircle className="h-4 w-4" />
-              <span>{selectionMode ? 'Cancel Select' : 'Select'}</span>
+              <span>{selectionMode ? t("logs.cancelSelect") : t("logs.select")}</span>
             </button>
           )}
 
@@ -264,7 +273,7 @@ export default function Logs() {
                       : "hover:bg-gray-50 text-gray-700"
                   }`}
                 >
-                  {type.charAt(0).toUpperCase() + type.slice(1)}
+                  {type === "all" ? t("logs.filter.all") : mealTypeLabel(type)}
                 </button>
               ))}
             </div>
@@ -278,14 +287,14 @@ export default function Logs() {
           ) : filteredLogs.length === 0 ? (
             <div className="bg-white rounded-3xl shadow-lg p-8">
               <MascotEmptyState
-                title="No Meals Logged"
-                subtitle="Start tracking your meals to see your nutrition data"
+                title={t("logs.emptyTitle")}
+                subtitle={t("logs.emptySubtitle")}
                 action={
                   <button
                     onClick={() => setShowAddMeal(true)}
                     className="bg-gradient-to-r from-[#1f7a8c] to-[#4ecdc4] text-white rounded-2xl px-6 py-3 shadow-lg hover:shadow-xl transition-all"
                   >
-                    Log First Meal
+                    {t("logs.logFirst")}
                   </button>
                 }
               />
@@ -336,7 +345,7 @@ export default function Logs() {
                             className="px-2 py-0.5 rounded-full text-white"
                             style={{ backgroundColor: color }}
                           >
-                            {log.mealType}
+                            {mealTypeLabel(log.mealType)}
                           </span>
                         </div>
                       </div>
@@ -347,19 +356,19 @@ export default function Logs() {
                   <div className="grid grid-cols-4 gap-2 mb-4">
                     <div className="bg-gray-50 rounded-xl p-2 text-center">
                       <p className="text-sm text-[#1f7a8c] mb-1">{log.calories}</p>
-                      <p className="text-xs text-gray-600">Cal</p>
+                      <p className="text-xs text-gray-600">{t("logs.cal")}</p>
                     </div>
                     <div className="bg-gray-50 rounded-xl p-2 text-center">
                       <p className="text-sm text-[#4ecdc4] mb-1">{log.protein}g</p>
-                      <p className="text-xs text-gray-600">Protein</p>
+                      <p className="text-xs text-gray-600">{t("mealview.protein")}</p>
                     </div>
                     <div className="bg-gray-50 rounded-xl p-2 text-center">
                       <p className="text-sm text-[#f77f00] mb-1">{log.carbs}g</p>
-                      <p className="text-xs text-gray-600">Carbs</p>
+                      <p className="text-xs text-gray-600">{t("mealview.carbs")}</p>
                     </div>
                     <div className="bg-gray-50 rounded-xl p-2 text-center">
                       <p className="text-sm text-[#e63946] mb-1">{log.fats}g</p>
-                      <p className="text-xs text-gray-600">Fats</p>
+                      <p className="text-xs text-gray-600">{t("mealview.fats")}</p>
                     </div>
                   </div>
 
@@ -368,7 +377,7 @@ export default function Logs() {
                     <div className="bg-blue-50 rounded-xl p-3">
                       <div className="flex items-center gap-2 mb-2">
                         <Zap className="h-4 w-4 text-blue-600" />
-                        <p className="text-xs text-gray-700">Energy</p>
+                        <p className="text-xs text-gray-700">{t("logs.energy")}</p>
                       </div>
                       <div className="flex gap-1">
                         {[1, 2, 3, 4, 5].map((star) => (
@@ -384,7 +393,7 @@ export default function Logs() {
                     <div className="bg-green-50 rounded-xl p-3">
                       <div className="flex items-center gap-2 mb-2">
                         <Heart className="h-4 w-4 text-green-600" />
-                        <p className="text-xs text-gray-700">Comfort</p>
+                        <p className="text-xs text-gray-700">{t("logs.comfort")}</p>
                       </div>
                       <div className="flex gap-1">
                         {[1, 2, 3, 4, 5].map((star) => (
@@ -403,7 +412,7 @@ export default function Logs() {
                   {mode === "expert" && log.bloodSugarImpact && (
                     <div className="mt-4 pt-4 border-t border-gray-100">
                       <div className="flex items-center justify-between text-xs">
-                        <span className="text-gray-600">Glycemic Impact</span>
+                        <span className="text-gray-600">{t("logs.glycemicImpact")}</span>
                         <span
                           className={`px-3 py-1 rounded-full ${
                             log.bloodSugarImpact === "low"
@@ -413,7 +422,7 @@ export default function Logs() {
                               : "bg-red-100 text-red-700"
                           }`}
                         >
-                          {log.bloodSugarImpact.toUpperCase()}
+                          {t(`logs.impact.${log.bloodSugarImpact}`)}
                         </span>
                       </div>
                     </div>
@@ -430,11 +439,11 @@ export default function Logs() {
             <div className="flex items-start gap-3">
               <TrendingUp className="h-6 w-6 text-purple-600 flex-shrink-0 mt-1" />
               <div>
-                <h3 className="text-gray-800 mb-2">Today's Insight</h3>
+                <h3 className="text-gray-800 mb-2">{t("logs.todaysInsight")}</h3>
                 <p className="text-sm text-gray-700 leading-relaxed">
                   {mode === "simple"
-                    ? "Great job logging your meals! You're on track with your daily nutrition goals."
-                    : `Your P/C/F ratio is ${Math.round((totalProtein * 4 / totalCalories) * 100)}:${Math.round((totalCarbs * 4 / totalCalories) * 100)}:${Math.round((totalFats * 9 / totalCalories) * 100)}. Consider adjusting your next meal to optimize macronutrient distribution.`}
+                    ? t("logs.insightSimple")
+                    : t("logs.insightExpert").replace("{ratio}", `${Math.round((totalProtein * 4 / totalCalories) * 100)}:${Math.round((totalCarbs * 4 / totalCalories) * 100)}:${Math.round((totalFats * 9 / totalCalories) * 100)}`)}
                 </p>
               </div>
             </div>
@@ -444,7 +453,7 @@ export default function Logs() {
         <button
           onClick={() => setShowAddMeal(true)}
           className="fixed bottom-24 right-6 bg-gradient-to-r from-[#1f7a8c] to-[#4ecdc4] text-white rounded-full p-4 shadow-lg hover:shadow-xl transition-all hover:scale-110 z-10"
-          title="Log a meal"
+          title={t("logs.logMeal")}
         >
           <Plus className="h-6 w-6" />
         </button>

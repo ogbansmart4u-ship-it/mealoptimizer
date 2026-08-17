@@ -3,6 +3,7 @@ import { Target, TrendingUp, Award, Plus, Check, Edit2, Trash2, Calendar, Activi
 import BottomNav from "../components/BottomNav";
 import { useAppMode } from "../contexts/AppModeContext";
 import { useUser } from "../contexts/UserContext";
+import { useLanguage } from "../contexts/LanguageContext";
 import { useUnits } from "../contexts/UnitsContext";
 import { useAchievements } from "../contexts/AchievementContext";
 import ProfilePictureUpload from "../components/ProfilePictureUpload";
@@ -32,6 +33,9 @@ type Goal = {
 
 export default function Goals() {
   const { mode } = useAppMode();
+  const { t } = useLanguage();
+  // Category label ("all" + the four categories); stored value stays English.
+  const catLabel = (c: string) => (c === "all" ? t("logs.filter.all") : t(`goals.cat.${c}`));
   const { unitSystem, convertWeight } = useUnits();
   const { unlockAchievement } = useAchievements();
   const [activeTab, setActiveTab] = useState<"active" | "completed">("active");
@@ -156,7 +160,7 @@ export default function Goals() {
     setGoals(goals.filter(g => g.id !== goalId));
     setUndoState({
       goal: goalToDelete,
-      message: `"${goalToDelete.title}" deleted`,
+      message: t("goals.deletedMsg").replace("{title}", goalToDelete.title),
     });
     // Soft-delete on the backend (hidden because status is neither active nor completed)
     try { await updateGoal(goalId, { status: "deleted" }); } catch (e) { console.error("Failed to delete goal", e); }
@@ -192,7 +196,7 @@ export default function Goals() {
 
     // Check if goal reached 100%
     if (progress >= 100 && calculateProgress(selectedGoal.currentValue, selectedGoal.targetValue) < 100) {
-      setCelebrationMessage(`${selectedGoal.title} - Target Reached!`);
+      setCelebrationMessage(t("goals.targetReachedMsg").replace("{title}", selectedGoal.title));
       setShowCelebration(true);
     }
 
@@ -213,7 +217,7 @@ export default function Goals() {
     try { await updateGoal(goalId, { status: "completed" }); } catch (e) { console.error("Failed to mark goal complete", e); }
 
     // Show celebration
-    setCelebrationMessage(`${goal.title} Completed!`);
+    setCelebrationMessage(t("goals.completedMsg").replace("{title}", goal.title));
     setShowCelebration(true);
 
     // Check for achievements
@@ -258,8 +262,8 @@ export default function Goals() {
       <div className="bg-gradient-to-r from-[#1f7a8c] to-[#4ecdc4] px-6 pt-12 pb-8">
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h1 className="text-3xl text-white mb-1">My Goals</h1>
-            <p className="text-white/80 text-sm">Track your health journey</p>
+            <h1 className="text-3xl text-white mb-1">{t("goals.myGoals")}</h1>
+            <p className="text-white/80 text-sm">{t("goals.subtitle")}</p>
           </div>
           <ProfilePictureUpload />
         </div>
@@ -268,11 +272,11 @@ export default function Goals() {
         <div className="grid grid-cols-3 gap-3">
           <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-3 text-center">
             <p className="text-2xl text-white mb-1">{allActiveGoals.length}</p>
-            <p className="text-xs text-white/80">Active</p>
+            <p className="text-xs text-white/80">{t("goals.stat.active")}</p>
           </div>
           <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-3 text-center">
             <p className="text-2xl text-white mb-1">{allCompletedGoals.length}</p>
-            <p className="text-xs text-white/80">Completed</p>
+            <p className="text-xs text-white/80">{t("goals.stat.completed")}</p>
           </div>
           <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-3 text-center">
             <p className="text-2xl text-white mb-1">
@@ -280,7 +284,7 @@ export default function Goals() {
                 ? Math.round(allActiveGoals.reduce((sum, g) => sum + calculateProgress(g.currentValue, g.targetValue), 0) / allActiveGoals.length)
                 : 0}%
             </p>
-            <p className="text-xs text-white/80">Avg Progress</p>
+            <p className="text-xs text-white/80">{t("goals.stat.avgProgress")}</p>
           </div>
         </div>
       </div>
@@ -297,7 +301,7 @@ export default function Goals() {
                 : "text-gray-600 hover:bg-gray-50"
             }`}
           >
-            Active ({goals.filter(g => g.status === "active").length})
+            {t("goals.stat.active")} ({goals.filter(g => g.status === "active").length})
           </button>
           <button
             onClick={() => setActiveTab("completed")}
@@ -307,19 +311,19 @@ export default function Goals() {
                 : "text-gray-600 hover:bg-gray-50"
             }`}
           >
-            Completed ({goals.filter(g => g.status === "completed").length})
+            {t("goals.stat.completed")} ({goals.filter(g => g.status === "completed").length})
           </button>
         </div>
 
         {/* Category Filters */}
         <div className="flex gap-2 overflow-x-auto mb-6 pb-2">
           {[
-            { id: "all", label: "All", icon: Target },
-            { id: "weight", label: "Weight", icon: Scale },
-            { id: "nutrition", label: "Nutrition", icon: Apple },
-            { id: "health", label: "Health", icon: Heart },
-            { id: "lifestyle", label: "Lifestyle", icon: Activity },
-          ].map(({ id, label, icon: Icon }) => (
+            { id: "all", icon: Target },
+            { id: "weight", icon: Scale },
+            { id: "nutrition", icon: Apple },
+            { id: "health", icon: Heart },
+            { id: "lifestyle", icon: Activity },
+          ].map(({ id, icon: Icon }) => (
             <button
               key={id}
               onClick={() => setSelectedCategory(id as GoalCategory | "all")}
@@ -330,7 +334,7 @@ export default function Goals() {
               }`}
             >
               <Icon className="h-4 w-4" />
-              <span className="text-sm">{label}</span>
+              <span className="text-sm">{catLabel(id)}</span>
             </button>
           ))}
         </div>
@@ -344,19 +348,19 @@ export default function Goals() {
               <div className="bg-white rounded-3xl shadow-lg p-12 text-center">
                 <Target className="h-16 w-16 text-gray-300 mx-auto mb-4" />
                 <h3 className="text-gray-800 mb-2">
-                  {selectedCategory === "all" ? "No Active Goals" : `No ${selectedCategory} goals`}
+                  {selectedCategory === "all" ? t("goals.noActive") : t("goals.noCatGoals").replace("{cat}", catLabel(selectedCategory))}
                 </h3>
                 <p className="text-sm text-gray-600 mb-4">
                   {selectedCategory === "all"
-                    ? "Start your health journey by creating your first goal!"
-                    : `Create a ${selectedCategory} goal to get started.`}
+                    ? t("goals.startJourney")
+                    : t("goals.createCatGoal").replace("{cat}", catLabel(selectedCategory))}
                 </p>
                 <button
                   onClick={() => setShowAddGoal(true)}
                   className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-[#1f7a8c] to-[#4ecdc4] text-white rounded-full hover:shadow-md transition-all"
                 >
                   <Plus className="h-4 w-4" />
-                  <span>Create Goal</span>
+                  <span>{t("goals.createGoal")}</span>
                 </button>
               </div>
             ) : (
@@ -383,7 +387,7 @@ export default function Goals() {
                         <h3 className="text-gray-800 mb-1">{goal.title}</h3>
                         <div className="flex items-center gap-2 text-xs text-gray-500">
                           <Calendar className="h-3 w-3" />
-                          <span>{daysLeft} days left</span>
+                          <span>{t("goals.daysLeft").replace("{n}", String(daysLeft))}</span>
                         </div>
                       </div>
                     </div>
@@ -406,12 +410,12 @@ export default function Goals() {
                   {/* Progress Bar */}
                   <div className="mb-3">
                     <div className="flex items-center justify-between mb-2">
-                      <span className="text-sm text-gray-600">Progress</span>
+                      <span className="text-sm text-gray-600">{t("goals.progress")}</span>
                       <div className="flex items-center gap-2">
                         {progress >= 100 && (
                           <div className="flex items-center gap-1 text-green-600 text-xs animate-bounce">
                             <Sparkles className="h-3 w-3" />
-                            <span>Goal Reached!</span>
+                            <span>{t("goals.goalReached")}</span>
                           </div>
                         )}
                         <span className={`text-sm ${progress >= 100 ? 'text-green-600' : 'text-gray-800'}`}>
@@ -458,14 +462,14 @@ export default function Goals() {
                   {/* Values */}
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-xs text-gray-500 mb-1">Current</p>
+                      <p className="text-xs text-gray-500 mb-1">{t("goals.current")}</p>
                       <p className="text-lg text-gray-800">
                         {goal.currentValue} {goal.unit}
                       </p>
                     </div>
                     <TrendingUp className="h-5 w-5 text-gray-400" />
                     <div className="text-right">
-                      <p className="text-xs text-gray-500 mb-1">Target</p>
+                      <p className="text-xs text-gray-500 mb-1">{t("goals.target")}</p>
                       <p className="text-lg" style={{ color: goal.color }}>
                         {goal.targetValue} {goal.unit}
                       </p>
@@ -479,14 +483,14 @@ export default function Goals() {
                       className="flex items-center justify-center gap-2 px-4 py-2 bg-gradient-to-r from-[#1f7a8c] to-[#4ecdc4] text-white rounded-xl hover:shadow-md transition-all"
                     >
                       <ArrowUp className="h-4 w-4" />
-                      <span className="text-sm">Update Progress</span>
+                      <span className="text-sm">{t("goals.updateProgress")}</span>
                     </button>
                     <button
                       onClick={() => handleMarkComplete(goal.id)}
                       className="flex items-center justify-center gap-2 px-4 py-2 bg-gradient-to-r from-green-500 to-green-600 text-white rounded-xl hover:shadow-md transition-all"
                     >
                       <CheckCircle2 className="h-4 w-4" />
-                      <span className="text-sm">Mark Complete</span>
+                      <span className="text-sm">{t("goals.markComplete")}</span>
                     </button>
                   </div>
 
@@ -495,31 +499,31 @@ export default function Goals() {
                     <div className="mt-4 pt-4 border-t border-gray-100">
                       <div className="grid grid-cols-2 gap-3 text-xs">
                         <div className="bg-gray-50 rounded-lg p-2">
-                          <p className="text-gray-500 mb-1">Required Weekly</p>
+                          <p className="text-gray-500 mb-1">{t("goals.requiredWeekly")}</p>
                           <p className="text-gray-800">
                             {daysLeft > 0
-                              ? `${(Math.abs(goal.targetValue - goal.currentValue) / (daysLeft / 7)).toFixed(2)} ${goal.unit}/week`
-                              : 'Deadline passed'}
+                              ? `${(Math.abs(goal.targetValue - goal.currentValue) / (daysLeft / 7)).toFixed(2)} ${goal.unit}/${t("goals.week")}`
+                              : t("goals.deadlinePassed")}
                           </p>
                         </div>
                         <div className="bg-gray-50 rounded-lg p-2">
-                          <p className="text-gray-500 mb-1">Status</p>
+                          <p className="text-gray-500 mb-1">{t("goals.status")}</p>
                           {daysLeft > 0 ? (
                             progress >= (100 - (daysLeft / 90) * 100) ? (
                               <p className="text-green-600 flex items-center gap-1">
                                 <CheckCircle2 className="h-3 w-3" />
-                                On Track
+                                {t("goals.onTrack")}
                               </p>
                             ) : (
                               <p className="text-amber-600 flex items-center gap-1">
                                 <Activity className="h-3 w-3" />
-                                Needs Effort
+                                {t("goals.needsEffort")}
                               </p>
                             )
                           ) : (
                             <p className="text-red-600 flex items-center gap-1">
                               <XCircle className="h-3 w-3" />
-                              Overdue
+                              {t("goals.overdue")}
                             </p>
                           )}
                         </div>
@@ -537,14 +541,14 @@ export default function Goals() {
               <div className="bg-gradient-to-br from-purple-50 to-white rounded-3xl shadow-lg p-6 mb-4">
                 <div className="flex items-center gap-2 mb-4">
                   <Sparkles className="h-5 w-5 text-purple-600" />
-                  <h3 className="text-gray-800">Quick Start Templates</h3>
+                  <h3 className="text-gray-800">{t("goals.quickStart")}</h3>
                 </div>
                 <div className="grid grid-cols-2 gap-3">
                   {[
-                    { title: "Lose 5 kg", category: "weight", target: 65, current: 70, unit: "kg", icon: "⚖️" },
-                    { title: "Drink 2L Water Daily", category: "nutrition", target: 2000, current: 1000, unit: "ml", icon: "💧" },
-                    { title: "Walk 10k Steps", category: "lifestyle", target: 10000, current: 5000, unit: "steps", icon: "👟" },
-                    { title: "Sleep 8 Hours", category: "health", target: 8, current: 6, unit: "hours", icon: "😴" },
+                    { title: t("goals.tpl.loseWeight"), category: "weight", target: 65, current: 70, unit: "kg", icon: "⚖️" },
+                    { title: t("goals.tpl.water"), category: "nutrition", target: 2000, current: 1000, unit: "ml", icon: "💧" },
+                    { title: t("goals.tpl.steps"), category: "lifestyle", target: 10000, current: 5000, unit: "steps", icon: "👟" },
+                    { title: t("goals.tpl.sleep"), category: "health", target: 8, current: 6, unit: "hours", icon: "😴" },
                   ].map((template, idx) => (
                     <button
                       key={idx}
@@ -575,7 +579,7 @@ export default function Goals() {
               className="w-full bg-gradient-to-r from-[#1f7a8c] to-[#4ecdc4] text-white rounded-3xl py-4 shadow-lg hover:shadow-xl transition-all flex items-center justify-center gap-2"
             >
               <Plus className="h-5 w-5" />
-              <span>Add New Goal</span>
+              <span>{t("goals.addNewGoal")}</span>
             </button>
           </div>
         )}
@@ -586,11 +590,11 @@ export default function Goals() {
             {completedGoals.length === 0 ? (
               <div className="bg-white rounded-3xl shadow-lg p-12 text-center">
                 <Award className="h-16 w-16 text-gray-300 mx-auto mb-4" />
-                <h3 className="text-gray-800 mb-2">No Completed Goals Yet</h3>
+                <h3 className="text-gray-800 mb-2">{t("goals.noCompleted")}</h3>
                 <p className="text-sm text-gray-600">
                   {selectedCategory === "all"
-                    ? "Complete your first goal to see it here!"
-                    : `Complete a ${selectedCategory} goal to see it here!`}
+                    ? t("goals.completeFirst")
+                    : t("goals.completeCatGoal").replace("{cat}", catLabel(selectedCategory))}
                 </p>
               </div>
             ) : (
@@ -619,7 +623,7 @@ export default function Goals() {
                       </h3>
                       <p className="text-xs text-green-600 flex items-center gap-1">
                         <CheckCircle2 className="h-3 w-3" />
-                        Goal Achieved!
+                        {t("goals.goalAchieved")}
                       </p>
                     </div>
                     <button
@@ -632,20 +636,20 @@ export default function Goals() {
 
                   <div className="grid grid-cols-3 gap-3 bg-white rounded-2xl p-3">
                     <div className="text-center">
-                      <p className="text-xs text-gray-500 mb-1">Achieved</p>
+                      <p className="text-xs text-gray-500 mb-1">{t("goals.achieved")}</p>
                       <p className="text-sm text-gray-800">
                         {goal.currentValue} {goal.unit}
                       </p>
                     </div>
                     <div className="text-center border-x border-gray-200">
-                      <p className="text-xs text-gray-500 mb-1">Target</p>
+                      <p className="text-xs text-gray-500 mb-1">{t("goals.target")}</p>
                       <p className="text-sm text-green-600">
                         {goal.targetValue} {goal.unit}
                       </p>
                     </div>
                     <div className="text-center">
-                      <p className="text-xs text-gray-500 mb-1">Category</p>
-                      <p className="text-sm text-gray-800 capitalize">{goal.category}</p>
+                      <p className="text-xs text-gray-500 mb-1">{t("goals.category")}</p>
+                      <p className="text-sm text-gray-800">{catLabel(goal.category)}</p>
                     </div>
                   </div>
                 </div>
@@ -660,17 +664,17 @@ export default function Goals() {
             <Zap className="h-6 w-6 text-purple-600 flex-shrink-0 mt-1" />
             <div>
               <h3 className="text-gray-800 mb-2">
-                {allActiveGoals.length === 0 ? "Get Started" : allCompletedGoals.length > 0 ? "Keep Going!" : "Daily Tip"}
+                {allActiveGoals.length === 0 ? t("goals.tipHeadStart") : allCompletedGoals.length > 0 ? t("goals.tipHeadKeep") : t("goals.tipHeadDaily")}
               </h3>
               <p className="text-sm text-gray-700 leading-relaxed">
                 {allActiveGoals.length === 0 ? (
-                  "Ready to transform your health? Start by setting one achievable goal today!"
+                  t("goals.tipStart")
                 ) : allCompletedGoals.length > 0 ? (
-                  `Amazing work completing ${allCompletedGoals.length} goal${allCompletedGoals.length > 1 ? 's' : ''}! Your dedication is paying off. Keep pushing forward!`
+                  t(allCompletedGoals.length > 1 ? "goals.tipKeepMany" : "goals.tipKeepOne").replace("{n}", String(allCompletedGoals.length))
                 ) : mode === "simple" ? (
-                  "Break big goals into smaller weekly targets. Small wins add up!"
+                  t("goals.tipSimple")
                 ) : (
-                  "Implement progressive overload: increase weekly targets by 5-10% for sustainable adaptation and adherence."
+                  t("goals.tipExpert")
                 )}
               </p>
             </div>
@@ -701,18 +705,18 @@ export default function Goals() {
       <Dialog open={showAddGoal} onOpenChange={setShowAddGoal}>
         <DialogContent className="max-h-[90vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle>Add New Goal</DialogTitle>
+            <DialogTitle>{t("goals.addNewGoal")}</DialogTitle>
             <DialogDescription>
-              Set a new health goal to track your progress
+              {t("goals.addDesc")}
             </DialogDescription>
           </DialogHeader>
 
           <div className="space-y-4 py-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Goal Title</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">{t("goals.goalTitle")}</label>
               <input
                 type="text"
-                placeholder="e.g., Drink more water"
+                placeholder={t("goals.goalTitlePlaceholder")}
                 value={newGoal.title}
                 onChange={(e) => setNewGoal({ ...newGoal, title: e.target.value })}
                 className="w-full px-4 py-2 rounded-lg border-2 border-gray-200 focus:border-[#1f7a8c] focus:outline-none"
@@ -720,22 +724,22 @@ export default function Goals() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Category</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">{t("goals.category")}</label>
               <select
                 value={newGoal.category}
                 onChange={(e) => setNewGoal({ ...newGoal, category: e.target.value as GoalCategory })}
                 className="w-full px-4 py-2 rounded-lg border-2 border-gray-200 focus:border-[#1f7a8c] focus:outline-none"
               >
-                <option value="weight">Weight</option>
-                <option value="nutrition">Nutrition</option>
-                <option value="health">Health</option>
-                <option value="lifestyle">Lifestyle</option>
+                <option value="weight">{t("goals.cat.weight")}</option>
+                <option value="nutrition">{t("goals.cat.nutrition")}</option>
+                <option value="health">{t("goals.cat.health")}</option>
+                <option value="lifestyle">{t("goals.cat.lifestyle")}</option>
               </select>
             </div>
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Current Value</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t("goals.currentValue")}</label>
                 <input
                   type="number"
                   step="0.1"
@@ -746,7 +750,7 @@ export default function Goals() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Target Value</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t("goals.targetValue")}</label>
                 <input
                   type="number"
                   step="0.1"
@@ -759,10 +763,10 @@ export default function Goals() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Unit</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">{t("goals.unit")}</label>
               <input
                 type="text"
-                placeholder="e.g., kg, ml, steps"
+                placeholder={t("goals.unitPlaceholder")}
                 value={newGoal.unit}
                 onChange={(e) => setNewGoal({ ...newGoal, unit: e.target.value })}
                 className="w-full px-4 py-2 rounded-lg border-2 border-gray-200 focus:border-[#1f7a8c] focus:outline-none"
@@ -770,7 +774,7 @@ export default function Goals() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Deadline</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">{t("goals.deadline")}</label>
               <input
                 type="date"
                 value={newGoal.deadline}
@@ -786,14 +790,14 @@ export default function Goals() {
               onClick={() => setShowAddGoal(false)}
               className="flex-1"
             >
-              Cancel
+              {t("common.cancel")}
             </Button>
             <Button
               onClick={handleAddGoal}
               className="flex-1 bg-gradient-to-r from-[#1f7a8c] to-[#4ecdc4] hover:shadow-lg"
               disabled={!newGoal.title || !newGoal.targetValue || !newGoal.currentValue || !newGoal.unit || !newGoal.deadline}
             >
-              Add Goal
+              {t("goals.addGoal")}
             </Button>
           </div>
         </DialogContent>
@@ -803,18 +807,18 @@ export default function Goals() {
       <Dialog open={showEditGoal} onOpenChange={setShowEditGoal}>
         <DialogContent className="max-h-[90vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle>Edit Goal</DialogTitle>
+            <DialogTitle>{t("goals.editGoal")}</DialogTitle>
             <DialogDescription>
-              Update your goal details
+              {t("goals.editDesc")}
             </DialogDescription>
           </DialogHeader>
 
           <div className="space-y-4 py-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Goal Title</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">{t("goals.goalTitle")}</label>
               <input
                 type="text"
-                placeholder="e.g., Drink more water"
+                placeholder={t("goals.goalTitlePlaceholder")}
                 value={newGoal.title}
                 onChange={(e) => setNewGoal({ ...newGoal, title: e.target.value })}
                 className="w-full px-4 py-2 rounded-lg border-2 border-gray-200 focus:border-[#1f7a8c] focus:outline-none"
@@ -822,22 +826,22 @@ export default function Goals() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Category</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">{t("goals.category")}</label>
               <select
                 value={newGoal.category}
                 onChange={(e) => setNewGoal({ ...newGoal, category: e.target.value as GoalCategory })}
                 className="w-full px-4 py-2 rounded-lg border-2 border-gray-200 focus:border-[#1f7a8c] focus:outline-none"
               >
-                <option value="weight">Weight</option>
-                <option value="nutrition">Nutrition</option>
-                <option value="health">Health</option>
-                <option value="lifestyle">Lifestyle</option>
+                <option value="weight">{t("goals.cat.weight")}</option>
+                <option value="nutrition">{t("goals.cat.nutrition")}</option>
+                <option value="health">{t("goals.cat.health")}</option>
+                <option value="lifestyle">{t("goals.cat.lifestyle")}</option>
               </select>
             </div>
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Current Value</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t("goals.currentValue")}</label>
                 <input
                   type="number"
                   step="0.1"
@@ -848,7 +852,7 @@ export default function Goals() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Target Value</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t("goals.targetValue")}</label>
                 <input
                   type="number"
                   step="0.1"
@@ -861,10 +865,10 @@ export default function Goals() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Unit</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">{t("goals.unit")}</label>
               <input
                 type="text"
-                placeholder="e.g., kg, ml, steps"
+                placeholder={t("goals.unitPlaceholder")}
                 value={newGoal.unit}
                 onChange={(e) => setNewGoal({ ...newGoal, unit: e.target.value })}
                 className="w-full px-4 py-2 rounded-lg border-2 border-gray-200 focus:border-[#1f7a8c] focus:outline-none"
@@ -872,7 +876,7 @@ export default function Goals() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Deadline</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">{t("goals.deadline")}</label>
               <input
                 type="date"
                 value={newGoal.deadline}
@@ -899,14 +903,14 @@ export default function Goals() {
               }}
               className="flex-1"
             >
-              Cancel
+              {t("common.cancel")}
             </Button>
             <Button
               onClick={handleSaveEdit}
               className="flex-1 bg-gradient-to-r from-[#1f7a8c] to-[#4ecdc4] hover:shadow-lg"
               disabled={!newGoal.title || !newGoal.targetValue || !newGoal.currentValue || !newGoal.unit || !newGoal.deadline}
             >
-              Save Changes
+              {t("profile.saveChanges")}
             </Button>
           </div>
         </DialogContent>
@@ -916,9 +920,9 @@ export default function Goals() {
       <Dialog open={showUpdateProgress} onOpenChange={setShowUpdateProgress}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Update Progress</DialogTitle>
+            <DialogTitle>{t("goals.updateProgress")}</DialogTitle>
             <DialogDescription>
-              {selectedGoal && `Update your current value for "${selectedGoal.title}"`}
+              {selectedGoal && t("goals.updateProgressDesc").replace("{title}", selectedGoal.title)}
             </DialogDescription>
           </DialogHeader>
 
@@ -927,7 +931,7 @@ export default function Goals() {
               <>
                 <div className="bg-gradient-to-br from-blue-50 to-cyan-50 rounded-2xl p-4 mb-4">
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm text-gray-600">Current Progress</span>
+                    <span className="text-sm text-gray-600">{t("goals.currentProgress")}</span>
                     <span className="text-2xl">{selectedGoal.icon}</span>
                   </div>
                   <div className="text-center">
@@ -935,14 +939,14 @@ export default function Goals() {
                       {selectedGoal.currentValue} <span className="text-lg text-gray-500">{selectedGoal.unit}</span>
                     </p>
                     <p className="text-sm text-gray-500">
-                      Target: {selectedGoal.targetValue} {selectedGoal.unit}
+                      {t("goals.targetLabel")} {selectedGoal.targetValue} {selectedGoal.unit}
                     </p>
                   </div>
                 </div>
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    New Value ({selectedGoal.unit})
+                    {t("goals.newValue").replace("{unit}", selectedGoal.unit)}
                   </label>
                   <input
                     type="number"
@@ -961,10 +965,10 @@ export default function Goals() {
                       <Sparkles className="h-4 w-4" />
                       <span>
                         {parseFloat(updateValue) > selectedGoal.currentValue
-                          ? `+${(parseFloat(updateValue) - selectedGoal.currentValue).toFixed(1)} ${selectedGoal.unit} progress!`
+                          ? t("goals.progressGain").replace("{d}", (parseFloat(updateValue) - selectedGoal.currentValue).toFixed(1)).replace("{unit}", selectedGoal.unit)
                           : parseFloat(updateValue) < selectedGoal.currentValue
-                          ? `${(selectedGoal.currentValue - parseFloat(updateValue)).toFixed(1)} ${selectedGoal.unit} improvement!`
-                          : "No change"}
+                          ? t("goals.progressImprove").replace("{d}", (selectedGoal.currentValue - parseFloat(updateValue)).toFixed(1)).replace("{unit}", selectedGoal.unit)
+                          : t("goals.noChange")}
                       </span>
                     </div>
                   </div>
@@ -983,14 +987,14 @@ export default function Goals() {
               }}
               className="flex-1"
             >
-              Cancel
+              {t("common.cancel")}
             </Button>
             <Button
               onClick={handleSaveProgress}
               className="flex-1 bg-gradient-to-r from-[#1f7a8c] to-[#4ecdc4] hover:shadow-lg"
               disabled={!updateValue || parseFloat(updateValue) === selectedGoal?.currentValue}
             >
-              Update Progress
+              {t("goals.updateProgress")}
             </Button>
           </div>
         </DialogContent>

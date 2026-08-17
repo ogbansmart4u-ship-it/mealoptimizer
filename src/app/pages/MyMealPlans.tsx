@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router";
 import { useUser } from "../contexts/UserContext";
+import { useLanguage } from "../contexts/LanguageContext";
 import { projectId } from '/utils/supabase/info';
 import { getAccessToken } from '../../lib/supabase';
 import { toast } from "sonner";
@@ -62,7 +63,14 @@ const getMealIcon = (mealType: string) => {
 export default function MyMealPlans() {
   const navigate = useNavigate();
   const { profile } = useUser();
+  const { t } = useLanguage();
   const [mealPlans, setMealPlans] = useState<MealPlan[]>([]);
+
+  // Translate a meal type ("breakfast" → localized) with a safe fallback.
+  const mealTypeLabel = (type: string) =>
+    ["breakfast", "brunch", "lunch", "dinner"].includes(type.toLowerCase())
+      ? t(`planmeal.meal.${type.toLowerCase()}`)
+      : type;
   const [isLoading, setIsLoading] = useState(true);
   const [deletingPlanId, setDeletingPlanId] = useState<string | null>(null);
 
@@ -76,7 +84,7 @@ export default function MyMealPlans() {
       const token = await getAccessToken();
       
       if (!token) {
-        toast.error("Please log in to view meal plans");
+        toast.error(t("mealview.toast.loginRequired"));
         navigate("/login");
         return;
       }
@@ -100,14 +108,14 @@ export default function MyMealPlans() {
       setMealPlans(sortedPlans);
     } catch (err: any) {
       console.error("Error loading meal plans:", err);
-      toast.error("Failed to load meal plans");
+      toast.error(t("myplans.loadFailed"));
     } finally {
       setIsLoading(false);
     }
   };
 
   const handleDeletePlan = async (planId: string) => {
-    if (!confirm("Are you sure you want to delete this meal plan?")) return;
+    if (!confirm(t("mealview.confirmDelete"))) return;
 
     try {
       setDeletingPlanId(planId);
@@ -124,12 +132,12 @@ export default function MyMealPlans() {
         throw new Error("Failed to delete meal plan");
       }
 
-      toast.success("Meal plan deleted");
+      toast.success(t("mealview.toast.deleted"));
       // Remove from local state
       setMealPlans(prev => prev.filter(plan => plan.id !== planId));
     } catch (err: any) {
       console.error("Error deleting meal plan:", err);
-      toast.error("Failed to delete meal plan");
+      toast.error(t("mealview.toast.deleteFailed"));
     } finally {
       setDeletingPlanId(null);
     }
@@ -138,7 +146,7 @@ export default function MyMealPlans() {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-b from-[#B8E5E5] to-[#E8F5F5] flex items-center justify-center">
-        <MascotLoader label="Loading your meal plans..." size={96} />
+        <MascotLoader label={t("myplans.loading")} size={96} />
       </div>
     );
   }
@@ -147,13 +155,13 @@ export default function MyMealPlans() {
     <div className="min-h-screen bg-gradient-to-b from-[#B8E5E5] to-[#E8F5F5] pb-24">
       {/* Header */}
       <PageHeader
-        title="My Meal Plans"
+        title={t("myplans.title")}
         showHome
         actions={
           <button
             onClick={() => navigate("/plan-meal")}
             className="bg-white/20 hover:bg-white/30 text-white rounded-full p-2 transition-colors"
-            title="Create new meal plan"
+            title={t("myplans.createNew")}
           >
             <Plus className="h-6 w-6" />
           </button>
@@ -162,7 +170,7 @@ export default function MyMealPlans() {
 
       <div className="bg-[#1f7a8c] px-6 pb-4">
         <p className="text-white/90 text-sm">
-          {mealPlans.length} {mealPlans.length === 1 ? 'plan' : 'plans'} saved
+          {(mealPlans.length === 1 ? t("myplans.savedOne") : t("myplans.savedMany")).replace("{n}", String(mealPlans.length))}
         </p>
       </div>
 
@@ -171,8 +179,8 @@ export default function MyMealPlans() {
         {mealPlans.length === 0 ? (
           <div className="bg-white rounded-3xl shadow-lg p-8">
             <MascotEmptyState
-              title="No Meal Plans Yet"
-              subtitle="Start planning your personalized meals based on your health profile"
+              title={t("myplans.emptyTitle")}
+              subtitle={t("myplans.emptySubtitle")}
               action={
                 <button
                   onClick={() => navigate("/plan-meal")}
@@ -180,7 +188,7 @@ export default function MyMealPlans() {
                 >
                   <div className="flex items-center gap-2">
                     <Plus className="h-5 w-5" />
-                    <span>Plan My First Meal</span>
+                    <span>{t("myplans.planFirst")}</span>
                   </div>
                 </button>
               }
@@ -209,7 +217,7 @@ export default function MyMealPlans() {
                           {plan.plan_json.meal_name}
                         </h3>
                         <div className="flex items-center gap-2 text-xs text-gray-500">
-                          <span className="capitalize">{plan.mealType}</span>
+                          <span className="capitalize">{mealTypeLabel(plan.mealType)}</span>
                           <span>•</span>
                           <div className="flex items-center gap-1">
                             <Calendar className="h-3 w-3" />
@@ -228,7 +236,7 @@ export default function MyMealPlans() {
                         <button
                           onClick={() => navigate(`/meal-plan?id=${plan.id}`)}
                           className="text-[#1f7a8c] hover:bg-[#B8E5E5] rounded-full p-2 transition-colors"
-                          title="View details"
+                          title={t("myplans.viewDetails")}
                         >
                           <Eye className="h-5 w-5" />
                         </button>
@@ -236,7 +244,7 @@ export default function MyMealPlans() {
                           onClick={() => handleDeletePlan(plan.id)}
                           disabled={isDeleting}
                           className="text-red-600 hover:bg-red-50 rounded-full p-2 transition-colors disabled:opacity-50"
-                          title="Delete plan"
+                          title={t("mealview.deleteTitle")}
                         >
                           {isDeleting ? (
                             <div className="w-5 h-5 border-2 border-red-600 border-t-transparent rounded-full animate-spin"></div>
@@ -252,7 +260,7 @@ export default function MyMealPlans() {
                       <div className="bg-orange-50 rounded-xl p-3">
                         <div className="flex items-center gap-1 mb-1">
                           <Flame className="h-3 w-3 text-orange-600" />
-                          <p className="text-xs text-gray-600">Calories</p>
+                          <p className="text-xs text-gray-600">{t("mealview.calories")}</p>
                         </div>
                         <p className="text-sm text-gray-800">{plan.plan_json.calories}</p>
                       </div>
@@ -260,7 +268,7 @@ export default function MyMealPlans() {
                       <div className="bg-blue-50 rounded-xl p-3">
                         <div className="flex items-center gap-1 mb-1">
                           <Activity className="h-3 w-3 text-blue-600" />
-                          <p className="text-xs text-gray-600">Protein</p>
+                          <p className="text-xs text-gray-600">{t("mealview.protein")}</p>
                         </div>
                         <p className="text-sm text-gray-800">{plan.plan_json.protein}g</p>
                       </div>
@@ -268,7 +276,7 @@ export default function MyMealPlans() {
                       <div className="bg-green-50 rounded-xl p-3">
                         <div className="flex items-center gap-1 mb-1">
                           <Activity className="h-3 w-3 text-green-600" />
-                          <p className="text-xs text-gray-600">Carbs</p>
+                          <p className="text-xs text-gray-600">{t("mealview.carbs")}</p>
                         </div>
                         <p className="text-sm text-gray-800">{plan.plan_json.carbs}g</p>
                       </div>
@@ -277,7 +285,7 @@ export default function MyMealPlans() {
                     {/* Goal Badge */}
                     <div className="mt-3 inline-flex items-center gap-1 px-3 py-1 bg-[#B8E5E5] rounded-full">
                       <Activity className="h-3 w-3 text-[#1f7a8c]" />
-                      <p className="text-xs text-[#1f7a8c]">{plan.currentGoal}</p>
+                      <p className="text-xs text-[#1f7a8c]">{plan.currentGoal === "General Health & Nutrition" ? t("planmeal.defaultGoal") : plan.currentGoal}</p>
                     </div>
                   </div>
 
@@ -286,7 +294,7 @@ export default function MyMealPlans() {
                     onClick={() => navigate(`/meal-plan?id=${plan.id}`)}
                     className="w-full bg-gradient-to-r from-[#1f7a8c] to-[#4ecdc4] text-white py-3 hover:opacity-90 transition-opacity"
                   >
-                    View Full Details
+                    {t("myplans.viewFull")}
                   </button>
                 </div>
               );
@@ -302,7 +310,7 @@ export default function MyMealPlans() {
           >
             <div className="flex items-center justify-center gap-2">
               <Plus className="h-5 w-5" />
-              <span className="text-lg">Plan Another Meal</span>
+              <span className="text-lg">{t("myplans.planAnother")}</span>
             </div>
           </button>
         )}

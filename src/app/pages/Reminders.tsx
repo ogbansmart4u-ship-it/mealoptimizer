@@ -7,11 +7,14 @@ import { SkeletonRows } from '../components/SkeletonLoader';
 import MascotEmptyState from '../components/MascotEmptyState';
 import { Button } from '../components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../components/ui/dialog';
+import { useLanguage } from '../contexts/LanguageContext';
 
 const DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+const DAY_KEYS = ['reminders.day.sun', 'reminders.day.mon', 'reminders.day.tue', 'reminders.day.wed', 'reminders.day.thu', 'reminders.day.fri', 'reminders.day.sat'];
 
 export default function Reminders() {
   const navigate = useNavigate();
+  const { t } = useLanguage();
   const [reminders, setReminders] = useState<Reminder[]>([]);
   const [loading, setLoading] = useState(true);
   const [showAddDialog, setShowAddDialog] = useState(false);
@@ -62,7 +65,7 @@ export default function Reminders() {
   };
 
   const deleteReminder = async (id: string) => {
-    if (confirm('Delete this reminder?')) {
+    if (confirm(t('reminders.confirmDelete'))) {
       const updated = reminders.filter((r) => r.id !== id);
       setReminders(updated);
       saveReminders(updated);
@@ -79,7 +82,7 @@ export default function Reminders() {
       time: formData.time,
       enabled: true,
       days: formData.days,
-      message: formData.message || `Time to log ${formData.trackerName}!`,
+      message: formData.message || t('reminders.defaultMsg').replace('{name}', formData.trackerName),
     };
 
     const updated = [...reminders, newReminder];
@@ -138,8 +141,8 @@ export default function Reminders() {
             <ArrowLeft className="h-6 w-6 text-white" />
           </button>
           <div className="flex-1">
-            <h1 className="text-3xl font-bold text-white">Custom Reminders</h1>
-            <p className="text-white/90 text-sm">Set personalized reminder times</p>
+            <h1 className="text-3xl font-bold text-white">{t('reminders.title')}</h1>
+            <p className="text-white/90 text-sm">{t('reminders.subtitle')}</p>
           </div>
           <button
             onClick={() => setShowAddDialog(true)}
@@ -157,15 +160,15 @@ export default function Reminders() {
             <div className="flex items-start gap-3">
               <BellOff className="h-6 w-6 text-yellow-600 flex-shrink-0 mt-0.5" />
               <div className="flex-1">
-                <h3 className="font-semibold text-yellow-800">Enable Notifications</h3>
+                <h3 className="font-semibold text-yellow-800">{t('reminders.enableTitle')}</h3>
                 <p className="text-sm text-yellow-700 mb-3">
-                  Allow notifications to receive reminders
+                  {t('reminders.enableDesc')}
                 </p>
                 <Button
                   onClick={handleRequestPermission}
                   className="bg-yellow-600 hover:bg-yellow-700 text-white"
                 >
-                  Enable Notifications
+                  {t('reminders.enableTitle')}
                 </Button>
               </div>
             </div>
@@ -218,7 +221,7 @@ export default function Reminders() {
                               : 'bg-gray-100 text-gray-400'
                           }`}
                         >
-                          {day}
+                          {t(DAY_KEYS[index])}
                         </span>
                       ))}
                     </div>
@@ -254,14 +257,14 @@ export default function Reminders() {
           {!loading && reminders.length === 0 && (
             <div className="bg-white rounded-2xl shadow-lg p-8">
               <MascotEmptyState
-                title="No Reminders Yet"
-                subtitle="Create custom reminders for your health trackers"
+                title={t('reminders.emptyTitle')}
+                subtitle={t('reminders.emptySubtitle')}
                 action={
                   <Button
                     onClick={() => setShowAddDialog(true)}
                     className="bg-gradient-to-r from-[#1f7a8c] to-[#4ecdc4] text-white"
                   >
-                    Create First Reminder
+                    {t('reminders.createFirst')}
                   </Button>
                 }
               />
@@ -278,26 +281,26 @@ export default function Reminders() {
       }}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>{editingReminder ? 'Edit Reminder' : 'Add Reminder'}</DialogTitle>
+            <DialogTitle>{editingReminder ? t('reminders.editTitle') : t('reminders.addTitle')}</DialogTitle>
           </DialogHeader>
 
           <div className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Tracker Name
+                {t('reminders.trackerName')}
               </label>
               <input
                 type="text"
                 value={formData.trackerName}
                 onChange={(e) => setFormData({ ...formData, trackerName: e.target.value })}
-                placeholder="e.g., Hydration, Meals, Workout"
+                placeholder={t('reminders.trackerPlaceholder')}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#1f7a8c]"
               />
             </div>
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Time
+                {t('reminders.time')}
               </label>
               <input
                 type="time"
@@ -309,7 +312,7 @@ export default function Reminders() {
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Repeat on
+                {t('reminders.repeatOn')}
               </label>
               <div className="flex gap-2">
                 {DAYS.map((day, index) => (
@@ -322,7 +325,7 @@ export default function Reminders() {
                         : 'bg-gray-100 text-gray-600'
                     }`}
                   >
-                    {day}
+                    {t(DAY_KEYS[index])}
                   </button>
                 ))}
               </div>
@@ -330,13 +333,13 @@ export default function Reminders() {
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Message
+                {t('reminders.message')}
               </label>
               <input
                 type="text"
                 value={formData.message}
                 onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                placeholder="Reminder message"
+                placeholder={t('reminders.messagePlaceholder')}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#1f7a8c]"
               />
             </div>
@@ -351,14 +354,14 @@ export default function Reminders() {
                 variant="outline"
                 className="flex-1"
               >
-                Cancel
+                {t('common.cancel')}
               </Button>
               <Button
                 onClick={editingReminder ? handleEditReminder : handleAddReminder}
                 className="flex-1 bg-gradient-to-r from-[#1f7a8c] to-[#4ecdc4] text-white"
                 disabled={!formData.trackerName || formData.days.length === 0}
               >
-                {editingReminder ? 'Save Changes' : 'Add Reminder'}
+                {editingReminder ? t('profile.saveChanges') : t('reminders.addTitle')}
               </Button>
             </div>
           </div>

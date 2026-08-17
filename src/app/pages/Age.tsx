@@ -3,11 +3,13 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import OnboardingProgress from "../components/OnboardingProgress";
 import { useUser } from "../contexts/UserContext";
+import { useLanguage } from "../contexts/LanguageContext";
 import { updateUserProfile } from "../../lib/api";
 
 export default function Age() {
   const navigate = useNavigate();
   const { profile, updateProfile } = useUser();
+  const { t } = useLanguage();
   const [birthDate, setBirthDate] = useState("1990-01-01");
   const [gender, setGender] = useState<"male" | "female" | "other">("female");
   const [saving, setSaving] = useState(false);
@@ -32,11 +34,11 @@ export default function Age() {
   };
 
   const getLifeStage = (age: number) => {
-    if (age < 13) return { stage: "Child", icon: "👶", color: "from-blue-400 to-blue-500" };
-    if (age < 20) return { stage: "Teenager", icon: "🧒", color: "from-purple-400 to-purple-500" };
-    if (age < 40) return { stage: "Young Adult", icon: "👤", color: "from-green-400 to-green-500" };
-    if (age < 60) return { stage: "Middle Age", icon: "👨", color: "from-yellow-400 to-yellow-500" };
-    return { stage: "Senior", icon: "👴", color: "from-orange-400 to-orange-500" };
+    if (age < 13) return { stageKey: "age.stage.child", icon: "👶", color: "from-blue-400 to-blue-500" };
+    if (age < 20) return { stageKey: "age.stage.teen", icon: "🧒", color: "from-purple-400 to-purple-500" };
+    if (age < 40) return { stageKey: "age.stage.youngAdult", icon: "👤", color: "from-green-400 to-green-500" };
+    if (age < 60) return { stageKey: "age.stage.middleAge", icon: "👨", color: "from-yellow-400 to-yellow-500" };
+    return { stageKey: "age.stage.senior", icon: "👴", color: "from-orange-400 to-orange-500" };
   };
 
   const age = calculateAge();
@@ -76,7 +78,7 @@ export default function Age() {
           >
             <ChevronLeft className="h-6 w-6" />
           </button>
-          <h1 className="text-2xl text-white flex-1">Age & Gender</h1>
+          <h1 className="text-2xl text-white flex-1">{t("age.title")}</h1>
           <Calendar className="h-6 w-6 text-white" />
         </div>
       </div>
@@ -90,18 +92,18 @@ export default function Age() {
       <div className="px-6 mt-6">
         {/* Current Age Display */}
         <div className="bg-white rounded-3xl shadow-lg p-6 mb-6">
-          <h2 className="text-lg text-[#1f7a8c] mb-4">Your Age</h2>
+          <h2 className="text-lg text-[#1f7a8c] mb-4">{t("age.yourAge")}</h2>
           <div className={`bg-gradient-to-r ${lifeStage.color} rounded-2xl p-8 text-center text-white mb-4`}>
             <div className="text-6xl mb-3">{lifeStage.icon}</div>
             <div className="text-5xl mb-2">{age}</div>
-            <div className="text-xl">years old</div>
-            <div className="text-sm mt-2 opacity-90">{lifeStage.stage}</div>
+            <div className="text-xl">{t("age.yearsOld")}</div>
+            <div className="text-sm mt-2 opacity-90">{t(lifeStage.stageKey)}</div>
           </div>
         </div>
 
         {/* Birth Date Input */}
         <div className="bg-white rounded-3xl shadow-lg p-6 mb-6">
-          <h2 className="text-lg text-[#1f7a8c] mb-4">Date of Birth</h2>
+          <h2 className="text-lg text-[#1f7a8c] mb-4">{t("age.dob")}</h2>
           <input
             type="date"
             value={birthDate}
@@ -112,7 +114,7 @@ export default function Age() {
 
         {/* Gender Selection */}
         <div className="bg-white rounded-3xl shadow-lg p-6 mb-6">
-          <h2 className="text-lg text-[#1f7a8c] mb-4">Gender</h2>
+          <h2 className="text-lg text-[#1f7a8c] mb-4">{t("age.gender")}</h2>
           <div className="grid grid-cols-3 gap-3">
             <button
               onClick={() => setGender("male")}
@@ -123,7 +125,7 @@ export default function Age() {
               }`}
             >
               <div className="text-4xl mb-2">👨</div>
-              <div className="text-sm">Male</div>
+              <div className="text-sm">{t("goalsetup.sex.male")}</div>
             </button>
             <button
               onClick={() => setGender("female")}
@@ -134,7 +136,7 @@ export default function Age() {
               }`}
             >
               <div className="text-4xl mb-2">👩</div>
-              <div className="text-sm">Female</div>
+              <div className="text-sm">{t("goalsetup.sex.female")}</div>
             </button>
             <button
               onClick={() => setGender("other")}
@@ -145,28 +147,28 @@ export default function Age() {
               }`}
             >
               <div className="text-4xl mb-2">⚧</div>
-              <div className="text-sm">Other</div>
+              <div className="text-sm">{t("goalsetup.sex.other")}</div>
             </button>
           </div>
         </div>
 
         {/* Age-Based Nutrition Info */}
         <div className="bg-white rounded-3xl shadow-lg p-6 mb-6">
-          <h2 className="text-lg text-[#e63946] mb-4">Nutrition Needs for Your Age</h2>
+          <h2 className="text-lg text-[#e63946] mb-4">{t("age.nutritionTitle")}</h2>
           <div className="space-y-3 text-sm text-gray-700">
             {age < 20 && (
               <>
                 <div className="flex gap-3">
                   <span className="text-xl">🥛</span>
-                  <p>High calcium intake for bone development</p>
+                  <p>{t("age.tip.teen1")}</p>
                 </div>
                 <div className="flex gap-3">
                   <span className="text-xl">💪</span>
-                  <p>Adequate protein for growth and development</p>
+                  <p>{t("age.tip.teen2")}</p>
                 </div>
                 <div className="flex gap-3">
                   <span className="text-xl">🧠</span>
-                  <p>Omega-3 fatty acids for brain development</p>
+                  <p>{t("age.tip.teen3")}</p>
                 </div>
               </>
             )}
@@ -174,15 +176,15 @@ export default function Age() {
               <>
                 <div className="flex gap-3">
                   <span className="text-xl">⚡</span>
-                  <p>Balanced macronutrients for active lifestyle</p>
+                  <p>{t("age.tip.young1")}</p>
                 </div>
                 <div className="flex gap-3">
                   <span className="text-xl">🥗</span>
-                  <p>Plenty of vegetables and whole grains</p>
+                  <p>{t("age.tip.young2")}</p>
                 </div>
                 <div className="flex gap-3">
                   <span className="text-xl">💧</span>
-                  <p>Stay well-hydrated throughout the day</p>
+                  <p>{t("age.tip.young3")}</p>
                 </div>
               </>
             )}
@@ -190,15 +192,15 @@ export default function Age() {
               <>
                 <div className="flex gap-3">
                   <span className="text-xl">🦴</span>
-                  <p>Focus on bone health with calcium and vitamin D</p>
+                  <p>{t("age.tip.mid1")}</p>
                 </div>
                 <div className="flex gap-3">
                   <span className="text-xl">❤️</span>
-                  <p>Heart-healthy fats and fiber-rich foods</p>
+                  <p>{t("age.tip.mid2")}</p>
                 </div>
                 <div className="flex gap-3">
                   <span className="text-xl">🥦</span>
-                  <p>Antioxidant-rich foods to combat aging</p>
+                  <p>{t("age.tip.mid3")}</p>
                 </div>
               </>
             )}
@@ -206,15 +208,15 @@ export default function Age() {
               <>
                 <div className="flex gap-3">
                   <span className="text-xl">💊</span>
-                  <p>Vitamin B12 and D supplementation may be needed</p>
+                  <p>{t("age.tip.senior1")}</p>
                 </div>
                 <div className="flex gap-3">
                   <span className="text-xl">🍗</span>
-                  <p>Lean protein to maintain muscle mass</p>
+                  <p>{t("age.tip.senior2")}</p>
                 </div>
                 <div className="flex gap-3">
                   <span className="text-xl">🧠</span>
-                  <p>Brain-boosting nutrients for cognitive health</p>
+                  <p>{t("age.tip.senior3")}</p>
                 </div>
               </>
             )}
@@ -227,14 +229,14 @@ export default function Age() {
             onClick={() => navigate("/medications")}
             className="px-6 py-4 text-gray-600 hover:text-gray-800 transition-colors font-medium"
           >
-            Skip
+            {t("meds.skip")}
           </button>
           <button
             onClick={handleContinue}
             disabled={saving}
             className="flex-1 bg-gradient-to-r from-[#1f7a8c] to-[#4ecdc4] text-white rounded-2xl py-4 shadow-lg hover:shadow-xl transition-all disabled:opacity-60"
           >
-            {saving ? "Saving…" : "Continue"}
+            {saving ? t("profile.saving") : t("goalsetup.continue")}
           </button>
         </div>
       </div>

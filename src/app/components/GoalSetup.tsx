@@ -17,24 +17,28 @@ import {
 import { useAuth } from "../contexts/AuthContext";
 import { useUser } from "../contexts/UserContext";
 import { useDashboard } from "../contexts/DashboardContext";
+import { useLanguage } from "../contexts/LanguageContext";
 import { updateUserProfile } from "../../lib/api";
 
 type Sex = "male" | "female" | "other";
 
-const GOALS: { id: string; label: string; icon: any }[] = [
-  { id: "eat-healthy", label: "Eat healthy", icon: Salad },
-  { id: "lose-weight", label: "Lose weight", icon: TrendingDown },
-  { id: "gain-weight", label: "Gain weight", icon: TrendingUp },
-  { id: "sleep-better", label: "Sleep well", icon: Moon },
-  { id: "hydrate-more", label: "Hydrate more", icon: Droplet },
-  { id: "manage-condition", label: "Manage a condition", icon: HeartPulse },
-  { id: "get-fit", label: "Get fit / build muscle", icon: Dumbbell },
-  { id: "eat-local", label: "Eat local & affordable", icon: Wallet },
+// `tkey` maps each goal to a translation key in LanguageContext. `label` is the
+// English fallback (also used if a key is ever missing).
+const GOALS: { id: string; label: string; tkey: string; icon: any }[] = [
+  { id: "eat-healthy", label: "Eat healthy", tkey: "goalsetup.goal.eatHealthy", icon: Salad },
+  { id: "lose-weight", label: "Lose weight", tkey: "goalsetup.goal.loseWeight", icon: TrendingDown },
+  { id: "gain-weight", label: "Gain weight", tkey: "goalsetup.goal.gainWeight", icon: TrendingUp },
+  { id: "sleep-better", label: "Sleep well", tkey: "goalsetup.goal.sleepWell", icon: Moon },
+  { id: "hydrate-more", label: "Hydrate more", tkey: "goalsetup.goal.hydrateMore", icon: Droplet },
+  { id: "manage-condition", label: "Manage a condition", tkey: "goalsetup.goal.manageCondition", icon: HeartPulse },
+  { id: "get-fit", label: "Get fit / build muscle", tkey: "goalsetup.goal.getFit", icon: Dumbbell },
+  { id: "eat-local", label: "Eat local & affordable", tkey: "goalsetup.goal.eatLocal", icon: Wallet },
 ];
 
-// Ranges (label + representative midpoint used for calculations).
-const AGE_RANGES = [
-  { label: "Under 18", mid: 16 },
+// Ranges (label + representative midpoint used for calculations). Only labels
+// with translatable words carry a `tkey`; purely numeric chips stay as-is.
+const AGE_RANGES: { label: string; mid: number; tkey?: string }[] = [
+  { label: "Under 18", mid: 16, tkey: "goalsetup.age.under18" },
   { label: "18–24", mid: 21 },
   { label: "25–34", mid: 30 },
   { label: "35–44", mid: 40 },
@@ -43,8 +47,8 @@ const AGE_RANGES = [
   { label: "65+", mid: 68 },
 ];
 
-const WEIGHT_RANGES = [
-  { label: "Under 50 kg", mid: 46 },
+const WEIGHT_RANGES: { label: string; mid: number; tkey?: string }[] = [
+  { label: "Under 50 kg", mid: 46, tkey: "goalsetup.weight.under50" },
   { label: "50–64 kg", mid: 57 },
   { label: "65–79 kg", mid: 72 },
   { label: "80–94 kg", mid: 87 },
@@ -63,6 +67,7 @@ export default function GoalSetup() {
   const { user } = useAuth();
   const { profile, updateProfile } = useUser();
   const { widgets, reorderWidgets } = useDashboard();
+  const { t } = useLanguage();
 
   const [open, setOpen] = useState(false);
   const [step, setStep] = useState(0);
@@ -168,15 +173,15 @@ export default function GoalSetup() {
         {/* Header */}
         <div className="bg-gradient-to-r from-[#1f7a8c] to-[#4ecdc4] px-6 pt-7 pb-6 sm:rounded-t-3xl">
           <div className="flex items-center gap-2 text-white/90 text-xs font-semibold mb-2">
-            <Sparkles className="h-4 w-4" /> LET'S PERSONALIZE YOUR APP
+            <Sparkles className="h-4 w-4" /> {t('goalsetup.badge')}
           </div>
           <h2 className="text-2xl font-bold text-white">
-            {step === 0 ? "What do you want to achieve?" : "A little about you"}
+            {step === 0 ? t('goalsetup.step0.title') : t('goalsetup.step1.title')}
           </h2>
           <p className="text-white/85 text-sm mt-1">
             {step === 0
-              ? "Pick everything that applies — we'll tune your dashboard to match."
-              : "This helps us set the right calorie and health targets for you."}
+              ? t('goalsetup.step0.subtitle')
+              : t('goalsetup.step1.subtitle')}
           </p>
           {/* Step dots */}
           <div className="flex gap-1.5 mt-4">
@@ -189,7 +194,7 @@ export default function GoalSetup() {
         <div className="p-6">
           {step === 0 ? (
             <div className="grid grid-cols-2 gap-3">
-              {GOALS.map(({ id, label, icon: Icon }) => {
+              {GOALS.map(({ id, label, tkey, icon: Icon }) => {
                 const selected = goals.includes(id);
                 return (
                   <button
@@ -205,7 +210,7 @@ export default function GoalSetup() {
                       <Icon className={`h-6 w-6 ${selected ? "text-[#1f7a8c]" : "text-gray-500"}`} />
                       {selected && <Check className="h-4 w-4 text-[#1f7a8c]" />}
                     </div>
-                    <span className={`text-sm font-medium ${selected ? "text-[#1f7a8c]" : "text-gray-700"}`}>{label}</span>
+                    <span className={`text-sm font-medium ${selected ? "text-[#1f7a8c]" : "text-gray-700"}`}>{t(tkey) || label}</span>
                   </button>
                 );
               })}
@@ -214,25 +219,25 @@ export default function GoalSetup() {
             <div className="space-y-6">
               {/* Sex */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Sex</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('goalsetup.sex')}</label>
                 <div className="grid grid-cols-3 gap-3">
                   {(["male", "female", "other"] as Sex[]).map((s) => (
                     <button
                       key={s}
                       type="button"
                       onClick={() => setSex(s)}
-                      className={`py-3 rounded-xl border-2 text-sm font-medium capitalize transition-all ${
+                      className={`py-3 rounded-xl border-2 text-sm font-medium transition-all ${
                         sex === s ? "border-[#1f7a8c] bg-[#E8F5F5] text-[#1f7a8c]" : "border-gray-200 text-gray-700 hover:border-[#4ecdc4]"
                       }`}
                     >
-                      {s}
+                      {t(`goalsetup.sex.${s}`)}
                     </button>
                   ))}
                 </div>
               </div>
               {/* Age range */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Age range</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('goalsetup.ageRange')}</label>
                 <div className="flex flex-wrap gap-2">
                   {AGE_RANGES.map((r) => (
                     <button
@@ -243,14 +248,14 @@ export default function GoalSetup() {
                         ageMid === r.mid ? "border-[#1f7a8c] bg-[#1f7a8c] text-white" : "border-gray-200 text-gray-700 hover:border-[#4ecdc4]"
                       }`}
                     >
-                      {r.label}
+                      {r.tkey ? t(r.tkey) : r.label}
                     </button>
                   ))}
                 </div>
               </div>
               {/* Weight range */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Weight range</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('goalsetup.weightRange')}</label>
                 <div className="flex flex-wrap gap-2">
                   {WEIGHT_RANGES.map((r) => (
                     <button
@@ -261,7 +266,7 @@ export default function GoalSetup() {
                         weightMid === r.mid ? "border-[#1f7a8c] bg-[#1f7a8c] text-white" : "border-gray-200 text-gray-700 hover:border-[#4ecdc4]"
                       }`}
                     >
-                      {r.label}
+                      {r.tkey ? t(r.tkey) : r.label}
                     </button>
                   ))}
                 </div>
@@ -273,7 +278,7 @@ export default function GoalSetup() {
           <div className="flex items-center gap-3 mt-8">
             {step === 0 ? (
               <button type="button" onClick={skip} className="text-sm text-gray-500 hover:text-gray-700 font-medium px-2">
-                Skip for now
+                {t('goalsetup.skip')}
               </button>
             ) : (
               <button
@@ -281,7 +286,7 @@ export default function GoalSetup() {
                 onClick={() => setStep(0)}
                 className="flex items-center gap-1 text-sm text-gray-600 hover:text-gray-800 font-medium px-2"
               >
-                <ChevronLeft className="h-4 w-4" /> Back
+                <ChevronLeft className="h-4 w-4" /> {t('common.back')}
               </button>
             )}
             <div className="flex-1" />
@@ -292,7 +297,7 @@ export default function GoalSetup() {
                 disabled={!canContinue}
                 className="flex items-center gap-1 bg-gradient-to-r from-[#1f7a8c] to-[#4ecdc4] text-white rounded-xl px-6 py-3 font-semibold shadow-sm hover:shadow-md transition-all disabled:opacity-50"
               >
-                Continue <ChevronRight className="h-4 w-4" />
+                {t('goalsetup.continue')} <ChevronRight className="h-4 w-4" />
               </button>
             ) : (
               <button
@@ -302,7 +307,7 @@ export default function GoalSetup() {
                 className="flex items-center gap-2 bg-gradient-to-r from-[#1f7a8c] to-[#4ecdc4] text-white rounded-xl px-6 py-3 font-semibold shadow-sm hover:shadow-md transition-all disabled:opacity-50"
               >
                 {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Check className="h-4 w-4" />}
-                {saving ? "Setting up…" : "Finish"}
+                {saving ? t('goalsetup.settingUp') : t('goalsetup.finish')}
               </button>
             )}
           </div>

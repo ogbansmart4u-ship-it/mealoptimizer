@@ -8,7 +8,12 @@ type NavBadge = {
   color?: string;
 };
 
-export default function BottomNav() {
+// The real bottom navigation bar. This is now rendered ONCE at the router
+// layout level (see routes.tsx -> AppBottomNav) so it stays perfectly fixed
+// while pages slide/fade beneath it. The per-page default export below is a
+// no-op, so the existing `<BottomNav />` calls in individual pages render
+// nothing and don't need to be touched.
+function BottomNavBar() {
   const location = useLocation();
   const { t } = useLanguage();
   const [badges, setBadges] = useState<Record<string, NavBadge>>({});
@@ -102,4 +107,15 @@ export default function BottomNav() {
       </div>
     </nav>
   );
+}
+
+// Rendered once at the layout level for a persistent, transition-proof nav bar.
+export function AppBottomNav() {
+  return <BottomNavBar />;
+}
+
+// Per-page usages now render nothing (nav lives at the layout). Kept as the
+// default export so the many existing `<BottomNav />` imports still resolve.
+export default function BottomNav() {
+  return null;
 }

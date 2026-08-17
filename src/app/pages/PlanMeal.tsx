@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router";
 import { useUser } from "../contexts/UserContext";
+import { useLanguage } from "../contexts/LanguageContext";
 import { generateSingleMeal, updateUserProfile } from "../../lib/api";
 import { toast } from "sonner";
 import PageHeader from "../components/PageHeader";
@@ -38,45 +39,47 @@ interface MealOption {
 export default function PlanMeal() {
   const navigate = useNavigate();
   const { profile } = useUser();
+  const { t } = useLanguage();
   const [selectedMeal, setSelectedMeal] = useState<MealType | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
+  // Kept in English — this value is also sent to the AI backend as the goal.
   const [currentGoal, setCurrentGoal] = useState("General Health & Nutrition");
   const [budget, setBudget] = useState("");
 
   const mealOptions: MealOption[] = [
     {
       id: "breakfast",
-      name: "Breakfast",
+      name: t("planmeal.meal.breakfast"),
       icon: Coffee,
       time: "6:00 AM - 10:00 AM",
-      description: "Start your day with energy",
+      description: t("planmeal.mealDesc.breakfast"),
       color: "text-orange-600",
       bgColor: "bg-orange-50",
     },
     {
       id: "brunch",
-      name: "Brunch",
+      name: t("planmeal.meal.brunch"),
       icon: Sun,
       time: "10:00 AM - 12:00 PM",
-      description: "Mid-morning nutrition boost",
+      description: t("planmeal.mealDesc.brunch"),
       color: "text-yellow-600",
       bgColor: "bg-yellow-50",
     },
     {
       id: "lunch",
-      name: "Lunch",
+      name: t("planmeal.meal.lunch"),
       icon: Utensils,
       time: "12:00 PM - 3:00 PM",
-      description: "Fuel your afternoon",
+      description: t("planmeal.mealDesc.lunch"),
       color: "text-green-600",
       bgColor: "bg-green-50",
     },
     {
       id: "dinner",
-      name: "Dinner",
+      name: t("planmeal.meal.dinner"),
       icon: Moon,
       time: "6:00 PM - 9:00 PM",
-      description: "Healthy evening meal",
+      description: t("planmeal.mealDesc.dinner"),
       color: "text-purple-600",
       bgColor: "bg-purple-50",
     },
@@ -194,7 +197,7 @@ export default function PlanMeal() {
   const handleGenerateMeal = async () => {
     if (!selectedMeal) return;
     if (!profile) {
-      toast.error("Please complete your profile first");
+      toast.error(t("planmeal.toast.completeProfile"));
       navigate("/profile");
       return;
     }
@@ -224,11 +227,12 @@ export default function PlanMeal() {
       }
 
       const response = await generateSingleMeal(selectedMeal, currentGoal, budget);
-      toast.success(`✅ ${selectedMeal.charAt(0).toUpperCase() + selectedMeal.slice(1)} plan generated!`);
+      const mealName = mealOptions.find((m) => m.id === selectedMeal)?.name ?? selectedMeal;
+      toast.success(`✅ ${t("planmeal.toast.generated").replace("{meal}", mealName)}`);
       navigate(`/meal-plan?id=${response.planId}`);
     } catch (error: any) {
       console.error('❌ Failed to generate meal:', error);
-      toast.error("Failed to generate meal plan. Please check your internet connection and try again.");
+      toast.error(t("planmeal.toast.failed"));
     } finally {
       setIsGenerating(false);
     }
@@ -238,7 +242,7 @@ export default function PlanMeal() {
     <div className="min-h-screen bg-gradient-to-b from-[#B8E5E5] to-[#E8F5F5] pb-8">
       {/* Header */}
       <PageHeader
-        title="Plan My Meal"
+        title={t("planmeal.title")}
         showHome
         actions={<Calendar className="h-6 w-6 text-white" />}
       />
@@ -251,32 +255,32 @@ export default function PlanMeal() {
             <div className="bg-[#1f7a8c] rounded-full p-3">
               <User className="h-5 w-5 text-white" />
             </div>
-            <h2 className="text-lg text-[#1f7a8c]">Your Health Profile</h2>
+            <h2 className="text-lg text-[#1f7a8c]">{t("planmeal.healthProfile")}</h2>
           </div>
 
           <div className="space-y-3">
             <div className="flex items-start gap-3 p-3 bg-blue-50 rounded-xl">
               <MapPin className="h-4 w-4 text-[#1f7a8c] mt-0.5" />
               <div className="flex-1">
-                <p className="text-xs text-gray-600">Location</p>
-                <p className="text-sm text-gray-800">{profile?.location || 'Not set'}</p>
+                <p className="text-xs text-gray-600">{t("planmeal.location")}</p>
+                <p className="text-sm text-gray-800">{profile?.location || t("planmeal.notSet")}</p>
               </div>
             </div>
 
             <div className="grid grid-cols-2 gap-3">
               <div className="flex items-start gap-2 p-3 bg-green-50 rounded-xl">
                 <div className="flex-1">
-                  <p className="text-xs text-gray-600">Age & Weight</p>
+                  <p className="text-xs text-gray-600">{t("planmeal.ageWeight")}</p>
                   <p className="text-sm text-gray-800">
-                    {profile?.age || 'N/A'} years, {profile?.weight || 'Not set'}
+                    {profile?.age || t("planmeal.na")} {t("profile.years")}, {profile?.weight || t("planmeal.notSet")}
                   </p>
                 </div>
               </div>
 
               <div className="flex items-start gap-2 p-3 bg-yellow-50 rounded-xl">
                 <div className="flex-1">
-                  <p className="text-xs text-gray-600">BMI</p>
-                  <p className="text-sm text-gray-800">{profile?.bmi || 'Not set'}</p>
+                  <p className="text-xs text-gray-600">{t("profile.bmi")}</p>
+                  <p className="text-sm text-gray-800">{profile?.bmi || t("planmeal.notSet")}</p>
                 </div>
               </div>
             </div>
@@ -284,9 +288,9 @@ export default function PlanMeal() {
             <div className="flex items-start gap-3 p-3 bg-red-50 rounded-xl">
               <Stethoscope className="h-4 w-4 text-red-600 mt-0.5" />
               <div className="flex-1">
-                <p className="text-xs text-gray-600">Medical Condition</p>
+                <p className="text-xs text-gray-600">{t("profile.medicalCondition")}</p>
                 <p className="text-sm text-gray-800">
-                  {profile?.medicalCondition || 'None specified'}
+                  {profile?.medicalCondition || t("planmeal.noneSpecified")}
                 </p>
               </div>
             </div>
@@ -294,16 +298,16 @@ export default function PlanMeal() {
             <div className="flex items-start gap-3 p-3 bg-purple-50 rounded-xl">
               <Pill className="h-4 w-4 text-purple-600 mt-0.5" />
               <div className="flex-1">
-                <p className="text-xs text-gray-600">Medications</p>
-                <p className="text-sm text-gray-800">{profile?.medications || 'None'}</p>
+                <p className="text-xs text-gray-600">{t("planmeal.medications")}</p>
+                <p className="text-sm text-gray-800">{profile?.medications || t("profile.none")}</p>
               </div>
             </div>
 
             <div className="flex items-start gap-3 p-3 bg-teal-50 rounded-xl">
               <Target className="h-4 w-4 text-[#1f7a8c] mt-0.5" />
               <div className="flex-1">
-                <p className="text-xs text-gray-600">Current Goal</p>
-                <p className="text-sm text-gray-800">{currentGoal}</p>
+                <p className="text-xs text-gray-600">{t("planmeal.currentGoal")}</p>
+                <p className="text-sm text-gray-800">{currentGoal === "General Health & Nutrition" ? t("planmeal.defaultGoal") : currentGoal}</p>
               </div>
             </div>
           </div>
@@ -311,11 +315,9 @@ export default function PlanMeal() {
 
         {/* Instructions */}
         <div className="bg-gradient-to-r from-[#1f7a8c] to-[#4ecdc4] rounded-3xl shadow-lg p-6 mb-6">
-          <h3 className="text-lg text-white mb-2">Select Your Meal Type</h3>
+          <h3 className="text-lg text-white mb-2">{t("planmeal.selectMealType")}</h3>
           <p className="text-sm text-white/90">
-            Choose the meal you'd like to plan. We'll generate personalized
-            recommendations based on your health profile, dietary needs, and local
-            food availability.
+            {t("planmeal.selectMealTypeDesc")}
           </p>
         </div>
 
@@ -376,7 +378,7 @@ export default function PlanMeal() {
         <div className="bg-white rounded-2xl shadow-lg p-5 mb-6">
           <label htmlFor="budget" className="text-sm font-medium text-gray-800 flex items-center gap-2 mb-2">
             <Target className="h-4 w-4 text-[#1f7a8c]" />
-            Budget per serving (optional)
+            {t("planmeal.budgetLabel")}
           </label>
           <div className="relative">
             <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">₦</span>
@@ -388,20 +390,20 @@ export default function PlanMeal() {
               step="50"
               value={budget}
               onChange={(e) => setBudget(e.target.value)}
-              placeholder="e.g. 800"
+              placeholder={t("planmeal.budgetPlaceholder")}
               className="w-full h-12 pl-8 pr-4 rounded-xl border-2 border-gray-200 focus:border-[#1f7a8c] focus:outline-none"
             />
           </div>
           <p className="text-xs text-gray-500 mt-2">
-            We'll tailor the meal to affordable, in-season Nigerian market ingredients within your budget.
+            {t("planmeal.budgetHelper")}
           </p>
         </div>
 
         {/* Mascot loader while the plan is being generated */}
         {isGenerating && (
           <MealOptimizingLoader
-            message="Optimizing your meal..."
-            subMessage="Tailoring local, in-season ingredients to your goals and budget..."
+            message={t("planmeal.optimizing")}
+            subMessage={t("planmeal.optimizingSub")}
           />
         )}
 
@@ -418,13 +420,13 @@ export default function PlanMeal() {
           {isGenerating ? (
             <div className="flex items-center justify-center gap-3">
               <div className="w-6 h-6 border-4 border-white border-t-transparent rounded-full animate-spin"></div>
-              <span>Generating Your Meal Plan...</span>
+              <span>{t("planmeal.generating")}</span>
             </div>
           ) : (
             <span>
               {selectedMeal
-                ? `Generate ${mealOptions.find((m) => m.id === selectedMeal)?.name} Plan`
-                : "Select a Meal Type to Continue"}
+                ? t("planmeal.generatePlan").replace("{meal}", mealOptions.find((m) => m.id === selectedMeal)?.name ?? "")
+                : t("planmeal.selectToContinue")}
             </span>
           )}
         </button>
@@ -432,8 +434,7 @@ export default function PlanMeal() {
         {/* Info Note */}
         <div className="mt-6 bg-blue-50 border border-blue-200 rounded-2xl p-4">
           <p className="text-sm text-blue-800 text-center">
-            💡 Your meal plan will include nutritional information, local ingredients,
-            and considerations for your medical condition and medications.
+            {t("planmeal.infoNote")}
           </p>
         </div>
       </div>
@@ -444,23 +445,23 @@ export default function PlanMeal() {
         steps={[
           {
             id: "welcome",
-            title: "AI-Powered Meal Planning",
-            description: "Our intelligent system creates personalized meal plans based on your health profile, location, and preferences!",
+            title: t("planmeal.tut.welcome.title"),
+            description: t("planmeal.tut.welcome.desc"),
           },
           {
             id: "select-meal",
-            title: "Choose Your Meal Type",
-            description: "Select when you want to eat - breakfast, brunch, lunch, or dinner. Each meal is optimized for that time of day.",
+            title: t("planmeal.tut.select.title"),
+            description: t("planmeal.tut.select.desc"),
           },
           {
             id: "personalized",
-            title: "Personalized for You",
-            description: "We consider your medical conditions, medications, BMI, and local food availability to create the perfect meal!",
+            title: t("planmeal.tut.personalized.title"),
+            description: t("planmeal.tut.personalized.desc"),
           },
           {
             id: "generate",
-            title: "Generate & Enjoy",
-            description: "Tap 'Generate My Meal Plan' and we'll create a detailed meal with recipes, nutrition info, and grocery lists!",
+            title: t("planmeal.tut.generate.title"),
+            description: t("planmeal.tut.generate.desc"),
           },
         ]}
       />

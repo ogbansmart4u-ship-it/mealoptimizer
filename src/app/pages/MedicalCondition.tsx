@@ -2,6 +2,7 @@ import { Stethoscope, ChevronLeft, Plus, X, AlertCircle, Check, Loader2 } from "
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import OnboardingProgress from "../components/OnboardingProgress";
+import { useLanguage } from "../contexts/LanguageContext";
 import { getCollection, createCollectionItem, deleteCollectionItem } from "../../lib/api";
 
 type Severity = "mild" | "moderate" | "severe";
@@ -46,6 +47,8 @@ const uid = () => `${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
 
 export default function MedicalCondition() {
   const navigate = useNavigate();
+  const { t } = useLanguage();
+  const sevLabel = (s: string) => t(`medcond.sev.${s}`);
 
   const [conditions, setConditions] = useState<Condition[]>([]);
   const [loading, setLoading] = useState(true);
@@ -73,7 +76,7 @@ export default function MedicalCondition() {
           })),
         ),
       )
-      .catch((err: any) => setLoadError(err?.message ?? "Couldn't load your conditions"))
+      .catch((err: any) => setLoadError(err?.message ?? t("medcond.errLoad")))
       .finally(() => setLoading(false));
   }, []);
 
@@ -95,7 +98,7 @@ export default function MedicalCondition() {
         setConditions((prev) => [...prev, item]);
       }
     } catch (err: any) {
-      setLoadError(err?.message ?? "Couldn't save. Please try again.");
+      setLoadError(err?.message ?? t("medcond.errSave"));
     } finally {
       setBusyName(null);
     }
@@ -120,7 +123,7 @@ export default function MedicalCondition() {
       setNewCondition({ name: "", severity: "moderate", diagnosedDate: "" });
       setShowAddForm(false);
     } catch (err: any) {
-      setLoadError(err?.message ?? "Couldn't save the condition. Please try again.");
+      setLoadError(err?.message ?? t("medcond.errSaveCond"));
     } finally {
       setSaving(false);
     }
@@ -133,7 +136,7 @@ export default function MedicalCondition() {
       await deleteCollectionItem("conditions", id);
     } catch {
       setConditions(prev); // roll back on failure
-      setLoadError("Couldn't remove the condition. Please try again.");
+      setLoadError(t("medcond.errRemove"));
     }
   };
 
@@ -148,9 +151,9 @@ export default function MedicalCondition() {
     s === "mild" ? "bg-green-500 text-white" : s === "severe" ? "bg-red-500 text-white" : "bg-yellow-500 text-white";
 
   const formatDiagnosed = (d: string) => {
-    if (!d) return "Date not set";
+    if (!d) return t("medcond.dateNotSet");
     const dt = new Date(d + "-01");
-    return isNaN(+dt) ? "Date not set" : dt.toLocaleDateString("en-US", { year: "numeric", month: "long" });
+    return isNaN(+dt) ? t("medcond.dateNotSet") : dt.toLocaleDateString("en-US", { year: "numeric", month: "long" });
   };
 
   return (
@@ -164,7 +167,7 @@ export default function MedicalCondition() {
           >
             <ChevronLeft className="h-6 w-6" />
           </button>
-          <h1 className="text-2xl text-white flex-1">Medical Conditions</h1>
+          <h1 className="text-2xl text-white flex-1">{t("medcond.title")}</h1>
           <Stethoscope className="h-6 w-6 text-white" />
         </div>
       </div>
@@ -180,8 +183,8 @@ export default function MedicalCondition() {
         <div className="bg-blue-50 border-2 border-blue-200 rounded-2xl p-4 mb-6 flex gap-3">
           <AlertCircle className="h-5 w-5 text-blue-600 flex-shrink-0 mt-0.5" />
           <div className="text-sm text-gray-700">
-            <p className="font-medium text-blue-800 mb-1">Your Health Privacy</p>
-            <p>Your medical information is confidential and will only be used to personalize your nutrition plan.</p>
+            <p className="font-medium text-blue-800 mb-1">{t("medcond.privacyTitle")}</p>
+            <p>{t("medcond.privacyDesc")}</p>
           </div>
         </div>
 
@@ -191,12 +194,12 @@ export default function MedicalCondition() {
 
         {/* Quick multi-select */}
         <div className="bg-white rounded-3xl shadow-lg p-6 mb-6">
-          <h2 className="text-lg text-[#1f7a8c] mb-1">Select your conditions</h2>
-          <p className="text-sm text-gray-500 mb-4">Tap any that apply. You can add more detail below.</p>
+          <h2 className="text-lg text-[#1f7a8c] mb-1">{t("medcond.selectTitle")}</h2>
+          <p className="text-sm text-gray-500 mb-4">{t("medcond.selectDesc")}</p>
 
           {loading ? (
             <div className="flex items-center justify-center gap-2 py-6 text-gray-400 text-sm">
-              <Loader2 className="h-4 w-4 animate-spin" /> Loading…
+              <Loader2 className="h-4 w-4 animate-spin" /> {t("medcond.loading")}
             </div>
           ) : (
             <div className="flex flex-wrap gap-2">
@@ -233,11 +236,11 @@ export default function MedicalCondition() {
         {/* Selected conditions (with severity + diagnosis detail) */}
         <div className="bg-white rounded-3xl shadow-lg p-6 mb-6">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg text-[#1f7a8c]">My Conditions</h2>
+            <h2 className="text-lg text-[#1f7a8c]">{t("medcond.myConditions")}</h2>
             <button
               onClick={() => setShowAddForm((v) => !v)}
               className="bg-gradient-to-r from-[#1f7a8c] to-[#4ecdc4] text-white rounded-full p-2 hover:shadow-lg transition-all"
-              aria-label="Add a condition with details"
+              aria-label={t("medcond.addAria")}
             >
               <Plus className="h-5 w-5" />
             </button>
@@ -246,8 +249,8 @@ export default function MedicalCondition() {
           {conditions.length === 0 ? (
             <div className="text-center py-8 text-gray-500">
               <Stethoscope className="h-12 w-12 mx-auto mb-3 text-gray-300" />
-              <p>No conditions added yet</p>
-              <p className="text-sm">Tap a chip above, or the + to add details</p>
+              <p>{t("medcond.emptyTitle")}</p>
+              <p className="text-sm">{t("medcond.emptyDesc")}</p>
             </div>
           ) : (
             <div className="space-y-3">
@@ -259,7 +262,7 @@ export default function MedicalCondition() {
                   <button
                     onClick={() => removeCondition(condition.id)}
                     className="absolute top-3 right-3 text-gray-400 hover:text-red-500 transition-colors"
-                    aria-label={`Remove ${condition.name}`}
+                    aria-label={`${t("medcond.remove")} ${condition.name}`}
                   >
                     <X className="h-5 w-5" />
                   </button>
@@ -268,10 +271,10 @@ export default function MedicalCondition() {
                     <div className="flex items-center gap-2 mb-2 flex-wrap">
                       <h3 className="text-lg text-gray-800">{condition.name}</h3>
                       <span className={`text-xs px-2 py-1 rounded-full ${severityBadge(condition.severity)}`}>
-                        {condition.severity}
+                        {sevLabel(condition.severity)}
                       </span>
                     </div>
-                    <p className="text-xs text-gray-600">Diagnosed: {formatDiagnosed(condition.diagnosedDate)}</p>
+                    <p className="text-xs text-gray-600">{t("medcond.diagnosed")} {formatDiagnosed(condition.diagnosedDate)}</p>
                   </div>
                 </div>
               ))}
@@ -282,16 +285,16 @@ export default function MedicalCondition() {
         {/* Add Condition Form (detailed) */}
         {showAddForm && (
           <div className="bg-white rounded-3xl shadow-lg p-6 mb-6">
-            <h2 className="text-lg text-[#1f7a8c] mb-4">Add Medical Condition</h2>
+            <h2 className="text-lg text-[#1f7a8c] mb-4">{t("medcond.addTitle")}</h2>
 
             <div className="space-y-4">
               <div>
-                <label className="block text-sm text-gray-700 mb-2">Condition Name</label>
+                <label className="block text-sm text-gray-700 mb-2">{t("medcond.condName")}</label>
                 <input
                   type="text"
                   value={newCondition.name}
                   onChange={(e) => setNewCondition({ ...newCondition, name: e.target.value })}
-                  placeholder="Type or select from suggestions"
+                  placeholder={t("medcond.condNamePlaceholder")}
                   list="conditions-list"
                   className="w-full px-4 py-3 bg-gray-50 rounded-xl outline-none focus:ring-2 focus:ring-[#4ecdc4]"
                 />
@@ -303,14 +306,14 @@ export default function MedicalCondition() {
               </div>
 
               <div>
-                <label className="block text-sm text-gray-700 mb-2">Severity</label>
+                <label className="block text-sm text-gray-700 mb-2">{t("medcond.severity")}</label>
                 <div className="grid grid-cols-3 gap-3">
                   {(["mild", "moderate", "severe"] as Severity[]).map((s) => (
                     <button
                       key={s}
                       type="button"
                       onClick={() => setNewCondition({ ...newCondition, severity: s })}
-                      className={`p-3 rounded-xl capitalize transition-all ${
+                      className={`p-3 rounded-xl transition-all ${
                         newCondition.severity === s
                           ? s === "mild"
                             ? "bg-green-500 text-white"
@@ -320,14 +323,14 @@ export default function MedicalCondition() {
                           : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                       }`}
                     >
-                      {s}
+                      {sevLabel(s)}
                     </button>
                   ))}
                 </div>
               </div>
 
               <div>
-                <label className="block text-sm text-gray-700 mb-2">Diagnosed Date (optional)</label>
+                <label className="block text-sm text-gray-700 mb-2">{t("medcond.diagnosedDate")}</label>
                 <input
                   type="month"
                   value={newCondition.diagnosedDate}
@@ -342,14 +345,14 @@ export default function MedicalCondition() {
                   disabled={saving}
                   className="flex-1 border-2 border-gray-300 text-gray-700 rounded-xl py-3 hover:bg-gray-50 transition-colors disabled:opacity-60"
                 >
-                  Cancel
+                  {t("common.cancel")}
                 </button>
                 <button
                   onClick={addDetailedCondition}
                   disabled={saving || !newCondition.name.trim()}
                   className="flex-1 bg-gradient-to-r from-[#1f7a8c] to-[#4ecdc4] text-white rounded-xl py-3 hover:shadow-lg transition-all disabled:opacity-60"
                 >
-                  {saving ? "Saving…" : "Add Condition"}
+                  {saving ? t("profile.saving") : t("medcond.addCondition")}
                 </button>
               </div>
             </div>
@@ -358,23 +361,23 @@ export default function MedicalCondition() {
 
         {/* Nutritional Impact */}
         <div className="bg-white rounded-3xl shadow-lg p-6 mb-6">
-          <h2 className="text-lg text-[#e63946] mb-4">How We Help</h2>
+          <h2 className="text-lg text-[#e63946] mb-4">{t("medcond.howWeHelp")}</h2>
           <div className="space-y-3 text-sm text-gray-700">
             <div className="flex gap-3">
               <span className="text-xl">🎯</span>
-              <p>Personalized meal plans tailored to your specific conditions</p>
+              <p>{t("medcond.help1")}</p>
             </div>
             <div className="flex gap-3">
               <span className="text-xl">⚠️</span>
-              <p>Automatic warnings about foods to avoid</p>
+              <p>{t("medcond.help2")}</p>
             </div>
             <div className="flex gap-3">
               <span className="text-xl">✅</span>
-              <p>Recommendations for beneficial nutrients and foods</p>
+              <p>{t("medcond.help3")}</p>
             </div>
             <div className="flex gap-3">
               <span className="text-xl">📊</span>
-              <p>Track how your diet affects your health over time</p>
+              <p>{t("medcond.help4")}</p>
             </div>
           </div>
         </div>
@@ -385,13 +388,13 @@ export default function MedicalCondition() {
             onClick={() => navigate("/home")}
             className="px-6 py-4 text-gray-600 hover:text-gray-800 transition-colors font-medium"
           >
-            Skip
+            {t("meds.skip")}
           </button>
           <button
             onClick={() => navigate("/home")}
             className="flex-1 bg-gradient-to-r from-[#1f7a8c] to-[#4ecdc4] text-white rounded-2xl py-4 shadow-lg hover:shadow-xl transition-all"
           >
-            Complete Setup
+            {t("medcond.completeSetup")}
           </button>
         </div>
       </div>

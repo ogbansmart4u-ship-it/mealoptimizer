@@ -3,7 +3,24 @@ import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router";
 import OnboardingProgress from "../components/OnboardingProgress";
 import MascotEmptyState from "../components/MascotEmptyState";
+import { useLanguage } from "../contexts/LanguageContext";
 import { getMedications, createMedication, deleteMedication } from "../../lib/api";
+
+// Stored frequency/time values stay in English (they're saved to the backend);
+// these maps translate them for display only.
+const FREQ_KEY: Record<string, string> = {
+  "Once daily": "meds.freq.onceDaily",
+  "Twice daily": "meds.freq.twiceDaily",
+  "Three times daily": "meds.freq.threeDaily",
+  "As needed": "meds.freq.asNeeded",
+};
+const TIME_KEY: Record<string, string> = {
+  "Morning": "meds.time.morning",
+  "Afternoon": "meds.time.afternoon",
+  "Evening": "meds.time.evening",
+  "Bedtime": "meds.time.bedtime",
+  "Morning & Evening": "meds.time.morningEvening",
+};
 
 interface Medication {
   id: string;
@@ -25,6 +42,9 @@ const mapApiItem = (item: any): Medication => ({
 
 export default function Medications() {
   const navigate = useNavigate();
+  const { t } = useLanguage();
+  const freqLabel = (v: string) => (FREQ_KEY[v] ? t(FREQ_KEY[v]) : v);
+  const timeLabel = (v: string) => (TIME_KEY[v] ? t(TIME_KEY[v]) : v);
   const [medications, setMedications] = useState<Medication[]>([]);
   const [logsLoading, setLogsLoading] = useState(true);
   const [logsError, setLogsError] = useState<string | null>(null);
@@ -42,7 +62,7 @@ export default function Medications() {
   useEffect(() => {
     getMedications()
       .then((items: any[]) => setMedications((items ?? []).map(mapApiItem)))
-      .catch((err: any) => setLogsError(err.message ?? "Failed to load medications"))
+      .catch((err: any) => setLogsError(err.message ?? t("meds.errLoad")))
       .finally(() => setLogsLoading(false));
   }, []);
 
@@ -58,7 +78,7 @@ export default function Medications() {
   const addMedication = async () => {
     // Only the name is required; dosage is optional (many users won't know it).
     if (!newMed.name.trim()) {
-      setLogsError("Please enter the medication name.");
+      setLogsError(t("meds.errNameRequired"));
       return;
     }
     setSaving(true);
@@ -76,7 +96,7 @@ export default function Medications() {
       setNewMed({ name: "", dosage: "", frequency: "Once daily", time: "Morning", withFood: false });
       setShowAddForm(false);
     } catch (err: any) {
-      setLogsError(err.message ?? "Failed to add medication");
+      setLogsError(err.message ?? t("meds.errAdd"));
     } finally {
       setSaving(false);
     }
@@ -87,7 +107,7 @@ export default function Medications() {
       await deleteMedication(id);
       setMedications((prev) => prev.filter((med) => med.id !== id));
     } catch (err: any) {
-      setLogsError(err.message ?? "Failed to remove medication");
+      setLogsError(err.message ?? t("meds.errRemove"));
     }
   };
 
@@ -102,7 +122,7 @@ export default function Medications() {
           >
             <ChevronLeft className="h-6 w-6" />
           </button>
-          <h1 className="text-2xl text-white flex-1">Medications</h1>
+          <h1 className="text-2xl text-white flex-1">{t("planmeal.medications")}</h1>
           <Pill className="h-6 w-6 text-white" />
         </div>
       </div>
@@ -126,19 +146,19 @@ export default function Medications() {
         <div className="bg-yellow-50 border-2 border-yellow-200 rounded-2xl p-4 mb-6 flex gap-3">
           <AlertCircle className="h-5 w-5 text-yellow-600 flex-shrink-0 mt-0.5" />
           <div className="text-sm text-gray-700">
-            <p className="font-medium text-yellow-800 mb-1">Important</p>
-            <p>We'll check for food-drug interactions to keep you safe and optimize your nutrition plan.</p>
+            <p className="font-medium text-yellow-800 mb-1">{t("meds.important")}</p>
+            <p>{t("meds.importantDesc")}</p>
           </div>
         </div>
 
         {/* Current Medications */}
         <div className="bg-white rounded-3xl shadow-lg p-6 mb-6">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg text-[#1f7a8c]">Current Medications</h2>
+            <h2 className="text-lg text-[#1f7a8c]">{t("meds.current")}</h2>
             <button
               type="button"
               onClick={openAddForm}
-              aria-label="Add medication"
+              aria-label={t("meds.add")}
               className="bg-gradient-to-r from-[#1f7a8c] to-[#4ecdc4] text-white rounded-full p-2 hover:shadow-lg transition-all"
             >
               <Plus className="h-5 w-5" />
@@ -148,19 +168,19 @@ export default function Medications() {
           {logsLoading ? (
             <div className="text-center py-8 text-gray-400">
               <Pill className="h-12 w-12 mx-auto mb-3 text-gray-200 animate-pulse" />
-              <p className="text-sm">Loading medications…</p>
+              <p className="text-sm">{t("meds.loading")}</p>
             </div>
           ) : medications.length === 0 ? (
             <MascotEmptyState
-              title="No medications added yet"
-              subtitle="Add your medications so we can check for food-drug interactions."
+              title={t("meds.emptyTitle")}
+              subtitle={t("meds.emptySubtitle")}
               action={
                 <button
                   type="button"
                   onClick={openAddForm}
                   className="inline-flex items-center gap-2 bg-gradient-to-r from-[#1f7a8c] to-[#4ecdc4] text-white rounded-xl px-5 py-3 font-medium hover:shadow-lg transition-all"
                 >
-                  <Plus className="h-4 w-4" /> Add medication
+                  <Plus className="h-4 w-4" /> {t("meds.add")}
                 </button>
               }
             />
@@ -185,14 +205,14 @@ export default function Medications() {
                     <div className="flex gap-4 text-xs text-gray-600">
                       <div className="flex items-center gap-1">
                         <Clock className="h-3 w-3" />
-                        <span>{med.frequency}</span>
+                        <span>{freqLabel(med.frequency)}</span>
                       </div>
                       <span>•</span>
-                      <span>{med.time}</span>
+                      <span>{timeLabel(med.time)}</span>
                       {med.withFood && (
                         <>
                           <span>•</span>
-                          <span>🍽️ With food</span>
+                          <span>{t("meds.withFoodChip")}</span>
                         </>
                       )}
                     </div>
@@ -206,57 +226,57 @@ export default function Medications() {
         {/* Add Medication Form */}
         {showAddForm && (
           <div ref={formRef} className="bg-white rounded-3xl shadow-lg p-6 mb-6 scroll-mt-20">
-            <h2 className="text-lg text-[#1f7a8c] mb-4">Add New Medication</h2>
-            
+            <h2 className="text-lg text-[#1f7a8c] mb-4">{t("meds.addNew")}</h2>
+
             <div className="space-y-4">
               <div>
-                <label className="block text-sm text-gray-700 mb-2">Medication Name</label>
+                <label className="block text-sm text-gray-700 mb-2">{t("meds.name")}</label>
                 <input
                   type="text"
                   value={newMed.name}
                   onChange={(e) => setNewMed({ ...newMed, name: e.target.value })}
-                  placeholder="e.g., Aspirin"
+                  placeholder={t("meds.namePlaceholder")}
                   className="w-full px-4 py-3 bg-gray-50 rounded-xl outline-none focus:ring-2 focus:ring-[#4ecdc4]"
                 />
               </div>
 
               <div>
-                <label className="block text-sm text-gray-700 mb-2">Dosage</label>
+                <label className="block text-sm text-gray-700 mb-2">{t("meds.dosage")}</label>
                 <input
                   type="text"
                   value={newMed.dosage}
                   onChange={(e) => setNewMed({ ...newMed, dosage: e.target.value })}
-                  placeholder="e.g., 500mg"
+                  placeholder={t("meds.dosagePlaceholder")}
                   className="w-full px-4 py-3 bg-gray-50 rounded-xl outline-none focus:ring-2 focus:ring-[#4ecdc4]"
                 />
               </div>
 
               <div>
-                <label className="block text-sm text-gray-700 mb-2">Frequency</label>
+                <label className="block text-sm text-gray-700 mb-2">{t("meds.frequency")}</label>
                 <select
                   value={newMed.frequency}
                   onChange={(e) => setNewMed({ ...newMed, frequency: e.target.value })}
                   className="w-full px-4 py-3 bg-gray-50 rounded-xl outline-none focus:ring-2 focus:ring-[#4ecdc4]"
                 >
-                  <option>Once daily</option>
-                  <option>Twice daily</option>
-                  <option>Three times daily</option>
-                  <option>As needed</option>
+                  <option value="Once daily">{t("meds.freq.onceDaily")}</option>
+                  <option value="Twice daily">{t("meds.freq.twiceDaily")}</option>
+                  <option value="Three times daily">{t("meds.freq.threeDaily")}</option>
+                  <option value="As needed">{t("meds.freq.asNeeded")}</option>
                 </select>
               </div>
 
               <div>
-                <label className="block text-sm text-gray-700 mb-2">Time of Day</label>
+                <label className="block text-sm text-gray-700 mb-2">{t("meds.timeOfDay")}</label>
                 <select
                   value={newMed.time}
                   onChange={(e) => setNewMed({ ...newMed, time: e.target.value })}
                   className="w-full px-4 py-3 bg-gray-50 rounded-xl outline-none focus:ring-2 focus:ring-[#4ecdc4]"
                 >
-                  <option>Morning</option>
-                  <option>Afternoon</option>
-                  <option>Evening</option>
-                  <option>Bedtime</option>
-                  <option>Morning & Evening</option>
+                  <option value="Morning">{t("meds.time.morning")}</option>
+                  <option value="Afternoon">{t("meds.time.afternoon")}</option>
+                  <option value="Evening">{t("meds.time.evening")}</option>
+                  <option value="Bedtime">{t("meds.time.bedtime")}</option>
+                  <option value="Morning & Evening">{t("meds.time.morningEvening")}</option>
                 </select>
               </div>
 
@@ -269,7 +289,7 @@ export default function Medications() {
                   className="w-5 h-5 text-[#1f7a8c] rounded focus:ring-[#4ecdc4]"
                 />
                 <label htmlFor="withFood" className="text-sm text-gray-700">
-                  Take with food
+                  {t("meds.takeWithFood")}
                 </label>
               </div>
 
@@ -279,7 +299,7 @@ export default function Medications() {
                   onClick={() => setShowAddForm(false)}
                   className="flex-1 border-2 border-gray-300 text-gray-700 rounded-xl py-3 hover:bg-gray-50 transition-colors"
                 >
-                  Cancel
+                  {t("common.cancel")}
                 </button>
                 <button
                   type="button"
@@ -287,7 +307,7 @@ export default function Medications() {
                   disabled={saving}
                   className="flex-1 bg-gradient-to-r from-[#1f7a8c] to-[#4ecdc4] text-white rounded-xl py-3 hover:shadow-lg transition-all disabled:opacity-60"
                 >
-                  {saving ? "Adding…" : "Add Medication"}
+                  {saving ? t("meds.adding") : t("meds.addMedication")}
                 </button>
               </div>
             </div>
@@ -296,23 +316,23 @@ export default function Medications() {
 
         {/* Drug Interaction Info */}
         <div className="bg-white rounded-3xl shadow-lg p-6 mb-6">
-          <h2 className="text-lg text-[#e63946] mb-4">Food-Drug Interactions</h2>
+          <h2 className="text-lg text-[#e63946] mb-4">{t("meds.interactionsTitle")}</h2>
           <div className="space-y-3 text-sm text-gray-700">
             <div className="flex gap-3">
               <span className="text-xl">🥤</span>
-              <p>Some medications need to be taken with plenty of water</p>
+              <p>{t("meds.tip1")}</p>
             </div>
             <div className="flex gap-3">
               <span className="text-xl">🥛</span>
-              <p>Dairy products may affect certain antibiotic absorption</p>
+              <p>{t("meds.tip2")}</p>
             </div>
             <div className="flex gap-3">
               <span className="text-xl">🍊</span>
-              <p>Grapefruit can interact with many medications</p>
+              <p>{t("meds.tip3")}</p>
             </div>
             <div className="flex gap-3">
               <span className="text-xl">🍽️</span>
-              <p>We'll adjust your meal plans to avoid interactions</p>
+              <p>{t("meds.tip4")}</p>
             </div>
           </div>
         </div>
@@ -323,13 +343,13 @@ export default function Medications() {
             onClick={() => navigate("/medical-condition")}
             className="px-6 py-4 text-gray-600 hover:text-gray-800 transition-colors font-medium"
           >
-            Skip
+            {t("meds.skip")}
           </button>
           <button
             onClick={() => navigate("/medical-condition")}
             className="flex-1 bg-gradient-to-r from-[#1f7a8c] to-[#4ecdc4] text-white rounded-2xl py-4 shadow-lg hover:shadow-xl transition-all"
           >
-            Continue
+            {t("goalsetup.continue")}
           </button>
         </div>
       </div>

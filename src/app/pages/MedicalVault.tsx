@@ -30,6 +30,7 @@ import { Label } from "../components/ui/label";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "../components/ui/dialog";
 import { toast } from "sonner";
 import { useUser } from "../contexts/UserContext";
+import { useLanguage } from "../contexts/LanguageContext";
 import {
   getMedicalDocuments,
   uploadMedicalDocument,
@@ -56,9 +57,24 @@ type Biomarker = {
   lastUpdated: string;
 };
 
+// Maps stored English document-category values to translation keys.
+const DOC_CAT_KEY: Record<string, string> = {
+  'Lab Result': 'vault.doccat.lab',
+  'Prescription': 'vault.doccat.prescription',
+  'Imaging / Scan': 'vault.doccat.imaging',
+  "Doctor's Note": 'vault.doccat.doctorNote',
+  'Insurance': 'vault.doccat.insurance',
+  'Other': 'vault.doccat.other',
+};
+
 export default function MedicalVault() {
   const navigate = useNavigate();
   const { profile } = useUser();
+  const { t } = useLanguage();
+  // Biomarker status/category and doc-category labels; stored values stay English.
+  const statusLabel = (s: string) => (s === 'high' ? t('vault.bstatusHigh') : s === 'low' ? t('vault.statusLow') : t('vault.statusNormal'));
+  const bioCatLabel = (c: string) => t(`vault.cat.${c}`);
+  const docCatLabel = (c: string | null | undefined) => (c && DOC_CAT_KEY[c] ? t(DOC_CAT_KEY[c]) : (c || ''));
   const [biomarkers, setBiomarkers] = useState<Biomarker[]>([]);
   const [showAddBiomarker, setShowAddBiomarker] = useState(false);
   const [showUploadDialog, setShowUploadDialog] = useState(false);
@@ -75,8 +91,8 @@ export default function MedicalVault() {
       setDocuments(docs);
     } catch (err) {
       console.error('Failed to load documents:', err);
-      toast.error("Couldn't load your documents", {
-        description: err instanceof Error ? err.message : 'Please try again.',
+      toast.error(t("vault.toast.loadDocsFail"), {
+        description: err instanceof Error ? err.message : t("vault.toast.tryAgain"),
       });
     } finally {
       setDocsLoading(false);
@@ -89,7 +105,7 @@ export default function MedicalVault() {
 
   const handleViewDocument = async (doc: MedicalDocument) => {
     if (!doc.file_path) {
-      toast.error("This document has no file attached");
+      toast.error(t("vault.toast.noFile"));
       return;
     }
     setOpeningId(doc.id);
@@ -97,8 +113,8 @@ export default function MedicalVault() {
       const url = await getMedicalDocumentDownloadUrl(doc.id);
       window.open(url, '_blank', 'noopener,noreferrer');
     } catch (err) {
-      toast.error("Couldn't open the file", {
-        description: err instanceof Error ? err.message : 'Please try again.',
+      toast.error(t("vault.toast.openFail"), {
+        description: err instanceof Error ? err.message : t("vault.toast.tryAgain"),
       });
     } finally {
       setOpeningId(null);
@@ -106,14 +122,14 @@ export default function MedicalVault() {
   };
 
   const handleDeleteDocument = async (doc: MedicalDocument) => {
-    if (!window.confirm(`Delete "${doc.title}"? This permanently removes the file.`)) return;
+    if (!window.confirm(t("vault.confirmDeleteDoc").replace("{title}", doc.title))) return;
     try {
       await deleteMedicalDocument(doc.id);
       setDocuments((prev) => prev.filter((d) => d.id !== doc.id));
-      toast.success("Document deleted");
+      toast.success(t("vault.toast.docDeleted"));
     } catch (err) {
-      toast.error("Couldn't delete the document", {
-        description: err instanceof Error ? err.message : 'Please try again.',
+      toast.error(t("vault.toast.deleteDocFail"), {
+        description: err instanceof Error ? err.message : t("vault.toast.tryAgain"),
       });
     }
   };
@@ -147,8 +163,8 @@ export default function MedicalVault() {
       .then((items) => setBiomarkers((items || []).map(hydrateBiomarker)))
       .catch((err) => {
         console.error('Failed to load biomarkers:', err);
-        toast.error("Couldn't load your biomarkers", {
-          description: err instanceof Error ? err.message : 'Please try again.',
+        toast.error(t("vault.toast.loadBioFail"), {
+          description: err instanceof Error ? err.message : t("vault.toast.tryAgain"),
         });
       })
       .finally(() => setBiomarkersLoading(false));
@@ -167,10 +183,10 @@ export default function MedicalVault() {
     try {
       const created = await createCollectionItem('biomarkers', payload);
       setBiomarkers((prev) => [...prev, hydrateBiomarker(created)]);
-      toast.success("Biomarker added");
+      toast.success(t("vault.toast.bioAdded"));
     } catch (err) {
-      toast.error("Couldn't save biomarker", {
-        description: err instanceof Error ? err.message : 'Please try again.',
+      toast.error(t("vault.toast.saveBioFail"), {
+        description: err instanceof Error ? err.message : t("vault.toast.tryAgain"),
       });
     }
   };
@@ -179,10 +195,10 @@ export default function MedicalVault() {
     try {
       await deleteCollectionItem('biomarkers', id);
       setBiomarkers((prev) => prev.filter((b) => b.id !== id));
-      toast.success("Biomarker removed");
+      toast.success(t("vault.toast.bioRemoved"));
     } catch (err) {
-      toast.error("Couldn't remove biomarker", {
-        description: err instanceof Error ? err.message : 'Please try again.',
+      toast.error(t("vault.toast.removeBioFail"), {
+        description: err instanceof Error ? err.message : t("vault.toast.tryAgain"),
       });
     }
   };
@@ -209,8 +225,8 @@ export default function MedicalVault() {
     const abnormalMarkers = biomarkers.filter(b => b.status !== 'normal');
 
     if (abnormalMarkers.length === 0) {
-      toast.success("All biomarkers normal!", {
-        description: "You can use our regular meal planning features.",
+      toast.success(t("vault.toast.allNormalTitle"), {
+        description: t("vault.toast.allNormalDesc"),
       });
       navigate("/plan-meal");
       return;
@@ -219,15 +235,15 @@ export default function MedicalVault() {
     // Determine primary concern
     const concerns = abnormalMarkers.map(m => m.name).join(", ");
 
-    toast.success("Generating personalized meal plan...", {
-      description: `Targeting: ${concerns}`,
+    toast.success(t("vault.toast.generatingTitle"), {
+      description: t("vault.toast.targeting").replace("{concerns}", concerns),
     });
 
     // Navigate to meal planning with biomarker context
     setTimeout(() => {
       navigate("/plan-meal");
-      toast.info("Meal plan optimized for your biomarkers!", {
-        description: "Your plan considers your clinical data.",
+      toast.info(t("vault.toast.optimizedTitle"), {
+        description: t("vault.toast.optimizedDesc"),
       });
     }, 1500);
   };
@@ -235,7 +251,7 @@ export default function MedicalVault() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#B8E5E5] to-[#E8F5F5] pb-24">
       <PageHeader
-        title="Medical Vault"
+        title={t("vault.title")}
         showHome
         actions={
           <Shield className="h-6 w-6 text-white" />
@@ -248,9 +264,9 @@ export default function MedicalVault() {
           <div className="flex items-start gap-3">
             <Lock className="h-6 w-6 flex-shrink-0 mt-0.5" />
             <div>
-              <div className="font-semibold mb-1">Secure & Private</div>
+              <div className="font-semibold mb-1">{t("vault.secureTitle")}</div>
               <div className="text-sm text-white/90">
-                Your documents are stored in a private, encrypted vault tied to your account. Only you can access them, on any device.
+                {t("vault.secureDesc")}
               </div>
             </div>
           </div>
@@ -261,19 +277,19 @@ export default function MedicalVault() {
           <div className="flex items-center justify-between mb-3">
             <h3 className="text-lg font-semibold text-gray-800 flex items-center gap-2">
               <FileText className="h-5 w-5 text-[#1f7a8c]" />
-              My Documents
+              {t("vault.myDocuments")}
             </h3>
             <button
               onClick={() => setShowUploadDialog(true)}
               className="flex items-center gap-2 px-4 py-2 bg-[#1f7a8c] text-white rounded-xl hover:bg-[#1a6273] transition-colors"
             >
               <Upload className="h-4 w-4" />
-              <span className="text-sm font-medium">Upload</span>
+              <span className="text-sm font-medium">{t("vault.upload")}</span>
             </button>
           </div>
 
           {docsLoading ? (
-            <MascotLoader label="Loading your documents..." size={72} />
+            <MascotLoader label={t("vault.loadingDocs")} size={72} />
           ) : documents.length === 0 ? (
             <button
               onClick={() => setShowUploadDialog(true)}
@@ -281,10 +297,10 @@ export default function MedicalVault() {
             >
               <FileText className="h-12 w-12 text-gray-400 mx-auto mb-3 group-hover:text-[#1f7a8c]" />
               <div className="text-sm font-semibold text-gray-700 group-hover:text-[#1f7a8c]">
-                Upload a lab report or medical file
+                {t("vault.uploadPrompt")}
               </div>
               <div className="text-xs text-gray-500 mt-1">
-                PDF, image or Word document, up to 15 MB
+                {t("vault.uploadHint")}
               </div>
             </button>
           ) : (
@@ -300,7 +316,7 @@ export default function MedicalVault() {
                   <div className="flex-1 min-w-0">
                     <div className="text-sm font-semibold text-gray-800 truncate">{doc.title}</div>
                     <div className="text-xs text-gray-500 truncate">
-                      {[doc.category, doc.provider, formatFileSize(doc.file_size)]
+                      {[docCatLabel(doc.category), doc.provider, formatFileSize(doc.file_size)]
                         .filter(Boolean)
                         .join(' · ')}
                     </div>
@@ -309,7 +325,7 @@ export default function MedicalVault() {
                     onClick={() => handleViewDocument(doc)}
                     disabled={openingId === doc.id}
                     className="p-2 text-gray-500 hover:text-[#1f7a8c] disabled:opacity-50"
-                    aria-label={`View ${doc.title}`}
+                    aria-label={`${t("vault.view")} ${doc.title}`}
                   >
                     {openingId === doc.id ? (
                       <Loader2 className="h-4 w-4 animate-spin" />
@@ -320,7 +336,7 @@ export default function MedicalVault() {
                   <button
                     onClick={() => handleDeleteDocument(doc)}
                     className="p-2 text-gray-500 hover:text-red-600"
-                    aria-label={`Delete ${doc.title}`}
+                    aria-label={`${t("common.delete")} ${doc.title}`}
                   >
                     <Trash2 className="h-4 w-4" />
                   </button>
@@ -333,13 +349,13 @@ export default function MedicalVault() {
         {/* Biomarker Summary */}
         <div className="bg-white rounded-2xl shadow-lg p-5">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-semibold text-gray-800">Biomarker Overview</h3>
+            <h3 className="text-lg font-semibold text-gray-800">{t("vault.biomarkerOverview")}</h3>
             <button
               onClick={() => setShowAddBiomarker(true)}
               className="flex items-center gap-2 px-4 py-2 bg-[#1f7a8c] text-white rounded-xl hover:bg-[#1a6273] transition-colors"
             >
               <Plus className="h-4 w-4" />
-              <span className="text-sm font-medium">Add</span>
+              <span className="text-sm font-medium">{t("common.add")}</span>
             </button>
           </div>
 
@@ -349,19 +365,19 @@ export default function MedicalVault() {
               <div className="text-2xl font-bold text-green-600">
                 {biomarkers.filter(b => b.status === 'normal').length}
               </div>
-              <div className="text-xs text-gray-600">Normal</div>
+              <div className="text-xs text-gray-600">{t("vault.statusNormal")}</div>
             </div>
             <div className="bg-yellow-50 rounded-xl p-3 text-center">
               <div className="text-2xl font-bold text-yellow-600">
                 {biomarkers.filter(b => b.status === 'high').length}
               </div>
-              <div className="text-xs text-gray-600">Elevated</div>
+              <div className="text-xs text-gray-600">{t("vault.statusElevated")}</div>
             </div>
             <div className="bg-blue-50 rounded-xl p-3 text-center">
               <div className="text-2xl font-bold text-blue-600">
                 {biomarkers.filter(b => b.status === 'low').length}
               </div>
-              <div className="text-xs text-gray-600">Low</div>
+              <div className="text-xs text-gray-600">{t("vault.statusLow")}</div>
             </div>
           </div>
 
@@ -375,7 +391,7 @@ export default function MedicalVault() {
                   : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
               }`}
             >
-              All ({biomarkers.length})
+              {t("logs.filter.all")} ({biomarkers.length})
             </button>
             <button
               onClick={() => setSelectedCategory('metabolic')}
@@ -385,7 +401,7 @@ export default function MedicalVault() {
                   : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
               }`}
             >
-              Metabolic ({categoryCounts.metabolic})
+              {t("vault.cat.metabolic")} ({categoryCounts.metabolic})
             </button>
             <button
               onClick={() => setSelectedCategory('cardiovascular')}
@@ -395,7 +411,7 @@ export default function MedicalVault() {
                   : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
               }`}
             >
-              Cardiovascular ({categoryCounts.cardiovascular})
+              {t("vault.cat.cardiovascular")} ({categoryCounts.cardiovascular})
             </button>
             <button
               onClick={() => setSelectedCategory('nutritional')}
@@ -405,7 +421,7 @@ export default function MedicalVault() {
                   : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
               }`}
             >
-              Nutritional ({categoryCounts.nutritional})
+              {t("vault.cat.nutritional")} ({categoryCounts.nutritional})
             </button>
           </div>
         </div>
@@ -414,17 +430,17 @@ export default function MedicalVault() {
         <div className="space-y-3">
           {biomarkersLoading ? (
             <div className="bg-white rounded-2xl p-8">
-              <MascotLoader label="Loading biomarkers..." size={72} />
+              <MascotLoader label={t("vault.loadingBiomarkers")} size={72} />
             </div>
           ) : filteredBiomarkers.length === 0 ? (
             <div className="bg-white rounded-2xl p-8 text-center">
               <FileText className="h-12 w-12 text-gray-300 mx-auto mb-3" />
-              <p className="text-gray-600 mb-4">No biomarkers in this category yet</p>
+              <p className="text-gray-600 mb-4">{t("vault.noBiomarkers")}</p>
               <Button
                 onClick={() => setShowAddBiomarker(true)}
                 className="bg-[#1f7a8c] hover:bg-[#1a6273]"
               >
-                Add Biomarker
+                {t("vault.addBiomarker")}
               </Button>
             </div>
           ) : (
@@ -454,17 +470,17 @@ export default function MedicalVault() {
                             biomarker.status === 'low' ? 'bg-blue-100 text-blue-700' :
                             'bg-green-100 text-green-700'
                           }`}>
-                            {biomarker.status}
+                            {statusLabel(biomarker.status)}
                           </span>
                         </div>
                         <div className="text-2xl font-bold text-gray-900 mb-1">
                           {biomarker.value} <span className="text-sm font-normal text-gray-600">{biomarker.unit}</span>
                         </div>
                         <div className="text-xs text-gray-500">
-                          Normal range: {biomarker.normalRange.min}-{biomarker.normalRange.max} {biomarker.unit}
+                          {t("vault.normalRange").replace("{min}", String(biomarker.normalRange.min)).replace("{max}", String(biomarker.normalRange.max)).replace("{unit}", biomarker.unit)}
                         </div>
                         <div className="text-xs text-gray-400 mt-2">
-                          Updated: {new Date(biomarker.lastUpdated).toLocaleDateString()}
+                          {t("vault.updatedLabel")} {new Date(biomarker.lastUpdated).toLocaleDateString()}
                         </div>
                       </div>
                     </div>
@@ -479,7 +495,7 @@ export default function MedicalVault() {
                       <button
                         onClick={() => handleDeleteBiomarker(biomarker.id)}
                         className="p-1 text-gray-400 hover:text-red-600"
-                        aria-label={`Delete ${biomarker.name}`}
+                        aria-label={`${t("common.delete")} ${biomarker.name}`}
                       >
                         <Trash2 className="h-4 w-4" />
                       </button>
@@ -499,9 +515,9 @@ export default function MedicalVault() {
                 <Sparkles className="h-6 w-6 text-white" />
               </div>
               <div className="flex-1">
-                <h3 className="text-lg font-semibold text-gray-800 mb-1">Clinical Meal Plan</h3>
+                <h3 className="text-lg font-semibold text-gray-800 mb-1">{t("vault.clinicalMealPlan")}</h3>
                 <p className="text-sm text-gray-700">
-                  {abnormalCount} biomarker{abnormalCount > 1 ? 's' : ''} need attention. Generate a personalized meal plan to help optimize your levels.
+                  {t(abnormalCount > 1 ? "vault.needAttentionMany" : "vault.needAttentionOne").replace("{n}", String(abnormalCount))}
                 </p>
               </div>
             </div>
@@ -511,7 +527,7 @@ export default function MedicalVault() {
               className="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white py-4 rounded-xl font-semibold hover:shadow-xl transition-all flex items-center justify-center gap-2"
             >
               <ChefHat className="h-5 w-5" />
-              Generate Targeted Meal Plan
+              {t("vault.generateTargeted")}
             </button>
           </div>
         )}
@@ -523,7 +539,7 @@ export default function MedicalVault() {
         onClose={() => setShowUploadDialog(false)}
         onUploaded={(doc) => {
           setDocuments((prev) => [doc, ...prev]);
-          toast.success("Document uploaded securely");
+          toast.success(t("vault.toast.docUploaded"));
         }}
       />
 
@@ -549,6 +565,7 @@ function DocumentUploadDialog({
   onClose: () => void;
   onUploaded: (doc: MedicalDocument) => void;
 }) {
+  const { t } = useLanguage();
   const [title, setTitle] = useState('');
   const [category, setCategory] = useState('Lab Result');
   const [provider, setProvider] = useState('');
@@ -568,7 +585,7 @@ function DocumentUploadDialog({
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const f = e.target.files?.[0] ?? null;
     if (f && f.size > MAX_BYTES) {
-      toast.error("File is too large", { description: "Maximum size is 15 MB." });
+      toast.error(t("vault.toast.fileTooBig"), { description: t("vault.toast.maxSize") });
       e.target.value = '';
       return;
     }
@@ -579,11 +596,11 @@ function DocumentUploadDialog({
 
   const handleSubmit = async () => {
     if (!file) {
-      toast.error("Please choose a file to upload");
+      toast.error(t("vault.toast.chooseFile"));
       return;
     }
     if (!title.trim()) {
-      toast.error("Please give the document a title");
+      toast.error(t("vault.toast.giveTitle"));
       return;
     }
     setUploading(true);
@@ -597,8 +614,8 @@ function DocumentUploadDialog({
       reset();
       onClose();
     } catch (err) {
-      toast.error("Upload failed", {
-        description: err instanceof Error ? err.message : 'Please try again.',
+      toast.error(t("vault.toast.uploadFail"), {
+        description: err instanceof Error ? err.message : t("vault.toast.tryAgain"),
       });
     } finally {
       setUploading(false);
@@ -609,73 +626,73 @@ function DocumentUploadDialog({
     <Dialog open={isOpen} onOpenChange={(open) => { if (!open && !uploading) { reset(); onClose(); } }}>
       <DialogContent className="max-w-md max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>Upload Document</DialogTitle>
+          <DialogTitle>{t("vault.uploadTitle")}</DialogTitle>
           <DialogDescription>
-            Add a lab report, prescription, scan or other medical file to your private vault.
+            {t("vault.uploadDesc")}
           </DialogDescription>
         </DialogHeader>
 
         <div className="space-y-4 py-4">
           {/* File picker */}
           <div>
-            <Label htmlFor="doc-file">File</Label>
+            <Label htmlFor="doc-file">{t("vault.file")}</Label>
             <Input id="doc-file" type="file" accept={ACCEPT} onChange={handleFileChange} />
-            <p className="text-xs text-gray-500 mt-1">PDF, image or Word document, up to 15 MB.</p>
+            <p className="text-xs text-gray-500 mt-1">{t("vault.fileHint")}</p>
           </div>
 
           {/* Title */}
           <div>
-            <Label htmlFor="doc-title">Title</Label>
+            <Label htmlFor="doc-title">{t("vault.titleLabel")}</Label>
             <Input
               id="doc-title"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              placeholder="e.g., HbA1c blood test — Aug 2026"
+              placeholder={t("vault.titlePlaceholder")}
             />
           </div>
 
           {/* Category */}
           <div>
-            <Label htmlFor="doc-category">Category</Label>
+            <Label htmlFor="doc-category">{t("goals.category")}</Label>
             <select
               id="doc-category"
               value={category}
               onChange={(e) => setCategory(e.target.value)}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg"
             >
-              <option value="Lab Result">Lab Result</option>
-              <option value="Prescription">Prescription</option>
-              <option value="Imaging / Scan">Imaging / Scan</option>
-              <option value="Doctor's Note">Doctor's Note</option>
-              <option value="Insurance">Insurance</option>
-              <option value="Other">Other</option>
+              <option value="Lab Result">{t("vault.doccat.lab")}</option>
+              <option value="Prescription">{t("vault.doccat.prescription")}</option>
+              <option value="Imaging / Scan">{t("vault.doccat.imaging")}</option>
+              <option value="Doctor's Note">{t("vault.doccat.doctorNote")}</option>
+              <option value="Insurance">{t("vault.doccat.insurance")}</option>
+              <option value="Other">{t("vault.doccat.other")}</option>
             </select>
           </div>
 
           {/* Provider */}
           <div>
-            <Label htmlFor="doc-provider">Provider / Hospital (optional)</Label>
+            <Label htmlFor="doc-provider">{t("vault.provider")}</Label>
             <Input
               id="doc-provider"
               value={provider}
               onChange={(e) => setProvider(e.target.value)}
-              placeholder="e.g., Lagoon Hospital"
+              placeholder={t("vault.providerPlaceholder")}
             />
           </div>
 
           {/* Actions */}
           <div className="flex gap-3">
             <Button onClick={() => { reset(); onClose(); }} variant="outline" className="flex-1" disabled={uploading}>
-              Cancel
+              {t("common.cancel")}
             </Button>
             <Button onClick={handleSubmit} className="flex-1 bg-[#1f7a8c] hover:bg-[#1a6273]" disabled={uploading}>
               {uploading ? (
                 <span className="flex items-center gap-2">
                   <Loader2 className="h-4 w-4 animate-spin" />
-                  Uploading…
+                  {t("vault.uploading")}
                 </span>
               ) : (
-                'Upload'
+                t("vault.upload")
               )}
             </Button>
           </div>
@@ -695,6 +712,7 @@ function AddBiomarkerDialog({
   onClose: () => void;
   onAdd: (biomarker: Omit<Biomarker, 'id'>) => void;
 }) {
+  const { t } = useLanguage();
   const [formData, setFormData] = useState({
     name: '',
     value: '',
@@ -728,7 +746,7 @@ function AddBiomarkerDialog({
 
   const handleSubmit = () => {
     if (!formData.name || !formData.value || !formData.unit || !formData.minRange || !formData.maxRange) {
-      toast.error("Please fill all fields");
+      toast.error(t("vault.toast.fillAll"));
       return;
     }
 
@@ -779,14 +797,14 @@ function AddBiomarkerDialog({
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-md max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>Add Biomarker</DialogTitle>
-          <DialogDescription>Manually add a biomarker from your lab results.</DialogDescription>
+          <DialogTitle>{t("vault.addBiomarker")}</DialogTitle>
+          <DialogDescription>{t("vault.addBioDesc")}</DialogDescription>
         </DialogHeader>
 
         <div className="space-y-4 py-4">
           {/* Quick Select */}
           <div>
-            <Label className="text-sm font-medium text-gray-700 mb-2 block">Quick Select</Label>
+            <Label className="text-sm font-medium text-gray-700 mb-2 block">{t("vault.quickSelect")}</Label>
             <div className="grid grid-cols-2 gap-2">
               {commonBiomarkers.slice(0, 6).map((biomarker) => (
                 <button
@@ -803,33 +821,33 @@ function AddBiomarkerDialog({
 
           {/* Category */}
           <div>
-            <Label className="text-sm font-medium text-gray-700 mb-2 block">Category</Label>
+            <Label className="text-sm font-medium text-gray-700 mb-2 block">{t("goals.category")}</Label>
             <select
               value={formData.category}
               onChange={(e) => setFormData({ ...formData, category: e.target.value as any })}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg"
             >
-              <option value="metabolic">Metabolic</option>
-              <option value="cardiovascular">Cardiovascular</option>
-              <option value="nutritional">Nutritional</option>
+              <option value="metabolic">{t("vault.cat.metabolic")}</option>
+              <option value="cardiovascular">{t("vault.cat.cardiovascular")}</option>
+              <option value="nutritional">{t("vault.cat.nutritional")}</option>
             </select>
           </div>
 
           {/* Biomarker Name */}
           <div>
-            <Label htmlFor="biomarker-name">Biomarker Name</Label>
+            <Label htmlFor="biomarker-name">{t("vault.biomarkerName")}</Label>
             <Input
               id="biomarker-name"
               value={formData.name}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-              placeholder="e.g., HbA1c"
+              placeholder={t("vault.biomarkerNamePlaceholder")}
             />
           </div>
 
           {/* Value & Unit */}
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <Label htmlFor="value">Value</Label>
+              <Label htmlFor="value">{t("vault.value")}</Label>
               <Input
                 id="value"
                 type="number"
@@ -840,7 +858,7 @@ function AddBiomarkerDialog({
               />
             </div>
             <div>
-              <Label htmlFor="unit">Unit</Label>
+              <Label htmlFor="unit">{t("goals.unit")}</Label>
               <Input
                 id="unit"
                 value={formData.unit}
@@ -852,7 +870,7 @@ function AddBiomarkerDialog({
 
           {/* Normal Range */}
           <div>
-            <Label className="text-sm font-medium text-gray-700 mb-2 block">Normal Range</Label>
+            <Label className="text-sm font-medium text-gray-700 mb-2 block">{t("vault.normalRangeLabel")}</Label>
             <div className="grid grid-cols-2 gap-3">
               <div>
                 <Input
@@ -860,7 +878,7 @@ function AddBiomarkerDialog({
                   step="0.1"
                   value={formData.minRange}
                   onChange={(e) => setFormData({ ...formData, minRange: e.target.value })}
-                  placeholder="Min (e.g., 4.0)"
+                  placeholder={t("vault.minPlaceholder")}
                 />
               </div>
               <div>
@@ -869,7 +887,7 @@ function AddBiomarkerDialog({
                   step="0.1"
                   value={formData.maxRange}
                   onChange={(e) => setFormData({ ...formData, maxRange: e.target.value })}
-                  placeholder="Max (e.g., 5.6)"
+                  placeholder={t("vault.maxPlaceholder")}
                 />
               </div>
             </div>
@@ -878,10 +896,10 @@ function AddBiomarkerDialog({
           {/* Action Buttons */}
           <div className="flex gap-3">
             <Button onClick={onClose} variant="outline" className="flex-1">
-              Cancel
+              {t("common.cancel")}
             </Button>
             <Button onClick={handleSubmit} className="flex-1 bg-[#1f7a8c] hover:bg-[#1a6273]">
-              Add Biomarker
+              {t("vault.addBiomarker")}
             </Button>
           </div>
         </div>

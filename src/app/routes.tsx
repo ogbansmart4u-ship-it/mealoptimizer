@@ -1,6 +1,7 @@
 import { lazy, Suspense } from "react";
-import { createBrowserRouter, Outlet, useLocation } from "react-router";
-import { motion, useReducedMotion } from "motion/react";
+import { createBrowserRouter, useLocation, useOutlet, useNavigationType } from "react-router";
+import { AnimatePresence, motion, useReducedMotion } from "motion/react";
+import { AppBottomNav } from "./components/BottomNav";
 
 // Structural components stay eager — they're small and needed to render the shell.
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -58,23 +59,112 @@ function PageLoader() {
   );
 }
 
-// Root wrapper: Suspense catches every lazily-loaded page chunk, and a subtle
-// cross-fade plays on each navigation. Opacity-only (no transform) so it never
-// changes the containing block for `position: fixed` elements (bottom nav, FABs).
+// ============================================================
+//  PAGE TRANSITIONS
+// ------------------------------------------------------------
+//  Change TRANSITION_STYLE below to switch the feel app-wide:
+//    'slide' — pages slide in/out horizontally (direction follows
+//              browser back/forward), with a soft fade. (default)
+//    'zoom'  — pages scale up gently as they fade in.
+//    'fade'  — a clean smooth cross-fade.
+//    'blink' — a very fast fade, like a quick blink/flash.
+//  Users with "reduce motion" enabled always get a quick fade.
+// ============================================================
+const TRANSITION_STYLE: "slide" | "zoom" | "fade" | "blink" = "slide";
+
+const SLIDE_PX = 28;
+const EASE = [0.22, 1, 0.36, 1] as const; // easeOutQuint — smooth, premium
+const DURATION: Record<typeof TRANSITION_STYLE, number> = {
+  slide: 0.26,
+  zoom: 0.28,
+  fade: 0.24,
+  blink: 0.13,
+};
+
+// Variants per style. `custom` carries the navigation direction
+// (+1 = forward / push, -1 = back / pop) so slides feel spatial.
+const buildVariants = (style: typeof TRANSITION_STYLE) => {
+  if (style === "slide") {
+    return {
+      initial: (dir: number) => ({ opacity: 0, x: dir >= 0 ? SLIDE_PX : -SLIDE_PX }),
+      animate: { opacity: 1, x: 0 },
+      exit: (dir: number) => ({ opacity: 0, x: dir >= 0 ? -SLIDE_PX : SLIDE_PX }),
+    };
+  }
+  if (style === "zoom") {
+    return {
+      initial: { opacity: 0, scale: 0.96 },
+      animate: { opacity: 1, scale: 1 },
+      exit: { opacity: 0, scale: 1.03 },
+    };
+  }
+  // 'fade' and 'blink' share opacity-only variants (differ only in duration)
+  return {
+    initial: { opacity: 0 },
+    animate: { opacity: 1 },
+    exit: { opacity: 0 },
+  };
+};
+
+// Drop the CSS transform to `none` once a page is at rest (x:0, scale:1).
+// A lingering transform on an ancestor re-anchors `position: fixed` children
+// (floating "+" buttons, bulk-action bars, undo toasts) to that ancestor
+// instead of the viewport. Returning 'none' at rest keeps them pinned
+// correctly; they only travel with the page during the brief transition.
+const restlessTransform = (latest: any, generated: string) => {
+  const xRest = latest.x === undefined || latest.x === 0 || latest.x === "0px" || latest.x === "0";
+  const scaleRest = latest.scale === undefined || latest.scale === 1;
+  return xRest && scaleRest ? "none" : generated;
+};
+
+// Routes that display the persistent bottom navigation bar. Includes both the
+// primary tab pages and the AppLayout-wrapped sub-pages that previously showed
+// the nav via that layout.
+const NAV_ROUTES = new Set<string>([
+  // Primary pages (previously rendered <BottomNav/> directly)
+  "/home", "/goals", "/logs", "/recipe", "/profile", "/health",
+  "/achievements", "/biometrics", "/glucose-insights", "/medical-vault",
+  "/hydration", "/sleep", "/medication-tracker", "/workout", "/fasting",
+  // AppLayout-wrapped sub-pages (previously got the nav from AppLayout)
+  "/weight", "/location", "/plan-meal", "/meal-plan", "/my-meal-plans",
+  "/grocery-list", "/scan-barcode", "/symptoms", "/reminders",
+  "/personalization", "/hyper-personalized-plan", "/about",
+]);
+
+// Root wrapper: AnimatePresence plays an exit + enter animation on every route
+// change (Suspense catches lazily-loaded page chunks per page). The bottom nav
+// is rendered ONCE here, as a sibling OUTSIDE the animated area, so it stays
+// perfectly fixed and persistent while pages slide/zoom/fade beneath it.
 function RootLayout() {
   const location = useLocation();
+  const outlet = useOutlet();
+  const navType = useNavigationType(); // 'PUSH' | 'REPLACE' | 'POP'
   const reduced = useReducedMotion();
+
+  const dir = navType === "POP" ? -1 : 1;
+  const style = reduced ? "blink" : TRANSITION_STYLE;
+  const variants = buildVariants(style);
+  const duration = reduced ? 0.12 : DURATION[style];
+  const showNav = NAV_ROUTES.has(location.pathname);
+
   return (
-    <Suspense fallback={<PageLoader />}>
-      <motion.div
-        key={location.pathname}
-        initial={{ opacity: reduced ? 1 : 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.22, ease: [0, 0, 0.2, 1] }}
-      >
-        <Outlet />
-      </motion.div>
-    </Suspense>
+    <>
+      <AnimatePresence mode="wait" initial={false} custom={dir}>
+        <motion.div
+          key={location.pathname}
+          custom={dir}
+          variants={variants}
+          initial="initial"
+          animate="animate"
+          exit="exit"
+          transition={{ duration, ease: EASE }}
+          transformTemplate={restlessTransform}
+        >
+          <Suspense fallback={<PageLoader />}>{outlet}</Suspense>
+        </motion.div>
+      </AnimatePresence>
+      {showNav && <AppBottomNav />}
+    </>
   );
 }
 

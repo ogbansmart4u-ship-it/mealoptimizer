@@ -25,6 +25,7 @@ import { Input } from "../components/ui/input";
 import { toast } from "sonner";
 import { SkeletonRows } from "../components/SkeletonLoader";
 import MascotEmptyState from "../components/MascotEmptyState";
+import { useLanguage } from "../contexts/LanguageContext";
 import { getCollection, createCollectionItem, updateCollectionItem, deleteCollectionItem } from "../../lib/api";
 
 type MedicationType = 'medication' | 'supplement' | 'vitamin';
@@ -54,19 +55,23 @@ type DoseLog = {
   date: string;
 };
 
-const FREQUENCY_OPTIONS: { value: Frequency; label: string; times: string[] }[] = [
-  { value: 'daily', label: 'Once Daily', times: ['08:00'] },
-  { value: 'twice-daily', label: 'Twice Daily', times: ['08:00', '20:00'] },
-  { value: 'three-times-daily', label: '3 Times Daily', times: ['08:00', '14:00', '20:00'] },
-  { value: 'weekly', label: 'Weekly', times: ['08:00'] },
-  { value: 'as-needed', label: 'As Needed', times: [] },
+// `labelKey` maps each frequency to a translation key; `label` is the English
+// fallback. `value` is the stored enum and never changes.
+const FREQUENCY_OPTIONS: { value: Frequency; label: string; labelKey: string; times: string[] }[] = [
+  { value: 'daily', label: 'Once Daily', labelKey: 'medtrack.freq.daily', times: ['08:00'] },
+  { value: 'twice-daily', label: 'Twice Daily', labelKey: 'medtrack.freq.twiceDaily', times: ['08:00', '20:00'] },
+  { value: 'three-times-daily', label: '3 Times Daily', labelKey: 'medtrack.freq.threeDaily', times: ['08:00', '14:00', '20:00'] },
+  { value: 'weekly', label: 'Weekly', labelKey: 'medtrack.freq.weekly', times: ['08:00'] },
+  { value: 'as-needed', label: 'As Needed', labelKey: 'medtrack.freq.asNeeded', times: [] },
 ];
 
+// Combo names stay in English — they're matched against user-entered med names.
+// `warnKey` translates the advice text.
 const COMMON_INTERACTIONS = [
-  { combo: ['Vitamin D', 'Calcium'], warning: 'Take together for better absorption' },
-  { combo: ['Iron', 'Vitamin C'], warning: 'Vitamin C enhances iron absorption by 300%' },
-  { combo: ['Magnesium', 'Calcium'], warning: 'Space 2 hours apart for optimal absorption' },
-  { combo: ['Fish Oil', 'Blood Thinners'], warning: '⚠️ May increase bleeding risk - consult doctor' },
+  { combo: ['Vitamin D', 'Calcium'], warnKey: 'medtrack.warn.vitDCalcium' },
+  { combo: ['Iron', 'Vitamin C'], warnKey: 'medtrack.warn.ironVitC' },
+  { combo: ['Magnesium', 'Calcium'], warnKey: 'medtrack.warn.magCalcium' },
+  { combo: ['Fish Oil', 'Blood Thinners'], warnKey: 'medtrack.warn.fishOilBlood' },
 ];
 
 const generateTodaySchedule = (medications: Medication[]): DoseLog[] => {
@@ -99,6 +104,12 @@ const calculateAdherence = (logs: DoseLog[], days: number = 7): number => {
 
 export default function MedicationTracker() {
   const navigate = useNavigate();
+  const { t } = useLanguage();
+  const freqLabel = (v: string) => {
+    const o = FREQUENCY_OPTIONS.find((f) => f.value === v);
+    return o ? t(o.labelKey) : v;
+  };
+  const typeLabel = (v: string) => t(`medtrack.type.${v}`);
 
   const [medications, setMedications] = useState<Medication[]>([]);
   const [doseLogs, setDoseLogs] = useState<DoseLog[]>([]);
@@ -151,7 +162,7 @@ export default function MedicationTracker() {
     if (lowStock.length > 0) {
       lowStock.forEach(med => {
         if (med.pillsRemaining <= 5) {
-          toast.error(`Critical: ${med.name} - Only ${med.pillsRemaining} pills left!`);
+          toast.error(t("medtrack.toast.criticalToast").replace("{name}", med.name).replace("{n}", String(med.pillsRemaining)));
         }
       });
     }
@@ -159,7 +170,7 @@ export default function MedicationTracker() {
 
   const handleAddMedication = () => {
     if (!formData.name.trim() || !formData.dosage.trim()) {
-      toast.error('Please fill in all required fields');
+      toast.error(t("medtrack.toast.fillRequired"));
       return;
     }
 
@@ -179,12 +190,12 @@ export default function MedicationTracker() {
 
     if (editingMed) {
       setMedications(prev => prev.map(m => m.id === editingMed.id ? newMed : m));
-      toast.success('Medication updated!');
+      toast.success(t("medtrack.toast.updated"));
       updateCollectionItem('medications', newMed.id, newMed)
         .catch((e) => console.error('Failed to update medication', e));
     } else {
       setMedications(prev => [...prev, newMed]);
-      toast.success('Medication added!');
+      toast.success(t("medtrack.toast.added"));
       createCollectionItem('medications', newMed)
         .catch((e) => console.error('Failed to save medication', e));
     }
@@ -225,9 +236,9 @@ export default function MedicationTracker() {
   };
 
   const handleDeleteMed = (id: string) => {
-    if (confirm('Are you sure you want to delete this medication?')) {
+    if (confirm(t("medtrack.confirmDelete"))) {
       setMedications(prev => prev.filter(m => m.id !== id));
-      toast.success('Medication deleted');
+      toast.success(t("medtrack.toast.deleted"));
       deleteCollectionItem('medications', id)
         .catch((e) => console.error('Failed to delete medication', e));
     }
@@ -265,7 +276,7 @@ export default function MedicationTracker() {
     updateCollectionItem('medications', med.id, { pillsRemaining: newRemaining })
       .catch((e) => console.error('Failed to update pill count', e));
 
-    toast.success(`${med.name} logged!`);
+    toast.success(t("medtrack.toast.logged").replace("{name}", med.name));
   };
 
   const adherence = calculateAdherence(doseLogs);
@@ -282,7 +293,7 @@ export default function MedicationTracker() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-emerald-50 via-teal-50 to-cyan-50 pb-24">
       <PageHeader
-        title="Medication Tracker"
+        title={t("medtrack.title")}
         showHome
         className="bg-gradient-to-r from-emerald-600 to-teal-600"
         actions={
@@ -304,10 +315,10 @@ export default function MedicationTracker() {
                 <AlertTriangle className="h-5 w-5 text-red-600 flex-shrink-0 mt-0.5" />
                 <div className="flex-1">
                   <div className="text-sm font-semibold text-red-900 mb-1">
-                    Critical: {med.name} Running Low
+                    {t("medtrack.alertCriticalTitle").replace("{name}", med.name)}
                   </div>
                   <div className="text-sm text-red-800">
-                    Only {med.pillsRemaining} pills remaining. Order refill immediately!
+                    {t("medtrack.alertCriticalDesc").replace("{n}", String(med.pillsRemaining))}
                   </div>
                 </div>
               </div>
@@ -318,9 +329,9 @@ export default function MedicationTracker() {
                 <Info className="h-5 w-5 text-blue-600 flex-shrink-0 mt-0.5" />
                 <div className="flex-1">
                   <div className="text-sm font-semibold text-blue-900 mb-1">
-                    Interaction: {interaction.combo.join(' + ')}
+                    {t("medtrack.interactionTitle").replace("{combo}", interaction.combo.join(' + '))}
                   </div>
-                  <div className="text-sm text-blue-800">{interaction.warning}</div>
+                  <div className="text-sm text-blue-800">{t(interaction.warnKey)}</div>
                 </div>
               </div>
             ))}
@@ -332,7 +343,7 @@ export default function MedicationTracker() {
           <div className="text-center mb-6">
             <div className="inline-flex items-center gap-2 px-4 py-2 bg-teal-100 rounded-full mb-4">
               <TrendingUp className="h-5 w-5 text-teal-600" />
-              <span className="text-sm font-semibold text-teal-700">7-Day Adherence</span>
+              <span className="text-sm font-semibold text-teal-700">{t("medtrack.adherence7Day")}</span>
             </div>
 
             <div className={`text-6xl font-bold mb-2 ${
@@ -343,9 +354,9 @@ export default function MedicationTracker() {
               {adherence}%
             </div>
             <div className="text-gray-600">
-              {adherence >= 90 ? 'Excellent!' :
-               adherence >= 75 ? 'Good' :
-               adherence >= 60 ? 'Fair' : 'Needs Improvement'}
+              {adherence >= 90 ? t("medtrack.adh.excellent") :
+               adherence >= 75 ? t("medtrack.adh.good") :
+               adherence >= 60 ? t("medtrack.adh.fair") : t("medtrack.adh.needsImprovement")}
             </div>
 
             <div className="mt-4 w-full bg-gray-200 rounded-full h-3">
@@ -366,7 +377,7 @@ export default function MedicationTracker() {
         <div className="bg-white rounded-3xl shadow-xl p-6">
           <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
             <Calendar className="h-5 w-5 text-teal-600" />
-            Today's Schedule
+            {t("medtrack.todaySchedule")}
           </h3>
 
           {loading ? (
@@ -374,7 +385,7 @@ export default function MedicationTracker() {
           ) : todaySchedule.length === 0 ? (
             <div className="text-center py-8 text-gray-500">
               <Pill className="h-12 w-12 mx-auto mb-2 text-gray-300" />
-              <p>No scheduled doses for today</p>
+              <p>{t("medtrack.noDoses")}</p>
             </div>
           ) : (
             <div className="space-y-3">
@@ -418,7 +429,7 @@ export default function MedicationTracker() {
                           size="sm"
                           className="ml-3 bg-teal-600 hover:bg-teal-700"
                         >
-                          Take
+                          {t("medtrack.take")}
                         </Button>
                       )}
                     </div>
@@ -433,22 +444,22 @@ export default function MedicationTracker() {
         <div className="bg-white rounded-3xl shadow-xl p-6">
           <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
             <Package className="h-5 w-5 text-teal-600" />
-            Active Medications ({medications.length})
+            {t("medtrack.activeMeds")} ({medications.length})
           </h3>
 
           {loading ? (
             <SkeletonRows count={3} />
           ) : medications.length === 0 ? (
             <MascotEmptyState
-              title="No medications added yet"
-              subtitle="Track your medications, supplements and vitamins to get dose reminders and refill alerts."
+              title={t("medtrack.emptyTitle")}
+              subtitle={t("medtrack.emptySubtitle")}
               action={
                 <Button
                   onClick={() => setShowAddDialog(true)}
                   className="bg-teal-600 hover:bg-teal-700"
                 >
                   <Plus className="h-4 w-4 mr-2" />
-                  Add First Medication
+                  {t("medtrack.addFirst")}
                 </Button>
               }
             />
@@ -475,12 +486,12 @@ export default function MedicationTracker() {
                         <div className="flex items-center gap-2 mb-1">
                           <h4 className="text-base font-semibold text-gray-800">{med.name}</h4>
                           <span className="px-2 py-0.5 bg-teal-100 text-teal-700 text-xs rounded-full font-medium">
-                            {med.type}
+                            {typeLabel(med.type)}
                           </span>
                         </div>
                         <div className="text-sm text-gray-600">{med.dosage}</div>
                         <div className="text-xs text-gray-500 mt-1">
-                          {FREQUENCY_OPTIONS.find(f => f.value === med.frequency)?.label} - {med.times.join(', ')}
+                          {freqLabel(med.frequency)} - {med.times.join(', ')}
                         </div>
                       </div>
 
@@ -503,11 +514,11 @@ export default function MedicationTracker() {
                     {/* Stock Status */}
                     <div className="pt-3 border-t border-gray-200">
                       <div className="flex items-center justify-between mb-2">
-                        <span className="text-xs text-gray-600">Stock Remaining</span>
+                        <span className="text-xs text-gray-600">{t("medtrack.stockRemaining")}</span>
                         <span className={`text-sm font-semibold ${
                           isCritical ? 'text-red-600' : isLowStock ? 'text-amber-600' : 'text-green-600'
                         }`}>
-                          {med.pillsRemaining} pills ({daysRemaining} days)
+                          {t("medtrack.pillsDays").replace("{n}", String(med.pillsRemaining)).replace("{d}", String(daysRemaining))}
                         </span>
                       </div>
 
@@ -533,7 +544,7 @@ export default function MedicationTracker() {
                         <div className="mt-2 flex items-center gap-2 text-xs">
                           <AlertCircle className="h-4 w-4 text-amber-600" />
                           <span className="text-amber-700">
-                            {isCritical ? 'Order refill immediately!' : 'Time to refill soon'}
+                            {isCritical ? t("medtrack.orderNow") : t("medtrack.refillSoon")}
                           </span>
                         </div>
                       )}
@@ -555,16 +566,16 @@ export default function MedicationTracker() {
         <div className="bg-gradient-to-br from-teal-50 to-emerald-50 rounded-3xl shadow-xl p-6 border border-teal-200">
           <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
             <Bell className="h-5 w-5 text-teal-600" />
-            Medication Best Practices
+            {t("medtrack.bestPractices")}
           </h3>
 
           <div className="space-y-3">
             <div className="flex items-start gap-3 p-3 bg-white rounded-xl">
               <CheckCircle className="h-5 w-5 text-green-600 flex-shrink-0 mt-0.5" />
               <div>
-                <div className="text-sm font-semibold text-gray-800 mb-1">Consistency is Key</div>
+                <div className="text-sm font-semibold text-gray-800 mb-1">{t("medtrack.tip1Title")}</div>
                 <div className="text-sm text-gray-600">
-                  Take medications at the same time daily for optimal effectiveness.
+                  {t("medtrack.tip1Desc")}
                 </div>
               </div>
             </div>
@@ -572,9 +583,9 @@ export default function MedicationTracker() {
             <div className="flex items-start gap-3 p-3 bg-white rounded-xl">
               <Clock className="h-5 w-5 text-blue-600 flex-shrink-0 mt-0.5" />
               <div>
-                <div className="text-sm font-semibold text-gray-800 mb-1">Timing Matters</div>
+                <div className="text-sm font-semibold text-gray-800 mb-1">{t("medtrack.tip2Title")}</div>
                 <div className="text-sm text-gray-600">
-                  Some supplements work better on empty stomach, others with food.
+                  {t("medtrack.tip2Desc")}
                 </div>
               </div>
             </div>
@@ -582,9 +593,9 @@ export default function MedicationTracker() {
             <div className="flex items-start gap-3 p-3 bg-white rounded-xl">
               <AlertCircle className="h-5 w-5 text-amber-600 flex-shrink-0 mt-0.5" />
               <div>
-                <div className="text-sm font-semibold text-gray-800 mb-1">Check Interactions</div>
+                <div className="text-sm font-semibold text-gray-800 mb-1">{t("medtrack.tip3Title")}</div>
                 <div className="text-sm text-gray-600">
-                  Always consult your doctor about potential medication interactions.
+                  {t("medtrack.tip3Desc")}
                 </div>
               </div>
             </div>
@@ -597,21 +608,21 @@ export default function MedicationTracker() {
         <DialogContent className="max-w-md max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle className="text-2xl text-teal-600">
-              {editingMed ? 'Edit Medication' : 'Add Medication'}
+              {editingMed ? t("medtrack.editTitle") : t("medtrack.addTitle")}
             </DialogTitle>
             <DialogDescription>
-              {editingMed ? 'Update medication details and dosage information.' : 'Add a new medication, supplement, or vitamin to track.'}
+              {editingMed ? t("medtrack.editDesc") : t("medtrack.addDesc")}
             </DialogDescription>
           </DialogHeader>
 
           <div className="space-y-4 mt-4">
             <div>
               <Label htmlFor="name" className="text-sm font-medium text-gray-700 mb-2 block">
-                Name *
+                {t("medtrack.nameLabel")}
               </Label>
               <Input
                 id="name"
-                placeholder="e.g., Vitamin D3"
+                placeholder={t("medtrack.namePlaceholder")}
                 value={formData.name}
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                 className="h-12"
@@ -619,19 +630,19 @@ export default function MedicationTracker() {
             </div>
 
             <div>
-              <Label className="text-sm font-medium text-gray-700 mb-2 block">Type</Label>
+              <Label className="text-sm font-medium text-gray-700 mb-2 block">{t("medtrack.typeLabel")}</Label>
               <div className="grid grid-cols-3 gap-2">
                 {(['medication', 'supplement', 'vitamin'] as const).map((type) => (
                   <button
                     key={type}
                     onClick={() => setFormData({ ...formData, type })}
-                    className={`p-3 rounded-xl border-2 text-sm font-medium transition-all capitalize ${
+                    className={`p-3 rounded-xl border-2 text-sm font-medium transition-all ${
                       formData.type === type
                         ? 'border-teal-500 bg-teal-50 text-teal-700'
                         : 'border-gray-200 hover:border-gray-300 text-gray-600'
                     }`}
                   >
-                    {type}
+                    {typeLabel(type)}
                   </button>
                 ))}
               </div>
@@ -639,11 +650,11 @@ export default function MedicationTracker() {
 
             <div>
               <Label htmlFor="dosage" className="text-sm font-medium text-gray-700 mb-2 block">
-                Dosage *
+                {t("medtrack.dosageLabel")}
               </Label>
               <Input
                 id="dosage"
-                placeholder="e.g., 5000 IU or 500mg"
+                placeholder={t("medtrack.dosagePlaceholder")}
                 value={formData.dosage}
                 onChange={(e) => setFormData({ ...formData, dosage: e.target.value })}
                 className="h-12"
@@ -651,7 +662,7 @@ export default function MedicationTracker() {
             </div>
 
             <div>
-              <Label className="text-sm font-medium text-gray-700 mb-2 block">Frequency</Label>
+              <Label className="text-sm font-medium text-gray-700 mb-2 block">{t("medtrack.frequencyLabel")}</Label>
               <select
                 value={formData.frequency}
                 onChange={(e) => {
@@ -662,14 +673,14 @@ export default function MedicationTracker() {
                 className="w-full h-12 px-3 border border-gray-300 rounded-lg"
               >
                 {FREQUENCY_OPTIONS.map(opt => (
-                  <option key={opt.value} value={opt.value}>{opt.label}</option>
+                  <option key={opt.value} value={opt.value}>{t(opt.labelKey)}</option>
                 ))}
               </select>
             </div>
 
             {formData.frequency !== 'as-needed' && (
               <div>
-                <Label className="text-sm font-medium text-gray-700 mb-2 block">Times</Label>
+                <Label className="text-sm font-medium text-gray-700 mb-2 block">{t("medtrack.timesLabel")}</Label>
                 <div className="space-y-2">
                   {formData.times.map((time, idx) => (
                     <Input
@@ -691,7 +702,7 @@ export default function MedicationTracker() {
             <div className="grid grid-cols-2 gap-3">
               <div>
                 <Label htmlFor="pillsRemaining" className="text-sm font-medium text-gray-700 mb-2 block">
-                  Pills Remaining
+                  {t("medtrack.pillsRemainingLabel")}
                 </Label>
                 <Input
                   id="pillsRemaining"
@@ -704,7 +715,7 @@ export default function MedicationTracker() {
 
               <div>
                 <Label htmlFor="refillThreshold" className="text-sm font-medium text-gray-700 mb-2 block">
-                  Refill Alert At
+                  {t("medtrack.refillAtLabel")}
                 </Label>
                 <Input
                   id="refillThreshold"
@@ -718,11 +729,11 @@ export default function MedicationTracker() {
 
             <div>
               <Label htmlFor="notes" className="text-sm font-medium text-gray-700 mb-2 block">
-                Notes (Optional)
+                {t("medtrack.notesLabel")}
               </Label>
               <Input
                 id="notes"
-                placeholder="e.g., Take with food"
+                placeholder={t("medtrack.notesPlaceholder")}
                 value={formData.notes}
                 onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
                 className="h-12"
@@ -731,10 +742,10 @@ export default function MedicationTracker() {
 
             <div className="flex gap-3 pt-4">
               <Button onClick={resetForm} variant="outline" className="flex-1">
-                Cancel
+                {t("common.cancel")}
               </Button>
               <Button onClick={handleAddMedication} className="flex-1 bg-teal-600 hover:bg-teal-700">
-                {editingMed ? 'Update' : 'Add'}
+                {editingMed ? t("medtrack.update") : t("medtrack.add")}
               </Button>
             </div>
           </div>

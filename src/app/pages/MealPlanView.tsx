@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router";
 import { useUser } from "../contexts/UserContext";
+import { useLanguage } from "../contexts/LanguageContext";
 import { projectId, publicAnonKey } from '/utils/supabase/info';
 import { getAccessToken } from '../../lib/supabase';
 import { generateSingleMeal } from "../../lib/api";
@@ -72,8 +73,15 @@ const getMealIcon = (mealType: string) => {
 export default function MealPlanView() {
   const navigate = useNavigate();
   const { profile } = useUser();
+  const { t } = useLanguage();
   const [searchParams] = useSearchParams();
   const planId = searchParams.get("id");
+
+  // Translate a meal type ("breakfast" → localized) with a safe fallback.
+  const mealTypeLabel = (type: string) =>
+    ["breakfast", "brunch", "lunch", "dinner"].includes(type.toLowerCase())
+      ? t(`planmeal.meal.${type.toLowerCase()}`)
+      : type;
   
   const [mealPlan, setMealPlan] = useState<MealPlan | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -95,7 +103,7 @@ export default function MealPlanView() {
       const res = await generateSingleMeal(mealPlan.mealType, mealPlan.currentGoal, (mealPlan as any).budget, seenMeals);
       navigate(`/meal-plan?id=${res.planId}`);
     } catch {
-      toast.error("Couldn't generate another. Please try again.");
+      toast.error(t("mealview.toast.genAnotherFail"));
       navigate("/plan-meal");
     } finally {
       setRegenerating(false);
@@ -119,7 +127,7 @@ export default function MealPlanView() {
       const token = await getAccessToken();
 
       if (!token) {
-        toast.error("Please log in to view meal plans");
+        toast.error(t("mealview.toast.loginRequired"));
         navigate("/login");
         return;
       }
@@ -139,8 +147,8 @@ export default function MealPlanView() {
       setMealPlan(data.mealPlan);
     } catch (err: any) {
       console.error("Error loading meal plan:", err);
-      setError(err.message || "Failed to load meal plan");
-      toast.error("Failed to load meal plan");
+      setError(err.message || t("mealview.toast.loadFailed"));
+      toast.error(t("mealview.toast.loadFailed"));
     } finally {
       setIsLoading(false);
     }
@@ -169,11 +177,11 @@ TIMING: ${mealPlan.plan_json.circadianAnchor}
     `.trim();
 
     navigator.clipboard.writeText(text);
-    toast.success("Meal plan copied to clipboard!");
+    toast.success(t("mealview.toast.copied"));
   };
 
   const handleDeletePlan = async () => {
-    if (!mealPlan || !confirm("Are you sure you want to delete this meal plan?")) return;
+    if (!mealPlan || !confirm(t("mealview.confirmDelete"))) return;
 
     try {
       const token = await getAccessToken();
@@ -189,18 +197,18 @@ TIMING: ${mealPlan.plan_json.circadianAnchor}
         throw new Error("Failed to delete meal plan");
       }
 
-      toast.success("Meal plan deleted");
+      toast.success(t("mealview.toast.deleted"));
       navigate("/");
     } catch (err: any) {
       console.error("Error deleting meal plan:", err);
-      toast.error("Failed to delete meal plan");
+      toast.error(t("mealview.toast.deleteFailed"));
     }
   };
 
   if (isLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-b from-[#B8E5E5] to-[#E8F5F5] flex items-center justify-center">
-        <MascotLoader label="Loading meal plan..." size={96} />
+        <MascotLoader label={t("mealview.loading")} size={96} />
       </div>
     );
   }
@@ -216,19 +224,19 @@ TIMING: ${mealPlan.plan_json.circadianAnchor}
             >
               <ChevronLeft className="h-6 w-6" />
             </button>
-            <h1 className="text-2xl text-white flex-1">Meal Plan</h1>
+            <h1 className="text-2xl text-white flex-1">{t("mealview.errorTitle")}</h1>
           </div>
         </div>
-        
+
         <div className="px-6 mt-6">
           <div className="bg-red-50 border border-red-200 rounded-3xl p-6 text-center">
             <AlertCircle className="h-12 w-12 text-red-600 mx-auto mb-4" />
-            <p className="text-red-800 mb-4">{error || "Meal plan not found"}</p>
+            <p className="text-red-800 mb-4">{error || t("mealview.notFound")}</p>
             <button
               onClick={() => navigate("/")}
               className="bg-[#1f7a8c] text-white px-6 py-3 rounded-xl hover:bg-[#165f6d] transition-colors"
             >
-              Go to Home
+              {t("mealview.goHome")}
             </button>
           </div>
         </div>
@@ -242,21 +250,21 @@ TIMING: ${mealPlan.plan_json.circadianAnchor}
     <div className="min-h-screen bg-gradient-to-b from-[#B8E5E5] to-[#E8F5F5] pb-24">
       {/* Header */}
       <PageHeader
-        title="Your Meal Plan"
+        title={t("mealview.title")}
         showHome
         actions={
           <>
             <button
               onClick={handleCopyMealPlan}
               className="text-white hover:bg-white/10 rounded-full p-2 transition-colors"
-              title="Copy to clipboard"
+              title={t("mealview.copyTitle")}
             >
               <Copy className="h-5 w-5" />
             </button>
             <button
               onClick={handleDeletePlan}
               className="text-white hover:bg-white/10 rounded-full p-2 transition-colors"
-              title="Delete plan"
+              title={t("mealview.deleteTitle")}
             >
               <Trash2 className="h-5 w-5" />
             </button>
@@ -277,7 +285,7 @@ TIMING: ${mealPlan.plan_json.circadianAnchor}
               day: 'numeric'
             })}
           </p>
-          <p className="text-white text-lg capitalize">{mealPlan.mealType}</p>
+          <p className="text-white text-lg capitalize">{mealTypeLabel(mealPlan.mealType)}</p>
         </div>
       </div>
 
@@ -293,7 +301,7 @@ TIMING: ${mealPlan.plan_json.circadianAnchor}
           </div>
           <div className="flex items-center gap-2 mt-3">
             <Target className="h-4 w-4 text-[#1f7a8c]" />
-            <p className="text-sm text-gray-600">Goal: {mealPlan.currentGoal}</p>
+            <p className="text-sm text-gray-600">{t("mealview.goalLabel")} {mealPlan.currentGoal === "General Health & Nutrition" ? t("planmeal.defaultGoal") : mealPlan.currentGoal}</p>
           </div>
         </div>
 
@@ -301,50 +309,50 @@ TIMING: ${mealPlan.plan_json.circadianAnchor}
         <div className="bg-white rounded-3xl shadow-lg p-6">
           <h3 className="text-lg text-[#1f7a8c] mb-4 flex items-center gap-2">
             <Activity className="h-5 w-5" />
-            Nutrition Facts
+            {t("mealview.nutritionFacts")}
           </h3>
-          
+
           <div className="grid grid-cols-2 gap-4 mb-4">
             <div className="bg-gradient-to-br from-orange-50 to-orange-100 rounded-2xl p-4">
               <div className="flex items-center gap-2 mb-2">
                 <Flame className="h-5 w-5 text-orange-600" />
-                <p className="text-xs text-gray-600">Calories</p>
+                <p className="text-xs text-gray-600">{t("mealview.calories")}</p>
               </div>
               <p className="text-2xl text-gray-800">{mealPlan.plan_json.calories}</p>
-              <p className="text-xs text-gray-500">kcal</p>
+              <p className="text-xs text-gray-500">{t("mealview.kcal")}</p>
             </div>
 
             <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl p-4">
               <div className="flex items-center gap-2 mb-2">
                 <Droplet className="h-5 w-5 text-blue-600" />
-                <p className="text-xs text-gray-600">Protein</p>
+                <p className="text-xs text-gray-600">{t("mealview.protein")}</p>
               </div>
               <p className="text-2xl text-gray-800">{mealPlan.plan_json.protein}</p>
-              <p className="text-xs text-gray-500">grams</p>
+              <p className="text-xs text-gray-500">{t("mealview.grams")}</p>
             </div>
 
             <div className="bg-gradient-to-br from-yellow-50 to-yellow-100 rounded-2xl p-4">
               <div className="flex items-center gap-2 mb-2">
                 <Wheat className="h-5 w-5 text-yellow-600" />
-                <p className="text-xs text-gray-600">Carbs</p>
+                <p className="text-xs text-gray-600">{t("mealview.carbs")}</p>
               </div>
               <p className="text-2xl text-gray-800">{mealPlan.plan_json.carbs}</p>
-              <p className="text-xs text-gray-500">grams</p>
+              <p className="text-xs text-gray-500">{t("mealview.grams")}</p>
             </div>
 
             <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-2xl p-4">
               <div className="flex items-center gap-2 mb-2">
                 <Heart className="h-5 w-5 text-green-600" />
-                <p className="text-xs text-gray-600">Fats</p>
+                <p className="text-xs text-gray-600">{t("mealview.fats")}</p>
               </div>
               <p className="text-2xl text-gray-800">{mealPlan.plan_json.fats}</p>
-              <p className="text-xs text-gray-500">grams</p>
+              <p className="text-xs text-gray-500">{t("mealview.grams")}</p>
             </div>
           </div>
 
           {mealPlan.plan_json.estimatedCostNaira ? (
             <div className="bg-gradient-to-br from-teal-50 to-cyan-100 rounded-2xl p-4 mb-4 flex items-center justify-between">
-              <p className="text-sm text-gray-700">Est. ingredient cost per serving</p>
+              <p className="text-sm text-gray-700">{t("mealview.estCost")}</p>
               <p className="text-xl font-semibold text-[#1f7a8c]">₦{mealPlan.plan_json.estimatedCostNaira.toLocaleString()}</p>
             </div>
           ) : null}
@@ -352,13 +360,13 @@ TIMING: ${mealPlan.plan_json.circadianAnchor}
           <div className="bg-teal-50 rounded-2xl p-4">
             <div className="flex items-center gap-2 mb-2">
               <Activity className="h-4 w-4 text-[#1f7a8c]" />
-              <p className="text-xs text-gray-600">Fiber</p>
+              <p className="text-xs text-gray-600">{t("mealview.fiber")}</p>
             </div>
             <p className="text-xl text-gray-800">{mealPlan.plan_json.fiber}g</p>
           </div>
 
           <div className="mt-4 p-4 bg-purple-50 rounded-2xl">
-            <p className="text-xs text-gray-600 mb-1">Biochemical Ratio</p>
+            <p className="text-xs text-gray-600 mb-1">{t("mealview.biochemicalRatio")}</p>
             <p className="text-sm text-gray-800">{mealPlan.plan_json.biochemicalRatio}</p>
           </div>
         </div>
@@ -367,7 +375,7 @@ TIMING: ${mealPlan.plan_json.circadianAnchor}
         <div className="bg-white rounded-3xl shadow-lg p-6">
           <h3 className="text-lg text-[#1f7a8c] mb-4 flex items-center gap-2">
             <CheckCircle2 className="h-5 w-5" />
-            Ingredients
+            {t("mealview.ingredients")}
           </h3>
           <div className="space-y-3">
             {mealPlan.plan_json.ingredients.map((ingredient, index) => (
@@ -388,14 +396,14 @@ TIMING: ${mealPlan.plan_json.circadianAnchor}
         <div className="bg-white rounded-3xl shadow-lg p-6">
           <h3 className="text-lg text-[#1f7a8c] mb-4 flex items-center gap-2">
             <Stethoscope className="h-5 w-5" />
-            Clinical Information
+            {t("mealview.clinicalInfo")}
           </h3>
-          
+
           <div className="space-y-4">
             <div className="bg-blue-50 rounded-2xl p-4">
               <div className="flex items-center gap-2 mb-2">
                 <Clock className="h-4 w-4 text-blue-600" />
-                <p className="text-xs text-gray-600">Optimal Timing</p>
+                <p className="text-xs text-gray-600">{t("mealview.optimalTiming")}</p>
               </div>
               <p className="text-sm text-gray-800">{mealPlan.plan_json.circadianAnchor}</p>
             </div>
@@ -403,7 +411,7 @@ TIMING: ${mealPlan.plan_json.circadianAnchor}
             <div className="bg-green-50 rounded-2xl p-4">
               <div className="flex items-center gap-2 mb-2">
                 <Stethoscope className="h-4 w-4 text-green-600" />
-                <p className="text-xs text-gray-600">Clinical Indication</p>
+                <p className="text-xs text-gray-600">{t("mealview.clinicalIndication")}</p>
               </div>
               <p className="text-sm text-gray-800">{mealPlan.plan_json.clinicalIndication}</p>
             </div>
@@ -411,7 +419,7 @@ TIMING: ${mealPlan.plan_json.circadianAnchor}
             <div className="bg-orange-50 rounded-2xl p-4">
               <div className="flex items-center gap-2 mb-2">
                 <ChefHat className="h-4 w-4 text-orange-600" />
-                <p className="text-xs text-gray-600">Preparation Method</p>
+                <p className="text-xs text-gray-600">{t("mealview.prepMethod")}</p>
               </div>
               <p className="text-sm text-gray-800">{mealPlan.plan_json.engineeringMethod}</p>
             </div>
@@ -419,7 +427,7 @@ TIMING: ${mealPlan.plan_json.circadianAnchor}
             <div className="bg-purple-50 rounded-2xl p-4">
               <div className="flex items-center gap-2 mb-2">
                 <Info className="h-4 w-4 text-purple-600" />
-                <p className="text-xs text-gray-600">Post-Meal Monitoring</p>
+                <p className="text-xs text-gray-600">{t("mealview.postMeal")}</p>
               </div>
               <p className="text-sm text-gray-800">{mealPlan.plan_json.postPrandialNote}</p>
             </div>
@@ -433,21 +441,21 @@ TIMING: ${mealPlan.plan_json.circadianAnchor}
             disabled={regenerating}
             className="w-full bg-gradient-to-r from-[#1f7a8c] to-[#4ecdc4] text-white py-4 rounded-2xl shadow-lg hover:shadow-xl transition-all transform hover:scale-[1.02] disabled:opacity-60 disabled:hover:scale-100"
           >
-            {regenerating ? "Finding another…" : `🍽️ Generate another ${mealPlan.mealType}`}
+            {regenerating ? t("mealview.findingAnother") : t("mealview.generateAnother").replace("{meal}", mealTypeLabel(mealPlan.mealType))}
           </button>
 
           <button
             onClick={() => navigate("/plan-meal")}
             className="w-full bg-white text-[#1f7a8c] border-2 border-[#1f7a8c] py-4 rounded-2xl shadow-lg hover:shadow-xl transition-all transform hover:scale-[1.02]"
           >
-            Plan a Different Meal
+            {t("mealview.planDifferent")}
           </button>
-          
+
           <button
             onClick={() => navigate("/home")}
             className="w-full bg-white text-[#1f7a8c] border-2 border-[#1f7a8c] py-4 rounded-2xl shadow-lg hover:shadow-xl transition-all transform hover:scale-[1.02]"
           >
-            Back to Home
+            {t("mealview.backHome")}
           </button>
         </div>
       </div>

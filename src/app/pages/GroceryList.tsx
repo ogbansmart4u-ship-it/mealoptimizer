@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router';
 import { ShoppingCart, Trash2, Check } from 'lucide-react';
 import { projectId } from '/utils/supabase/info';
 import { getAccessToken } from '../../lib/supabase';
+import { useLanguage } from '../contexts/LanguageContext';
 import PageHeader from '../components/PageHeader';
 import Breadcrumbs from '../components/Breadcrumbs';
 import { SkeletonList } from '../components/SkeletonLoader';
@@ -19,9 +20,16 @@ interface GroceryItem {
 
 export default function GroceryList() {
   const navigate = useNavigate();
+  const { t } = useLanguage();
   const [groceryItems, setGroceryItems] = useState<GroceryItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  // Translate a meal type ("breakfast" → localized) with a safe fallback.
+  const mealTypeLabel = (type: string) =>
+    ["breakfast", "brunch", "lunch", "dinner"].includes((type || "").toLowerCase())
+      ? t(`planmeal.meal.${type.toLowerCase()}`)
+      : type;
 
   // Load grocery list from backend
   useEffect(() => {
@@ -173,7 +181,7 @@ export default function GroceryList() {
     <div className="min-h-screen bg-gradient-to-br from-[#1f7a8c] via-[#2a9d8f] to-[#4ecdc4]">
       {/* Header */}
       <PageHeader
-        title="Grocery List"
+        title={t("grocery.title")}
         showHome
         className="bg-gradient-to-r from-[#1f7a8c] to-[#2a9d8f]"
       />
@@ -182,8 +190,8 @@ export default function GroceryList() {
       <div className="bg-gradient-to-r from-[#1f7a8c] to-[#2a9d8f] px-6 pb-3">
         <Breadcrumbs
           items={[
-            { label: "Meal Planning", path: "/plan-meal" },
-            { label: "Grocery List" }
+            { label: t("grocery.breadcrumbMeal"), path: "/plan-meal" },
+            { label: t("grocery.title") }
           ]}
           className="text-white/80"
         />
@@ -192,10 +200,10 @@ export default function GroceryList() {
       {/* Stats */}
       <div className="bg-gradient-to-r from-[#1f7a8c] to-[#2a9d8f] px-6 pb-4 flex justify-center gap-4 text-sm text-white">
         <div className="bg-white/20 rounded-lg px-4 py-2 backdrop-blur-sm">
-          <span className="font-semibold">{uncheckedCount}</span> to buy
+          <span className="font-semibold">{uncheckedCount}</span> {t("grocery.toBuy")}
         </div>
         <div className="bg-white/20 rounded-lg px-4 py-2 backdrop-blur-sm">
-          <span className="font-semibold">{checkedCount}</span> checked
+          <span className="font-semibold">{checkedCount}</span> {t("grocery.checked")}
         </div>
       </div>
 
@@ -210,20 +218,20 @@ export default function GroceryList() {
               onClick={loadGroceryList}
               className="px-6 py-2 bg-white text-[#1f7a8c] rounded-lg hover:bg-gray-100 transition-colors"
             >
-              Retry
+              {t("profile.retry")}
             </button>
           </div>
         ) : groceryItems.length === 0 ? (
           <div className="bg-white rounded-2xl shadow-lg p-8">
             <MascotEmptyState
-              title="Your grocery list is empty"
-              subtitle="Generate a meal plan to automatically add ingredients to your grocery list!"
+              title={t("grocery.emptyTitle")}
+              subtitle={t("grocery.emptySubtitle")}
               action={
                 <button
                   onClick={() => navigate('/plan-meal')}
                   className="px-6 py-3 bg-gradient-to-r from-[#1f7a8c] to-[#4ecdc4] text-white rounded-lg hover:shadow-lg transition-all font-semibold"
                 >
-                  Plan a Meal
+                  {t("grocery.planMeal")}
                 </button>
               }
             />
@@ -238,7 +246,7 @@ export default function GroceryList() {
                   className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors text-sm font-semibold flex items-center gap-2"
                 >
                   <Trash2 className="h-4 w-4" />
-                  Clear Checked ({checkedCount})
+                  {t("grocery.clearChecked")} ({checkedCount})
                 </button>
               </div>
             )}
@@ -248,9 +256,9 @@ export default function GroceryList() {
               {Object.entries(groupedItems).map(([mealName, items]) => (
                 <div key={mealName} className="bg-white rounded-2xl shadow-lg overflow-hidden">
                   <div className="bg-gradient-to-r from-[#1f7a8c] to-[#4ecdc4] p-4">
-                    <h3 className="text-white font-semibold text-lg">{mealName}</h3>
+                    <h3 className="text-white font-semibold text-lg">{mealName === 'Other' ? t("grocery.other") : mealName}</h3>
                     {items[0]?.mealType && (
-                      <p className="text-white/80 text-sm capitalize">{items[0].mealType}</p>
+                      <p className="text-white/80 text-sm capitalize">{mealTypeLabel(items[0].mealType)}</p>
                     )}
                   </div>
                   <div className="divide-y divide-gray-200">
