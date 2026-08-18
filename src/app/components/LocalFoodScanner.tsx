@@ -1,11 +1,12 @@
-import { useState } from "react";
-import { MapPin, Sparkles, TrendingUp, ChevronRight, X, Camera, Upload, ScanBarcode } from "lucide-react";
+import { useState, useEffect } from "react";
+import { MapPin, Sparkles, TrendingUp, ChevronRight, X, Camera, Upload, ScanBarcode, CheckCircle2, AlertTriangle, Ban, Lightbulb } from "lucide-react";
 import { useNavigate } from "react-router";
 import { useLocation } from "../contexts/LocationContext";
 import { useUser } from "../contexts/UserContext";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
 import CameraCapture from "./CameraCapture";
-import { createMealLog } from "../../lib/api";
+import { createMealLog, getCollection } from "../../lib/api";
+import { computeVerdict } from "../../lib/conditionVerdict";
 import { toast } from "sonner";
 import { projectId } from '/utils/supabase/info';
 import { getAccessToken } from '../../lib/supabase';
@@ -470,6 +471,13 @@ type LocalFoodScannerProps = {
   onClose: () => void;
 };
 
+// Visual styling for the personal verdict card, keyed by verdict level.
+const VERDICT_UI = {
+  good: { wrap: "bg-green-50 border-green-400", icon: "text-green-600", title: "text-green-700", dot: "text-green-500", chip: "bg-green-100 text-green-700", Icon: CheckCircle2, label: "Good" },
+  caution: { wrap: "bg-amber-50 border-amber-400", icon: "text-amber-600", title: "text-amber-800", dot: "text-amber-500", chip: "bg-amber-100 text-amber-800", Icon: AlertTriangle, label: "Care" },
+  avoid: { wrap: "bg-red-50 border-red-400", icon: "text-red-600", title: "text-red-700", dot: "text-red-500", chip: "bg-red-100 text-red-700", Icon: Ban, label: "Avoid" },
+} as const;
+
 export default function LocalFoodScanner({ isOpen, onClose }: LocalFoodScannerProps) {
   const navigate = useNavigate();
   const { selectedLocation } = useLocation();
@@ -481,6 +489,37 @@ export default function LocalFoodScanner({ isOpen, onClose }: LocalFoodScannerPr
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [analyzeError, setAnalyzeError] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState(false);
+  const [conditions, setConditions] = useState<{ name: string; severity?: string }[]>([]);
+
+  // Load the user's medical conditions so every result gets a personal verdict.
+  useEffect(() => {
+    if (!isOpen) return;
+    let cancelled = false;
+    getCollection("conditions")
+      .then((items: any[]) => {
+        if (cancelled) return;
+        const list = Array.isArray(items)
+          ? items.map((it) => ({ name: it?.name ?? "", severity: it?.severity })).filter((c) => c.name)
+          : [];
+        // Fall back to the single profile condition if the collection is empty.
+        if (list.length === 0 && profile?.medicalCondition && !["", "none", "None"].includes(profile.medicalCondition)) {
+          list.push({ name: profile.medicalCondition });
+        }
+        setConditions(list);
+      })
+      .catch(() => {
+        if (cancelled) return;
+        if (profile?.medicalCondition && !["", "none", "None"].includes(profile.medicalCondition)) {
+          setConditions([{ name: profile.medicalCondition }]);
+        }
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [isOpen, profile?.medicalCondition]);
+
+  // Personal "Is this good for ME?" verdict, recomputed whenever a result loads.
+  const verdict = foodData ? computeVerdict(foodData.macroBreakdown, conditions) : null;
 
   // Save the analysed dish into the user's meal log (real persistence)
   const handleSaveToLog = async () => {
@@ -750,6 +789,69 @@ export default function LocalFoodScanner({ isOpen, onClose }: LocalFoodScannerPr
         ) : (
           /* Food Analysis Results */
           <div className="p-6">
+            {/* Personal verdict — "Is this good for ME?" */}
+            {verdict && (() => {
+              const V = VERDICT_UI[verdict.level];
+              const VIcon = V.Icon;
+              return (
+                <div className={`rounded-2xl p-5 mb-6 border-2 ${V.wrap}`}>
+                  <div className="flex items-start gap-3">
+                    <VIcon className={`h-9 w-9 shrink-0 ${V.icon}`} strokeWidth={2.2} />
+                    <div className="flex-1 min-w-0">
+                      <div className="text-[11px] uppercase tracking-wide font-bold text-gray-500">
+                        Is this good for me?
+                      </div>
+                      <h3 className={`text-xl font-bold leading-tight ${V.title}`}>{verdict.title}</h3>
+                      <p className="text-sm text-gray-600 mt-0.5">{verdict.subtitle}</p>
+                    </div>
+                  </div>
+
+                  {verdict.reasons.length > 0 && (
+                    <ul className="mt-3 space-y-1.5">
+                      {verdict.reasons.map((reason, i) => (
+                        <li key={i} className="text-sm text-gray-700 flex gap-2">
+                          <span className={`${V.dot} font-bold`}>•</span>
+                          <span>{reason}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+
+                  {verdict.hasConditions && verdict.perCondition.length > 1 && (
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      {verdict.perCondition.map((p, i) => (
+                        <span
+                          key={i}
+                          className={`text-xs px-2.5 py-1 rounded-full font-medium ${VERDICT_UI[p.level].chip}`}
+                        >
+                          {p.condition}: {VERDICT_UI[p.level].label}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+
+                  {verdict.tip && (
+                    <div className="mt-3 flex gap-2 items-start bg-white/70 rounded-xl p-3">
+                      <Lightbulb className="h-4 w-4 text-amber-500 shrink-0 mt-0.5" />
+                      <p className="text-sm text-gray-700">
+                        <span className="font-semibold">Make it better: </span>
+                        {verdict.tip}
+                      </p>
+                    </div>
+                  )}
+
+                  {!verdict.hasConditions && (
+                    <button
+                      onClick={() => { onClose(); navigate("/medical-condition"); }}
+                      className="mt-3 text-sm font-semibold text-[#1f7a8c] hover:underline"
+                    >
+                      Add your health conditions for a verdict made for you →
+                    </button>
+                  )}
+                </div>
+              );
+            })()}
+
             {/* Dish Info */}
             <div className="bg-gradient-to-br from-[#B8E5E5] to-[#E8F5F5] rounded-2xl p-5 mb-6">
               <h3 className="text-2xl font-bold text-gray-800 mb-2">{foodData.dishName}</h3>
