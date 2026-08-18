@@ -15,6 +15,7 @@ import { useLanguage } from "../contexts/LanguageContext";
 import { useMascot } from "../hooks/useMascot";
 import Mascot from "../components/Mascot";
 import MascotNudge from "../components/MascotNudge";
+import QuickLogShelf, { QuickFoodItem } from "../components/QuickLogShelf";
 import { useSmartNudges } from "../hooks/useSmartNudges";
 import ModeToggle from "../components/ModeToggle";
 import LocationSelector from "../components/LocationSelector";
@@ -615,6 +616,42 @@ export default function Home() {
     }
   };
 
+  
+  const handleQuickLogItem = async (food: QuickFoodItem) => {
+    if (quickLogging) return;
+    const now = new Date();
+    const newLog = {
+      id: Date.now().toString(),
+      date: now.toISOString().split("T")[0],
+      time: now.toTimeString().slice(0, 5),
+      mealType: food.mealType,
+      foodName: food.name,
+      calories: food.calories,
+      protein: food.protein,
+      carbs: food.carbs,
+      fats: food.fats,
+      energyRating: 4,
+      digestiveComfort: 4,
+      bloodSugarImpact: food.glycemicTag === "Low Spike" || food.glycemicTag === "Heart Safe" ? "low" : "medium",
+    };
+    setQuickLogging(true);
+    setWeekLogs((prev) => [...prev, newLog]);
+    try {
+      await createMealLog(newLog);
+      mascot.thumbsUp();
+      celebrate(`${food.name} logged! \ud83c\udf72\ud83c\udf89`, `+${food.calories} kcal \u00b7 ${food.protein}g protein`, {
+        confettiStyle: "burst",
+        hapticPattern: "success",
+      });
+    } catch (e) {
+      console.error("Failed to quick-log meal", e);
+      toast.error("Could not log meal. Please try again.");
+      setWeekLogs((prev) => prev.filter((l) => l.id !== newLog.id));
+    } finally {
+      setQuickLogging(false);
+    }
+  };
+
   const handleQuickMealSelect = (mealType: "breakfast" | "lunch" | "dinner") => {
     setSelectedQuickMeal(mealType);
     setShowQuickMealLog(true);
@@ -890,33 +927,13 @@ export default function Home() {
             </div>
           )}
           
-          {/* Quick Meal Logging Buttons */}
-          <div className="mt-4 mb-4">
-            <h4 className="text-xs text-gray-700 mb-2 text-center">{t('home.quickLogMeal')}</h4>
-            <div className="grid grid-cols-3 gap-2">
-              <button
-                onClick={() => handleQuickMealSelect("breakfast")}
-                className="bg-gradient-to-r from-yellow-100 to-orange-100 border-2 border-yellow-300 rounded-xl p-3 hover:scale-105 transition-transform shadow-sm cursor-pointer"
-              >
-                <div className="text-2xl mb-1">🍳</div>
-                <div className="text-[10px] text-gray-700">{t('home.breakfast')}</div>
-              </button>
-              <button
-                onClick={() => handleQuickMealSelect("lunch")}
-                className="bg-gradient-to-r from-green-100 to-emerald-100 border-2 border-green-300 rounded-xl p-3 hover:scale-105 transition-transform shadow-sm cursor-pointer"
-              >
-                <div className="text-2xl mb-1">🍛</div>
-                <div className="text-[10px] text-gray-700">{t('home.lunch')}</div>
-              </button>
-              <button
-                onClick={() => handleQuickMealSelect("dinner")}
-                className="bg-gradient-to-r from-purple-100 to-pink-100 border-2 border-purple-300 rounded-xl p-3 hover:scale-105 transition-transform shadow-sm cursor-pointer"
-              >
-                <div className="text-2xl mb-1">🍲</div>
-                <div className="text-[10px] text-gray-700">{t('home.dinner')}</div>
-              </button>
-            </div>
-          </div>
+          {/* 1-Tap Quick-Log Shelf */}
+          <QuickLogShelf
+            onLogItem={handleQuickLogItem}
+            onOpenScanner={() => setShowLocalFoodScanner(true)}
+            onOpenCustom={() => navigate("/logs", { state: { openAdd: true } })}
+            isLogging={quickLogging}
+          />
           
           {/* Time-Based Circadian Insight */}
           <div className="mt-4 pt-4 border-t border-gray-200">
