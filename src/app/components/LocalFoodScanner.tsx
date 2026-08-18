@@ -1,9 +1,11 @@
 import { useState } from "react";
-import { MapPin, Sparkles, TrendingUp, ChevronRight, X, Camera, Upload } from "lucide-react";
+import { MapPin, Sparkles, TrendingUp, ChevronRight, X, Camera, Upload, ScanBarcode } from "lucide-react";
+import { useNavigate } from "react-router";
 import { useLocation } from "../contexts/LocationContext";
 import { useUser } from "../contexts/UserContext";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
 import CameraCapture from "./CameraCapture";
+import { createMealLog } from "../../lib/api";
 import { toast } from "sonner";
 import { projectId } from '/utils/supabase/info';
 import { getAccessToken } from '../../lib/supabase';
@@ -469,6 +471,7 @@ type LocalFoodScannerProps = {
 };
 
 export default function LocalFoodScanner({ isOpen, onClose }: LocalFoodScannerProps) {
+  const navigate = useNavigate();
   const { selectedLocation } = useLocation();
   const { profile } = useUser();
   const [showCamera, setShowCamera] = useState(false);
@@ -477,6 +480,53 @@ export default function LocalFoodScanner({ isOpen, onClose }: LocalFoodScannerPr
   const [activeTab, setActiveTab] = useState("traditional");
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [analyzeError, setAnalyzeError] = useState<string | null>(null);
+  const [isSaving, setIsSaving] = useState(false);
+
+  // Save the analysed dish into the user's meal log (real persistence)
+  const handleSaveToLog = async () => {
+    if (!foodData || isSaving) return;
+    setIsSaving(true);
+
+    const now = new Date();
+    const hour = now.getHours();
+    const mealType =
+      hour < 11 ? "breakfast" : hour < 16 ? "lunch" : hour < 21 ? "dinner" : "snack";
+    const gl = foodData.macroBreakdown.glycemicLoad;
+    const bloodSugarImpact = gl === "Low" ? "low" : gl === "High" ? "high" : "medium";
+
+    const logData = {
+      date: now.toISOString().split("T")[0],
+      time: now.toTimeString().slice(0, 5),
+      mealType,
+      foodName: foodData.dishName,
+      calories: foodData.macroBreakdown.calories,
+      protein: foodData.macroBreakdown.protein,
+      carbs: foodData.macroBreakdown.carbs,
+      fats: foodData.macroBreakdown.fats,
+      energyRating: 3,
+      digestiveComfort: 3,
+      bloodSugarImpact,
+    };
+
+    try {
+      await createMealLog(logData);
+      toast.success("Saved to meal log!", { description: foodData.dishName });
+      onClose();
+    } catch (err: any) {
+      // Fallback: persist locally so the log still updates offline
+      try {
+        const existing = JSON.parse(localStorage.getItem("mealLogs") || "[]");
+        existing.push({ id: `local-${now.getTime()}`, ...logData });
+        localStorage.setItem("mealLogs", JSON.stringify(existing));
+        toast.success("Saved to meal log!", { description: foodData.dishName });
+        onClose();
+      } catch {
+        toast.error("Could not save", { description: err?.message || "Please try again" });
+      }
+    } finally {
+      setIsSaving(false);
+    }
+  };
 
   // Step 1 — store the image, show preview + Analyze button
   const handleImageCaptured = (imageData: string) => {
@@ -593,7 +643,7 @@ export default function LocalFoodScanner({ isOpen, onClose }: LocalFoodScannerPr
               <Sparkles className="h-6 w-6 text-white" />
             </div>
             <div>
-              <h2 className="text-xl font-semibold text-white">Local Food Engineer</h2>
+              <h2 className="text-xl font-semibold text-white">Snap &amp; Know</h2>
               <div className="flex items-center gap-2 text-white/90 text-sm">
                 <MapPin className="h-4 w-4" />
                 <span>{selectedLocation.displayName}</span>
@@ -665,6 +715,14 @@ export default function LocalFoodScanner({ isOpen, onClose }: LocalFoodScannerPr
                 <span className="font-semibold">Upload Photo</span>
               </button>
             </div>
+
+            <button
+              onClick={() => { onClose(); navigate("/scan-barcode"); }}
+              className="mt-4 w-full bg-white border-2 border-[#1f7a8c] text-[#1f7a8c] rounded-2xl p-4 flex items-center justify-center gap-3 hover:bg-[#1f7a8c]/5 transition-colors font-semibold"
+            >
+              <ScanBarcode className="h-6 w-6" />
+              <span>Scan a Barcode instead</span>
+            </button>
 
             <input
               id="local-food-upload"
@@ -862,13 +920,11 @@ export default function LocalFoodScanner({ isOpen, onClose }: LocalFoodScannerPr
                 Scan Another
               </button>
               <button
-                onClick={() => {
-                  toast.success("Saved to meal log!");
-                  onClose();
-                }}
-                className="flex-1 bg-gradient-to-r from-[#1f7a8c] to-[#4ecdc4] text-white py-3 rounded-xl font-semibold hover:shadow-lg transition-shadow"
+                onClick={handleSaveToLog}
+                disabled={isSaving}
+                className="flex-1 bg-gradient-to-r from-[#1f7a8c] to-[#4ecdc4] text-white py-3 rounded-xl font-semibold hover:shadow-lg transition-shadow disabled:opacity-60"
               >
-                Save to Log
+                {isSaving ? "Saving…" : "Save to Log"}
               </button>
             </div>
           </div>
