@@ -14,6 +14,8 @@ import { useUser } from "../contexts/UserContext";
 import { useLanguage } from "../contexts/LanguageContext";
 import { useMascot } from "../hooks/useMascot";
 import Mascot from "../components/Mascot";
+import MascotNudge from "../components/MascotNudge";
+import { useSmartNudges } from "../hooks/useSmartNudges";
 import ModeToggle from "../components/ModeToggle";
 import LocationSelector from "../components/LocationSelector";
 import ProfilePictureUpload from "../components/ProfilePictureUpload";
@@ -474,6 +476,16 @@ export default function Home() {
 
   // Add a glass (250ml) — creates a real hydration log, so it appears on the
   // Hydration tracker too.
+  
+  // Smart contextual in-app reminder nudges powered by Avo Mascot
+  const { nudge: smartNudge, closeNudge: closeSmartNudge } = useSmartNudges({
+    waterGlasses,
+    mealsLoggedCount: todayLogs.length,
+    streak: trackingStreak,
+    onDrinkWater: handleWaterIncrease,
+    onLogMeal: () => navigate("/plan-meal"),
+  });
+
   const handleWaterIncrease = async () => {
     if (waterBusy || waterGlasses >= 12) return;
     setWaterBusy(true);
@@ -1253,6 +1265,9 @@ export default function Home() {
 
       {/* Quick Actions FAB */}
       <QuickActionsFAB />
+
+        {/* Smart Contextual In-App Animated Reminder */}
+        <MascotNudge {...smartNudge} onClose={closeSmartNudge} />
 
       {/* Global Search */}
       <GlobalSearch isOpen={showGlobalSearch} onClose={() => setShowGlobalSearch(false)} />
