@@ -40,6 +40,8 @@ import { useLanguage } from "../contexts/LanguageContext";
 import { useUser } from "../contexts/UserContext";
 import { useLocation } from "../contexts/LocationContext";
 import { updateUserProfile } from "../../lib/api";
+import { uploadUserAvatar } from "../../lib/avatarStorage";
+import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { availableRegions } from "../contexts/LocationContext";
 import { AuthDebug } from "../components/AuthDebug";
@@ -193,46 +195,35 @@ export default function Profile() {
     }
   };
 
-  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const [uploadingAvatar, setUploadingAvatar] = useState(false);
+
+  const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
 
-    // Check file type
     if (!file.type.startsWith("image/")) {
       setUploadError(t('profile.selectImage'));
       return;
     }
 
-    // Check file size (limit to 5MB)
-    const maxSize = 5 * 1024 * 1024; // 5MB in bytes
+    const maxSize = 10 * 1024 * 1024; // 10MB
     if (file.size > maxSize) {
       setUploadError(t('profile.imageTooLarge'));
       return;
     }
 
-    // Clear any previous errors
     setUploadError("");
-
-    // Read and display the image
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      const base64Image = reader.result as string;
-      // Update profile picture in context and backend
-      updateProfile({ profilePicture: base64Image });
-      updateUserProfile({
-        name: profile!.name,
-        age: profile!.age,
-        bmi: profile!.bmi,
-        medicalCondition: profile!.medicalCondition,
-        location: profile!.location,
-        profilePicture: base64Image,
-      }).then(() => {
-        toast.success(t('profile.pictureUpdated'));
-      }).catch(() => {
-        toast.error(t('profile.pictureFailed'));
-      });
-    };
-    reader.readAsDataURL(file);
+    setUploadingAvatar(true);
+    try {
+      const publicUrl = await uploadUserAvatar(file);
+      updateProfile({ profilePicture: publicUrl });
+      toast.success(t('profile.pictureUpdated'));
+    } catch (err) {
+      console.error("Avatar upload failed:", err);
+      toast.error(t('profile.pictureFailed'));
+    } finally {
+      setUploadingAvatar(false);
+    }
   };
 
   const triggerFileInput = () => {
@@ -351,7 +342,7 @@ export default function Profile() {
               className="absolute bottom-0 right-0 bg-white rounded-full p-2 shadow-lg hover:bg-gray-100 transition-colors"
               aria-label="Upload profile picture"
             >
-              <Camera className="h-4 w-4 text-[#1f7a8c]" />
+              {uploadingAvatar ? <Loader2 className="h-4 w-4 text-[#1f7a8c] animate-spin" /> : <Camera className="h-4 w-4 text-[#1f7a8c]" />}
             </button>
             <input
               id="profile-image-input"
