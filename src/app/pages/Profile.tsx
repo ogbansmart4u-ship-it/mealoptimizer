@@ -1,4 +1,5 @@
-import { useState, useEffect } from "react";
+import {
+  HeartPulse, useState, useEffect } from "react";
 import { useNavigate } from "react-router";
 import {
   User,
@@ -548,6 +549,25 @@ export default function Profile() {
               </div>
             </div>
           </div>
+        </div>
+
+        {/* Clinical Doctor's Report Export Card */}
+        <div className="bg-gradient-to-r from-[#1f7a8c] to-[#2e98a8] text-white rounded-3xl p-5 mb-6 shadow-lg flex items-center justify-between gap-4">
+          <div className="flex items-center gap-3.5 min-w-0">
+            <div className="p-3 bg-white/20 rounded-2xl flex-shrink-0">
+              <HeartPulse className="h-6 w-6 text-white" />
+            </div>
+            <div className="min-w-0">
+              <h4 className="font-bold text-sm leading-tight">Doctor's Clinical Report</h4>
+              <p className="text-xs text-teal-100 mt-0.5 truncate">30-day glucose, vitals & West African nutrition record</p>
+            </div>
+          </div>
+          <button
+            onClick={() => navigate("/health-report")}
+            className="px-4 py-2.5 bg-white text-[#1f7a8c] hover:bg-teal-50 rounded-xl text-xs font-bold shadow-sm whitespace-nowrap transition-all cursor-pointer flex-shrink-0"
+          >
+            Generate PDF
+          </button>
         </div>
 
         {/* Account Settings */}
