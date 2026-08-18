@@ -9,6 +9,7 @@ import { toast } from "sonner";
 import PageHeader from "../components/PageHeader";
 import Breadcrumbs from "../components/Breadcrumbs";
 import MascotLoader from "../components/MascotLoader";
+import HealthImpactCard from "../components/HealthImpactCard";
 import {
   Calendar,
   Clock,
@@ -304,6 +305,13 @@ TIMING: ${mealPlan.plan_json.circadianAnchor}
             <p className="text-sm text-gray-600">{t("mealview.goalLabel")} {mealPlan.currentGoal === "General Health & Nutrition" ? t("planmeal.defaultGoal") : mealPlan.currentGoal}</p>
           </div>
         </div>
+
+        {/* Personalized Health & Glycemic Impact Card */}
+        <HealthImpactCard
+          macros={mealPlan.plan_json}
+          clinicalIndication={mealPlan.plan_json.clinicalIndication}
+          postPrandialNote={mealPlan.plan_json.postPrandialNote}
+        />
 
         {/* Nutrition Facts */}
         <div className="bg-white rounded-3xl shadow-lg p-6">
