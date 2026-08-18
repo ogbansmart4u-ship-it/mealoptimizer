@@ -318,9 +318,11 @@ export default function Profile() {
     );
   }
 
-  // Calculate weight and height from BMI (for display only)
-  const estimatedWeight = Math.round(profile.bmi * 1.65 * 1.65); // Assuming 165cm height
+  // Calculate weight and height from BMI with complete null-safety
+  const bmiVal = profile?.bmi ? Number(profile.bmi) : null;
+  const estimatedWeight = bmiVal && !isNaN(bmiVal) ? Math.round(bmiVal * 1.65 * 1.65) : null;
   const estimatedHeight = 165;
+  const displayName = profile?.name || "User";
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#B8E5E5] to-[#E8F5F5] pb-24">
@@ -334,10 +336,11 @@ export default function Profile() {
             <Avatar className="h-24 w-24 border-4 border-white shadow-lg">
               <AvatarImage src={profile.profilePicture} alt={profile.name} />
               <AvatarFallback className="bg-[#4ecdc4] text-white text-2xl">
-                {profile.name
+                {displayName
                   .split(" ")
+                  .filter(Boolean)
                   .map((n) => n[0])
-                  .join("")}
+                  .join("") || "U"}
               </AvatarFallback>
             </Avatar>
             <button
@@ -356,7 +359,7 @@ export default function Profile() {
               aria-label="Profile picture upload"
             />
           </div>
-          <h2 className="text-xl text-white">{profile.name}</h2>
+          <h2 className="text-xl text-white">{displayName}</h2>
           <p className="text-[#B8E5E5] text-sm">{profile.email}</p>
           {uploadError && (
             <div className="mt-2 bg-red-100 border border-red-400 text-red-700 px-4 py-2 rounded-lg text-sm">
@@ -494,7 +497,7 @@ export default function Profile() {
                 </div>
                 <div className="flex-1">
                   <p className="text-xs text-gray-600">{t('health.link.age')}</p>
-                  <p className="text-sm text-gray-800">{profile.age} {t('profile.years')}</p>
+                  <p className="text-sm text-gray-800">{profile?.age ? `${profile.age} ${t("profile.years")}` : "-"}</p>
                 </div>
               </div>
 
@@ -504,7 +507,7 @@ export default function Profile() {
                 </div>
                 <div className="flex-1">
                   <p className="text-xs text-gray-600">{t('profile.weight')}</p>
-                  <p className="text-sm text-gray-800">~{estimatedWeight} kg</p>
+                  <p className="text-sm text-gray-800">{estimatedWeight ? `~${estimatedWeight} kg` : "-"}</p>
                 </div>
               </div>
             </div>
@@ -526,7 +529,7 @@ export default function Profile() {
                 </div>
                 <div className="flex-1">
                   <p className="text-xs text-gray-600">{t('profile.bmi')}</p>
-                  <p className="text-sm text-gray-800">{profile.bmi.toFixed(1)}</p>
+                  <p className="text-sm text-gray-800">{bmiVal && !isNaN(bmiVal) ? bmiVal.toFixed(1) : "-"}</p>
                 </div>
               </div>
             </div>
