@@ -8,6 +8,7 @@ import CameraCapture from "./CameraCapture";
 import { createMealLog, getCollection } from "../../lib/api";
 import { computeVerdict } from "../../lib/conditionVerdict";
 import { toast } from "sonner";
+import { celebrate } from "./celebrate";
 import { projectId } from '/utils/supabase/info';
 import { getAccessToken } from '../../lib/supabase';
 
@@ -549,7 +550,7 @@ export default function LocalFoodScanner({ isOpen, onClose }: LocalFoodScannerPr
 
     try {
       await createMealLog(logData);
-      toast.success("Saved to meal log!", { description: foodData.dishName });
+      celebrate(`${foodData.dishName} logged! 🍲🎉`, "Macros & nutrition updated.", { confettiStyle: "burst", hapticPattern: "success" });
       onClose();
     } catch (err: any) {
       // Fallback: persist locally so the log still updates offline
@@ -557,7 +558,7 @@ export default function LocalFoodScanner({ isOpen, onClose }: LocalFoodScannerPr
         const existing = JSON.parse(localStorage.getItem("mealLogs") || "[]");
         existing.push({ id: `local-${now.getTime()}`, ...logData });
         localStorage.setItem("mealLogs", JSON.stringify(existing));
-        toast.success("Saved to meal log!", { description: foodData.dishName });
+        celebrate(`${foodData.dishName} logged! 🍲🎉`, "Saved offline. Macros updated.", { confettiStyle: "burst", hapticPattern: "success" });
         onClose();
       } catch {
         toast.error("Could not save", { description: err?.message || "Please try again" });

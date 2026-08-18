@@ -488,6 +488,18 @@ export default function Home() {
         logged_at: new Date().toISOString(),
       });
       if (item?.id) setHomeWaterIds((ids) => [...ids, String(item.id)]);
+      const nextGlasses = waterGlasses + 1;
+      if (nextGlasses >= waterGoal) {
+        celebrate("Hydration Goal Achieved! 💧🎉", "10 of 10 glasses completed today!", {
+          confettiStyle: "cannons",
+          hapticPattern: "milestone",
+        });
+      } else {
+        celebrate("Water Logged! 💧 (+250ml)", `${nextGlasses}/${waterGoal} glasses today`, {
+          confetti: false,
+          hapticPattern: "light",
+        });
+      }
     } catch {
       setWaterMl((ml) => Math.max(0, ml - GLASS_ML)); // roll back
     } finally {
