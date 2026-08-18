@@ -980,26 +980,32 @@ export default function Home() {
         <div className="mb-6">
           <h3 className="text-lg mb-3 text-gray-800">{t('home.analyserPlanner')}</h3>
           <div className="grid grid-cols-2 gap-4">
-            {/* Nigerian Food Guide Card */}
+            {/* Snap & Know Card — unified intelligent analyzer (hero, full width) */}
             <motion.button
-              onClick={() => setShowLocalFoodOptions(true)}
+              onClick={() => setShowLocalFoodScanner(true)}
               initial={reduce ? false : { opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.35, delay: 0.05, ease: "easeOut" }}
-              whileTap={{ scale: 0.96 }}
-              whileHover={reduce ? undefined : { scale: 1.03, y: -4 }}
-              className="bg-gradient-to-br from-teal-50 to-cyan-50 rounded-2xl p-6 shadow-md hover:shadow-xl transition-shadow duration-300 flex flex-col items-center justify-center border-2 border-teal-400 group cursor-pointer">
-              <div className="bg-gradient-to-br from-teal-500 to-cyan-500 rounded-xl p-3 mb-3 group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300">
-                <Sparkles className="h-8 w-8 text-white" />
+              whileTap={{ scale: 0.97 }}
+              whileHover={reduce ? undefined : { scale: 1.02, y: -4 }}
+              className="col-span-2 relative overflow-hidden bg-gradient-to-br from-teal-500 to-cyan-600 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-shadow duration-300 flex items-center gap-4 border-2 border-teal-400 group cursor-pointer text-left">
+              <div className="bg-white/20 backdrop-blur-sm rounded-2xl p-4 group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300 shrink-0">
+                <Camera className="h-9 w-9 text-white" />
               </div>
-              <span className="text-sm text-teal-700 text-center uppercase tracking-wide font-semibold">
-                {t('home.foodGuide')}
-              </span>
+              <div className="flex-1 min-w-0">
+                <span className="block text-lg text-white font-bold tracking-wide">
+                  {t('home.snapKnow')}
+                </span>
+                <span className="block text-sm text-teal-50/90 mt-0.5 leading-snug">
+                  {t('home.snapKnowSub')}
+                </span>
+              </div>
+              <ChevronRight className="h-6 w-6 text-white/80 shrink-0 group-hover:translate-x-1 transition-transform duration-300" />
             </motion.button>
 
-            {/* Analyse Food Card */}
+            {/* Scan Barcode Card */}
             <motion.button
-              onClick={() => setShowAnalyseFoodOptions(true)}
+              onClick={() => navigate("/scan-barcode")}
               initial={reduce ? false : { opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.35, delay: 0.12, ease: "easeOut" }}
@@ -1007,10 +1013,27 @@ export default function Home() {
               whileHover={reduce ? undefined : { scale: 1.03, y: -4 }}
               className="bg-white rounded-2xl p-6 shadow-md hover:shadow-xl transition-shadow duration-300 flex flex-col items-center justify-center border-2 border-[#1f7a8c] group cursor-pointer">
               <div className="bg-[#4ecdc4] rounded-xl p-3 mb-3 group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300">
-                <Camera className="h-8 w-8 text-white" />
+                <ScanBarcode className="h-8 w-8 text-white" />
               </div>
               <span className="text-sm text-[#1f7a8c] text-center uppercase tracking-wide font-semibold">
-                {t('home.analyseFood')}
+                {t('home.scanBarcode')}
+              </span>
+            </motion.button>
+
+            {/* Grocery List Card */}
+            <motion.button
+              onClick={() => navigate("/grocery-list")}
+              initial={reduce ? false : { opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.35, delay: 0.16, ease: "easeOut" }}
+              whileTap={{ scale: 0.96 }}
+              whileHover={reduce ? undefined : { scale: 1.03, y: -4 }}
+              className="bg-white rounded-2xl p-6 shadow-md hover:shadow-xl transition-shadow duration-300 flex flex-col items-center justify-center border-2 border-teal-400 group cursor-pointer">
+              <div className="bg-gradient-to-br from-teal-500 to-cyan-500 rounded-xl p-3 mb-3 group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300">
+                <span className="text-2xl">🛒</span>
+              </div>
+              <span className="text-sm text-teal-700 text-center uppercase tracking-wide font-semibold">
+                {t('grocery.title')}
               </span>
             </motion.button>
 
