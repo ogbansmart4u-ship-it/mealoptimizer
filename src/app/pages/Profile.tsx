@@ -45,6 +45,8 @@ import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { availableRegions } from "../contexts/LocationContext";
 import { AuthDebug } from "../components/AuthDebug";
+import WhatsAppConnectDialog from "../components/WhatsAppConnectDialog";
+import { MessageSquare } from "lucide-react";
 
 export default function Profile() {
   const navigate = useNavigate();
@@ -61,6 +63,7 @@ export default function Profile() {
   const [editingPersonalInfo, setEditingPersonalInfo] = useState(false);
   const [editingEmailPrefs, setEditingEmailPrefs] = useState(false);
   const [editingPassword, setEditingPassword] = useState(false);
+  const [showWhatsAppDialog, setShowWhatsAppDialog] = useState(false);
 
   // Form data for editing
   const [formData, setFormData] = useState({
@@ -566,6 +569,28 @@ export default function Profile() {
           <h3 className="text-lg text-gray-800 mb-4">{t('profile.accountSettings')}</h3>
 
           <div className="space-y-3">
+            {/* WhatsApp AI Food Logger Link */}
+            <button
+              onClick={() => setShowWhatsAppDialog(true)}
+              className="w-full flex items-center justify-between p-3 hover:bg-emerald-50/60 rounded-2xl transition-colors text-left border border-emerald-100/80 dark:border-zinc-800 bg-emerald-50/30 dark:bg-emerald-950/10 mb-2 cursor-pointer"
+            >
+              <div className="flex items-center gap-3">
+                <div className="p-2 bg-emerald-100 dark:bg-emerald-900/60 text-emerald-700 dark:text-emerald-300 rounded-xl">
+                  <MessageSquare className="h-5 w-5" />
+                </div>
+                <div>
+                  <span className="text-sm font-bold text-gray-800 dark:text-gray-200 flex items-center gap-1.5">
+                    WhatsApp AI Food Logger
+                    <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 dark:bg-emerald-900 dark:text-emerald-200">
+                      NEW
+                    </span>
+                  </span>
+                  <p className="text-[11px] text-gray-500 dark:text-gray-400">Log meals instantly via WhatsApp photos & voice</p>
+                </div>
+              </div>
+              <ChevronRight className="h-5 w-5 text-gray-400" />
+            </button>
+
             {/* Personalization Link */}
             <button
               onClick={() => navigate('/personalization')}
@@ -921,6 +946,8 @@ export default function Profile() {
           MealOptimiza v1.0.0
         </p>
       </div>
+
+      <WhatsAppConnectDialog isOpen={showWhatsAppDialog} onClose={() => setShowWhatsAppDialog(false)} />
 
       <BottomNav />
       <AuthDebug />
