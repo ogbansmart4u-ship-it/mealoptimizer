@@ -1,6 +1,6 @@
-import { useState, useEffect, useCallback } from 'react';
-import { MascotGesture } from '../types/mascot';
-import { MascotNudgeAction } from '../components/MascotNudge';
+import { useState, useEffect, useCallback } from "react";
+import { MascotGesture } from "../types/mascot";
+import { MascotNudgeAction } from "../components/MascotNudge";
 
 export interface SmartNudgeState {
   isOpen: boolean;
@@ -8,7 +8,7 @@ export interface SmartNudgeState {
   message: string;
   gesture: MascotGesture;
   badge?: string;
-  badgeColor?: 'teal' | 'amber' | 'emerald' | 'rose' | 'indigo';
+  badgeColor?: "teal" | "amber" | "emerald" | "rose" | "indigo";
   primaryAction?: MascotNudgeAction;
   secondaryAction?: MascotNudgeAction;
 }
@@ -21,7 +21,7 @@ export interface UseSmartNudgesProps {
   onLogMeal?: () => void;
 }
 
-const NUDGE_STORAGE_KEY = 'mo_last_smart_nudge_time';
+const NUDGE_STORAGE_KEY = "mo_last_smart_nudge_time";
 const NUDGE_COOLDOWN_MS = 45 * 60 * 1000; // 45 minutes between automatic proactive nudges
 
 export function useSmartNudges({
@@ -33,16 +33,16 @@ export function useSmartNudges({
 }: UseSmartNudgesProps = {}) {
   const [nudge, setNudge] = useState<SmartNudgeState>({
     isOpen: false,
-    title: '',
-    message: '',
-    gesture: 'waving',
+    title: "",
+    message: "",
+    gesture: "waving",
   });
 
   const closeNudge = useCallback(() => {
     setNudge((prev) => ({ ...prev, isOpen: false }));
   }, []);
 
-  const showNudge = useCallback((data: Omit<SmartNudgeState, 'isOpen'>) => {
+  const showNudge = useCallback((data: Omit<SmartNudgeState, "isOpen">) => {
     setNudge({
       ...data,
       isOpen: true,
@@ -75,30 +75,30 @@ export function useSmartNudges({
       // Rule 1: Hydration Check (Afternoon / Evening)
       if (hour >= 13 && hour <= 20 && waterGlasses < 4 && onDrinkWater) {
         showNudge({
-          title: 'Stay Hydrated! 💧',
-          message: `You've logged ${waterGlasses} of 10 glasses today. Drinking water now helps regulate digestion and keep blood pressure steady.`,
-          gesture: 'waving',
-          badge: 'Hydration Goal',
-          badgeColor: 'teal',
+          title: "Stay Hydrated! \ud83d\udca7",
+          message: `You have logged ${waterGlasses} of 10 glasses today. Drinking water now helps regulate digestion and keep blood pressure steady.`,
+          gesture: "waving",
+          badge: "Hydration Goal",
+          badgeColor: "teal",
           primaryAction: {
-            label: 'Drink 1 Glass (+250ml)',
+            label: "Drink 1 Glass (+250ml)",
             onClick: async () => {
               await onDrinkWater();
               showNudge({
-                title: 'Great Job! 👏',
-                message: '1 glass added! Hydration level updated.',
-                gesture: 'thumbsup',
-                badge: 'Logged',
-                badgeColor: 'emerald',
+                title: "Great Job! \ud83d\udc4f",
+                message: "1 glass added! Hydration level updated.",
+                gesture: "thumbsup",
+                badge: "Logged",
+                badgeColor: "emerald",
                 secondaryAction: {
-                  label: 'Done',
+                  label: "Done",
                   onClick: closeNudge,
                 },
               });
             },
           },
           secondaryAction: {
-            label: 'Later',
+            label: "Later",
             onClick: closeNudge,
           },
         });
@@ -108,20 +108,20 @@ export function useSmartNudges({
       // Rule 2: Morning Breakfast Check (7:30 AM - 11:00 AM)
       if (hour >= 7 && hour < 11 && mealsLoggedCount === 0 && onLogMeal) {
         showNudge({
-          title: 'Good Morning! ☀️',
-          message: 'Fuel your day with a balanced West African breakfast to keep your glucose steady and energy high.',
-          gesture: 'waving',
-          badge: 'Morning Nutrition',
-          badgeColor: 'amber',
+          title: "Good Morning! \u2600\ufe0f",
+          message: "Fuel your day with a balanced West African breakfast to keep your glucose steady and energy high.",
+          gesture: "waving",
+          badge: "Morning Nutrition",
+          badgeColor: "amber",
           primaryAction: {
-            label: 'Log Breakfast',
+            label: "Log Breakfast",
             onClick: () => {
               closeNudge();
               onLogMeal();
             },
           },
           secondaryAction: {
-            label: 'Dismiss',
+            label: "Dismiss",
             onClick: closeNudge,
           },
         });
@@ -131,20 +131,20 @@ export function useSmartNudges({
       // Rule 3: Lunch Check (12:30 PM - 3:30 PM)
       if (hour >= 12 && hour < 16 && mealsLoggedCount <= 1 && onLogMeal) {
         showNudge({
-          title: 'Time for Lunch! 🍲',
-          message: 'Remember to balance your carbs with leafy greens and protein to prevent afternoon glucose spikes.',
-          gesture: 'thumbsup',
-          badge: 'Midday Fuel',
-          badgeColor: 'emerald',
+          title: "Time for Lunch! \ud83c\udf72",
+          message: "Remember to balance your carbs with leafy greens and protein to prevent afternoon glucose spikes.",
+          gesture: "thumbsup",
+          badge: "Midday Fuel",
+          badgeColor: "emerald",
           primaryAction: {
-            label: 'Log / Plan Lunch',
+            label: "Log / Plan Lunch",
             onClick: () => {
               closeNudge();
               onLogMeal();
             },
           },
           secondaryAction: {
-            label: 'Later',
+            label: "Later",
             onClick: closeNudge,
           },
         });
@@ -154,19 +154,19 @@ export function useSmartNudges({
       // Rule 4: Streak Motivation
       if (streak >= 3 && mealsLoggedCount === 0) {
         showNudge({
-          title: `🔥 ${streak}-Day Streak Active!`,
-          message: 'You are building strong, lasting health habits. Log your meals today to keep your streak alive!',
-          gesture: 'dancing',
-          badge: 'Habit Champion',
-          badgeColor: 'indigo',
+          title: `\ud83d\udd25 ${streak}-Day Streak Active!`,
+          message: "You are building strong, lasting health habits. Log your meals today to keep your streak alive!",
+          gesture: "dancing",
+          badge: "Habit Champion",
+          badgeColor: "indigo",
           secondaryAction: {
-            label: 'Keep Going!',
+            label: "Keep Going!",
             onClick: closeNudge,
           },
         });
         return;
       }
-    }, 2000); // 2 second initial delay on page load
+    }, 2000);
 
     return () => clearTimeout(timer);
   }, [waterGlasses, mealsLoggedCount, streak, onDrinkWater, onLogMeal, showNudge, closeNudge]);
