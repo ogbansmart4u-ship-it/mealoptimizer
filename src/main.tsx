@@ -44,16 +44,26 @@ if (typeof navigator !== "undefined" && typeof navigator.vibrate === "function")
   }
 }
 
-// Service worker intentionally NOT registered. The app is online-first (all data
-// comes from Supabase), and PWA caching caused stale "won't load / won't update"
-// states. To be safe we also proactively remove any worker + caches left by a
-// previous version, so every device converges to always loading the latest build.
-if ("serviceWorker" in navigator) {
-  navigator.serviceWorker
-    .getRegistrations()
-    .then((regs) => regs.forEach((r) => r.unregister()))
-    .catch(() => {});
-  if (typeof caches !== "undefined" && caches.keys) {
-    caches.keys().then((keys) => keys.forEach((k) => caches.delete(k))).catch(() => {});
-  }
+// Register Service Worker for PWA offline support
+if (typeof window !== "undefined" && "serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker
+      .register("/sw.js")
+      .then((reg) => {
+        // Automatically check for SW updates
+        reg.onupdatefound = () => {
+          const installingWorker = reg.installing;
+          if (installingWorker) {
+            installingWorker.onstatechange = () => {
+              if (installingWorker.state === "installed" && navigator.serviceWorker.controller) {
+                console.log("[PWA] New version available, will activate on next reload.");
+              }
+            };
+          }
+        };
+      })
+      .catch((err) => {
+        console.warn("[PWA] Service Worker registration failed:", err);
+      });
+  });
 }

@@ -19,6 +19,8 @@ import { AchievementNotification } from "./components/AchievementNotification";
 import AppErrorBoundary from "./components/AppErrorBoundary";
 import GoalSetup from "./components/GoalSetup";
 import { initNotificationEngine } from "../lib/notifications";
+import OfflineSyncBanner from "./components/OfflineSyncBanner";
+import PWAInstallBanner from "./components/PWAInstallBanner";
 
 function AchievementListener() {
   const { pendingNotification, dismissNotification } = useAchievements();
@@ -64,6 +66,8 @@ export default function App() {
                       <LocationProfileSync />
                       <AchievementListener />
                       <NotificationEngineListener />
+                      <OfflineSyncBanner />
+                      <PWAInstallBanner />
                       <RouterProvider router={router} />
                       <GoalSetup />
                       <Toaster />
