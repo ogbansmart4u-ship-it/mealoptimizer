@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { RouterProvider } from "react-router";
 import { router } from "./routes";
 import { AppModeProvider } from "./contexts/AppModeContext";
@@ -17,6 +18,7 @@ import { EnvironmentCheck } from "./components/EnvironmentCheck";
 import { AchievementNotification } from "./components/AchievementNotification";
 import AppErrorBoundary from "./components/AppErrorBoundary";
 import GoalSetup from "./components/GoalSetup";
+import { initNotificationEngine } from "../lib/notifications";
 
 function AchievementListener() {
   const { pendingNotification, dismissNotification } = useAchievements();
@@ -29,6 +31,15 @@ function AchievementListener() {
       onDismiss={dismissNotification}
     />
   );
+}
+
+function NotificationEngineListener() {
+  useEffect(() => {
+    const cleanup = initNotificationEngine();
+    return cleanup;
+  }, []);
+
+  return null;
 }
 
 // Clear any stale mock meal plans from localStorage on every app load
@@ -50,11 +61,9 @@ export default function App() {
                 <AppModeProvider>
                   <LocationProvider>
                     <UserProvider>
-                      {/* Temporarily disabled while working with mock data */}
-                      {/* <EnvironmentCheck /> */}
-                      {/* <AuthErrorBanner /> */}
                       <LocationProfileSync />
                       <AchievementListener />
+                      <NotificationEngineListener />
                       <RouterProvider router={router} />
                       <GoalSetup />
                       <Toaster />
