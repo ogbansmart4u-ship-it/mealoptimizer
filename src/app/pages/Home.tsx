@@ -16,6 +16,7 @@ import { useMascot } from "../hooks/useMascot";
 import Mascot from "../components/Mascot";
 import MascotNudge from "../components/MascotNudge";
 import SpotlightTour from "../components/SpotlightTour";
+import HealthProfileWizardModal from "../components/HealthProfileWizardModal";
 import MetabolicChecklist from "../components/MetabolicChecklist";
 import VoiceFoodLogger from "../components/VoiceFoodLogger";
 import PostMealCheckIn from "../components/PostMealCheckIn";
@@ -108,13 +109,14 @@ export default function Home() {
   const [foodAnalysisResult, setFoodAnalysisResult] = useState<Record<string, any> | null>(null);
   const [showLocalFoodScanner, setShowLocalFoodScanner] = useState(false);
   const [showWhatsAppModal, setShowWhatsAppModal] = useState(false);
-  const [showSpotlightTour, setShowSpotlightTour] = useState(() => {
+  const [showHealthWizard, setShowHealthWizard] = useState(() => {
     try {
-      return localStorage.getItem("hasSeenSpotlightTour") !== "true";
+      return localStorage.getItem("hasCompletedHealthSetup") !== "true";
     } catch {
       return false;
     }
   });
+  const [showSpotlightTour, setShowSpotlightTour] = useState(false);
   const [showVoiceLogger, setShowVoiceLogger] = useState(false);
   const [showGroceryPlanner, setShowGroceryPlanner] = useState(false);
   const [showAnalyseFoodOptions, setShowAnalyseFoodOptions] = useState(false);
@@ -1330,6 +1332,14 @@ export default function Home() {
       <WhatsAppConnectDialog isOpen={showWhatsAppModal} onClose={() => setShowWhatsAppModal(false)} />
 
       <div id="tour-fab-actions"><QuickActionsFAB /></div>
+
+      <HealthProfileWizardModal
+        isOpen={showHealthWizard}
+        onComplete={() => {
+          setShowHealthWizard(false);
+          setShowSpotlightTour(true);
+        }}
+      />
 
       <SpotlightTour isOpen={showSpotlightTour} onClose={() => setShowSpotlightTour(false)} />
       <VoiceFoodLogger isOpen={showVoiceLogger} onClose={() => setShowVoiceLogger(false)} onMealSaved={() => { getMealLogs().then(logs => { if (Array.isArray(logs)) setWeekLogs(logs); }).catch(() => {}); }} />
