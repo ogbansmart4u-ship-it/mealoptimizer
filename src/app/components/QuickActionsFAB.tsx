@@ -1,17 +1,26 @@
 import { useState } from "react";
-import { Plus, Camera, FileText, Utensils, Activity, X, MessageSquare } from "lucide-react";
+import { Plus, Camera, FileText, Utensils, Activity, X, MessageSquare, Mic, ShoppingCart } from "lucide-react";
 import { useNavigate } from "react-router";
 import WhatsAppConnectDialog from "./WhatsAppConnectDialog";
+import VoiceFoodLogger from "./VoiceFoodLogger";
+import SmartGroceryPlanner from "./SmartGroceryPlanner";
 
 type QuickAction = {
   id: string;
   label: string;
-  icon: typeof Camera;
+  icon: any;
   color: string;
   route: string;
 };
 
 const QUICK_ACTIONS: QuickAction[] = [
+  {
+    id: "voice-log",
+    label: "Voice Log (Pidgin/English)",
+    icon: Mic,
+    color: "bg-rose-500",
+    route: "voice",
+  },
   {
     id: "whatsapp-log",
     label: "WhatsApp Log",
@@ -20,32 +29,25 @@ const QUICK_ACTIONS: QuickAction[] = [
     route: "whatsapp",
   },
   {
+    id: "market-checklist",
+    label: "Smart Market List",
+    icon: ShoppingCart,
+    color: "bg-amber-600",
+    route: "grocery",
+  },
+  {
     id: "log-meal",
-    label: "Log Meal",
+    label: "Snap Meal Photo",
     icon: Camera,
     color: "bg-blue-500",
     route: "/logs",
   },
   {
     id: "plan-meal",
-    label: "Plan Meal",
+    label: "Plan Balanced Meal",
     icon: Utensils,
-    color: "bg-green-500",
+    color: "bg-emerald-600",
     route: "/plan-meal",
-  },
-  {
-    id: "add-workout",
-    label: "Log Workout",
-    icon: Activity,
-    color: "bg-orange-500",
-    route: "/workout",
-  },
-  {
-    id: "add-log",
-    label: "Quick Log",
-    icon: FileText,
-    color: "bg-purple-500",
-    route: "/logs",
   },
 ];
 
@@ -53,10 +55,16 @@ export default function QuickActionsFAB() {
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const [showWhatsAppModal, setShowWhatsAppModal] = useState(false);
+  const [showVoiceModal, setShowVoiceModal] = useState(false);
+  const [showGroceryModal, setShowGroceryModal] = useState(false);
 
   const handleActionClick = (route: string) => {
     if (route === "whatsapp") {
       setShowWhatsAppModal(true);
+    } else if (route === "voice") {
+      setShowVoiceModal(true);
+    } else if (route === "grocery") {
+      setShowGroceryModal(true);
     } else {
       navigate(route);
     }
@@ -77,7 +85,7 @@ export default function QuickActionsFAB() {
                   onClick={() => handleActionClick(action.route)}
                   className={`${action.color} text-white rounded-full px-4 py-3 shadow-lg hover:shadow-xl transition-all flex items-center gap-3 group animate-in fade-in slide-in-from-bottom-2 cursor-pointer`}
                   style={{
-                    animationDelay: `${index * 40}ms`,
+                    animationDelay: `${index * 35}ms`,
                   }}
                 >
                   <Icon className="h-5 w-5" />
@@ -117,6 +125,16 @@ export default function QuickActionsFAB() {
       <WhatsAppConnectDialog
         isOpen={showWhatsAppModal}
         onClose={() => setShowWhatsAppModal(false)}
+      />
+
+      <VoiceFoodLogger
+        isOpen={showVoiceModal}
+        onClose={() => setShowVoiceModal(false)}
+      />
+
+      <SmartGroceryPlanner
+        isOpen={showGroceryModal}
+        onClose={() => setShowGroceryModal(false)}
       />
     </>
   );

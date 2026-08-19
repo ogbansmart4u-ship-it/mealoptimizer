@@ -15,6 +15,13 @@ import { useLanguage } from "../contexts/LanguageContext";
 import { useMascot } from "../hooks/useMascot";
 import Mascot from "../components/Mascot";
 import MascotNudge from "../components/MascotNudge";
+import SpotlightTour from "../components/SpotlightTour";
+import MetabolicChecklist from "../components/MetabolicChecklist";
+import VoiceFoodLogger from "../components/VoiceFoodLogger";
+import PostMealCheckIn from "../components/PostMealCheckIn";
+import SmartGroceryPlanner from "../components/SmartGroceryPlanner";
+import CircadianArc from "../components/CircadianArc";
+import { Mic, ShoppingCart, Compass } from "lucide-react";
 import WhatsAppConnectDialog from "../components/WhatsAppConnectDialog";
 import QuickLogShelf, { QuickFoodItem } from "../components/QuickLogShelf";
 import { useSmartNudges } from "../hooks/useSmartNudges";
@@ -101,6 +108,15 @@ export default function Home() {
   const [foodAnalysisResult, setFoodAnalysisResult] = useState<Record<string, any> | null>(null);
   const [showLocalFoodScanner, setShowLocalFoodScanner] = useState(false);
   const [showWhatsAppModal, setShowWhatsAppModal] = useState(false);
+  const [showSpotlightTour, setShowSpotlightTour] = useState(() => {
+    try {
+      return localStorage.getItem("hasSeenSpotlightTour") !== "true";
+    } catch {
+      return false;
+    }
+  });
+  const [showVoiceLogger, setShowVoiceLogger] = useState(false);
+  const [showGroceryPlanner, setShowGroceryPlanner] = useState(false);
   const [showAnalyseFoodOptions, setShowAnalyseFoodOptions] = useState(false);
   const [showLocalFoodOptions, setShowLocalFoodOptions] = useState(false);
   const [showGlobalSearch, setShowGlobalSearch] = useState(false);
@@ -930,14 +946,22 @@ export default function Home() {
           )}
           
           {/* 1-Tap Quick-Log Shelf */}
-          <QuickLogShelf
+          <div id="tour-quick-shelf"><QuickLogShelf
             onLogItem={handleQuickLogItem}
             onOpenWhatsApp={() => setShowWhatsAppModal(true)}
             onOpenScanner={() => setShowLocalFoodScanner(true)}
             onOpenCustom={() => navigate("/logs", { state: { openAdd: true } })}
             isLogging={quickLogging}
-          />
+          /></div>
           
+          {/* 2-Hour Post-Meal Check-In */}
+          {todaysMeals.length > 0 && (
+            <PostMealCheckIn lastMeal={todaysMeals[todaysMeals.length - 1]} />
+          )}
+
+          {/* Circadian Metabolic Arc */}
+          <CircadianArc lastMealTime={todaysMeals[todaysMeals.length - 1]?.time || "20:00"} />
+
           {/* Time-Based Circadian Insight */}
           <div className="mt-4 pt-4 border-t border-gray-200">
             <div className="flex items-center gap-2 mb-2">
@@ -972,6 +996,13 @@ export default function Home() {
       
       {/* Main Content */}
       <div className="px-6">
+        {/* Daily Metabolic Habit Scorecard */}
+        <MetabolicChecklist
+          waterCount={waterCount}
+          mealsLoggedCount={todaysMeals.length}
+          vitalsLoggedCount={0}
+        />
+
         {/* Daily logging streak */}
         <div className="mb-5">
           <StreakCard />
@@ -1298,7 +1329,11 @@ export default function Home() {
       {/* Quick Actions FAB */}
       <WhatsAppConnectDialog isOpen={showWhatsAppModal} onClose={() => setShowWhatsAppModal(false)} />
 
-      <QuickActionsFAB />
+      <div id="tour-fab-actions"><QuickActionsFAB /></div>
+
+      <SpotlightTour isOpen={showSpotlightTour} onClose={() => setShowSpotlightTour(false)} />
+      <VoiceFoodLogger isOpen={showVoiceLogger} onClose={() => setShowVoiceLogger(false)} onMealSaved={fetchTodaysMeals} />
+      <SmartGroceryPlanner isOpen={showGroceryPlanner} onClose={() => setShowGroceryPlanner(false)} />
 
         {/* Smart Contextual In-App Animated Reminder */}
         <MascotNudge {...smartNudge} onClose={closeSmartNudge} />
