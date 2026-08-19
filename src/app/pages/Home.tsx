@@ -998,7 +998,7 @@ export default function Home() {
       <div className="px-6">
         {/* Daily Metabolic Habit Scorecard */}
         <MetabolicChecklist
-          waterCount={waterCount}
+          waterCount={waterGlasses}
           mealsLoggedCount={todayLogs.length}
           vitalsLoggedCount={0}
         />
