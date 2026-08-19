@@ -15,6 +15,7 @@ import { useLanguage } from "../contexts/LanguageContext";
 import { useMascot } from "../hooks/useMascot";
 import Mascot from "../components/Mascot";
 import MascotNudge from "../components/MascotNudge";
+import WhatsAppConnectDialog from "../components/WhatsAppConnectDialog";
 import QuickLogShelf, { QuickFoodItem } from "../components/QuickLogShelf";
 import { useSmartNudges } from "../hooks/useSmartNudges";
 import ModeToggle from "../components/ModeToggle";
@@ -99,6 +100,7 @@ export default function Home() {
   const [isAnalysingFood, setIsAnalysingFood] = useState(false);
   const [foodAnalysisResult, setFoodAnalysisResult] = useState<Record<string, any> | null>(null);
   const [showLocalFoodScanner, setShowLocalFoodScanner] = useState(false);
+  const [showWhatsAppModal, setShowWhatsAppModal] = useState(false);
   const [showAnalyseFoodOptions, setShowAnalyseFoodOptions] = useState(false);
   const [showLocalFoodOptions, setShowLocalFoodOptions] = useState(false);
   const [showGlobalSearch, setShowGlobalSearch] = useState(false);
@@ -930,6 +932,7 @@ export default function Home() {
           {/* 1-Tap Quick-Log Shelf */}
           <QuickLogShelf
             onLogItem={handleQuickLogItem}
+            onOpenWhatsApp={() => setShowWhatsAppModal(true)}
             onOpenScanner={() => setShowLocalFoodScanner(true)}
             onOpenCustom={() => navigate("/logs", { state: { openAdd: true } })}
             isLogging={quickLogging}
@@ -1293,6 +1296,8 @@ export default function Home() {
       <BottomNav />
 
       {/* Quick Actions FAB */}
+      <WhatsAppConnectDialog isOpen={showWhatsAppModal} onClose={() => setShowWhatsAppModal(false)} />
+
       <QuickActionsFAB />
 
         {/* Smart Contextual In-App Animated Reminder */}

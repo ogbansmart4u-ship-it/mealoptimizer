@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { motion } from "motion/react";
-import { Zap, Plus, Camera, Sparkles, Check, Flame } from "lucide-react";
+import { Zap, Plus, Camera, Sparkles, Check, Flame, MessageSquare } from "lucide-react";
 import { triggerHaptic } from "../utils/celebration";
 
 export interface QuickFoodItem {
@@ -161,6 +161,7 @@ const QUICK_FOODS: QuickFoodItem[] = [
 interface QuickLogShelfProps {
   onLogItem: (item: QuickFoodItem) => Promise<void> | void;
   onOpenScanner?: () => void;
+  onOpenWhatsApp?: () => void;
   onOpenCustom?: () => void;
   isLogging?: boolean;
 }
@@ -175,6 +176,7 @@ const TAG_CLASSES = {
 export default function QuickLogShelf({
   onLogItem,
   onOpenScanner,
+  onOpenWhatsApp,
   onOpenCustom,
   isLogging = false,
 }: QuickLogShelfProps) {
@@ -226,6 +228,15 @@ export default function QuickLogShelf({
 
         {/* Quick action shortcuts */}
         <div className="flex items-center gap-1.5">
+          {onOpenWhatsApp && (
+            <button
+              onClick={onOpenWhatsApp}
+              title="Log via WhatsApp"
+              className="p-2 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-600 dark:bg-emerald-950/60 dark:hover:bg-emerald-900/60 dark:text-emerald-300 transition-colors flex items-center gap-1 cursor-pointer"
+            >
+              <MessageSquare size={15} />
+            </button>
+          )}
           {onOpenScanner && (
             <button
               onClick={onOpenScanner}
