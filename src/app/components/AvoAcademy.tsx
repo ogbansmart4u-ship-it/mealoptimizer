@@ -316,7 +316,7 @@ export default function AvoAcademy() {
 
             <DialogHeader className="text-left mb-3">
               <div className="flex items-center gap-2">
-                <Mascot gesture="pointing" size={36} />
+                <Mascot gesture="waving" size={36} />
                 <div>
                   <span className="text-[10px] uppercase font-bold text-[#1f7a8c] dark:text-teal-400 block">
                     {activeLesson.category} · 60-Second Bite

@@ -17,7 +17,9 @@ export type MascotGesture =
   | "thumbsup"
   | "clapping"
   | "dancing"
-  | "running";
+  | "running"
+  | "pointing"
+  | "neutral";
 
 export interface GestureConfig {
   /** CSS `animation` shorthand applied to the mascot image for this gesture. */
@@ -34,12 +36,14 @@ export interface GestureConfig {
 // (no layout shift) so it never disturbs surrounding content or fixed nav/FABs.
 export const GESTURES: Record<MascotGesture, GestureConfig> = {
   idle:       { css: "avoIdle 3.5s ease-in-out infinite",     hold: "persistent" },
+  neutral:    { css: "avoIdle 3.5s ease-in-out infinite",     hold: "persistent" },
   waving:     { css: "avoWave 0.9s ease-in-out infinite",     hold: 1400 },
   scratching: { css: "avoScratch 0.5s ease-in-out infinite",  hold: "persistent" },
   thumbsup:   { css: "avoPop 0.6s ease-out infinite",         hold: 1000 },
   clapping:   { css: "avoClap 0.5s ease-in-out infinite",     hold: 1600 },
   dancing:    { css: "avoDance 0.8s ease-in-out infinite",    hold: "persistent" },
   running:    { css: "avoRun 0.6s ease-in-out infinite",      hold: "persistent" },
+  pointing:   { css: "avoPop 0.6s ease-out infinite",         hold: 1200 },
 };
 
 // Keyframes for every gesture, plus a reduced-motion opt-out. Injected once.
