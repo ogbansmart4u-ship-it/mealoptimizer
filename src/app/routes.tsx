@@ -36,6 +36,7 @@ const ScanBarcode = lazy(() => import("./pages/ScanBarcode"));
 const BiometricDashboard = lazy(() => import("./pages/BiometricDashboard"));
 const GlucoseInsights = lazy(() => import("./pages/GlucoseInsights"));
 const HealthReport = lazy(() => import("./pages/HealthReport"));
+const UpgradePro = lazy(() => import("./pages/UpgradePro"));
 const MedicalVault = lazy(() => import("./pages/MedicalVault"));
 const HydrationTracker = lazy(() => import("./pages/HydrationTracker"));
 const SleepTracker = lazy(() => import("./pages/SleepTracker"));

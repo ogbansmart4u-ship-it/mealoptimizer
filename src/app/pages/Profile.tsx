@@ -43,6 +43,8 @@ import { useUser } from "../contexts/UserContext";
 import { useLocation } from "../contexts/LocationContext";
 import { updateUserProfile } from "../../lib/api";
 import { uploadUserAvatar } from "../../lib/avatarStorage";
+import { getSubscriptionStatus } from "../../lib/payment";
+import { Crown } from "lucide-react";
 import { toast } from "sonner";
 import { availableRegions } from "../contexts/LocationContext";
 import { AuthDebug } from "../components/AuthDebug";
@@ -546,6 +548,32 @@ export default function Profile() {
               </div>
             </div>
           </div>
+        </div>
+
+        {/* PRO Membership Status Card */}
+        <div
+          onClick={() => navigate("/upgrade")}
+          className="bg-gradient-to-r from-amber-500 via-amber-600 to-teal-600 text-white rounded-3xl p-5 mb-4 shadow-xl flex items-center justify-between gap-4 cursor-pointer hover:opacity-95 transition-all"
+        >
+          <div className="flex items-center gap-3.5 min-w-0">
+            <div className="p-3 bg-white/20 rounded-2xl flex-shrink-0">
+              <Crown className="h-6 w-6 text-white" />
+            </div>
+            <div className="min-w-0">
+              <div className="flex items-center gap-2">
+                <h4 className="font-extrabold text-sm leading-tight">MealOptimizer PRO</h4>
+                <span className="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-white text-slate-900 shadow-sm">
+                  {getSubscriptionStatus().isPro ? "ACTIVE MEMBER 👑" : "UPGRADE"}
+                </span>
+              </div>
+              <p className="text-xs text-amber-100 mt-0.5 truncate">
+                {getSubscriptionStatus().isPro
+                  ? "All clinical AI, WhatsApp bot & PDF tools active"
+                  : "Unlock unlimited AI vision, WhatsApp bot & Doctor reports"}
+              </p>
+            </div>
+          </div>
+          <ChevronRight className="h-5 w-5 text-white/80 flex-shrink-0" />
         </div>
 
         {/* Clinical Doctor's Report Export Card */}
