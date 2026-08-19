@@ -1,13 +1,13 @@
 import React, { useState, useRef, useEffect } from "react";
 import {
-  Camera, Sparkles, TrendingUp, MapPin, Globe, AlertCircle, ChevronDown, ChevronUp, X,
-  Activity, Clock, Flame, Calendar, Bell, ChevronRight, Heart,
-  Droplet, Minus, Plus, Upload, Zap, Target, BarChart3, ScanBarcode, Shield, Moon, Search, FlaskConical, BookOpen
+  Camera, Sparkles, TrendingUp, MapPin, Globe, AlertCircle, AlertTriangle, ChevronDown, ChevronUp, X,
+  Activity, Clock, Flame, Calendar, Bell, BellRing, ChevronRight, Heart,
+  Droplet, Droplets, Minus, Plus, Upload, Zap, Target, BarChart3, ScanBarcode, Shield, ShieldCheck, Moon, Search, FlaskConical, BookOpen, Stethoscope, Mic, ShoppingCart, Compass, FileText, CheckCircle2, Trophy, Pill, FileSpreadsheet
 } from "lucide-react";
 import BottomNav from "../components/BottomNav";
 import StreakCard from "../components/StreakCard";
 import { useNavigate } from "react-router";
-import { motion, useReducedMotion } from "motion/react";
+import { motion, AnimatePresence, useReducedMotion } from "motion/react";
 import { useAppMode } from "../contexts/AppModeContext";
 import { useLocation } from "../contexts/LocationContext";
 import { useUser } from "../contexts/UserContext";
@@ -20,13 +20,11 @@ import HealthProfileWizardModal from "../components/HealthProfileWizardModal";
 import AvoAcademy from "../components/AvoAcademy";
 import FoodWrappedModal from "../components/FoodWrappedModal";
 import NotificationSettingsDialog from "../components/NotificationSettingsDialog";
-import { Sparkles, BellRing, BookOpen, Stethoscope, Zap } from "lucide-react";
 import MetabolicChecklist from "../components/MetabolicChecklist";
 import VoiceFoodLogger from "../components/VoiceFoodLogger";
 import PostMealCheckIn from "../components/PostMealCheckIn";
 import SmartGroceryPlanner from "../components/SmartGroceryPlanner";
 import CircadianArc from "../components/CircadianArc";
-import { Mic, ShoppingCart, Compass } from "lucide-react";
 import WhatsAppConnectDialog from "../components/WhatsAppConnectDialog";
 import QuickLogShelf, { QuickFoodItem } from "../components/QuickLogShelf";
 import { useSmartNudges } from "../hooks/useSmartNudges";
@@ -100,6 +98,7 @@ export default function Home() {
     mascot.wave();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
   const currentDate = new Date().toLocaleDateString("en-US", { 
     weekday: "long", 
     year: "numeric", 
@@ -134,7 +133,7 @@ export default function Home() {
   const [animatedProgress, setAnimatedProgress] = useState(0);
   const [animatedPercentage, setAnimatedPercentage] = useState(0);
 
-  // New state for enhanced Daily Fuel Gauge
+  // State for enhanced Daily Fuel Gauge
   const [showGaugeDetails, setShowGaugeDetails] = useState(false);
   const [showQuickMealLog, setShowQuickMealLog] = useState(false);
   const [selectedQuickMeal, setSelectedQuickMeal] = useState<"breakfast" | "lunch" | "dinner" | null>(null);
@@ -142,7 +141,6 @@ export default function Home() {
   // Track current day of week for automatic calendar rotation (0 = Mon, 6 = Sun)
   const [currentDayIndex, setCurrentDayIndex] = useState(() => {
     const today = new Date().getDay();
-    // Convert to Mon=0, Tue=1, ..., Sun=6
     return today === 0 ? 6 : today - 1;
   });
 
@@ -154,17 +152,14 @@ export default function Home() {
       setCurrentDayIndex(dayIndex);
     };
 
-    // Calculate time until next midnight
     const now = new Date();
     const tomorrow = new Date(now);
     tomorrow.setDate(tomorrow.getDate() + 1);
     tomorrow.setHours(0, 0, 0, 0);
     const timeUntilMidnight = tomorrow.getTime() - now.getTime();
 
-    // Set timer to update at midnight
     const midnightTimer = setTimeout(() => {
       updateCurrentDay();
-      // After first midnight update, set daily interval
       const dailyInterval = setInterval(updateCurrentDay, 24 * 60 * 60 * 1000);
       return () => clearInterval(dailyInterval);
     }, timeUntilMidnight);
@@ -177,7 +172,7 @@ export default function Home() {
     initializeSampleData();
   }, []);
 
-  // Load this account's real meal logs (used by the weekly Food Calendar).
+  // Load this account's real meal logs
   const [weekLogs, setWeekLogs] = useState<any[]>([]);
   useEffect(() => {
     getMealLogs()
@@ -185,11 +180,10 @@ export default function Home() {
       .catch((e) => { console.error('Failed to load meal logs', e); setWeekLogs([]); });
   }, []);
 
-  // The 7 days of the current week (Mon–Sun), keyed in UTC to match how logs
-  // store their `date` (new Date().toISOString().split('T')[0]).
+  // 7 days of the current week (Mon-Sun)
   const todayKey = new Date().toISOString().split('T')[0];
   const weekBase = new Date(`${todayKey}T12:00:00Z`);
-  const weekMondayOffset = (weekBase.getUTCDay() + 6) % 7; // Mon=0 … Sun=6
+  const weekMondayOffset = (weekBase.getUTCDay() + 6) % 7; // Mon=0 ... Sun=6
   const weekDayLabels = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
   const weekDays = Array.from({ length: 7 }, (_, i) => {
     const d = new Date(weekBase);
@@ -208,10 +202,10 @@ export default function Home() {
   const weekRangeLabel = (() => {
     const first = weekDays[0], last = weekDays[6];
     const mk = (key: string) => new Date(`${key}T12:00:00Z`).toLocaleDateString('en-US', { month: 'short', day: 'numeric', timeZone: 'UTC' });
-    return `${mk(first.key)} – ${mk(last.key)}`;
+    return `${mk(first.key)} - ${mk(last.key)}`;
   })();
 
-  // Today's nutrition, computed from this account's REAL meal logs (no more mock).
+  // Today's nutrition from real logs
   const todayLogs = weekLogs.filter((l) => l?.date === todayKey);
   const sumField = (f: string) => todayLogs.reduce((s, l) => s + (Number(l?.[f]) || 0), 0);
   const caloriesConsumed = sumField("calories");
@@ -223,17 +217,17 @@ export default function Home() {
   const fatsConsumed = sumField("fats");
   const fatsTarget = 67;
 
-  // Gauge percentage — real share of the daily calorie goal (0–100).
+  // Gauge percentage (0-100)
   const dailyProgress =
     caloriesTarget > 0 ? Math.min(Math.round((caloriesConsumed / caloriesTarget) * 100), 100) : 0;
 
-  // Real daily logging streak: count back from today over days that have a meal log.
+  // Real daily logging streak
   const loggedDays = new Set(weekLogs.map((l) => l?.date).filter(Boolean));
   const trackingStreak = (() => {
     let c = 0;
     const d = new Date();
     const k = (x: Date) => x.toISOString().split("T")[0];
-    if (!loggedDays.has(k(d))) d.setDate(d.getDate() - 1); // today not logged yet — start at yesterday
+    if (!loggedDays.has(k(d))) d.setDate(d.getDate() - 1);
     while (loggedDays.has(k(d))) {
       c++;
       d.setDate(d.getDate() - 1);
@@ -247,7 +241,6 @@ export default function Home() {
       setAnimatedProgress(dailyProgress);
     }, 300);
 
-    // Animate percentage counter
     let currentPercentage = 0;
     const percentageInterval = setInterval(() => {
       if (currentPercentage < dailyProgress) {
@@ -264,17 +257,14 @@ export default function Home() {
     };
   }, [dailyProgress]);
 
-  // Water tracker — backed by the SAME hydration logs as the /hydration page, so
-  // the two stay in sync. One Home "glass" = 250 ml. Home shows total daily
-  // hydration (including drinks logged on the Hydration page) as glasses.
-  const waterGoal = 10; // 10 glasses (2,500 ml) per day — matches the Hydration tracker
+  // Water tracker
+  const waterGoal = 10;
   const GLASS_ML = 250;
-  const [waterMl, setWaterMl] = useState(0); // today's total ml across all logs
-  const [homeWaterIds, setHomeWaterIds] = useState<string[]>([]); // 250ml glasses Home can remove
+  const [waterMl, setWaterMl] = useState(0);
+  const [homeWaterIds, setHomeWaterIds] = useState<string[]>([]);
   const [waterBusy, setWaterBusy] = useState(false);
-  const waterGlasses = Math.round(waterMl / GLASS_ML); // derived count for the UI
+  const waterGlasses = Math.round(waterMl / GLASS_ML);
 
-  // Load today's hydration from the backend (shared with the Hydration tracker).
   const loadWater = () => {
     const today = new Date().toISOString().split("T")[0];
     getHydrationLogs()
@@ -282,18 +272,16 @@ export default function Home() {
         const todays = (items ?? []).filter((it) => String(it.logged_at ?? "").startsWith(today));
         const total = todays.reduce((sum, it) => sum + (it.amount_ml ?? 0), 0);
         setWaterMl(total);
-        // 250ml water logs are the "glasses" Home is allowed to remove.
         setHomeWaterIds(
           todays
             .filter((it) => (it.amount_ml ?? 0) === GLASS_ML && (it.type ?? "water") === "water")
             .map((it) => String(it.id)),
         );
       })
-      .catch(() => {/* offline / not signed in — leave at 0, non-fatal */});
+      .catch(() => {});
   };
+
   useEffect(() => { loadWater(); }, []);
-  // Refresh when the tab regains focus, so drinks logged on the Hydration page
-  // (or a new day) show up here without a manual reload.
   useEffect(() => {
     const onFocus = () => loadWater();
     window.addEventListener("focus", onFocus);
@@ -304,211 +292,20 @@ export default function Home() {
     };
   }, []);
 
-  // New state for enhanced features
   const [selectedMeal, setSelectedMeal] = useState<MealMetadata | null>(null);
   const [showMealPrescription, setShowMealPrescription] = useState(false);
   const [showPostMealLog, setShowPostMealLog] = useState(false);
-  const [hoveredDay, setHoveredDay] = useState<string | null>(null);
   const [postMealData, setPostMealData] = useState<PostMealLog>({
     energyLevel: 3,
     digestiveComfort: 3,
-    conditionMetric: 120, // Blood glucose for diabetes
+    conditionMetric: 120,
     timestamp: new Date(),
   });
-
-  // Enhanced food calendar data with functional metadata
-  const nutritionBlueprintCalendar: MealMetadata[] = [
-    {
-      day: "Mon",
-      dayFull: "Monday",
-      metabolicWindow: "Cortisol Peak (6-8 AM)",
-      meal: "🥗",
-      mealName: "Ugu & Garden Egg Protein Bowl",
-      color: "bg-green-100",
-      circadian_anchor: "Cortisol Management",
-      biochemical_ratio: "40P/30C/30F",
-      clinical_indication: "Low Glycemic for Diabetes Control",
-      engineering_method: "Flash-steamed (< 2 min)",
-      glycemicLoad: "Low",
-      bioAvailability: {
-        pairing: "Vitamin C (Garden Egg) + Iron (Ugu)",
-        explanation: "Vitamin C enhances iron absorption by up to 300%, critical for anemia prevention in diabetic patients.",
-      },
-      regionalIngredients: {
-        lagos: ["Ugu leaves", "Garden egg", "Dried fish", "Palm oil", "Onions"],
-        london: ["Spinach", "Eggplant", "Sardines", "Olive oil", "Onions"],
-      },
-      mealPrescription: {
-        physiologicalGoal: "Stabilize morning blood sugar while managing cortisol-induced glucose spike",
-        engineersNote: "Do not boil Ugu for more than 2 minutes to retain Vitamin C and folate. Add palm oil after cooking to preserve omega-3 fatty acids.",
-        pantryCheck: ["Fresh Ugu (Lekki Market)", "Garden egg (Yaba)", "Dried fish (local vendor)"],
-      },
-    },
-    {
-      day: "Tue",
-      dayFull: "Tuesday",
-      metabolicWindow: "Glycogen Replenishment (12-2 PM)",
-      meal: "🍲",
-      mealName: "Ogbono Soup with Unripe Plantain",
-      color: "bg-orange-100",
-      circadian_anchor: "Glycogen Replenishment",
-      biochemical_ratio: "25P/45C/30F",
-      clinical_indication: "Resistant Starch for Blood Sugar Control",
-      engineering_method: "Cold-soaked Ogbono seeds",
-      glycemicLoad: "Medium",
-      bioAvailability: {
-        pairing: "Fiber (Ogbono) + Resistant Starch (Unripe Plantain)",
-        explanation: "Combined fiber slows glucose absorption, preventing post-meal spikes in diabetic patients.",
-      },
-      regionalIngredients: {
-        lagos: ["Ogbono seeds", "Unripe plantain", "Stockfish", "Ugu", "Crayfish"],
-        london: ["Ground okra", "Green banana", "Dried fish", "Kale", "Shrimp powder"],
-      },
-      mealPrescription: {
-        physiologicalGoal: "Provide sustained energy release while supporting gut microbiome health",
-        engineersNote: "Soak Ogbono seeds in cold water for 30 minutes before grinding. Cook unripe plantain with skin on to maximize resistant starch content.",
-        pantryCheck: ["Ogbono (Mile 12 Market)", "Unripe plantain (local)", "Stockfish (Idumota)"],
-      },
-    },
-    {
-      day: "Wed",
-      dayFull: "Wednesday",
-      metabolicWindow: "Insulin Sensitivity Peak (4-6 PM)",
-      meal: "🥙",
-      mealName: "Bitter Leaf Wrap with Grilled Fish",
-      color: "bg-yellow-100",
-      circadian_anchor: "Insulin Sensitivity Enhancement",
-      biochemical_ratio: "45P/25C/30F",
-      clinical_indication: "Vasodilation for Hypertension Management",
-      engineering_method: "Raw preparation (minimal heat)",
-      glycemicLoad: "Low",
-      bioAvailability: {
-        pairing: "Omega-3 (Fish) + Polyphenols (Bitter Leaf)",
-        explanation: "Omega-3 fatty acids reduce inflammation while bitter leaf compounds improve insulin sensitivity.",
-      },
-      regionalIngredients: {
-        lagos: ["Bitter leaf", "Mackerel", "Avocado", "Tomatoes", "Onions"],
-        london: ["Arugula", "Salmon", "Avocado", "Tomatoes", "Red onions"],
-      },
-      mealPrescription: {
-        physiologicalGoal: "Maximize insulin sensitivity during metabolic window for optimal glucose uptake",
-        engineersNote: "Wash bitter leaf 3-4 times to reduce bitterness but retain bioactive compounds. Grill fish at 350°F to preserve omega-3 integrity.",
-        pantryCheck: ["Fresh bitter leaf (Oshodi)", "Fresh mackerel (Epe fish market)", "Avocado (supermarket)"],
-      },
-    },
-    {
-      day: "Thu",
-      dayFull: "Thursday",
-      metabolicWindow: "Metabolic Transition (10-11 AM)",
-      meal: "🍛",
-      mealName: "Ewedu Soup with Amala",
-      color: "bg-red-100",
-      circadian_anchor: "Digestive Enzyme Activation",
-      biochemical_ratio: "30P/40C/30F",
-      clinical_indication: "Mucilage for Gut Lining Protection",
-      engineering_method: "Hand-whisked (no blending)",
-      glycemicLoad: "Medium",
-      bioAvailability: {
-        pairing: "Mucilage (Ewedu) + Prebiotics (Yam flour)",
-        explanation: "Mucilage forms protective coating on gut lining while prebiotics feed beneficial bacteria.",
-      },
-      regionalIngredients: {
-        lagos: ["Ewedu leaves", "Yam flour", "Beef", "Locust beans", "Palm oil"],
-        london: ["Jute leaves", "Plantain flour", "Beef", "Fermented beans", "Coconut oil"],
-      },
-      mealPrescription: {
-        physiologicalGoal: "Support digestive health and maintain stable blood sugar throughout day",
-        engineersNote: "Hand-whisk Ewedu to preserve mucilage structure. Mix Amala with lukewarm water to prevent starch retrogradation.",
-        pantryCheck: ["Fresh Ewedu (Oyingbo)", "Yam flour (Lafenwa)", "Locust beans (Balogun)"],
-      },
-    },
-    {
-      day: "Fri",
-      dayFull: "Friday",
-      metabolicWindow: "Evening Wind-Down (6-7 PM)",
-      meal: "🍜",
-      mealName: "Ukazi Soup with Oat Swallow",
-      color: "bg-purple-100",
-      circadian_anchor: "Melatonin Support",
-      biochemical_ratio: "35P/35C/30F",
-      clinical_indication: "Beta-Glucan for Cholesterol Management",
-      engineering_method: "Sous-vide (precise temperature)",
-      glycemicLoad: "Low",
-      bioAvailability: {
-        pairing: "Beta-Glucan (Oats) + Antioxidants (Ukazi)",
-        explanation: "Beta-glucan lowers LDL cholesterol while Ukazi antioxidants reduce oxidative stress.",
-      },
-      regionalIngredients: {
-        lagos: ["Ukazi leaves", "Steel-cut oats", "Chicken", "Crayfish", "Palm oil"],
-        london: ["Kale", "Steel-cut oats", "Chicken", "Shrimp", "Olive oil"],
-      },
-      mealPrescription: {
-        physiologicalGoal: "Prepare body for restful sleep while maintaining overnight glucose stability",
-        engineersNote: "Cook oats at 185°F for 25 minutes to maximize beta-glucan content. Add Ukazi leaves in last 3 minutes of cooking.",
-        pantryCheck: ["Ukazi leaves (Oke-Arin)", "Steel-cut oats (Shoprite)", "Fresh chicken (local)"],
-      },
-    },
-    {
-      day: "Sat",
-      dayFull: "Saturday",
-      metabolicWindow: "Recovery Phase (8-10 AM)",
-      meal: "🥘",
-      mealName: "Edikang Ikong Soup",
-      color: "bg-blue-100",
-      circadian_anchor: "Antioxidant Replenishment",
-      biochemical_ratio: "35P/30C/35F",
-      clinical_indication: "Anti-inflammatory for Joint Health",
-      engineering_method: "Layered cooking method",
-      glycemicLoad: "Low",
-      bioAvailability: {
-        pairing: "Vitamin K (Ugu) + Healthy Fats (Palm oil)",
-        explanation: "Fat-soluble vitamin K requires healthy fats for absorption, crucial for bone and cardiovascular health.",
-      },
-      regionalIngredients: {
-        lagos: ["Ugu", "Water leaf", "Beef", "Dried fish", "Periwinkle", "Palm oil"],
-        london: ["Spinach", "Swiss chard", "Beef", "Mussels", "Shrimp", "Coconut oil"],
-      },
-      mealPrescription: {
-        physiologicalGoal: "Provide comprehensive micronutrients for cellular repair and inflammation management",
-        engineersNote: "Cook protein separately, then add vegetables in stages: water leaf first (5 min), then Ugu (2 min). Add palm oil last.",
-        pantryCheck: ["Ugu (fresh from Berger)", "Water leaf (Ojuelegba)", "Periwinkle (Epe)"],
-      },
-    },
-    {
-      day: "Sun",
-      dayFull: "Sunday",
-      metabolicWindow: "Prep for New Week (3-5 PM)",
-      meal: "🍝",
-      mealName: "Vegetable Stir-fry with Konjac Noodles",
-      color: "bg-pink-100",
-      circadian_anchor: "Metabolic Reset",
-      biochemical_ratio: "30P/35C/35F",
-      clinical_indication: "Glucomannan for Satiety & Blood Sugar",
-      engineering_method: "High-heat stir-fry (< 3 min)",
-      glycemicLoad: "Low",
-      bioAvailability: {
-        pairing: "Glucomannan (Konjac) + Fat-soluble Vitamins (Vegetables)",
-        explanation: "Glucomannan slows gastric emptying while quick cooking preserves heat-sensitive vitamins.",
-      },
-      regionalIngredients: {
-        lagos: ["Konjac noodles", "Bell peppers", "Carrots", "Green beans", "Chicken breast"],
-        london: ["Shirataki noodles", "Bell peppers", "Carrots", "Green beans", "Turkey breast"],
-      },
-      mealPrescription: {
-        physiologicalGoal: "Reset metabolic pathways and prepare digestive system for upcoming week",
-        engineersNote: "Rinse konjac noodles thoroughly. Stir-fry vegetables at 450°F for maximum 2-3 minutes to retain crunch and nutrients.",
-        pantryCheck: ["Konjac noodles (Asian market, Ikeja)", "Fresh vegetables (Mile 12)", "Lean chicken (local)"],
-      },
-    },
-  ];
-
-  // Add a glass (250ml) — creates a real hydration log, so it appears on the
-  // Hydration tracker too.
 
   const handleWaterIncrease = async () => {
     if (waterBusy || waterGlasses >= 12) return;
     setWaterBusy(true);
-    setWaterMl((ml) => ml + GLASS_ML); // optimistic
+    setWaterMl((ml) => ml + GLASS_ML);
     try {
       const item = await createHydrationLog({
         amount_ml: GLASS_ML,
@@ -529,13 +326,12 @@ export default function Home() {
         });
       }
     } catch {
-      setWaterMl((ml) => Math.max(0, ml - GLASS_ML)); // roll back
+      setWaterMl((ml) => Math.max(0, ml - GLASS_ML));
     } finally {
       setWaterBusy(false);
     }
   };
 
-  // Smart contextual in-app reminder nudges powered by Avo Mascot
   const { nudge: smartNudge, closeNudge: closeSmartNudge } = useSmartNudges({
     waterGlasses,
     mealsLoggedCount: todayLogs.length,
@@ -544,27 +340,24 @@ export default function Home() {
     onLogMeal: () => navigate("/plan-meal"),
   });
 
-  // Remove a glass — deletes the most recent 250ml glass Home added.
   const handleWaterDecrease = async () => {
     if (waterBusy || homeWaterIds.length === 0) return;
     setWaterBusy(true);
     const id = homeWaterIds[homeWaterIds.length - 1];
-    setHomeWaterIds((ids) => ids.slice(0, -1)); // optimistic
+    setHomeWaterIds((ids) => ids.slice(0, -1));
     setWaterMl((ml) => Math.max(0, ml - GLASS_ML));
     try {
       await deleteHydrationLog(id);
     } catch {
-      setHomeWaterIds((ids) => [...ids, id]); // roll back
+      setHomeWaterIds((ids) => [...ids, id]);
       setWaterMl((ml) => ml + GLASS_ML);
     } finally {
       setWaterBusy(false);
     }
   };
 
-  // Get time-based greeting
   const getTimeBasedGreeting = () => {
     const currentHour = new Date().getHours();
-
     if (currentHour >= 5 && currentHour < 12) {
       return t('home.goodMorning');
     } else if (currentHour >= 12 && currentHour < 17) {
@@ -576,10 +369,8 @@ export default function Home() {
     }
   };
 
-  // Get time-based Nigerian meal recommendation
   const getTimeBasedRecommendation = () => {
     const currentHour = new Date().getHours();
-    
     if (currentHour >= 6 && currentHour < 10) {
       return {
         greeting: getTimeBasedGreeting(),
@@ -611,7 +402,6 @@ export default function Home() {
     }
   };
 
-  // Get gauge status color and message
   const getGaugeStatus = () => {
     if (dailyProgress >= 80) {
       return {
@@ -643,7 +433,8 @@ export default function Home() {
     }
   };
 
-  
+  const [quickLogging, setQuickLogging] = useState(false);
+
   const handleQuickLogItem = async (food: QuickFoodItem) => {
     if (quickLogging) return;
     const now = new Date();
@@ -666,7 +457,7 @@ export default function Home() {
     try {
       await createMealLog(newLog);
       mascot.thumbsUp();
-      celebrate(`${food.name} logged! \ud83c\udf72\ud83c\udf89`, `+${food.calories} kcal \u00b7 ${food.protein}g protein`, {
+      celebrate(`${food.name} logged! 🍲🎉`, `+${food.calories} kcal · ${food.protein}g protein`, {
         confettiStyle: "burst",
         hapticPattern: "success",
       });
@@ -684,7 +475,6 @@ export default function Home() {
     setShowQuickMealLog(true);
   };
 
-  // Common Nigerian / West African presets for one-tap logging, per meal type.
   const quickMealOptions: Record<
     "breakfast" | "lunch" | "dinner",
     { emoji: string; name: string; calories: number; protein: number; carbs: number; fats: number; label: string; impact: "low" | "medium" | "high" }[]
@@ -706,8 +496,6 @@ export default function Home() {
     ],
   };
 
-  const [quickLogging, setQuickLogging] = useState(false);
-
   const handleQuickLog = async (meal: { name: string; calories: number; protein: number; carbs: number; fats: number; impact: "low" | "medium" | "high" }) => {
     if (!selectedQuickMeal || quickLogging) return;
     const now = new Date();
@@ -728,7 +516,7 @@ export default function Home() {
     setQuickLogging(true);
     try {
       await createMealLog(newLog);
-      mascot.thumbsUp(); // Avo approves the logged meal
+      mascot.thumbsUp();
       celebrate(`${meal.name} logged! 🎉`, "Nice one — keep your streak going!");
       setShowQuickMealLog(false);
     } catch (e) {
@@ -744,600 +532,587 @@ export default function Home() {
     navigate("/logs", { state: { openAdd: true } });
   };
 
-  const handleTakePhoto = async () => {
-    try {
-      // Reset error states
-      setCameraPermissionDenied(false);
-      setPermissionError(null);
+  // User active conditions for Clinical tab
+  const activeConditions = (profile?.conditions || []).map((c: any) =>
+    typeof c === "string" ? c : c?.name || "General Metabolic Care"
+  );
+  if (activeConditions.length === 0 && profile?.medicalCondition) {
+    activeConditions.push(profile.medicalCondition);
+  }
+  if (activeConditions.length === 0) {
+    activeConditions.push("General Metabolic Wellness");
+  }
 
-      // Check if mediaDevices is supported
-      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-        setPermissionError("Camera is not supported on this device or browser.");
-        return;
-      }
-
-      // Request camera permission
-      const stream = await navigator.mediaDevices.getUserMedia({ 
-        video: { facingMode: "environment" } 
-      });
-
-      // Stop the stream immediately (we just needed permission)
-      stream.getTracks().forEach(track => track.stop());
-
-      // Permission granted, trigger file input
-      cameraInputRef.current?.click();
-    } catch (error) {
-      // Handle camera permission errors gracefully
-      if (error instanceof Error) {
-        if (error.name === "NotAllowedError" || error.name === "PermissionDeniedError") {
-          setCameraPermissionDenied(true);
-          setPermissionError("Camera access was denied. Please enable camera permissions in your browser settings.");
-        } else if (error.name === "NotFoundError") {
-          setPermissionError("No camera found on this device.");
-        } else if (error.name === "NotReadableError") {
-          setPermissionError("Camera is already in use by another application.");
-        } else {
-          setPermissionError("Unable to access camera. Please try again.");
-        }
-      }
-    }
-  };
-
-  const handleUploadPhoto = () => {
-    // Trigger file input
-    fileInputRef.current?.click();
-  };
-
-  const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setCapturedImage(reader.result as string);
-        setShowAnalyseDialog(false);
-        // Reset error states
-        setCameraPermissionDenied(false);
-        setPermissionError(null);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-  
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#B8E5E5] to-[#E8F5F5] pb-24">
+    <div className="min-h-screen bg-gradient-to-b from-[#B8E5E5] via-[#E8F5F5] to-[#F8FBFB] pb-28">
       {/* Header */}
-      <div className="bg-[#B8E5E5] px-6 pt-12 pb-6">
-        <div className="flex items-center justify-between mb-2">
-          <div className="text-sm text-gray-700">
-            {new Date().toLocaleTimeString("en-US", {
-              hour: "numeric",
-              minute: "2-digit",
-              hour12: true
-            })}
+      <div className="bg-[#B8E5E5] px-6 pt-10 pb-4">
+        {/* Top utility row */}
+        <div className="flex items-center justify-between mb-3">
+          <div className="flex items-center gap-2">
+            <span className="text-xs font-semibold px-2.5 py-1 bg-white/70 backdrop-blur-sm text-gray-700 rounded-full shadow-sm">
+              {new Date().toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit", hour12: true })}
+            </span>
+            <span className="flex items-center gap-1 text-xs font-extrabold px-2.5 py-1 bg-orange-100 text-orange-800 rounded-full border border-orange-200 shadow-sm">
+              <Flame className="h-3.5 w-3.5 text-orange-500 fill-orange-500" />
+              <span>{trackingStreak}d streak</span>
+            </span>
           </div>
-          <div className="flex items-center gap-3">
+
+          <div className="flex items-center gap-2">
             <button
               onClick={() => setShowGlobalSearch(true)}
-              className="p-2 hover:bg-white/20 rounded-full transition-colors"
+              className="p-2.5 bg-white/70 hover:bg-white rounded-full transition-all shadow-sm active:scale-95"
               aria-label="Search"
             >
-              <Search className="h-5 w-5 text-gray-700" />
+              <Search className="h-4 w-4 text-gray-700" />
+            </button>
+            <button
+              onClick={() => setShowNotificationSettings(true)}
+              className="p-2.5 bg-white/70 hover:bg-white rounded-full transition-all shadow-sm active:scale-95"
+              aria-label="Notifications"
+            >
+              <Bell className="h-4 w-4 text-gray-700" />
             </button>
             <ProfilePictureUpload />
           </div>
         </div>
         
-        {/* Logo */}
-        <div className="text-center mb-4 flex justify-center">
+        {/* Logo & Greeting Bar */}
+        <div className="flex items-center justify-between gap-3 my-2">
+          <div className="flex items-center gap-3">
+            <Mascot size={46} className="flex-shrink-0 drop-shadow-sm" />
+            <div>
+              <h2 className="text-xl sm:text-2xl font-extrabold text-gray-900 leading-tight">
+                {getTimeBasedGreeting()}, {userName || "Friend"}
+              </h2>
+              <p className="text-xs text-gray-600 mt-0.5">{currentDate}</p>
+            </div>
+          </div>
           <img 
             src={logoImage} 
-            alt="MealOptimiza Logo" 
-            className="h-16 object-contain"
+            alt="MealOptimiza" 
+            className="h-10 object-contain hidden sm:block opacity-90"
           />
         </div>
-        
-        {/* Greeting */}
-        <div className="flex items-center justify-center gap-3 mb-6">
-          <Mascot size={48} className="flex-shrink-0" />
-          <div className="text-left">
-            <h2 className="text-2xl text-gray-800">{getTimeBasedGreeting()}, {userName}</h2>
-            <p className="text-sm text-gray-600">{currentDate}</p>
-          </div>
+      </div>
+
+      {/* Main Content Area with Tabbed Architecture */}
+      <div className="px-5 sm:px-6 mt-2">
+        {/* Segmented Tab Navigation Control */}
+        <div className="sticky top-3 z-30 bg-white/90 backdrop-blur-md p-1.5 rounded-2xl shadow-md border border-teal-100/90 flex gap-1 mb-5 transition-all">
+          <button
+            onClick={() => setActiveHomeTab("today")}
+            className={`flex-1 py-2.5 px-3 rounded-xl font-bold text-xs sm:text-sm flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
+              activeHomeTab === "today"
+                ? "bg-gradient-to-r from-[#1f7a8c] to-[#2a9d8f] text-white shadow-md scale-[1.02]"
+                : "text-gray-600 hover:text-gray-900 hover:bg-gray-100/60"
+            }`}
+          >
+            <Sparkles size={15} />
+            <span>Today</span>
+          </button>
+
+          <button
+            onClick={() => setActiveHomeTab("academy")}
+            className={`flex-1 py-2.5 px-3 rounded-xl font-bold text-xs sm:text-sm flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
+              activeHomeTab === "academy"
+                ? "bg-gradient-to-r from-[#1f7a8c] to-[#2a9d8f] text-white shadow-md scale-[1.02]"
+                : "text-gray-600 hover:text-gray-900 hover:bg-gray-100/60"
+            }`}
+          >
+            <BookOpen size={15} />
+            <span>Avo Academy</span>
+          </button>
+
+          <button
+            onClick={() => setActiveHomeTab("clinical")}
+            className={`flex-1 py-2.5 px-3 rounded-xl font-bold text-xs sm:text-sm flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
+              activeHomeTab === "clinical"
+                ? "bg-gradient-to-r from-[#1f7a8c] to-[#2a9d8f] text-white shadow-md scale-[1.02]"
+                : "text-gray-600 hover:text-gray-900 hover:bg-gray-100/60"
+            }`}
+          >
+            <Stethoscope size={15} />
+            <span>Clinical & Vitals</span>
+          </button>
         </div>
 
-        {/* Daily Fuel Gauge - Enhanced */}
-        <div className="bg-gradient-to-br from-white via-[#E8F5F5] to-[#B8E5E5] rounded-3xl shadow-lg p-6 mb-6">
-          {/* Streak Counter */}
-          <div className="flex items-center justify-center gap-2 mb-4">
-            <Flame className="h-5 w-5 text-orange-500 animate-pulse" />
-            <span className="text-sm text-gray-700">
-              <span className="font-bold text-[#e63946]">{trackingStreak}-Day Streak!</span> Keep logging for expert insights
-            </span>
-          </div>
-
-          <h3 className="text-center text-sm tracking-wider mb-4 text-gray-700">
-            {t('home.todaysCalories')}
-          </h3>
-          
-          {/* Make gauge clickable for details */}
-          <button 
-            onClick={() => setShowGaugeDetails(true)}
-            className="w-full hover:scale-105 transition-transform duration-300 focus:outline-none focus:ring-2 focus:ring-[#1f7a8c] focus:ring-offset-2 rounded-2xl cursor-pointer"
-            aria-label={`Daily nutrition progress: ${animatedPercentage}% of goal achieved. Tap for detailed breakdown.`}
+        {/* ============================================================ */}
+        {/* TAB 1: TODAY (Decluttered Daily Metabolic Fuel & Actions)      */}
+        {/* ============================================================ */}
+        {activeHomeTab === "today" && (
+          <motion.div
+            key="today-tab"
+            initial={reduce ? false : { opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.25 }}
+            className="space-y-5"
           >
-            <div className="relative flex flex-col items-center justify-center mb-4">
-              {/* Circular Progress */}
-              <svg className="w-48 h-32" viewBox="0 0 200 120">
-                {/* Background arc */}
-                <path
-                  d="M 30 100 A 70 70 0 0 1 170 100"
-                  fill="none"
-                  stroke="#e5e7eb"
-                  strokeWidth="18"
-                  strokeLinecap="round"
-                />
-                {/* Progress arc */}
-                <path
-                  d="M 30 100 A 70 70 0 0 1 170 100"
-                  fill="none"
-                  stroke="url(#gaugeGradient)"
-                  strokeWidth="18"
-                  strokeLinecap="round"
-                  strokeDasharray={`${animatedProgress * 2.2} 1000`}
-                  style={{
-                    transition: "stroke-dasharray 1.5s cubic-bezier(0.4, 0, 0.2, 1)",
-                  }}
-                />
-                {/* Gradient definition */}
-                <defs>
-                  <linearGradient id="gaugeGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                    <stop offset="0%" stopColor="#1f7a8c" />
-                    <stop offset="100%" stopColor="#4ecdc4" />
-                  </linearGradient>
-                </defs>
-              </svg>
-              
-              {/* Center content */}
-              <div className="absolute top-12 flex flex-col items-center">
-                <div className="text-[#1f7a8c] text-[20px] font-bold transition-all duration-300 animate-pulse" style={{ animationDuration: "2s" }}>
-                  {animatedPercentage}%
-                </div>
-                <div className="text-xs text-gray-500 uppercase">{t('home.ofDailyGoal')}</div>
-                <div className="text-[10px] text-[#1f7a8c] mt-1">{t('home.tapForDetails')}</div>
+            {/* Daily Fuel Gauge Card */}
+            <div className="bg-gradient-to-br from-white via-[#F4FBFA] to-[#E2F4F3] rounded-3xl shadow-lg border border-teal-100/80 p-5 sm:p-6">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-xs font-bold uppercase tracking-wider text-[#1f7a8c]">
+                  {t('home.todaysCalories')}
+                </span>
+                <span className="text-xs font-extrabold px-2 py-0.5 rounded-full bg-teal-100 text-teal-800">
+                  {caloriesConsumed} / {caloriesTarget} kcal
+                </span>
               </div>
-              
-              {/* Text below gauge - Simple vs Expert Mode */}
-              {mode === "simple" ? (
-                <div className="text-xs text-gray-600 mt-1 flex items-center gap-1">
-                  <span className="text-lg">{getGaugeStatus().emoji}</span>
-                  <span>{getGaugeStatus().status}</span>
-                </div>
-              ) : (
-                <div className="text-[10px] text-gray-600 tracking-widest uppercase mt-1">
-                  {t('home.dailyNutritionOpt')}
-                </div>
-              )}
-            </div>
-          </button>
-          
-          {/* Metrics - Adaptive for Simple/Expert Mode */}
-          {mode === "expert" && (
-            <div className="flex justify-around pt-2 pb-4 border-b border-gray-200">
-              <div className="flex flex-col items-center">
-                <div className="bg-gradient-to-r from-yellow-400 to-orange-400 rounded-lg p-2 mb-1 shadow-sm">
-                  <Flame className="h-4 w-4 text-white" />
-                </div>
-                <div className="text-[10px] text-gray-700 tracking-wide">MACROS</div>
-                <div className="text-xs text-[#1f7a8c]">40/30/30</div>
-              </div>
-              <div className="flex flex-col items-center">
-                <div className="bg-gradient-to-r from-blue-400 to-cyan-400 rounded-lg p-2 mb-1 shadow-sm">
-                  <Activity className="h-4 w-4 text-white" />
-                </div>
-                <div className="text-[10px] text-gray-700 tracking-wide">GLYCEMIC</div>
-                <div className="text-xs text-green-600">Low</div>
-              </div>
-              <div className="flex flex-col items-center">
-                <div className="bg-gradient-to-r from-purple-400 to-pink-400 rounded-lg p-2 mb-1 shadow-sm">
-                  <Clock className="h-4 w-4 text-white" />
-                </div>
-                <div className="text-[10px] text-gray-700 tracking-wide">WINDOW</div>
-                <div className="text-xs text-[#1f7a8c]">Optimal</div>
-              </div>
-              <div className="flex flex-col items-center">
-                <div className="bg-gradient-to-r from-green-400 to-teal-400 rounded-lg p-2 mb-1 shadow-sm">
-                  <TrendingUp className="h-4 w-4 text-white" />
-                </div>
-                <div className="text-[10px] text-gray-700 tracking-wide">TREND</div>
-                <div className="text-xs text-green-600">↑5%</div>
-              </div>
-            </div>
-          )}
-          
-          {/* 1-Tap Quick-Log Shelf */}
-          <div id="tour-quick-shelf"><QuickLogShelf
-            onLogItem={handleQuickLogItem}
-            onOpenWhatsApp={() => setShowWhatsAppModal(true)}
-            onOpenScanner={() => setShowLocalFoodScanner(true)}
-            onOpenCustom={() => navigate("/logs", { state: { openAdd: true } })}
-            isLogging={quickLogging}
-          /></div>
-          
-          {/* 2-Hour Post-Meal Check-In */}
-          {todayLogs.length > 0 && (
-            <PostMealCheckIn lastMeal={todayLogs[todayLogs.length - 1]} />
-          )}
 
-          {/* Circadian Metabolic Arc */}
-          <CircadianArc lastMealTime={todayLogs[todayLogs.length - 1]?.time || "20:00"} />
+              {/* Clickable SVG Gauge */}
+              <button 
+                onClick={() => setShowGaugeDetails(true)}
+                className="w-full hover:scale-[1.02] active:scale-[0.99] transition-transform duration-200 focus:outline-none rounded-2xl cursor-pointer"
+                aria-label={`Daily nutrition progress: ${animatedPercentage}% of goal achieved. Tap for detailed breakdown.`}
+              >
+                <div className="relative flex flex-col items-center justify-center my-2">
+                  <svg className="w-48 h-28" viewBox="0 0 200 115">
+                    <path
+                      d="M 30 95 A 70 70 0 0 1 170 95"
+                      fill="none"
+                      stroke="#e5e7eb"
+                      strokeWidth="16"
+                      strokeLinecap="round"
+                    />
+                    <path
+                      d="M 30 95 A 70 70 0 0 1 170 95"
+                      fill="none"
+                      stroke="url(#gaugeGradient)"
+                      strokeWidth="16"
+                      strokeLinecap="round"
+                      strokeDasharray={`${animatedProgress * 2.2} 1000`}
+                      style={{
+                        transition: "stroke-dasharray 1.2s cubic-bezier(0.4, 0, 0.2, 1)",
+                      }}
+                    />
+                    <defs>
+                      <linearGradient id="gaugeGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" stopColor="#1f7a8c" />
+                        <stop offset="100%" stopColor="#4ecdc4" />
+                      </linearGradient>
+                    </defs>
+                  </svg>
+                  
+                  <div className="absolute top-8 flex flex-col items-center">
+                    <div className="text-[#1f7a8c] text-2xl font-black">
+                      {animatedPercentage}%
+                    </div>
+                    <div className="text-[10px] text-gray-500 uppercase font-semibold">{t('home.ofDailyGoal')}</div>
+                    <div className="text-[10px] text-teal-700 font-bold mt-0.5 bg-teal-50 px-2 py-0.5 rounded-full">
+                      {t('home.tapForDetails')} 📊
+                    </div>
+                  </div>
+                </div>
+              </button>
 
-          {/* Time-Based Circadian Insight */}
-          <div className="mt-4 pt-4 border-t border-gray-200">
-            <div className="flex items-center gap-2 mb-2">
-              <Clock className="h-4 w-4 text-[#1f7a8c]" />
-              <h4 className="text-xs text-gray-700 tracking-wide">
-                {mode === "simple" ? t('home.mealSuggestion') : t('home.metabolicFocus')}
-              </h4>
-              <span className="text-lg">{getTimeBasedRecommendation().icon}</span>
+              {/* Quick Macro Breakdown Row */}
+              <div className="grid grid-cols-3 gap-2 pt-3 border-t border-teal-100 text-center">
+                <div className="bg-white/80 rounded-2xl p-2 shadow-xs border border-teal-50">
+                  <span className="text-[10px] text-gray-500 font-bold block">Protein</span>
+                  <span className="text-xs font-extrabold text-blue-700">{proteinConsumed}g</span>
+                  <span className="text-[9px] text-gray-400 block">/ {proteinTarget}g</span>
+                </div>
+                <div className="bg-white/80 rounded-2xl p-2 shadow-xs border border-teal-50">
+                  <span className="text-[10px] text-gray-500 font-bold block">Carbs</span>
+                  <span className="text-xs font-extrabold text-emerald-700">{carbsConsumed}g</span>
+                  <span className="text-[9px] text-gray-400 block">/ {carbsTarget}g</span>
+                </div>
+                <div className="bg-white/80 rounded-2xl p-2 shadow-xs border border-teal-50">
+                  <span className="text-[10px] text-gray-500 font-bold block">Fats</span>
+                  <span className="text-xs font-extrabold text-purple-700">{fatsConsumed}g</span>
+                  <span className="text-[9px] text-gray-400 block">/ {fatsTarget}g</span>
+                </div>
+              </div>
             </div>
-            {mode === "simple" ? (
-              <div>
-                <p className="text-xs text-[#1f7a8c] font-semibold mb-1">
+
+            {/* 1-Tap Quick-Log Shelf */}
+            <div id="tour-quick-shelf" className="my-2">
+              <QuickLogShelf
+                onLogItem={handleQuickLogItem}
+                onOpenWhatsApp={() => setShowWhatsAppModal(true)}
+                onOpenScanner={() => setShowLocalFoodScanner(true)}
+                onOpenCustom={() => navigate("/logs", { state: { openAdd: true } })}
+                isLogging={quickLogging}
+              />
+            </div>
+
+            {/* Daily Metabolic Habit Scorecard */}
+            <MetabolicChecklist
+              waterCount={waterGlasses}
+              mealsLoggedCount={todayLogs.length}
+              vitalsLoggedCount={0}
+              onOpenWater={handleWaterIncrease}
+              onOpenQuickLog={() => navigate("/plan-meal")}
+            />
+
+            {/* Circadian Timing & Post-Meal Check-In */}
+            {todayLogs.length > 0 && (
+              <PostMealCheckIn lastMeal={todayLogs[todayLogs.length - 1]} />
+            )}
+
+            <CircadianArc lastMealTime={todayLogs[todayLogs.length - 1]?.time || "20:00"} />
+
+            {/* Time-Based Recommendation Card */}
+            <div className="bg-white rounded-3xl p-4 shadow-md border border-teal-100 flex items-start gap-3">
+              <div className="p-3 bg-teal-50 text-2xl rounded-2xl flex-shrink-0">
+                {getTimeBasedRecommendation().icon}
+              </div>
+              <div className="flex-1 min-w-0">
+                <span className="text-[10px] uppercase font-bold text-[#1f7a8c] block">
+                  {mode === "simple" ? t('home.mealSuggestion') : t('home.metabolicFocus')}
+                </span>
+                <p className="text-xs font-bold text-gray-900 mt-0.5">
                   {getTimeBasedRecommendation().greeting}
                 </p>
-                <p className="text-xs text-gray-600 leading-relaxed">
+                <p className="text-xs text-gray-600 mt-1 leading-relaxed">
                   {getTimeBasedRecommendation().recommendation}
                 </p>
               </div>
-            ) : (
-              <div>
-                <p className="text-xs text-[#1f7a8c] font-semibold mb-1">
-                  {getTimeBasedRecommendation().greeting}
-                </p>
-                <p className="text-xs text-gray-600 leading-relaxed">
-                  <span className="font-semibold">{getTimeBasedRecommendation().metabolicWindow}</span> - {getTimeBasedRecommendation().recommendation}
-                </p>
-              </div>
-            )}
-          </div>
-        </div>
-      </div>
-      
-      {/* Main Content */}
-      <div className="px-6">
-        {/* Daily Metabolic Habit Scorecard */}
-        <MetabolicChecklist
-          waterCount={waterGlasses}
-          mealsLoggedCount={todayLogs.length}
-          vitalsLoggedCount={0}
-        />
-
-        {/* Daily logging streak */}
-        <div className="mb-5">
-          <StreakCard />
-        </div>
-
-        {/* Market Update + Grocery List */}
-        <div className="mb-5">
-          <div className="bg-white rounded-2xl shadow-md p-4 mb-3">
-            <div className="flex items-center gap-3">
-              <div className="bg-[#B8E5E5] rounded-full p-2 flex-shrink-0">
-                <Bell className="h-4 w-4 text-[#1f7a8c]" />
-              </div>
-              <div className="flex-1">
-                <p className="text-sm text-gray-800">Market Update</p>
-                <p className="text-xs text-gray-600">
-                  {(() => {
-                    const loc = selectedLocation?.name || "your area";
-                    const tips = [
-                      `Local Ugu is fresh at markets in ${loc} today!`,
-                      `Tomatoes and peppers are in good supply — great for a fresh stew.`,
-                      `Look out for fresh catfish today — perfect for a light pepper soup.`,
-                      `Beans (oloyin) are budget-friendly now — try moi moi or ewa.`,
-                      `Plantain is plentiful — firm ones for boiling, ripe for dodo.`,
-                      `Fresh ugu, water leaf and spinach are great buys for efo riro.`,
-                      `Yam and sweet potato are steady-energy swaps for white rice.`,
-                      `Garden eggs are in season — a great low-calorie snack.`,
-                      `Okra is fresh — perfect for a quick draw soup.`,
-                      `Oranges and pawpaw are in season — vitamin C on a budget.`,
-                      `Ofada (brown) rice is a lower-GI pick — look for it in ${loc}.`,
-                      `Bitter leaf and oha are fresh — great for a nutrient-rich soup.`,
-                    ];
-                    const start = new Date(new Date().getFullYear(), 0, 0).getTime();
-                    const dayOfYear = Math.floor((Date.now() - start) / 86400000);
-                    return tips[dayOfYear % tips.length];
-                  })()}
-                </p>
-              </div>
-            </div>
-          </div>
-          <button
-            onClick={() => navigate("/grocery-list")}
-            className="w-full bg-gradient-to-r from-[#1f7a8c] to-[#4ecdc4] text-white rounded-2xl py-3.5 flex items-center justify-center gap-2 hover:shadow-md active:scale-[0.98] transition-all font-semibold"
-          >
-            <span className="text-lg">🛒</span>
-            {t('home.viewGroceryList')}
-          </button>
-        </div>
-
-        {/* Analyser & Planner */}
-        <div className="mb-6">
-          <h3 className="text-lg mb-3 text-gray-800">{t('home.analyserPlanner')}</h3>
-          <div className="grid grid-cols-2 gap-4">
-            {/* Snap & Know Card — unified intelligent analyzer (hero, full width) */}
-            <motion.button
-              onClick={() => setShowLocalFoodScanner(true)}
-              initial={reduce ? false : { opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.35, delay: 0.05, ease: "easeOut" }}
-              whileTap={{ scale: 0.97 }}
-              whileHover={reduce ? undefined : { scale: 1.02, y: -4 }}
-              className="col-span-2 relative overflow-hidden bg-gradient-to-br from-teal-500 to-cyan-600 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-shadow duration-300 flex items-center gap-4 border-2 border-teal-400 group cursor-pointer text-left">
-              <div className="bg-white/20 backdrop-blur-sm rounded-2xl p-4 group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300 shrink-0">
-                <Camera className="h-9 w-9 text-white" />
-              </div>
-              <div className="flex-1 min-w-0">
-                <span className="block text-lg text-white font-bold tracking-wide">
-                  {t('home.snapKnow')}
-                </span>
-                <span className="block text-sm text-teal-50/90 mt-0.5 leading-snug">
-                  {t('home.snapKnowSub')}
-                </span>
-              </div>
-              <ChevronRight className="h-6 w-6 text-white/80 shrink-0 group-hover:translate-x-1 transition-transform duration-300" />
-            </motion.button>
-
-            {/* Scan Barcode Card */}
-            <motion.button
-              onClick={() => navigate("/scan-barcode")}
-              initial={reduce ? false : { opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.35, delay: 0.12, ease: "easeOut" }}
-              whileTap={{ scale: 0.96 }}
-              whileHover={reduce ? undefined : { scale: 1.03, y: -4 }}
-              className="bg-white rounded-2xl p-6 shadow-md hover:shadow-xl transition-shadow duration-300 flex flex-col items-center justify-center border-2 border-[#1f7a8c] group cursor-pointer">
-              <div className="bg-[#4ecdc4] rounded-xl p-3 mb-3 group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300">
-                <ScanBarcode className="h-8 w-8 text-white" />
-              </div>
-              <span className="text-sm text-[#1f7a8c] text-center uppercase tracking-wide font-semibold">
-                {t('home.scanBarcode')}
-              </span>
-            </motion.button>
-
-            {/* Grocery List Card */}
-            <motion.button
-              onClick={() => navigate("/grocery-list")}
-              initial={reduce ? false : { opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.35, delay: 0.16, ease: "easeOut" }}
-              whileTap={{ scale: 0.96 }}
-              whileHover={reduce ? undefined : { scale: 1.03, y: -4 }}
-              className="bg-white rounded-2xl p-6 shadow-md hover:shadow-xl transition-shadow duration-300 flex flex-col items-center justify-center border-2 border-teal-400 group cursor-pointer">
-              <div className="bg-gradient-to-br from-teal-500 to-cyan-500 rounded-xl p-3 mb-3 group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300">
-                <span className="text-2xl">🛒</span>
-              </div>
-              <span className="text-sm text-teal-700 text-center uppercase tracking-wide font-semibold">
-                {t('grocery.title')}
-              </span>
-            </motion.button>
-
-            {/* Plan My Meal Card — full width */}
-            <motion.button
-              onClick={() => navigate("/plan-meal")}
-              initial={reduce ? false : { opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.35, delay: 0.19, ease: "easeOut" }}
-              whileTap={{ scale: 0.97 }}
-              whileHover={reduce ? undefined : { scale: 1.02, y: -3 }}
-              className="col-span-2 bg-white rounded-2xl p-6 shadow-md hover:shadow-xl transition-shadow duration-300 flex flex-col items-center justify-center gap-0 border-2 border-[#1f7a8c] group cursor-pointer"
-            >
-              <div className="bg-[#e63946] rounded-xl p-3 mb-3 group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300">
-                <span className="text-3xl">🍽️</span>
-              </div>
-              <span className="text-sm text-[#1f7a8c] text-center uppercase tracking-wide font-semibold">
-                {t('home.planMyMeal')}
-              </span>
-            </motion.button>
-          </div>
-        </div>
-
-        {/* Your Custom Meal Plan - Featured Card */}
-        <div className="mb-6">
-          <button
-            onClick={() => navigate("/hyper-personalized-plan")}
-            className="w-full bg-gradient-to-br from-purple-600 via-indigo-600 to-blue-600 rounded-3xl p-6 shadow-2xl hover:shadow-3xl transition-all duration-300 hover:scale-[1.02] group cursor-pointer relative overflow-hidden"
-          >
-            {/* Animated background effect */}
-            <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/10 to-white/0 transform -skew-x-12 group-hover:translate-x-full transition-transform duration-1000"></div>
-
-            <div className="relative z-10">
-              <div className="flex items-center justify-between mb-3">
-                <div className="flex items-center gap-3">
-                  <div className="bg-white/20 backdrop-blur-sm rounded-2xl p-3 group-hover:scale-110 transition-transform">
-                    <FlaskConical className="h-8 w-8 text-white" />
-                  </div>
-                  <div className="text-left">
-                    <h3 className="text-white font-bold text-xl">{t('home.customMealPlan')}</h3>
-                  </div>
-                </div>
-                <ChevronRight className="h-6 w-6 text-white group-hover:translate-x-1 transition-transform" />
-              </div>
-
-              <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-4">
-                <p className="text-white/90 text-sm leading-relaxed">
-                  {t('home.customMealPlanDesc')}
-                </p>
-                <div className="mt-3 flex flex-wrap gap-2">
-                  <span className="px-3 py-1 bg-white/20 text-white text-xs rounded-full">Pre-Workout Snack</span>
-                  <span className="px-3 py-1 bg-white/20 text-white text-xs rounded-full">Focus Snack</span>
-                  <span className="px-3 py-1 bg-white/20 text-white text-xs rounded-full">Post-Workout Meal</span>
-                  <span className="px-3 py-1 bg-white/20 text-white text-xs rounded-full">Evening Snack</span>
-                </div>
-              </div>
-            </div>
-          </button>
-        </div>
-
-        
-        {/* Location & Market Sync */}
-        <div className="mb-6">
-          <h3 className="text-lg mb-3 text-gray-800">{t('home.yourLocation')}</h3>
-          <LocationSelector />
-          
-          <div className="bg-white rounded-2xl shadow-md p-4 mt-3 mb-3">
-            <p className="text-sm text-gray-800 mb-3">
-              <span className="text-gray-600">{t('home.recommendedMeal')}</span> Savory Oat-Swallow
-            </p>
-          </div>
-        </div>
-
-        {/* Food Calendar */}
-        <div className="mb-6">
-          <div className="flex items-center justify-between mb-3">
-            <div className="flex items-center gap-2">
-              <h3 className="text-lg text-gray-800">{t('home.thisWeeksMeals')}</h3>
-              <span className="flex items-center gap-1 px-2 py-0.5 bg-[#E8F5F5] text-[#1f7a8c] text-xs rounded-full">
-                {weekRangeLabel}
-              </span>
-            </div>
-            <button
-              onClick={() => navigate("/logs")}
-              className="text-sm text-[#1f7a8c] flex items-center gap-1 hover:underline"
-            >
-              <span>{t('home.viewAll')}</span>
-              <ChevronRight className="h-4 w-4" />
-            </button>
-          </div>
-          <div className="bg-gradient-to-br from-white via-[#FFF9F5] to-[#FFE5D9] rounded-3xl shadow-lg p-5">
-            <div className="grid grid-cols-7 gap-1">
-              {weekDays.map((day) => {
-                const logged = day.count > 0;
-                return (
-                  <button
-                    key={day.key}
-                    onClick={() => navigate("/logs", { state: { date: day.key } })}
-                    title={logged ? `${day.count} meal${day.count > 1 ? 's' : ''} · ${day.calories} kcal` : 'No meals logged'}
-                    className={`flex flex-col items-center py-3 px-1 rounded-xl transition-all hover:scale-105 ${
-                      day.isToday
-                        ? "bg-[#1f7a8c] text-white scale-105 shadow-md"
-                        : logged
-                        ? "bg-green-100"
-                        : "bg-gray-50"
-                    }`}
-                  >
-                    <span className={`text-xs mb-2 ${day.isToday ? "text-white" : "text-gray-600"}`}>
-                      {day.label}
-                    </span>
-                    <span className="text-2xl mb-1 leading-none">{logged ? "🍽️" : "·"}</span>
-                    {logged ? (
-                      <span className={`text-[10px] leading-none ${day.isToday ? "text-white" : "text-gray-600"}`}>
-                        {day.count}
-                      </span>
-                    ) : (
-                      <span className={`text-[10px] leading-none ${day.isToday ? "text-white/80" : "text-gray-400"}`}>
-                        {day.dateNum}
-                      </span>
-                    )}
-                  </button>
-                );
-              })}
-            </div>
-            <p className="text-xs text-gray-500 text-center mt-3">
-              {t('home.tapDayHint')}
-            </p>
-          </div>
-        </div>
-
-        {/* Water Tracker */}
-        <div className="mb-6">
-          <h3 className="text-lg mb-3 text-gray-800">Water Tracker</h3>
-          <div className="bg-gradient-to-br from-blue-50 to-cyan-50 rounded-3xl shadow-lg p-6">
-            <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center gap-3">
-                <div className="bg-blue-500 rounded-full p-3">
-                  <Droplet className="h-6 w-6 text-white" />
-                </div>
-                <div>
-                  <p className="text-sm text-gray-600">Daily Goal</p>
-                  <p className="text-xl text-gray-800">{waterGlasses} / {waterGoal} glasses</p>
-                </div>
-              </div>
-              {waterGlasses >= waterGoal ? (
-                <img
-                  src="/assets/mascot.png"
-                  alt="Goal reached!"
-                  className="w-12 h-12 object-contain drop-shadow-sm"
-                  title="Daily water goal reached!"
-                />
-              ) : (
-                <div className="text-3xl">💧</div>
-              )}
             </div>
 
-            {/* Water Progress Bar */}
-            <div className="mb-4">
-              <div className="w-full bg-white rounded-full h-3 overflow-hidden">
-                <div
-                  className="bg-gradient-to-r from-blue-400 to-cyan-400 h-full rounded-full transition-all duration-500"
-                  style={{ width: `${Math.min((waterGlasses / waterGoal) * 100, 100)}%` }}
-                ></div>
-              </div>
-              <p className="text-xs text-gray-600 text-center mt-2">
-                {waterGlasses >= waterGoal 
-                  ? "Great job! You've reached your goal!" 
-                  : `${waterGoal - waterGlasses} more glass${waterGoal - waterGlasses > 1 ? 'es' : ''} to go!`}
-              </p>
-            </div>
-
-            {/* Water Glass Visualization */}
-            <div className="flex justify-center gap-2 mb-4">
-              {[...Array(waterGoal)].map((_, index) => (
-                <div
-                  key={index}
-                  className={`w-8 h-10 rounded-lg border-2 transition-all ${
-                    index < waterGlasses
-                      ? "bg-blue-400 border-blue-500"
-                      : "bg-white border-gray-300"
-                  }`}
+            {/* Core Action Grid (2x2) */}
+            <div>
+              <h3 className="text-sm font-extrabold text-gray-800 uppercase tracking-wider mb-3">
+                {t('home.analyserPlanner')}
+              </h3>
+              <div className="grid grid-cols-2 gap-3">
+                {/* 1. Snap & Know Card */}
+                <button
+                  onClick={() => setShowLocalFoodScanner(true)}
+                  className="bg-gradient-to-br from-teal-500 to-cyan-600 rounded-3xl p-4 text-white text-left shadow-md hover:shadow-lg transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer flex flex-col justify-between h-36"
                 >
-                  {index < waterGlasses && (
-                    <div className="w-full h-full flex items-center justify-center text-white text-xs">
-                      💧
-                    </div>
-                  )}
+                  <div className="bg-white/20 rounded-2xl p-2.5 w-fit">
+                    <Camera className="h-6 w-6 text-white" />
+                  </div>
+                  <div>
+                    <span className="text-xs font-bold block leading-tight">
+                      {t('home.snapKnow')}
+                    </span>
+                    <span className="text-[10px] text-teal-50/80 block mt-0.5">
+                      Food photo AI analyzer
+                    </span>
+                  </div>
+                </button>
+
+                {/* 2. Plan My Meal Card */}
+                <button
+                  onClick={() => navigate("/plan-meal")}
+                  className="bg-white rounded-3xl p-4 text-left shadow-md hover:shadow-lg border-2 border-[#1f7a8c]/20 hover:border-[#1f7a8c] transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer flex flex-col justify-between h-36"
+                >
+                  <div className="bg-orange-100 rounded-2xl p-2.5 w-fit text-xl">
+                    🍽️
+                  </div>
+                  <div>
+                    <span className="text-xs font-extrabold text-gray-900 block leading-tight">
+                      {t('home.planMyMeal')}
+                    </span>
+                    <span className="text-[10px] text-gray-500 block mt-0.5">
+                      Nigerian/Diaspora meals
+                    </span>
+                  </div>
+                </button>
+
+                {/* 3. Smart Grocery List */}
+                <button
+                  onClick={() => navigate("/grocery-list")}
+                  className="bg-white rounded-3xl p-4 text-left shadow-md hover:shadow-lg border-2 border-teal-100 hover:border-teal-400 transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer flex flex-col justify-between h-36"
+                >
+                  <div className="bg-teal-50 rounded-2xl p-2.5 w-fit text-xl">
+                    🛒
+                  </div>
+                  <div>
+                    <span className="text-xs font-extrabold text-gray-900 block leading-tight">
+                      {t('grocery.title')}
+                    </span>
+                    <span className="text-[10px] text-gray-500 block mt-0.5">
+                      Market price sync & swaps
+                    </span>
+                  </div>
+                </button>
+
+                {/* 4. Custom Meal Plan */}
+                <button
+                  onClick={() => navigate("/hyper-personalized-plan")}
+                  className="bg-gradient-to-br from-indigo-600 to-purple-600 rounded-3xl p-4 text-white text-left shadow-md hover:shadow-lg transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer flex flex-col justify-between h-36"
+                >
+                  <div className="bg-white/20 rounded-2xl p-2.5 w-fit">
+                    <FlaskConical className="h-6 w-6 text-white" />
+                  </div>
+                  <div>
+                    <span className="text-xs font-bold block leading-tight">
+                      Custom Bio-Plan
+                    </span>
+                    <span className="text-[10px] text-purple-100 block mt-0.5">
+                      Hyper-personalized recipes
+                    </span>
+                  </div>
+                </button>
+              </div>
+            </div>
+
+            {/* This Week's Food Calendar */}
+            <div className="bg-white rounded-3xl shadow-md border border-teal-100 p-4 sm:p-5">
+              <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center gap-2">
+                  <h3 className="text-xs font-bold text-gray-800 uppercase tracking-wider">{t('home.thisWeeksMeals')}</h3>
+                  <span className="px-2 py-0.5 bg-teal-50 text-[#1f7a8c] text-[10px] font-bold rounded-full">
+                    {weekRangeLabel}
+                  </span>
                 </div>
-              ))}
+                <button
+                  onClick={() => navigate("/logs")}
+                  className="text-xs font-bold text-[#1f7a8c] flex items-center gap-1 hover:underline cursor-pointer"
+                >
+                  <span>{t('home.viewAll')}</span>
+                  <ChevronRight className="h-3.5 w-3.5" />
+                </button>
+              </div>
+
+              <div className="grid grid-cols-7 gap-1">
+                {weekDays.map((day) => {
+                  const logged = day.count > 0;
+                  return (
+                    <button
+                      key={day.key}
+                      onClick={() => navigate("/logs", { state: { date: day.key } })}
+                      title={logged ? `${day.count} meals · ${day.calories} kcal` : 'No meals logged'}
+                      className={`flex flex-col items-center py-2.5 px-1 rounded-2xl transition-all cursor-pointer ${
+                        day.isToday
+                          ? "bg-[#1f7a8c] text-white shadow-sm scale-105"
+                          : logged
+                          ? "bg-teal-50 border border-teal-200 text-teal-900"
+                          : "bg-gray-50 text-gray-600 hover:bg-gray-100"
+                      }`}
+                    >
+                      <span className={`text-[10px] font-bold mb-1 ${day.isToday ? "text-white" : "text-gray-500"}`}>
+                        {day.label}
+                      </span>
+                      <span className="text-base mb-0.5 leading-none">{logged ? "🍲" : "·"}</span>
+                      <span className={`text-[9px] font-semibold ${day.isToday ? "text-white/90" : "text-gray-400"}`}>
+                        {logged ? `${day.count}m` : day.dateNum}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
             </div>
 
-            {/* Control Buttons */}
-            <div className="flex gap-3">
+            {/* Location & Regional Market Tip */}
+            <div className="bg-gradient-to-r from-teal-50 to-cyan-50 rounded-3xl p-4 border border-teal-100/80">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-[10px] uppercase font-bold text-teal-800 tracking-wider">
+                  Regional Market Sync
+                </span>
+                <span className="text-sm">{selectedLocation.flag} {selectedLocation.displayName}</span>
+              </div>
+              <LocationSelector />
+            </div>
+          </motion.div>
+        )}
+
+        {/* ============================================================ */}
+        {/* TAB 2: AVO ACADEMY (60-Second Food Science Masterclasses)     */}
+        {/* ============================================================ */}
+        {activeHomeTab === "academy" && (
+          <motion.div
+            key="academy-tab"
+            initial={reduce ? false : { opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.25 }}
+            className="space-y-4"
+          >
+            {/* Embedded Avo Academy Component */}
+            <AvoAcademy />
+          </motion.div>
+        )}
+
+        {/* ============================================================ */}
+        {/* TAB 3: CLINICAL & VITALS (Metabolic Safeguards & Doctor PDF)   */}
+        {/* ============================================================ */}
+        {activeHomeTab === "clinical" && (
+          <motion.div
+            key="clinical-tab"
+            initial={reduce ? false : { opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.25 }}
+            className="space-y-5"
+          >
+            {/* 1. Active Conditions Safeguards Card */}
+            <div className="bg-white rounded-3xl p-5 shadow-lg border border-teal-100">
+              <div className="flex items-center justify-between gap-2 mb-3">
+                <div className="flex items-center gap-2">
+                  <div className="p-2 rounded-2xl bg-teal-50 text-[#1f7a8c]">
+                    <ShieldCheck className="h-5 w-5" />
+                  </div>
+                  <div>
+                    <h3 className="text-sm font-extrabold text-gray-900 leading-tight">
+                      Active Condition Intelligence
+                    </h3>
+                    <p className="text-[11px] text-gray-500">Real-time dietary guards for your health</p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => navigate("/medical-condition")}
+                  className="text-xs font-bold text-[#1f7a8c] hover:underline"
+                >
+                  Edit
+                </button>
+              </div>
+
+              {/* Condition Chips */}
+              <div className="flex flex-wrap gap-2 mb-4">
+                {activeConditions.map((cond, idx) => (
+                  <span
+                    key={idx}
+                    className="px-3 py-1 bg-teal-50 text-[#1f7a8c] border border-teal-200 rounded-full text-xs font-extrabold flex items-center gap-1.5"
+                  >
+                    <Activity size={13} />
+                    <span>{cond}</span>
+                  </span>
+                ))}
+              </div>
+
+              {/* Safeguards Bullet List */}
+              <div className="space-y-2.5 p-3.5 rounded-2xl bg-gray-50/80 border border-gray-100 text-xs">
+                <div className="flex items-start gap-2 text-gray-700">
+                  <span className="text-emerald-500 font-bold">✓</span>
+                  <span><strong>Glycemic Spike Shield:</strong> Real-time meal analysis flags high-GI cassava/white rice spikes.</span>
+                </div>
+                <div className="flex items-start gap-2 text-gray-700">
+                  <span className="text-teal-500 font-bold">✓</span>
+                  <span><strong>Sodium & Palm Oil Check:</strong> Monitors stock cubes and saturated palm oil ratios for blood pressure control.</span>
+                </div>
+                <div className="flex items-start gap-2 text-gray-700">
+                  <span className="text-blue-500 font-bold">✓</span>
+                  <span><strong>Wound & Tissue Recovery:</strong> Ensures daily protein target (100g) for maternal / surgical recovery.</span>
+                </div>
+              </div>
+            </div>
+
+            {/* 2. Biometric Vitals Quick-Snapshot (3 Cards Grid) */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              {/* Glucose & Projected eA1c */}
               <button
-                onClick={handleWaterDecrease}
-                disabled={waterBusy || homeWaterIds.length === 0}
-                className="flex-1 bg-white text-gray-700 rounded-xl py-3 flex items-center justify-center gap-2 hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-sm"
+                onClick={() => navigate("/glucose-insights")}
+                className="bg-white rounded-3xl p-4 shadow-md border border-rose-100 hover:shadow-lg transition-all text-left cursor-pointer"
               >
-                <Minus className="h-4 w-4" />
-                <span className="text-sm">Remove</span>
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-[10px] uppercase font-bold text-rose-600">Blood Glucose & eA1c</span>
+                  <Droplet className="h-4 w-4 text-rose-500" />
+                </div>
+                <div className="text-xl font-black text-gray-900">
+                  118 <span className="text-xs font-normal text-gray-500">mg/dL</span>
+                </div>
+                <p className="text-[10px] text-gray-500 mt-1">
+                  Projected eA1c: <strong className="text-rose-700 font-bold">5.7%</strong> (Optimal)
+                </p>
+                <span className="mt-2 text-[10px] font-bold text-[#1f7a8c] block">
+                  View Insights →
+                </span>
               </button>
+
+              {/* Blood Pressure */}
               <button
-                onClick={handleWaterIncrease}
-                disabled={waterBusy || waterGlasses >= 12}
-                className="flex-1 bg-gradient-to-r from-[#1f7a8c] to-[#4ecdc4] text-white rounded-xl py-3 flex items-center justify-center gap-2 hover:shadow-md transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                onClick={() => navigate("/biometric-dashboard")}
+                className="bg-white rounded-3xl p-4 shadow-md border border-purple-100 hover:shadow-lg transition-all text-left cursor-pointer"
               >
-                <Plus className="h-4 w-4" />
-                <span className="text-sm">Add Glass</span>
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-[10px] uppercase font-bold text-purple-600">Blood Pressure</span>
+                  <Activity className="h-4 w-4 text-purple-500" />
+                </div>
+                <div className="text-xl font-black text-gray-900">
+                  118/78 <span className="text-xs font-normal text-gray-500">mmHg</span>
+                </div>
+                <p className="text-[10px] text-emerald-600 font-bold mt-1">
+                  Normal Range (AHA Standard)
+                </p>
+                <span className="mt-2 text-[10px] font-bold text-[#1f7a8c] block">
+                  Log Vitals →
+                </span>
+              </button>
+
+              {/* Weight & BMI */}
+              <button
+                onClick={() => navigate("/weight")}
+                className="bg-white rounded-3xl p-4 shadow-md border border-teal-100 hover:shadow-lg transition-all text-left cursor-pointer"
+              >
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-[10px] uppercase font-bold text-teal-600">Weight & BMI</span>
+                  <TrendingUp className="h-4 w-4 text-teal-500" />
+                </div>
+                <div className="text-xl font-black text-gray-900">
+                  {profile?.weight ? `${profile.weight} kg` : "72.4 kg"}
+                </div>
+                <p className="text-[10px] text-gray-500 mt-1">
+                  BMI: <strong>23.4</strong> (Healthy Weight)
+                </p>
+                <span className="mt-2 text-[10px] font-bold text-[#1f7a8c] block">
+                  Track Weight →
+                </span>
               </button>
             </div>
-          </div>
-        </div>
 
+            {/* 3. 1-Tap Clinical Doctor PDF Export Banner */}
+            <div className="bg-gradient-to-br from-[#1f7a8c] to-[#0e4d5c] rounded-3xl p-5 text-white shadow-xl">
+              <div className="flex items-start justify-between gap-3 mb-3">
+                <div className="p-3 bg-white/20 rounded-2xl backdrop-blur-sm">
+                  <FileSpreadsheet className="h-7 w-7 text-white" />
+                </div>
+                <span className="px-2.5 py-0.5 rounded-full bg-teal-400 text-teal-950 font-extrabold text-[10px]">
+                  Clinical Ready
+                </span>
+              </div>
+              <h3 className="text-base font-bold leading-snug mb-1">
+                Doctor & Dietitian 30-Day Clinical Report
+              </h3>
+              <p className="text-xs text-teal-50/90 leading-relaxed mb-4">
+                Export your glycemic logs, blood pressure trends, estimated A1c, and dietary compliance into a certified 1-page PDF summary for your physician.
+              </p>
+              <button
+                onClick={() => navigate("/health-report")}
+                className="w-full py-3 bg-white text-[#1f7a8c] hover:bg-teal-50 font-extrabold text-xs rounded-2xl shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer"
+              >
+                <FileText size={16} />
+                <span>Open Clinical Doctor Report</span>
+              </button>
+            </div>
+
+            {/* 4. Medical Vault & Medication Quick Actions */}
+            <div className="grid grid-cols-2 gap-3">
+              <button
+                onClick={() => navigate("/medical-vault")}
+                className="bg-white rounded-3xl p-4 border border-teal-100 shadow-md text-left hover:shadow-lg transition-all cursor-pointer"
+              >
+                <div className="p-2.5 rounded-2xl bg-indigo-50 text-indigo-700 w-fit mb-2">
+                  <Shield size={20} />
+                </div>
+                <span className="text-xs font-extrabold text-gray-900 block">Medical Vault</span>
+                <span className="text-[10px] text-gray-500 block mt-0.5">Lab results & prescriptions</span>
+              </button>
+
+              <button
+                onClick={() => navigate("/medication-tracker")}
+                className="bg-white rounded-3xl p-4 border border-teal-100 shadow-md text-left hover:shadow-lg transition-all cursor-pointer"
+              >
+                <div className="p-2.5 rounded-2xl bg-rose-50 text-rose-700 w-fit mb-2">
+                  <Pill size={20} />
+                </div>
+                <span className="text-xs font-extrabold text-gray-900 block">Medication Tracker</span>
+                <span className="text-[10px] text-gray-500 block mt-0.5">Dose logs & adherence</span>
+              </button>
+            </div>
+          </motion.div>
+        )}
       </div>
-      
+
       <BottomNav />
 
-      {/* Quick Actions FAB */}
+      {/* Floating Action / WhatsApp Modal */}
       <WhatsAppConnectDialog isOpen={showWhatsAppModal} onClose={() => setShowWhatsAppModal(false)} />
-
       <div id="tour-fab-actions"><QuickActionsFAB /></div>
 
       <HealthProfileWizardModal
@@ -1349,106 +1124,22 @@ export default function Home() {
       />
 
       <SpotlightTour isOpen={showSpotlightTour} onClose={() => setShowSpotlightTour(false)} />
-      <VoiceFoodLogger isOpen={showVoiceLogger} onClose={() => setShowVoiceLogger(false)} onMealSaved={() => { getMealLogs().then(logs => { if (Array.isArray(logs)) setWeekLogs(logs); }).catch(() => {}); }} />
+      <VoiceFoodLogger
+        isOpen={showVoiceLogger}
+        onClose={() => setShowVoiceLogger(false)}
+        onMealSaved={() => {
+          getMealLogs().then(logs => { if (Array.isArray(logs)) setWeekLogs(logs); }).catch(() => {});
+        }}
+      />
       <SmartGroceryPlanner isOpen={showGroceryPlanner} onClose={() => setShowGroceryPlanner(false)} />
       <FoodWrappedModal isOpen={showFoodWrapped} onClose={() => setShowFoodWrapped(false)} />
       <NotificationSettingsDialog isOpen={showNotificationSettings} onClose={() => setShowNotificationSettings(false)} />
 
-        {/* Smart Contextual In-App Animated Reminder */}
-        <MascotNudge {...smartNudge} onClose={closeSmartNudge} />
+      {/* Smart Contextual In-App Reminder */}
+      <MascotNudge {...smartNudge} onClose={closeSmartNudge} />
 
       {/* Global Search */}
       <GlobalSearch isOpen={showGlobalSearch} onClose={() => setShowGlobalSearch(false)} />
-
-      {/* Tracker Wheel Tutorial */}
-      <TutorialTooltip
-        tutorialId="tracker-wheel"
-        steps={[
-          {
-            id: "welcome",
-            title: "Welcome to Health Trackers!",
-            description: "This circular menu gives you quick access to all your health tracking tools. Let's take a quick tour!",
-          },
-          {
-            id: "trackers",
-            title: "7 Powerful Trackers",
-            description: "Track Medical Records, Hydration, Sleep, Medications, Workouts, Fasting, and Symptoms - all in one place!",
-          },
-          {
-            id: "center-button",
-            title: "Tap the Center to Spin",
-            description: "Tap the center button to rotate the wheel and explore different trackers. It's fun and interactive!",
-          },
-          {
-            id: "click-tracker",
-            title: "Click Any Tracker",
-            description: "Simply tap any tracker icon to start logging your health data. Each tracker has charts, analytics, and insights!",
-          },
-        ]}
-      />
-
-      {/* Analyse Food Options Dialog */}
-      <Dialog open={showAnalyseFoodOptions} onOpenChange={setShowAnalyseFoodOptions}>
-        <DialogContent className="max-w-lg">
-          <DialogHeader>
-            <DialogTitle className="text-2xl text-[#1f7a8c]">Analyse Food</DialogTitle>
-            <DialogDescription>Choose how you'd like to analyse your food.</DialogDescription>
-          </DialogHeader>
-
-          <div className="space-y-3 mt-6">
-            {/* Take Photo with Camera */}
-            <button
-              onClick={() => {
-                setShowAnalyseFoodOptions(false);
-                setShowCameraCapture(true);
-              }}
-              className="w-full flex items-center gap-4 p-5 bg-gradient-to-r from-[#1f7a8c] to-[#4ecdc4] text-white rounded-xl hover:shadow-lg transition-all"
-            >
-              <div className="bg-white/20 rounded-full p-3">
-                <Camera className="h-6 w-6" />
-              </div>
-              <div className="text-left flex-1">
-                <div className="font-semibold">Take Photo with Camera</div>
-                <div className="text-sm text-white/80">Capture food with your camera</div>
-              </div>
-            </button>
-
-            {/* Upload from Gallery */}
-            <button
-              onClick={() => {
-                setShowAnalyseFoodOptions(false);
-                setShowCameraCapture(true);
-              }}
-              className="w-full flex items-center gap-4 p-5 bg-white border-2 border-gray-200 hover:border-[#1f7a8c] rounded-xl transition-all"
-            >
-              <div className="bg-[#E8F5F5] rounded-full p-3">
-                <Upload className="h-6 w-6 text-[#1f7a8c]" />
-              </div>
-              <div className="text-left flex-1">
-                <div className="font-semibold text-gray-800">Upload from Gallery</div>
-                <div className="text-sm text-gray-600">Choose photo from your device</div>
-              </div>
-            </button>
-
-            {/* Scan a Barcode */}
-            <button
-              onClick={() => {
-                setShowAnalyseFoodOptions(false);
-                navigate("/scan-barcode");
-              }}
-              className="w-full flex items-center gap-4 p-5 bg-white border-2 border-gray-200 hover:border-[#1f7a8c] rounded-xl transition-all"
-            >
-              <div className="bg-[#E8F5F5] rounded-full p-3">
-                <ScanBarcode className="h-6 w-6 text-[#2a9d8f]" />
-              </div>
-              <div className="text-left flex-1">
-                <div className="font-semibold text-gray-800">Scan a Barcode</div>
-                <div className="text-sm text-gray-600">Scan product barcode for instant info</div>
-              </div>
-            </button>
-          </div>
-        </DialogContent>
-      </Dialog>
 
       {/* Camera Capture Component */}
       <CameraCapture
@@ -1456,187 +1147,16 @@ export default function Home() {
         onClose={() => setShowCameraCapture(false)}
         onCapture={(imageData, source) => {
           setCapturedImage(imageData);
-          console.log('Food captured via:', source);
-          // TODO: Send to AI analysis endpoint
         }}
         mode="food"
         title="Analyse Food"
       />
 
-      {/* Local Food Engineer Options Dialog */}
-      <Dialog open={showLocalFoodOptions} onOpenChange={setShowLocalFoodOptions}>
-        <DialogContent className="max-w-lg">
-          <DialogHeader>
-            <DialogTitle className="text-2xl text-teal-600">Local Food Engineer</DialogTitle>
-            <DialogDescription>Choose how you'd like to use the food engineer.</DialogDescription>
-          </DialogHeader>
-
-          <div className="space-y-3 mt-6">
-            {/* Scan Local Food */}
-            <button
-              onClick={() => {
-                setShowLocalFoodOptions(false);
-                setShowLocalFoodScanner(true);
-              }}
-              className="w-full flex items-center gap-4 p-5 bg-gradient-to-r from-teal-500 to-cyan-500 text-white rounded-xl hover:shadow-lg transition-all"
-            >
-              <div className="bg-white/20 rounded-full p-3">
-                <Sparkles className="h-6 w-6" />
-              </div>
-              <div className="text-left flex-1">
-                <div className="font-semibold">Scan Local Food</div>
-                <div className="text-sm text-white/80">Analyze regional dishes with healthy swaps</div>
-              </div>
-            </button>
-
-            {/* View Grocery List */}
-            <button
-              onClick={() => {
-                setShowLocalFoodOptions(false);
-                navigate("/grocery-list");
-              }}
-              className="w-full flex items-center gap-4 p-5 bg-white border-2 border-gray-200 hover:border-teal-500 rounded-xl transition-all"
-            >
-              <div className="bg-teal-50 rounded-full p-3">
-                <span className="text-3xl">🛒</span>
-              </div>
-              <div className="text-left flex-1">
-                <div className="font-semibold text-gray-800">View Grocery List</div>
-                <div className="text-sm text-gray-600">See your shopping list for healthy ingredients</div>
-              </div>
-            </button>
-          </div>
-        </DialogContent>
-      </Dialog>
-
-      {/* Local Food Scanner Component - NEW */}
+      {/* Local Food Scanner */}
       <LocalFoodScanner
         isOpen={showLocalFoodScanner}
         onClose={() => setShowLocalFoodScanner(false)}
       />
-
-      {/* Show captured image preview (optional) */}
-      {capturedImage && (
-        <div className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-6">
-          <div className="bg-white rounded-3xl p-6 max-w-md w-full max-h-[90vh] overflow-y-auto">
-            {!foodAnalysisResult ? (
-              <>
-                <div className="flex justify-between items-center mb-4">
-                  <h3 className="text-xl text-[#1f7a8c]">Ready to Analyse</h3>
-                  <button onClick={() => { setCapturedImage(null); setIsAnalysingFood(false); }} className="text-gray-500 hover:text-gray-700">
-                    <X className="h-6 w-6" />
-                  </button>
-                </div>
-                <img src={capturedImage} alt="Food to analyse" className="w-full rounded-2xl mb-4 max-h-56 object-cover" />
-                {isAnalysingFood ? (
-                  <div className="flex flex-col items-center gap-3 py-4">
-                    <div className="w-10 h-10 border-4 border-[#1f7a8c] border-t-transparent rounded-full animate-spin" />
-                    <p className="text-[#1f7a8c] font-medium">Analysing food...</p>
-                  </div>
-                ) : (
-                  <div className="flex gap-3">
-                    <button
-                      onClick={() => setCapturedImage(null)}
-                      className="flex-1 border-2 border-gray-300 text-gray-700 rounded-xl py-3 hover:bg-gray-50 transition-colors"
-                    >
-                      Retake
-                    </button>
-                    <button
-                      onClick={async () => {
-                        console.log('[Home] Analyse button clicked');
-                        setIsAnalysingFood(true);
-                        try {
-                          const token = await getAccessToken();
-                          console.log('[Home] token:', !!token);
-                          if (!token) throw new Error('Not authenticated');
-                          const base64 = capturedImage.replace(/^data:[^;]+;base64,/, '');
-                          console.log('[Home] POSTing to', FOOD_API_URL, 'base64 length:', base64.length);
-                          const res = await fetch(FOOD_API_URL, {
-                            method: 'POST',
-                            headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
-                            body: JSON.stringify({
-                              imageBase64: base64,
-                              userContext: {
-                                medicalCondition: profile?.medicalCondition || 'None',
-                                age: profile?.age || 'Not specified',
-                                bmi: profile?.bmi || 'Not specified',
-                                location: selectedLocation?.displayName || 'Nigeria',
-                              },
-                            }),
-                          });
-                          console.log('[Home] response status:', res.status);
-                          const data = await res.json();
-                          console.log('[Home] response data:', data);
-                          if (!res.ok) throw new Error(data.error || `Server error ${res.status}`);
-                          setFoodAnalysisResult(data.analysis);
-                        } catch (err: any) {
-                          console.error('[Home] analyse error:', err);
-                          alert('Analysis failed: ' + (err?.message || err));
-                        } finally {
-                          setIsAnalysingFood(false);
-                        }
-                      }}
-                      className="flex-1 bg-[#1f7a8c] text-white rounded-xl py-3 hover:bg-[#1a6273] transition-colors font-semibold"
-                    >
-                      Analyse
-                    </button>
-                  </div>
-                )}
-              </>
-            ) : (
-              <>
-                <div className="flex justify-between items-center mb-4">
-                  <h3 className="text-xl text-[#1f7a8c]">Analysis Results</h3>
-                  <button onClick={() => { setCapturedImage(null); setFoodAnalysisResult(null); }} className="text-gray-500 hover:text-gray-700">
-                    <X className="h-6 w-6" />
-                  </button>
-                </div>
-                <div className="space-y-3">
-                  <div className="bg-teal-50 rounded-2xl p-4">
-                    <p className="text-lg font-bold text-gray-800">{foodAnalysisResult.foodName || foodAnalysisResult.food_name || 'Food Item'}</p>
-                    {foodAnalysisResult.clinicalIndication && <p className="text-sm text-gray-600 mt-1">{foodAnalysisResult.clinicalIndication}</p>}
-                  </div>
-                  <div className="grid grid-cols-2 gap-3">
-                    {[
-                      { label: 'Calories', value: `${foodAnalysisResult.calories ?? '–'} kcal`, color: 'bg-orange-50' },
-                      { label: 'Protein',  value: `${foodAnalysisResult.protein  ?? '–'}g`,    color: 'bg-blue-50'   },
-                      { label: 'Carbs',    value: `${foodAnalysisResult.carbs    ?? '–'}g`,    color: 'bg-yellow-50' },
-                      { label: 'Fats',     value: `${foodAnalysisResult.fats     ?? '–'}g`,    color: 'bg-purple-50' },
-                    ].map(({ label, value, color }) => (
-                      <div key={label} className={`${color} rounded-xl p-3`}>
-                        <p className="text-xs text-gray-500">{label}</p>
-                        <p className="text-lg font-bold text-gray-800">{value}</p>
-                      </div>
-                    ))}
-                  </div>
-                  {Array.isArray(foodAnalysisResult.recommendations) && foodAnalysisResult.recommendations.length > 0 && (
-                    <div className="bg-green-50 rounded-xl p-4">
-                      <p className="text-sm font-semibold text-green-800 mb-2">Recommendations</p>
-                      <ul className="space-y-1">
-                        {foodAnalysisResult.recommendations.map((r: string, i: number) => (
-                          <li key={i} className="text-sm text-gray-700 flex gap-2"><span className="text-green-500">✓</span>{r}</li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
-                  {foodAnalysisResult.circadianAnchor && (
-                    <div className="bg-indigo-50 rounded-xl p-3">
-                      <p className="text-xs text-gray-500">Best Eating Time</p>
-                      <p className="text-sm font-semibold text-indigo-800">{foodAnalysisResult.circadianAnchor}</p>
-                    </div>
-                  )}
-                </div>
-                <button
-                  onClick={() => { setCapturedImage(null); setFoodAnalysisResult(null); }}
-                  className="w-full mt-4 bg-[#1f7a8c] text-white rounded-xl py-3 font-semibold"
-                >
-                  Done
-                </button>
-              </>
-            )}
-          </div>
-        </div>
-      )}
 
       {/* Detailed Gauge Breakdown Dialog */}
       <Dialog open={showGaugeDetails} onOpenChange={setShowGaugeDetails}>
@@ -1652,7 +1172,6 @@ export default function Home() {
           </DialogHeader>
 
           <div className="space-y-6 py-4">
-            {/* Status Alert */}
             <Alert className={`${getGaugeStatus().bgColor} border-2`}>
               <Zap className="h-5 w-5" />
               <AlertTitle className={getGaugeStatus().textColor}>
@@ -1693,13 +1212,7 @@ export default function Home() {
                     {proteinConsumed}g / {proteinTarget}g
                   </div>
                 </div>
-                <div className="relative">
-                  <Progress value={(proteinConsumed / proteinTarget) * 100} className="h-2" />
-                  <div className="flex justify-between text-xs text-gray-500 mt-1">
-                    <span>0g</span>
-                    <span>{proteinTarget}g</span>
-                  </div>
-                </div>
+                <Progress value={(proteinConsumed / proteinTarget) * 100} className="h-2" />
               </div>
 
               {/* Carbs */}
@@ -1710,13 +1223,7 @@ export default function Home() {
                     {carbsConsumed}g / {carbsTarget}g
                   </div>
                 </div>
-                <div className="relative">
-                  <Progress value={(carbsConsumed / carbsTarget) * 100} className="h-2" />
-                  <div className="flex justify-between text-xs text-gray-500 mt-1">
-                    <span>0g</span>
-                    <span>{carbsTarget}g</span>
-                  </div>
-                </div>
+                <Progress value={(carbsConsumed / carbsTarget) * 100} className="h-2" />
               </div>
 
               {/* Fats */}
@@ -1727,41 +1234,10 @@ export default function Home() {
                     {fatsConsumed}g / {fatsTarget}g
                   </div>
                 </div>
-                <div className="relative">
-                  <Progress value={(fatsConsumed / fatsTarget) * 100} className="h-2" />
-                  <div className="flex justify-between text-xs text-gray-500 mt-1">
-                    <span>0g</span>
-                    <span>{fatsTarget}g</span>
-                  </div>
-                </div>
+                <Progress value={(fatsConsumed / fatsTarget) * 100} className="h-2" />
               </div>
             </div>
 
-            {/* Weekly Comparison (Expert Mode Only) */}
-            {mode === "expert" && (
-              <div className="bg-gradient-to-br from-teal-50 to-cyan-50 rounded-2xl p-4">
-                <h3 className="font-semibold text-gray-800 mb-3 flex items-center gap-2">
-                  <TrendingUp className="h-5 w-5 text-teal-600" />
-                  Weekly Progress
-                </h3>
-                <div className="space-y-2">
-                  <div className="flex justify-between text-sm">
-                    <span className="text-gray-700">Today:</span>
-                    <span className="font-semibold text-[#1f7a8c]">{dailyProgress}%</span>
-                  </div>
-                  <div className="flex justify-between text-sm">
-                    <span className="text-gray-700">Yesterday:</span>
-                    <span className="font-semibold text-gray-600">62% <span className="text-red-500 text-xs">↓7%</span></span>
-                  </div>
-                  <div className="flex justify-between text-sm">
-                    <span className="text-gray-700">Weekly Average:</span>
-                    <span className="font-semibold text-green-600">68%</span>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* Action Buttons */}
             <div className="flex gap-3">
               <Button 
                 onClick={() => setShowGaugeDetails(false)}
@@ -1797,7 +1273,6 @@ export default function Home() {
           </DialogHeader>
 
           <div className="space-y-4 py-4">
-            {/* Common Nigerian meals based on meal type — one tap to log */}
             {selectedQuickMeal && (
               <div className="space-y-3">
                 {quickMealOptions[selectedQuickMeal].map((meal) => (
@@ -1805,32 +1280,23 @@ export default function Home() {
                     key={meal.name}
                     onClick={() => handleQuickLog(meal)}
                     disabled={quickLogging}
-                    className={`w-full bg-gradient-to-r border-2 rounded-xl p-4 text-left hover:border-[#1f7a8c] transition-colors disabled:opacity-60 disabled:cursor-not-allowed ${
-                      selectedQuickMeal === "breakfast"
-                        ? "from-yellow-50 to-orange-50 border-yellow-200"
-                        : selectedQuickMeal === "lunch"
-                        ? "from-green-50 to-emerald-50 border-green-200"
-                        : "from-purple-50 to-pink-50 border-purple-200"
-                    }`}
+                    className="w-full bg-white border-2 border-gray-100 hover:border-[#1f7a8c] rounded-2xl p-4 text-left transition-colors disabled:opacity-60 flex items-center gap-3 cursor-pointer shadow-xs"
                   >
-                    <div className="flex items-center gap-3">
-                      <span className="text-3xl">{meal.emoji}</span>
-                      <div className="flex-1">
-                        <div className="font-semibold text-gray-800">{meal.name}</div>
-                        <div className="text-xs text-gray-600">~{meal.calories} kcal • {meal.label}</div>
-                      </div>
-                      <Plus className="h-5 w-5 text-[#1f7a8c] flex-shrink-0" />
+                    <span className="text-3xl">{meal.emoji}</span>
+                    <div className="flex-1">
+                      <div className="font-semibold text-gray-800">{meal.name}</div>
+                      <div className="text-xs text-gray-500">~{meal.calories} kcal • {meal.label}</div>
                     </div>
+                    <Plus className="h-5 w-5 text-[#1f7a8c] flex-shrink-0" />
                   </button>
                 ))}
               </div>
             )}
 
-            {/* Custom Entry Option */}
             <button
               onClick={handleCustomEntry}
               disabled={quickLogging}
-              className="w-full bg-white border-2 border-dashed border-[#1f7a8c] rounded-xl p-4 text-center hover:bg-[#E8F5F5] transition-colors disabled:opacity-60"
+              className="w-full bg-white border-2 border-dashed border-[#1f7a8c] rounded-2xl p-4 text-center hover:bg-[#E8F5F5] transition-colors disabled:opacity-60 cursor-pointer"
             >
               <div className="flex items-center justify-center gap-2 text-[#1f7a8c] font-semibold">
                 <Plus className="h-5 w-5" />
@@ -1838,8 +1304,7 @@ export default function Home() {
               </div>
             </button>
 
-            {/* Action Buttons */}
-            <div className="flex gap-3 pt-4">
+            <div className="flex gap-3 pt-2">
               <Button
                 onClick={() => setShowQuickMealLog(false)}
                 variant="outline"
@@ -1858,229 +1323,6 @@ export default function Home() {
               </Button>
             </div>
           </div>
-        </DialogContent>
-      </Dialog>
-
-
-      {/* Meal Prescription Dialog */}
-      <Dialog open={showMealPrescription} onOpenChange={setShowMealPrescription}>
-        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
-          {selectedMeal && (
-            <>
-              <DialogHeader>
-                <div className="flex items-center justify-center mb-4">
-                  <div className={`${selectedMeal.color} rounded-full p-6 text-5xl`}>
-                    {selectedMeal.meal}
-                  </div>
-                </div>
-                <DialogTitle className={`text-2xl text-center mb-2 ${selectedMeal.color}`}>
-                  {selectedMeal.mealName}
-                </DialogTitle>
-                <DialogDescription className="text-center text-gray-600">
-                  Detailed meal prescription for optimal health
-                </DialogDescription>
-              </DialogHeader>
-
-              <div className="space-y-6 py-4">
-                {/* Description */}
-                <div className={`${selectedMeal.color} rounded-2xl p-4`}>
-                  <p className="text-sm text-gray-700 leading-relaxed">
-                    <strong>Metabolic Window:</strong> {selectedMeal.metabolicWindow}<br />
-                    <strong>Circadian Anchor:</strong> {selectedMeal.circadian_anchor}<br />
-                    <strong>Biochemical Ratio:</strong> {selectedMeal.biochemical_ratio}<br />
-                    <strong>Clinical Indication:</strong> {selectedMeal.clinical_indication}<br />
-                    <strong>Engineering Method:</strong> {selectedMeal.engineering_method}<br />
-                    <strong>Glycemic Load:</strong> {selectedMeal.glycemicLoad}<br />
-                    <strong>Bioavailability:</strong> {selectedMeal.bioAvailability.pairing} - {selectedMeal.bioAvailability.explanation}
-                  </p>
-                </div>
-
-                {/* Regional Ingredients */}
-                <div>
-                  <div className="flex items-center gap-2 mb-3">
-                    <Heart className={`h-5 w-5 ${selectedMeal.color}`} />
-                    <h3 className={`text-lg ${selectedMeal.color}`}>Regional Ingredients</h3>
-                  </div>
-                  <div className="space-y-3">
-                    <div className="bg-[#B8E5E5] rounded-xl p-3 flex items-center gap-2">
-                      <MapPin className="h-4 w-4 text-[#1f7a8c]" />
-                      <span className="text-sm text-gray-700">
-                        Ingredients for <span className="font-semibold">{selectedLocation.displayName}</span>
-                      </span>
-                      <span className="ml-auto text-lg">{selectedLocation.flag}</span>
-                    </div>
-                    <div className="flex flex-wrap gap-3">
-                      {selectedMeal.regionalIngredients[getRegionalKey()].map((ingredient, index) => (
-                        <div
-                          key={index}
-                          className="bg-gray-50 rounded-xl p-2 text-sm text-gray-700"
-                        >
-                          {ingredient}
-                        </div>
-                      ))}
-                    </div>
-                    <p className="text-xs text-gray-500 italic">
-                      {getRegionalKey() === "lagos" 
-                        ? "These ingredients are commonly available in local markets"
-                        : "These are recommended substitutes available in your region"}
-                    </p>
-                  </div>
-                </div>
-
-                {/* Meal Prescription */}
-                <div className={`${selectedMeal.color} rounded-2xl p-4 border-2 ${selectedMeal.color.replace('text', 'border')}`}>
-                  <div className="flex items-center gap-2 mb-2">
-                    <BookOpen className={`h-4 w-4 ${selectedMeal.color}`} />
-                    <p className={`text-sm ${selectedMeal.color}`}>
-                      Meal Prescription
-                    </p>
-                  </div>
-                  <p className="text-xs text-gray-600">
-                    <strong>Physiological Goal:</strong> {selectedMeal.mealPrescription.physiologicalGoal}<br />
-                    <strong>Engineer's Note:</strong> {selectedMeal.mealPrescription.engineersNote}<br />
-                    <strong>Pantry Check:</strong> {selectedMeal.mealPrescription.pantryCheck.join(", ")}
-                  </p>
-                </div>
-
-                {/* Post-Meal Log */}
-                <div className="flex items-center gap-3">
-                  <button
-                    onClick={() => setShowPostMealLog(true)}
-                    className="flex-1 bg-gradient-to-r from-[#1f7a8c] to-[#4ecdc4] text-white rounded-2xl py-4 hover:shadow-lg transition-all"
-                  >
-                    Log Post-Meal Data
-                  </button>
-                </div>
-
-                {/* Close Button */}
-                <button
-                  onClick={() => setShowMealPrescription(false)}
-                  className="w-full bg-gradient-to-r from-[#1f7a8c] to-[#4ecdc4] text-white rounded-2xl py-4 hover:shadow-lg transition-all"
-                >
-                  Got It!
-                </button>
-              </div>
-            </>
-          )}
-        </DialogContent>
-      </Dialog>
-
-      {/* Post-Meal Log Dialog */}
-      <Dialog open={showPostMealLog} onOpenChange={setShowPostMealLog}>
-        <DialogContent className="max-w-md max-h-[90vh] overflow-y-auto">
-          {selectedMeal && (
-            <>
-              <DialogHeader>
-                <div className="flex items-center justify-center mb-4">
-                  <div className={`${selectedMeal.color} rounded-full p-6 text-5xl`}>
-                    {selectedMeal.meal}
-                  </div>
-                </div>
-                <DialogTitle className={`text-2xl text-center mb-2 ${selectedMeal.color}`}>
-                  {selectedMeal.mealName}
-                </DialogTitle>
-                <DialogDescription className="text-center text-gray-600">
-                  Log your post-meal data for analysis
-                </DialogDescription>
-              </DialogHeader>
-
-              <div className="space-y-6 py-4">
-                {/* Energy Level */}
-                <div className="flex items-center gap-3">
-                  <div className="bg-gray-50 rounded-xl p-2 text-sm text-gray-700">
-                    Energy Level
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <button
-                      onClick={() => setPostMealData({ ...postMealData, energyLevel: Math.max(postMealData.energyLevel - 1, 1) })}
-                      className="bg-gray-50 rounded-full p-2 text-gray-700"
-                    >
-                      <Minus className="h-4 w-4" />
-                    </button>
-                    <div className="bg-gray-50 rounded-full p-2 text-sm text-gray-700">
-                      {postMealData.energyLevel}
-                    </div>
-                    <button
-                      onClick={() => setPostMealData({ ...postMealData, energyLevel: Math.min(postMealData.energyLevel + 1, 5) })}
-                      className="bg-gray-50 rounded-full p-2 text-gray-700"
-                    >
-                      <Plus className="h-4 w-4" />
-                    </button>
-                  </div>
-                </div>
-
-                {/* Digestive Comfort */}
-                <div className="flex items-center gap-3">
-                  <div className="bg-gray-50 rounded-xl p-2 text-sm text-gray-700">
-                    Digestive Comfort
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <button
-                      onClick={() => setPostMealData({ ...postMealData, digestiveComfort: Math.max(postMealData.digestiveComfort - 1, 1) })}
-                      className="bg-gray-50 rounded-full p-2 text-gray-700"
-                    >
-                      <Minus className="h-4 w-4" />
-                    </button>
-                    <div className="bg-gray-50 rounded-full p-2 text-sm text-gray-700">
-                      {postMealData.digestiveComfort}
-                    </div>
-                    <button
-                      onClick={() => setPostMealData({ ...postMealData, digestiveComfort: Math.min(postMealData.digestiveComfort + 1, 5) })}
-                      className="bg-gray-50 rounded-full p-2 text-gray-700"
-                    >
-                      <Plus className="h-4 w-4" />
-                    </button>
-                  </div>
-                </div>
-
-                {/* Condition Metric */}
-                <div className="flex items-center gap-3">
-                  <div className="bg-gray-50 rounded-xl p-2 text-sm text-gray-700">
-                    Condition Metric
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <button
-                      onClick={() => setPostMealData({ ...postMealData, conditionMetric: Math.max(postMealData.conditionMetric - 10, 0) })}
-                      className="bg-gray-50 rounded-full p-2 text-gray-700"
-                    >
-                      <Minus className="h-4 w-4" />
-                    </button>
-                    <div className="bg-gray-50 rounded-full p-2 text-sm text-gray-700">
-                      {postMealData.conditionMetric}
-                    </div>
-                    <button
-                      onClick={() => setPostMealData({ ...postMealData, conditionMetric: Math.min(postMealData.conditionMetric + 10, 200) })}
-                      className="bg-gray-50 rounded-full p-2 text-gray-700"
-                    >
-                      <Plus className="h-4 w-4" />
-                    </button>
-                  </div>
-                </div>
-
-                {/* Submit Button */}
-                <div className="flex items-center gap-3">
-                  <button
-                    onClick={() => {
-                      // Handle post-meal data submission
-                      console.log("Post-Meal Data:", postMealData);
-                      setShowPostMealLog(false);
-                    }}
-                    className="flex-1 bg-gradient-to-r from-[#1f7a8c] to-[#4ecdc4] text-white rounded-2xl py-4 hover:shadow-lg transition-all"
-                  >
-                    Submit
-                  </button>
-                </div>
-
-                {/* Close Button */}
-                <button
-                  onClick={() => setShowPostMealLog(false)}
-                  className="w-full bg-gradient-to-r from-[#1f7a8c] to-[#4ecdc4] text-white rounded-2xl py-4 hover:shadow-lg transition-all"
-                >
-                  Cancel
-                </button>
-              </div>
-            </>
-          )}
         </DialogContent>
       </Dialog>
     </div>
