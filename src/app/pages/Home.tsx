@@ -561,6 +561,14 @@ export default function Home() {
 
           <div className="flex items-center gap-2">
             <button
+              onClick={() => setShowFoodWrapped(true)}
+              className="flex items-center gap-1 text-xs font-black px-2.5 py-1 bg-gradient-to-r from-amber-400 to-orange-400 text-amber-950 rounded-full shadow-sm hover:scale-105 active:scale-95 transition-all cursor-pointer"
+              title="Open Food Wrapped Story"
+            >
+              <Sparkles className="h-3.5 w-3.5 text-amber-950 fill-amber-950" />
+              <span>Wrapped</span>
+            </button>
+            <button
               onClick={() => setShowGlobalSearch(true)}
               className="p-2.5 bg-white/70 hover:bg-white rounded-full transition-all shadow-sm active:scale-95"
               aria-label="Search"
@@ -924,6 +932,27 @@ export default function Home() {
             transition={{ duration: 0.25 }}
             className="space-y-4"
           >
+            {/* Food Wrapped Story Highlight Banner */}
+            <div className="bg-gradient-to-r from-amber-500 via-orange-500 to-teal-700 rounded-3xl p-5 text-white shadow-xl flex items-center justify-between gap-4">
+              <div className="space-y-1">
+                <div className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-white/20 text-white text-[10px] font-extrabold uppercase tracking-wider">
+                  <Sparkles size={11} /> 9:16 Story Deck
+                </div>
+                <h3 className="text-base font-black leading-tight">
+                  Your {new Date().toLocaleString("default", { month: "long" })} Food Wrapped
+                </h3>
+                <p className="text-xs text-white/90 leading-snug">
+                  See your cultural food archetype, blood sugar stability score, and share to WhatsApp Status!
+                </p>
+              </div>
+              <button
+                onClick={() => setShowFoodWrapped(true)}
+                className="px-4 py-3 bg-white text-slate-900 font-extrabold text-xs rounded-2xl shadow-md hover:scale-105 active:scale-95 transition-all cursor-pointer shrink-0"
+              >
+                View Story ✨
+              </button>
+            </div>
+
             {/* Embedded Avo Academy Component */}
             <AvoAcademy />
           </motion.div>
@@ -1132,7 +1161,15 @@ export default function Home() {
         }}
       />
       <SmartGroceryPlanner isOpen={showGroceryPlanner} onClose={() => setShowGroceryPlanner(false)} />
-      <FoodWrappedModal isOpen={showFoodWrapped} onClose={() => setShowFoodWrapped(false)} />
+      <FoodWrappedModal
+        isOpen={showFoodWrapped}
+        onClose={() => setShowFoodWrapped(false)}
+        monthlyMealsCount={Math.max(weekLogs.length * 4, 28)}
+        glucoseStabilityPercent={94}
+        topSuperfood="Fluted Pumpkin (Ugu) & Ewedu"
+        spikesPrevented={16}
+        waterGlassesCount={Math.max(waterGlasses * 20, 185)}
+      />
       <NotificationSettingsDialog isOpen={showNotificationSettings} onClose={() => setShowNotificationSettings(false)} />
 
       {/* Smart Contextual In-App Reminder */}
