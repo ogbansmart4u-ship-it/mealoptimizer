@@ -1,5 +1,4 @@
-import {
-  HeartPulse, useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router";
 import {
   User,
@@ -19,6 +18,9 @@ import {
   Settings,
   Palette,
   Trophy,
+  HeartPulse,
+  MessageSquare,
+  Loader2,
 } from "lucide-react";
 import BottomNav from "../components/BottomNav";
 import { Button } from "../components/ui/button";
@@ -41,12 +43,10 @@ import { useUser } from "../contexts/UserContext";
 import { useLocation } from "../contexts/LocationContext";
 import { updateUserProfile } from "../../lib/api";
 import { uploadUserAvatar } from "../../lib/avatarStorage";
-import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { availableRegions } from "../contexts/LocationContext";
 import { AuthDebug } from "../components/AuthDebug";
 import WhatsAppConnectDialog from "../components/WhatsAppConnectDialog";
-import { MessageSquare } from "lucide-react";
 
 export default function Profile() {
   const navigate = useNavigate();
