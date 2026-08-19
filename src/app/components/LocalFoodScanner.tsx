@@ -5,6 +5,7 @@ import { useLocation } from "../contexts/LocationContext";
 import { useUser } from "../contexts/UserContext";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
 import CameraCapture from "./CameraCapture";
+import FixMyPlateModal from "./FixMyPlateModal";
 import { createMealLog, getCollection } from "../../lib/api";
 import { computeVerdict } from "../../lib/conditionVerdict";
 import { toast } from "sonner";
@@ -490,6 +491,7 @@ export default function LocalFoodScanner({ isOpen, onClose }: LocalFoodScannerPr
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [analyzeError, setAnalyzeError] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState(false);
+  const [showFixModal, setShowFixModal] = useState(false);
   const [conditions, setConditions] = useState<{ name: string; severity?: string }[]>([]);
 
   // Load the user's medical conditions so every result gets a personal verdict.
@@ -1031,6 +1033,38 @@ export default function LocalFoodScanner({ isOpen, onClose }: LocalFoodScannerPr
               </button>
             </div>
           </div>
+        )}
+
+        {foodData && (
+          <FixMyPlateModal
+            isOpen={showFixModal}
+            onClose={() => setShowFixModal(false)}
+            meal={{
+              foodName: foodData.dishName,
+              calories: foodData.macroBreakdown.calories,
+              protein: foodData.macroBreakdown.protein,
+              carbs: foodData.macroBreakdown.carbs,
+              fats: foodData.macroBreakdown.fats,
+              fiber: foodData.macroBreakdown.fiber,
+              glycemicLoad: foodData.macroBreakdown.glycemicLoad,
+            }}
+            onApplyOptimized={(optimized) => {
+              setFoodData({
+                ...foodData,
+                dishName: optimized.foodName,
+                macroBreakdown: {
+                  ...foodData.macroBreakdown,
+                  calories: optimized.calories,
+                  protein: optimized.protein,
+                  carbs: optimized.carbs,
+                  fats: optimized.fats,
+                  fiber: optimized.fiber || foodData.macroBreakdown.fiber,
+                  glycemicLoad: (optimized.glycemicLoad as 'Low' | 'Medium' | 'High') || 'Low',
+                },
+              });
+              toast.success("Plate optimized with balanced macros!");
+            }}
+          />
         )}
       </div>
     </div>

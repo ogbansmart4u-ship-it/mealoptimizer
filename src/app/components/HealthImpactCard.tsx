@@ -1,9 +1,12 @@
-import React from "react";
+import React, { useState } from "react";
+import FixMyPlateModal from "./FixMyPlateModal";
 import { ShieldCheck, AlertTriangle, AlertCircle, Sparkles, Heart, Activity, Lightbulb, ChevronRight } from "lucide-react";
 import { computeVerdict, Macros, VerdictLevel } from "../../lib/conditionVerdict";
 import { useUser } from "../contexts/UserContext";
 
 interface HealthImpactCardProps {
+  foodName?: string;
+  onPlateOptimized?: (optimized: any) => void;
   macros: {
     calories: number;
     protein: number;
@@ -55,12 +58,15 @@ const LEVEL_STYLES: Record<
 };
 
 export default function HealthImpactCard({
+  foodName,
+  onPlateOptimized,
   macros,
   clinicalIndication,
   postPrandialNote,
   className = "",
 }: HealthImpactCardProps) {
   const { profile } = useUser();
+  const [showFixModal, setShowFixModal] = useState(false);
 
   // Extract user conditions
   const conditions = (profile?.conditions || []).map((c: any) =>
@@ -196,6 +202,29 @@ export default function HealthImpactCard({
           </div>
         </div>
       )}
+      {/* Fix My Plate Action Button */}
+      <button
+        onClick={() => setShowFixModal(true)}
+        className="mt-3.5 w-full bg-gradient-to-r from-[#1f7a8c] to-[#4ecdc4] hover:opacity-95 text-white font-bold py-2.5 px-4 rounded-2xl text-xs flex items-center justify-center gap-2 shadow-sm transition-all cursor-pointer"
+      >
+        <Sparkles size={15} />
+        <span>Fix My Plate with Avo 🪄</span>
+      </button>
+
+      <FixMyPlateModal
+        isOpen={showFixModal}
+        onClose={() => setShowFixModal(false)}
+        meal={{
+          foodName: foodName || "This Meal",
+          calories: macros.calories,
+          protein: macros.protein,
+          carbs: macros.carbs,
+          fats: macros.fats,
+          fiber: macros.fiber,
+          glycemicLoad: macros.glycemicLoad,
+        }}
+        onApplyOptimized={onPlateOptimized}
+      />
     </div>
   );
 }
