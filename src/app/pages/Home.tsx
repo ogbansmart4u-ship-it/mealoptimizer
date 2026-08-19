@@ -26,6 +26,7 @@ import PostMealCheckIn from "../components/PostMealCheckIn";
 import SmartGroceryPlanner from "../components/SmartGroceryPlanner";
 import CircadianArc from "../components/CircadianArc";
 import WhatsAppConnectDialog from "../components/WhatsAppConnectDialog";
+import CGMSensorVisualizer from "../components/CGMSensorVisualizer";
 import QuickLogShelf, { QuickFoodItem } from "../components/QuickLogShelf";
 import { useSmartNudges } from "../hooks/useSmartNudges";
 import ModeToggle from "../components/ModeToggle";
@@ -1022,7 +1023,10 @@ export default function Home() {
               </div>
             </div>
 
-            {/* 2. Biometric Vitals Quick-Snapshot (3 Cards Grid) */}
+            {/* 2. Continuous Glucose Monitor (CGM) 24-Hr Sensor Stream */}
+            <CGMSensorVisualizer />
+
+            {/* 3. Biometric Vitals Quick-Snapshot (3 Cards Grid) */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               {/* Glucose & Projected eA1c */}
               <button

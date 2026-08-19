@@ -16,10 +16,12 @@ import {
   Trash2,
   Loader2,
   ChevronRight,
+  Radio,
 } from "lucide-react";
 import { XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Area, AreaChart } from "recharts";
 import PageHeader from "../components/PageHeader";
 import BottomNav from "../components/BottomNav";
+import CGMSensorVisualizer from "../components/CGMSensorVisualizer";
 import { SkeletonDashboard } from "../components/SkeletonLoader";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
@@ -55,6 +57,7 @@ export default function BiometricDashboard() {
   const [loading, setLoading] = useState(true);
   const [darkMode, setDarkMode] = useState(false);
   const [showAdd, setShowAdd] = useState(false);
+  const [viewMode, setViewMode] = useState<"cgm" | "manual">("cgm");
 
   const load = async () => {
     try {
@@ -151,49 +154,79 @@ export default function BiometricDashboard() {
         }
       />
 
-      <div className="px-6 mt-6 space-y-6">
-        {/* Header row: last updated + add reading */}
-        <div className={`flex items-center justify-between px-4 py-2 rounded-xl ${darkMode ? "bg-gray-800" : "bg-white/50"}`}>
-          <span className={`text-xs ${darkMode ? "text-gray-400" : "text-gray-500"}`}>
-            {lastUpdated ? `Last reading: ${lastUpdated}` : "No readings yet"}
-          </span>
+      <div className="px-6 mt-6 space-y-5">
+        {/* View Mode Segmented Control */}
+        <div className="flex bg-white/70 dark:bg-gray-800 p-1 rounded-2xl gap-1 shadow-xs border border-teal-100 dark:border-gray-700">
           <button
-            onClick={() => setShowAdd(true)}
-            className="flex items-center gap-1.5 px-3 py-1.5 bg-[#1f7a8c] text-white rounded-lg hover:bg-[#1a6273] transition-colors text-sm font-medium"
+            onClick={() => setViewMode("cgm")}
+            className={`flex-1 py-2.5 px-3 rounded-xl font-extrabold text-xs flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
+              viewMode === "cgm"
+                ? "bg-[#1f7a8c] text-white shadow-md"
+                : "text-gray-600 dark:text-gray-400 hover:text-gray-900"
+            }`}
           >
-            <Plus className="h-4 w-4" /> Add reading
+            <Radio size={14} />
+            <span>CGM 24-Hr Sensor Stream</span>
+          </button>
+          <button
+            onClick={() => setViewMode("manual")}
+            className={`flex-1 py-2.5 px-3 rounded-xl font-extrabold text-xs flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
+              viewMode === "manual"
+                ? "bg-[#1f7a8c] text-white shadow-md"
+                : "text-gray-600 dark:text-gray-400 hover:text-gray-900"
+            }`}
+          >
+            <Activity size={14} />
+            <span>Manual Vitals &amp; Logs</span>
           </button>
         </div>
 
-        {/* Link to meal ↔ glucose insights */}
-        <button
-          onClick={() => navigate("/glucose-insights")}
-          className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left transition-colors ${darkMode ? "bg-gray-800 border border-gray-700 hover:bg-gray-700" : "bg-white shadow-sm hover:bg-gray-50"}`}
-        >
-          <div className="rounded-lg p-2" style={{ backgroundColor: "#1f7a8c20" }}>
-            <TrendingUp className="h-5 w-5 text-[#1f7a8c]" />
-          </div>
-          <div className="flex-1">
-            <div className={`text-sm font-semibold ${darkMode ? "text-gray-200" : "text-gray-800"}`}>Meal &amp; glucose insights</div>
-            <div className={`text-xs ${subText}`}>See which meals spike your blood sugar</div>
-          </div>
-          <ChevronRight className={`h-5 w-5 ${darkMode ? "text-gray-500" : "text-gray-400"}`} />
-        </button>
-
-        {loading ? (
-          <SkeletonDashboard />
-        ) : readings.length === 0 ? (
-          <div className={`rounded-3xl p-8 text-center ${cardClass}`}>
-            <Activity className="h-12 w-12 text-gray-300 mx-auto mb-3" />
-            <h3 className={`font-semibold mb-1 ${darkMode ? "text-gray-200" : "text-gray-800"}`}>No biometrics yet</h3>
-            <p className={`text-sm mb-4 ${subText}`}>
-              Log your first reading — glucose, heart rate, blood pressure and more — to build your dashboard.
-            </p>
-            <Button onClick={() => setShowAdd(true)} className="bg-[#1f7a8c] hover:bg-[#1a6273]">
-              <Plus className="h-4 w-4 mr-1" /> Add your first reading
-            </Button>
-          </div>
+        {viewMode === "cgm" ? (
+          <CGMSensorVisualizer />
         ) : (
+          <>
+            {/* Header row: last updated + add reading */}
+            <div className={`flex items-center justify-between px-4 py-2 rounded-xl ${darkMode ? "bg-gray-800" : "bg-white/50"}`}>
+              <span className={`text-xs ${darkMode ? "text-gray-400" : "text-gray-500"}`}>
+                {lastUpdated ? `Last reading: ${lastUpdated}` : "No readings yet"}
+              </span>
+              <button
+                onClick={() => setShowAdd(true)}
+                className="flex items-center gap-1.5 px-3 py-1.5 bg-[#1f7a8c] text-white rounded-lg hover:bg-[#1a6273] transition-colors text-sm font-medium"
+              >
+                <Plus className="h-4 w-4" /> Add reading
+              </button>
+            </div>
+
+            {/* Link to meal ↔ glucose insights */}
+            <button
+              onClick={() => navigate("/glucose-insights")}
+              className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left transition-colors ${darkMode ? "bg-gray-800 border border-gray-700 hover:bg-gray-700" : "bg-white shadow-sm hover:bg-gray-50"}`}
+            >
+              <div className="rounded-lg p-2" style={{ backgroundColor: "#1f7a8c20" }}>
+                <TrendingUp className="h-5 w-5 text-[#1f7a8c]" />
+              </div>
+              <div className="flex-1">
+                <div className={`text-sm font-semibold ${darkMode ? "text-gray-200" : "text-gray-800"}`}>Meal &amp; glucose insights</div>
+                <div className={`text-xs ${subText}`}>See which meals spike your blood sugar</div>
+              </div>
+              <ChevronRight className={`h-5 w-5 ${darkMode ? "text-gray-500" : "text-gray-400"}`} />
+            </button>
+
+            {loading ? (
+              <SkeletonDashboard />
+            ) : readings.length === 0 ? (
+              <div className={`rounded-3xl p-8 text-center ${cardClass}`}>
+                <Activity className="h-12 w-12 text-gray-300 mx-auto mb-3" />
+                <h3 className={`font-semibold mb-1 ${darkMode ? "text-gray-200" : "text-gray-800"}`}>No biometrics yet</h3>
+                <p className={`text-sm mb-4 ${subText}`}>
+                  Log your first reading — glucose, heart rate, blood pressure and more — to build your dashboard.
+                </p>
+                <Button onClick={() => setShowAdd(true)} className="bg-[#1f7a8c] hover:bg-[#1a6273]">
+                  <Plus className="h-4 w-4 mr-1" /> Add your first reading
+                </Button>
+              </div>
+            ) : (
           <>
             {/* Metabolic Status Gauge (glucose) */}
             <div className={`rounded-3xl shadow-xl p-8 ${darkMode ? "bg-gray-800 border border-gray-700" : "bg-white"}`}>
@@ -356,6 +389,8 @@ export default function BiometricDashboard() {
                 </div>
               </div>
             )}
+          </>
+        )}
           </>
         )}
       </div>
