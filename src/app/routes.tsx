@@ -1,5 +1,5 @@
 import { lazy, Suspense } from "react";
-import { createBrowserRouter, useLocation, useOutlet, useNavigationType } from "react-router";
+import { createBrowserRouter, useLocation, useOutlet, useNavigationType, Navigate } from "react-router";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { AppBottomNav } from "./components/BottomNav";
 
@@ -300,6 +300,14 @@ export const router = createBrowserRouter([
     ),
   },
   {
+    path: "/upgrade",
+    element: (
+      <ProtectedRoute>
+        <UpgradePro />
+      </ProtectedRoute>
+    ),
+  },
+  {
     path: "/health-report",
     element: (
       <ProtectedRoute>
@@ -460,6 +468,10 @@ export const router = createBrowserRouter([
         ),
       },
     ],
+  },
+  {
+    path: "*",
+    element: <Navigate to="/home" replace />,
   },
     ],
   },
