@@ -11,8 +11,10 @@ export default function CircadianArc({ lastMealTime = "20:00" }: CircadianArcPro
 
   useEffect(() => {
     const now = new Date();
-    const [h, m] = lastMealTime.split(":").map(Number);
-    let diff = now.getHours() - (h || 20);
+    const parts = String(lastMealTime || "20:00").split(":");
+    const h = Number(parts[0]);
+    const safeH = !isNaN(h) && h >= 0 && h <= 23 ? h : 20;
+    let diff = now.getHours() - safeH;
     if (diff < 0) diff += 24;
     setFastedHours(Math.max(1, diff));
     setCurrentHour(now.getHours());

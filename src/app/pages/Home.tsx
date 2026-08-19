@@ -955,12 +955,12 @@ export default function Home() {
           /></div>
           
           {/* 2-Hour Post-Meal Check-In */}
-          {todaysMeals.length > 0 && (
-            <PostMealCheckIn lastMeal={todaysMeals[todaysMeals.length - 1]} />
+          {todayLogs.length > 0 && (
+            <PostMealCheckIn lastMeal={todayLogs[todayLogs.length - 1]} />
           )}
 
           {/* Circadian Metabolic Arc */}
-          <CircadianArc lastMealTime={todaysMeals[todaysMeals.length - 1]?.time || "20:00"} />
+          <CircadianArc lastMealTime={todayLogs[todayLogs.length - 1]?.time || "20:00"} />
 
           {/* Time-Based Circadian Insight */}
           <div className="mt-4 pt-4 border-t border-gray-200">
@@ -999,7 +999,7 @@ export default function Home() {
         {/* Daily Metabolic Habit Scorecard */}
         <MetabolicChecklist
           waterCount={waterCount}
-          mealsLoggedCount={todaysMeals.length}
+          mealsLoggedCount={todayLogs.length}
           vitalsLoggedCount={0}
         />
 
@@ -1332,7 +1332,7 @@ export default function Home() {
       <div id="tour-fab-actions"><QuickActionsFAB /></div>
 
       <SpotlightTour isOpen={showSpotlightTour} onClose={() => setShowSpotlightTour(false)} />
-      <VoiceFoodLogger isOpen={showVoiceLogger} onClose={() => setShowVoiceLogger(false)} onMealSaved={fetchTodaysMeals} />
+      <VoiceFoodLogger isOpen={showVoiceLogger} onClose={() => setShowVoiceLogger(false)} onMealSaved={() => { getMealLogs().then(logs => { if (Array.isArray(logs)) setWeekLogs(logs); }).catch(() => {}); }} />
       <SmartGroceryPlanner isOpen={showGroceryPlanner} onClose={() => setShowGroceryPlanner(false)} />
 
         {/* Smart Contextual In-App Animated Reminder */}
