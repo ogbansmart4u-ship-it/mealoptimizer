@@ -11,6 +11,7 @@ export interface SmartNudgeState {
   badgeColor?: "teal" | "amber" | "emerald" | "rose" | "indigo";
   primaryAction?: MascotNudgeAction;
   secondaryAction?: MascotNudgeAction;
+  autoCloseSec?: number;
 }
 
 export interface UseSmartNudgesProps {
@@ -21,8 +22,10 @@ export interface UseSmartNudgesProps {
   onLogMeal?: () => void;
 }
 
-const NUDGE_STORAGE_KEY = "mo_last_smart_nudge_time";
-const NUDGE_COOLDOWN_MS = 45 * 60 * 1000; // 45 minutes between automatic proactive nudges
+const HYDRATION_NUDGE_STORAGE_KEY = "mo_last_hydration_nudge_time";
+const GENERAL_NUDGE_STORAGE_KEY = "mo_last_smart_nudge_time";
+const HYDRATION_INTERVAL_MS = 2 * 60 * 60 * 1000; // Smart 2-hour interval for hydration reminders
+const GENERAL_COOLDOWN_MS = 45 * 60 * 1000; // 45-minute cooldown for meal reminders
 
 export function useSmartNudges({
   waterGlasses = 0,
@@ -35,63 +38,80 @@ export function useSmartNudges({
     isOpen: false,
     title: "",
     message: "",
-    gesture: "waving",
+    gesture: "wave",
+    autoCloseSec: 9,
   });
 
   const closeNudge = useCallback(() => {
     setNudge((prev) => ({ ...prev, isOpen: false }));
   }, []);
 
-  const showNudge = useCallback((data: Omit<SmartNudgeState, "isOpen">) => {
-    setNudge({
-      ...data,
-      isOpen: true,
-    });
-    try {
-      localStorage.setItem(NUDGE_STORAGE_KEY, String(Date.now()));
-    } catch {
-      /* ignore */
-    }
-  }, []);
+  const showNudge = useCallback(
+    (data: Omit<SmartNudgeState, "isOpen">) => {
+      setNudge({
+        ...data,
+        isOpen: true,
+        autoCloseSec: data.autoCloseSec ?? 9,
+      });
+      try {
+        localStorage.setItem(GENERAL_NUDGE_STORAGE_KEY, String(Date.now()));
+      } catch {
+        /* ignore */
+      }
+    },
+    []
+  );
 
   useEffect(() => {
-    // Check cooldown
-    let lastTime = 0;
+    let lastGeneralTime = 0;
+    let lastHydrationTime = 0;
     try {
-      lastTime = Number(localStorage.getItem(NUDGE_STORAGE_KEY) || 0);
+      lastGeneralTime = Number(localStorage.getItem(GENERAL_NUDGE_STORAGE_KEY) || 0);
+      lastHydrationTime = Number(localStorage.getItem(HYDRATION_NUDGE_STORAGE_KEY) || 0);
     } catch {
       /* ignore */
     }
 
-    const timeSinceLast = Date.now() - lastTime;
-    if (timeSinceLast < NUDGE_COOLDOWN_MS) {
-      return; // Still in cooldown
-    }
+    const now = Date.now();
+    const timeSinceGeneral = now - lastGeneralTime;
+    const timeSinceHydration = now - lastHydrationTime;
 
     const timer = setTimeout(() => {
-      const now = new Date();
-      const hour = now.getHours();
+      const currentHour = new Date().getHours();
 
-      // Rule 1: Hydration Check (Afternoon / Evening)
-      if (hour >= 13 && hour <= 20 && waterGlasses < 4 && onDrinkWater) {
+      // Rule 1: Smart Ambient Hydration Reminder (Every 2-3 Hours during waking hours 8 AM - 9 PM)
+      if (
+        currentHour >= 8 &&
+        currentHour <= 21 &&
+        waterGlasses < 8 &&
+        timeSinceHydration >= HYDRATION_INTERVAL_MS &&
+        onDrinkWater
+      ) {
         showNudge({
-          title: "Stay Hydrated! \ud83d\udca7",
-          message: `You have logged ${waterGlasses} of 10 glasses today. Drinking water now helps regulate digestion and keep blood pressure steady.`,
-          gesture: "waving",
-          badge: "Hydration Goal",
+          title: "Time for Water, Chief! 💧",
+          message: `You've had ${waterGlasses}/8 glasses today. A glass of water now prevents blood thickness and supports natural blood pressure control.`,
+          gesture: "wave",
+          badge: "Hydration Guard",
           badgeColor: "teal",
+          autoCloseSec: 9,
           primaryAction: {
-            label: "Drink 1 Glass (+250ml)",
+            label: "+1 Glass (250ml) ⚡",
             onClick: async () => {
+              try {
+                localStorage.setItem(HYDRATION_NUDGE_STORAGE_KEY, String(Date.now()));
+              } catch {
+                /* ignore */
+              }
               await onDrinkWater();
               showNudge({
-                title: "Great Job! \ud83d\udc4f",
-                message: "1 glass added! Hydration level updated.",
-                gesture: "thumbsup",
-                badge: "Logged",
+                title: "Hydration Logged! 🥑",
+                message: `${waterGlasses + 1} of 8 glasses reached! Arterial viscosity optimized.`,
+                gesture: "celebrate",
+                badge: "Goal Progress",
                 badgeColor: "emerald",
+                autoCloseSec: 4,
                 secondaryAction: {
-                  label: "Done",
+                  label: "Awesome",
                   onClick: closeNudge,
                 },
               });
@@ -99,22 +119,35 @@ export function useSmartNudges({
           },
           secondaryAction: {
             label: "Later",
-            onClick: closeNudge,
+            onClick: () => {
+              try {
+                localStorage.setItem(HYDRATION_NUDGE_STORAGE_KEY, String(Date.now()));
+              } catch {
+                /* ignore */
+              }
+              closeNudge();
+            },
           },
         });
         return;
       }
 
+      // Check general cooldown for meal prompts
+      if (timeSinceGeneral < GENERAL_COOLDOWN_MS) {
+        return;
+      }
+
       // Rule 2: Morning Breakfast Check (7:30 AM - 11:00 AM)
-      if (hour >= 7 && hour < 11 && mealsLoggedCount === 0 && onLogMeal) {
+      if (currentHour >= 7 && currentHour < 11 && mealsLoggedCount === 0 && onLogMeal) {
         showNudge({
-          title: "Good Morning! \u2600\ufe0f",
-          message: "Fuel your day with a balanced West African breakfast to keep your glucose steady and energy high.",
-          gesture: "waving",
-          badge: "Morning Nutrition",
+          title: "Good Morning! ☀️",
+          message: "Fuel your morning with a balanced West African breakfast to keep your glucose steady and avoid midday slumps.",
+          gesture: "wave",
+          badge: "Morning Fuel",
           badgeColor: "amber",
+          autoCloseSec: 9,
           primaryAction: {
-            label: "Log Breakfast",
+            label: "Plan Breakfast",
             onClick: () => {
               closeNudge();
               onLogMeal();
@@ -129,15 +162,16 @@ export function useSmartNudges({
       }
 
       // Rule 3: Lunch Check (12:30 PM - 3:30 PM)
-      if (hour >= 12 && hour < 16 && mealsLoggedCount <= 1 && onLogMeal) {
+      if (currentHour >= 12 && currentHour < 16 && mealsLoggedCount <= 1 && onLogMeal) {
         showNudge({
-          title: "Time for Lunch! \ud83c\udf72",
-          message: "Remember to balance your carbs with leafy greens and protein to prevent afternoon glucose spikes.",
+          title: "Time for Lunch! 🍲",
+          message: "Remember the sequencing secret: eat your leafy greens and protein first to buffer carbs and block the 2 PM crash.",
           gesture: "thumbsup",
-          badge: "Midday Fuel",
+          badge: "Midday Shield",
           badgeColor: "emerald",
+          autoCloseSec: 9,
           primaryAction: {
-            label: "Log / Plan Lunch",
+            label: "Log Lunch",
             onClick: () => {
               closeNudge();
               onLogMeal();
@@ -154,11 +188,12 @@ export function useSmartNudges({
       // Rule 4: Streak Motivation
       if (streak >= 3 && mealsLoggedCount === 0) {
         showNudge({
-          title: `\ud83d\udd25 ${streak}-Day Streak Active!`,
-          message: "You are building strong, lasting health habits. Log your meals today to keep your streak alive!",
-          gesture: "dancing",
-          badge: "Habit Champion",
+          title: `🔥 ${streak}-Day Streak Active!`,
+          message: "You are building real metabolic momentum. Log your first meal today to protect your streak!",
+          gesture: "celebrate",
+          badge: "Habit Streak",
           badgeColor: "indigo",
+          autoCloseSec: 8,
           secondaryAction: {
             label: "Keep Going!",
             onClick: closeNudge,
@@ -166,7 +201,7 @@ export function useSmartNudges({
         });
         return;
       }
-    }, 2000);
+    }, 2500);
 
     return () => clearTimeout(timer);
   }, [waterGlasses, mealsLoggedCount, streak, onDrinkWater, onLogMeal, showNudge, closeNudge]);
