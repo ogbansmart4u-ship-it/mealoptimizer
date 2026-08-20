@@ -1,10 +1,11 @@
-import { useState } from "react";
-import { Link, useNavigate } from "react-router";
+import { useState, useEffect } from "react";
+import { Link, useNavigate, useLocation } from "react-router";
 import {
   Eye,
   EyeOff,
   Mail,
   Lock,
+  User,
   ArrowLeft,
   Leaf,
   Loader2,
@@ -13,42 +14,90 @@ import {
   MessageSquare,
   Zap,
   CheckCircle2,
+  ArrowRight,
 } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
+import { Checkbox } from "../components/ui/checkbox";
 import { useAuth } from "../contexts/AuthContext";
 import { useLanguage } from "../contexts/LanguageContext";
 import Mascot from "../components/Mascot";
 import WhatsAppConnectDialog from "../components/WhatsAppConnectDialog";
 import { toast } from "sonner";
 import { triggerHaptic } from "../utils/celebration";
-import { motion, useReducedMotion } from "motion/react";
+import { motion, useReducedMotion, AnimatePresence } from "motion/react";
 import type { MascotGesture } from "../types/mascot";
 
 const ease = [0.16, 1, 0.3, 1] as const;
 
 export default function Login() {
   const navigate = useNavigate();
+  const location = useLocation();
   const { t } = useLanguage();
-  const { signIn, signInWithGoogle, signInWithApple } = useAuth();
+  const { user, signIn, signUp, signInWithGoogle, signInWithApple } = useAuth();
   const reduced = useReducedMotion();
 
+  // If user is already authenticated, redirect to /home
+  useEffect(() => {
+    if (user?.id) {
+      navigate("/home", { replace: true });
+    }
+  }, [user?.id, navigate]);
+
+  // Tab State: "login" vs "signup"
+  const isInitialSignUp = location.pathname === "/signup";
+  const [authMode, setAuthMode] = useState<"login" | "signup">(
+    isInitialSignUp ? "signup" : "login"
+  );
+
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [agreedToTerms, setAgreedToTerms] = useState(false);
   const [loading, setLoading] = useState(false);
   const [oauthLoading, setOauthLoading] = useState<"google" | "apple" | null>(null);
   const [mascotGesture, setMascotGesture] = useState<MascotGesture>("wave");
   const [showWhatsAppModal, setShowWhatsAppModal] = useState(false);
 
   const [formData, setFormData] = useState({
+    fullName: "",
     email: "",
     password: "",
+    confirmPassword: "",
   });
+
+  const handleModeSwitch = (mode: "login" | "signup") => {
+    triggerHaptic("light");
+    setAuthMode(mode);
+    setMascotGesture(mode === "signup" ? "pointing" : "wave");
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.email || !formData.password) {
-      toast.error("Please fill in both email and password");
+    const email = formData.email.trim().toLowerCase();
+    const password = formData.password;
+
+    if (!email || !password) {
+      toast.error("Please fill in all required fields");
       return;
+    }
+
+    if (authMode === "signup") {
+      if (!formData.fullName.trim()) {
+        toast.error("Please enter your full name");
+        return;
+      }
+      if (password.length < 6) {
+        toast.error("Password must be at least 6 characters");
+        return;
+      }
+      if (password !== formData.confirmPassword) {
+        toast.error("Passwords do not match");
+        return;
+      }
+      if (!agreedToTerms) {
+        toast.error("Please agree to the Terms & Privacy Policy to continue");
+        return;
+      }
     }
 
     setLoading(true);
@@ -56,17 +105,35 @@ export default function Login() {
     triggerHaptic("medium");
 
     try {
-      await signIn(formData.email.trim(), formData.password);
-      setMascotGesture("celebrate");
-      triggerHaptic("success");
-      toast.success("Welcome back! Loading your metabolic dashboard...", {
-        duration: 2500,
-      });
-      setTimeout(() => navigate("/home"), 400);
+      if (authMode === "login") {
+        await signIn(email, password);
+        setMascotGesture("celebrate");
+        triggerHaptic("success");
+        toast.success("Welcome back! Loading your metabolic dashboard...", {
+          duration: 2500,
+        });
+        setTimeout(() => navigate("/home"), 400);
+      } else {
+        // Sign Up Flow — stores pending signup for step-by-step Onboarding or registers directly
+        localStorage.setItem(
+          "pendingSignup",
+          JSON.stringify({
+            email,
+            password,
+            fullName: formData.fullName.trim(),
+          })
+        );
+        setMascotGesture("celebrate");
+        triggerHaptic("success");
+        toast.success("Account initialized! Let's personalize your plan.", {
+          duration: 2500,
+        });
+        setTimeout(() => navigate("/onboarding"), 400);
+      }
     } catch (error: any) {
       setMascotGesture("idle");
       triggerHaptic("heavy");
-      console.error("Login error:", error);
+      console.error("Auth error:", error);
 
       const msg = error?.message || "";
       if (msg.includes("Invalid login credentials") || msg.includes("invalid_grant")) {
@@ -83,8 +150,14 @@ export default function Login() {
           description: "Please click the confirmation link sent to your inbox, then sign in.",
           duration: 7000,
         });
+      } else if (msg.includes("already registered") || msg.includes("User already registered")) {
+        toast.error("Account already exists", {
+          description: "Switching you to sign in...",
+          duration: 4000,
+        });
+        setAuthMode("login");
       } else {
-        toast.error("Could not sign in", {
+        toast.error("Authentication failed", {
           description: msg || "Please check your connection and try again.",
           duration: 5000,
         });
@@ -137,32 +210,33 @@ export default function Login() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#B8E5E5] via-[#E8F5F5] to-[#F7F9F8] flex flex-col justify-between selection:bg-teal-200">
       {/* Top Header Bar */}
-      <div className="px-5 pt-8 sm:pt-10 flex items-center justify-between max-w-md mx-auto w-full">
-        <button
-          onClick={() => navigate("/")}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/70 hover:bg-white text-[#1f7a8c] text-xs font-bold transition-all shadow-xs active:scale-95 cursor-pointer backdrop-blur-sm"
-        >
-          <ArrowLeft className="h-3.5 w-3.5" />
-          <span>{t("common.back")}</span>
-        </button>
+      <div className="px-5 pt-7 sm:pt-8 flex items-center justify-between max-w-md mx-auto w-full">
+        <div className="flex items-center gap-2">
+          <div className="w-8 h-8 rounded-xl bg-white/80 shadow-xs flex items-center justify-center">
+            <Leaf className="h-4 w-4 text-[#1f7a8c]" />
+          </div>
+          <span className="font-extrabold text-lg text-[#1f7a8c] tracking-tight">
+            MealOptimizer
+          </span>
+        </div>
 
-        <div className="flex items-center gap-1.5 text-[11px] font-black uppercase tracking-wider text-teal-800 bg-white/60 backdrop-blur-sm px-3 py-1 rounded-full border border-teal-100/60 shadow-xs">
+        <div className="flex items-center gap-1.5 text-[11px] font-black uppercase tracking-wider text-teal-800 bg-white/70 backdrop-blur-sm px-3 py-1 rounded-full border border-teal-100/70 shadow-xs">
           <Sparkles size={12} className="text-teal-600" />
-          <span>Metabolic Health OS</span>
+          <span>Metabolic OS</span>
         </div>
       </div>
 
       {/* Main Content Container */}
-      <div className="px-5 py-6 flex-1 flex flex-col justify-center max-w-md mx-auto w-full">
+      <div className="px-4 sm:px-5 py-5 flex-1 flex flex-col justify-center max-w-md mx-auto w-full">
         {/* Mascot & Welcome Greeting Header */}
         <motion.div
-          className="text-center mb-5 flex flex-col items-center"
-          initial={{ opacity: 0, y: reduced ? 0 : 12 }}
+          className="text-center mb-4 flex flex-col items-center"
+          initial={{ opacity: 0, y: reduced ? 0 : 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.35, ease }}
         >
           <div className="relative mb-2">
-            <Mascot gesture={mascotGesture} size={72} className="drop-shadow-md" />
+            <Mascot gesture={mascotGesture} size={70} className="drop-shadow-md" />
             <span className="absolute -bottom-1 -right-1 flex h-4 w-4">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
               <span className="relative inline-flex rounded-full h-4 w-4 bg-emerald-500 border-2 border-white"></span>
@@ -170,22 +244,50 @@ export default function Login() {
           </div>
 
           <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight leading-tight">
-            Welcome Back! 👋
+            {authMode === "login" ? "Welcome Back! 👋" : "Claim Your Free Plan 🥑"}
           </h1>
           <p className="text-xs sm:text-sm text-slate-600 font-medium mt-1">
-            Your personalized cultural glucose shield is ready
+            {authMode === "login"
+              ? "Your personalized cultural glucose shield is ready"
+              : "Smart nutrition tailored to your biology & African cuisine"}
           </p>
         </motion.div>
 
         {/* 10X Card Container */}
         <motion.div
-          className="bg-white/95 dark:bg-zinc-900/95 backdrop-blur-md border border-teal-100 dark:border-zinc-800 rounded-3xl shadow-xl p-6 sm:p-7 transition-all"
-          initial={{ opacity: 0, y: reduced ? 0 : 16 }}
+          className="bg-white/95 dark:bg-zinc-900/95 backdrop-blur-md border border-teal-100 dark:border-zinc-800 rounded-3xl shadow-xl p-5 sm:p-7 transition-all"
+          initial={{ opacity: 0, y: reduced ? 0 : 14 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4, delay: 0.08, ease }}
+          transition={{ duration: 0.38, delay: 0.05, ease }}
         >
+          {/* Segmented Auth Mode Switcher (Sign In vs Create Account) */}
+          <div className="bg-slate-100 dark:bg-zinc-800/90 p-1 rounded-2xl flex gap-1 mb-5">
+            <button
+              type="button"
+              onClick={() => handleModeSwitch("login")}
+              className={`flex-1 py-2 rounded-xl text-xs font-black transition-all cursor-pointer ${
+                authMode === "login"
+                  ? "bg-white dark:bg-zinc-900 text-slate-900 dark:text-white shadow-xs"
+                  : "text-slate-500 hover:text-slate-800 dark:text-zinc-400"
+              }`}
+            >
+              Sign In
+            </button>
+            <button
+              type="button"
+              onClick={() => handleModeSwitch("signup")}
+              className={`flex-1 py-2 rounded-xl text-xs font-black transition-all cursor-pointer ${
+                authMode === "signup"
+                  ? "bg-white dark:bg-zinc-900 text-slate-900 dark:text-white shadow-xs"
+                  : "text-slate-500 hover:text-slate-800 dark:text-zinc-400"
+              }`}
+            >
+              Create Account
+            </button>
+          </div>
+
           {/* Quick Social One-Tap Auth */}
-          <div className="grid grid-cols-2 gap-2.5 mb-5">
+          <div className="grid grid-cols-2 gap-2.5 mb-4">
             <button
               onClick={handleGoogleSignIn}
               disabled={oauthLoading === "google"}
@@ -233,17 +335,41 @@ export default function Login() {
           </div>
 
           {/* Clean Modern Divider */}
-          <div className="relative my-4">
+          <div className="relative my-3.5">
             <div className="absolute inset-0 flex items-center">
               <div className="w-full border-t border-slate-200 dark:border-zinc-700"></div>
             </div>
             <div className="relative flex justify-center text-[10px] uppercase font-bold tracking-wider">
-              <span className="px-3 bg-white dark:bg-zinc-900 text-slate-400">or sign in with email</span>
+              <span className="px-3 bg-white dark:bg-zinc-900 text-slate-400">
+                {authMode === "login" ? "or sign in with email" : "or register with email"}
+              </span>
             </div>
           </div>
 
           {/* Form */}
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-3.5">
+            {/* Full Name Field (Sign Up Only) */}
+            {authMode === "signup" && (
+              <div className="space-y-1">
+                <label className="text-xs font-bold text-slate-800 dark:text-zinc-200 block">
+                  Full Name
+                </label>
+                <div className="relative">
+                  <User className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                  <Input
+                    name="fullName"
+                    type="text"
+                    autoComplete="name"
+                    placeholder="e.g. Amara Okafor"
+                    value={formData.fullName}
+                    onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
+                    className="pl-10 h-11 bg-slate-50/70 dark:bg-zinc-800/80 border-slate-200 dark:border-zinc-700 rounded-2xl focus-visible:ring-[#1f7a8c] text-sm"
+                    required
+                  />
+                </div>
+              </div>
+            )}
+
             {/* Email Field with Autofill & Keychain Ready */}
             <div className="space-y-1">
               <label
@@ -263,7 +389,7 @@ export default function Login() {
                   placeholder="you@example.com"
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  className="pl-10 h-11 sm:h-12 bg-slate-50/70 dark:bg-zinc-800/80 border-slate-200 dark:border-zinc-700 rounded-2xl focus-visible:ring-[#1f7a8c] text-sm"
+                  className="pl-10 h-11 bg-slate-50/70 dark:bg-zinc-800/80 border-slate-200 dark:border-zinc-700 rounded-2xl focus-visible:ring-[#1f7a8c] text-sm"
                   required
                 />
               </div>
@@ -278,12 +404,14 @@ export default function Login() {
                 >
                   {t("auth.password")}
                 </label>
-                <Link
-                  to="/forgot-password"
-                  className="text-[11px] font-bold text-[#1f7a8c] dark:text-teal-400 hover:underline"
-                >
-                  {t("auth.forgot")}
-                </Link>
+                {authMode === "login" && (
+                  <Link
+                    to="/forgot-password"
+                    className="text-[11px] font-bold text-[#1f7a8c] dark:text-teal-400 hover:underline"
+                  >
+                    {t("auth.forgot")}
+                  </Link>
+                )}
               </div>
               <div className="relative">
                 <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
@@ -291,11 +419,11 @@ export default function Login() {
                   id="password"
                   name="password"
                   type={showPassword ? "text" : "password"}
-                  autoComplete="current-password"
-                  placeholder={t("auth.passwordPlaceholder")}
+                  autoComplete={authMode === "login" ? "current-password" : "new-password"}
+                  placeholder={authMode === "signup" ? "At least 6 characters" : "Enter your password"}
                   value={formData.password}
                   onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                  className="pl-10 pr-10 h-11 sm:h-12 bg-slate-50/70 dark:bg-zinc-800/80 border-slate-200 dark:border-zinc-700 rounded-2xl focus-visible:ring-[#1f7a8c] text-sm"
+                  className="pl-10 pr-10 h-11 bg-slate-50/70 dark:bg-zinc-800/80 border-slate-200 dark:border-zinc-700 rounded-2xl focus-visible:ring-[#1f7a8c] text-sm"
                   required
                 />
                 <button
@@ -309,28 +437,87 @@ export default function Login() {
               </div>
             </div>
 
+            {/* Confirm Password (Sign Up Only) */}
+            {authMode === "signup" && (
+              <div className="space-y-1">
+                <label className="text-xs font-bold text-slate-800 dark:text-zinc-200 block">
+                  Confirm Password
+                </label>
+                <div className="relative">
+                  <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                  <Input
+                    name="confirmPassword"
+                    type={showConfirmPassword ? "text" : "password"}
+                    autoComplete="new-password"
+                    placeholder="Repeat your password"
+                    value={formData.confirmPassword}
+                    onChange={(e) =>
+                      setFormData({ ...formData, confirmPassword: e.target.value })
+                    }
+                    className="pl-10 pr-10 h-11 bg-slate-50/70 dark:bg-zinc-800/80 border-slate-200 dark:border-zinc-700 rounded-2xl focus-visible:ring-[#1f7a8c] text-sm"
+                    required
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                    className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors p-1 cursor-pointer"
+                  >
+                    {showConfirmPassword ? (
+                      <EyeOff className="h-4 w-4" />
+                    ) : (
+                      <Eye className="h-4 w-4" />
+                    )}
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* Terms Checkbox (Sign Up Only) */}
+            {authMode === "signup" && (
+              <div className="flex items-start gap-2 pt-1">
+                <Checkbox
+                  id="terms"
+                  checked={agreedToTerms}
+                  onCheckedChange={(checked) => setAgreedToTerms(checked === true)}
+                  className="mt-0.5"
+                />
+                <label htmlFor="terms" className="text-[11px] text-slate-600 leading-tight">
+                  I agree to the{" "}
+                  <Link to="/terms" className="text-[#1f7a8c] font-bold hover:underline">
+                    Terms
+                  </Link>{" "}
+                  and{" "}
+                  <Link to="/privacy" className="text-[#1f7a8c] font-bold hover:underline">
+                    Privacy Policy
+                  </Link>
+                </label>
+              </div>
+            )}
+
             {/* Primary Submit Button */}
             <Button
               type="submit"
               disabled={loading}
-              className="w-full bg-gradient-to-r from-[#1f7a8c] to-[#2a9d8f] hover:from-[#176270] hover:to-[#227f74] text-white h-12 rounded-2xl font-black text-sm shadow-md hover:shadow-lg transition-all active:scale-[0.98] cursor-pointer mt-1 disabled:opacity-70"
+              className="w-full bg-gradient-to-r from-[#1f7a8c] to-[#2a9d8f] hover:from-[#176270] hover:to-[#227f74] text-white h-12 rounded-2xl font-black text-sm shadow-md hover:shadow-lg transition-all active:scale-[0.98] cursor-pointer mt-2 disabled:opacity-70"
             >
               {loading ? (
                 <span className="flex items-center justify-center gap-2">
                   <Loader2 className="h-4 w-4 animate-spin" />
-                  <span>Logging In...</span>
+                  <span>{authMode === "login" ? "Signing In..." : "Creating Account..."}</span>
                 </span>
               ) : (
                 <span className="flex items-center justify-center gap-1.5">
-                  <span>Sign In to Dashboard</span>
-                  <Zap size={15} />
+                  <span>
+                    {authMode === "login" ? "Sign In to Dashboard" : "Start My Free Plan"}
+                  </span>
+                  {authMode === "login" ? <Zap size={15} /> : <ArrowRight size={15} />}
                 </span>
               )}
             </Button>
           </form>
 
           {/* 1-Tap WhatsApp AI Fast Login */}
-          <div className="mt-4 pt-4 border-t border-slate-100 dark:border-zinc-800">
+          <div className="mt-3.5 pt-3.5 border-t border-slate-100 dark:border-zinc-800">
             <button
               onClick={() => setShowWhatsAppModal(true)}
               className="w-full flex items-center justify-center gap-2 py-2.5 px-3 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 rounded-2xl text-xs font-bold transition-all border border-emerald-200 active:scale-[0.98] cursor-pointer"
@@ -339,23 +526,12 @@ export default function Login() {
               <span>1-Tap WhatsApp AI Fast Connect</span>
             </button>
           </div>
-
-          {/* Sign Up Redirect */}
-          <p className="text-center mt-5 text-xs text-slate-600 font-medium">
-            {t("auth.noAccount")}{" "}
-            <Link
-              to="/signup"
-              className="text-[#1f7a8c] dark:text-teal-400 font-extrabold hover:underline"
-            >
-              {t("auth.signUp")}
-            </Link>
-          </p>
         </motion.div>
       </div>
 
-      {/* Production-Grade Security & Trust Seal Footer (Replaces Debug box) */}
-      <div className="pb-6 px-6 text-center max-w-md mx-auto w-full">
-        <div className="flex flex-wrap items-center justify-center gap-3 text-[11px] text-slate-500 font-semibold mb-1.5">
+      {/* Production-Grade Security & Trust Seal Footer */}
+      <div className="pb-5 px-6 text-center max-w-md mx-auto w-full">
+        <div className="flex flex-wrap items-center justify-center gap-3 text-[11px] text-slate-500 font-semibold mb-1">
           <span className="flex items-center gap-1">
             <ShieldCheck size={13} className="text-teal-600" />
             <span>256-Bit Encrypted</span>
