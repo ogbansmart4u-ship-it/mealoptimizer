@@ -7,7 +7,7 @@ export interface TourStep {
   targetId: string;
   title: string;
   description: string;
-  mascotGesture: "waving" | "thumbsup" | "dancing" | "neutral";
+  mascotGesture: "wave" | "thumbsup" | "dancing" | "neutral";
   position?: "top" | "bottom";
 }
 
@@ -16,7 +16,7 @@ const TOUR_STEPS: TourStep[] = [
     targetId: "tour-quick-shelf",
     title: "1-Tap Cultural Meal Logging 🍲",
     description: "Tap any West African staple (Akamu, Moi Moi, Jollof) to log calories and macros instantly.",
-    mascotGesture: "waving",
+    mascotGesture: "wave",
     position: "bottom",
   },
   {

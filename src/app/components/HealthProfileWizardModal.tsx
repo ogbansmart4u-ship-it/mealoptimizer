@@ -117,7 +117,7 @@ export default function HealthProfileWizardModal({
         {/* Step Indicator Header */}
         <div className="flex items-center justify-between border-b border-zinc-100 dark:border-zinc-800 pb-3.5 mb-4">
           <div className="flex items-center gap-2">
-            <Mascot gesture="waving" size={38} />
+            <Mascot gesture="wave" size={38} />
             <div>
               <span className="text-[10px] uppercase font-bold tracking-wider text-[#1f7a8c] dark:text-teal-400">
                 Setup Step {step} of 4

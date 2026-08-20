@@ -50,6 +50,7 @@ export default function Onboarding() {
 
           // Store onboarding completion
           localStorage.setItem("onboardingComplete", "true");
+          localStorage.setItem("hasCompletedHealthSetup", "true");
           localStorage.setItem("userLocation", location);
           localStorage.setItem("userGoal", primaryGoal);
 

@@ -17,7 +17,6 @@ import { AuthErrorBanner } from "./components/AuthErrorBanner";
 import { EnvironmentCheck } from "./components/EnvironmentCheck";
 import { AchievementNotification } from "./components/AchievementNotification";
 import AppErrorBoundary from "./components/AppErrorBoundary";
-import GoalSetup from "./components/GoalSetup";
 import { initNotificationEngine } from "../lib/notifications";
 import OfflineSyncBanner from "./components/OfflineSyncBanner";
 import PWAInstallBanner from "./components/PWAInstallBanner";
@@ -69,7 +68,6 @@ export default function App() {
                       <OfflineSyncBanner />
                       <PWAInstallBanner />
                       <RouterProvider router={router} />
-                      <GoalSetup />
                       <Toaster />
                     </UserProvider>
                   </LocationProvider>

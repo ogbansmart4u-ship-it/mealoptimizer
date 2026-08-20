@@ -115,7 +115,9 @@ export default function Home() {
   const [showWhatsAppModal, setShowWhatsAppModal] = useState(false);
   const [showHealthWizard, setShowHealthWizard] = useState(() => {
     try {
-      return localStorage.getItem("hasCompletedHealthSetup") !== "true";
+      const isHealthDone = localStorage.getItem("hasCompletedHealthSetup") === "true";
+      const isOnboardingDone = localStorage.getItem("onboardingComplete") === "true";
+      return !isHealthDone && !isOnboardingDone;
     } catch {
       return false;
     }
