@@ -1,8 +1,10 @@
-import { useState, useRef, useEffect } from 'react';
-import { Camera, Upload, Keyboard, X, SwitchCamera, Circle } from 'lucide-react';
+import { useState, useRef, useEffect, useCallback } from 'react';
+import { Camera, Upload, Keyboard, X, SwitchCamera, Circle, AlertCircle, RefreshCw, Smartphone } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from './ui/dialog';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
+import { toast } from 'sonner';
+import { triggerHaptic } from '../utils/celebration';
 
 type CameraCaptureProps = {
   isOpen: boolean;
@@ -24,108 +26,126 @@ export default function CameraCapture({
   const [facingMode, setFacingMode] = useState<'user' | 'environment'>('environment');
   const [manualInput, setManualInput] = useState('');
   const [error, setError] = useState<string | null>(null);
+  const [isStarting, setIsStarting] = useState(false);
 
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const nativeCameraInputRef = useRef<HTMLInputElement>(null);
 
-  // Cleanup camera stream when closing
-  useEffect(() => {
-    if (!isOpen && stream) {
-      stream.getTracks().forEach(track => track.stop());
+  // Stop all active tracks helper
+  const stopTracks = useCallback(() => {
+    if (stream) {
+      stream.getTracks().forEach((track) => track.stop());
       setStream(null);
+    }
+  }, [stream]);
+
+  // Cleanup camera stream when modal closes
+  useEffect(() => {
+    if (!isOpen) {
+      stopTracks();
       setView('options');
       setError(null);
+      setIsStarting(false);
     }
-  }, [isOpen, stream]);
+  }, [isOpen, stopTracks]);
 
-  const startCamera = async () => {
+  // Reliably attach media stream to <video> when view is 'camera' and stream is ready
+  useEffect(() => {
+    if (view === 'camera' && stream && videoRef.current) {
+      const video = videoRef.current;
+      video.srcObject = stream;
+      video.onloadedmetadata = () => {
+        video
+          .play()
+          .catch((e) => console.warn('[CameraCapture] video play interrupted:', e));
+      };
+    }
+  }, [view, stream]);
+
+  const startCamera = async (targetFacing: 'user' | 'environment' = facingMode) => {
+    setIsStarting(true);
+    setError(null);
+    triggerHaptic('light');
+
+    // Stop existing stream if any
+    stopTracks();
+
+    // Check if mediaDevices is supported
+    if (!navigator?.mediaDevices?.getUserMedia) {
+      setError('Camera is not supported in this browser. Please use native photo upload below.');
+      setIsStarting(false);
+      return;
+    }
+
     try {
-      setError(null);
-      const mediaStream = await navigator.mediaDevices.getUserMedia({
-        video: {
-          facingMode: facingMode,
-          width: { ideal: 1920 },
-          height: { ideal: 1080 }
-        }
-      });
+      let mediaStream: MediaStream;
+
+      try {
+        // Preferred modern constraints
+        mediaStream = await navigator.mediaDevices.getUserMedia({
+          video: {
+            facingMode: { ideal: targetFacing },
+            width: { ideal: 1280 },
+            height: { ideal: 720 },
+          },
+          audio: false,
+        });
+      } catch (firstErr) {
+        console.warn('[CameraCapture] Exact constraints failed, falling back to basic video:', firstErr);
+        // Fallback to basic video constraint
+        mediaStream = await navigator.mediaDevices.getUserMedia({
+          video: true,
+          audio: false,
+        });
+      }
 
       setStream(mediaStream);
-
-      if (videoRef.current) {
-        videoRef.current.srcObject = mediaStream;
-        await videoRef.current.play();
-      }
-
       setView('camera');
     } catch (err: any) {
-      console.error('Camera error:', err);
-      if (err.name === 'NotAllowedError') {
-        setError('Camera permission denied. Please allow camera access in your browser settings.');
-      } else if (err.name === 'NotFoundError') {
-        setError('No camera found on this device.');
+      console.error('[CameraCapture] Camera access failed:', err);
+      if (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError') {
+        setError('Camera permission was denied. Please allow camera permissions in your browser or use Phone Camera below.');
+      } else if (err.name === 'NotFoundError' || err.name === 'DevicesNotFoundError') {
+        setError('No camera device found on this system.');
+      } else if (err.name === 'NotReadableError' || err.name === 'TrackStartError') {
+        setError('Camera is currently in use by another application.');
       } else {
-        setError('Could not access camera. ' + err.message);
+        setError(`Could not start camera: ${err.message || 'Unknown error'}`);
       }
+    } finally {
+      setIsStarting(false);
     }
   };
 
   const switchCamera = async () => {
-    // Stop current stream
-    if (stream) {
-      stream.getTracks().forEach(track => track.stop());
-    }
-
-    // Toggle facing mode
-    const newFacingMode = facingMode === 'user' ? 'environment' : 'user';
-    setFacingMode(newFacingMode);
-
-    // Restart camera with new facing mode
-    try {
-      const mediaStream = await navigator.mediaDevices.getUserMedia({
-        video: {
-          facingMode: newFacingMode,
-          width: { ideal: 1920 },
-          height: { ideal: 1080 }
-        }
-      });
-
-      setStream(mediaStream);
-
-      if (videoRef.current) {
-        videoRef.current.srcObject = mediaStream;
-        await videoRef.current.play();
-      }
-    } catch (err) {
-      console.error('Error switching camera:', err);
-      setError('Could not switch camera');
-    }
+    triggerHaptic('light');
+    const newFacing = facingMode === 'user' ? 'environment' : 'user';
+    setFacingMode(newFacing);
+    await startCamera(newFacing);
   };
 
   const capturePhoto = () => {
     if (!videoRef.current || !canvasRef.current) return;
 
+    triggerHaptic('medium');
     const video = videoRef.current;
     const canvas = canvasRef.current;
 
-    // Set canvas dimensions to match video
-    canvas.width = video.videoWidth;
-    canvas.height = video.videoHeight;
+    // Use video stream resolution or fallback
+    const width = video.videoWidth || 640;
+    const height = video.videoHeight || 480;
 
-    // Draw video frame to canvas
+    canvas.width = width;
+    canvas.height = height;
+
     const context = canvas.getContext('2d');
     if (context) {
-      context.drawImage(video, 0, 0, canvas.width, canvas.height);
+      context.drawImage(video, 0, 0, width, height);
+      const imageData = canvas.toDataURL('image/jpeg', 0.9);
 
-      // Convert to base64
-      const imageData = canvas.toDataURL('image/jpeg', 0.95);
-
-      // Stop camera stream
-      if (stream) {
-        stream.getTracks().forEach(track => track.stop());
-        setStream(null);
-      }
-
+      stopTracks();
       onCapture(imageData, 'camera');
       handleClose();
     }
@@ -135,6 +155,7 @@ export default function CameraCapture({
     const file = event.target.files?.[0];
     if (!file) return;
 
+    triggerHaptic('light');
     const reader = new FileReader();
     reader.onload = (e) => {
       const imageData = e.target?.result as string;
@@ -146,63 +167,101 @@ export default function CameraCapture({
 
   const handleManualSubmit = () => {
     if (manualInput.trim()) {
+      triggerHaptic('light');
       onCapture('', 'manual', manualInput.trim());
       handleClose();
     }
   };
 
   const handleClose = () => {
-    if (stream) {
-      stream.getTracks().forEach(track => track.stop());
-      setStream(null);
-    }
+    stopTracks();
     setView('options');
     setManualInput('');
     setError(null);
+    setIsStarting(false);
     onClose();
   };
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent className="max-w-lg p-0 overflow-hidden">
+      <DialogContent className="max-w-lg p-0 overflow-hidden rounded-3xl border-teal-500/30">
         <DialogHeader className="sr-only">
-          <DialogTitle>{title ?? "Capture"}</DialogTitle>
+          <DialogTitle>{title ?? "Capture Food Photo"}</DialogTitle>
           <DialogDescription>Take a photo or upload an image</DialogDescription>
         </DialogHeader>
-        {/* Options View */}
+
+        {/* ============================================================ */}
+        {/* VIEW 1: OPTIONS / PICKER VIEW                                */}
+        {/* ============================================================ */}
         {view === 'options' && (
           <div className="p-6">
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-2xl font-semibold text-gray-800">
-                {title || (mode === 'barcode' ? 'Scan Barcode' : 'Capture Food Photo')}
-              </h2>
+            <div className="flex items-center justify-between mb-5">
+              <div className="flex items-center gap-2.5">
+                <div className="p-2.5 bg-teal-50 dark:bg-teal-950/60 rounded-2xl text-[#1f7a8c] dark:text-teal-400">
+                  <Camera className="h-6 w-6" />
+                </div>
+                <div>
+                  <h2 className="text-xl font-black text-gray-900 dark:text-zinc-100">
+                    {title || (mode === 'barcode' ? 'Scan Barcode' : 'Capture Food Photo')}
+                  </h2>
+                  <p className="text-xs text-gray-500">
+                    Live camera, phone gallery, or instant upload
+                  </p>
+                </div>
+              </div>
               <button
                 onClick={handleClose}
-                className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+                className="p-2 hover:bg-gray-100 dark:hover:bg-zinc-800 rounded-full transition-colors cursor-pointer"
+                aria-label="Close"
               >
-                <X className="h-5 w-5 text-gray-600" />
+                <X className="h-5 w-5 text-gray-500" />
               </button>
             </div>
 
             {error && (
-              <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
-                {error}
+              <div className="mb-4 p-3.5 bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-900/60 rounded-2xl text-red-700 dark:text-red-300 text-xs flex items-start gap-2.5">
+                <AlertCircle size={16} className="flex-shrink-0 mt-0.5" />
+                <div>
+                  <span className="font-bold block">Camera Notice:</span>
+                  <span>{error}</span>
+                </div>
               </div>
             )}
 
             <div className="space-y-3">
-              {/* Take Photo with Camera */}
+              {/* Take Live Photo with In-App Camera */}
               <button
-                onClick={startCamera}
-                className="w-full flex items-center gap-4 p-5 bg-gradient-to-r from-[#1f7a8c] to-[#4ecdc4] hover:from-[#1a6273] hover:to-[#3db3a6] text-white rounded-xl transition-all shadow-md hover:shadow-lg"
+                onClick={() => startCamera()}
+                disabled={isStarting}
+                className="w-full flex items-center gap-3.5 p-4 bg-gradient-to-r from-[#1f7a8c] to-[#4ecdc4] hover:from-[#176270] hover:to-[#3eb5a7] text-white rounded-2xl transition-all shadow-md active:scale-[0.99] cursor-pointer"
               >
-                <div className="bg-white/20 rounded-full p-3">
-                  <Camera className="h-6 w-6" />
+                <div className="bg-white/20 rounded-2xl p-2.5 flex-shrink-0">
+                  {isStarting ? <RefreshCw className="h-6 w-6 animate-spin" /> : <Camera className="h-6 w-6" />}
                 </div>
-                <div className="text-left flex-1">
-                  <div className="font-semibold">Take Photo with Camera</div>
-                  <div className="text-sm text-white/80">
-                    {mode === 'barcode' ? 'Scan barcode directly' : 'Capture food image live'}
+                <div className="text-left flex-1 min-w-0">
+                  <div className="font-extrabold text-sm">
+                    {isStarting ? "Starting Camera..." : "Open Live Camera View"}
+                  </div>
+                  <div className="text-xs text-white/90">
+                    {mode === 'barcode' ? 'Scan product barcode live' : 'Real-time camera scanner'}
+                  </div>
+                </div>
+              </button>
+
+              {/* Native Phone Camera / File Capture (100% Reliable Mobile Fallback) */}
+              <button
+                onClick={() => nativeCameraInputRef.current?.click()}
+                className="w-full flex items-center gap-3.5 p-4 bg-white dark:bg-zinc-900 border-2 border-teal-200 dark:border-zinc-700 hover:border-[#1f7a8c] rounded-2xl transition-all shadow-xs active:scale-[0.99] cursor-pointer"
+              >
+                <div className="bg-emerald-50 dark:bg-emerald-950/60 rounded-2xl p-2.5 flex-shrink-0 text-emerald-600 dark:text-emerald-400">
+                  <Smartphone className="h-6 w-6" />
+                </div>
+                <div className="text-left flex-1 min-w-0">
+                  <div className="font-extrabold text-sm text-gray-900 dark:text-zinc-100">
+                    Take Photo with Phone Camera 📱
+                  </div>
+                  <div className="text-xs text-gray-500">
+                    Opens your device's native high-res camera app
                   </div>
                 </div>
               </button>
@@ -210,38 +269,51 @@ export default function CameraCapture({
               {/* Upload from Gallery */}
               <button
                 onClick={() => fileInputRef.current?.click()}
-                className="w-full flex items-center gap-4 p-5 bg-white border-2 border-gray-200 hover:border-[#1f7a8c] hover:bg-gray-50 rounded-xl transition-all"
+                className="w-full flex items-center gap-3.5 p-4 bg-white dark:bg-zinc-900 border-2 border-gray-200 dark:border-zinc-800 hover:border-[#1f7a8c] rounded-2xl transition-all shadow-xs active:scale-[0.99] cursor-pointer"
               >
-                <div className="bg-[#E8F5F5] rounded-full p-3">
-                  <Upload className="h-6 w-6 text-[#1f7a8c]" />
+                <div className="bg-cyan-50 dark:bg-cyan-950/60 rounded-2xl p-2.5 flex-shrink-0 text-cyan-700 dark:text-cyan-400">
+                  <Upload className="h-6 w-6" />
                 </div>
-                <div className="text-left flex-1">
-                  <div className="font-semibold text-gray-800">Upload from Gallery</div>
-                  <div className="text-sm text-gray-600">
-                    Choose an existing photo
+                <div className="text-left flex-1 min-w-0">
+                  <div className="font-extrabold text-sm text-gray-900 dark:text-zinc-100">
+                    Upload from Photo Gallery
+                  </div>
+                  <div className="text-xs text-gray-500">
+                    Select an existing food picture
                   </div>
                 </div>
               </button>
 
-              {/* Enter Manually */}
+              {/* Enter Manually for Barcodes */}
               {mode === 'barcode' && (
                 <button
                   onClick={() => setView('manual')}
-                  className="w-full flex items-center gap-4 p-5 bg-white border-2 border-gray-200 hover:border-[#1f7a8c] hover:bg-gray-50 rounded-xl transition-all"
+                  className="w-full flex items-center gap-3.5 p-4 bg-white dark:bg-zinc-900 border-2 border-gray-200 dark:border-zinc-800 hover:border-[#1f7a8c] rounded-2xl transition-all cursor-pointer"
                 >
-                  <div className="bg-[#E8F5F5] rounded-full p-3">
-                    <Keyboard className="h-6 w-6 text-[#1f7a8c]" />
+                  <div className="bg-amber-50 dark:bg-amber-950/60 rounded-2xl p-2.5 flex-shrink-0 text-amber-600">
+                    <Keyboard className="h-6 w-6" />
                   </div>
-                  <div className="text-left flex-1">
-                    <div className="font-semibold text-gray-800">Enter Barcode Manually</div>
-                    <div className="text-sm text-gray-600">
-                      Type the barcode number
+                  <div className="text-left flex-1 min-w-0">
+                    <div className="font-extrabold text-sm text-gray-900 dark:text-zinc-100">
+                      Enter Barcode Manually
                     </div>
+                    <div className="text-xs text-gray-500">Type product EAN/UPC code</div>
                   </div>
                 </button>
               )}
             </div>
 
+            {/* Hidden native camera capture input */}
+            <input
+              ref={nativeCameraInputRef}
+              type="file"
+              accept="image/*"
+              capture="environment"
+              onChange={handleFileSelect}
+              className="hidden"
+            />
+
+            {/* Hidden gallery file upload input */}
             <input
               ref={fileInputRef}
               type="file"
@@ -252,122 +324,127 @@ export default function CameraCapture({
           </div>
         )}
 
-        {/* Camera View */}
+        {/* ============================================================ */}
+        {/* VIEW 2: LIVE CAMERA STREAM VIEW                              */}
+        {/* ============================================================ */}
         {view === 'camera' && (
-          <div className="relative bg-black">
+          <div className="relative bg-black flex flex-col justify-center items-center min-h-[420px] max-h-[75vh] overflow-hidden">
             <video
               ref={videoRef}
               autoPlay
               playsInline
-              className="w-full h-auto"
-              style={{ maxHeight: '70vh' }}
+              muted
+              className="w-full h-full object-cover"
+              style={{ maxHeight: '72vh' }}
             />
             <canvas ref={canvasRef} className="hidden" />
 
-            {/* Camera Controls Overlay */}
-            <div className="absolute inset-0 pointer-events-none">
-              {/* Top Bar */}
-              <div className="absolute top-0 left-0 right-0 p-4 bg-gradient-to-b from-black/50 to-transparent pointer-events-auto">
-                <div className="flex items-center justify-between">
-                  <button
-                    onClick={() => {
-                      if (stream) {
-                        stream.getTracks().forEach(track => track.stop());
-                        setStream(null);
-                      }
-                      setView('options');
-                    }}
-                    className="p-2 bg-white/20 backdrop-blur-sm hover:bg-white/30 rounded-full transition-colors"
-                  >
-                    <X className="h-6 w-6 text-white" />
-                  </button>
+            {/* Overlay UI Controls */}
+            <div className="absolute inset-0 flex flex-col justify-between p-4 pointer-events-none">
+              {/* Top Controls Bar */}
+              <div className="flex items-center justify-between pointer-events-auto">
+                <button
+                  onClick={() => {
+                    stopTracks();
+                    setView('options');
+                  }}
+                  className="p-2.5 bg-black/60 backdrop-blur-md hover:bg-black/80 rounded-full text-white transition-colors cursor-pointer"
+                  aria-label="Back to options"
+                >
+                  <X className="h-5 w-5" />
+                </button>
 
-                  <button
-                    onClick={switchCamera}
-                    className="p-2 bg-white/20 backdrop-blur-sm hover:bg-white/30 rounded-full transition-colors"
-                  >
-                    <SwitchCamera className="h-6 w-6 text-white" />
-                  </button>
+                <div className="px-3 py-1 bg-black/60 backdrop-blur-md rounded-full text-white text-[11px] font-bold">
+                  {facingMode === 'environment' ? 'Rear Camera' : 'Front Camera'}
                 </div>
+
+                <button
+                  onClick={switchCamera}
+                  className="p-2.5 bg-black/60 backdrop-blur-md hover:bg-black/80 rounded-full text-white transition-colors cursor-pointer"
+                  aria-label="Switch Camera"
+                >
+                  <SwitchCamera className="h-5 w-5" />
+                </button>
               </div>
 
-              {/* Bottom Bar - Capture Button */}
-              <div className="absolute bottom-0 left-0 right-0 p-8 bg-gradient-to-t from-black/50 to-transparent pointer-events-auto">
-                <div className="flex items-center justify-center">
-                  <button
-                    onClick={capturePhoto}
-                    className="relative group"
-                  >
-                    <div className="w-20 h-20 rounded-full border-4 border-white flex items-center justify-center hover:scale-110 transition-transform">
-                      <div className="w-16 h-16 rounded-full bg-white group-hover:bg-gray-200 transition-colors" />
-                    </div>
-                  </button>
-                </div>
-                <p className="text-center text-white text-sm mt-4">
-                  {mode === 'barcode' ? 'Position barcode in center' : 'Tap to capture'}
-                </p>
-              </div>
-
-              {/* Barcode Guide Overlay */}
+              {/* Barcode Targeting Box (if barcode mode) */}
               {mode === 'barcode' && (
-                <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                  <div className="w-64 h-40 border-4 border-white rounded-lg relative">
-                    <div className="absolute -top-1 -left-1 w-6 h-6 border-t-4 border-l-4 border-green-400" />
-                    <div className="absolute -top-1 -right-1 w-6 h-6 border-t-4 border-r-4 border-green-400" />
-                    <div className="absolute -bottom-1 -left-1 w-6 h-6 border-b-4 border-l-4 border-green-400" />
-                    <div className="absolute -bottom-1 -right-1 w-6 h-6 border-b-4 border-r-4 border-green-400" />
+                <div className="flex-1 flex items-center justify-center pointer-events-none my-auto">
+                  <div className="w-64 h-36 border-2 border-white/80 rounded-2xl relative shadow-2xl">
+                    <div className="absolute top-0 left-0 w-4 h-4 border-t-4 border-l-4 border-emerald-400 -mt-0.5 -ml-0.5" />
+                    <div className="absolute top-0 right-0 w-4 h-4 border-t-4 border-r-4 border-emerald-400 -mt-0.5 -mr-0.5" />
+                    <div className="absolute bottom-0 left-0 w-4 h-4 border-b-4 border-l-4 border-emerald-400 -mb-0.5 -ml-0.5" />
+                    <div className="absolute bottom-0 right-0 w-4 h-4 border-b-4 border-r-4 border-emerald-400 -mb-0.5 -mr-0.5" />
                   </div>
                 </div>
               )}
+
+              {/* Bottom Snap Button */}
+              <div className="flex flex-col items-center justify-center pb-3 pointer-events-auto">
+                <button
+                  onClick={capturePhoto}
+                  className="p-1 rounded-full border-4 border-white hover:scale-105 active:scale-95 transition-all shadow-2xl cursor-pointer"
+                  aria-label="Take Photo"
+                >
+                  <div className="w-16 h-16 rounded-full bg-white hover:bg-teal-100 transition-colors flex items-center justify-center">
+                    <div className="w-13 h-13 rounded-full border-2 border-slate-300" />
+                  </div>
+                </button>
+                <span className="text-white text-xs font-bold mt-2 drop-shadow-md">
+                  Tap to Capture Plate
+                </span>
+              </div>
             </div>
           </div>
         )}
 
-        {/* Manual Entry View */}
+        {/* ============================================================ */}
+        {/* VIEW 3: MANUAL BARCODE ENTRY VIEW                            */}
+        {/* ============================================================ */}
         {view === 'manual' && (
           <div className="p-6">
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-2xl font-semibold text-gray-800">Enter Barcode</h2>
+            <div className="flex items-center justify-between mb-5">
+              <h2 className="text-xl font-black text-gray-900 dark:text-zinc-100">Enter Barcode</h2>
               <button
                 onClick={() => setView('options')}
-                className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+                className="p-2 hover:bg-gray-100 rounded-full transition-colors cursor-pointer"
               >
-                <X className="h-5 w-5 text-gray-600" />
+                <X className="h-5 w-5 text-gray-500" />
               </button>
             </div>
 
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Barcode Number
+                <label className="block text-xs font-bold text-gray-700 dark:text-zinc-300 mb-1.5">
+                  Barcode Number (EAN / UPC)
                 </label>
                 <Input
                   type="text"
-                  placeholder="e.g., 5000112576009"
+                  placeholder="e.g. 5000112576009"
                   value={manualInput}
                   onChange={(e) => setManualInput(e.target.value)}
-                  className="h-12 text-lg"
+                  className="h-12 text-base rounded-2xl"
                   autoFocus
                 />
-                <p className="text-xs text-gray-500 mt-2">
-                  Enter the numeric barcode found on the product packaging
+                <p className="text-[11px] text-gray-400 mt-1.5">
+                  Enter the numeric digits underneath the barcode on product packaging.
                 </p>
               </div>
 
-              <div className="flex gap-3">
+              <div className="flex gap-2 pt-2">
                 <Button
                   onClick={() => setView('options')}
                   variant="outline"
-                  className="flex-1"
+                  className="flex-1 rounded-2xl h-10 font-bold text-xs cursor-pointer"
                 >
                   Back
                 </Button>
                 <Button
                   onClick={handleManualSubmit}
                   disabled={!manualInput.trim()}
-                  className="flex-1 bg-[#1f7a8c] hover:bg-[#1a6273]"
+                  className="flex-1 bg-[#1f7a8c] hover:bg-[#165a67] text-white rounded-2xl h-10 font-bold text-xs cursor-pointer"
                 >
-                  Submit
+                  Submit Barcode
                 </Button>
               </div>
             </div>
