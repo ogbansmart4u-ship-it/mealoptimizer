@@ -607,43 +607,44 @@ export default function Home() {
       </div>
 
       {/* Main Content Area with Tabbed Architecture */}
-      <div className="px-5 sm:px-6 mt-2">
+      {/* Main Content Area with Tabbed Architecture */}
+      <div className="px-3.5 sm:px-6 mt-2 max-w-2xl mx-auto w-full min-w-0">
         {/* Segmented Tab Navigation Control */}
-        <div className="sticky top-3 z-30 bg-white/90 backdrop-blur-md p-1.5 rounded-2xl shadow-md border border-teal-100/90 flex gap-1 mb-5 transition-all">
+        <div className="sticky top-3 z-30 bg-white/95 dark:bg-zinc-900/95 backdrop-blur-md p-1 rounded-2xl shadow-md border border-teal-100/90 dark:border-zinc-800 flex gap-1 mb-4 sm:mb-5 transition-all">
           <button
             onClick={() => setActiveHomeTab("today")}
-            className={`flex-1 py-2.5 px-3 rounded-xl font-bold text-xs sm:text-sm flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
+            className={`flex-1 py-2 sm:py-2.5 px-1.5 sm:px-3 rounded-xl font-bold text-xs sm:text-sm flex items-center justify-center gap-1 sm:gap-1.5 transition-all cursor-pointer truncate ${
               activeHomeTab === "today"
-                ? "bg-gradient-to-r from-[#1f7a8c] to-[#2a9d8f] text-white shadow-md scale-[1.02]"
-                : "text-gray-600 hover:text-gray-900 hover:bg-gray-100/60"
+                ? "bg-gradient-to-r from-[#1f7a8c] to-[#2a9d8f] text-white shadow-md"
+                : "text-gray-600 dark:text-gray-400 hover:text-gray-900 hover:bg-gray-100/60"
             }`}
           >
-            <Sparkles size={15} />
-            <span>Today</span>
+            <Sparkles size={14} className="shrink-0" />
+            <span className="truncate">Today</span>
           </button>
 
           <button
             onClick={() => setActiveHomeTab("academy")}
-            className={`flex-1 py-2.5 px-3 rounded-xl font-bold text-xs sm:text-sm flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
+            className={`flex-1 py-2 sm:py-2.5 px-1.5 sm:px-3 rounded-xl font-bold text-xs sm:text-sm flex items-center justify-center gap-1 sm:gap-1.5 transition-all cursor-pointer truncate ${
               activeHomeTab === "academy"
-                ? "bg-gradient-to-r from-[#1f7a8c] to-[#2a9d8f] text-white shadow-md scale-[1.02]"
-                : "text-gray-600 hover:text-gray-900 hover:bg-gray-100/60"
+                ? "bg-gradient-to-r from-[#1f7a8c] to-[#2a9d8f] text-white shadow-md"
+                : "text-gray-600 dark:text-gray-400 hover:text-gray-900 hover:bg-gray-100/60"
             }`}
           >
-            <BookOpen size={15} />
-            <span>Avo Academy</span>
+            <BookOpen size={14} className="shrink-0" />
+            <span className="truncate">Academy</span>
           </button>
 
           <button
             onClick={() => setActiveHomeTab("clinical")}
-            className={`flex-1 py-2.5 px-3 rounded-xl font-bold text-xs sm:text-sm flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
+            className={`flex-1 py-2 sm:py-2.5 px-1.5 sm:px-3 rounded-xl font-bold text-xs sm:text-sm flex items-center justify-center gap-1 sm:gap-1.5 transition-all cursor-pointer truncate ${
               activeHomeTab === "clinical"
-                ? "bg-gradient-to-r from-[#1f7a8c] to-[#2a9d8f] text-white shadow-md scale-[1.02]"
-                : "text-gray-600 hover:text-gray-900 hover:bg-gray-100/60"
+                ? "bg-gradient-to-r from-[#1f7a8c] to-[#2a9d8f] text-white shadow-md"
+                : "text-gray-600 dark:text-gray-400 hover:text-gray-900 hover:bg-gray-100/60"
             }`}
           >
-            <Stethoscope size={15} />
-            <span>Clinical & Vitals</span>
+            <Stethoscope size={14} className="shrink-0" />
+            <span className="truncate">Clinical</span>
           </button>
         </div>
 
@@ -969,56 +970,56 @@ export default function Home() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.25 }}
-            className="space-y-5"
+            className="w-full min-w-0 space-y-4 sm:space-y-5 overflow-hidden"
           >
             {/* 1. Active Conditions Safeguards Card */}
-            <div className="bg-white rounded-3xl p-5 shadow-lg border border-teal-100">
-              <div className="flex items-center justify-between gap-2 mb-3">
-                <div className="flex items-center gap-2">
-                  <div className="p-2 rounded-2xl bg-teal-50 text-[#1f7a8c]">
+            <div className="w-full min-w-0 bg-white dark:bg-zinc-900 rounded-3xl p-4 sm:p-5 shadow-lg border border-teal-100 dark:border-zinc-800 overflow-hidden">
+              <div className="flex items-center justify-between gap-2 mb-3 min-w-0">
+                <div className="flex items-center gap-2 min-w-0 flex-1">
+                  <div className="p-2 rounded-2xl bg-teal-50 dark:bg-teal-950/50 text-[#1f7a8c] dark:text-teal-400 shrink-0">
                     <ShieldCheck className="h-5 w-5" />
                   </div>
-                  <div>
-                    <h3 className="text-sm font-extrabold text-gray-900 leading-tight">
+                  <div className="min-w-0">
+                    <h3 className="text-xs sm:text-sm font-extrabold text-gray-900 dark:text-zinc-100 leading-tight truncate">
                       Active Condition Intelligence
                     </h3>
-                    <p className="text-[11px] text-gray-500">Real-time dietary guards for your health</p>
+                    <p className="text-[10px] sm:text-[11px] text-gray-500 truncate">Real-time dietary guards for your health</p>
                   </div>
                 </div>
                 <button
                   onClick={() => navigate("/medical-condition")}
-                  className="text-xs font-bold text-[#1f7a8c] hover:underline"
+                  className="text-xs font-bold text-[#1f7a8c] dark:text-teal-400 hover:underline shrink-0 cursor-pointer"
                 >
                   Edit
                 </button>
               </div>
 
               {/* Condition Chips */}
-              <div className="flex flex-wrap gap-2 mb-4">
+              <div className="flex flex-wrap gap-1.5 sm:gap-2 mb-3.5">
                 {activeConditions.map((cond, idx) => (
                   <span
                     key={idx}
-                    className="px-3 py-1 bg-teal-50 text-[#1f7a8c] border border-teal-200 rounded-full text-xs font-extrabold flex items-center gap-1.5"
+                    className="px-2.5 py-1 bg-teal-50 dark:bg-teal-950/40 text-[#1f7a8c] dark:text-teal-300 border border-teal-200 dark:border-teal-800 rounded-full text-[11px] font-extrabold flex items-center gap-1.5 shrink-0"
                   >
-                    <Activity size={13} />
-                    <span>{cond}</span>
+                    <Activity size={12} className="shrink-0" />
+                    <span className="truncate max-w-[200px]">{cond}</span>
                   </span>
                 ))}
               </div>
 
               {/* Safeguards Bullet List */}
-              <div className="space-y-2.5 p-3.5 rounded-2xl bg-gray-50/80 border border-gray-100 text-xs">
-                <div className="flex items-start gap-2 text-gray-700">
-                  <span className="text-emerald-500 font-bold">✓</span>
-                  <span><strong>Glycemic Spike Shield:</strong> Real-time meal analysis flags high-GI cassava/white rice spikes.</span>
+              <div className="space-y-2 p-3 sm:p-3.5 rounded-2xl bg-gray-50/80 dark:bg-zinc-800/60 border border-gray-100 dark:border-zinc-800 text-[11px] sm:text-xs">
+                <div className="flex items-start gap-2 text-gray-700 dark:text-zinc-300">
+                  <span className="text-emerald-500 font-bold shrink-0">✓</span>
+                  <span className="break-words"><strong>Glycemic Spike Shield:</strong> Real-time meal analysis flags high-GI cassava/white rice spikes.</span>
                 </div>
-                <div className="flex items-start gap-2 text-gray-700">
-                  <span className="text-teal-500 font-bold">✓</span>
-                  <span><strong>Sodium & Palm Oil Check:</strong> Monitors stock cubes and saturated palm oil ratios for blood pressure control.</span>
+                <div className="flex items-start gap-2 text-gray-700 dark:text-zinc-300">
+                  <span className="text-teal-500 font-bold shrink-0">✓</span>
+                  <span className="break-words"><strong>Sodium &amp; Palm Oil Check:</strong> Monitors stock cubes and saturated palm oil ratios for blood pressure.</span>
                 </div>
-                <div className="flex items-start gap-2 text-gray-700">
-                  <span className="text-blue-500 font-bold">✓</span>
-                  <span><strong>Wound & Tissue Recovery:</strong> Ensures daily protein target (100g) for maternal / surgical recovery.</span>
+                <div className="flex items-start gap-2 text-gray-700 dark:text-zinc-300">
+                  <span className="text-blue-500 font-bold shrink-0">✓</span>
+                  <span className="break-words"><strong>Tissue Recovery:</strong> Ensures daily protein target (100g) for maternal / surgical recovery.</span>
                 </div>
               </div>
             </div>
@@ -1027,43 +1028,43 @@ export default function Home() {
             <CGMSensorVisualizer />
 
             {/* 3. Biometric Vitals Quick-Snapshot (3 Cards Grid) */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 sm:gap-3">
               {/* Glucose & Projected eA1c */}
               <button
                 onClick={() => navigate("/glucose-insights")}
-                className="bg-white rounded-3xl p-4 shadow-md border border-rose-100 hover:shadow-lg transition-all text-left cursor-pointer"
+                className="w-full min-w-0 bg-white dark:bg-zinc-900 rounded-3xl p-3.5 sm:p-4 shadow-md border border-rose-100 dark:border-zinc-800 hover:shadow-lg transition-all text-left cursor-pointer overflow-hidden"
               >
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-[10px] uppercase font-bold text-rose-600">Blood Glucose & eA1c</span>
-                  <Droplet className="h-4 w-4 text-rose-500" />
+                  <span className="text-[10px] uppercase font-bold text-rose-600 truncate">Blood Glucose &amp; eA1c</span>
+                  <Droplet className="h-4 w-4 text-rose-500 shrink-0" />
                 </div>
-                <div className="text-xl font-black text-gray-900">
+                <div className="text-lg sm:text-xl font-black text-gray-900 dark:text-zinc-100">
                   118 <span className="text-xs font-normal text-gray-500">mg/dL</span>
                 </div>
-                <p className="text-[10px] text-gray-500 mt-1">
-                  Projected eA1c: <strong className="text-rose-700 font-bold">5.7%</strong> (Optimal)
+                <p className="text-[10px] text-gray-500 mt-1 truncate">
+                  Projected eA1c: <strong className="text-rose-700 dark:text-rose-400 font-bold">5.7%</strong> (Optimal)
                 </p>
-                <span className="mt-2 text-[10px] font-bold text-[#1f7a8c] block">
+                <span className="mt-2 text-[10px] font-bold text-[#1f7a8c] dark:text-teal-400 block">
                   View Insights →
                 </span>
               </button>
 
               {/* Blood Pressure */}
               <button
-                onClick={() => navigate("/biometric-dashboard")}
-                className="bg-white rounded-3xl p-4 shadow-md border border-purple-100 hover:shadow-lg transition-all text-left cursor-pointer"
+                onClick={() => navigate("/biometrics")}
+                className="w-full min-w-0 bg-white dark:bg-zinc-900 rounded-3xl p-3.5 sm:p-4 shadow-md border border-purple-100 dark:border-zinc-800 hover:shadow-lg transition-all text-left cursor-pointer overflow-hidden"
               >
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-[10px] uppercase font-bold text-purple-600">Blood Pressure</span>
-                  <Activity className="h-4 w-4 text-purple-500" />
+                  <span className="text-[10px] uppercase font-bold text-purple-600 truncate">Blood Pressure</span>
+                  <Activity className="h-4 w-4 text-purple-500 shrink-0" />
                 </div>
-                <div className="text-xl font-black text-gray-900">
+                <div className="text-lg sm:text-xl font-black text-gray-900 dark:text-zinc-100">
                   118/78 <span className="text-xs font-normal text-gray-500">mmHg</span>
                 </div>
-                <p className="text-[10px] text-emerald-600 font-bold mt-1">
+                <p className="text-[10px] text-emerald-600 dark:text-emerald-400 font-bold mt-1 truncate">
                   Normal Range (AHA Standard)
                 </p>
-                <span className="mt-2 text-[10px] font-bold text-[#1f7a8c] block">
+                <span className="mt-2 text-[10px] font-bold text-[#1f7a8c] dark:text-teal-400 block">
                   Log Vitals →
                 </span>
               </button>
@@ -1071,71 +1072,71 @@ export default function Home() {
               {/* Weight & BMI */}
               <button
                 onClick={() => navigate("/weight")}
-                className="bg-white rounded-3xl p-4 shadow-md border border-teal-100 hover:shadow-lg transition-all text-left cursor-pointer"
+                className="w-full min-w-0 bg-white dark:bg-zinc-900 rounded-3xl p-3.5 sm:p-4 shadow-md border border-teal-100 dark:border-zinc-800 hover:shadow-lg transition-all text-left cursor-pointer overflow-hidden"
               >
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-[10px] uppercase font-bold text-teal-600">Weight & BMI</span>
-                  <TrendingUp className="h-4 w-4 text-teal-500" />
+                  <span className="text-[10px] uppercase font-bold text-teal-600 truncate">Weight &amp; BMI</span>
+                  <TrendingUp className="h-4 w-4 text-teal-500 shrink-0" />
                 </div>
-                <div className="text-xl font-black text-gray-900">
+                <div className="text-lg sm:text-xl font-black text-gray-900 dark:text-zinc-100">
                   {profile?.weight ? `${profile.weight} kg` : "72.4 kg"}
                 </div>
-                <p className="text-[10px] text-gray-500 mt-1">
-                  BMI: <strong>23.4</strong> (Healthy Weight)
+                <p className="text-[10px] text-gray-500 mt-1 truncate">
+                  BMI: <strong>23.4</strong> (Healthy)
                 </p>
-                <span className="mt-2 text-[10px] font-bold text-[#1f7a8c] block">
+                <span className="mt-2 text-[10px] font-bold text-[#1f7a8c] dark:text-teal-400 block">
                   Track Weight →
                 </span>
               </button>
             </div>
 
             {/* 3. 1-Tap Clinical Doctor PDF Export Banner */}
-            <div className="bg-gradient-to-br from-[#1f7a8c] to-[#0e4d5c] rounded-3xl p-5 text-white shadow-xl">
-              <div className="flex items-start justify-between gap-3 mb-3">
-                <div className="p-3 bg-white/20 rounded-2xl backdrop-blur-sm">
-                  <FileSpreadsheet className="h-7 w-7 text-white" />
+            <div className="w-full min-w-0 bg-gradient-to-br from-[#1f7a8c] to-[#0e4d5c] rounded-3xl p-4 sm:p-5 text-white shadow-xl overflow-hidden">
+              <div className="flex items-start justify-between gap-2.5 mb-3">
+                <div className="p-2.5 bg-white/20 rounded-2xl backdrop-blur-sm shrink-0">
+                  <FileSpreadsheet className="h-6 w-6 text-white" />
                 </div>
-                <span className="px-2.5 py-0.5 rounded-full bg-teal-400 text-teal-950 font-extrabold text-[10px]">
+                <span className="px-2.5 py-0.5 rounded-full bg-teal-400 text-teal-950 font-extrabold text-[10px] shrink-0">
                   Clinical Ready
                 </span>
               </div>
-              <h3 className="text-base font-bold leading-snug mb-1">
-                Doctor & Dietitian 30-Day Clinical Report
+              <h3 className="text-sm sm:text-base font-bold leading-snug mb-1">
+                Doctor &amp; Dietitian 30-Day Clinical Report
               </h3>
-              <p className="text-xs text-teal-50/90 leading-relaxed mb-4">
+              <p className="text-[11px] sm:text-xs text-teal-50/90 leading-relaxed mb-4 break-words">
                 Export your glycemic logs, blood pressure trends, estimated A1c, and dietary compliance into a certified 1-page PDF summary for your physician.
               </p>
               <button
                 onClick={() => navigate("/health-report")}
                 className="w-full py-3 bg-white text-[#1f7a8c] hover:bg-teal-50 font-extrabold text-xs rounded-2xl shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer"
               >
-                <FileText size={16} />
+                <FileText size={15} />
                 <span>Open Clinical Doctor Report</span>
               </button>
             </div>
 
             {/* 4. Medical Vault & Medication Quick Actions */}
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-2 gap-2.5 sm:gap-3">
               <button
                 onClick={() => navigate("/medical-vault")}
-                className="bg-white rounded-3xl p-4 border border-teal-100 shadow-md text-left hover:shadow-lg transition-all cursor-pointer"
+                className="w-full min-w-0 bg-white dark:bg-zinc-900 rounded-3xl p-3 sm:p-4 border border-teal-100 dark:border-zinc-800 shadow-md text-left hover:shadow-lg transition-all cursor-pointer overflow-hidden"
               >
-                <div className="p-2.5 rounded-2xl bg-indigo-50 text-indigo-700 w-fit mb-2">
-                  <Shield size={20} />
+                <div className="p-2 rounded-2xl bg-indigo-50 dark:bg-indigo-950/50 text-indigo-700 dark:text-indigo-400 w-fit mb-2">
+                  <Shield size={18} />
                 </div>
-                <span className="text-xs font-extrabold text-gray-900 block">Medical Vault</span>
-                <span className="text-[10px] text-gray-500 block mt-0.5">Lab results & prescriptions</span>
+                <span className="text-xs font-extrabold text-gray-900 dark:text-zinc-100 block truncate">Medical Vault</span>
+                <span className="text-[9.5px] sm:text-[10px] text-gray-500 block mt-0.5 truncate">Lab results &amp; files</span>
               </button>
 
               <button
                 onClick={() => navigate("/medication-tracker")}
-                className="bg-white rounded-3xl p-4 border border-teal-100 shadow-md text-left hover:shadow-lg transition-all cursor-pointer"
+                className="w-full min-w-0 bg-white dark:bg-zinc-900 rounded-3xl p-3 sm:p-4 border border-teal-100 dark:border-zinc-800 shadow-md text-left hover:shadow-lg transition-all cursor-pointer overflow-hidden"
               >
-                <div className="p-2.5 rounded-2xl bg-rose-50 text-rose-700 w-fit mb-2">
-                  <Pill size={20} />
+                <div className="p-2 rounded-2xl bg-rose-50 dark:bg-rose-950/50 text-rose-700 dark:text-rose-400 w-fit mb-2">
+                  <Pill size={18} />
                 </div>
-                <span className="text-xs font-extrabold text-gray-900 block">Medication Tracker</span>
-                <span className="text-[10px] text-gray-500 block mt-0.5">Dose logs & adherence</span>
+                <span className="text-xs font-extrabold text-gray-900 dark:text-zinc-100 block truncate">Med Tracker</span>
+                <span className="text-[9.5px] sm:text-[10px] text-gray-500 block mt-0.5 truncate">Dose adherence</span>
               </button>
             </div>
           </motion.div>

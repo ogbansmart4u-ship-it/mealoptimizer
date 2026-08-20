@@ -206,60 +206,60 @@ export default function QuickLogShelf({
   };
 
   return (
-    <div className="bg-white/90 dark:bg-zinc-900/90 backdrop-blur-md rounded-3xl p-4 sm:p-5 shadow-sm border border-teal-50 dark:border-zinc-800 my-4">
+    <div className="w-full min-w-0 bg-white/90 dark:bg-zinc-900/90 backdrop-blur-md rounded-3xl p-3.5 sm:p-5 shadow-sm border border-teal-50 dark:border-zinc-800 my-4 overflow-hidden">
       {/* Header */}
-      <div className="flex items-center justify-between mb-3">
-        <div className="flex items-center gap-2">
-          <div className="p-1.5 rounded-xl bg-teal-50 dark:bg-teal-950/50 text-[#1f7a8c] dark:text-teal-400">
+      <div className="flex items-center justify-between gap-2 mb-3 min-w-0">
+        <div className="flex items-center gap-2 min-w-0 flex-1">
+          <div className="p-1.5 rounded-xl bg-teal-50 dark:bg-teal-950/50 text-[#1f7a8c] dark:text-teal-400 shrink-0">
             <Zap size={16} />
           </div>
-          <div>
-            <h3 className="text-sm font-bold text-zinc-900 dark:text-zinc-100 flex items-center gap-1.5">
-              1-Tap Quick Log
-              <span className="text-[10px] font-normal px-2 py-0.5 rounded-full bg-teal-50 text-teal-700 dark:bg-teal-950 dark:text-teal-300">
+          <div className="min-w-0">
+            <h3 className="text-xs sm:text-sm font-bold text-zinc-900 dark:text-zinc-100 flex items-center gap-1.5 truncate">
+              <span>1-Tap Quick Log</span>
+              <span className="text-[9px] sm:text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-teal-50 text-teal-700 dark:bg-teal-950 dark:text-teal-300 shrink-0">
                 Instant
               </span>
             </h3>
-            <p className="text-[11px] text-zinc-500 dark:text-zinc-400">
-              Tap any food to log calories & macros in 1 second
+            <p className="text-[10px] sm:text-[11px] text-zinc-500 dark:text-zinc-400 truncate">
+              Tap any food to log calories &amp; macros in 1s
             </p>
           </div>
         </div>
 
         {/* Quick action shortcuts */}
-        <div className="flex items-center gap-1.5">
+        <div className="flex items-center gap-1 shrink-0">
           {onOpenWhatsApp && (
             <button
               onClick={onOpenWhatsApp}
               title="Log via WhatsApp"
-              className="p-2 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-600 dark:bg-emerald-950/60 dark:hover:bg-emerald-900/60 dark:text-emerald-300 transition-colors flex items-center gap-1 cursor-pointer"
+              className="p-1.5 sm:p-2 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-600 dark:bg-emerald-950/60 dark:hover:bg-emerald-900/60 dark:text-emerald-300 transition-colors flex items-center gap-1 cursor-pointer"
             >
-              <MessageSquare size={15} />
+              <MessageSquare size={14} />
             </button>
           )}
           {onOpenScanner && (
             <button
               onClick={onOpenScanner}
               title="Scan Food Photo"
-              className="p-2 rounded-xl bg-teal-50 hover:bg-teal-100 text-[#1f7a8c] dark:bg-zinc-800 dark:hover:bg-zinc-700 transition-colors"
+              className="p-1.5 sm:p-2 rounded-xl bg-teal-50 hover:bg-teal-100 text-[#1f7a8c] dark:bg-zinc-800 dark:hover:bg-zinc-700 transition-colors cursor-pointer"
             >
-              <Camera size={15} />
+              <Camera size={14} />
             </button>
           )}
           {onOpenCustom && (
             <button
               onClick={onOpenCustom}
               title="Custom Log"
-              className="p-2 rounded-xl bg-zinc-100 hover:bg-zinc-200 text-zinc-700 dark:bg-zinc-800 dark:hover:bg-zinc-700 dark:text-zinc-300 transition-colors"
+              className="p-1.5 sm:p-2 rounded-xl bg-zinc-100 hover:bg-zinc-200 text-zinc-700 dark:bg-zinc-800 dark:hover:bg-zinc-700 dark:text-zinc-300 transition-colors cursor-pointer"
             >
-              <Plus size={15} />
+              <Plus size={14} />
             </button>
           )}
         </div>
       </div>
 
       {/* Meal type filter tabs */}
-      <div className="flex items-center gap-1.5 p-1 bg-zinc-100/80 dark:bg-zinc-800/80 rounded-2xl mb-3">
+      <div className="flex items-center gap-1 p-1 bg-zinc-100/80 dark:bg-zinc-800/80 rounded-2xl mb-3">
         {(["breakfast", "lunch", "dinner", "snack"] as const).map((tab) => (
           <button
             key={tab}
@@ -267,7 +267,7 @@ export default function QuickLogShelf({
               triggerHaptic("light");
               setActiveTab(tab);
             }}
-            className={`flex-1 py-1.5 px-2 rounded-xl text-xs font-semibold capitalize transition-all ${
+            className={`flex-1 py-1.5 px-1 sm:px-2 rounded-xl text-[11px] sm:text-xs font-bold capitalize transition-all cursor-pointer ${
               activeTab === tab
                 ? "bg-white dark:bg-zinc-900 text-teal-700 dark:text-teal-300 shadow-sm"
                 : "text-zinc-500 hover:text-zinc-800 dark:text-zinc-400"
@@ -278,7 +278,7 @@ export default function QuickLogShelf({
         ))}
       </div>
 
-      {/* Horizontal Scrollable / Grid of Foods */}
+      {/* Grid of Foods */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
         {filteredFoods.map((food) => {
           const isItemLogging = loggingId === food.id;
@@ -288,27 +288,27 @@ export default function QuickLogShelf({
               whileTap={{ scale: 0.96 }}
               onClick={() => handleTap(food)}
               disabled={isLogging || loggingId !== null}
-              className={`relative text-left p-3 rounded-2xl border transition-all flex flex-col justify-between cursor-pointer select-none ${
+              className={`relative text-left p-3 rounded-2xl border transition-all flex flex-col justify-between cursor-pointer select-none min-w-0 ${
                 isItemLogging
                   ? "bg-teal-50 border-teal-300 dark:bg-teal-950/50"
                   : "bg-white dark:bg-zinc-900/60 border-zinc-100 dark:border-zinc-800/80 hover:border-teal-200 dark:hover:border-zinc-700 hover:shadow-sm"
               }`}
             >
-              <div className="flex items-start justify-between gap-2 mb-1.5">
-                <div className="flex items-center gap-2 min-w-0">
-                  <span className="text-xl flex-shrink-0">{food.emoji}</span>
-                  <div className="min-w-0">
+              <div className="flex items-start justify-between gap-1.5 mb-1.5 min-w-0">
+                <div className="flex items-center gap-2 min-w-0 flex-1">
+                  <span className="text-xl shrink-0">{food.emoji}</span>
+                  <div className="min-w-0 flex-1">
                     <h4 className="text-xs font-bold text-zinc-900 dark:text-zinc-100 truncate">
                       {food.name}
                     </h4>
-                    <span className="text-[11px] text-zinc-500 font-medium">
+                    <span className="text-[10px] sm:text-[11px] text-zinc-500 font-medium block">
                       {food.calories} kcal
                     </span>
                   </div>
                 </div>
 
                 <span
-                  className={`text-[9px] font-bold px-2 py-0.5 rounded-full border ${TAG_CLASSES[food.glycemicColor]}`}
+                  className={`text-[8.5px] sm:text-[9px] font-bold px-1.5 py-0.5 rounded-full border shrink-0 whitespace-nowrap ${TAG_CLASSES[food.glycemicColor]}`}
                 >
                   {food.glycemicTag}
                 </span>
