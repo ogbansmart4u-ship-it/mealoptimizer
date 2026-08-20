@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { MapPin, Sparkles, TrendingUp, ChevronRight, X, Camera, Upload, ScanBarcode, CheckCircle2, AlertTriangle, Ban, Lightbulb } from "lucide-react";
+import { MapPin, Sparkles, TrendingUp, ChevronRight, X, Camera, Upload, ScanBarcode, CheckCircle2, AlertTriangle, Ban, Lightbulb, Share2 } from "lucide-react";
 import { useNavigate } from "react-router";
 import { useLocation } from "../contexts/LocationContext";
 import { useUser } from "../contexts/UserContext";
@@ -7,6 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
 import CameraCapture from "./CameraCapture";
 import FixMyPlateModal from "./FixMyPlateModal";
 import FoodScanningSkeleton from "./FoodScanningSkeleton";
+import ViralMealCardModal from "./ViralMealCardModal";
 import { createMealLog, getCollection } from "../../lib/api";
 import { computeVerdict } from "../../lib/conditionVerdict";
 import { toast } from "sonner";
@@ -493,6 +494,7 @@ export default function LocalFoodScanner({ isOpen, onClose }: LocalFoodScannerPr
   const [analyzeError, setAnalyzeError] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const [showFixModal, setShowFixModal] = useState(false);
+  const [showViralShareModal, setShowViralShareModal] = useState(false);
   const [conditions, setConditions] = useState<{ name: string; severity?: string }[]>([]);
 
   // Load the user's medical conditions so every result gets a personal verdict.
@@ -1026,20 +1028,31 @@ export default function LocalFoodScanner({ isOpen, onClose }: LocalFoodScannerPr
             </Tabs>
 
             {/* Actions */}
-            <div className="flex gap-3 mt-6">
+            <div className="space-y-2.5 mt-6">
+              {/* Viral WhatsApp & IG Story Sharing Button */}
               <button
-                onClick={() => { setFoodData(null); setCapturedImage(null); setAnalyzeError(null); }}
-                className="flex-1 bg-gray-200 text-gray-800 py-3 rounded-xl font-semibold hover:bg-gray-300 transition-colors"
+                onClick={() => setShowViralShareModal(true)}
+                className="w-full py-3.5 px-4 bg-gradient-to-r from-emerald-500 via-[#1f7a8c] to-teal-500 hover:from-emerald-600 hover:to-[#176270] text-white rounded-2xl font-black text-sm shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-[0.98]"
               >
-                Scan Another
+                <Share2 size={16} />
+                <span>Share Plate Grade to WhatsApp / IG Story 📱</span>
               </button>
-              <button
-                onClick={handleSaveToLog}
-                disabled={isSaving}
-                className="flex-1 bg-gradient-to-r from-[#1f7a8c] to-[#4ecdc4] text-white py-3 rounded-xl font-semibold hover:shadow-lg transition-shadow disabled:opacity-60"
-              >
-                {isSaving ? "Saving…" : "Save to Log"}
-              </button>
+
+              <div className="flex gap-3">
+                <button
+                  onClick={() => { setFoodData(null); setCapturedImage(null); setAnalyzeError(null); }}
+                  className="flex-1 bg-gray-200 dark:bg-zinc-800 text-gray-800 dark:text-zinc-200 py-3 rounded-2xl font-bold text-xs hover:bg-gray-300 transition-colors cursor-pointer"
+                >
+                  Scan Another
+                </button>
+                <button
+                  onClick={handleSaveToLog}
+                  disabled={isSaving}
+                  className="flex-1 bg-gradient-to-r from-[#1f7a8c] to-[#4ecdc4] text-white py-3 rounded-2xl font-bold text-xs shadow-md hover:shadow-lg transition-all disabled:opacity-60 cursor-pointer"
+                >
+                  {isSaving ? "Saving…" : "Save to Log"}
+                </button>
+              </div>
             </div>
           </div>
         )}
@@ -1072,6 +1085,25 @@ export default function LocalFoodScanner({ isOpen, onClose }: LocalFoodScannerPr
                 },
               });
               toast.success("Plate optimized with balanced macros!");
+            }}
+          />
+        )}
+
+        {foodData && (
+          <ViralMealCardModal
+            isOpen={showViralShareModal}
+            onClose={() => setShowViralShareModal(false)}
+            mealData={{
+              dishName: foodData.dishName,
+              region: foodData.region,
+              calories: foodData.macroBreakdown.calories,
+              protein: foodData.macroBreakdown.protein,
+              carbs: foodData.macroBreakdown.carbs,
+              fats: foodData.macroBreakdown.fats,
+              fiber: foodData.macroBreakdown.fiber,
+              glycemicLoad: foodData.macroBreakdown.glycemicLoad,
+              imageSrc: capturedImage,
+              impactStatement: foodData.engineerSwap?.impactStatement,
             }}
           />
         )}
