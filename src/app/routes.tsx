@@ -185,7 +185,9 @@ export const router = createBrowserRouter([
   { path: "/forgot-password", Component: ForgotPassword },
   { path: "/reset-password", Component: ResetPassword },
   { path: "/privacy-policy", Component: PrivacyPolicy },
+  { path: "/privacy", Component: PrivacyPolicy },
   { path: "/terms-and-conditions", Component: TermsAndConditions },
+  { path: "/terms", Component: TermsAndConditions },
 
   // ============================================================
   // Onboarding / signup-flow steps — NO bottom nav (single flow)
