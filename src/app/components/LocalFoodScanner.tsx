@@ -6,6 +6,7 @@ import { useUser } from "../contexts/UserContext";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
 import CameraCapture from "./CameraCapture";
 import FixMyPlateModal from "./FixMyPlateModal";
+import FoodScanningSkeleton from "./FoodScanningSkeleton";
 import { createMealLog, getCollection } from "../../lib/api";
 import { computeVerdict } from "../../lib/conditionVerdict";
 import { toast } from "sonner";
@@ -701,36 +702,44 @@ export default function LocalFoodScanner({ isOpen, onClose }: LocalFoodScannerPr
         </div>
 
         {isAnalyzing ? (
-          /* Loading state */
-          <div className="flex flex-col items-center justify-center py-20 px-6 gap-4">
-            <div className="w-16 h-16 border-4 border-[#1f7a8c] border-t-transparent rounded-full animate-spin" />
-            <p className="text-[#1f7a8c] text-lg font-medium">Analysing your food...</p>
-            <p className="text-gray-500 text-sm text-center">AI is identifying nutrients and health insights</p>
+          /* Live Biochemical Laser Scanning State with Progressive Badges */
+          <div className="py-2">
+            <FoodScanningSkeleton imageSrc={capturedImage} />
           </div>
         ) : capturedImage && !foodData ? (
           /* Step 2 — preview + Analyze button */
-          <div className="p-6 flex flex-col items-center gap-5">
-            <p className="text-gray-600 text-center text-sm">Ready to analyse. Tap the button below.</p>
-            <img
-              src={capturedImage}
-              alt="Food to analyse"
-              className="w-full max-h-64 object-cover rounded-2xl shadow-md border border-gray-200"
-            />
+          <div className="p-5 sm:p-6 flex flex-col items-center gap-4">
+            <div className="w-full flex items-center justify-between">
+              <span className="text-xs font-bold text-gray-700 dark:text-zinc-300">Plate Photo Ready</span>
+              <span className="text-[10px] font-black uppercase text-teal-700 bg-teal-50 dark:bg-teal-950/50 px-2 py-0.5 rounded-full border border-teal-200 dark:border-teal-800">
+                AI Vision Ready
+              </span>
+            </div>
+            <div className="relative w-full rounded-2xl overflow-hidden shadow-md border-2 border-teal-200 dark:border-zinc-700">
+              <img
+                src={capturedImage}
+                alt="Food to analyse"
+                className="w-full max-h-64 object-cover"
+              />
+              <div className="absolute top-2 right-2 px-2.5 py-1 bg-black/70 backdrop-blur-md rounded-full text-white text-[10px] font-bold">
+                Tap Scan Below
+              </div>
+            </div>
             {analyzeError && (
-              <p className="text-red-600 text-sm text-center bg-red-50 rounded-xl px-4 py-3 w-full">{analyzeError}</p>
+              <p className="text-red-600 text-xs text-center bg-red-50 dark:bg-red-950/40 rounded-xl px-4 py-2.5 w-full border border-red-200 dark:border-red-900">{analyzeError}</p>
             )}
             <button
               onClick={handleAnalyze}
-              className="w-full bg-gradient-to-r from-[#1f7a8c] to-[#4ecdc4] text-white py-4 rounded-2xl text-lg font-semibold shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all"
+              className="w-full bg-gradient-to-r from-[#1f7a8c] via-[#2a9d8f] to-[#4ecdc4] text-white py-4 rounded-2xl text-base font-extrabold shadow-lg hover:shadow-xl hover:scale-[1.01] active:scale-[0.98] transition-all flex items-center justify-center gap-2 cursor-pointer"
             >
-              <Sparkles className="inline h-5 w-5 mr-2 -mt-0.5" />
-              Analyse Food
+              <Sparkles className="h-5 w-5 animate-pulse" />
+              <span>Scan Plate &amp; Compute Spike Shield</span>
             </button>
             <button
               onClick={() => { setCapturedImage(null); setAnalyzeError(null); }}
-              className="w-full bg-gray-100 text-gray-700 py-3 rounded-2xl font-medium hover:bg-gray-200 transition-colors"
+              className="w-full bg-gray-100 dark:bg-zinc-800 text-gray-700 dark:text-zinc-300 py-2.5 rounded-2xl font-bold text-xs hover:bg-gray-200 dark:hover:bg-zinc-700 transition-colors cursor-pointer"
             >
-              Choose Different Image
+              Take Different Photo
             </button>
           </div>
         ) : !foodData ? (
