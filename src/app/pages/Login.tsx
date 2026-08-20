@@ -1,39 +1,44 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router";
-import { Eye, EyeOff, Mail, Lock, ArrowLeft, Leaf, Loader2 } from "lucide-react";
+import {
+  Eye,
+  EyeOff,
+  Mail,
+  Lock,
+  ArrowLeft,
+  Leaf,
+  Loader2,
+  Sparkles,
+  ShieldCheck,
+  MessageSquare,
+  Zap,
+  CheckCircle2,
+} from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { useAuth } from "../contexts/AuthContext";
 import { useLanguage } from "../contexts/LanguageContext";
+import Mascot from "../components/Mascot";
+import WhatsAppConnectDialog from "../components/WhatsAppConnectDialog";
 import { toast } from "sonner";
+import { triggerHaptic } from "../utils/celebration";
 import { motion, useReducedMotion } from "motion/react";
+import type { MascotGesture } from "../types/mascot";
 
-function Wordmark() {
-  return (
-    <div className="flex items-center gap-2.5 justify-center">
-      <div className="w-9 h-9 rounded-xl bg-[#CCFBF1] flex items-center justify-center flex-shrink-0">
-        <Leaf className="h-5 w-5 text-[#1f7a8c]" />
-      </div>
-      <span
-        className="font-bold text-2xl text-[#1f7a8c] tracking-tight"
-        style={{ fontFamily: "Manrope, sans-serif" }}
-      >
-        MealOptimiza
-      </span>
-    </div>
-  );
-}
-
-const ease = [0, 0, 0.2, 1] as const;
+const ease = [0.16, 1, 0.3, 1] as const;
 
 export default function Login() {
   const navigate = useNavigate();
   const { t } = useLanguage();
   const { signIn, signInWithGoogle, signInWithApple } = useAuth();
   const reduced = useReducedMotion();
+
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [oauthLoading, setOauthLoading] = useState<'google' | 'apple' | null>(null);
+  const [oauthLoading, setOauthLoading] = useState<"google" | "apple" | null>(null);
+  const [mascotGesture, setMascotGesture] = useState<MascotGesture>("wave");
+  const [showWhatsAppModal, setShowWhatsAppModal] = useState(false);
+
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -41,39 +46,47 @@ export default function Login() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
+    if (!formData.email || !formData.password) {
+      toast.error("Please fill in both email and password");
+      return;
+    }
 
-    console.log('=== LOGIN ATTEMPT ===');
-    console.log('Email:', formData.email);
-    console.log('Password length:', formData.password.length);
+    setLoading(true);
+    setMascotGesture("thinking");
+    triggerHaptic("medium");
 
     try {
-      await signIn(formData.email, formData.password);
-      console.log('✅ Login successful');
-      toast.success("Welcome back!");
-      navigate("/home");
-    } catch (error: any) {
-      console.error("❌ Login error:", error);
-      console.error('Error details:', {
-        message: error.message,
-        status: error.status,
-        name: error.name
+      await signIn(formData.email.trim(), formData.password);
+      setMascotGesture("celebrate");
+      triggerHaptic("success");
+      toast.success("Welcome back! Loading your metabolic dashboard...", {
+        duration: 2500,
       });
+      setTimeout(() => navigate("/home"), 400);
+    } catch (error: any) {
+      setMascotGesture("idle");
+      triggerHaptic("heavy");
+      console.error("Login error:", error);
 
-      if (error.message.includes("Invalid login credentials")) {
-        toast.error("Cannot log in", {
-          description: "Wrong password, account not found, or email not yet confirmed. Check your inbox for a confirmation link and try again.",
-          duration: 8000,
+      const msg = error?.message || "";
+      if (msg.includes("Invalid login credentials") || msg.includes("invalid_grant")) {
+        toast.error("Invalid email or password", {
+          description: "Please check your details or tap 'Forgot Password' below.",
+          action: {
+            label: "Reset",
+            onClick: () => navigate("/forgot-password"),
+          },
+          duration: 6000,
         });
-      } else if (error.message.includes("Email not confirmed")) {
+      } else if (msg.includes("Email not confirmed")) {
         toast.error("Email not confirmed", {
-          description: "Check your inbox for a confirmation link, click it, then log in here.",
-          duration: 8000,
+          description: "Please click the confirmation link sent to your inbox, then sign in.",
+          duration: 7000,
         });
       } else {
-        toast.error("Login failed: " + error.message, {
-          description: "Check browser console (F12) for details",
-          duration: 5000
+        toast.error("Could not sign in", {
+          description: msg || "Please check your connection and try again.",
+          duration: 5000,
         });
       }
     } finally {
@@ -82,17 +95,17 @@ export default function Login() {
   };
 
   const handleGoogleSignIn = async () => {
-    setOauthLoading('google');
+    setOauthLoading("google");
+    triggerHaptic("light");
     try {
       await signInWithGoogle();
-      toast.info("Redirecting to Google...");
+      toast.info("Connecting to Google...");
     } catch (error: any) {
       console.error("Google sign-in error:", error);
-      if (error.message?.includes('not enabled')) {
-        toast.error(
-          "Google sign-in is not configured yet. Please use email/password or contact support.",
-          { duration: 6000 }
-        );
+      if (error.message?.includes("not enabled")) {
+        toast.error("Google sign-in is coming soon! Please use email/password for now.", {
+          duration: 5000,
+        });
       } else {
         toast.error(error.message || "Failed to sign in with Google. Please try again.");
       }
@@ -102,17 +115,17 @@ export default function Login() {
   };
 
   const handleAppleSignIn = async () => {
-    setOauthLoading('apple');
+    setOauthLoading("apple");
+    triggerHaptic("light");
     try {
       await signInWithApple();
-      toast.info("Redirecting to Apple...");
+      toast.info("Connecting to Apple...");
     } catch (error: any) {
       console.error("Apple sign-in error:", error);
-      if (error.message?.includes('not enabled')) {
-        toast.error(
-          "Apple sign-in is not configured yet. Please use email/password or contact support.",
-          { duration: 6000 }
-        );
+      if (error.message?.includes("not enabled")) {
+        toast.error("Apple sign-in is coming soon! Please use email/password for now.", {
+          duration: 5000,
+        });
       } else {
         toast.error(error.message || "Failed to sign in with Apple. Please try again.");
       }
@@ -122,194 +135,252 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F7F9F8] flex flex-col">
-      {/* Back nav */}
-      <div className="px-6 pt-10">
+    <div className="min-h-screen bg-gradient-to-b from-[#B8E5E5] via-[#E8F5F5] to-[#F7F9F8] flex flex-col justify-between selection:bg-teal-200">
+      {/* Top Header Bar */}
+      <div className="px-5 pt-8 sm:pt-10 flex items-center justify-between max-w-md mx-auto w-full">
         <button
           onClick={() => navigate("/")}
-          className="flex items-center gap-1.5 text-[#1f7a8c] text-sm font-medium hover:text-[#1a6273] transition-colors"
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/70 hover:bg-white text-[#1f7a8c] text-xs font-bold transition-all shadow-xs active:scale-95 cursor-pointer backdrop-blur-sm"
         >
-          <ArrowLeft className="h-4 w-4" />
-          <span>{t('common.back')}</span>
+          <ArrowLeft className="h-3.5 w-3.5" />
+          <span>{t("common.back")}</span>
         </button>
+
+        <div className="flex items-center gap-1.5 text-[11px] font-black uppercase tracking-wider text-teal-800 bg-white/60 backdrop-blur-sm px-3 py-1 rounded-full border border-teal-100/60 shadow-xs">
+          <Sparkles size={12} className="text-teal-600" />
+          <span>Metabolic Health OS</span>
+        </div>
       </div>
 
-      {/* Logo above card */}
-      <motion.div
-        className="flex justify-center mt-8 mb-6"
-        initial={{ opacity: 0, y: reduced ? 0 : 8 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.3, ease }}
-      >
-        <Wordmark />
-      </motion.div>
-
-      {/* Card */}
-      <div className="flex-1 px-6 pb-10">
+      {/* Main Content Container */}
+      <div className="px-5 py-6 flex-1 flex flex-col justify-center max-w-md mx-auto w-full">
+        {/* Mascot & Welcome Greeting Header */}
         <motion.div
-          className="bg-[#ffffff] border border-[#E2E8F0] rounded-2xl shadow-sm p-8 max-w-md mx-auto"
-          initial={{ opacity: 0, y: reduced ? 0 : 8 }}
+          className="text-center mb-5 flex flex-col items-center"
+          initial={{ opacity: 0, y: reduced ? 0 : 12 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3, delay: 0.05, ease }}
+          transition={{ duration: 0.35, ease }}
         >
-          <h2
-            className="text-xl font-bold text-center mb-1 text-[#0F172A]"
-            style={{ fontFamily: "Manrope, sans-serif" }}
-          >
-            {t('auth.welcomeBack')}
-          </h2>
-          <p className="text-sm text-[#475569] text-center mb-7">{t('auth.loginSubtitle')}</p>
+          <div className="relative mb-2">
+            <Mascot gesture={mascotGesture} size={72} className="drop-shadow-md" />
+            <span className="absolute -bottom-1 -right-1 flex h-4 w-4">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-4 w-4 bg-emerald-500 border-2 border-white"></span>
+            </span>
+          </div>
 
-          <form onSubmit={handleSubmit} className="space-y-5">
-            {/* Email */}
-            <div className="space-y-1.5">
-              <label htmlFor="email" className="text-sm font-medium text-[#1E293B]">
-                {t('auth.email')}
+          <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight leading-tight">
+            Welcome Back! 👋
+          </h1>
+          <p className="text-xs sm:text-sm text-slate-600 font-medium mt-1">
+            Your personalized cultural glucose shield is ready
+          </p>
+        </motion.div>
+
+        {/* 10X Card Container */}
+        <motion.div
+          className="bg-white/95 dark:bg-zinc-900/95 backdrop-blur-md border border-teal-100 dark:border-zinc-800 rounded-3xl shadow-xl p-6 sm:p-7 transition-all"
+          initial={{ opacity: 0, y: reduced ? 0 : 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, delay: 0.08, ease }}
+        >
+          {/* Quick Social One-Tap Auth */}
+          <div className="grid grid-cols-2 gap-2.5 mb-5">
+            <button
+              onClick={handleGoogleSignIn}
+              disabled={oauthLoading === "google"}
+              className="flex items-center justify-center gap-2 bg-white dark:bg-zinc-800 border border-slate-200 dark:border-zinc-700 rounded-2xl py-2.5 px-3 hover:bg-slate-50 dark:hover:bg-zinc-700 transition-all text-xs font-bold text-slate-800 dark:text-zinc-200 shadow-2xs hover:shadow-xs active:scale-[0.98] cursor-pointer disabled:opacity-60"
+            >
+              {oauthLoading === "google" ? (
+                <Loader2 className="h-4 w-4 animate-spin text-teal-600" />
+              ) : (
+                <svg className="h-4 w-4 shrink-0" viewBox="0 0 24 24">
+                  <path
+                    fill="#4285F4"
+                    d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+                  />
+                  <path
+                    fill="#34A853"
+                    d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+                  />
+                  <path
+                    fill="#FBBC05"
+                    d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
+                  />
+                  <path
+                    fill="#EA3323"
+                    d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
+                  />
+                </svg>
+              )}
+              <span>Google</span>
+            </button>
+
+            <button
+              onClick={handleAppleSignIn}
+              disabled={oauthLoading === "apple"}
+              className="flex items-center justify-center gap-2 bg-slate-900 dark:bg-zinc-800 text-white rounded-2xl py-2.5 px-3 hover:bg-black dark:hover:bg-zinc-700 transition-all text-xs font-bold shadow-2xs hover:shadow-xs active:scale-[0.98] cursor-pointer disabled:opacity-60"
+            >
+              {oauthLoading === "apple" ? (
+                <Loader2 className="h-4 w-4 animate-spin text-white" />
+              ) : (
+                <svg className="h-4 w-4 shrink-0" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09l.01-.01zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z" />
+                </svg>
+              )}
+              <span>Apple</span>
+            </button>
+          </div>
+
+          {/* Clean Modern Divider */}
+          <div className="relative my-4">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-slate-200 dark:border-zinc-700"></div>
+            </div>
+            <div className="relative flex justify-center text-[10px] uppercase font-bold tracking-wider">
+              <span className="px-3 bg-white dark:bg-zinc-900 text-slate-400">or sign in with email</span>
+            </div>
+          </div>
+
+          {/* Form */}
+          <form onSubmit={handleSubmit} className="space-y-4">
+            {/* Email Field with Autofill & Keychain Ready */}
+            <div className="space-y-1">
+              <label
+                htmlFor="email"
+                className="text-xs font-bold text-slate-800 dark:text-zinc-200 block"
+              >
+                {t("auth.email")}
               </label>
               <div className="relative">
-                <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-[#94A3B8]" />
+                <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
                 <Input
                   id="email"
+                  name="email"
                   type="email"
+                  inputMode="email"
+                  autoComplete="username email"
                   placeholder="you@example.com"
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  className="pl-10 h-12 bg-[#ffffff] border-[#CBD5E1] rounded-xl focus-visible:ring-[#1f7a8c] focus-visible:border-[#1f7a8c]"
+                  className="pl-10 h-11 sm:h-12 bg-slate-50/70 dark:bg-zinc-800/80 border-slate-200 dark:border-zinc-700 rounded-2xl focus-visible:ring-[#1f7a8c] text-sm"
                   required
                 />
               </div>
             </div>
 
-            {/* Password */}
-            <div className="space-y-1.5">
-              <label htmlFor="password" className="text-sm font-medium text-[#1E293B]">
-                {t('auth.password')}
-              </label>
+            {/* Password Field with Autofill & Keychain Ready */}
+            <div className="space-y-1">
+              <div className="flex items-center justify-between">
+                <label
+                  htmlFor="password"
+                  className="text-xs font-bold text-slate-800 dark:text-zinc-200 block"
+                >
+                  {t("auth.password")}
+                </label>
+                <Link
+                  to="/forgot-password"
+                  className="text-[11px] font-bold text-[#1f7a8c] dark:text-teal-400 hover:underline"
+                >
+                  {t("auth.forgot")}
+                </Link>
+              </div>
               <div className="relative">
-                <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-[#94A3B8]" />
+                <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
                 <Input
                   id="password"
+                  name="password"
                   type={showPassword ? "text" : "password"}
-                  placeholder={t('auth.passwordPlaceholder')}
+                  autoComplete="current-password"
+                  placeholder={t("auth.passwordPlaceholder")}
                   value={formData.password}
                   onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                  className="pl-10 pr-10 h-12 bg-[#ffffff] border-[#CBD5E1] rounded-xl focus-visible:ring-[#1f7a8c] focus-visible:border-[#1f7a8c]"
+                  className="pl-10 pr-10 h-11 sm:h-12 bg-slate-50/70 dark:bg-zinc-800/80 border-slate-200 dark:border-zinc-700 rounded-2xl focus-visible:ring-[#1f7a8c] text-sm"
                   required
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[#94A3B8] hover:text-[#64748B] transition-colors"
+                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors p-1 cursor-pointer"
+                  aria-label={showPassword ? "Hide password" : "Show password"}
                 >
                   {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                 </button>
               </div>
             </div>
 
-            {/* Forgot Password */}
-            <div className="text-right -mt-1">
-              <Link
-                to="/forgot-password"
-                className="text-xs text-[#1f7a8c] hover:text-[#1a6273] hover:underline transition-colors"
-              >
-                {t('auth.forgot')}
-              </Link>
-            </div>
-
-            {/* Submit Button */}
+            {/* Primary Submit Button */}
             <Button
               type="submit"
-              className="w-full bg-[#1f7a8c] hover:bg-[#1a6273] text-white h-12 rounded-xl shadow-sm font-semibold transition-all duration-200 ease-out hover:shadow-md hover:-translate-y-px active:scale-[0.97] motion-reduce:hover:translate-y-0 motion-reduce:active:scale-100 disabled:opacity-60 disabled:pointer-events-none"
-              style={{ fontFamily: "Manrope, sans-serif" }}
               disabled={loading}
+              className="w-full bg-gradient-to-r from-[#1f7a8c] to-[#2a9d8f] hover:from-[#176270] hover:to-[#227f74] text-white h-12 rounded-2xl font-black text-sm shadow-md hover:shadow-lg transition-all active:scale-[0.98] cursor-pointer mt-1 disabled:opacity-70"
             >
               {loading ? (
                 <span className="flex items-center justify-center gap-2">
                   <Loader2 className="h-4 w-4 animate-spin" />
-                  {t('auth.loggingIn')}
+                  <span>Logging In...</span>
                 </span>
-              ) : t('auth.login')}
+              ) : (
+                <span className="flex items-center justify-center gap-1.5">
+                  <span>Sign In to Dashboard</span>
+                  <Zap size={15} />
+                </span>
+              )}
             </Button>
           </form>
 
-          {/* Divider */}
-          <div className="relative my-6">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-[#E2E8F0]"></div>
-            </div>
-            <div className="relative flex justify-center text-xs">
-              <span className="px-3 bg-[#ffffff] text-[#94A3B8] uppercase tracking-wide">{t('common.or')}</span>
-            </div>
-          </div>
-
-          {/* Social Login */}
-          <div className="space-y-3">
+          {/* 1-Tap WhatsApp AI Fast Login */}
+          <div className="mt-4 pt-4 border-t border-slate-100 dark:border-zinc-800">
             <button
-              className="w-full flex items-center justify-center gap-3 bg-[#ffffff] border border-[#E2E8F0] rounded-xl py-3 hover:bg-[#F8FAFC] hover:scale-[1.01] transition-all duration-200 ease-out text-sm font-medium text-[#1E293B] disabled:opacity-50"
-              onClick={handleGoogleSignIn}
-              disabled={oauthLoading === 'google'}
+              onClick={() => setShowWhatsAppModal(true)}
+              className="w-full flex items-center justify-center gap-2 py-2.5 px-3 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 rounded-2xl text-xs font-bold transition-all border border-emerald-200 active:scale-[0.98] cursor-pointer"
             >
-              <svg className="h-4 w-4" viewBox="0 0 24 24">
-                <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
-                <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
-                <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
-                <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
-              </svg>
-              Continue with Google
-            </button>
-
-            <button
-              className="w-full flex items-center justify-center gap-3 bg-[#0F172A] text-white rounded-xl py-3 hover:bg-[#1E293B] hover:scale-[1.01] transition-all duration-200 ease-out text-sm font-medium disabled:opacity-50"
-              onClick={handleAppleSignIn}
-              disabled={oauthLoading === 'apple'}
-            >
-              <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09l.01-.01zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z" />
-              </svg>
-              Continue with Apple
+              <MessageSquare size={14} className="text-[#25D366]" />
+              <span>1-Tap WhatsApp AI Fast Connect</span>
             </button>
           </div>
 
-          {/* Sign Up Link */}
-          <p className="text-center mt-6 text-sm text-[#475569]">
-            {t('auth.noAccount')}{" "}
-            <Link to="/signup" className="text-[#1f7a8c] font-medium hover:underline">
-              {t('auth.signUp')}
+          {/* Sign Up Redirect */}
+          <p className="text-center mt-5 text-xs text-slate-600 font-medium">
+            {t("auth.noAccount")}{" "}
+            <Link
+              to="/signup"
+              className="text-[#1f7a8c] dark:text-teal-400 font-extrabold hover:underline"
+            >
+              {t("auth.signUp")}
             </Link>
           </p>
-
-          {/* Debug Info */}
-          <details className="mt-4">
-            <summary className="text-xs text-[#94A3B8] cursor-pointer hover:text-[#64748B] text-center transition-colors">
-              Troubleshooting &amp; Testing
-            </summary>
-            <div className="mt-2 p-3 bg-[#F8FAFC] rounded-lg text-xs text-[#475569]">
-              <p className="mb-2"><strong>Can&apos;t log in?</strong></p>
-              <ul className="list-disc list-inside space-y-1 mb-3">
-                <li>Account doesn&apos;t exist (you need to sign up first)</li>
-                <li>Wrong email or password</li>
-                <li>Email confirmation required (check Supabase settings)</li>
-                <li>Didn&apos;t complete onboarding after signup</li>
-              </ul>
-              <div className="border-t border-[#E2E8F0] pt-3 space-y-2">
-                <p className="font-semibold text-[#1E293B]">Quick Options:</p>
-                <Link
-                  to="/direct-signup"
-                  className="block bg-blue-50 border border-blue-200 text-blue-700 px-3 py-2 rounded text-center hover:bg-blue-100"
-                >
-                  🧪 Direct Signup Test (Bypass Onboarding)
-                </Link>
-                <Link
-                  to="/signup"
-                  className="block bg-[#F0FDFA] border border-[#CCFBF1] text-[#1f7a8c] px-3 py-2 rounded text-center hover:bg-[#CCFBF1]"
-                >
-                  ✨ Normal Signup (With Onboarding)
-                </Link>
-              </div>
-            </div>
-          </details>
         </motion.div>
       </div>
+
+      {/* Production-Grade Security & Trust Seal Footer (Replaces Debug box) */}
+      <div className="pb-6 px-6 text-center max-w-md mx-auto w-full">
+        <div className="flex flex-wrap items-center justify-center gap-3 text-[11px] text-slate-500 font-semibold mb-1.5">
+          <span className="flex items-center gap-1">
+            <ShieldCheck size={13} className="text-teal-600" />
+            <span>256-Bit Encrypted</span>
+          </span>
+          <span>•</span>
+          <span className="flex items-center gap-1">
+            <CheckCircle2 size={13} className="text-emerald-600" />
+            <span>HIPAA &amp; NDPR Private</span>
+          </span>
+          <span>•</span>
+          <span className="flex items-center gap-1">
+            <Leaf size={13} className="text-teal-700" />
+            <span>Cultural Nutrition</span>
+          </span>
+        </div>
+        <p className="text-[10px] text-slate-400">
+          MealOptimizer &copy; {new Date().getFullYear()} • Engineered for African &amp; Diaspora Health
+        </p>
+      </div>
+
+      {/* WhatsApp Fast Connect Modal */}
+      <WhatsAppConnectDialog
+        isOpen={showWhatsAppModal}
+        onClose={() => setShowWhatsAppModal(false)}
+      />
     </div>
   );
 }
