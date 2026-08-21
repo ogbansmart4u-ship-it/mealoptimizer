@@ -549,62 +549,76 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#B8E5E5] via-[#E8F5F5] to-[#F8FBFB] pb-28">
       {/* Header */}
-      <div className="bg-[#B8E5E5] px-6 pt-10 pb-4">
-        {/* Top utility row */}
-        <div className="flex items-center justify-between mb-3">
+      <div className="bg-gradient-to-b from-[#A5DBDB] to-[#B8E5E5] px-4 sm:px-6 pt-9 pb-4 border-b border-teal-500/15">
+        {/* Top Brand & Utility Navigation Bar */}
+        <div className="flex items-center justify-between gap-2 mb-3.5">
+          {/* Top Left: Clean Brand Anchor (Always Visible on Mobile & Desktop) */}
           <div className="flex items-center gap-2">
-            <span className="text-xs font-semibold px-2.5 py-1 bg-white/70 backdrop-blur-sm text-gray-700 rounded-full shadow-sm">
-              {new Date().toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit", hour12: true })}
-            </span>
-            <span className="flex items-center gap-1 text-xs font-extrabold px-2.5 py-1 bg-orange-100 text-orange-800 rounded-full border border-orange-200 shadow-sm">
-              <Flame className="h-3.5 w-3.5 text-orange-500 fill-orange-500" />
-              <span>{trackingStreak}d streak</span>
-            </span>
+            <img
+              src={logoImage}
+              alt="MealOptimizer"
+              className="h-8 sm:h-9 object-contain drop-shadow-xs"
+            />
           </div>
 
-          <div className="flex items-center gap-2">
+          {/* Top Right: Actions & Profile Avatar */}
+          <div className="flex items-center gap-1.5 sm:gap-2">
+            {/* Streak Counter */}
+            <div className="flex items-center gap-1 text-xs font-black px-2.5 py-1 bg-orange-100/90 text-orange-900 rounded-full border border-orange-300/60 shadow-xs">
+              <Flame className="h-3.5 w-3.5 text-orange-500 fill-orange-500 animate-pulse" />
+              <span>{trackingStreak}d</span>
+            </div>
+
+            {/* Food Wrapped Story Trigger */}
             <button
               onClick={() => setShowFoodWrapped(true)}
-              className="flex items-center gap-1 text-xs font-black px-2.5 py-1 bg-gradient-to-r from-amber-400 to-orange-400 text-amber-950 rounded-full shadow-sm hover:scale-105 active:scale-95 transition-all cursor-pointer"
+              className="hidden xs:flex items-center gap-1 text-xs font-black px-2.5 py-1 bg-gradient-to-r from-amber-400 to-orange-400 text-amber-950 rounded-full shadow-xs hover:scale-105 active:scale-95 transition-all cursor-pointer"
               title="Open Food Wrapped Story"
             >
               <Sparkles className="h-3.5 w-3.5 text-amber-950 fill-amber-950" />
-              <span>Wrapped</span>
+              <span className="hidden sm:inline">Wrapped</span>
             </button>
+
+            {/* Search */}
             <button
               onClick={() => setShowGlobalSearch(true)}
-              className="p-2.5 bg-white/70 hover:bg-white rounded-full transition-all shadow-sm active:scale-95"
+              className="p-2 sm:p-2.5 bg-white/80 hover:bg-white text-gray-700 rounded-full transition-all shadow-xs active:scale-95 cursor-pointer"
               aria-label="Search"
             >
-              <Search className="h-4 w-4 text-gray-700" />
+              <Search className="h-4 w-4" />
             </button>
+
+            {/* Notifications */}
             <button
               onClick={() => setShowNotificationSettings(true)}
-              className="p-2.5 bg-white/70 hover:bg-white rounded-full transition-all shadow-sm active:scale-95"
+              className="p-2 sm:p-2.5 bg-white/80 hover:bg-white text-gray-700 rounded-full transition-all shadow-xs active:scale-95 cursor-pointer"
               aria-label="Notifications"
             >
-              <Bell className="h-4 w-4 text-gray-700" />
+              <Bell className="h-4 w-4" />
             </button>
+
+            {/* Profile Avatar with Upgrade & Plan Badge */}
             <ProfilePictureUpload />
           </div>
         </div>
-        
-        {/* Logo & Greeting Bar */}
-        <div className="flex items-center justify-between gap-3 my-2">
+
+        {/* Hero Greeting & Health Status Bar */}
+        <div className="flex items-center justify-between gap-3 pt-1">
           <div className="flex items-center gap-3">
-            <Mascot size={46} className="flex-shrink-0 drop-shadow-sm" />
+            <Mascot gesture="wave" size={48} className="shrink-0 drop-shadow-sm" />
             <div>
-              <h2 className="text-xl sm:text-2xl font-extrabold text-gray-900 leading-tight">
+              <h2 className="text-lg sm:text-xl font-black text-gray-900 leading-tight">
                 {getTimeBasedGreeting()}, {userName || "Friend"}
               </h2>
-              <p className="text-xs text-gray-600 mt-0.5">{currentDate}</p>
+              <div className="flex items-center gap-1.5 flex-wrap mt-0.5 text-xs font-semibold text-teal-900/80">
+                <span className="text-[11px] text-gray-600">{currentDate}</span>
+                <span>•</span>
+                <span className="text-[11px] font-bold text-teal-800 bg-white/60 px-2 py-0.5 rounded-full border border-teal-600/20">
+                  🛡️ {activeConditions[0] || "Metabolic Health"}
+                </span>
+              </div>
             </div>
           </div>
-          <img 
-            src={logoImage} 
-            alt="MealOptimiza" 
-            className="h-10 object-contain hidden sm:block opacity-90"
-          />
         </div>
       </div>
 
