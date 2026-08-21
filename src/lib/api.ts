@@ -92,16 +92,22 @@ export async function getUserProfile() {
 }
 
 export async function updateUserProfile(profileData: {
-  name: string;
-  age: number;
-  bmi: number;
-  medicalCondition: string;
-  location: string;
-  profilePicture?: string;
+  name?: string;
+  age?: number;
+  bmi?: number;
   weight?: string;
+  height?: string;
+  bloodPressure?: string;
+  systolic?: number;
+  diastolic?: number;
+  medicalCondition?: string;
+  location?: string;
+  profilePicture?: string;
   medications?: string;
   allergies?: string;
   gender?: string;
+  plan?: string;
+  isPro?: boolean;
 }) {
   return apiCall('/auth/profile', {
     method: 'PUT',

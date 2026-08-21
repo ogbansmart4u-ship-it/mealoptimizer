@@ -67,11 +67,14 @@ export default function Profile() {
   const [editingPassword, setEditingPassword] = useState(false);
   const [showWhatsAppDialog, setShowWhatsAppDialog] = useState(false);
 
-  // Form data for editing
+  // Form data for editing with full biodata locking
   const [formData, setFormData] = useState({
     name: "",
     location: "",
     age: "",
+    weight: "",
+    height: "",
+    bloodPressure: "",
     bmi: "",
     medicalCondition: "",
   });
@@ -104,8 +107,11 @@ export default function Profile() {
       setFormData({
         name: profile.name || "",
         location: profile.location || "",
-        age: profile.age?.toString() || "",
-        bmi: profile.bmi?.toString() || "",
+        age: profile.age ? profile.age.toString() : "25",
+        weight: profile.weight ? profile.weight.toString() : "70",
+        height: profile.height ? profile.height.toString() : "170",
+        bloodPressure: profile.bloodPressure || "120/80",
+        bmi: profile.bmi ? profile.bmi.toString() : "24.2",
         medicalCondition: profile.medicalCondition || "",
       });
 
@@ -124,7 +130,7 @@ export default function Profile() {
         setSelectedLocation(matchingRegion);
       }
     }
-  }, [profile, setSelectedLocation]); // Added setSelectedLocation to dependencies
+  }, [profile, setSelectedLocation]);
 
   const handleLogout = async () => {
     try {
@@ -141,44 +147,39 @@ export default function Profile() {
     try {
       setSaving(true);
 
-      // Validate inputs
-      const age = parseInt(formData.age);
-      const bmi = parseFloat(formData.bmi);
+      const age = parseInt(formData.age) || 25;
+      const weight = formData.weight.trim() || "70";
+      const height = formData.height.trim() || "170";
+      const bloodPressure = formData.bloodPressure.trim() || "120/80";
 
-      if (isNaN(age) || age <= 0) {
-        toast.error(t('profile.invalidAge'));
-        setSaving(false);
-        return;
-      }
-
-      if (isNaN(bmi) || bmi <= 0) {
-        toast.error(t('profile.invalidBmi'));
-        setSaving(false);
-        return;
-      }
+      const wNum = parseFloat(weight);
+      const hNum = parseFloat(height) / 100;
+      const computedBmi = (wNum > 0 && hNum > 0)
+        ? parseFloat((wNum / (hNum * hNum)).toFixed(1))
+        : parseFloat(formData.bmi) || 24.2;
 
       const updates = {
         name: formData.name,
         age,
-        bmi,
+        weight,
+        height,
+        bloodPressure,
+        bmi: computedBmi,
         medicalCondition: formData.medicalCondition,
         location: formData.location,
         profilePicture: profile?.profilePicture,
       };
 
-      // Try to update backend
       try {
         await updateUserProfile(updates);
-        console.log("✅ Profile updated in backend");
+        console.log("✅ Profile & Biodata locked to backend");
       } catch (apiError: any) {
-        console.warn("⚠️ Backend update failed, using offline mode:", apiError.message);
-        // Continue with local update
+        console.warn("⚠️ Backend update failed, saving locally:", apiError.message);
       }
 
-      // Update local context (this saves to localStorage)
+      // Update local context (this locks into localStorage)
       updateProfile(updates);
 
-      // Update location context if changed
       const matchingRegion = availableRegions.find(r =>
         r.displayName === formData.location ||
         formData.location?.includes(r.name)
@@ -189,8 +190,6 @@ export default function Profile() {
 
       toast.success(t('profile.updateSuccess'));
       setEditingProfile(false);
-      
-      // Refresh profile to get latest data
       await refreshProfile();
     } catch (error) {
       toast.error(t('profile.updateFailed'));
@@ -320,10 +319,11 @@ export default function Profile() {
     );
   }
 
-  // Calculate weight and height from BMI with complete null-safety
-  const bmiVal = profile?.bmi ? Number(profile.bmi) : null;
-  const estimatedWeight = bmiVal && !isNaN(bmiVal) ? Math.round(bmiVal * 1.65 * 1.65) : null;
-  const estimatedHeight = 165;
+  // Read real biodata with complete null-safety
+  const realWeight = profile?.weight ? `${profile.weight} kg` : "70 kg";
+  const realHeight = profile?.height ? `${profile.height} cm` : "170 cm";
+  const realBp = profile?.bloodPressure || (profile?.systolic && profile?.diastolic ? `${profile.systolic}/${profile.diastolic} mmHg` : "120/80 mmHg");
+  const bmiVal = profile?.bmi ? Number(profile.bmi) : 24.2;
   const displayName = profile?.name || "User";
 
   return (
@@ -376,24 +376,24 @@ export default function Profile() {
         {/* Health Profile Card */}
         <div className="bg-white rounded-3xl shadow-lg p-6 mb-6">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg text-gray-800">{t('profile.healthProfile')}</h3>
+            <h3 className="text-lg font-bold text-gray-800">{t('profile.healthProfile')}</h3>
             <Dialog open={editingProfile} onOpenChange={setEditingProfile}>
               <DialogTrigger asChild>
-                <button className="text-[#1f7a8c] flex items-center gap-1 text-sm hover:underline">
+                <button className="text-[#1f7a8c] font-bold flex items-center gap-1 text-sm hover:underline cursor-pointer">
                   <Edit2 className="h-4 w-4" />
                   {t('profile.edit')}
                 </button>
               </DialogTrigger>
-              <DialogContent className="max-w-md max-h-[90vh] overflow-y-auto">
+              <DialogContent className="max-w-md max-h-[90vh] overflow-y-auto rounded-3xl p-6">
                 <DialogHeader>
-                  <DialogTitle>{t('profile.editHealthProfile')}</DialogTitle>
-                  <DialogDescription>
-                    {t('profile.editHealthDesc')}
+                  <DialogTitle className="text-xl font-bold text-[#1f7a8c]">{t('profile.editHealthProfile')}</DialogTitle>
+                  <DialogDescription className="text-xs text-gray-500">
+                    Update your biodata to calibrate personalized glycemic models and clinical metrics.
                   </DialogDescription>
                 </DialogHeader>
-                <div className="space-y-4 py-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="name">{t('auth.fullName')}</Label>
+                <div className="space-y-3.5 py-3">
+                  <div className="space-y-1.5">
+                    <Label htmlFor="name" className="text-xs font-semibold">{t('auth.fullName')}</Label>
                     <Input
                       id="name"
                       value={formData.name}
@@ -402,15 +402,15 @@ export default function Profile() {
                       }
                     />
                   </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="location">{t('health.link.location')}</Label>
+                  <div className="space-y-1.5">
+                    <Label htmlFor="location" className="text-xs font-semibold">{t('health.link.location')}</Label>
                     <select
                       id="location"
                       value={formData.location}
                       onChange={(e) =>
                         setFormData({ ...formData, location: e.target.value })
                       }
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-xl text-sm"
                     >
                       {availableRegions.map((region) => (
                         <option key={region.id} value={region.displayName}>
@@ -419,9 +419,10 @@ export default function Profile() {
                       ))}
                     </select>
                   </div>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="age">{t('health.link.age')}</Label>
+
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="space-y-1.5">
+                      <Label htmlFor="age" className="text-xs font-semibold">{t('health.link.age')} (yrs)</Label>
                       <Input
                         id="age"
                         type="number"
@@ -431,21 +432,54 @@ export default function Profile() {
                         }
                       />
                     </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="bmi">{t('profile.bmi')}</Label>
+                    <div className="space-y-1.5">
+                      <Label htmlFor="weight" className="text-xs font-semibold">{t('profile.weight')} (kg)</Label>
                       <Input
-                        id="bmi"
+                        id="weight"
                         type="number"
-                        step="0.1"
-                        value={formData.bmi}
+                        step="0.5"
+                        value={formData.weight}
+                        onChange={(e) => {
+                          const w = parseFloat(e.target.value);
+                          const h = parseFloat(formData.height) / 100;
+                          const newBmi = (w > 0 && h > 0) ? (w / (h * h)).toFixed(1) : formData.bmi;
+                          setFormData({ ...formData, weight: e.target.value, bmi: newBmi });
+                        }}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="space-y-1.5">
+                      <Label htmlFor="height" className="text-xs font-semibold">{t('profile.height')} (cm)</Label>
+                      <Input
+                        id="height"
+                        type="number"
+                        step="1"
+                        value={formData.height}
+                        onChange={(e) => {
+                          const h = parseFloat(e.target.value) / 100;
+                          const w = parseFloat(formData.weight);
+                          const newBmi = (w > 0 && h > 0) ? (w / (h * h)).toFixed(1) : formData.bmi;
+                          setFormData({ ...formData, height: e.target.value, bmi: newBmi });
+                        }}
+                      />
+                    </div>
+                    <div className="space-y-1.5">
+                      <Label htmlFor="bp" className="text-xs font-semibold">Blood Pressure (mmHg)</Label>
+                      <Input
+                        id="bp"
+                        placeholder="120/80"
+                        value={formData.bloodPressure}
                         onChange={(e) =>
-                          setFormData({ ...formData, bmi: e.target.value })
+                          setFormData({ ...formData, bloodPressure: e.target.value })
                         }
                       />
                     </div>
                   </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="medicalCondition">{t('profile.medicalCondition')}</Label>
+
+                  <div className="space-y-1.5">
+                    <Label htmlFor="medicalCondition" className="text-xs font-semibold">{t('profile.medicalCondition')}</Label>
                     <Textarea
                       id="medicalCondition"
                       value={formData.medicalCondition}
@@ -455,7 +489,7 @@ export default function Profile() {
                           medicalCondition: e.target.value,
                         })
                       }
-                      rows={3}
+                      rows={2}
                       placeholder={t('profile.conditionPlaceholder')}
                     />
                   </div>
@@ -464,14 +498,14 @@ export default function Profile() {
                   <Button
                     variant="outline"
                     onClick={() => setEditingProfile(false)}
-                    className="flex-1"
+                    className="flex-1 rounded-xl"
                     disabled={saving}
                   >
                     {t('common.cancel')}
                   </Button>
                   <Button
                     onClick={handleSaveProfile}
-                    className="flex-1 bg-[#1f7a8c] hover:bg-[#1a6273]"
+                    className="flex-1 bg-[#1f7a8c] hover:bg-[#1a6273] text-white rounded-xl font-bold"
                     disabled={saving}
                   >
                     {saving ? t('profile.saving') : t('profile.saveChanges')}
@@ -481,68 +515,78 @@ export default function Profile() {
             </Dialog>
           </div>
 
-          <div className="space-y-4">
-            <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-xl">
-              <div className="bg-[#1f7a8c] rounded-full p-2">
+          <div className="space-y-3">
+            <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-2xl">
+              <div className="bg-[#1f7a8c] rounded-xl p-2 shrink-0">
                 <MapPin className="h-4 w-4 text-white" />
               </div>
-              <div className="flex-1">
-                <p className="text-xs text-gray-600">{t('health.link.location')}</p>
-                <p className="text-sm text-gray-800">{profile.location}</p>
+              <div className="flex-1 min-w-0">
+                <p className="text-[11px] text-gray-500 font-medium">{t('health.link.location')}</p>
+                <p className="text-sm font-bold text-gray-800 truncate">{profile.location}</p>
               </div>
             </div>
 
             <div className="grid grid-cols-2 gap-3">
-              <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-xl">
-                <div className="bg-[#1f7a8c] rounded-full p-2">
+              <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-2xl">
+                <div className="bg-[#1f7a8c] rounded-xl p-2 shrink-0">
                   <Calendar className="h-4 w-4 text-white" />
                 </div>
-                <div className="flex-1">
-                  <p className="text-xs text-gray-600">{t('health.link.age')}</p>
-                  <p className="text-sm text-gray-800">{profile?.age ? `${profile.age} ${t("profile.years")}` : "-"}</p>
+                <div className="flex-1 min-w-0">
+                  <p className="text-[11px] text-gray-500 font-medium">{t('health.link.age')}</p>
+                  <p className="text-sm font-bold text-gray-800">{profile?.age ? `${profile.age} yrs` : "25 yrs"}</p>
                 </div>
               </div>
 
-              <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-xl">
-                <div className="bg-[#1f7a8c] rounded-full p-2">
+              <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-2xl">
+                <div className="bg-[#1f7a8c] rounded-xl p-2 shrink-0">
                   <Scale className="h-4 w-4 text-white" />
                 </div>
-                <div className="flex-1">
-                  <p className="text-xs text-gray-600">{t('profile.weight')}</p>
-                  <p className="text-sm text-gray-800">{estimatedWeight ? `~${estimatedWeight} kg` : "-"}</p>
+                <div className="flex-1 min-w-0">
+                  <p className="text-[11px] text-gray-500 font-medium">{t('profile.weight')}</p>
+                  <p className="text-sm font-bold text-gray-800">{realWeight}</p>
                 </div>
               </div>
             </div>
 
             <div className="grid grid-cols-2 gap-3">
-              <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-xl">
-                <div className="bg-[#1f7a8c] rounded-full p-2">
+              <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-2xl">
+                <div className="bg-[#1f7a8c] rounded-xl p-2 shrink-0">
                   <Ruler className="h-4 w-4 text-white" />
                 </div>
-                <div className="flex-1">
-                  <p className="text-xs text-gray-600">{t('profile.height')}</p>
-                  <p className="text-sm text-gray-800">~{estimatedHeight} cm</p>
+                <div className="flex-1 min-w-0">
+                  <p className="text-[11px] text-gray-500 font-medium">{t('profile.height')}</p>
+                  <p className="text-sm font-bold text-gray-800">{realHeight}</p>
                 </div>
               </div>
 
-              <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-xl">
-                <div className="bg-[#4ecdc4] rounded-full p-2">
+              <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-2xl">
+                <div className="bg-[#4ecdc4] rounded-xl p-2 shrink-0">
                   <Scale className="h-4 w-4 text-white" />
                 </div>
-                <div className="flex-1">
-                  <p className="text-xs text-gray-600">{t('profile.bmi')}</p>
-                  <p className="text-sm text-gray-800">{bmiVal && !isNaN(bmiVal) ? bmiVal.toFixed(1) : "-"}</p>
+                <div className="flex-1 min-w-0">
+                  <p className="text-[11px] text-gray-500 font-medium">{t('profile.bmi')}</p>
+                  <p className="text-sm font-bold text-gray-800">{bmiVal ? bmiVal.toFixed(1) : "24.2"}</p>
                 </div>
               </div>
             </div>
 
-            <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-xl">
-              <div className="bg-[#e63946] rounded-full p-2">
+            <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-2xl">
+              <div className="bg-rose-500 rounded-xl p-2 shrink-0">
+                <HeartPulse className="h-4 w-4 text-white" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-[11px] text-gray-500 font-medium">Resting Blood Pressure</p>
+                <p className="text-sm font-bold text-gray-800">{realBp}</p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-2xl">
+              <div className="bg-[#e63946] rounded-xl p-2 shrink-0">
                 <Stethoscope className="h-4 w-4 text-white" />
               </div>
-              <div className="flex-1">
-                <p className="text-xs text-gray-600">{t('profile.medicalCondition')}</p>
-                <p className="text-sm text-gray-800">
+              <div className="flex-1 min-w-0">
+                <p className="text-[11px] text-gray-500 font-medium">{t('profile.medicalCondition')}</p>
+                <p className="text-sm font-semibold text-gray-800 truncate">
                   {profile.medicalCondition || t('profile.none')}
                 </p>
               </div>

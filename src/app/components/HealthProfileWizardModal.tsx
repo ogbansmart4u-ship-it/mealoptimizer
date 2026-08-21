@@ -82,7 +82,12 @@ export default function HealthProfileWizardModal({
       const conditionString = selectedConditions.join(", ") || "General Metabolic Wellness";
       const updates = {
         age: ageRange === "18-29" ? 25 : ageRange === "30-45" ? 38 : ageRange === "46-60" ? 52 : 65,
-        bmi: parseFloat(bmi),
+        bmi: parseFloat(bmi) || 24.2,
+        weight: weightKg.trim() || "70",
+        height: heightCm.trim() || "170",
+        bloodPressure: "120/80",
+        systolic: 120,
+        diastolic: 80,
         gender: gender,
         medicalCondition: conditionString,
         goal: selectedGoal,

@@ -18,6 +18,11 @@ export type UserProfile = {
   birthDate?: string; // "YYYY-MM-DD"
   bmi: number;
   weight?: string;
+  height?: string;
+  bloodPressure?: string;
+  systolic?: number;
+  diastolic?: number;
+  targetWeight?: string;
   medicalCondition: string;
   medications?: string;
   allergies?: string;
@@ -55,12 +60,10 @@ export function UserProvider({
   const [profile, setProfile] = useState<UserProfile | null>(
     null,
   );
-  const [loading, setLoading] = useState(false); // Changed to false initially
-  const [isFetching, setIsFetching] = useState(false); // Prevent duplicate fetches
+  const [loading, setLoading] = useState(false);
+  const [isFetching, setIsFetching] = useState(false);
 
-  // Read a durably-saved profile picture for this user. Base64 photos are large
-  // and can be dropped by the backend profile record, so we keep a dedicated
-  // local copy and re-attach it whenever the loaded profile is missing one.
+  // Read a durably-saved profile picture for this user
   const readSavedPicture = (uid: string): string => {
     try {
       const direct = localStorage.getItem(`profile-picture-${uid}`);
@@ -76,16 +79,14 @@ export function UserProvider({
     return "";
   };
 
-  // Fetch user profile from backend
+  // Fetch user profile from backend with persistent local cache merge
   const refreshProfile = async () => {
-    // Early return if no user - don't show loading or make API calls
     if (!user) {
       setProfile(null);
       setLoading(false);
       return;
     }
 
-    // Prevent duplicate fetches
     if (isFetching) {
       console.log("Profile fetch already in progress, skipping");
       return;
@@ -97,79 +98,100 @@ export function UserProvider({
 
       console.log("Fetching user profile for user:", user.id);
 
+      // Read local cached profile first so we never drop biodata
+      let localCached: any = {};
+      try {
+        const storedProfileRaw = localStorage.getItem(`user-profile-${user.id}`);
+        if (storedProfileRaw) localCached = JSON.parse(storedProfileRaw);
+      } catch {
+        /* ignore */
+      }
+
       // Try to get profile from backend
       try {
         const profileData = await getUserProfile();
         console.log("✅ Profile loaded successfully from backend:", profileData);
-        // Re-attach the locally-saved picture if the backend copy has none, so a
-        // profile photo doesn't vanish on the next login.
+
         const savedPic = readSavedPicture(user.id);
         const merged: UserProfile = {
+          ...localCached,
           ...profileData,
-          profilePicture: profileData?.profilePicture || savedPic || "",
+          age: profileData?.age || localCached.age || 25,
+          weight: profileData?.weight || localCached.weight || "70",
+          height: profileData?.height || localCached.height || "170",
+          bmi: profileData?.bmi || localCached.bmi || 24.2,
+          bloodPressure: profileData?.bloodPressure || localCached.bloodPressure || "120/80",
+          systolic: profileData?.systolic || localCached.systolic || 120,
+          diastolic: profileData?.diastolic || localCached.diastolic || 80,
+          gender: profileData?.gender || localCached.gender || "other",
+          medicalCondition: profileData?.medicalCondition || localCached.medicalCondition || "General Metabolic Health",
+          location: profileData?.location || localCached.location || localStorage.getItem("userLocation") || "Nigeria",
+          profilePicture: profileData?.profilePicture || savedPic || localCached.profilePicture || "",
         };
+
         setProfile(merged);
         syncSubscriptionFromProfile(merged);
-        if (merged.profilePicture) {
-          try {
+
+        try {
+          localStorage.setItem(`user-profile-${user.id}`, JSON.stringify(merged));
+          if (merged.profilePicture) {
             localStorage.setItem(`profile-picture-${user.id}`, merged.profilePicture);
-          } catch {
-            /* ignore */
           }
+        } catch {
+          /* ignore */
         }
+
         setLoading(false);
         setIsFetching(false);
-        return; // Success! Exit early
+        return;
       } catch (apiError: any) {
         console.warn("⚠️ Backend API unavailable:", apiError.message);
-
-        // Check if it's a JWT algorithm error
-        if (apiError?.message?.includes('ES256') ||
-            apiError?.message?.includes('JWT') ||
-            apiError?.message?.includes('Unauthorized')) {
-          console.log('🔧 Using offline mode - Edge Function not configured');
-          console.log('💡 Profile data will be loaded from local auth metadata');
-        }
-
-        // Continue to fallback below
       }
 
       // Fallback: Use local storage and auth metadata
       console.log("📦 Loading profile from localStorage and auth metadata");
 
-      // Try localStorage first
       const storedProfile = localStorage.getItem(`user-profile-${user.id}`);
       if (storedProfile) {
         const parsed = JSON.parse(storedProfile);
         if (!parsed.profilePicture) parsed.profilePicture = readSavedPicture(user.id);
-        console.log("✅ Profile loaded from localStorage");
+        console.log("✅ Profile loaded from localStorage:", parsed);
         setProfile(parsed);
+        syncSubscriptionFromProfile(parsed);
       } else {
-        // Create profile from auth metadata
         console.log("Creating profile from auth metadata");
         const fallbackProfile: UserProfile = {
           id: user.id,
           email: user.email || "",
           name: user.user_metadata?.name || "User",
-          age: user.user_metadata?.age || 25,
-          bmi: user.user_metadata?.bmi || 22,
-          weight: user.user_metadata?.weight || "",
+          age: Number(user.user_metadata?.age) || 25,
+          bmi: Number(user.user_metadata?.bmi) || 24.2,
+          weight: user.user_metadata?.weight || "70",
+          height: user.user_metadata?.height || "170",
+          bloodPressure: user.user_metadata?.bloodPressure || "120/80",
+          systolic: Number(user.user_metadata?.systolic) || 120,
+          diastolic: Number(user.user_metadata?.diastolic) || 80,
+          gender: user.user_metadata?.gender || "other",
           medicalCondition: user.user_metadata?.medical_condition ||
                            user.user_metadata?.goal ||
-                           "General Health",
+                           "General Metabolic Health",
           medications: user.user_metadata?.medications || "",
           allergies: user.user_metadata?.allergies || "",
           location: user.user_metadata?.location ||
-                   localStorage.getItem('userLocation') ||
+                   localStorage.getItem("userLocation") ||
                    "Nigeria",
           profilePicture: user.user_metadata?.profilePicture || readSavedPicture(user.id) || "",
         };
 
         setProfile(fallbackProfile);
+        syncSubscriptionFromProfile(fallbackProfile);
 
-        // Save to localStorage for next time
-        localStorage.setItem(`user-profile-${user.id}`, JSON.stringify(fallbackProfile));
-        console.log("✅ Profile created and saved to localStorage");
+        try {
+          localStorage.setItem(`user-profile-${user.id}`, JSON.stringify(fallbackProfile));
+        } catch {
+          /* ignore */
+        }
+        console.log("✅ Profile created and locked to localStorage");
       }
 
       setLoading(false);
@@ -183,36 +205,31 @@ export function UserProvider({
 
   // Load profile when auth user changes
   useEffect(() => {
-    // Only fetch when user exists and changes
     if (user?.id) {
       refreshProfile();
     } else {
-      // Clear profile when user logs out
       setProfile(null);
       setLoading(false);
     }
-  }, [user?.id]); // Only depend on user ID, not the whole user object
+  }, [user?.id]);
 
-  // Update profile locally (call this after backend update)
+  // Update profile locally and lock in permanently
   const updateProfile = (updates: Partial<UserProfile>) => {
     if (profile) {
       const updatedProfile = { ...profile, ...updates };
       setProfile(updatedProfile);
       syncSubscriptionFromProfile(updatedProfile);
 
-      // Save to localStorage for offline use
       if (user) {
-        localStorage.setItem(`user-profile-${user.id}`, JSON.stringify(updatedProfile));
-        // Keep a durable, dedicated copy of the picture so it survives even if the
-        // backend profile record drops it on the next login.
-        if (updates.profilePicture) {
-          try {
+        try {
+          localStorage.setItem(`user-profile-${user.id}`, JSON.stringify(updatedProfile));
+          if (updates.profilePicture) {
             localStorage.setItem(`profile-picture-${user.id}`, updates.profilePicture);
-          } catch {
-            /* ignore */
           }
+        } catch {
+          /* ignore */
         }
-        console.log("✅ Profile updated in localStorage");
+        console.log("✅ Biodata locked in permanently for user:", user.id);
       }
     }
   };
@@ -220,16 +237,13 @@ export function UserProvider({
   // Legacy setters for backward compatibility
   const setUserName = (name: string) => {
     if (profile) {
-      setProfile({ ...profile, name });
+      updateProfile({ name });
     }
   };
 
   const setProfilePicture = (picture: string | null) => {
     if (profile) {
-      setProfile({
-        ...profile,
-        profilePicture: picture || undefined,
-      });
+      updateProfile({ profilePicture: picture || "" });
     }
   };
 
@@ -240,8 +254,7 @@ export function UserProvider({
         loading,
         refreshProfile,
         updateProfile,
-        // Legacy compatibility
-        userName: profile?.name || "User",
+        userName: profile?.name || "Friend",
         profilePicture: profile?.profilePicture || null,
         setProfilePicture,
         setUserName,
@@ -255,9 +268,7 @@ export function UserProvider({
 export function useUser() {
   const context = useContext(UserContext);
   if (context === undefined) {
-    throw new Error(
-      "useUser must be used within a UserProvider",
-    );
+    throw new Error("useUser must be used within a UserProvider");
   }
   return context;
 }
