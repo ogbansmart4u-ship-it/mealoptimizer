@@ -550,9 +550,9 @@ export default function Home() {
     <div className="min-h-screen bg-gradient-to-b from-[#B8E5E5] via-[#E8F5F5] to-[#F8FBFB] pb-28">
       {/* Header */}
       <div className="bg-gradient-to-b from-[#A5DBDB] to-[#B8E5E5] px-4 sm:px-6 pt-9 pb-4 border-b border-teal-500/15">
-        {/* Top Brand & Utility Navigation Bar */}
-        <div className="flex items-center justify-between gap-2 mb-3.5">
-          {/* Top Left: Clean Brand Anchor (Always Visible on Mobile & Desktop) */}
+        {/* Top Brand & Profile Avatar Bar (Option 2: Minimalist & Spacious) */}
+        <div className="flex items-center justify-between gap-3 mb-4">
+          {/* Top Left: Clean Brand Anchor */}
           <div className="flex items-center gap-2">
             <img
               src={logoImage}
@@ -561,61 +561,53 @@ export default function Home() {
             />
           </div>
 
-          {/* Top Right: Actions & Profile Avatar */}
-          <div className="flex items-center gap-1.5 sm:gap-2">
-            {/* Streak Counter */}
-            <div className="flex items-center gap-1 text-xs font-black px-2.5 py-1 bg-orange-100/90 text-orange-900 rounded-full border border-orange-300/60 shadow-xs">
-              <Flame className="h-3.5 w-3.5 text-orange-500 fill-orange-500 animate-pulse" />
-              <span>{trackingStreak}d</span>
-            </div>
-
-            {/* Food Wrapped Story Trigger */}
-            <button
-              onClick={() => setShowFoodWrapped(true)}
-              className="hidden xs:flex items-center gap-1 text-xs font-black px-2.5 py-1 bg-gradient-to-r from-amber-400 to-orange-400 text-amber-950 rounded-full shadow-xs hover:scale-105 active:scale-95 transition-all cursor-pointer"
-              title="Open Food Wrapped Story"
-            >
-              <Sparkles className="h-3.5 w-3.5 text-amber-950 fill-amber-950" />
-              <span className="hidden sm:inline">Wrapped</span>
-            </button>
-
-            {/* Search */}
-            <button
-              onClick={() => setShowGlobalSearch(true)}
-              className="p-2 sm:p-2.5 bg-white/80 hover:bg-white text-gray-700 rounded-full transition-all shadow-xs active:scale-95 cursor-pointer"
-              aria-label="Search"
-            >
-              <Search className="h-4 w-4" />
-            </button>
-
-            {/* Notifications */}
-            <button
-              onClick={() => setShowNotificationSettings(true)}
-              className="p-2 sm:p-2.5 bg-white/80 hover:bg-white text-gray-700 rounded-full transition-all shadow-xs active:scale-95 cursor-pointer"
-              aria-label="Notifications"
-            >
-              <Bell className="h-4 w-4" />
-            </button>
-
-            {/* Profile Avatar with Upgrade & Plan Badge */}
+          {/* Top Right: Prominent Profile Avatar Only */}
+          <div className="flex items-center">
             <ProfilePictureUpload />
           </div>
         </div>
 
-        {/* Hero Greeting & Health Status Bar */}
-        <div className="flex items-center justify-between gap-3 pt-1">
+        {/* Hero Greeting & Privacy-Protected Status Bar */}
+        <div className="flex items-center justify-between gap-3 pt-0.5">
           <div className="flex items-center gap-3">
             <Mascot gesture="wave" size={48} className="shrink-0 drop-shadow-sm" />
             <div>
               <h2 className="text-lg sm:text-xl font-black text-gray-900 leading-tight">
                 {getTimeBasedGreeting()}, {userName || "Friend"}
               </h2>
-              <div className="flex items-center gap-1.5 flex-wrap mt-0.5 text-xs font-semibold text-teal-900/80">
-                <span className="text-[11px] text-gray-600">{currentDate}</span>
+              {/* Privacy-Preserved Subtitle: Date & Quick Chips (No Medical Condition) */}
+              <div className="flex items-center gap-1.5 flex-wrap mt-1 text-xs font-semibold">
+                <span className="text-[11px] text-gray-600 font-medium">{currentDate}</span>
                 <span>•</span>
-                <span className="text-[11px] font-bold text-teal-800 bg-white/60 px-2 py-0.5 rounded-full border border-teal-600/20">
-                  🛡️ {activeConditions[0] || "Metabolic Health"}
-                </span>
+                {/* Interactive Streak Chip */}
+                <button
+                  onClick={() => navigate("/achievements")}
+                  className="inline-flex items-center gap-1 text-[11px] font-black px-2.5 py-0.5 bg-orange-100/90 hover:bg-orange-200 text-orange-900 rounded-full border border-orange-300/60 shadow-2xs cursor-pointer active:scale-95 transition-all"
+                  title="View streaks and achievements"
+                >
+                  <Flame className="h-3 w-3 text-orange-500 fill-orange-500 animate-pulse" />
+                  <span>{trackingStreak}d Streak</span>
+                </button>
+
+                {/* Quick Search */}
+                <button
+                  onClick={() => setShowGlobalSearch(true)}
+                  className="inline-flex items-center gap-1 text-[11px] font-bold px-2 py-0.5 bg-white/70 hover:bg-white text-gray-700 rounded-full border border-teal-600/15 shadow-2xs cursor-pointer active:scale-95 transition-all"
+                  title="Search meals, recipes, and guides"
+                >
+                  <Search className="h-3 w-3 text-teal-700" />
+                  <span>Search</span>
+                </button>
+
+                {/* Quick Alerts */}
+                <button
+                  onClick={() => setShowNotificationSettings(true)}
+                  className="inline-flex items-center gap-1 text-[11px] font-bold px-2 py-0.5 bg-white/70 hover:bg-white text-gray-700 rounded-full border border-teal-600/15 shadow-2xs cursor-pointer active:scale-95 transition-all"
+                  title="Notification & WhatsApp settings"
+                >
+                  <Bell className="h-3 w-3 text-teal-700" />
+                  <span>Alerts</span>
+                </button>
               </div>
             </div>
           </div>

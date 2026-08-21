@@ -106,18 +106,13 @@ export default function ProfilePictureUpload() {
             <img
               src={profilePicture}
               alt="Profile"
-              className="h-11 w-11 sm:h-12 sm:w-12 rounded-full object-cover"
+              className="h-12 w-12 sm:h-14 sm:w-14 rounded-full object-cover"
             />
           ) : (
-            <div className="h-11 w-11 sm:h-12 sm:w-12 rounded-full bg-slate-100 flex items-center justify-center">
-              <User className="h-6 w-6 text-[#1f7a8c]" />
+            <div className="h-12 w-12 sm:h-14 sm:w-14 rounded-full bg-slate-100 flex items-center justify-center">
+              <User className="h-7 w-7 text-[#1f7a8c]" />
             </div>
           )}
-
-          {/* Camera mini badge */}
-          <div className="absolute -bottom-0.5 -right-0.5 bg-[#1f7a8c] text-white rounded-full p-1 shadow-sm border border-white">
-            <Camera className="h-2.5 w-2.5" />
-          </div>
         </button>
 
         {/* 1-Tap Upgrade / Pro Plan Status Pill Attached to Avatar */}
