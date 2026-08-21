@@ -1216,136 +1216,171 @@ export default function Home() {
         onClose={() => setShowLocalFoodScanner(false)}
       />
 
-      {/* Detailed Gauge Breakdown Dialog */}
+      {/* 10x Better Compact In-Frame Nutrition Breakdown Dialog */}
       <Dialog open={showGaugeDetails} onOpenChange={setShowGaugeDetails}>
-        <DialogContent className="max-w-md max-h-[90vh] overflow-y-auto">
-          <DialogHeader>
-            <DialogTitle className="text-2xl text-center text-[#1f7a8c] flex items-center justify-center gap-2">
-              <BarChart3 className="h-6 w-6" />
-              Nutrition Breakdown
-            </DialogTitle>
-            <DialogDescription className="text-center text-gray-600">
-              Detailed view of your daily nutrition progress
-            </DialogDescription>
+        <DialogContent className="max-w-md max-h-[85vh] p-5 sm:p-6 flex flex-col rounded-3xl">
+          <DialogHeader className="pb-1 text-left">
+            <div className="flex items-center gap-2">
+              <div className="p-2 bg-teal-50 text-[#1f7a8c] rounded-xl shrink-0">
+                <BarChart3 className="h-5 w-5" />
+              </div>
+              <div>
+                <DialogTitle className="text-lg font-extrabold text-gray-900">
+                  Nutrition Breakdown
+                </DialogTitle>
+                <DialogDescription className="text-xs text-gray-500">
+                  Live daily macronutrient &amp; metabolic energy tracking
+                </DialogDescription>
+              </div>
+            </div>
           </DialogHeader>
 
-          <div className="space-y-6 py-4">
-            <Alert className={`${getGaugeStatus().bgColor} border-2`}>
-              <Zap className="h-5 w-5" />
-              <AlertTitle className={getGaugeStatus().textColor}>
-                {getGaugeStatus().status}
-              </AlertTitle>
-              <AlertDescription className="text-sm">
-                {getGaugeStatus().message}
-              </AlertDescription>
-            </Alert>
+          <div className="flex-1 overflow-y-auto overscroll-contain space-y-3.5 py-2 pr-1">
+            {/* Status Alert Banner */}
+            <div className={`p-3 rounded-2xl border flex items-center gap-2.5 text-xs ${getGaugeStatus().bgColor}`}>
+              <Zap className={`h-4 w-4 shrink-0 ${getGaugeStatus().textColor}`} />
+              <div className="min-w-0">
+                <span className={`font-bold block ${getGaugeStatus().textColor}`}>
+                  {getGaugeStatus().status}
+                </span>
+                <span className="text-[11px] text-gray-600 leading-tight block">
+                  {getGaugeStatus().message}
+                </span>
+              </div>
+            </div>
 
-            {/* Calorie Progress */}
-            <div className="bg-gradient-to-br from-orange-50 to-yellow-50 rounded-2xl p-4">
-              <div className="flex items-center justify-between mb-3">
-                <div className="flex items-center gap-2">
-                  <Flame className="h-5 w-5 text-orange-500" />
-                  <h3 className="font-semibold text-gray-800">Calories</h3>
+            {/* Compact Calorie Progress Card */}
+            <div className="bg-gradient-to-r from-teal-50/80 via-emerald-50/50 to-amber-50/60 rounded-2xl p-3.5 border border-teal-100">
+              <div className="flex items-center justify-between mb-1.5">
+                <div className="flex items-center gap-1.5">
+                  <Flame className="h-4 w-4 text-orange-500" />
+                  <span className="text-xs font-bold text-gray-800">Calories</span>
                 </div>
                 <div className="text-right">
-                  <div className="text-lg font-bold text-[#1f7a8c]">{caloriesConsumed}</div>
-                  <div className="text-xs text-gray-600">of {caloriesTarget} kcal</div>
+                  <span className="text-sm font-black text-[#1f7a8c]">{caloriesConsumed}</span>
+                  <span className="text-xs text-gray-500 font-medium"> / {caloriesTarget} kcal</span>
                 </div>
               </div>
-              <Progress value={(caloriesConsumed / caloriesTarget) * 100} className="h-3" />
+              <Progress value={Math.min(100, (caloriesConsumed / caloriesTarget) * 100)} className="h-2 rounded-full" />
+              <div className="flex justify-between items-center mt-1.5 text-[10px] text-gray-500 font-semibold">
+                <span>{animatedPercentage}% completed</span>
+                <span>{Math.max(0, caloriesTarget - caloriesConsumed)} kcal remaining</span>
+              </div>
             </div>
 
-            {/* Macronutrient Breakdown */}
+            {/* 3-Column Macro Grid Matrix */}
             <div>
-              <h3 className="font-semibold text-gray-800 mb-3 flex items-center gap-2">
-                <Target className="h-5 w-5 text-[#1f7a8c]" />
-                Macronutrients
-              </h3>
-              
-              {/* Protein */}
-              <div className="mb-4">
-                <div className="flex items-center justify-between mb-2">
-                  <div className="text-sm text-gray-700">Protein</div>
-                  <div className="text-sm font-semibold text-blue-600">
-                    {proteinConsumed}g / {proteinTarget}g
+              <span className="text-[11px] font-extrabold text-gray-700 uppercase tracking-wider block mb-2">
+                Macronutrient Pillars
+              </span>
+              <div className="grid grid-cols-3 gap-2">
+                {/* Protein */}
+                <div className="bg-slate-50 border border-slate-200/80 rounded-2xl p-2.5 flex flex-col justify-between">
+                  <div>
+                    <span className="text-[10px] font-bold text-blue-700 block">Protein</span>
+                    <span className="text-sm font-black text-slate-900">{proteinConsumed}g</span>
+                    <span className="text-[10px] text-slate-400 block font-medium">/ {proteinTarget}g</span>
+                  </div>
+                  <div className="w-full bg-blue-100 h-1.5 rounded-full overflow-hidden mt-2">
+                    <div
+                      className="bg-blue-600 h-full rounded-full transition-all duration-500"
+                      style={{ width: `${Math.min(100, (proteinConsumed / proteinTarget) * 100)}%` }}
+                    />
                   </div>
                 </div>
-                <Progress value={(proteinConsumed / proteinTarget) * 100} className="h-2" />
-              </div>
 
-              {/* Carbs */}
-              <div className="mb-4">
-                <div className="flex items-center justify-between mb-2">
-                  <div className="text-sm text-gray-700">Carbohydrates</div>
-                  <div className="text-sm font-semibold text-green-600">
-                    {carbsConsumed}g / {carbsTarget}g
+                {/* Carbs */}
+                <div className="bg-slate-50 border border-slate-200/80 rounded-2xl p-2.5 flex flex-col justify-between">
+                  <div>
+                    <span className="text-[10px] font-bold text-emerald-700 block">Carbs</span>
+                    <span className="text-sm font-black text-slate-900">{carbsConsumed}g</span>
+                    <span className="text-[10px] text-slate-400 block font-medium">/ {carbsTarget}g</span>
+                  </div>
+                  <div className="w-full bg-emerald-100 h-1.5 rounded-full overflow-hidden mt-2">
+                    <div
+                      className="bg-emerald-600 h-full rounded-full transition-all duration-500"
+                      style={{ width: `${Math.min(100, (carbsConsumed / carbsTarget) * 100)}%` }}
+                    />
                   </div>
                 </div>
-                <Progress value={(carbsConsumed / carbsTarget) * 100} className="h-2" />
-              </div>
 
-              {/* Fats */}
-              <div className="mb-4">
-                <div className="flex items-center justify-between mb-2">
-                  <div className="text-sm text-gray-700">Fats</div>
-                  <div className="text-sm font-semibold text-purple-600">
-                    {fatsConsumed}g / {fatsTarget}g
+                {/* Fats */}
+                <div className="bg-slate-50 border border-slate-200/80 rounded-2xl p-2.5 flex flex-col justify-between">
+                  <div>
+                    <span className="text-[10px] font-bold text-purple-700 block">Fats</span>
+                    <span className="text-sm font-black text-slate-900">{fatsConsumed}g</span>
+                    <span className="text-[10px] text-slate-400 block font-medium">/ {fatsTarget}g</span>
+                  </div>
+                  <div className="w-full bg-purple-100 h-1.5 rounded-full overflow-hidden mt-2">
+                    <div
+                      className="bg-purple-600 h-full rounded-full transition-all duration-500"
+                      style={{ width: `${Math.min(100, (fatsConsumed / fatsTarget) * 100)}%` }}
+                    />
                   </div>
                 </div>
-                <Progress value={(fatsConsumed / fatsTarget) * 100} className="h-2" />
               </div>
             </div>
 
-            <div className="flex gap-3">
-              <Button 
-                onClick={() => setShowGaugeDetails(false)}
-                variant="outline"
-                className="flex-1"
-              >
-                Close
-              </Button>
-              <Button 
-                onClick={() => {
-                  setShowGaugeDetails(false);
-                  navigate("/logs");
-                }}
-                className="flex-1 bg-[#1f7a8c] hover:bg-[#1a6273]"
-              >
-                View Full Log
-              </Button>
+            {/* Smart Clinical Glycemic Context Tip */}
+            <div className="p-3 bg-teal-50/60 border border-teal-100 rounded-2xl text-[11px] text-teal-900 flex items-start gap-2">
+              <span className="text-sm">💡</span>
+              <span className="leading-snug">
+                <strong>Metabolic Tip:</strong> Pairing protein (eggs, fish, beans) with cultural carbohydrates delays gastric emptying and flattens post-meal glucose spikes by up to 35%.
+              </span>
             </div>
+          </div>
+
+          {/* Sticky In-Frame Action Footer */}
+          <div className="pt-3 border-t border-gray-100 flex gap-2.5 mt-auto shrink-0">
+            <Button
+              onClick={() => setShowGaugeDetails(false)}
+              variant="outline"
+              className="flex-1 rounded-xl text-xs font-bold py-2.5"
+            >
+              Close
+            </Button>
+            <Button
+              onClick={() => {
+                setShowGaugeDetails(false);
+                navigate("/logs");
+              }}
+              className="flex-1 bg-[#1f7a8c] hover:bg-[#1a6273] text-white rounded-xl text-xs font-bold py-2.5"
+            >
+              View Full Log 📝
+            </Button>
           </div>
         </DialogContent>
       </Dialog>
 
       {/* Quick Meal Log Dialog */}
       <Dialog open={showQuickMealLog} onOpenChange={setShowQuickMealLog}>
-        <DialogContent className="max-w-md">
-          <DialogHeader>
-            <DialogTitle className="text-2xl text-center text-[#1f7a8c]">
-              Log {selectedQuickMeal && selectedQuickMeal.charAt(0).toUpperCase() + selectedQuickMeal.slice(1)}
+        <DialogContent className="max-w-md max-h-[85vh] p-5 sm:p-6 flex flex-col rounded-3xl">
+          <DialogHeader className="pb-1 text-left">
+            <DialogTitle className="text-lg font-black text-[#1f7a8c] flex items-center gap-2">
+              <span>🍽️</span>
+              <span>Log {selectedQuickMeal && selectedQuickMeal.charAt(0).toUpperCase() + selectedQuickMeal.slice(1)}</span>
             </DialogTitle>
-            <DialogDescription className="text-center text-gray-600">
-              Quick log your meal with common Nigerian options
+            <DialogDescription className="text-xs text-gray-500">
+              Quick log your meal with common cultural options
             </DialogDescription>
           </DialogHeader>
 
-          <div className="space-y-4 py-4">
+          <div className="flex-1 overflow-y-auto overscroll-contain space-y-2.5 py-2 pr-1">
             {selectedQuickMeal && (
-              <div className="space-y-3">
+              <div className="space-y-2">
                 {quickMealOptions[selectedQuickMeal].map((meal) => (
                   <button
                     key={meal.name}
                     onClick={() => handleQuickLog(meal)}
                     disabled={quickLogging}
-                    className="w-full bg-white border-2 border-gray-100 hover:border-[#1f7a8c] rounded-2xl p-4 text-left transition-colors disabled:opacity-60 flex items-center gap-3 cursor-pointer shadow-xs"
+                    className="w-full bg-slate-50 hover:bg-teal-50/50 border border-slate-200/80 hover:border-[#1f7a8c] rounded-2xl p-3 text-left transition-all disabled:opacity-60 flex items-center gap-3 cursor-pointer shadow-2xs active:scale-[0.99]"
                   >
-                    <span className="text-3xl">{meal.emoji}</span>
-                    <div className="flex-1">
-                      <div className="font-semibold text-gray-800">{meal.name}</div>
-                      <div className="text-xs text-gray-500">~{meal.calories} kcal • {meal.label}</div>
+                    <span className="text-2xl shrink-0 p-1 bg-white rounded-xl shadow-2xs">{meal.emoji}</span>
+                    <div className="flex-1 min-w-0">
+                      <div className="font-bold text-xs text-gray-900 truncate">{meal.name}</div>
+                      <div className="text-[10px] text-gray-500 font-medium">~{meal.calories} kcal • {meal.label}</div>
                     </div>
-                    <Plus className="h-5 w-5 text-[#1f7a8c] flex-shrink-0" />
+                    <Plus className="h-4 w-4 text-[#1f7a8c] shrink-0" />
                   </button>
                 ))}
               </div>
@@ -1354,32 +1389,32 @@ export default function Home() {
             <button
               onClick={handleCustomEntry}
               disabled={quickLogging}
-              className="w-full bg-white border-2 border-dashed border-[#1f7a8c] rounded-2xl p-4 text-center hover:bg-[#E8F5F5] transition-colors disabled:opacity-60 cursor-pointer"
+              className="w-full bg-white border border-dashed border-[#1f7a8c]/40 hover:border-[#1f7a8c] rounded-2xl p-2.5 text-center hover:bg-[#E8F5F5] transition-colors disabled:opacity-60 cursor-pointer"
             >
-              <div className="flex items-center justify-center gap-2 text-[#1f7a8c] font-semibold">
-                <Plus className="h-5 w-5" />
+              <div className="flex items-center justify-center gap-1.5 text-[#1f7a8c] font-bold text-xs">
+                <Plus className="h-4 w-4" />
                 Custom Entry
               </div>
             </button>
+          </div>
 
-            <div className="flex gap-3 pt-2">
-              <Button
-                onClick={() => setShowQuickMealLog(false)}
-                variant="outline"
-                className="flex-1"
-              >
-                Cancel
-              </Button>
-              <Button
-                onClick={() => {
-                  setShowQuickMealLog(false);
-                  navigate("/logs");
-                }}
-                className="flex-1 bg-[#1f7a8c] hover:bg-[#1a6273]"
-              >
-                View Full Logs
-              </Button>
-            </div>
+          <div className="flex gap-2.5 pt-3 border-t border-gray-100 mt-auto shrink-0">
+            <Button
+              onClick={() => setShowQuickMealLog(false)}
+              variant="outline"
+              className="flex-1 rounded-xl text-xs font-bold py-2"
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={() => {
+                setShowQuickMealLog(false);
+                navigate("/logs");
+              }}
+              className="flex-1 bg-[#1f7a8c] hover:bg-[#1a6273] text-white rounded-xl text-xs font-bold py-2"
+            >
+              Full Logs 📋
+            </Button>
           </div>
         </DialogContent>
       </Dialog>

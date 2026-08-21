@@ -348,7 +348,7 @@ export default function SmartGroceryPlanner({ isOpen, onClose }: SmartGroceryPla
         {/* TAB 3: SMART METABOLIC SWAPS                                 */}
         {/* ============================================================ */}
         {activeTab === "swaps" && (
-          <div className="space-y-2.5 py-1">
+          <div className="space-y-2.5 py-1 flex-1 overflow-y-auto overscroll-contain pr-1">
             <div className="p-3 bg-amber-50 dark:bg-amber-950/40 rounded-2xl border border-amber-200 dark:border-amber-900/50 text-xs text-amber-900 dark:text-amber-200">
               <span className="font-bold block mb-0.5">🧠 Living in the Diaspora?</span>
               <p className="text-[11px]">
@@ -384,6 +384,12 @@ export default function SmartGroceryPlanner({ isOpen, onClose }: SmartGroceryPla
             </div>
           </div>
         )}
+
+        <div className="pt-2 border-t border-gray-100 dark:border-zinc-800 mt-auto shrink-0">
+          <Button onClick={onClose} variant="outline" className="w-full text-xs font-bold rounded-xl h-10">
+            Done
+          </Button>
+        </div>
       </DialogContent>
     </Dialog>
   );

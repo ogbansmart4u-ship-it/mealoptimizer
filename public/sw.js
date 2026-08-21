@@ -1,10 +1,9 @@
 /**
  * MealOptimizer Service Worker (PWA Offline Engine)
- * Network-First for HTML documents (guarantees zero stale builds)
- * Cache-First for static hashed assets and icons
+ * Robust Network-First with Safe Fallbacks
  */
 
-const CACHE_NAME = 'mealoptimizer-pwa-v2.1';
+const CACHE_NAME = 'mealoptimizer-pwa-v2.2';
 
 const PRECACHE_ASSETS = [
   '/',
@@ -16,14 +15,17 @@ const PRECACHE_ASSETS = [
   '/assets/mascot.png',
 ];
 
-// Install: precache essential shell assets and activate immediately
+// Install: precache essential assets and activate immediately
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches
       .open(CACHE_NAME)
       .then((cache) => cache.addAll(PRECACHE_ASSETS))
       .then(() => self.skipWaiting())
-      .catch((err) => console.warn('[SW] Precache skipped:', err))
+      .catch((err) => {
+        console.warn('[SW] Precache skipped:', err);
+        return self.skipWaiting();
+      })
   );
 });
 
@@ -55,12 +57,16 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // 1. Skip Supabase Edge Functions & Auth endpoints (handled by offline queue)
-  if (url.hostname.includes('supabase.co') || url.pathname.includes('/ai/')) {
+  // 1. Skip Supabase Edge Functions & Auth endpoints
+  if (
+    url.hostname.includes('supabase.co') ||
+    url.pathname.includes('/ai/') ||
+    url.pathname.startsWith('/api/')
+  ) {
     return;
   }
 
-  // 2. HTML Navigation: Network-First with cached fallback
+  // 2. HTML Navigation: Network-First with safe fallback
   if (request.mode === 'navigate') {
     event.respondWith(
       fetch(request)
@@ -71,19 +77,30 @@ self.addEventListener('fetch', (event) => {
           }
           return response;
         })
-        .catch(() => caches.match('/') || caches.match(request))
+        .catch(async () => {
+          const cached = await caches.match(request);
+          if (cached) return cached;
+          const rootCached = await caches.match('/');
+          if (rootCached) return rootCached;
+          // Fallback minimal offline page
+          return new Response(
+            '<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>MealOptimizer</title></head><body style="font-family:sans-serif;display:flex;align-items:center;justify-content:center;height:100vh;margin:0;background:#F7F9F8;text-align:center;padding:20px;"><div><h2 style="color:#1f7a8c;">MealOptimizer</h2><p style="color:#64748B;">Please check your connection and tap reload.</p><button onclick="location.reload()" style="background:#1f7a8c;color:#fff;border:none;padding:10px 20px;border-radius:12px;font-weight:bold;cursor:pointer;">Reload</button></div></body></html>',
+            { headers: { 'Content-Type': 'text/html; charset=utf-8' } }
+          );
+        })
     );
     return;
   }
 
-  // 3. Static Assets (/assets/*, images, fonts): Stale-While-Revalidate / Cache-First
+  // 3. Static Assets: Cache with Network Fallback
   if (
     url.pathname.startsWith('/assets/') ||
-    url.pathname.match(/\.(png|jpg|jpeg|svg|webp|woff2|ttf)$/)
+    url.pathname.match(/\.(png|jpg|jpeg|svg|webp|woff2|ttf|js|css)$/)
   ) {
     event.respondWith(
       caches.match(request).then((cached) => {
-        const fetchPromise = fetch(request)
+        if (cached) return cached;
+        return fetch(request)
           .then((networkResponse) => {
             if (networkResponse && networkResponse.status === 200) {
               const copy = networkResponse.clone();
@@ -91,16 +108,12 @@ self.addEventListener('fetch', (event) => {
             }
             return networkResponse;
           })
-          .catch(() => cached);
-
-        return cached || fetchPromise;
+          .catch(() => {
+            // Safe fallback response instead of undefined
+            return new Response('', { status: 408, statusText: 'Request Timeout' });
+          });
       })
     );
     return;
   }
-
-  // 4. Default: Network with Cache Fallback
-  event.respondWith(
-    fetch(request).catch(() => caches.match(request))
-  );
 });

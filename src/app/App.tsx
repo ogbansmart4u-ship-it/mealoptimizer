@@ -43,10 +43,16 @@ function NotificationEngineListener() {
   return null;
 }
 
-// Clear any stale mock meal plans from localStorage on every app load
-Object.keys(localStorage)
-  .filter((k) => k.startsWith("meal-plan-mock-") || k.startsWith("meal-plan-"))
-  .forEach((k) => localStorage.removeItem(k));
+// Clear any stale mock meal plans from localStorage safely on app load
+try {
+  if (typeof window !== "undefined" && window.localStorage) {
+    Object.keys(localStorage)
+      .filter((k) => k.startsWith("meal-plan-mock-") || k.startsWith("meal-plan-"))
+      .forEach((k) => localStorage.removeItem(k));
+  }
+} catch {
+  /* ignore storage access restrictions */
+}
 
 // MealOptimiza - Nutrition app with personalized meal planning
 export default function App() {
