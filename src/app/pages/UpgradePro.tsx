@@ -37,7 +37,7 @@ export default function UpgradePro() {
   const [cycle, setCycle] = useState<BillingCycle>("annual");
   const [loadingPlan, setLoadingPlan] = useState<string | null>(null);
   const [isSyncing, setIsSyncing] = useState(false);
-  const [currentSub, setCurrentSub] = useState(getSubscriptionStatus());
+  const [currentSub, setCurrentSub] = useState(getSubscriptionStatus(profile?.id));
 
   const handleSubscribe = async (plan: PlanTier) => {
     if (plan === "free") return;
@@ -52,9 +52,9 @@ export default function UpgradePro() {
         cycle,
         userEmail: profile?.email,
         onSuccess: () => {
-          setSubscriptionStatus(plan, cycle === "annual" ? 12 : 1);
+          setSubscriptionStatus(plan, cycle === "annual" ? 12 : 1, profile?.id);
           updateProfile?.({ plan, isPro: true });
-          setCurrentSub(getSubscriptionStatus());
+          setCurrentSub(getSubscriptionStatus(profile?.id));
           triggerHaptic("milestone");
           triggerConfetti("fireworks");
           toast.success(`🎉 You are now subscribed to ${plan === "family" ? "Diaspora Family Care" : "MealOptimizer PRO"}!`);
@@ -72,15 +72,15 @@ export default function UpgradePro() {
     triggerHaptic("medium");
     try {
       await refreshProfile?.();
-      setSubscriptionStatus("pro", 12);
+      setSubscriptionStatus("pro", 12, profile?.id);
       updateProfile?.({ plan: "pro", isPro: true });
-      setCurrentSub(getSubscriptionStatus());
+      setCurrentSub(getSubscriptionStatus(profile?.id));
       triggerHaptic("milestone");
       triggerConfetti("fireworks");
       toast.success("✅ PRO status synced & activated on this mobile device!");
     } catch {
-      setSubscriptionStatus("pro", 12);
-      setCurrentSub(getSubscriptionStatus());
+      setSubscriptionStatus("pro", 12, profile?.id);
+      setCurrentSub(getSubscriptionStatus(profile?.id));
       toast.success("✅ Device activated as PRO Member!");
     } finally {
       setIsSyncing(false);

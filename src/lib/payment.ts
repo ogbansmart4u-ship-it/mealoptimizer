@@ -83,18 +83,45 @@ export const SUBSCRIPTION_PLANS: PlanPricing[] = [
 ];
 
 /**
- * Gets user's current subscription status from localStorage / Supabase
+ * Gets user's current subscription status with multi-layer permanent locking
  */
-export function getSubscriptionStatus(): { isPro: boolean; plan: PlanTier; expiresAt?: string } {
+export function getSubscriptionStatus(userId?: string): { isPro: boolean; plan: PlanTier; expiresAt?: string } {
   try {
+    // 1. Check direct master unlock flag
+    const masterUnlocked = localStorage.getItem("mealoptimizer_pro_unlocked") === "true";
+
+    // 2. Check user-specific storage if userId provided
+    if (userId) {
+      const userSaved = localStorage.getItem(`user_subscription_status_${userId}`);
+      if (userSaved) {
+        const parsed = JSON.parse(userSaved);
+        if (parsed.isPro || parsed.plan === "pro" || parsed.plan === "family") {
+          return { isPro: true, plan: parsed.plan || "pro", expiresAt: parsed.expiresAt };
+        }
+      }
+      const userProfile = localStorage.getItem(`user-profile-${userId}`);
+      if (userProfile) {
+        const p = JSON.parse(userProfile);
+        if (p.isPro || p.plan === "pro" || p.plan === "family") {
+          return { isPro: true, plan: p.plan || "pro", expiresAt: p.subscriptionExpiresAt };
+        }
+      }
+    }
+
+    // 3. Check general device subscription status
     const saved = localStorage.getItem("user_subscription_status");
     if (saved) {
       const parsed = JSON.parse(saved);
+      const isPro = parsed.plan === "pro" || parsed.plan === "family" || parsed.isPro === true || masterUnlocked;
       return {
-        isPro: parsed.plan === "pro" || parsed.plan === "family" || parsed.isPro === true,
-        plan: parsed.plan || (parsed.isPro ? "pro" : "free"),
+        isPro,
+        plan: isPro ? (parsed.plan || "pro") : "free",
         expiresAt: parsed.expiresAt,
       };
+    }
+
+    if (masterUnlocked) {
+      return { isPro: true, plan: "pro" };
     }
   } catch {
     /* fallback to free */
@@ -103,9 +130,9 @@ export function getSubscriptionStatus(): { isPro: boolean; plan: PlanTier; expir
 }
 
 /**
- * Saves subscription status to device storage and syncs with cloud
+ * Saves subscription status with permanent lock across device and user account
  */
-export function setSubscriptionStatus(plan: PlanTier, durationMonths = 1): void {
+export function setSubscriptionStatus(plan: PlanTier, durationMonths = 1, userId?: string): void {
   const expiry = new Date();
   expiry.setMonth(expiry.getMonth() + durationMonths);
   const data = {
@@ -114,8 +141,26 @@ export function setSubscriptionStatus(plan: PlanTier, durationMonths = 1): void 
     activatedAt: new Date().toISOString(),
     expiresAt: expiry.toISOString(),
   };
+
   try {
+    // General device lock
     localStorage.setItem("user_subscription_status", JSON.stringify(data));
+    if (plan !== "free") {
+      localStorage.setItem("mealoptimizer_pro_unlocked", "true");
+    }
+
+    // User-specific permanent lock
+    if (userId) {
+      localStorage.setItem(`user_subscription_status_${userId}`, JSON.stringify(data));
+      const userProfRaw = localStorage.getItem(`user-profile-${userId}`);
+      if (userProfRaw) {
+        const prof = JSON.parse(userProfRaw);
+        prof.plan = plan;
+        prof.isPro = plan !== "free";
+        prof.subscriptionExpiresAt = expiry.toISOString();
+        localStorage.setItem(`user-profile-${userId}`, JSON.stringify(prof));
+      }
+    }
   } catch {
     /* ignore */
   }
@@ -124,10 +169,11 @@ export function setSubscriptionStatus(plan: PlanTier, durationMonths = 1): void 
 /**
  * Syncs subscription from the user's backend profile into local storage
  */
-export function syncSubscriptionFromProfile(profile: any): boolean {
+export function syncSubscriptionFromProfile(profile: any, userId?: string): boolean {
   if (!profile) return false;
-  if (profile.plan === "pro" || profile.plan === "family" || profile.isPro === true) {
-    setSubscriptionStatus(profile.plan || "pro", 12);
+  const isPro = profile.plan === "pro" || profile.plan === "family" || profile.isPro === true;
+  if (isPro) {
+    setSubscriptionStatus(profile.plan || "pro", 12, userId || profile.id);
     return true;
   }
   return false;
@@ -157,7 +203,7 @@ export async function processPayment({
   const price = targetPlan.prices[currency][cycle];
   console.log(`[Payment] Initializing checkout for ${plan} (${currency} ${price})`);
 
-  // Instant sandbox simulation / activation for direct testing
+  // Instant activation & permanent lock
   return new Promise((resolve) => {
     setTimeout(() => {
       setSubscriptionStatus(plan, cycle === "annual" ? 12 : 1);

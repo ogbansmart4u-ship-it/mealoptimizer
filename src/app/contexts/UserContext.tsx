@@ -113,6 +113,10 @@ export function UserProvider({
         console.log("✅ Profile loaded successfully from backend:", profileData);
 
         const savedPic = readSavedPicture(user.id);
+        const currentSub = getSubscriptionStatus(user.id);
+        const resolvedPlan = profileData?.plan || localCached.plan || currentSub.plan || (currentSub.isPro ? "pro" : "free");
+        const resolvedIsPro = profileData?.isPro ?? localCached.isPro ?? currentSub.isPro ?? (resolvedPlan === "pro" || resolvedPlan === "family");
+
         const merged: UserProfile = {
           ...localCached,
           ...profileData,
@@ -127,10 +131,13 @@ export function UserProvider({
           medicalCondition: profileData?.medicalCondition || localCached.medicalCondition || "General Metabolic Health",
           location: profileData?.location || localCached.location || localStorage.getItem("userLocation") || "Nigeria",
           profilePicture: profileData?.profilePicture || savedPic || localCached.profilePicture || "",
+          plan: resolvedPlan,
+          isPro: resolvedIsPro,
+          subscriptionExpiresAt: profileData?.subscriptionExpiresAt || localCached.subscriptionExpiresAt || currentSub.expiresAt,
         };
 
         setProfile(merged);
-        syncSubscriptionFromProfile(merged);
+        syncSubscriptionFromProfile(merged, user.id);
 
         try {
           localStorage.setItem(`user-profile-${user.id}`, JSON.stringify(merged));
@@ -158,7 +165,7 @@ export function UserProvider({
         console.log("✅ Profile loaded from localStorage:", parsed);
         setProfile(parsed);
         syncSubscriptionFromProfile(parsed);
-      } else {
+        const currentSub = getSubscriptionStatus(user.id);
         console.log("Creating profile from auth metadata");
         const fallbackProfile: UserProfile = {
           id: user.id,
@@ -181,10 +188,13 @@ export function UserProvider({
                    localStorage.getItem("userLocation") ||
                    "Nigeria",
           profilePicture: user.user_metadata?.profilePicture || readSavedPicture(user.id) || "",
+          plan: currentSub.plan,
+          isPro: currentSub.isPro,
+          subscriptionExpiresAt: currentSub.expiresAt,
         };
 
         setProfile(fallbackProfile);
-        syncSubscriptionFromProfile(fallbackProfile);
+        syncSubscriptionFromProfile(fallbackProfile, user.id);
 
         try {
           localStorage.setItem(`user-profile-${user.id}`, JSON.stringify(fallbackProfile));

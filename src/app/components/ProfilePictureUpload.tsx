@@ -10,7 +10,7 @@ import { triggerHaptic } from "../utils/celebration";
 
 export default function ProfilePictureUpload() {
   const navigate = useNavigate();
-  const { profilePicture, setProfilePicture, updateProfile } = useUser();
+  const { profile, profilePicture, setProfilePicture, updateProfile } = useUser();
   const [showDialog, setShowDialog] = useState(false);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -18,8 +18,8 @@ export default function ProfilePictureUpload() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const cameraInputRef = useRef<HTMLInputElement>(null);
 
-  const subStatus = getSubscriptionStatus();
-  const isPro = subStatus.isPro;
+  const subStatus = getSubscriptionStatus(profile?.id);
+  const isPro = profile?.isPro || profile?.plan === "pro" || profile?.plan === "family" || subStatus.isPro;
 
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
