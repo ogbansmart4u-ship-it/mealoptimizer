@@ -19,7 +19,7 @@ export default function MascotLoader({
         @keyframes avoBob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
       `}</style>
       <img
-        src="/assets/mascot.png"
+        src="/assets/mascot-v2.png"
         alt=""
         aria-hidden="true"
         style={{ width: size, height: size, animation: "avoBob 0.8s ease-in-out infinite" }}

@@ -290,7 +290,7 @@ export default function HydrationTracker() {
             <div className="absolute inset-0 flex flex-col items-center justify-center">
               {progressPercentage >= 100 ? (
                 <img
-                  src="/assets/mascot.png"
+                  src="/assets/mascot-v2.png"
                   alt="Hydration goal reached!"
                   className="h-16 w-16 object-contain mb-1 drop-shadow-sm"
                   title="You hit your hydration goal!"

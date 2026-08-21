@@ -158,7 +158,7 @@ export function celebrateMilestone(
         <div className="relative flex-shrink-0">
           <div className="absolute inset-0 bg-teal-400/20 rounded-full blur-sm" />
           <img
-            src="/assets/mascot.png"
+            src="/assets/mascot-v2.png"
             alt=""
             aria-hidden="true"
             className="relative w-11 h-11 object-contain drop-shadow-sm"

@@ -4,7 +4,7 @@
  * Cache-First for static hashed assets and icons
  */
 
-const CACHE_NAME = 'mealoptimizer-pwa-v2.0';
+const CACHE_NAME = 'mealoptimizer-pwa-v2.1';
 
 const PRECACHE_ASSETS = [
   '/',
@@ -12,6 +12,7 @@ const PRECACHE_ASSETS = [
   '/icon-192.png',
   '/icon-512.png',
   '/manifest.webmanifest',
+  '/assets/mascot-v2.png',
   '/assets/mascot.png',
 ];
 

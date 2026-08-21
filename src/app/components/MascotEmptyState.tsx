@@ -23,7 +23,7 @@ export default function MascotEmptyState({
   return (
     <div className="flex flex-col items-center justify-center text-center py-8 px-4">
       <img
-        src="/assets/mascot.png"
+        src="/assets/mascot-v2.png"
         alt="MealOptimiza mascot"
         className={`${imgSize} object-contain drop-shadow-sm mb-4`}
         loading="lazy"

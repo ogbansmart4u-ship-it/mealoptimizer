@@ -44,7 +44,7 @@ export default function Mascot({ gesture: override, size = 96, className = "", a
       <img
         // `key` restarts the CSS animation cleanly whenever the gesture changes.
         key={gesture || "idle"}
-        src="/assets/mascot.png"
+        src="/assets/mascot-v2.png"
         alt={alt ?? ""}
         aria-hidden={decorative ? true : undefined}
         draggable={false}
