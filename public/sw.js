@@ -3,7 +3,7 @@
  * Robust Network-First with Safe Fallbacks
  */
 
-const CACHE_NAME = 'mealoptimizer-pwa-v2.2';
+const CACHE_NAME = 'mealoptimizer-pwa-v2.3';
 
 const PRECACHE_ASSETS = [
   '/',
