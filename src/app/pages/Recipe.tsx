@@ -1,882 +1,1181 @@
-import { useState, useEffect } from "react";
-import { ChefHat, Search, Filter, Heart, Clock, Flame, Users, ChevronRight, Star, Bookmark, MapPin, ShoppingCart, AlertCircle, Leaf, Globe } from "lucide-react";
-import { getCollection, createCollectionItem, deleteCollectionItem } from "../../lib/api";
+import React, { useState, useEffect, useMemo, useRef } from "react";
+import {
+  ChefHat,
+  Search,
+  Filter,
+  Heart,
+  Clock,
+  Flame,
+  Users,
+  ChevronRight,
+  Star,
+  Bookmark,
+  MapPin,
+  ShoppingCart,
+  AlertCircle,
+  Leaf,
+  Globe,
+  Plus,
+  Minus,
+  CheckCircle2,
+  Check,
+  Play,
+  Pause,
+  RotateCcw,
+  Sparkles,
+  Zap,
+  Shield,
+  ArrowRight,
+  X,
+  Share2,
+  BookOpen,
+  Info,
+} from "lucide-react";
+import { getCollection, createCollectionItem, deleteCollectionItem, createMealLog } from "../../lib/api";
 import BottomNav from "../components/BottomNav";
 import MascotEmptyState from "../components/MascotEmptyState";
 import { useAppMode } from "../contexts/AppModeContext";
 import { useLocation } from "../contexts/LocationContext";
 import { useUser } from "../contexts/UserContext";
 import { useLanguage } from "../contexts/LanguageContext";
-
-// Maps a dietary tag to its translation key; falls back to the prettified tag.
-const TAG_KEY: Record<string, string> = {
-  "diabetic-friendly": "recipe.tag.diabeticFriendly",
-  "low-sodium": "recipe.tag.lowSodium",
-  "high-protein": "recipe.tag.highProtein",
-  "heart-healthy": "recipe.tag.heartHealthy",
-  "weight-loss": "recipe.tag.weightLoss",
-};
 import LocationSelector from "../components/LocationSelector";
 import ProfilePictureUpload from "../components/ProfilePictureUpload";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "../components/ui/dialog";
+import { Button } from "../components/ui/button";
+import Mascot from "../components/Mascot";
+import { toast } from "sonner";
+import { triggerConfetti, triggerHaptic } from "../utils/celebration";
 
-type RecipeCategory = "all" | "breakfast" | "lunch" | "dinner" | "snack";
-type DietaryTag = "diabetic-friendly" | "low-sodium" | "high-protein" | "heart-healthy" | "weight-loss";
+export type DietaryTag =
+  | "all"
+  | "diabetic-friendly"
+  | "low-sodium"
+  | "high-protein"
+  | "heart-healthy"
+  | "pcos-safe"
+  | "weight-loss"
+  | "favorites";
 
-type Recipe = {
+export interface ScaledIngredient {
+  amount: number; // base per serving
+  unit: string;
+  name: string;
+  diasporaSwap?: string;
+  lowSodiumSwap?: string;
+}
+
+export interface RecipeStep {
+  stepNumber: number;
+  instruction: string;
+  flameLevel?: "Low" | "Medium" | "High" | "Simmer";
+  timerMinutes?: number;
+  avoTip?: string;
+}
+
+export interface FullRecipe {
   id: string;
   name: string;
-  image: string;
-  category: RecipeCategory;
+  emoji: string;
+  category: "breakfast" | "lunch" | "dinner" | "snack";
+  tags: string[];
   prepTime: number;
   cookTime: number;
-  servings: number;
+  baseServings: number;
   difficulty: "easy" | "medium" | "hard";
-  calories: number;
-  protein: number;
-  carbs: number;
-  fats: number;
+  baseCalories: number;
+  baseProtein: number;
+  baseCarbs: number;
+  baseFats: number;
+  glycemicIndex: "Low" | "Medium" | "High";
   rating: number;
   reviews: number;
-  tags: DietaryTag[];
-  ingredients: string[];
-  localMarkets?: string[];
   healthBenefits: string;
-  isFavorite: boolean;
-};
+  clinicalNote: string;
+  ingredients: ScaledIngredient[];
+  steps: RecipeStep[];
+  localMarkets: string[];
+  isFavorite?: boolean;
+}
+
+const MASTER_RECIPES: FullRecipe[] = [
+  {
+    id: "1",
+    name: "Diabetic-Friendly Oat Swallow & Fresh Okra Soup",
+    emoji: "🥣",
+    category: "lunch",
+    tags: ["diabetic-friendly", "heart-healthy", "weight-loss"],
+    prepTime: 15,
+    cookTime: 25,
+    baseServings: 2,
+    difficulty: "easy",
+    baseCalories: 390,
+    baseProtein: 26,
+    baseCarbs: 48,
+    baseFats: 10,
+    glycemicIndex: "Low",
+    rating: 4.9,
+    reviews: 142,
+    healthBenefits: "Soluble oat beta-glucan and okra mucilage buffer post-meal blood sugar surges.",
+    clinicalNote: "Low Glycemic Index (~42). Viscous mucilage slows gastric carbohydrate absorption by ~35%.",
+    localMarkets: ["Oyingbo Market", "Mile 12 Market", "Tesco / Walmart International Aisle"],
+    ingredients: [
+      { amount: 0.5, unit: "cup", name: "Rolled oats ground into flour", diasporaSwap: "Spelt or almond flour" },
+      { amount: 150, unit: "g", name: "Fresh green okra finely chopped", diasporaSwap: "Frozen cut okra or Molokhia" },
+      { amount: 150, unit: "g", name: "Grilled Mackerel / Titus fish", diasporaSwap: "Salmon or cod fillets" },
+      { amount: 1, unit: "tbsp", name: "Ground crayfish", diasporaSwap: "Dried shrimp powder" },
+      { amount: 1, unit: "tsp", name: "Fermented locust beans (Iru)", lowSodiumSwap: "Garlic, ginger & black pepper" },
+      { amount: 1, unit: "cup", name: "Pumpkin leaf (Ugu) or spinach", diasporaSwap: "Baby spinach or chopped kale" },
+      { amount: 1, unit: "tsp", name: "Unbleached virgin red palm oil", lowSodiumSwap: "Extra virgin olive oil" },
+    ],
+    steps: [
+      {
+        stepNumber: 1,
+        instruction: "Bring 1.5 cups of water to a gentle boil in a pot. Whisk oat flour vigorously with a wooden spoon for 3 minutes until smooth, stretchy, and lump-free.",
+        flameLevel: "Medium",
+        timerMinutes: 3,
+        avoTip: "Keep stirring continuously in one direction to activate the natural beta-glucan elasticity!",
+      },
+      {
+        stepNumber: 2,
+        instruction: "In a separate saucepan, heat 1 cup of water with crayfish, Iru, and chopped peppers. Add the fresh chopped okra and stir gently for 4 minutes.",
+        flameLevel: "Medium",
+        timerMinutes: 4,
+        avoTip: "Do not cover the pot while cooking okra so it maintains its vibrant green chlorophyll and slimy mucilage.",
+      },
+      {
+        stepNumber: 3,
+        instruction: "Fold in shredded pumpkin leaves (Ugu) and grilled fish. Simmer for 2 minutes and take off heat immediately.",
+        flameLevel: "Simmer",
+        timerMinutes: 2,
+        avoTip: "Short cooking preserves heat-sensitive folates and Vitamin C in your greens.",
+      },
+    ],
+  },
+  {
+    id: "2",
+    name: "Low-Sodium Native Brown Jollof Rice",
+    emoji: "🍚",
+    category: "lunch",
+    tags: ["diabetic-friendly", "low-sodium", "heart-healthy"],
+    prepTime: 20,
+    cookTime: 45,
+    baseServings: 4,
+    difficulty: "medium",
+    baseCalories: 410,
+    baseProtein: 28,
+    baseCarbs: 56,
+    baseFats: 9,
+    glycemicIndex: "Medium",
+    rating: 4.8,
+    reviews: 218,
+    healthBenefits: "Whole brown rice provides slow-release energy; umami base replaces industrial bouillon cubes.",
+    clinicalNote: "Sodium reduced by 65% compared to standard restaurant party Jollof.",
+    localMarkets: ["Tejuosho Market", "Balogun Market", "ShopRite / Whole Foods"],
+    ingredients: [
+      { amount: 0.5, unit: "cup", name: "Unpolished Brown Rice or Ofada", diasporaSwap: "Wild rice blend or Bulgur wheat" },
+      { amount: 150, unit: "g", name: "Skinless chicken breast or turkey", diasporaSwap: "Tofu or lean beef strips" },
+      { amount: 1, unit: "cup", name: "Blended plum tomatoes & red bell pepper", diasporaSwap: "Canned crushed San Marzano tomatoes" },
+      { amount: 0.5, unit: "bulb", name: "Red onion chopped", diasporaSwap: "Shallots" },
+      { amount: 1, unit: "tbsp", name: "Fermented Iru (locust beans)", lowSodiumSwap: "Ground bay leaf, thyme & garlic" },
+      { amount: 1, unit: "tbsp", name: "Ground dried crayfish", diasporaSwap: "Smoked paprika & mushroom powder" },
+      { amount: 1, unit: "tbsp", name: "Cold-pressed olive oil or sunflower oil", lowSodiumSwap: "Zero-salt vegetable broth reduction" },
+    ],
+    steps: [
+      {
+        stepNumber: 1,
+        instruction: "Rinse brown rice thoroughly under cold water. Parboil for 15 minutes, drain, and set aside.",
+        flameLevel: "High",
+        timerMinutes: 15,
+        avoTip: "Parboiling brown rice strips excess starch surface dust, keeping the grains separate and fluffy.",
+      },
+      {
+        stepNumber: 2,
+        instruction: "In a heavy pot, saute onions, garlic, ginger, and Iru in olive oil for 3 minutes until aromatic. Pour in the blended tomato-pepper reduction.",
+        flameLevel: "Medium",
+        timerMinutes: 5,
+        avoTip: "The Iru and crayfish provide natural glutamates (umami), so you don't need sodium-heavy seasoning cubes!",
+      },
+      {
+        stepNumber: 3,
+        instruction: "Add chicken broth, bay leaves, thyme, and drained brown rice. Cover tightly with foil and pot lid. Simmer on low heat for 25 minutes until all liquid is absorbed.",
+        flameLevel: "Low",
+        timerMinutes: 25,
+        avoTip: "Tightly sealing with foil traps the steam, ensuring brown rice cooks completely tender.",
+      },
+    ],
+  },
+  {
+    id: "3",
+    name: "Protein-Packed Egusi & Ugu Soup (Unbleached)",
+    emoji: "🍲",
+    category: "dinner",
+    tags: ["high-protein", "pcos-safe", "heart-healthy"],
+    prepTime: 20,
+    cookTime: 35,
+    baseServings: 4,
+    difficulty: "medium",
+    baseCalories: 440,
+    baseProtein: 34,
+    baseCarbs: 16,
+    baseFats: 24,
+    glycemicIndex: "Low",
+    rating: 4.9,
+    reviews: 189,
+    healthBenefits: "High in arginine, healthy linoleic fats, and magnesium from natural melon seeds.",
+    clinicalNote: "Zero glycemic spike (Carbs < 18g). Ideal for PCOS and ketogenic-leaning metabolic diets.",
+    localMarkets: ["Mile 12 Market", "Oshodi Market", "African Grocery Store"],
+    ingredients: [
+      { amount: 0.5, unit: "cup", name: "Ground melon seeds (Egusi)", diasporaSwap: "Pumpkin seeds (Pepitas) ground" },
+      { amount: 150, unit: "g", name: "Lean beef chunks or goat meat", diasporaSwap: "Skinless chicken thighs" },
+      { amount: 100, unit: "g", name: "Steamed stockfish / smoked fish flakes", diasporaSwap: "Smoked trout or haddock" },
+      { amount: 1.5, unit: "cups", name: "Fresh fluted pumpkin leaves (Ugu)", diasporaSwap: "Collard greens or spinach" },
+      { amount: 1, unit: "tbsp", name: "Virgin unrefined red palm oil", lowSodiumSwap: "Avocado oil + paprika" },
+      { amount: 1, unit: "tbsp", name: "Locust beans (Iru)", lowSodiumSwap: "Onion powder & ground coriander" },
+    ],
+    steps: [
+      {
+        stepNumber: 1,
+        instruction: "Mix ground egusi with 3 tablespoons of warm water and a pinch of grated onion to form small moist clumps.",
+        flameLevel: "Low",
+        timerMinutes: 2,
+        avoTip: "Forming egusi into tight paste balls creates that hearty, mouthwatering curd texture without excess oil.",
+      },
+      {
+        stepNumber: 2,
+        instruction: "Heat unbleached palm oil lightly on low heat. Drop egusi clumps into the pot with meat broth and Iru. Simmer covered for 15 minutes.",
+        flameLevel: "Medium",
+        timerMinutes: 15,
+        avoTip: "Never bleach palm oil until smoke rises—unbleached oil preserves 100% of its Vitamin E tocotrienols.",
+      },
+      {
+        stepNumber: 3,
+        instruction: "Stir in shredded Ugu leaves, smoked fish, and ground crayfish. Cook for 3 final minutes and remove from heat.",
+        flameLevel: "Simmer",
+        timerMinutes: 3,
+        avoTip: "Pair with 1 small wrap of oat swallow or cauliflower swallow for an ultra-low glycemic dinner.",
+      },
+    ],
+  },
+  {
+    id: "4",
+    name: "Heart-Healthy Anti-Inflammatory Pepper Soup",
+    emoji: "🌶️",
+    category: "dinner",
+    tags: ["low-sodium", "diabetic-friendly", "weight-loss", "heart-healthy"],
+    prepTime: 10,
+    cookTime: 25,
+    baseServings: 2,
+    difficulty: "easy",
+    baseCalories: 230,
+    baseProtein: 32,
+    baseCarbs: 6,
+    baseFats: 8,
+    glycemicIndex: "Low",
+    rating: 4.8,
+    reviews: 174,
+    healthBenefits: "Thermogenic spices (calabash nutmeg, uziza) support vascular relaxation and digestion.",
+    clinicalNote: "Nearly zero carbohydrate density. Ideal post-workout recovery and hypertension broth.",
+    localMarkets: ["Epe Fish Market", "Ikeja Market", "Asian Fish Market"],
+    ingredients: [
+      { amount: 200, unit: "g", name: "Fresh catfish or Tilapia cutlets", diasporaSwap: "Salmon steak or red snapper" },
+      { amount: 1, unit: "tbsp", name: "Traditional pepper soup spice blend (Ehuru/Uda)", diasporaSwap: "Allspice, ginger & black peppercorns" },
+      { amount: 0.5, unit: "cup", name: "Fresh scent leaf (Efirin / Nchuanwu)", diasporaSwap: "Fresh sweet basil or mint leaves" },
+      { amount: 1, unit: "tsp", name: "Freshly grated ginger & garlic", lowSodiumSwap: "Extra lime juice for tang" },
+      { amount: 1, unit: "pc", name: "Scotch bonnet pepper seeded", diasporaSwap: "Habanero or jalapeño" },
+    ],
+    steps: [
+      {
+        stepNumber: 1,
+        instruction: "Place catfish in a pot with 3 cups of water, grated ginger, garlic, and traditional spices. Bring to a rolling boil for 10 minutes.",
+        flameLevel: "High",
+        timerMinutes: 10,
+        avoTip: "The aromatic terpenes in Ehuru (African nutmeg) help naturally calm intestinal spasms.",
+      },
+      {
+        stepNumber: 2,
+        instruction: "Toss in chopped scent leaves and simmer for 5 minutes until the fish is tender and flaky.",
+        flameLevel: "Simmer",
+        timerMinutes: 5,
+        avoTip: "Drink the rich, fragrant broth first to stimulate satiety hormones before eating the fish.",
+      },
+    ],
+  },
+  {
+    id: "5",
+    name: "Steamed Protein Moi-Moi with Boiled Egg",
+    emoji: "🍮",
+    category: "breakfast",
+    tags: ["high-protein", "diabetic-friendly", "weight-loss", "pcos-safe"],
+    prepTime: 25,
+    cookTime: 40,
+    baseServings: 4,
+    difficulty: "medium",
+    baseCalories: 310,
+    baseProtein: 22,
+    baseCarbs: 32,
+    baseFats: 9,
+    glycemicIndex: "Low",
+    rating: 4.9,
+    reviews: 205,
+    healthBenefits: "Slow-digesting cowpeas deliver prebiotic fiber and steady amino acid release.",
+    clinicalNote: "Low glycemic load (~8). Resistant starch nourishes beneficial gut Bifidobacteria.",
+    localMarkets: ["Idumota Market", "Oyingbo Market", "African Caribbean Food Market"],
+    ingredients: [
+      { amount: 0.5, unit: "cup", name: "Peeled brown cowpeas (Beans)", diasporaSwap: "Black-eyed peas or chickpea flour" },
+      { amount: 1, unit: "pc", name: "Hard-boiled egg sliced", diasporaSwap: "Flaked canned tuna or tofu" },
+      { amount: 0.5, unit: "cup", name: "Red bell peppers & onions blended", diasporaSwap: "Piquillo roasted peppers" },
+      { amount: 1, unit: "tbsp", name: "Ground crayfish", diasporaSwap: "Nutritional yeast for savory depth" },
+      { amount: 1, unit: "tbsp", name: "Sunflower or olive oil", lowSodiumSwap: "Cold-pressed coconut oil" },
+    ],
+    steps: [
+      {
+        stepNumber: 1,
+        instruction: "Blend soaked peeled beans with red bell peppers, onions, ginger, and crayfish with 1 cup of water until silky smooth.",
+        flameLevel: "Low",
+        timerMinutes: 3,
+        avoTip: "Whisk the blended batter with a spoon for 2 minutes to incorporate air for a fluffy, soufflé texture!",
+      },
+      {
+        stepNumber: 2,
+        instruction: "Pour batter into silicone muffin cups or banana leaves, placing boiled egg slice inside each. Steam in a covered pot with 2 inches of boiling water for 35 minutes.",
+        flameLevel: "Medium",
+        timerMinutes: 35,
+        avoTip: "Steaming uses zero excess frying oil, keeping calories and trans fats low.",
+      },
+    ],
+  },
+  {
+    id: "6",
+    name: "Efo Riro (Leafy Spinach & Ugu Stir-In) with Lean Beef",
+    emoji: "🥬",
+    category: "dinner",
+    tags: ["high-protein", "heart-healthy", "diabetic-friendly"],
+    prepTime: 15,
+    cookTime: 30,
+    baseServings: 4,
+    difficulty: "easy",
+    baseCalories: 320,
+    baseProtein: 32,
+    baseCarbs: 12,
+    baseFats: 14,
+    glycemicIndex: "Low",
+    rating: 4.9,
+    reviews: 160,
+    healthBenefits: "High iron, folate, and calcium from greens; lean protein supports muscle without blood sugar spikes.",
+    clinicalNote: "Ultra-low carbohydrate density (12g). Excellent for glycemic stabilization.",
+    localMarkets: ["Balogun Market", "Mile 12 Market", "Supermarket Produce Aisle"],
+    ingredients: [
+      { amount: 2, unit: "cups", name: "Coarsely chopped spinach & Ugu leaves", diasporaSwap: "Swiss chard, baby kale & spinach" },
+      { amount: 150, unit: "g", name: "Lean diced beef or turkey", diasporaSwap: "Extra firm tofu or grilled chicken" },
+      { amount: 0.5, unit: "cup", name: "Coarsely blended pepper & tomato base", diasporaSwap: "Fire-roasted crushed tomatoes" },
+      { amount: 1, unit: "tbsp", name: "Fermented Iru", lowSodiumSwap: "Chopped garlic, ginger & thyme" },
+      { amount: 1, unit: "tbsp", name: "Ground crayfish", diasporaSwap: "Smoked dried shrimp" },
+    ],
+    steps: [
+      {
+        stepNumber: 1,
+        instruction: "Blanch chopped spinach in boiling water for 60 seconds, drain immediately, and squeeze out excess moisture.",
+        flameLevel: "High",
+        timerMinutes: 1,
+        avoTip: "Squeezing out excess water prevents your Efo Riro stew from turning watery!",
+      },
+      {
+        stepNumber: 2,
+        instruction: "Fry pepper sauce with Iru, crayfish, and cooked beef until the oil floats on top (about 12 minutes).",
+        flameLevel: "Medium",
+        timerMinutes: 12,
+        avoTip: "Cooking the pepper base thoroughly develops deep sweetness without adding sugar.",
+      },
+      {
+        stepNumber: 3,
+        instruction: "Turn off the stove flame and stir in blanched greens. Let residual heat wilt the leaves for 2 minutes.",
+        flameLevel: "Simmer",
+        timerMinutes: 2,
+        avoTip: "Turning off heat before stirring in greens keeps them crisp, bright green, and nutrient-dense.",
+      },
+    ],
+  },
+  {
+    id: "7",
+    name: "Unsweetened Hibiscus (Zobo) Elixir with Ginger & Lime",
+    emoji: "🌺",
+    category: "snack",
+    tags: ["heart-healthy", "low-sodium", "diabetic-friendly", "weight-loss"],
+    prepTime: 10,
+    cookTime: 20,
+    baseServings: 6,
+    difficulty: "easy",
+    baseCalories: 35,
+    baseProtein: 1,
+    baseCarbs: 8,
+    baseFats: 0,
+    glycemicIndex: "Low",
+    rating: 4.9,
+    reviews: 310,
+    healthBenefits: "High anthocyanin bioflavonoids support arterial elasticity and natural blood pressure reduction.",
+    clinicalNote: "Zero added sugar. Clinically documented ACE-inhibitory and diuretic properties.",
+    localMarkets: ["Any local market", "Health Food Store / Mexican Hibiscus Flor de Jamaica"],
+    ingredients: [
+      { amount: 0.5, unit: "cup", name: "Dried dark red hibiscus petals (Zobo leaves)", diasporaSwap: "Flor de Jamaica (Mexican hibiscus)" },
+      { amount: 2, unit: "tbsp", name: "Freshly grated ginger", diasporaSwap: "Ginger root slices" },
+      { amount: 1, unit: "tsp", name: "Whole cloves (Kanunfari)", diasporaSwap: "Ground cloves or cinnamon stick" },
+      { amount: 1, unit: "pc", name: "Fresh lime or lemon juice", diasporaSwap: "Apple cider vinegar splash" },
+    ],
+    steps: [
+      {
+        stepNumber: 1,
+        instruction: "Rinse dried hibiscus petals in cold water quickly to remove any dust. Place in pot with 4 cups of water, ginger, and cloves.",
+        flameLevel: "High",
+        timerMinutes: 5,
+        avoTip: "Rinse fast so you don't wash away the deep red medicinal anthocyanins!",
+      },
+      {
+        stepNumber: 2,
+        instruction: "Boil gently for 15 minutes. Strain the deep ruby elixir through a fine mesh sieve. Squeeze in fresh lime juice and chill in refrigerator.",
+        flameLevel: "Medium",
+        timerMinutes: 15,
+        avoTip: "Drink 1 glass daily as a refreshing, cardio-protective beverage with zero glucose impact!",
+      },
+    ],
+  },
+];
 
 export default function Recipe() {
   const { mode } = useAppMode();
-  const { selectedLocation, getRegionalKey } = useLocation();
+  const { selectedLocation } = useLocation();
   const { t } = useLanguage();
-  // Category ("all" + meal types) and difficulty label helpers.
-  const categoryLabel = (cat: string) =>
-    cat === "all"
-      ? t("logs.filter.all")
-      : cat === "snack"
-      ? t("logs.meal.snack")
-      : ["breakfast", "brunch", "lunch", "dinner"].includes(cat)
-      ? t(`planmeal.meal.${cat}`)
-      : cat;
-  const diffLabel = (d: string) => t(`recipe.diff.${d}`);
-  const tagLabel = (tag: string) => (TAG_KEY[tag] ? t(TAG_KEY[tag]) : tag.replace("-", " "));
+  const { profile } = useUser();
+
+  const [recipes, setRecipes] = useState<FullRecipe[]>(MASTER_RECIPES);
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState<RecipeCategory>("all");
-  const [showFilters, setShowFilters] = useState(false);
-  const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null);
+  const [selectedTag, setSelectedTag] = useState<DietaryTag>("all");
+  const [selectedMealCategory, setSelectedMealCategory] = useState<"all" | "breakfast" | "lunch" | "dinner" | "snack">("all");
+  const [selectedRecipe, setSelectedRecipe] = useState<FullRecipe | null>(null);
 
-  const [recipes, setRecipes] = useState<Recipe[]>([
-    {
-      id: "1",
-      name: "Diabetic-Friendly Jollof Rice",
-      image: "🍚",
-      category: "lunch",
-      prepTime: 15,
-      cookTime: 45,
-      servings: 4,
-      difficulty: "medium",
-      calories: 380,
-      protein: 22,
-      carbs: 48,
-      fats: 10,
-      rating: 4.8,
-      reviews: 127,
-      tags: ["diabetic-friendly", "heart-healthy"],
-      ingredients: [
-        "2 cups brown rice",
-        "400g chicken breast",
-        "2 tomatoes",
-        "1 onion",
-        "2 bell peppers",
-        "Garlic & ginger",
-        "Low-sodium bouillon",
-        "Olive oil"
-      ],
-      localMarkets: ["Tejuosho Market", "Balogun Market", "ShopRite"],
-      healthBenefits: "Uses brown rice for lower glycemic index and lean protein for blood sugar control",
-      isFavorite: true,
-    },
-    {
-      id: "2",
-      name: "Protein-Packed Egusi Soup",
-      image: "🥣",
-      category: "dinner",
-      prepTime: 20,
-      cookTime: 40,
-      servings: 6,
-      difficulty: "medium",
-      calories: 420,
-      protein: 32,
-      carbs: 18,
-      fats: 26,
-      rating: 4.9,
-      reviews: 203,
-      tags: ["high-protein", "heart-healthy"],
-      ingredients: [
-        "2 cups ground egusi",
-        "500g beef/fish",
-        "Spinach leaves",
-        "2 onions",
-        "Palm oil (moderate)",
-        "Crayfish",
-        "Stockfish",
-        "Seasoning"
-      ],
-      localMarkets: ["Oyingbo Market", "Mile 12 Market"],
-      healthBenefits: "High in protein and healthy fats from melon seeds, supports muscle health",
-      isFavorite: false,
-    },
-    {
-      id: "3",
-      name: "Low-Sodium Pepper Soup",
-      image: "🍲",
-      category: "dinner",
-      prepTime: 10,
-      cookTime: 30,
-      servings: 4,
-      difficulty: "easy",
-      calories: 220,
-      protein: 28,
-      carbs: 8,
-      fats: 9,
-      rating: 4.7,
-      reviews: 156,
-      tags: ["low-sodium", "diabetic-friendly", "heart-healthy"],
-      ingredients: [
-        "500g catfish/chicken",
-        "Pepper soup spices",
-        "2 scotch bonnets",
-        "Onions",
-        "Ginger & garlic",
-        "Uziza leaves",
-        "No added salt"
-      ],
-      localMarkets: ["Ikeja Market", "Oshodi Market"],
-      healthBenefits: "Low in sodium, anti-inflammatory spices support cardiovascular health",
-      isFavorite: true,
-    },
-    {
-      id: "4",
-      name: "Nutrient-Dense Akara (Bean Cakes)",
-      image: "🥙",
-      category: "breakfast",
-      prepTime: 30,
-      cookTime: 20,
-      servings: 12,
-      difficulty: "medium",
-      calories: 180,
-      protein: 12,
-      carbs: 16,
-      fats: 8,
-      rating: 4.6,
-      reviews: 98,
-      tags: ["high-protein", "diabetic-friendly"],
-      ingredients: [
-        "2 cups peeled beans",
-        "1 onion",
-        "2 peppers",
-        "Salt (minimal)",
-        "Vegetable oil (for frying)"
-      ],
-      localMarkets: ["Makola Market", "Idumota Market"],
-      healthBenefits: "Plant-based protein source, rich in fiber for sustained energy",
-      isFavorite: false,
-    },
-    {
-      id: "5",
-      name: "Heart-Healthy Grilled Tilapia",
-      image: "🐟",
-      category: "lunch",
-      prepTime: 15,
-      cookTime: 25,
-      servings: 2,
-      difficulty: "easy",
-      calories: 280,
-      protein: 38,
-      carbs: 4,
-      fats: 12,
-      rating: 4.9,
-      reviews: 174,
-      tags: ["heart-healthy", "high-protein", "low-sodium"],
-      ingredients: [
-        "2 whole tilapia",
-        "Lemon juice",
-        "Garlic & herbs",
-        "Olive oil",
-        "Bell peppers",
-        "Onions"
-      ],
-      localMarkets: ["Epe Fish Market", "Badagry Creek"],
-      healthBenefits: "Omega-3 rich, supports heart health and reduces inflammation",
-      isFavorite: true,
-    },
-    {
-      id: "6",
-      name: "Efo Riro (Vegetable Soup)",
-      image: "🍲",
-      category: "dinner",
-      prepTime: 20,
-      cookTime: 35,
-      servings: 6,
-      difficulty: "medium",
-      calories: 310,
-      protein: 26,
-      carbs: 12,
-      fats: 20,
-      rating: 4.8,
-      reviews: 0,
-      tags: ["high-protein", "heart-healthy", "low-sodium"],
-      ingredients: [
-        "Ugu & spinach (efo tete)",
-        "500g assorted lean meat & fish",
-        "Palm oil (moderate)",
-        "Locust beans (iru)",
-        "Crayfish",
-        "Fresh pepper & onions",
-        "Seasoning (minimal)"
-      ],
-      localMarkets: ["Mile 12 Market", "Balogun Market"],
-      healthBenefits: "Leafy greens deliver iron, folate and fibre; lean protein supports muscle without excess sodium",
-      isFavorite: false,
-    },
-    {
-      id: "7",
-      name: "Moi Moi (Steamed Bean Pudding)",
-      image: "🍮",
-      category: "breakfast",
-      prepTime: 30,
-      cookTime: 45,
-      servings: 8,
-      difficulty: "medium",
-      calories: 190,
-      protein: 13,
-      carbs: 18,
-      fats: 7,
-      rating: 4.7,
-      reviews: 0,
-      tags: ["high-protein", "diabetic-friendly", "weight-loss"],
-      ingredients: [
-        "2 cups peeled beans",
-        "Boiled egg (optional)",
-        "Fresh pepper & onions",
-        "Palm oil (small amount)",
-        "Crayfish",
-        "Sardine or fish (optional)"
-      ],
-      localMarkets: ["Oyingbo Market", "Mushin Market"],
-      healthBenefits: "Steamed rather than fried — plant protein and fibre with a low glycemic load",
-      isFavorite: false,
-    },
-    {
-      id: "8",
-      name: "Ewa Agoyin (Mashed Beans)",
-      image: "🫘",
-      category: "lunch",
-      prepTime: 15,
-      cookTime: 60,
-      servings: 5,
-      difficulty: "medium",
-      calories: 360,
-      protein: 18,
-      carbs: 52,
-      fats: 9,
-      rating: 4.6,
-      reviews: 0,
-      tags: ["high-protein", "weight-loss"],
-      ingredients: [
-        "3 cups honey beans",
-        "Caramelised onions",
-        "Palm oil (moderate)",
-        "Dry pepper",
-        "Ground crayfish"
-      ],
-      localMarkets: ["Idumota Market", "Ojuwoye Market"],
-      healthBenefits: "Slow-digesting beans keep you full for hours and help steady blood sugar",
-      isFavorite: false,
-    },
-    {
-      id: "9",
-      name: "Ofada Rice & Ayamase Sauce",
-      image: "🍚",
-      category: "lunch",
-      prepTime: 20,
-      cookTime: 45,
-      servings: 4,
-      difficulty: "medium",
-      calories: 430,
-      protein: 24,
-      carbs: 55,
-      fats: 13,
-      rating: 4.7,
-      reviews: 0,
-      tags: ["diabetic-friendly", "heart-healthy"],
-      ingredients: [
-        "2 cups ofada (unpolished) rice",
-        "Assorted lean meat",
-        "Green bell peppers (ayamase)",
-        "Palm oil (moderate)",
-        "Locust beans (iru)",
-        "Onions"
-      ],
-      localMarkets: ["Mile 12 Market", "Mushin Market"],
-      healthBenefits: "Unpolished ofada rice carries more fibre and a lower glycemic index than white rice",
-      isFavorite: false,
-    },
-    {
-      id: "10",
-      name: "Okro Soup",
-      image: "🥘",
-      category: "dinner",
-      prepTime: 15,
-      cookTime: 25,
-      servings: 5,
-      difficulty: "easy",
-      calories: 260,
-      protein: 24,
-      carbs: 14,
-      fats: 13,
-      rating: 4.6,
-      reviews: 0,
-      tags: ["low-sodium", "heart-healthy", "weight-loss"],
-      ingredients: [
-        "Fresh okra",
-        "Ugu or spinach",
-        "Lean beef & fish",
-        "Palm oil (moderate)",
-        "Crayfish",
-        "Fresh pepper & onions"
-      ],
-      localMarkets: ["Oshodi Market", "Ketu Market"],
-      healthBenefits: "Okra's soluble fibre helps control cholesterol and blood sugar",
-      isFavorite: false,
-    },
-    {
-      id: "11",
-      name: "Boiled Plantain & Garden Egg Sauce",
-      image: "🍌",
-      category: "breakfast",
-      prepTime: 10,
-      cookTime: 25,
-      servings: 3,
-      difficulty: "easy",
-      calories: 340,
-      protein: 10,
-      carbs: 58,
-      fats: 10,
-      rating: 4.5,
-      reviews: 0,
-      tags: ["heart-healthy", "weight-loss"],
-      ingredients: [
-        "2 unripe or semi-ripe plantains",
-        "Garden eggs (African eggplant)",
-        "Tomatoes & pepper",
-        "Onions",
-        "Olive or palm oil (small amount)",
-        "Smoked fish (optional)"
-      ],
-      localMarkets: ["Ikeja Market", "Agege Market"],
-      healthBenefits: "Fibre-rich plantain and garden egg support digestion and lasting satiety",
-      isFavorite: false,
-    },
-    {
-      id: "12",
-      name: "Nkwobi (Lean, Lightly Spiced)",
-      image: "🍖",
-      category: "snack",
-      prepTime: 20,
-      cookTime: 40,
-      servings: 4,
-      difficulty: "medium",
-      calories: 300,
-      protein: 30,
-      carbs: 6,
-      fats: 18,
-      rating: 4.5,
-      reviews: 0,
-      tags: ["high-protein", "low-sodium"],
-      ingredients: [
-        "Cleaned lean cow foot",
-        "Ehu seeds",
-        "Palm oil paste (moderate)",
-        "Utazi leaves",
-        "Onions",
-        "Fresh pepper"
-      ],
-      localMarkets: ["Nkwo Market", "Ariaria Market"],
-      healthBenefits: "Collagen-rich protein; serve a small portion and skip added salt for a heart-smart treat",
-      isFavorite: false,
-    },
-    {
-      id: "13",
-      name: "Unripe Plantain Porridge",
-      image: "🍲",
-      category: "lunch",
-      prepTime: 15,
-      cookTime: 30,
-      servings: 4,
-      difficulty: "easy",
-      calories: 320,
-      protein: 16,
-      carbs: 46,
-      fats: 9,
-      rating: 4.7,
-      reviews: 0,
-      tags: ["diabetic-friendly", "heart-healthy", "weight-loss"],
-      ingredients: [
-        "3 unripe plantains",
-        "Ugu or spinach",
-        "Smoked fish or lean chicken",
-        "Palm oil (small amount)",
-        "Crayfish",
-        "Fresh pepper & onions"
-      ],
-      localMarkets: ["Mile 12 Market", "Oyingbo Market"],
-      healthBenefits: "Unripe plantain is low-GI and rich in resistant starch — excellent for managing diabetes",
-      isFavorite: false,
-    },
-    {
-      id: "14",
-      name: "Abacha (African Salad)",
-      image: "🥗",
-      category: "snack",
-      prepTime: 25,
-      cookTime: 5,
-      servings: 4,
-      difficulty: "easy",
-      calories: 290,
-      protein: 12,
-      carbs: 34,
-      fats: 12,
-      rating: 4.4,
-      reviews: 0,
-      tags: ["heart-healthy"],
-      ingredients: [
-        "Dried shredded cassava (abacha)",
-        "Ugba (oil bean)",
-        "Garden egg leaves",
-        "Palm oil paste (with akanwu)",
-        "Smoked fish",
-        "Onions & pepper"
-      ],
-      localMarkets: ["Nkwo Nnewi Market", "Ariaria Market"],
-      healthBenefits: "A lighter, fibre-forward small chop when portioned and served with plenty of greens",
-      isFavorite: false,
-    },
-    {
-      id: "15",
-      name: "Beans & Sweet Potato Pottage",
-      image: "🍠",
-      category: "lunch",
-      prepTime: 15,
-      cookTime: 50,
-      servings: 5,
-      difficulty: "easy",
-      calories: 350,
-      protein: 17,
-      carbs: 54,
-      fats: 8,
-      rating: 4.6,
-      reviews: 0,
-      tags: ["high-protein", "diabetic-friendly", "weight-loss"],
-      ingredients: [
-        "2 cups beans",
-        "2 sweet potatoes",
-        "Tomatoes & pepper",
-        "Onions",
-        "Palm oil (small amount)",
-        "Crayfish & smoked fish"
-      ],
-      localMarkets: ["Ketu Market", "Mile 12 Market"],
-      healthBenefits: "Beans plus sweet potato give protein, fibre and slow-release energy",
-      isFavorite: false,
-    },
-    {
-      id: "16",
-      name: "Suya (Lean Beef Skewers)",
-      image: "🍢",
-      category: "snack",
-      prepTime: 20,
-      cookTime: 15,
-      servings: 4,
-      difficulty: "medium",
-      calories: 250,
-      protein: 34,
-      carbs: 6,
-      fats: 10,
-      rating: 4.9,
-      reviews: 0,
-      tags: ["high-protein", "low-sodium"],
-      ingredients: [
-        "500g lean beef",
-        "Yaji (suya spice)",
-        "Groundnut (peanut) powder",
-        "Onions, tomatoes & cabbage (garnish)",
-        "Light brush of vegetable oil"
-      ],
-      localMarkets: ["Sabo Market", "Wuse Market"],
-      healthBenefits: "Grilled lean protein with peanut-based spice — high protein and low carb",
-      isFavorite: false,
-    },
-    {
-      id: "17",
-      name: "Zobo (Unsweetened Hibiscus Drink)",
-      image: "🧃",
-      category: "snack",
-      prepTime: 10,
-      cookTime: 20,
-      servings: 6,
-      difficulty: "easy",
-      calories: 45,
-      protein: 1,
-      carbs: 10,
-      fats: 0,
-      rating: 4.5,
-      reviews: 0,
-      tags: ["heart-healthy", "weight-loss", "diabetic-friendly"],
-      ingredients: [
-        "Dried hibiscus (zobo) leaves",
-        "Ginger & cloves",
-        "Pineapple peel (for natural sweetness)",
-        "Cucumber (optional)",
-        "No added sugar"
-      ],
-      localMarkets: ["Any local market", "Sabo Market"],
-      healthBenefits: "Hibiscus may help lower blood pressure; keep it unsweetened to stay diabetes-friendly",
-      isFavorite: false,
-    },
-  ]);
+  // Scaler & Swap Toggles inside Modal
+  const [portionMultiplier, setPortionMultiplier] = useState<number>(2); // Default 2 servings
+  const [diasporaMode, setDiasporaMode] = useState<boolean>(false);
+  const [lowSodiumMode, setLowSodiumMode] = useState<boolean>(false);
 
-  // Load this account's saved favorites and apply them to the recipe list.
+  // Step-by-Step Cooking Mode State
+  const [isCookingMode, setIsCookingMode] = useState<boolean>(false);
+  const [currentStepIdx, setCurrentStepIdx] = useState<number>(0);
+  const [checkedIngredients, setCheckedIngredients] = useState<Record<string, boolean>>({});
+
+  // Active Cooking Timer
+  const [timerSeconds, setTimerSeconds] = useState<number>(0);
+  const [timerRunning, setTimerRunning] = useState<boolean>(false);
+  const timerIntervalRef = useRef<any>(null);
+
+  // Load cloud favorites
   useEffect(() => {
-    getCollection('recipeFavorites')
+    getCollection("recipeFavorites")
       .then((items) => {
         const favIds = new Set((Array.isArray(items) ? items : []).map((i: any) => i.id));
         setRecipes((prev) => prev.map((r) => ({ ...r, isFavorite: favIds.has(r.id) })));
       })
-      .catch((e) => console.error('Failed to load recipe favorites', e));
+      .catch(() => {});
   }, []);
 
-  const filteredRecipes = recipes.filter((recipe) => {
-    const matchesSearch = recipe.name.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesCategory = selectedCategory === "all" || recipe.category === selectedCategory;
-    return matchesSearch && matchesCategory;
-  });
+  // Cooking Timer Effect
+  useEffect(() => {
+    if (timerRunning && timerSeconds > 0) {
+      timerIntervalRef.current = setInterval(() => {
+        setTimerSeconds((prev) => {
+          if (prev <= 1) {
+            clearInterval(timerIntervalRef.current);
+            setTimerRunning(false);
+            triggerHaptic("success");
+            toast.success("Timer Finished! Check your pot 🍲");
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+    } else if (!timerRunning && timerIntervalRef.current) {
+      clearInterval(timerIntervalRef.current);
+    }
+    return () => {
+      if (timerIntervalRef.current) clearInterval(timerIntervalRef.current);
+    };
+  }, [timerRunning, timerSeconds]);
 
-  const toggleFavorite = async (id: string) => {
-    const willFavorite = !recipes.find((r) => r.id === id)?.isFavorite;
-    setRecipes(recipes.map(r => r.id === id ? { ...r, isFavorite: willFavorite } : r));
-    try {
-      if (willFavorite) await createCollectionItem('recipeFavorites', { id });
-      else await deleteCollectionItem('recipeFavorites', id);
-    } catch (e) { console.error('Failed to update favorite', e); }
+  const startStepTimer = (minutes: number) => {
+    setTimerSeconds(minutes * 60);
+    setTimerRunning(true);
+    triggerHaptic("medium");
+    toast.info(`Timer set for ${minutes} minutes ⏱️`);
   };
 
-  const difficultyColors = {
-    easy: "text-green-600 bg-green-50",
-    medium: "text-yellow-600 bg-yellow-50",
-    hard: "text-red-600 bg-red-50",
+  const toggleFavorite = async (id: string, e?: React.MouseEvent) => {
+    e?.stopPropagation();
+    triggerHaptic("light");
+    const willFav = !recipes.find((r) => r.id === id)?.isFavorite;
+    setRecipes((prev) => prev.map((r) => (r.id === id ? { ...r, isFavorite: willFav } : r)));
+    if (selectedRecipe && selectedRecipe.id === id) {
+      setSelectedRecipe({ ...selectedRecipe, isFavorite: willFav });
+    }
+
+    try {
+      if (willFav) await createCollectionItem("recipeFavorites", { id });
+      else await deleteCollectionItem("recipeFavorites", id);
+      toast.success(willFav ? "Saved to Favorites ❤️" : "Removed from Favorites");
+    } catch {}
+  };
+
+  // 1-Tap Log to Daily Food Diary
+  const handleLogToDiary = async (recipe: FullRecipe) => {
+    triggerHaptic("success");
+    try {
+      const now = new Date();
+      const scaledCals = Math.round((recipe.baseCalories / recipe.baseServings) * portionMultiplier);
+      const scaledProt = Math.round((recipe.baseProtein / recipe.baseServings) * portionMultiplier);
+      const scaledCarbs = Math.round((recipe.baseCarbs / recipe.baseServings) * portionMultiplier);
+      const scaledFats = Math.round((recipe.baseFats / recipe.baseServings) * portionMultiplier);
+
+      const newLog = {
+        date: now.toISOString().split("T")[0],
+        time: now.toTimeString().slice(0, 5),
+        mealType: recipe.category,
+        foodName: `${recipe.name} (${portionMultiplier} serv)`,
+        calories: scaledCals,
+        protein: scaledProt,
+        carbs: scaledCarbs,
+        fats: scaledFats,
+        bloodSugarImpact: recipe.glycemicIndex.toLowerCase(),
+        notes: `Cooked from MealOptimizer Recipes (${recipe.healthBenefits})`,
+      };
+
+      await createMealLog(newLog);
+      triggerConfetti("burst");
+      toast.success(`Logged ${recipe.name} (${scaledCals} kcal) to today's diary! 🎉`);
+    } catch {
+      toast.error("Failed to log recipe to diary");
+    }
+  };
+
+  // Export Ingredients to Grocery Checklist
+  const handleExportToGrocery = (recipe: FullRecipe) => {
+    triggerHaptic("medium");
+    try {
+      const existing = JSON.parse(localStorage.getItem("mealoptimizer_custom_groceries") || "[]");
+      const newItems = recipe.ingredients.map((ing) => ({
+        id: `ing-${Date.now()}-${Math.random()}`,
+        name: diasporaMode && ing.diasporaSwap ? ing.diasporaSwap : ing.name,
+        quantity: `${Number((ing.amount * portionMultiplier).toFixed(1))} ${ing.unit}`,
+        category: "Produce & Spices",
+        checked: false,
+      }));
+
+      const merged = [...existing, ...newItems];
+      localStorage.setItem("mealoptimizer_custom_groceries", JSON.stringify(merged));
+      toast.success(`Exported ${newItems.length} ingredients to your Smart Market Checklist 🛒`);
+    } catch {
+      toast.error("Failed to export to grocery list");
+    }
+  };
+
+  // Filter recipes
+  const filteredRecipes = useMemo(() => {
+    return recipes.filter((recipe) => {
+      const q = searchQuery.toLowerCase().trim();
+      const matchesSearch =
+        !q ||
+        recipe.name.toLowerCase().includes(q) ||
+        recipe.healthBenefits.toLowerCase().includes(q) ||
+        recipe.ingredients.some((ing) => ing.name.toLowerCase().includes(q));
+
+      const matchesCategory = selectedMealCategory === "all" || recipe.category === selectedMealCategory;
+
+      let matchesTag = true;
+      if (selectedTag === "favorites") {
+        matchesTag = Boolean(recipe.isFavorite);
+      } else if (selectedTag !== "all") {
+        matchesTag = recipe.tags.includes(selectedTag);
+      }
+
+      return matchesSearch && matchesCategory && matchesTag;
+    });
+  }, [recipes, searchQuery, selectedTag, selectedMealCategory]);
+
+  const openRecipeDetails = (recipe: FullRecipe) => {
+    setSelectedRecipe(recipe);
+    setPortionMultiplier(recipe.baseServings);
+    setIsCookingMode(false);
+    setCurrentStepIdx(0);
+    setCheckedIngredients({});
+    setTimerRunning(false);
+    setTimerSeconds(0);
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#B8E5E5] to-[#E8F5F5] pb-24">
-      {/* Header */}
-      <div className="bg-gradient-to-r from-[#1f7a8c] to-[#4ecdc4] px-6 pt-12 pb-8">
-        <div className="flex items-center justify-between mb-6">
+    <div className="min-h-screen bg-gradient-to-b from-[#B8E5E5] via-[#E8F5F5] to-[#F8FBFB] pb-28">
+      {/* Top Header */}
+      <div className="bg-gradient-to-b from-[#A5DBDB] to-[#B8E5E5] px-4 sm:px-6 pt-9 pb-5 border-b border-teal-500/15">
+        <div className="max-w-2xl mx-auto flex items-center justify-between">
           <div>
-            <h1 className="text-3xl text-white mb-1">{t("recipe.title")}</h1>
-            <p className="text-white/80 text-sm">{t("recipe.subtitle")}</p>
+            <span className="text-[10px] uppercase tracking-wider font-extrabold text-[#1f7a8c] block">
+              Metabolic Culinary Lab
+            </span>
+            <h1 className="text-xl sm:text-2xl font-black text-gray-900 leading-tight">
+              Clinical Recipes &amp; Swaps 🍲
+            </h1>
           </div>
           <ProfilePictureUpload />
         </div>
 
         {/* Search Bar */}
-        <div className="relative mb-4">
-          <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+        <div className="max-w-2xl mx-auto mt-3.5 relative">
+          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
           <input
             type="text"
-            placeholder={t("recipe.searchPlaceholder")}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-12 pr-4 py-3 rounded-2xl bg-white/90 backdrop-blur-sm text-gray-800 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-white"
+            placeholder="Search healthy Jollof, Egusi, swallows, low-sodium soups..."
+            className="w-full pl-10 pr-4 py-2.5 bg-white/95 backdrop-blur-md border border-teal-100/90 rounded-2xl text-xs text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[#1f7a8c] shadow-xs transition-all"
           />
         </div>
 
-        {/* Location Display */}
-        <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-3">
-          <div className="flex items-center justify-center gap-2 text-white">
-            <MapPin className="h-4 w-4" />
-            <span className="text-sm">{selectedLocation.flag} {selectedLocation.displayName}</span>
+        {/* Location & Diaspora Context Strip */}
+        <div className="max-w-2xl mx-auto mt-2.5 flex items-center justify-between text-[11px] text-teal-900 bg-white/70 backdrop-blur-xs px-3 py-1.5 rounded-xl border border-teal-100">
+          <div className="flex items-center gap-1.5 font-bold">
+            <MapPin size={13} className="text-[#1f7a8c]" />
+            <span>Region: {selectedLocation.flag} {selectedLocation.displayName}</span>
           </div>
-          <p className="text-xs text-white/70 text-center mt-1">
-            {getRegionalKey() === "lagos" ? t("recipe.localRecipes") : t("recipe.diaspora")}
-          </p>
+          <span className="text-[10px] text-teal-700 font-semibold">
+            {diasporaMode ? "🌍 Diaspora Supermarket Swaps Active" : "🇳🇬 Local Market Sourcing"}
+          </span>
         </div>
       </div>
 
-      {/* Content */}
-      <div className="px-6 mt-6">
-        {/* Category Tabs */}
-        <div className="flex gap-2 overflow-x-auto pb-2 mb-6 scrollbar-hide">
-          {(["all", "breakfast", "lunch", "dinner", "snack"] as RecipeCategory[]).map((cat) => (
+      <div className="px-4 sm:px-6 max-w-2xl mx-auto mt-4 space-y-4">
+        {/* ============================================================ */}
+        {/* 1. CLINICAL CONDITION FILTER PILLS                           */}
+        {/* ============================================================ */}
+        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none">
+          {[
+            { id: "all", label: "⚡ All Recipes" },
+            { id: "diabetic-friendly", label: "🩺 Low Glycemic (Diabetes)" },
+            { id: "low-sodium", label: "🫀 Low-Sodium (BP / DASH)" },
+            { id: "high-protein", label: "💪 High Protein & Satiety" },
+            { id: "pcos-safe", label: "🥑 PCOS & Hormone Care" },
+            { id: "weight-loss", label: "🔥 Calorie Balanced" },
+            { id: "favorites", label: "❤️ My Saved Favorites" },
+          ].map((pill) => (
             <button
-              key={cat}
-              onClick={() => setSelectedCategory(cat)}
-              className={`px-4 py-2 rounded-full whitespace-nowrap transition-all ${
-                selectedCategory === cat
-                  ? "bg-gradient-to-r from-[#1f7a8c] to-[#4ecdc4] text-white shadow-md"
-                  : "bg-white text-gray-700 shadow-sm hover:shadow-md"
+              key={pill.id}
+              onClick={() => {
+                triggerHaptic("light");
+                setSelectedTag(pill.id as DietaryTag);
+              }}
+              className={`px-3 py-1.5 rounded-xl text-xs font-bold shrink-0 transition-all cursor-pointer ${
+                selectedTag === pill.id
+                  ? "bg-[#1f7a8c] text-white shadow-2xs"
+                  : "bg-white text-gray-700 border border-slate-200/80 hover:bg-slate-50"
               }`}
             >
-              {categoryLabel(cat)}
+              {pill.label}
             </button>
           ))}
         </div>
 
-        {/* Location Selector */}
-        <div className="mb-4">
-          <LocationSelector />
-        </div>
-
-        {/* Recipe Cards */}
-        <div className="space-y-4">
-          {filteredRecipes.map((recipe) => (
-            <div
-              key={recipe.id}
-              className="bg-white rounded-3xl shadow-lg overflow-hidden hover:shadow-xl transition-all"
+        {/* Meal Type Filter Tabs */}
+        <div className="flex bg-white/90 p-1 rounded-2xl border border-teal-100 shadow-2xs gap-1">
+          {(["all", "breakfast", "lunch", "dinner", "snack"] as const).map((cat) => (
+            <button
+              key={cat}
+              onClick={() => {
+                triggerHaptic("light");
+                setSelectedMealCategory(cat);
+              }}
+              className={`flex-1 py-1.5 rounded-xl text-xs font-bold capitalize transition-all cursor-pointer ${
+                selectedMealCategory === cat
+                  ? "bg-teal-50 text-[#1f7a8c] shadow-2xs"
+                  : "text-gray-500 hover:text-gray-900"
+              }`}
             >
-              {/* Recipe Header */}
-              <div className="p-5">
-                <div className="flex items-start gap-4 mb-4">
-                  <div className="bg-gradient-to-br from-[#E8F5F5] to-[#B8E5E5] rounded-2xl p-3 text-3xl flex-shrink-0">
-                    {recipe.image}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-start justify-between mb-2">
-                      <h3 className="text-lg text-gray-800 flex-1 min-w-0 break-words">{recipe.name}</h3>
-                      <button
-                        onClick={() => toggleFavorite(recipe.id)}
-                        className="text-gray-400 hover:text-red-500 transition-colors ml-2"
-                      >
-                        <Heart
-                          className={`h-6 w-6 ${recipe.isFavorite ? "fill-red-500 text-red-500" : ""}`}
-                        />
-                      </button>
-                    </div>
-                    <div className="flex flex-wrap items-center gap-2 mb-2">
-                      <div className="flex items-center gap-1">
-                        <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                        <span className="text-sm text-gray-700">{recipe.rating}</span>
-                        <span className="text-xs text-gray-500">({recipe.reviews})</span>
-                      </div>
-                      <span
-                        className={`px-2 py-1 rounded-full text-xs ${difficultyColors[recipe.difficulty]}`}
-                      >
-                        {diffLabel(recipe.difficulty)}
-                      </span>
-                    </div>
-                    <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-gray-600">
-                      <span className="flex items-center gap-1">
-                        <Clock className="h-3 w-3" />
-                        {recipe.prepTime + recipe.cookTime}m
-                      </span>
-                      <span className="flex items-center gap-1">
-                        <Users className="h-3 w-3" />
-                        {recipe.servings}
-                      </span>
-                      <span className="flex items-center gap-1">
-                        <Flame className="h-3 w-3" />
-                        {recipe.calories} {t("recipe.calUnit")}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Macros */}
-                <div className="grid grid-cols-3 gap-2 mb-4">
-                  <div className="bg-blue-50 rounded-xl p-2 text-center">
-                    <p className="text-sm text-blue-600 mb-1">{recipe.protein}g</p>
-                    <p className="text-xs text-gray-600">{t("mealview.protein")}</p>
-                  </div>
-                  <div className="bg-orange-50 rounded-xl p-2 text-center">
-                    <p className="text-sm text-orange-600 mb-1">{recipe.carbs}g</p>
-                    <p className="text-xs text-gray-600">{t("mealview.carbs")}</p>
-                  </div>
-                  <div className="bg-red-50 rounded-xl p-2 text-center">
-                    <p className="text-sm text-red-600 mb-1">{recipe.fats}g</p>
-                    <p className="text-xs text-gray-600">{t("mealview.fats")}</p>
-                  </div>
-                </div>
-
-                {/* Tags */}
-                <div className="flex flex-wrap gap-2 mb-4">
-                  {recipe.tags.map((tag) => (
-                    <span
-                      key={tag}
-                      className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs"
-                    >
-                      {tagLabel(tag)}
-                    </span>
-                  ))}
-                </div>
-
-                {/* Health Benefits - Simple Mode */}
-                {mode === "simple" && (
-                  <div className="bg-green-50 border-l-4 border-green-500 rounded-lg p-3 mb-4">
-                    <div className="flex items-start gap-2">
-                      <Leaf className="h-4 w-4 text-green-600 flex-shrink-0 mt-0.5" />
-                      <p className="text-sm text-gray-700">{recipe.healthBenefits}</p>
-                    </div>
-                  </div>
-                )}
-
-                {/* Expert Mode - Additional Details */}
-                {mode === "expert" && (
-                  <div className="bg-purple-50 border-l-4 border-purple-500 rounded-lg p-3 mb-4">
-                    <div className="space-y-2 text-xs">
-                      <div className="flex items-center justify-between">
-                        <span className="text-gray-600">{t("recipe.glycemicLoad")}</span>
-                        <span className="text-gray-800 font-medium">{t("recipe.levelMedium")}</span>
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <span className="text-gray-600">{t("logs.pcfRatio")}</span>
-                        <span className="text-gray-800 font-medium">
-                          {Math.round((recipe.protein * 4 / recipe.calories) * 100)}:
-                          {Math.round((recipe.carbs * 4 / recipe.calories) * 100)}:
-                          {Math.round((recipe.fats * 9 / recipe.calories) * 100)}
-                        </span>
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <span className="text-gray-600">{t("recipe.bestTime")}</span>
-                        <span className="text-gray-800 font-medium">
-                          {recipe.category === "breakfast" ? "6-9am" : recipe.category === "lunch" ? "12-2pm" : "6-8pm"}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {/* Local Markets */}
-                {recipe.localMarkets && (
-                  <div className="bg-blue-50 rounded-xl p-3 mb-4">
-                    <div className="flex items-center gap-2 mb-2">
-                      <ShoppingCart className="h-4 w-4 text-blue-600" />
-                      <p className="text-xs text-gray-700">{t("recipe.whereToBuy")} ({selectedLocation.name})</p>
-                    </div>
-                    <div className="flex flex-wrap gap-2">
-                      {recipe.localMarkets.map((market) => (
-                        <span
-                          key={market}
-                          className="px-2 py-1 bg-white rounded-lg text-xs text-gray-700"
-                        >
-                          {market}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {/* View Recipe Button */}
-                <button
-                  onClick={() => setSelectedRecipe(recipe)}
-                  className="w-full bg-gradient-to-r from-[#1f7a8c] to-[#4ecdc4] text-white rounded-2xl py-3 hover:shadow-lg transition-all flex items-center justify-center gap-2"
-                >
-                  <span>{t("recipe.viewFull")}</span>
-                  <ChevronRight className="h-5 w-5" />
-                </button>
-              </div>
-            </div>
+              {cat === "all" ? "All Meals" : cat}
+            </button>
           ))}
         </div>
 
-        {/* No Results */}
-        {filteredRecipes.length === 0 && (
-          <div className="bg-white rounded-3xl shadow-lg p-8">
-            <MascotEmptyState
-              title={t("recipe.noResultsTitle")}
-              subtitle={t("recipe.noResultsSubtitle")}
-            />
-          </div>
-        )}
+        {/* Location Selector Component */}
+        <LocationSelector />
 
-        {/* Tips */}
-        <div className="mt-6 bg-gradient-to-br from-yellow-50 to-white rounded-3xl shadow-lg p-6 border-l-4 border-yellow-500">
-          <div className="flex items-start gap-3">
-            <AlertCircle className="h-6 w-6 text-yellow-600 flex-shrink-0 mt-1" />
-            <div>
-              <h3 className="text-gray-800 mb-2">{t("recipe.chefTip")}</h3>
-              <p className="text-sm text-gray-700 leading-relaxed">
-                {mode === "simple"
-                  ? t("recipe.tipSimple")
-                  : t("recipe.tipExpert")}
-              </p>
+        {/* ============================================================ */}
+        {/* 2. RECIPE CARDS GRID                                         */}
+        {/* ============================================================ */}
+        <div className="space-y-3.5">
+          {filteredRecipes.length === 0 ? (
+            <div className="bg-white rounded-3xl p-8 text-center shadow-xs border border-teal-100">
+              <MascotEmptyState
+                title="No recipes found"
+                subtitle="Try searching a different ingredient or clearing your clinical filters."
+              />
             </div>
-          </div>
+          ) : (
+            filteredRecipes.map((recipe) => (
+              <div
+                key={recipe.id}
+                onClick={() => openRecipeDetails(recipe)}
+                className="bg-white rounded-3xl p-4 sm:p-5 shadow-xs hover:shadow-md border border-teal-100/90 transition-all cursor-pointer group"
+              >
+                <div className="flex items-start justify-between gap-3">
+                  <div className="flex items-start gap-3 min-w-0 flex-1">
+                    <span className="text-3xl shrink-0 p-2 bg-gradient-to-br from-teal-50 to-emerald-50 rounded-2xl shadow-2xs border border-teal-100 group-hover:scale-105 transition-transform">
+                      {recipe.emoji}
+                    </span>
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-center gap-1.5 flex-wrap mb-1">
+                        <span
+                          className={`text-[9.5px] font-black px-2 py-0.5 rounded-full border ${
+                            recipe.glycemicIndex === "Low"
+                              ? "bg-emerald-50 text-emerald-800 border-emerald-200"
+                              : recipe.glycemicIndex === "Medium"
+                              ? "bg-amber-50 text-amber-800 border-amber-200"
+                              : "bg-rose-50 text-rose-800 border-rose-200"
+                          }`}
+                        >
+                          {recipe.glycemicIndex} Glycemic Spike
+                        </span>
+                        <span className="text-[10px] text-gray-400 font-semibold flex items-center gap-0.5">
+                          <Clock size={11} /> {recipe.prepTime + recipe.cookTime}m
+                        </span>
+                      </div>
+
+                      <h3 className="text-sm sm:text-base font-extrabold text-gray-900 group-hover:text-[#1f7a8c] transition-colors leading-snug">
+                        {recipe.name}
+                      </h3>
+
+                      <p className="text-xs text-gray-600 mt-1 line-clamp-2 leading-relaxed">
+                        {recipe.healthBenefits}
+                      </p>
+                    </div>
+                  </div>
+
+                  <button
+                    onClick={(e) => toggleFavorite(recipe.id, e)}
+                    className="p-2 text-gray-300 hover:text-rose-500 shrink-0 cursor-pointer transition-colors"
+                  >
+                    <Heart
+                      className={`h-5 w-5 ${recipe.isFavorite ? "fill-rose-500 text-rose-500" : ""}`}
+                    />
+                  </button>
+                </div>
+
+                {/* Macro Strip */}
+                <div className="grid grid-cols-4 gap-1.5 mt-3 pt-3 border-t border-slate-100 text-center">
+                  <div className="bg-slate-50 p-1.5 rounded-xl border border-slate-200/60">
+                    <span className="text-[9px] text-gray-400 font-bold block">Calories</span>
+                    <span className="text-xs font-black text-orange-600">{recipe.baseCalories}</span>
+                    <span className="text-[8px] text-gray-400 block">kcal</span>
+                  </div>
+                  <div className="bg-slate-50 p-1.5 rounded-xl border border-slate-200/60">
+                    <span className="text-[9px] text-gray-400 font-bold block">Protein</span>
+                    <span className="text-xs font-black text-blue-600">{recipe.baseProtein}g</span>
+                    <span className="text-[8px] text-gray-400 block">Muscle</span>
+                  </div>
+                  <div className="bg-slate-50 p-1.5 rounded-xl border border-slate-200/60">
+                    <span className="text-[9px] text-gray-400 font-bold block">Carbs</span>
+                    <span className="text-xs font-black text-emerald-600">{recipe.baseCarbs}g</span>
+                    <span className="text-[8px] text-gray-400 block">Energy</span>
+                  </div>
+                  <div className="bg-slate-50 p-1.5 rounded-xl border border-slate-200/60">
+                    <span className="text-[9px] text-gray-400 font-bold block">Fats</span>
+                    <span className="text-xs font-black text-purple-600">{recipe.baseFats}g</span>
+                    <span className="text-[8px] text-gray-400 block">Healthy</span>
+                  </div>
+                </div>
+
+                {/* Action Row */}
+                <div className="flex items-center justify-between mt-3 text-xs">
+                  <div className="flex items-center gap-1 text-[11px] font-bold text-teal-800 bg-teal-50 px-2.5 py-1 rounded-xl">
+                    <Sparkles size={12} className="text-amber-500" />
+                    <span>{recipe.ingredients.length} Whole Ingredients</span>
+                  </div>
+
+                  <span className="text-[#1f7a8c] font-black flex items-center gap-0.5 group-hover:translate-x-1 transition-transform">
+                    View Recipe &amp; Cook <ChevronRight size={14} />
+                  </span>
+                </div>
+              </div>
+            ))
+          )}
         </div>
       </div>
 
-      {/* Full Recipe Modal */}
-      {selectedRecipe && (
-        <div
-          className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-end"
-          onClick={() => setSelectedRecipe(null)}
-        >
-          <div
-            className="bg-white rounded-t-3xl w-full max-h-[80vh] overflow-y-auto"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="p-6">
-              {/* Modal Header */}
-              <div className="flex items-start justify-between mb-6">
-                <div className="flex items-center gap-3">
-                  <div className="bg-gradient-to-br from-[#E8F5F5] to-[#B8E5E5] rounded-2xl p-3 text-3xl">
-                    {selectedRecipe.image}
-                  </div>
-                  <div>
-                    <h2 className="text-xl text-gray-800 mb-1">{selectedRecipe.name}</h2>
-                    <div className="flex items-center gap-2 text-xs text-gray-600">
-                      <Clock className="h-3 w-3" />
-                      <span>{t("recipe.prep")} {selectedRecipe.prepTime}m | {t("recipe.cook")} {selectedRecipe.cookTime}m</span>
-                    </div>
+      <BottomNav />
+
+      {/* ============================================================ */}
+      {/* 3. INTERACTIVE 10X RECIPE & COOKING MODAL (IN-FRAME)         */}
+      {/* ============================================================ */}
+      <Dialog open={!!selectedRecipe} onOpenChange={(open) => !open && setSelectedRecipe(null)}>
+        <DialogContent className="max-w-lg max-h-[88vh] p-5 sm:p-6 flex flex-col rounded-3xl">
+          {selectedRecipe && (
+            <>
+              <DialogHeader className="pb-1 text-left">
+                <div className="flex items-center justify-between gap-2 mb-1">
+                  <span
+                    className={`text-[9.5px] font-black px-2.5 py-0.5 rounded-full border ${
+                      selectedRecipe.glycemicIndex === "Low"
+                        ? "bg-emerald-100 text-emerald-800 border-emerald-300"
+                        : "bg-amber-100 text-amber-800 border-amber-300"
+                    }`}
+                  >
+                    {selectedRecipe.glycemicIndex} Glycemic Spike
+                  </span>
+
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={(e) => toggleFavorite(selectedRecipe.id, e)}
+                      className="p-1 text-rose-500 hover:scale-110 transition-transform cursor-pointer"
+                    >
+                      <Heart className={`h-5 w-5 ${selectedRecipe.isFavorite ? "fill-rose-500" : ""}`} />
+                    </button>
                   </div>
                 </div>
+
+                <DialogTitle className="text-lg sm:text-xl font-black text-gray-900 leading-snug">
+                  {selectedRecipe.name}
+                </DialogTitle>
+                <DialogDescription className="text-xs text-teal-800 font-bold flex items-center gap-1 mt-0.5">
+                  <Sparkles size={12} className="text-amber-500" />
+                  {selectedRecipe.clinicalNote}
+                </DialogDescription>
+              </DialogHeader>
+
+              <div className="flex-1 overflow-y-auto overscroll-contain space-y-4 py-2 pr-1 text-xs">
+                {/* Mode Selector: Recipe View vs Interactive Cooking Mode */}
+                <div className="flex bg-slate-100 p-1 rounded-2xl gap-1">
+                  <button
+                    onClick={() => setIsCookingMode(false)}
+                    className={`flex-1 py-1.5 rounded-xl font-bold text-xs transition-all cursor-pointer ${
+                      !isCookingMode ? "bg-white text-teal-800 shadow-2xs" : "text-gray-500"
+                    }`}
+                  >
+                    📖 Ingredients &amp; Nutrition
+                  </button>
+                  <button
+                    onClick={() => setIsCookingMode(true)}
+                    className={`flex-1 py-1.5 rounded-xl font-bold text-xs transition-all cursor-pointer flex items-center justify-center gap-1 ${
+                      isCookingMode ? "bg-gradient-to-r from-[#1f7a8c] to-[#4ecdc4] text-white shadow-2xs" : "text-gray-500"
+                    }`}
+                  >
+                    👨‍🍳 Step-by-Step Cooking
+                  </button>
+                </div>
+
+                {/* -------------------------------------------------- */}
+                {/* VIEW A: INGREDIENTS & SCALER VIEW                  */}
+                {/* -------------------------------------------------- */}
+                {!isCookingMode && (
+                  <>
+                    {/* Dynamic Portion Scaler */}
+                    <div className="bg-slate-50 border border-slate-200/80 rounded-2xl p-3 flex items-center justify-between gap-3">
+                      <div>
+                        <span className="text-[10px] font-bold text-gray-500 uppercase tracking-wider block">
+                          Adjust Servings (Auto-Scale)
+                        </span>
+                        <span className="text-xs font-black text-gray-900">
+                          Cooking for: {portionMultiplier} {portionMultiplier === 1 ? "Person" : "People"}
+                        </span>
+                      </div>
+
+                      <div className="flex items-center gap-1.5 bg-white p-1 rounded-xl border border-slate-200 shadow-2xs">
+                        {[1, 2, 4, 6].map((num) => (
+                          <button
+                            key={num}
+                            onClick={() => {
+                              triggerHaptic("light");
+                              setPortionMultiplier(num);
+                            }}
+                            className={`px-2.5 py-1 rounded-lg text-xs font-black transition-all cursor-pointer ${
+                              portionMultiplier === num
+                                ? "bg-[#1f7a8c] text-white"
+                                : "text-gray-600 hover:bg-slate-100"
+                            }`}
+                          >
+                            {num}x
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Scaled Macro Strip */}
+                    <div className="grid grid-cols-4 gap-1.5 text-center">
+                      <div className="bg-orange-50/70 p-2 rounded-xl border border-orange-200/80">
+                        <span className="text-[9px] text-gray-500 font-bold block">Total Cals</span>
+                        <span className="text-xs font-black text-orange-700">
+                          {Math.round((selectedRecipe.baseCalories / selectedRecipe.baseServings) * portionMultiplier)}
+                        </span>
+                        <span className="text-[8px] text-gray-400 block">kcal</span>
+                      </div>
+                      <div className="bg-blue-50/70 p-2 rounded-xl border border-blue-200/80">
+                        <span className="text-[9px] text-gray-500 font-bold block">Protein</span>
+                        <span className="text-xs font-black text-blue-700">
+                          {Math.round((selectedRecipe.baseProtein / selectedRecipe.baseServings) * portionMultiplier)}g
+                        </span>
+                        <span className="text-[8px] text-gray-400 block">Muscle</span>
+                      </div>
+                      <div className="bg-emerald-50/70 p-2 rounded-xl border border-emerald-200/80">
+                        <span className="text-[9px] text-gray-500 font-bold block">Carbs</span>
+                        <span className="text-xs font-black text-emerald-700">
+                          {Math.round((selectedRecipe.baseCarbs / selectedRecipe.baseServings) * portionMultiplier)}g
+                        </span>
+                        <span className="text-[8px] text-gray-400 block">Energy</span>
+                      </div>
+                      <div className="bg-purple-50/70 p-2 rounded-xl border border-purple-200/80">
+                        <span className="text-[9px] text-gray-500 font-bold block">Fats</span>
+                        <span className="text-xs font-black text-purple-700">
+                          {Math.round((selectedRecipe.baseFats / selectedRecipe.baseServings) * portionMultiplier)}g
+                        </span>
+                        <span className="text-[8px] text-gray-400 block">Healthy</span>
+                      </div>
+                    </div>
+
+                    {/* Interactive Swaps Controls */}
+                    <div className="grid grid-cols-2 gap-2">
+                      <button
+                        onClick={() => {
+                          setDiasporaMode(!diasporaMode);
+                          triggerHaptic("light");
+                        }}
+                        className={`p-2.5 rounded-2xl border text-left text-xs transition-all cursor-pointer flex items-center justify-between ${
+                          diasporaMode
+                            ? "bg-teal-50 border-[#1f7a8c] text-teal-950 font-bold shadow-2xs"
+                            : "bg-slate-50 border-slate-200 text-gray-600 hover:bg-slate-100"
+                        }`}
+                      >
+                        <div className="min-w-0">
+                          <span className="text-[10px] uppercase font-bold text-[#1f7a8c] block">🌍 Diaspora Swaps</span>
+                          <span className="text-[11px] truncate block">UK / US Supermarket Mode</span>
+                        </div>
+                        <span className="text-sm font-black">{diasporaMode ? "ON" : "OFF"}</span>
+                      </button>
+
+                      <button
+                        onClick={() => {
+                          setLowSodiumMode(!lowSodiumMode);
+                          triggerHaptic("light");
+                        }}
+                        className={`p-2.5 rounded-2xl border text-left text-xs transition-all cursor-pointer flex items-center justify-between ${
+                          lowSodiumMode
+                            ? "bg-rose-50 border-rose-400 text-rose-950 font-bold shadow-2xs"
+                            : "bg-slate-50 border-slate-200 text-gray-600 hover:bg-slate-100"
+                        }`}
+                      >
+                        <div className="min-w-0">
+                          <span className="text-[10px] uppercase font-bold text-rose-700 block">🫀 Low-Sodium Mode</span>
+                          <span className="text-[11px] truncate block">No-Cube DASH Shield</span>
+                        </div>
+                        <span className="text-sm font-black">{lowSodiumMode ? "ON" : "OFF"}</span>
+                      </button>
+                    </div>
+
+                    {/* Checkable Ingredient List */}
+                    <div>
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-xs font-black text-gray-900 uppercase tracking-wider">
+                          Scaled Ingredients ({selectedRecipe.ingredients.length})
+                        </span>
+                        <button
+                          onClick={() => handleExportToGrocery(selectedRecipe)}
+                          className="text-[11px] font-bold text-[#1f7a8c] hover:underline flex items-center gap-1 cursor-pointer"
+                        >
+                          <ShoppingCart size={12} />
+                          <span>Export to Market List</span>
+                        </button>
+                      </div>
+
+                      <div className="space-y-1.5">
+                        {selectedRecipe.ingredients.map((ing, idx) => {
+                          const isChecked = Boolean(checkedIngredients[ing.name]);
+                          const scaledAmount = Number((ing.amount * portionMultiplier).toFixed(1));
+                          const displayText =
+                            diasporaMode && ing.diasporaSwap
+                              ? ing.diasporaSwap
+                              : lowSodiumMode && ing.lowSodiumSwap
+                              ? ing.lowSodiumSwap
+                              : ing.name;
+
+                          return (
+                            <div
+                              key={idx}
+                              onClick={() =>
+                                setCheckedIngredients({
+                                  ...checkedIngredients,
+                                  [ing.name]: !isChecked,
+                                })
+                              }
+                              className={`p-2.5 rounded-xl border text-xs flex items-center justify-between gap-2 cursor-pointer transition-all ${
+                                isChecked
+                                  ? "bg-slate-50 border-slate-200 text-gray-400 line-through"
+                                  : "bg-white border-slate-200/80 text-gray-800 shadow-2xs hover:border-teal-300"
+                              }`}
+                            >
+                              <div className="flex items-center gap-2 min-w-0">
+                                <div
+                                  className={`h-4 w-4 rounded-md border flex items-center justify-center shrink-0 ${
+                                    isChecked ? "bg-[#1f7a8c] border-[#1f7a8c] text-white" : "border-gray-300"
+                                  }`}
+                                >
+                                  {isChecked && <Check size={10} />}
+                                </div>
+                                <span className="font-semibold truncate">{displayText}</span>
+                              </div>
+
+                              <span className="font-black text-teal-800 bg-teal-50 px-2 py-0.5 rounded-md shrink-0">
+                                {scaledAmount} {ing.unit}
+                              </span>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  </>
+                )}
+
+                {/* -------------------------------------------------- */}
+                {/* VIEW B: INTERACTIVE STEP-BY-STEP COOKING MODE      */}
+                {/* -------------------------------------------------- */}
+                {isCookingMode && (
+                  <div className="space-y-4">
+                    {/* Live Cooking Timer Pill */}
+                    {timerSeconds > 0 && (
+                      <div className="p-3 bg-orange-50 border border-orange-200 rounded-2xl flex items-center justify-between gap-3 text-orange-950 shadow-2xs">
+                        <div className="flex items-center gap-2 font-mono text-base font-black">
+                          <Clock className="h-4 w-4 text-orange-600 animate-spin" />
+                          <span>
+                            {Math.floor(timerSeconds / 60)}:
+                            {(timerSeconds % 60).toString().padStart(2, "0")}
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-1.5">
+                          <button
+                            onClick={() => setTimerRunning(!timerRunning)}
+                            className="px-2.5 py-1 bg-orange-600 text-white rounded-lg font-bold text-xs cursor-pointer"
+                          >
+                            {timerRunning ? "Pause" : "Resume"}
+                          </button>
+                          <button
+                            onClick={() => {
+                              setTimerRunning(false);
+                              setTimerSeconds(0);
+                            }}
+                            className="p-1 text-gray-500 hover:text-gray-900 cursor-pointer"
+                          >
+                            <RotateCcw size={14} />
+                          </button>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Step Card Navigation */}
+                    <div className="flex items-center justify-between text-xs font-bold text-gray-500">
+                      <span>Step {currentStepIdx + 1} of {selectedRecipe.steps.length}</span>
+                      <div className="flex items-center gap-1">
+                        {selectedRecipe.steps.map((_, i) => (
+                          <div
+                            key={i}
+                            className={`h-1.5 rounded-full transition-all ${
+                              i === currentStepIdx
+                                ? "w-6 bg-[#1f7a8c]"
+                                : i < currentStepIdx
+                                ? "w-2 bg-teal-400"
+                                : "w-2 bg-slate-200"
+                            }`}
+                          />
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Active Step Hero Card */}
+                    <div className="p-4 bg-gradient-to-br from-teal-50/60 to-emerald-50/50 rounded-2xl border border-teal-200 space-y-3">
+                      <div className="flex items-center justify-between">
+                        <span className="text-[10px] font-black uppercase tracking-wider text-teal-800 bg-teal-100 px-2 py-0.5 rounded-md">
+                          Flame: {selectedRecipe.steps[currentStepIdx].flameLevel || "Medium"}
+                        </span>
+                        {selectedRecipe.steps[currentStepIdx].timerMinutes && (
+                          <button
+                            onClick={() =>
+                              startStepTimer(selectedRecipe.steps[currentStepIdx].timerMinutes!)
+                            }
+                            className="px-2.5 py-1 bg-orange-500 hover:bg-orange-600 text-white rounded-xl text-[11px] font-bold flex items-center gap-1 shadow-2xs cursor-pointer active:scale-95 transition-all"
+                          >
+                            <Play size={11} className="fill-current" />
+                            <span>Start {selectedRecipe.steps[currentStepIdx].timerMinutes}m Timer</span>
+                          </button>
+                        )}
+                      </div>
+
+                      <p className="text-sm font-semibold text-gray-900 leading-relaxed">
+                        {selectedRecipe.steps[currentStepIdx].instruction}
+                      </p>
+
+                      {selectedRecipe.steps[currentStepIdx].avoTip && (
+                        <div className="p-3 bg-white rounded-xl border border-teal-100 text-[11px] text-teal-900 flex items-start gap-2 shadow-2xs">
+                          <Mascot gesture="wave" size={32} className="shrink-0" />
+                          <span className="leading-snug">
+                            <strong>Avo's Chef Tip:</strong> {selectedRecipe.steps[currentStepIdx].avoTip}
+                          </span>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Step Navigation Buttons */}
+                    <div className="flex gap-2">
+                      <button
+                        disabled={currentStepIdx === 0}
+                        onClick={() => setCurrentStepIdx((prev) => Math.max(0, prev - 1))}
+                        className="px-4 py-2 bg-slate-100 hover:bg-slate-200 disabled:opacity-40 text-gray-700 font-bold rounded-xl text-xs cursor-pointer"
+                      >
+                        Previous Step
+                      </button>
+                      <button
+                        onClick={() => {
+                          if (currentStepIdx < selectedRecipe.steps.length - 1) {
+                            setCurrentStepIdx((prev) => prev + 1);
+                            triggerHaptic("light");
+                          } else {
+                            toast.success("Cooking Complete! Ready to enjoy and log 🎉");
+                            handleLogToDiary(selectedRecipe);
+                          }
+                        }}
+                        className="flex-1 py-2 bg-gradient-to-r from-[#1f7a8c] to-[#4ecdc4] text-white font-bold rounded-xl text-xs flex items-center justify-center gap-1.5 cursor-pointer shadow-2xs active:scale-95 transition-all"
+                      >
+                        <span>
+                          {currentStepIdx === selectedRecipe.steps.length - 1
+                            ? "Complete & Log Meal 🎉"
+                            : "Next Step"}
+                        </span>
+                        <ArrowRight size={14} />
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Sticky In-Frame Action Footer */}
+              <div className="pt-3 border-t border-gray-100 flex gap-2 mt-auto shrink-0">
+                <button
+                  onClick={() => handleLogToDiary(selectedRecipe)}
+                  className="flex-1 bg-gradient-to-r from-emerald-600 to-teal-600 hover:opacity-95 text-white font-black text-xs py-2.5 rounded-xl shadow-md cursor-pointer flex items-center justify-center gap-1.5 active:scale-95 transition-all"
+                >
+                  <Check size={14} />
+                  <span>Log to Diary Now 🍽️</span>
+                </button>
+
                 <button
                   onClick={() => setSelectedRecipe(null)}
-                  className="text-gray-400 hover:text-gray-600 text-2xl"
+                  className="px-4 py-2.5 border border-slate-200 rounded-xl text-xs font-bold text-gray-700 hover:bg-slate-50 cursor-pointer"
                 >
-                  ×
+                  Close
                 </button>
               </div>
-
-              {/* Ingredients */}
-              <div className="mb-6">
-                <h3 className="text-lg text-gray-800 mb-3">{t("mealview.ingredients")}</h3>
-                <div className="space-y-2">
-                  {selectedRecipe.ingredients.map((ingredient, index) => (
-                    <div
-                      key={index}
-                      className="flex items-center gap-3 bg-gray-50 rounded-xl p-3"
-                    >
-                      <div className="h-2 w-2 rounded-full bg-[#1f7a8c]" />
-                      <span className="text-sm text-gray-700">{ingredient}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Action Buttons */}
-              <div className="grid grid-cols-2 gap-3">
-                <button className="bg-gradient-to-r from-[#1f7a8c] to-[#4ecdc4] text-white rounded-2xl py-3 hover:shadow-lg transition-all">
-                  {t("recipe.startCooking")}
-                </button>
-                <button className="bg-white border-2 border-[#1f7a8c] text-[#1f7a8c] rounded-2xl py-3 hover:shadow-lg transition-all">
-                  {t("recipe.addToPlan")}
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      <BottomNav />
+            </>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
