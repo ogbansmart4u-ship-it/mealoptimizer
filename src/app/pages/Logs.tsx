@@ -1,20 +1,52 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { useLocation } from "react-router";
-import { Calendar, Clock, Camera, TrendingUp, Filter, ChevronDown, ChevronLeft, ChevronRight, Apple, Utensils, Coffee, Moon, Activity, Zap, Heart, Droplet, Plus, CheckCircle, Circle } from "lucide-react";
+import {
+  Calendar,
+  Clock,
+  Camera,
+  TrendingUp,
+  Filter,
+  ChevronLeft,
+  ChevronRight,
+  Apple,
+  Utensils,
+  Coffee,
+  Moon,
+  Activity,
+  Zap,
+  Heart,
+  Droplet,
+  Plus,
+  CheckCircle2,
+  Trash2,
+  Share2,
+  Mic,
+  Sparkles,
+  Shield,
+  Smile,
+  AlertCircle,
+  Copy,
+  Check,
+} from "lucide-react";
 import BottomNav from "../components/BottomNav";
 import { useAppMode } from "../contexts/AppModeContext";
 import { useUser } from "../contexts/UserContext";
 import { useLanguage } from "../contexts/LanguageContext";
 import ProfilePictureUpload from "../components/ProfilePictureUpload";
 import AddMealLog from "../components/AddMealLog";
-import { BulkActionsBar } from "../components/BulkActionsBar";
 import { SkeletonList } from "../components/SkeletonLoader";
 import MascotEmptyState from "../components/MascotEmptyState";
 import { getMealLogs, createMealLog, deleteMealLog } from "../../lib/api";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "../components/ui/dialog";
+import { Button } from "../components/ui/button";
+import VoiceFoodLogger from "../components/VoiceFoodLogger";
+import Mascot from "../components/Mascot";
+import { toast } from "sonner";
+import { triggerConfetti, triggerHaptic } from "../utils/celebration";
 
-type MealType = "breakfast" | "lunch" | "dinner" | "snack";
+export type MealType = "breakfast" | "lunch" | "dinner" | "snack";
 
-type MealLog = {
+export type MealLog = {
   id: string;
   date: string;
   time: string;
@@ -25,460 +57,500 @@ type MealLog = {
   carbs: number;
   fats: number;
   imageUrl?: string;
-  energyRating: number; // 1-5
-  digestiveComfort: number; // 1-5
+  energyRating?: number; // 1-5
+  digestiveComfort?: number; // 1-5
   bloodSugarImpact?: "low" | "medium" | "high";
+  notes?: string;
 };
 
 export default function Logs() {
   const { mode } = useAppMode();
   const location = useLocation();
   const { t } = useLanguage();
-  // Translate a meal type label (breakfast/lunch/dinner via shared keys; snack local).
-  const mealTypeLabel = (type: string) =>
-    type === "snack"
-      ? t("logs.meal.snack")
-      : ["breakfast", "brunch", "lunch", "dinner"].includes(type)
-      ? t(`planmeal.meal.${type}`)
-      : type;
-  const [selectedDate, setSelectedDate] = useState(new Date());
+  const { profile } = useUser();
+
+  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [filterMealType, setFilterMealType] = useState<MealType | "all">("all");
-  const [showFilters, setShowFilters] = useState(false);
   const [showAddMeal, setShowAddMeal] = useState(false);
-  const [selectedLogs, setSelectedLogs] = useState<string[]>([]);
-  const [selectionMode, setSelectionMode] = useState(false);
+  const [showVoiceLogger, setShowVoiceLogger] = useState(false);
+  const [showReportDialog, setShowReportDialog] = useState(false);
+  const [copiedReport, setCopiedReport] = useState(false);
 
   const [logs, setLogs] = useState<MealLog[]>([]);
   const [logsLoading, setLogsLoading] = useState(true);
 
-  // Load this user's meal logs from the backend on mount
+  // Load logs
   useEffect(() => {
     getMealLogs()
       .then((data) => setLogs(Array.isArray(data) ? data : []))
-      .catch((e) => { console.error("Failed to load meal logs", e); setLogs([]); })
+      .catch(() => setLogs([]))
       .finally(() => setLogsLoading(false));
   }, []);
 
-  // Honor navigation state from Home: preselect a date and/or open Add Meal.
+  // Honor navigation state from Home
   useEffect(() => {
     const st = location.state as { openAdd?: boolean; date?: string } | null;
     if (!st) return;
     if (st.date) setSelectedDate(new Date(`${st.date}T12:00:00Z`));
     if (st.openAdd) setShowAddMeal(true);
     if (st.date || st.openAdd) {
-      // Clear the flag so it doesn't re-fire on back/refresh
       window.history.replaceState({}, document.title);
     }
   }, [location.state]);
 
-  const handleAddMeal = async (newLog: MealLog) => {
-    setLogs((prev) => [...prev, newLog]);
-    try { await createMealLog(newLog); } catch (e) { console.error("Failed to save meal log", e); }
-  };
-
-  const toggleLogSelection = (logId: string) => {
-    setSelectedLogs((prev) =>
-      prev.includes(logId)
-        ? prev.filter((id) => id !== logId)
-        : [...prev, logId]
-    );
-  };
-
-  const handleSelectAll = () => {
-    setSelectedLogs(filteredLogs.map((log) => log.id));
-  };
-
-  const handleBulkDelete = async () => {
-    if (confirm(t("logs.confirmDelete").replace("{n}", String(selectedLogs.length)))) {
-      const ids = [...selectedLogs];
-      setLogs((prev) => prev.filter((log) => !ids.includes(log.id)));
-      setSelectedLogs([]);
-      setSelectionMode(false);
-      await Promise.all(ids.map((id) => deleteMealLog(id).catch((e) => console.error("Failed to delete meal log", e))));
+  const handleAddMeal = async (newLog: any) => {
+    setLogs((prev) => [newLog, ...prev]);
+    try {
+      await createMealLog(newLog);
+      triggerConfetti("burst");
+      toast.success("Meal Logged Successfully! 🎉");
+    } catch {
+      toast.error("Failed to save meal log");
     }
   };
 
-  const handleCancelSelection = () => {
-    setSelectedLogs([]);
-    setSelectionMode(false);
+  const handleDeleteMeal = async (id: string, e?: React.MouseEvent) => {
+    e?.stopPropagation();
+    if (!confirm("Delete this meal entry?")) return;
+    try {
+      await deleteMealLog(id);
+      setLogs((prev) => prev.filter((l) => l.id !== id));
+      toast.success("Meal removed");
+    } catch {
+      toast.error("Failed to delete log");
+    }
   };
 
-  const todayLogs = logs.filter((log) => log.date === selectedDate.toISOString().split("T")[0]);
-  const filteredLogs = filterMealType === "all" ? todayLogs : todayLogs.filter((log) => log.mealType === filterMealType);
+  const selectedIso = selectedDate.toISOString().split("T")[0];
+  const todayLogs = useMemo(() => logs.filter((l) => l.date === selectedIso), [logs, selectedIso]);
+  const filteredLogs = useMemo(
+    () => (filterMealType === "all" ? todayLogs : todayLogs.filter((l) => l.mealType === filterMealType)),
+    [todayLogs, filterMealType]
+  );
 
-  const totalCalories = todayLogs.reduce((sum, log) => sum + log.calories, 0);
-  const totalProtein = todayLogs.reduce((sum, log) => sum + log.protein, 0);
-  const totalCarbs = todayLogs.reduce((sum, log) => sum + log.carbs, 0);
-  const totalFats = todayLogs.reduce((sum, log) => sum + log.fats, 0);
+  // Nutrition Totals
+  const totalCalories = todayLogs.reduce((sum, l) => sum + (l.calories || 0), 0);
+  const totalProtein = todayLogs.reduce((sum, l) => sum + (l.protein || 0), 0);
+  const totalCarbs = todayLogs.reduce((sum, l) => sum + (l.carbs || 0), 0);
+  const totalFats = todayLogs.reduce((sum, l) => sum + (l.fats || 0), 0);
 
-  const mealTypeIcons: Record<MealType, any> = {
-    breakfast: Coffee,
-    lunch: Utensils,
-    dinner: Apple,
-    snack: Zap,
-  };
+  // Glycemic Spike Safety Rate
+  const lowSpikeCount = todayLogs.filter(
+    (l) => !l.bloodSugarImpact || l.bloodSugarImpact === "low"
+  ).length;
+  const glycemicSafetyPct =
+    todayLogs.length > 0 ? Math.round((lowSpikeCount / todayLogs.length) * 100) : 100;
 
-  const mealTypeColors: Record<MealType, string> = {
-    breakfast: "#f77f00",
-    lunch: "#1f7a8c",
-    dinner: "#e63946",
-    snack: "#4ecdc4",
-  };
+  // Generate 7-Day Calendar Strip
+  const calendarDays = useMemo(() => {
+    const days = [];
+    const base = new Date(selectedDate);
+    for (let i = -3; i <= 3; i++) {
+      const d = new Date(base);
+      d.setDate(base.getDate() + i);
+      const iso = d.toISOString().split("T")[0];
+      const hasLogs = logs.some((l) => l.date === iso);
+      days.push({ date: d, iso, hasLogs, isSelected: iso === selectedIso });
+    }
+    return days;
+  }, [selectedDate, logs, selectedIso]);
 
   const changeDate = (days: number) => {
-    const newDate = new Date(selectedDate);
-    newDate.setDate(newDate.getDate() + days);
-    setSelectedDate(newDate);
+    const next = new Date(selectedDate);
+    next.setDate(next.getDate() + days);
+    setSelectedDate(next);
   };
 
-  const formatDate = (date: Date) => {
-    return date.toLocaleDateString("en-US", { 
-      weekday: "long", 
-      year: "numeric", 
-      month: "long", 
-      day: "numeric" 
-    });
+  const isToday = selectedIso === new Date().toISOString().split("T")[0];
+
+  const mealIcons: Record<MealType, string> = {
+    breakfast: "🍳",
+    lunch: "🍲",
+    dinner: "🥗",
+    snack: "🍎",
+  };
+
+  // Generate Doctor/Dietitian Report Text
+  const doctorReportText = `📋 MEALOPTIMIZER CLINICAL DIARY REPORT
+Patient: ${profile?.name || "Member"}
+Date: ${selectedDate.toLocaleDateString("en-US", { weekday: "long", month: "short", day: "numeric", year: "numeric" })}
+
+📊 DAILY NUTRITION METRICS:
+• Total Calories: ${totalCalories} kcal
+• Protein: ${totalProtein}g
+• Carbohydrates: ${totalCarbs}g
+• Healthy Fats: ${totalFats}g
+• Glycemic Spike Safety: ${glycemicSafetyPct}% of meals were low-spike
+
+🍽️ DETAILED MEALS LOGGED (${todayLogs.length}):
+${todayLogs
+  .map(
+    (m, i) =>
+      `${i + 1}. [${m.mealType.toUpperCase()}] ${m.time} - ${m.foodName} (${m.calories} kcal | P:${m.protein}g C:${m.carbs}g F:${m.fats}g) - Glycemic Impact: ${m.bloodSugarImpact || "low"}`
+  )
+  .join("\n")}
+
+Generated via MealOptimizer Clinical Platform.`;
+
+  const handleCopyReport = () => {
+    navigator.clipboard.writeText(doctorReportText);
+    setCopiedReport(true);
+    triggerHaptic("success");
+    toast.success("Clinical Report copied to clipboard!");
+    setTimeout(() => setCopiedReport(false), 2000);
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#B8E5E5] to-[#E8F5F5] pb-24">
-      {/* Header */}
-      <div className="bg-gradient-to-r from-[#1f7a8c] to-[#4ecdc4] px-6 pt-12 pb-8">
-        <div className="flex items-center justify-between mb-6">
+    <div className="min-h-screen bg-gradient-to-b from-[#B8E5E5] via-[#E8F5F5] to-[#F8FBFB] pb-28">
+      {/* Top Header */}
+      <div className="bg-gradient-to-b from-[#A5DBDB] to-[#B8E5E5] px-4 sm:px-6 pt-9 pb-5 border-b border-teal-500/15">
+        <div className="max-w-2xl mx-auto flex items-center justify-between">
           <div>
-            <h1 className="text-3xl text-white mb-1">{t("logs.title")}</h1>
-            <p className="text-white/80 text-sm">{t("logs.subtitle")}</p>
+            <span className="text-[10px] uppercase tracking-wider font-extrabold text-[#1f7a8c] block">
+              Metabolic Food Diary
+            </span>
+            <h1 className="text-xl sm:text-2xl font-black text-gray-900 leading-tight">
+              Daily Nutrition Logs 🍽️
+            </h1>
           </div>
-          <ProfilePictureUpload />
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setShowVoiceLogger(true)}
+              className="p-2 bg-rose-500 hover:bg-rose-600 text-white rounded-2xl shadow-xs transition-transform active:scale-95 cursor-pointer"
+              title="Voice Log"
+            >
+              <Mic size={16} className="animate-pulse" />
+            </button>
+            <button
+              onClick={() => setShowAddMeal(true)}
+              className="p-2 bg-[#1f7a8c] text-white hover:bg-teal-800 rounded-2xl shadow-xs transition-transform active:scale-95 cursor-pointer flex items-center gap-1 text-xs font-bold"
+            >
+              <Plus size={16} />
+              <span className="hidden sm:inline">Add Meal</span>
+            </button>
+            <ProfilePictureUpload />
+          </div>
         </div>
 
-        {/* Date Navigator */}
-        <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-4">
-          <div className="flex items-center justify-between mb-3">
-            <button
-              onClick={() => changeDate(-1)}
-              className="bg-white/20 rounded-full p-2 hover:bg-white/30 transition-colors"
-            >
-              <ChevronLeft className="h-5 w-5 text-white" />
-            </button>
-            <div className="text-center">
-              <p className="text-white text-sm">
-                {selectedDate.toDateString() === new Date().toDateString()
-                  ? t("logs.today")
-                  : formatDate(selectedDate)}
-              </p>
-              <p className="text-white/60 text-xs mt-1">
-                {selectedDate.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
-              </p>
+        {/* ============================================================ */}
+        {/* 1. INTERACTIVE 7-DAY CALENDAR STRIP                          */}
+        {/* ============================================================ */}
+        <div className="max-w-2xl mx-auto mt-3.5 bg-white/90 backdrop-blur-md rounded-3xl p-3 shadow-xs border border-teal-100">
+          <div className="flex items-center justify-between mb-2 px-1 text-xs font-black text-gray-800">
+            <div className="flex items-center gap-1">
+              <button
+                onClick={() => changeDate(-1)}
+                className="p-1 hover:bg-slate-100 rounded-lg cursor-pointer"
+              >
+                <ChevronLeft size={16} />
+              </button>
+              <span>
+                {selectedDate.toLocaleDateString("en-US", {
+                  weekday: "short",
+                  month: "short",
+                  day: "numeric",
+                })}
+              </span>
+              <button
+                onClick={() => changeDate(1)}
+                className="p-1 hover:bg-slate-100 rounded-lg cursor-pointer"
+              >
+                <ChevronRight size={16} />
+              </button>
             </div>
-            <button
-              onClick={() => changeDate(1)}
-              className="bg-white/20 rounded-full p-2 hover:bg-white/30 transition-colors"
-            >
-              <ChevronRight className="h-5 w-5 text-white" />
-            </button>
+
+            {!isToday && (
+              <button
+                onClick={() => setSelectedDate(new Date())}
+                className="text-[10px] font-extrabold text-[#1f7a8c] bg-teal-50 px-2 py-0.5 rounded-full hover:bg-teal-100 transition-colors cursor-pointer"
+              >
+                Jump to Today
+              </button>
+            )}
+          </div>
+
+          <div className="grid grid-cols-7 gap-1 text-center">
+            {calendarDays.map((item, idx) => (
+              <button
+                key={idx}
+                onClick={() => {
+                  setSelectedDate(item.date);
+                  triggerHaptic("light");
+                }}
+                className={`py-1.5 rounded-2xl transition-all cursor-pointer flex flex-col items-center justify-center relative ${
+                  item.isSelected
+                    ? "bg-[#1f7a8c] text-white shadow-2xs font-bold"
+                    : "hover:bg-slate-100 text-gray-700"
+                }`}
+              >
+                <span className="text-[10px] uppercase font-bold opacity-80">
+                  {item.date.toLocaleDateString("en-US", { weekday: "narrow" })}
+                </span>
+                <span className="text-xs font-black">{item.date.getDate()}</span>
+                {item.hasLogs && (
+                  <span
+                    className={`h-1 w-1 rounded-full mt-0.5 ${
+                      item.isSelected ? "bg-amber-300" : "bg-[#1f7a8c]"
+                    }`}
+                  />
+                )}
+              </button>
+            ))}
           </div>
         </div>
       </div>
 
-      {/* Content */}
-      <div className="px-6 mt-6">
-        {/* Daily Summary */}
-        <div className="bg-white rounded-3xl shadow-lg p-6 mb-6">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg text-gray-800">{t("logs.dailySummary")}</h2>
-            <TrendingUp className="h-5 w-5 text-[#1f7a8c]" />
+      <div className="px-4 sm:px-6 max-w-2xl mx-auto mt-4 space-y-4">
+        {/* ============================================================ */}
+        {/* 2. DAILY METABOLIC SCORECARD                                 */}
+        {/* ============================================================ */}
+        <div className="bg-white rounded-3xl p-5 shadow-xs border border-teal-100">
+          <div className="flex items-center justify-between mb-3">
+            <div>
+              <span className="text-[10px] uppercase font-black tracking-wider text-[#1f7a8c] block">
+                Daily Macro Matrix
+              </span>
+              <h3 className="text-sm font-black text-gray-900">
+                {totalCalories} kcal Total Energy
+              </h3>
+            </div>
+
+            <div className="flex items-center gap-1.5">
+              <span
+                className={`text-[10px] font-black px-2.5 py-0.5 rounded-full border ${
+                  glycemicSafetyPct >= 80
+                    ? "bg-emerald-50 text-emerald-800 border-emerald-200"
+                    : "bg-amber-50 text-amber-800 border-amber-200"
+                }`}
+              >
+                🛡️ {glycemicSafetyPct}% Spike Shield
+              </span>
+              <button
+                onClick={() => setShowReportDialog(true)}
+                className="p-1.5 bg-slate-100 hover:bg-teal-50 text-gray-600 hover:text-[#1f7a8c] rounded-xl cursor-pointer transition-colors"
+                title="Export Doctor Report"
+              >
+                <Share2 size={14} />
+              </button>
+            </div>
           </div>
 
-          <div className="grid grid-cols-4 gap-3 mb-4">
-            <div className="text-center">
-              <p className="text-2xl text-[#1f7a8c] mb-1">{totalCalories}</p>
-              <p className="text-xs text-gray-600">{t("mealview.calories")}</p>
+          <div className="grid grid-cols-3 gap-2 text-center">
+            <div className="bg-blue-50/70 p-2.5 rounded-2xl border border-blue-100">
+              <span className="text-[10px] text-blue-700 font-bold block">Protein</span>
+              <span className="text-base font-black text-blue-900">{totalProtein}g</span>
+              <span className="text-[9px] text-blue-600 block">Muscle &amp; Satiety</span>
             </div>
-            <div className="text-center">
-              <p className="text-2xl text-[#4ecdc4] mb-1">{totalProtein}g</p>
-              <p className="text-xs text-gray-600">{t("mealview.protein")}</p>
+            <div className="bg-emerald-50/70 p-2.5 rounded-2xl border border-emerald-100">
+              <span className="text-[10px] text-emerald-700 font-bold block">Carbs</span>
+              <span className="text-base font-black text-emerald-900">{totalCarbs}g</span>
+              <span className="text-[9px] text-emerald-600 block">Energy Fuel</span>
             </div>
-            <div className="text-center">
-              <p className="text-2xl text-[#f77f00] mb-1">{totalCarbs}g</p>
-              <p className="text-xs text-gray-600">{t("mealview.carbs")}</p>
-            </div>
-            <div className="text-center">
-              <p className="text-2xl text-[#e63946] mb-1">{totalFats}g</p>
-              <p className="text-xs text-gray-600">{t("mealview.fats")}</p>
+            <div className="bg-purple-50/70 p-2.5 rounded-2xl border border-purple-100">
+              <span className="text-[10px] text-purple-700 font-bold block">Fats</span>
+              <span className="text-base font-black text-purple-900">{totalFats}g</span>
+              <span className="text-[9px] text-purple-600 block">Essential Lipids</span>
             </div>
           </div>
-
-          {mode === "expert" && (
-            <div className="pt-4 border-t border-gray-100">
-              <div className="grid grid-cols-3 gap-3 text-xs">
-                <div>
-                  <p className="text-gray-500 mb-1">{t("logs.pcfRatio")}</p>
-                  <p className="text-gray-800">
-                    {Math.round((totalProtein * 4 / totalCalories) * 100)}:
-                    {Math.round((totalCarbs * 4 / totalCalories) * 100)}:
-                    {Math.round((totalFats * 9 / totalCalories) * 100)}
-                  </p>
-                </div>
-                <div>
-                  <p className="text-gray-500 mb-1">{t("logs.mealsLogged")}</p>
-                  <p className="text-gray-800">{todayLogs.length}/4</p>
-                </div>
-                <div>
-                  <p className="text-gray-500 mb-1">{t("logs.adherence")}</p>
-                  <p className="text-green-600">85%</p>
-                </div>
-              </div>
-            </div>
-          )}
         </div>
 
-        {/* Filter and Bulk Actions */}
-        <div className="mb-4 flex gap-2">
-          <button
-            onClick={() => setShowFilters(!showFilters)}
-            className="flex items-center gap-2 text-sm text-gray-700 bg-white rounded-full px-4 py-2 shadow-md hover:shadow-lg transition-all"
-          >
-            <Filter className="h-4 w-4" />
-            <span>{t("logs.filterByMeal")}</span>
-            <ChevronDown className={`h-4 w-4 transition-transform ${showFilters ? "rotate-180" : ""}`} />
-          </button>
-
-          {filteredLogs.length > 0 && (
+        {/* Meal Type Filter Chips */}
+        <div className="flex bg-white/90 p-1 rounded-2xl border border-teal-100 shadow-2xs gap-1">
+          {(["all", "breakfast", "lunch", "dinner", "snack"] as const).map((cat) => (
             <button
+              key={cat}
               onClick={() => {
-                setSelectionMode(!selectionMode);
-                if (selectionMode) setSelectedLogs([]);
+                triggerHaptic("light");
+                setFilterMealType(cat);
               }}
-              className={`flex items-center gap-2 text-sm rounded-full px-4 py-2 shadow-md hover:shadow-lg transition-all ${
-                selectionMode
-                  ? 'bg-blue-600 text-white'
-                  : 'bg-white text-gray-700'
+              className={`flex-1 py-1.5 rounded-xl text-xs font-bold capitalize transition-all cursor-pointer ${
+                filterMealType === cat
+                  ? "bg-[#1f7a8c] text-white shadow-2xs"
+                  : "text-gray-500 hover:text-gray-900"
               }`}
             >
-              <CheckCircle className="h-4 w-4" />
-              <span>{selectionMode ? t("logs.cancelSelect") : t("logs.select")}</span>
+              {cat === "all" ? "All" : cat}
             </button>
-          )}
-
-          {showFilters && (
-            <div className="mt-3 bg-white rounded-2xl shadow-lg p-3 space-y-2">
-              {["all", "breakfast", "lunch", "dinner", "snack"].map((type) => (
-                <button
-                  key={type}
-                  onClick={() => setFilterMealType(type as MealType | "all")}
-                  className={`w-full text-left px-4 py-2 rounded-xl transition-all ${
-                    filterMealType === type
-                      ? "bg-gradient-to-r from-[#1f7a8c] to-[#4ecdc4] text-white"
-                      : "hover:bg-gray-50 text-gray-700"
-                  }`}
-                >
-                  {type === "all" ? t("logs.filter.all") : mealTypeLabel(type)}
-                </button>
-              ))}
-            </div>
-          )}
+          ))}
         </div>
 
-        {/* Meal Logs */}
-        <div className="space-y-4">
-          {logsLoading ? (
-            <SkeletonList count={3} />
-          ) : filteredLogs.length === 0 ? (
-            <div className="bg-white rounded-3xl shadow-lg p-8">
-              <MascotEmptyState
-                title={t("logs.emptyTitle")}
-                subtitle={t("logs.emptySubtitle")}
-                action={
-                  <button
-                    onClick={() => setShowAddMeal(true)}
-                    className="bg-gradient-to-r from-[#1f7a8c] to-[#4ecdc4] text-white rounded-2xl px-6 py-3 shadow-lg hover:shadow-xl transition-all"
-                  >
-                    {t("logs.logFirst")}
-                  </button>
-                }
-              />
-            </div>
-          ) : (
-            filteredLogs.map((log) => {
-              const Icon = mealTypeIcons[log.mealType];
-              const color = mealTypeColors[log.mealType];
-
-              const isSelected = selectedLogs.includes(log.id);
-
-              return (
-                <div
-                  key={log.id}
-                  className={`bg-white rounded-3xl shadow-lg p-5 hover:shadow-xl transition-all ${
-                    selectionMode ? 'cursor-pointer' : ''
-                  } ${isSelected ? 'ring-2 ring-blue-500' : ''}`}
-                  onClick={() => selectionMode && toggleLogSelection(log.id)}
-                >
-                  {/* Header */}
-                  <div className="flex items-start justify-between mb-4">
-                    <div className="flex items-center gap-3 flex-1">
-                      {selectionMode && (
-                        <div className="flex-shrink-0">
-                          {isSelected ? (
-                            <CheckCircle className="h-6 w-6 text-blue-600" />
-                          ) : (
-                            <Circle className="h-6 w-6 text-gray-300" />
-                          )}
-                        </div>
-                      )}
-                      <div
-                        className="rounded-2xl p-3"
-                        style={{ backgroundColor: `${color}20` }}
-                      >
-                        <Icon className="h-6 w-6" style={{ color }} />
-                      </div>
-                      <div>
-                        <div className="flex items-center gap-2 mb-1">
-                          <h3 className="text-gray-800">{log.foodName}</h3>
-                        </div>
-                        <div className="flex items-center gap-3 text-xs text-gray-500">
-                          <span className="flex items-center gap-1">
-                            <Clock className="h-3 w-3" />
-                            {log.time}
-                          </span>
-                          <span
-                            className="px-2 py-0.5 rounded-full text-white"
-                            style={{ backgroundColor: color }}
-                          >
-                            {mealTypeLabel(log.mealType)}
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Macros */}
-                  <div className="grid grid-cols-4 gap-2 mb-4">
-                    <div className="bg-gray-50 rounded-xl p-2 text-center">
-                      <p className="text-sm text-[#1f7a8c] mb-1">{log.calories}</p>
-                      <p className="text-xs text-gray-600">{t("logs.cal")}</p>
-                    </div>
-                    <div className="bg-gray-50 rounded-xl p-2 text-center">
-                      <p className="text-sm text-[#4ecdc4] mb-1">{log.protein}g</p>
-                      <p className="text-xs text-gray-600">{t("mealview.protein")}</p>
-                    </div>
-                    <div className="bg-gray-50 rounded-xl p-2 text-center">
-                      <p className="text-sm text-[#f77f00] mb-1">{log.carbs}g</p>
-                      <p className="text-xs text-gray-600">{t("mealview.carbs")}</p>
-                    </div>
-                    <div className="bg-gray-50 rounded-xl p-2 text-center">
-                      <p className="text-sm text-[#e63946] mb-1">{log.fats}g</p>
-                      <p className="text-xs text-gray-600">{t("mealview.fats")}</p>
-                    </div>
-                  </div>
-
-                  {/* Feedback */}
-                  <div className="grid grid-cols-2 gap-3">
-                    <div className="bg-blue-50 rounded-xl p-3">
-                      <div className="flex items-center gap-2 mb-2">
-                        <Zap className="h-4 w-4 text-blue-600" />
-                        <p className="text-xs text-gray-700">{t("logs.energy")}</p>
-                      </div>
-                      <div className="flex gap-1">
-                        {[1, 2, 3, 4, 5].map((star) => (
-                          <div
-                            key={star}
-                            className={`h-2 w-2 rounded-full ${
-                              star <= log.energyRating ? "bg-blue-600" : "bg-blue-200"
-                            }`}
-                          />
-                        ))}
-                      </div>
-                    </div>
-                    <div className="bg-green-50 rounded-xl p-3">
-                      <div className="flex items-center gap-2 mb-2">
-                        <Heart className="h-4 w-4 text-green-600" />
-                        <p className="text-xs text-gray-700">{t("logs.comfort")}</p>
-                      </div>
-                      <div className="flex gap-1">
-                        {[1, 2, 3, 4, 5].map((star) => (
-                          <div
-                            key={star}
-                            className={`h-2 w-2 rounded-full ${
-                              star <= log.digestiveComfort ? "bg-green-600" : "bg-green-200"
-                            }`}
-                          />
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Expert Mode - Blood Sugar Impact */}
-                  {mode === "expert" && log.bloodSugarImpact && (
-                    <div className="mt-4 pt-4 border-t border-gray-100">
-                      <div className="flex items-center justify-between text-xs">
-                        <span className="text-gray-600">{t("logs.glycemicImpact")}</span>
-                        <span
-                          className={`px-3 py-1 rounded-full ${
-                            log.bloodSugarImpact === "low"
-                              ? "bg-green-100 text-green-700"
-                              : log.bloodSugarImpact === "medium"
-                              ? "bg-yellow-100 text-yellow-700"
-                              : "bg-red-100 text-red-700"
-                          }`}
-                        >
-                          {t(`logs.impact.${log.bloodSugarImpact}`)}
-                        </span>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              );
-            })
-          )}
-        </div>
-
-        {/* Insights */}
-        {todayLogs.length > 0 && (
-          <div className="mt-6 bg-gradient-to-br from-purple-50 to-white rounded-3xl shadow-lg p-6 border-l-4 border-purple-500">
-            <div className="flex items-start gap-3">
-              <TrendingUp className="h-6 w-6 text-purple-600 flex-shrink-0 mt-1" />
-              <div>
-                <h3 className="text-gray-800 mb-2">{t("logs.todaysInsight")}</h3>
-                <p className="text-sm text-gray-700 leading-relaxed">
-                  {mode === "simple"
-                    ? t("logs.insightSimple")
-                    : t("logs.insightExpert").replace("{ratio}", `${Math.round((totalProtein * 4 / totalCalories) * 100)}:${Math.round((totalCarbs * 4 / totalCalories) * 100)}:${Math.round((totalFats * 9 / totalCalories) * 100)}`)}
-                </p>
-              </div>
+        {/* ============================================================ */}
+        {/* 3. LOGGED MEALS FEED                                         */}
+        {/* ============================================================ */}
+        {logsLoading ? (
+          <SkeletonList />
+        ) : filteredLogs.length === 0 ? (
+          <div className="bg-white rounded-3xl p-8 text-center shadow-xs border border-teal-100">
+            <MascotEmptyState
+              title="No meals logged for this day"
+              subtitle="Keep your metabolism tracked! Tap '+ Add Meal' or use Voice AI."
+            />
+            <div className="flex items-center justify-center gap-2 mt-4">
+              <Button
+                onClick={() => setShowVoiceLogger(true)}
+                className="bg-rose-500 hover:bg-rose-600 text-white font-bold rounded-2xl text-xs px-4"
+              >
+                <Mic size={14} className="mr-1" />
+                Speak to Avo 🎙️
+              </Button>
+              <Button
+                onClick={() => setShowAddMeal(true)}
+                className="bg-[#1f7a8c] hover:bg-teal-800 text-white font-bold rounded-2xl text-xs px-4"
+              >
+                + Manual Log
+              </Button>
             </div>
           </div>
+        ) : (
+          <div className="space-y-3">
+            {filteredLogs.map((log) => (
+              <div
+                key={log.id}
+                className="bg-white rounded-3xl p-4 sm:p-5 shadow-xs hover:shadow-md border border-teal-100/90 transition-all"
+              >
+                <div className="flex items-start justify-between gap-3">
+                  <div className="flex items-start gap-3 min-w-0 flex-1">
+                    <span className="text-2xl shrink-0 p-2 bg-gradient-to-br from-teal-50 to-emerald-50 rounded-2xl border border-teal-100">
+                      {mealIcons[log.mealType] || "🍽️"}
+                    </span>
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-center gap-1.5 mb-0.5">
+                        <span className="text-[10px] uppercase font-black px-2 py-0.5 rounded-md bg-teal-50 text-[#1f7a8c]">
+                          {log.mealType}
+                        </span>
+                        <span className="text-[10px] text-gray-400 font-semibold flex items-center gap-0.5">
+                          <Clock size={10} /> {log.time}
+                        </span>
+                      </div>
+
+                      <h3 className="text-sm sm:text-base font-extrabold text-gray-900 leading-snug">
+                        {log.foodName}
+                      </h3>
+
+                      {log.notes && (
+                        <p className="text-xs text-gray-500 italic mt-0.5 line-clamp-1">
+                          "{log.notes}"
+                        </p>
+                      )}
+                    </div>
+                  </div>
+
+                  <button
+                    onClick={(e) => handleDeleteMeal(log.id, e)}
+                    className="p-1.5 text-gray-300 hover:text-rose-500 rounded-lg cursor-pointer transition-colors"
+                    title="Delete meal"
+                  >
+                    <Trash2 size={15} />
+                  </button>
+                </div>
+
+                {/* Macro Strip */}
+                <div className="grid grid-cols-4 gap-1.5 mt-3 pt-3 border-t border-slate-100 text-center">
+                  <div className="bg-slate-50 p-1.5 rounded-xl border border-slate-200/60">
+                    <span className="text-[8px] text-gray-400 font-bold block">Energy</span>
+                    <span className="text-xs font-black text-orange-600">{log.calories}</span>
+                    <span className="text-[7.5px] text-gray-400 block">kcal</span>
+                  </div>
+                  <div className="bg-slate-50 p-1.5 rounded-xl border border-slate-200/60">
+                    <span className="text-[8px] text-gray-400 font-bold block">Protein</span>
+                    <span className="text-xs font-black text-blue-600">{log.protein}g</span>
+                    <span className="text-[7.5px] text-gray-400 block">Muscle</span>
+                  </div>
+                  <div className="bg-slate-50 p-1.5 rounded-xl border border-slate-200/60">
+                    <span className="text-[8px] text-gray-400 font-bold block">Carbs</span>
+                    <span className="text-xs font-black text-emerald-600">{log.carbs}g</span>
+                    <span className="text-[7.5px] text-gray-400 block">Energy</span>
+                  </div>
+                  <div className="bg-slate-50 p-1.5 rounded-xl border border-slate-200/60">
+                    <span className="text-[8px] text-gray-400 font-bold block">Fats</span>
+                    <span className="text-xs font-black text-purple-600">{log.fats}g</span>
+                    <span className="text-[7.5px] text-gray-400 block">Lipids</span>
+                  </div>
+                </div>
+
+                {/* Glycemic & Energy Badges */}
+                <div className="flex items-center justify-between mt-2.5 pt-2 text-[10px] text-gray-600 font-semibold">
+                  <span
+                    className={`px-2 py-0.5 rounded-full border font-bold ${
+                      log.bloodSugarImpact === "low"
+                        ? "bg-emerald-50 text-emerald-800 border-emerald-200"
+                        : log.bloodSugarImpact === "medium"
+                        ? "bg-amber-50 text-amber-800 border-amber-200"
+                        : "bg-rose-50 text-rose-800 border-rose-200"
+                    }`}
+                  >
+                    {log.bloodSugarImpact === "low"
+                      ? "🛡️ Low Glycemic Impact"
+                      : log.bloodSugarImpact === "medium"
+                      ? "⚠️ Moderate Glycemic Load"
+                      : "🔥 High Glucose Surge"}
+                  </span>
+
+                  {log.energyRating && (
+                    <span className="text-amber-500 font-bold flex items-center gap-0.5">
+                      ⚡ Energy: {"★".repeat(log.energyRating)}
+                    </span>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
         )}
-        {/* Floating Add Button */}
-        <button
-          onClick={() => setShowAddMeal(true)}
-          className="fixed bottom-24 right-6 bg-gradient-to-r from-[#1f7a8c] to-[#4ecdc4] text-white rounded-full p-4 shadow-lg hover:shadow-xl transition-all hover:scale-110 z-10"
-          title={t("logs.logMeal")}
-        >
-          <Plus className="h-6 w-6" />
-        </button>
       </div>
 
-      {/* Add Meal Dialog */}
-      <AddMealLog
-        isOpen={showAddMeal}
-        onClose={() => setShowAddMeal(false)}
-        onSave={handleAddMeal}
-        selectedDate={selectedDate}
-      />
+      <BottomNav />
 
-      {/* Bulk Actions Bar */}
-      {selectionMode && (
-        <BulkActionsBar
-          selectedCount={selectedLogs.length}
-          onDelete={handleBulkDelete}
-          onCancel={handleCancelSelection}
-          onSelectAll={handleSelectAll}
-          totalCount={filteredLogs.length}
+      {/* Manual Add Meal Modal */}
+      {showAddMeal && (
+        <AddMealLog
+          isOpen={showAddMeal}
+          onClose={() => setShowAddMeal(false)}
+          onAdd={handleAddMeal}
         />
       )}
 
-      <BottomNav />
+      {/* Voice AI Assistant */}
+      <VoiceFoodLogger
+        isOpen={showVoiceLogger}
+        onClose={() => setShowVoiceLogger(false)}
+        onMealSaved={(newLog) => setLogs((prev) => [newLog, ...prev])}
+      />
+
+      {/* Doctor / Dietitian Clinical Report Dialog */}
+      <Dialog open={showReportDialog} onOpenChange={(open) => !open && setShowReportDialog(false)}>
+        <DialogContent className="max-w-md max-h-[85vh] p-5 sm:p-6 flex flex-col rounded-3xl">
+          <DialogHeader className="pb-1 text-left">
+            <DialogTitle className="text-lg font-black text-gray-900 flex items-center gap-2">
+              <Share2 className="h-5 w-5 text-[#1f7a8c]" />
+              <span>Clinical Doctor / Dietitian Summary</span>
+            </DialogTitle>
+            <DialogDescription className="text-xs text-gray-500">
+              Structured nutrition report ready to copy or send to your physician.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="flex-1 overflow-y-auto overscroll-contain my-2 bg-slate-900 text-emerald-400 p-4 rounded-2xl font-mono text-[11px] leading-relaxed whitespace-pre-wrap select-all">
+            {doctorReportText}
+          </div>
+
+          <div className="pt-2 border-t border-gray-100 flex gap-2 shrink-0">
+            <Button
+              variant="outline"
+              onClick={() => setShowReportDialog(false)}
+              className="flex-1 rounded-xl text-xs font-bold py-2"
+            >
+              Close
+            </Button>
+            <Button
+              onClick={handleCopyReport}
+              className="flex-1 bg-[#1f7a8c] hover:bg-teal-800 text-white rounded-xl text-xs font-bold py-2 flex items-center justify-center gap-1.5"
+            >
+              {copiedReport ? <Check size={14} /> : <Copy size={14} />}
+              <span>{copiedReport ? "Copied!" : "Copy Report 📋"}</span>
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
