@@ -162,6 +162,7 @@ interface QuickLogShelfProps {
   onLogItem: (item: QuickFoodItem) => Promise<void> | void;
   onOpenScanner?: () => void;
   onOpenWhatsApp?: () => void;
+  onOpenVoice?: () => void;
   onOpenCustom?: () => void;
   isLogging?: boolean;
 }
@@ -177,6 +178,7 @@ export default function QuickLogShelf({
   onLogItem,
   onOpenScanner,
   onOpenWhatsApp,
+  onOpenVoice,
   onOpenCustom,
   isLogging = false,
 }: QuickLogShelfProps) {
@@ -228,6 +230,15 @@ export default function QuickLogShelf({
 
         {/* Quick action shortcuts */}
         <div className="flex items-center gap-1 shrink-0">
+          {onOpenVoice && (
+            <button
+              onClick={onOpenVoice}
+              title="Talk to Avo (Voice AI)"
+              className="p-1.5 sm:p-2 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-600 dark:bg-rose-950/60 dark:hover:bg-rose-900/60 dark:text-rose-300 transition-colors flex items-center gap-1 cursor-pointer shadow-2xs"
+            >
+              <Mic size={14} className="animate-pulse" />
+            </button>
+          )}
           {onOpenWhatsApp && (
             <button
               onClick={onOpenWhatsApp}

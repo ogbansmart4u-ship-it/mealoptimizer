@@ -745,10 +745,11 @@ export default function Home() {
               </div>
             </div>
 
-            {/* 1-Tap Quick-Log Shelf */}
+            {/* 1-Tap Quick-Log Shelf with Voice AI */}
             <div id="tour-quick-shelf" className="my-2">
               <QuickLogShelf
                 onLogItem={handleQuickLogItem}
+                onOpenVoice={() => setShowVoiceLogger(true)}
                 onOpenWhatsApp={() => setShowWhatsAppModal(true)}
                 onOpenScanner={() => setShowLocalFoodScanner(true)}
                 onOpenCustom={() => navigate("/logs", { state: { openAdd: true } })}
