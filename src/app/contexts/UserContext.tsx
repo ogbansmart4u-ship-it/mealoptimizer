@@ -6,6 +6,7 @@ import React, {
   ReactNode,
 } from "react";
 import { getUserProfile } from "../../lib/api";
+import { syncSubscriptionFromProfile } from "../../lib/payment";
 import { useAuth } from "./AuthContext";
 
 export type UserProfile = {
@@ -22,6 +23,9 @@ export type UserProfile = {
   allergies?: string;
   location: string;
   profilePicture?: string;
+  plan?: "free" | "pro" | "family";
+  isPro?: boolean;
+  subscriptionExpiresAt?: string;
   createdAt?: string;
   updatedAt?: string;
 };
@@ -105,6 +109,7 @@ export function UserProvider({
           profilePicture: profileData?.profilePicture || savedPic || "",
         };
         setProfile(merged);
+        syncSubscriptionFromProfile(merged);
         if (merged.profilePicture) {
           try {
             localStorage.setItem(`profile-picture-${user.id}`, merged.profilePicture);
@@ -193,6 +198,7 @@ export function UserProvider({
     if (profile) {
       const updatedProfile = { ...profile, ...updates };
       setProfile(updatedProfile);
+      syncSubscriptionFromProfile(updatedProfile);
 
       // Save to localStorage for offline use
       if (user) {

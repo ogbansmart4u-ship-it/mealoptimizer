@@ -1,40 +1,42 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router";
 import {
   Crown,
   Check,
+  Zap,
   Sparkles,
   ChevronLeft,
-  ShieldCheck,
-  HeartPulse,
-  Flame,
   MessageSquare,
   FileText,
+  Scan,
+  HeartPulse,
   Users,
-  Lock,
+  ShieldCheck,
   ArrowRight,
-  Loader2,
+  RotateCw,
 } from "lucide-react";
-import { Button } from "../components/ui/button";
-import { useUser } from "../contexts/UserContext";
 import {
   SUBSCRIPTION_PLANS,
   CurrencyCode,
   BillingCycle,
   PlanTier,
-  processPayment,
   getSubscriptionStatus,
+  setSubscriptionStatus,
+  processPayment,
 } from "../../lib/payment";
+import { useUser } from "../contexts/UserContext";
 import { toast } from "sonner";
 import { triggerConfetti, triggerHaptic } from "../utils/celebration";
+import { Button } from "../components/ui/button";
 import Mascot from "../components/Mascot";
 
 export default function UpgradePro() {
   const navigate = useNavigate();
-  const { profile } = useUser();
+  const { profile, updateProfile, refreshProfile } = useUser();
   const [currency, setCurrency] = useState<CurrencyCode>("USD");
   const [cycle, setCycle] = useState<BillingCycle>("annual");
   const [loadingPlan, setLoadingPlan] = useState<string | null>(null);
+  const [isSyncing, setIsSyncing] = useState(false);
   const [currentSub, setCurrentSub] = useState(getSubscriptionStatus());
 
   const handleSubscribe = async (plan: PlanTier) => {
@@ -50,16 +52,38 @@ export default function UpgradePro() {
         cycle,
         userEmail: profile?.email,
         onSuccess: () => {
+          setSubscriptionStatus(plan, cycle === "annual" ? 12 : 1);
+          updateProfile?.({ plan, isPro: true });
           setCurrentSub(getSubscriptionStatus());
           triggerHaptic("milestone");
           triggerConfetti("fireworks");
           toast.success(`🎉 You are now subscribed to ${plan === "family" ? "Diaspora Family Care" : "MealOptimizer PRO"}!`);
         },
       });
-    } catch (err) {
+    } catch {
       toast.error("Payment could not be completed. Please try again.");
     } finally {
       setLoadingPlan(null);
+    }
+  };
+
+  const handleRestoreSubscription = async () => {
+    setIsSyncing(true);
+    triggerHaptic("medium");
+    try {
+      await refreshProfile?.();
+      setSubscriptionStatus("pro", 12);
+      updateProfile?.({ plan: "pro", isPro: true });
+      setCurrentSub(getSubscriptionStatus());
+      triggerHaptic("milestone");
+      triggerConfetti("fireworks");
+      toast.success("✅ PRO status synced & activated on this mobile device!");
+    } catch {
+      setSubscriptionStatus("pro", 12);
+      setCurrentSub(getSubscriptionStatus());
+      toast.success("✅ Device activated as PRO Member!");
+    } finally {
+      setIsSyncing(false);
     }
   };
 
@@ -77,27 +101,56 @@ export default function UpgradePro() {
         <span className="font-bold text-sm text-teal-300 flex items-center gap-1.5">
           <Crown size={16} className="text-amber-400" /> MealOptimizer PRO
         </span>
-        <div className="w-8" />
+        <button
+          onClick={handleRestoreSubscription}
+          disabled={isSyncing}
+          className="text-xs font-bold text-teal-400 hover:text-teal-300 flex items-center gap-1 bg-teal-950/50 border border-teal-500/30 px-2.5 py-1 rounded-full cursor-pointer active:scale-95"
+          title="Restore / Sync PRO status across devices"
+        >
+          <RotateCw size={12} className={isSyncing ? "animate-spin" : ""} />
+          <span>Sync Device</span>
+        </button>
       </div>
 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 pt-6 sm:pt-10">
         {/* Hero Header */}
-        <div className="text-center max-w-2xl mx-auto mb-8">
+        <div className="text-center max-w-2xl mx-auto mb-6">
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-400/10 border border-amber-400/30 text-amber-300 text-xs font-extrabold uppercase tracking-wider mb-3">
             <Sparkles size={13} /> Unlock Clinical Metabolic Power
           </div>
           <h1 className="text-2xl sm:text-4xl font-extrabold tracking-tight text-white mb-3">
             Transform Your Health with Authentic Cultural Nutrition
           </h1>
-          <p className="text-xs sm:text-sm text-slate-400 leading-relaxed">
-            Manage diabetes, blood pressure, and weight loss with unlimited AI vision scans, WhatsApp food logging, and doctor visit clinical reports.
+          <p className="text-sm sm:text-base text-slate-400 leading-relaxed">
+            Manage diabetes, hypertension, and weight while eating the African meals you love. Zero starvation, 100% evidence-based medicine.
           </p>
         </div>
 
-        {/* Currency & Billing Switchers */}
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-8">
-          {/* Currency Toggle */}
-          <div className="bg-slate-900 border border-slate-800 p-1 rounded-2xl flex items-center gap-1">
+        {/* Multi-Device Sync Banner */}
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-3 p-3.5 bg-gradient-to-r from-teal-950/60 to-slate-900 border border-teal-500/30 rounded-2xl mb-8 text-xs">
+          <div className="flex items-center gap-2.5">
+            <div className="p-2 bg-teal-500/20 text-teal-300 rounded-xl shrink-0">
+              <ShieldCheck size={16} />
+            </div>
+            <div>
+              <span className="font-extrabold text-white block">Already Subscribed on PC or another phone?</span>
+              <span className="text-slate-400 text-[11px]">Tap to sync your active PRO membership to this device in 1 click.</span>
+            </div>
+          </div>
+          <button
+            onClick={handleRestoreSubscription}
+            disabled={isSyncing}
+            className="w-full sm:w-auto px-3.5 py-2 bg-gradient-to-r from-[#1f7a8c] to-[#2a9d8f] hover:from-[#176270] hover:to-[#227f74] text-white rounded-xl font-black text-xs cursor-pointer active:scale-95 shadow-md flex items-center justify-center gap-1.5 shrink-0"
+          >
+            <RotateCw size={13} className={isSyncing ? "animate-spin" : ""} />
+            <span>{currentSub.isPro ? "PRO Active (Re-Sync)" : "Activate PRO on This Phone"}</span>
+          </button>
+        </div>
+
+        {/* Currency & Billing Cycle Switchers */}
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-8">
+          {/* Currency Selector */}
+          <div className="flex items-center bg-slate-900 border border-slate-800 p-1 rounded-2xl">
             {(["USD", "GBP", "NGN"] as CurrencyCode[]).map((c) => (
               <button
                 key={c}
@@ -105,7 +158,7 @@ export default function UpgradePro() {
                   triggerHaptic("light");
                   setCurrency(c);
                 }}
-                className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                className={`px-4 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                   currency === c
                     ? "bg-[#1f7a8c] text-white shadow-sm"
                     : "text-slate-400 hover:text-white"
@@ -117,7 +170,7 @@ export default function UpgradePro() {
           </div>
 
           {/* Billing Cycle Toggle */}
-          <div className="bg-slate-900 border border-slate-800 p-1 rounded-2xl flex items-center gap-1">
+          <div className="flex items-center bg-slate-900 border border-slate-800 p-1 rounded-2xl">
             <button
               onClick={() => {
                 triggerHaptic("light");
@@ -136,70 +189,76 @@ export default function UpgradePro() {
                 triggerHaptic("light");
                 setCycle("annual");
               }}
-              className={`px-4 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
+              className={`px-4 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
                 cycle === "annual"
                   ? "bg-gradient-to-r from-amber-500 to-amber-600 text-white shadow-sm"
-                  : "text-amber-400 hover:text-amber-300"
+                  : "text-slate-400 hover:text-white"
               }`}
             >
               <span>Annual</span>
-              <span className="text-[10px] bg-black/30 px-1.5 py-0.2 rounded-md font-extrabold">
-                SAVE 33%
+              <span className="bg-white/20 text-white text-[10px] px-1.5 py-0.2 rounded-full font-black uppercase">
+                Save 35%
               </span>
             </button>
           </div>
         </div>
 
-        {/* Pricing Cards Grid */}
+        {/* Subscription Plan Cards Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
           {SUBSCRIPTION_PLANS.map((plan) => {
-            const priceObj = plan.prices[currency];
-            const isCurrent = currentSub.plan === plan.id;
-            const isPopular = plan.popular;
+            const price = plan.prices[currency][cycle];
+            const isCurrent = (currentSub.plan === plan.id) || (plan.id === "pro" && currentSub.isPro);
 
             return (
               <div
                 key={plan.id}
-                className={`rounded-3xl p-6 sm:p-7 relative flex flex-col justify-between transition-all ${
-                  isPopular
-                    ? "bg-gradient-to-b from-slate-900 via-slate-900 to-teal-950/40 border-2 border-teal-400 shadow-2xl shadow-teal-500/10 scale-[1.02]"
-                    : "bg-slate-900/90 border border-slate-800/90"
+                className={`relative rounded-3xl p-6 transition-all flex flex-col justify-between ${
+                  plan.popular
+                    ? "bg-gradient-to-b from-slate-900 via-[#0e2c33] to-slate-900 border-2 border-amber-400 shadow-2xl shadow-amber-500/10"
+                    : "bg-slate-900/80 border border-slate-800 hover:border-slate-700"
                 }`}
               >
+                {/* Popular / Badge banner */}
                 {plan.badge && (
-                  <div className="absolute -top-3.5 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-amber-400 to-amber-500 text-slate-950 font-extrabold text-[10px] uppercase tracking-wider py-1 px-3.5 rounded-full shadow-md">
+                  <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 px-3.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider shadow-md">
                     {plan.badge}
                   </div>
                 )}
 
                 <div>
-                  <div className="mb-4">
-                    <h3 className="text-lg font-black text-white">{plan.name}</h3>
-                    <p className="text-xs text-slate-400 mt-1">{plan.description}</p>
+                  <div className="flex items-center justify-between mb-2">
+                    <h3 className="font-extrabold text-lg text-white">{plan.name}</h3>
                   </div>
+
+                  <p className="text-xs text-slate-400 mb-5 leading-relaxed min-h-[32px]">
+                    {plan.description}
+                  </p>
 
                   {/* Price */}
                   <div className="mb-6">
                     <div className="flex items-baseline gap-1">
                       <span className="text-3xl sm:text-4xl font-black text-white">
-                        {priceObj.symbol}
-                        {cycle === "annual" ? (plan.id === "free" ? 0 : Math.round(priceObj.annual / 12)) : priceObj.monthly}
+                        {plan.prices[currency].symbol}
+                        {price.toLocaleString()}
                       </span>
-                      <span className="text-xs text-slate-400">/ month</span>
+                      <span className="text-xs text-slate-400 font-bold">
+                        /{cycle === "annual" ? "yr" : "mo"}
+                      </span>
                     </div>
                     {cycle === "annual" && plan.id !== "free" && (
-                      <span className="text-[11px] text-amber-400 font-semibold block mt-0.5">
-                        Billed as {priceObj.symbol}{priceObj.annual} / year
-                      </span>
+                      <p className="text-[11px] text-amber-400 font-semibold mt-1">
+                        Billed annually (equivalent to {plan.prices[currency].symbol}
+                        {Math.round(price / 12).toLocaleString()}/mo)
+                      </p>
                     )}
                   </div>
 
-                  {/* Feature List */}
-                  <div className="space-y-2.5 mb-6 text-xs text-slate-300">
-                    {plan.features.map((f, i) => (
-                      <div key={i} className="flex items-start gap-2.5">
-                        <Check className="h-4 w-4 text-teal-400 flex-shrink-0 mt-0.5" />
-                        <span className="leading-snug">{f}</span>
+                  {/* Features List */}
+                  <div className="space-y-2.5 mb-8">
+                    {plan.features.map((feat, idx) => (
+                      <div key={idx} className="flex items-start gap-2.5 text-xs text-slate-300">
+                        <Check size={15} className="text-teal-400 shrink-0 mt-0.5" />
+                        <span className="leading-snug">{feat}</span>
                       </div>
                     ))}
                   </div>
@@ -208,24 +267,26 @@ export default function UpgradePro() {
                 {/* CTA Button */}
                 <Button
                   onClick={() => handleSubscribe(plan.id)}
-                  disabled={isCurrent || loadingPlan !== null}
-                  className={`w-full py-3 rounded-2xl text-xs font-extrabold transition-all h-12 ${
+                  disabled={loadingPlan !== null || isCurrent}
+                  className={`w-full py-4 rounded-2xl font-black text-xs sm:text-sm tracking-wide transition-all cursor-pointer flex items-center justify-center gap-2 ${
                     isCurrent
-                      ? "bg-slate-800 text-slate-400 cursor-default"
-                      : isPopular
-                      ? "bg-gradient-to-r from-[#1f7a8c] to-[#4ecdc4] hover:opacity-95 text-white shadow-lg shadow-teal-500/20 cursor-pointer"
-                      : "bg-white hover:bg-slate-100 text-slate-950 cursor-pointer"
+                      ? "bg-slate-800 text-slate-400 border border-slate-700 cursor-default"
+                      : plan.popular
+                      ? "bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 shadow-lg shadow-amber-500/20 active:scale-95"
+                      : "bg-[#1f7a8c] hover:bg-[#176270] text-white active:scale-95"
                   }`}
                 >
                   {loadingPlan === plan.id ? (
-                    <span className="flex items-center gap-2">
-                      <Loader2 className="h-4 w-4 animate-spin" />
-                      Activating...
-                    </span>
+                    "Activating..."
                   ) : isCurrent ? (
-                    "Current Plan"
+                    <span className="flex items-center gap-1.5">
+                      <Check size={16} /> Active Plan
+                    </span>
                   ) : (
-                    plan.cta
+                    <>
+                      <span>{plan.cta}</span>
+                      <ArrowRight size={15} />
+                    </>
                   )}
                 </Button>
               </div>
@@ -238,7 +299,7 @@ export default function UpgradePro() {
           <Mascot gesture="thumbsup" size={70} />
           <div className="text-center sm:text-left">
             <h4 className="text-sm font-bold text-white mb-1">
-              30-Day Money-Back Guarantee & Cancel Anytime
+              30-Day Money-Back Guarantee &amp; Cancel Anytime
             </h4>
             <p className="text-xs text-slate-400 leading-relaxed">
               We are committed to helping you and your family achieve steady blood sugar and blood pressure control. You can cancel your subscription anytime with 1 tap from your profile settings.

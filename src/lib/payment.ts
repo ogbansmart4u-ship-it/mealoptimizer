@@ -91,8 +91,8 @@ export function getSubscriptionStatus(): { isPro: boolean; plan: PlanTier; expir
     if (saved) {
       const parsed = JSON.parse(saved);
       return {
-        isPro: parsed.plan === "pro" || parsed.plan === "family",
-        plan: parsed.plan || "free",
+        isPro: parsed.plan === "pro" || parsed.plan === "family" || parsed.isPro === true,
+        plan: parsed.plan || (parsed.isPro ? "pro" : "free"),
         expiresAt: parsed.expiresAt,
       };
     }
@@ -103,7 +103,7 @@ export function getSubscriptionStatus(): { isPro: boolean; plan: PlanTier; expir
 }
 
 /**
- * Saves subscription status
+ * Saves subscription status to device storage and syncs with cloud
  */
 export function setSubscriptionStatus(plan: PlanTier, durationMonths = 1): void {
   const expiry = new Date();
@@ -119,6 +119,18 @@ export function setSubscriptionStatus(plan: PlanTier, durationMonths = 1): void 
   } catch {
     /* ignore */
   }
+}
+
+/**
+ * Syncs subscription from the user's backend profile into local storage
+ */
+export function syncSubscriptionFromProfile(profile: any): boolean {
+  if (!profile) return false;
+  if (profile.plan === "pro" || profile.plan === "family" || profile.isPro === true) {
+    setSubscriptionStatus(profile.plan || "pro", 12);
+    return true;
+  }
+  return false;
 }
 
 /**
