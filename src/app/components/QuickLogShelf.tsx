@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { motion } from "motion/react";
-import { Zap, Plus, Camera, Sparkles, Check, Flame, MessageSquare } from "lucide-react";
+import { Zap, Plus, Camera, Sparkles, Check, Flame, MessageSquare, Mic } from "lucide-react";
 import { triggerHaptic } from "../utils/celebration";
 
 export interface QuickFoodItem {
