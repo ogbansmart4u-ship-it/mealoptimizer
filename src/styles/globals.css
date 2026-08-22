@@ -4,29 +4,47 @@ html, body, #root { max-width: 100%; overflow-x: hidden; }
 
 /* Custom animations */
 @keyframes fade-in {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 @keyframes slide-up {
-  from {
-    transform: translateY(100%);
-  }
-  to {
-    transform: translateY(0);
-  }
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
 }
 
-.animate-fade-in {
-  animation: fade-in 0.3s ease-in-out;
+@keyframes laserSweep {
+  0% { top: -20%; opacity: 0; }
+  30% { opacity: 0.9; }
+  70% { opacity: 0.9; }
+  100% { top: 120%; opacity: 0; }
 }
 
-.animate-slide-up {
-  animation: slide-up 0.3s ease-out;
+@keyframes pulseRadar {
+  0% { transform: scale(0.92); opacity: 0.7; }
+  50% { transform: scale(1.18); opacity: 0.2; }
+  100% { transform: scale(0.92); opacity: 0.7; }
+}
+
+@keyframes floatBob {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-4px) rotate(3deg); }
+}
+
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.animate-fade-in { animation: fade-in 0.3s ease-in-out; }
+.animate-slide-up { animation: slide-up 0.3s ease-out; }
+.animate-laser-sweep { animation: laserSweep 2.2s cubic-bezier(0.4, 0, 0.2, 1) infinite; }
+.animate-pulse-radar { animation: pulseRadar 2s ease-in-out infinite; }
+.animate-float-bob { animation: floatBob 3s ease-in-out infinite; }
+.animate-gradient-shift {
+  background-size: 200% 200%;
+  animation: gradientShift 4s ease infinite;
 }
 
 /* Dark mode overrides for page backgrounds */
