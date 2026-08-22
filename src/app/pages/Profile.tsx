@@ -86,20 +86,20 @@ export default function Profile() {
 
   // Form data for editing with full biodata locking
   const [formData, setFormData] = useState({
-    name: "",
-    location: "",
-    age: "",
-    weight: "",
-    height: "",
-    bloodPressure: "",
-    bmi: "",
-    medicalCondition: "",
+    name: safeProfile.name || "",
+    location: safeProfile.location || "",
+    age: safeProfile.age ? safeProfile.age.toString() : "28",
+    weight: safeProfile.weight ? safeProfile.weight.toString() : "74",
+    height: safeProfile.height ? safeProfile.height.toString() : "175",
+    bloodPressure: safeProfile.bloodPressure || "120/80",
+    bmi: safeProfile.bmi ? safeProfile.bmi.toString() : "24.2",
+    medicalCondition: safeProfile.medicalCondition || "",
   });
 
   // Personal info form
   const [personalInfoForm, setPersonalInfoForm] = useState({
-    name: "",
-    email: "",
+    name: safeProfile.name || "",
+    email: safeProfile.email || "",
     phone: "",
   });
 
