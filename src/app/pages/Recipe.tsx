@@ -650,33 +650,82 @@ export default function Recipe() {
 
       <div className="px-4 sm:px-6 max-w-2xl mx-auto mt-4 space-y-4">
         {/* ============================================================ */}
-        {/* 1. CLINICAL CONDITION FILTER PILLS                           */}
+        {/* 1. CLINICAL CONDITION & MEAL TIME FILTER PILL CHIPS          */}
         {/* ============================================================ */}
-        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none">
-          {[
-            { id: "all", label: "⚡ All Recipes" },
-            { id: "diabetic-friendly", label: "🩺 Low Glycemic (Diabetes)" },
-            { id: "low-sodium", label: "🫀 Low-Sodium (BP / DASH)" },
-            { id: "high-protein", label: "💪 High Protein & Satiety" },
-            { id: "pcos-safe", label: "🥑 PCOS & Hormone Care" },
-            { id: "weight-loss", label: "🔥 Calorie Balanced" },
-            { id: "favorites", label: "❤️ My Saved Favorites" },
-          ].map((pill) => (
-            <button
-              key={pill.id}
-              onClick={() => {
-                triggerHaptic("light");
-                setSelectedTag(pill.id as DietaryTag);
-              }}
-              className={`px-3 py-1.5 rounded-xl text-xs font-bold shrink-0 transition-all cursor-pointer ${
-                selectedTag === pill.id
-                  ? "bg-[#1f7a8c] text-white shadow-2xs"
-                  : "bg-white text-gray-700 border border-slate-200/80 hover:bg-slate-50"
-              }`}
-            >
-              {pill.label}
-            </button>
-          ))}
+        <div className="space-y-2">
+          {/* Main Clinical Tags */}
+          <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none -mx-4 px-4 sm:mx-0 sm:px-0">
+            {[
+              { id: "all", label: "All Meals", icon: "✨" },
+              { id: "diabetic-friendly", label: "Low Glycemic", icon: "🩸" },
+              { id: "low-sodium", label: "Hypertension Safe", icon: "❤️" },
+              { id: "high-protein", label: "High Protein Swallows", icon: "💪" },
+              { id: "pcos-safe", label: "PCOS & Hormone", icon: "🥑" },
+              { id: "weight-loss", label: "Metabolic Calorie", icon: "🔥" },
+              { id: "favorites", label: "Saved Favorites", icon: "❤️" },
+            ].map((pill) => {
+              const count = recipes.filter((r) =>
+                pill.id === "all"
+                  ? true
+                  : pill.id === "favorites"
+                  ? Boolean(r.isFavorite)
+                  : r.tags.includes(pill.id)
+              ).length;
+
+              const isSelected = selectedTag === pill.id;
+
+              return (
+                <button
+                  key={pill.id}
+                  onClick={() => {
+                    triggerHaptic("light");
+                    setSelectedTag(pill.id as DietaryTag);
+                  }}
+                  className={`px-3 py-1.5 rounded-full text-xs font-bold shrink-0 transition-all cursor-pointer flex items-center gap-1.5 border shadow-2xs ${
+                    isSelected
+                      ? "bg-[#1f7a8c] text-white border-[#1f7a8c] ring-2 ring-teal-500/20"
+                      : "bg-white text-slate-700 border-slate-200 hover:bg-slate-50 hover:border-slate-300"
+                  }`}
+                >
+                  <span>{pill.icon}</span>
+                  <span>{pill.label}</span>
+                  <span
+                    className={`text-[10px] px-1.5 py-0.2 rounded-full font-black ${
+                      isSelected ? "bg-white/20 text-white" : "bg-slate-100 text-slate-500"
+                    }`}
+                  >
+                    {count}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Secondary Meal Time Filter */}
+          <div className="flex items-center gap-1 overflow-x-auto pb-1 scrollbar-none -mx-4 px-4 sm:mx-0 sm:px-0">
+            {[
+              { id: "all", label: "All Types" },
+              { id: "breakfast", label: "🍳 Breakfast" },
+              { id: "lunch", label: "🍲 Lunch & Swallows" },
+              { id: "dinner", label: "🌙 Light Dinners" },
+              { id: "snack", label: "🥤 Snacks & Elixirs" },
+            ].map((cat) => (
+              <button
+                key={cat.id}
+                onClick={() => {
+                  triggerHaptic("light");
+                  setSelectedMealCategory(cat.id as any);
+                }}
+                className={`px-2.5 py-1 rounded-lg text-[11px] font-bold shrink-0 transition-all cursor-pointer ${
+                  selectedMealCategory === cat.id
+                    ? "bg-teal-900 text-white font-black"
+                    : "bg-white/70 text-slate-600 hover:bg-white border border-slate-200/60"
+                }`}
+              >
+                {cat.label}
+              </button>
+            ))}
+          </div>
         </div>
 
         {/* Meal Type Filter Tabs */}
