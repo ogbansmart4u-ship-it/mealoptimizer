@@ -104,7 +104,7 @@ export async function handleWhatsAppWebhook(c: any, supabaseAdmin: any) {
         `🥑 *Welcome to MealOptimizer AI!*\n\n` +
         `We noticed your phone number (+${senderPhone}) is not linked to an account yet.\n\n` +
         `👉 Link your number in 1 tap:\n` +
-        `1. Open https://mealoptimizer-two.vercel.app/profile\n` +
+        `1. Open https://mealoptimiza.com/profile\n` +
         `2. Tap *WhatsApp AI Food Logger*\n` +
         `3. Enter +${senderPhone} and save!\n\n` +
         `Once linked, you can log every meal simply by snapping a photo here!`;
