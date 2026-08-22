@@ -137,6 +137,12 @@ export async function updateGoal(goalId: string, goalData: any) {
   });
 }
 
+export async function deleteGoal(goalId: string) {
+  return apiCall(`/goals/${goalId}`, {
+    method: 'DELETE',
+  });
+}
+
 // ============================================
 // MEAL LOGS API
 // ============================================
