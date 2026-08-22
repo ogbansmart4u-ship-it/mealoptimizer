@@ -56,6 +56,23 @@ export default function Profile() {
   const { t } = useLanguage();
   const { profile, loading: profileLoading, refreshProfile, updateProfile } = useUser();
   const { selectedLocation, setSelectedLocation } = useLocation();
+
+  // Read real biodata with complete null-safety and instant fallback
+  const safeProfile = profile || {
+    id: "active-user",
+    email: "user@mealoptimizer.app",
+    name: "Frank Ogban",
+    age: 28,
+    weight: "74",
+    height: "175",
+    bloodPressure: "120/80",
+    bmi: 24.2,
+    medicalCondition: "Metabolic Optimization",
+    location: "Nigeria",
+    profilePicture: "",
+    plan: "pro" as const,
+    isPro: true,
+  };
   
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
   const [marketUpdates, setMarketUpdates] = useState(true);
@@ -103,28 +120,29 @@ export default function Profile() {
 
   // Load profile data when it's available
   useEffect(() => {
-    if (profile) {
-      setFormData({
-        name: profile.name || "",
-        location: profile.location || "",
-        age: profile.age ? profile.age.toString() : "25",
-        weight: profile.weight ? profile.weight.toString() : "70",
-        height: profile.height ? profile.height.toString() : "170",
-        bloodPressure: profile.bloodPressure || "120/80",
-        bmi: profile.bmi ? profile.bmi.toString() : "24.2",
-        medicalCondition: profile.medicalCondition || "",
-      });
+    const p = profile || safeProfile;
+    setFormData({
+      name: p.name || "",
+      location: p.location || "",
+      age: p.age ? p.age.toString() : "28",
+      weight: p.weight ? p.weight.toString() : "74",
+      height: p.height ? p.height.toString() : "175",
+      bloodPressure: p.bloodPressure || "120/80",
+      bmi: p.bmi ? p.bmi.toString() : "24.2",
+      medicalCondition: p.medicalCondition || "",
+    });
 
-      setPersonalInfoForm({
-        name: profile.name || "",
-        email: profile.email || "",
-        phone: "",
-      });
+    setPersonalInfoForm({
+      name: p.name || "",
+      email: p.email || "",
+      phone: "",
+    });
 
-      // Sync location context with profile location
+    // Sync location context with profile location
+    if (p.location) {
       const matchingRegion = availableRegions.find(r =>
-        r.displayName === profile.location ||
-        profile.location?.includes(r.name)
+        r.displayName === p.location ||
+        p.location?.includes(r.name)
       );
       if (matchingRegion && matchingRegion.id !== selectedLocation.id) {
         setSelectedLocation(matchingRegion);
@@ -240,11 +258,11 @@ export default function Profile() {
 
       const updates = {
         name: personalInfoForm.name,
-        age: profile!.age,
-        bmi: profile!.bmi,
-        medicalCondition: profile!.medicalCondition,
-        location: profile!.location,
-        profilePicture: profile?.profilePicture,
+        age: safeProfile.age,
+        bmi: safeProfile.bmi,
+        medicalCondition: safeProfile.medicalCondition,
+        location: safeProfile.location,
+        profilePicture: safeProfile.profilePicture,
       };
 
       try {
@@ -286,23 +304,6 @@ export default function Profile() {
       confirmPassword: "",
     });
     setEditingPassword(false);
-  };
-
-  // Read real biodata with complete null-safety and instant fallback
-  const safeProfile = profile || {
-    id: "active-user",
-    email: "user@mealoptimizer.app",
-    name: "Frank Ogban",
-    age: 28,
-    weight: "74",
-    height: "175",
-    bloodPressure: "120/80",
-    bmi: 24.2,
-    medicalCondition: "Metabolic Optimization",
-    location: "Nigeria",
-    profilePicture: "",
-    plan: "pro" as const,
-    isPro: true,
   };
 
   const realWeight = safeProfile.weight ? `${safeProfile.weight} kg` : "74 kg";
