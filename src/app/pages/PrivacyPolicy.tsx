@@ -1,12 +1,13 @@
-import { Shield, Lock, Eye, Database, UserCheck } from "lucide-react";
+import { Shield, Lock, Eye, Database, UserCheck, ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router";
 import PageHeader from "../components/PageHeader";
+import BottomNav from "../components/BottomNav";
 
 export default function PrivacyPolicy() {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#B8E5E5] to-[#E8F5F5] pb-8">
+    <div className="min-h-screen bg-gradient-to-b from-[#B8E5E5] to-[#E8F5F5] pb-28">
       {/* Header */}
       <PageHeader
         title="Privacy Policy"
@@ -233,11 +234,13 @@ export default function PrivacyPolicy() {
         {/* Back Button */}
         <button 
           onClick={() => navigate(-1)}
-          className="w-full bg-white text-[#1f7a8c] border-2 border-[#1f7a8c] rounded-2xl py-4 shadow-lg hover:shadow-xl transition-all"
+          className="w-full bg-white text-[#1f7a8c] font-bold border-2 border-[#1f7a8c] rounded-2xl py-3.5 shadow-md hover:bg-teal-50 transition-all cursor-pointer mb-6"
         >
           Go Back
         </button>
       </div>
+
+      <BottomNav activeTab="profile" />
     </div>
   );
 }

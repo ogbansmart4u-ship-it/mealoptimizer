@@ -783,7 +783,46 @@ export default function Profile() {
           </div>
         </div>
 
-        {/* 7. WhatsApp Connect Dialog Modal */}
+        {/* 7. Legal & Privacy Governance */}
+        <div className="bg-white rounded-3xl p-5 shadow-sm border border-slate-100 divide-y divide-slate-100">
+          <h3 className="font-black text-sm text-slate-900 pb-3">Legal & Clinical Governance</h3>
+
+          {/* Privacy Policy */}
+          <button
+            onClick={() => navigate("/privacy-policy")}
+            className="w-full flex items-center justify-between py-3.5 hover:bg-slate-50/80 px-2 rounded-2xl transition-colors cursor-pointer"
+          >
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-teal-50 text-teal-700 rounded-xl">
+                <ShieldCheck className="h-4 w-4" />
+              </div>
+              <div className="text-left">
+                <p className="text-xs font-bold text-slate-800">Privacy Policy</p>
+                <p className="text-[10px] text-slate-400">HIPAA & GDPR health data protection terms</p>
+              </div>
+            </div>
+            <ChevronRight className="h-4 w-4 text-slate-400" />
+          </button>
+
+          {/* Terms & Conditions */}
+          <button
+            onClick={() => navigate("/terms-and-conditions")}
+            className="w-full flex items-center justify-between py-3.5 hover:bg-slate-50/80 px-2 rounded-2xl transition-colors cursor-pointer"
+          >
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-slate-100 text-slate-700 rounded-xl">
+                <FileText className="h-4 w-4" />
+              </div>
+              <div className="text-left">
+                <p className="text-xs font-bold text-slate-800">Terms & Conditions</p>
+                <p className="text-[10px] text-slate-400">Medical disclaimer and terms of service</p>
+              </div>
+            </div>
+            <ChevronRight className="h-4 w-4 text-slate-400" />
+          </button>
+        </div>
+
+        {/* 8. WhatsApp Connect Dialog Modal */}
         <WhatsAppConnectDialog isOpen={showWhatsAppDialog} onClose={() => setShowWhatsAppDialog(false)} />
 
         {/* Encrypted Clinical Badge */}
