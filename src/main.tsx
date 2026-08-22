@@ -44,19 +44,27 @@ if (typeof navigator !== "undefined" && typeof navigator.vibrate === "function")
   }
 }
 
-// Register Service Worker for PWA offline support
+// Register Service Worker for PWA offline support with auto-update
 if (typeof window !== "undefined" && "serviceWorker" in navigator) {
+  let isRefreshing = false;
+  navigator.serviceWorker.addEventListener("controllerchange", () => {
+    if (!isRefreshing) {
+      isRefreshing = true;
+      window.location.reload();
+    }
+  });
+
   window.addEventListener("load", () => {
     navigator.serviceWorker
       .register("/sw.js")
       .then((reg) => {
-        // Automatically check for SW updates
+        reg.update(); // Proactively check for new version on page load
         reg.onupdatefound = () => {
           const installingWorker = reg.installing;
           if (installingWorker) {
             installingWorker.onstatechange = () => {
               if (installingWorker.state === "installed" && navigator.serviceWorker.controller) {
-                console.log("[PWA] New version available, will activate on next reload.");
+                installingWorker.postMessage({ type: "SKIP_WAITING" });
               }
             };
           }
