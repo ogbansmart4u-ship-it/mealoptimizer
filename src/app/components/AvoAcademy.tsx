@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import {
   BookOpen,
   Sparkles,
@@ -18,6 +18,10 @@ import {
   Activity,
   ShieldCheck,
   Award,
+  RefreshCw,
+  Sliders,
+  TrendingDown,
+  Info,
 } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "./ui/dialog";
 import { Button } from "./ui/button";
@@ -90,6 +94,144 @@ export const ACADEMY_LESSONS: AcademyLesson[] = [
     },
   },
   {
+    id: "swallow-velocity-index",
+    title: "Swallow Glucose Velocity (GVI)",
+    category: "Glucose Science",
+    readTime: "60 sec",
+    icon: Activity,
+    headline: "Why Pounded Yam spikes in 20 mins while Oat Swallow plateaus over 75 mins",
+    storySlides: [
+      "Not all carbohydrates are digested at the same velocity. The 'Glucose Velocity Index' measures how fast glucose enters the bloodstream per gram of swallowed food.",
+      "Pounded Yam and Garri have a high GVI (>80)—their pure starch chains hydrolyze rapidly in the stomach, creating a sharp 40–60 mg/dL glucose excursion within 25 minutes.",
+      "In contrast, Oat Swallow or Plantain Flour combined with Okra contains viscous soluble beta-glucan fibers that create an intestinal gel barrier.",
+      "This gel barrier stretches glucose absorption over 75–90 minutes, turning a dangerous spike into a gentle, sustained metabolic plateau! 🥣",
+    ],
+    takeaway: "Choose high-viscosity swallows (Oat, Plantain, or Okra-blended) to slow glucose velocity and eliminate post-meal fatigue.",
+    quiz: {
+      question: "How does soluble fiber in Oat and Okra swallows prevent a rapid blood sugar spike?",
+      options: [
+        "By neutralizing stomach acid completely",
+        "By forming an intestinal gel barrier that slows starch hydrolysis",
+        "By turning carbohydrates into pure protein",
+      ],
+      correctIndex: 1,
+      explanation: "Correct! The viscous gel physically delays enzymatic breakdown, smoothing out the post-meal glucose curve.",
+    },
+  },
+  {
+    id: "soleus-muscle-sink",
+    title: "The 20-Minute Post-Meal Muscle Sink",
+    category: "Glucose Science",
+    readTime: "60 sec",
+    icon: Zap,
+    headline: "How light soleus walking activates non-insulin GLUT4 glucose disposal",
+    storySlides: [
+      "Your soleus calf muscle has the highest oxidative slow-twitch fiber density in your body and can burn circulating blood glucose for fuel without requiring insulin.",
+      "When you take a gentle 15-minute walk starting 20 minutes after eating a heavy meal (like Jollof or Swallow), muscle contractions trigger GLUT4 transporter vesicles to fuse with the cell membrane.",
+      "GLUT4 transports glucose directly from your bloodstream into the working muscle cells, dropping your peak post-meal glucose spike by up to 35%.",
+      "No intense sweating required! A brisk stroll around your compound or living room immediately after lunch protects your beta-cells from insulin exhaustion. 🚶‍♂️",
+    ],
+    takeaway: "Walk for 15 minutes roughly 20 minutes after meals to activate GLUT4 and clear glucose without stressing your pancreas.",
+    quiz: {
+      question: "When is the optimal window to take a light walk to blunt a post-meal glucose spike?",
+      options: [
+        "20 minutes after finishing your meal",
+        "3 hours before eating",
+        "Right before going to sleep only",
+      ],
+      correctIndex: 0,
+      explanation: "Spot on! The 20-minute post-meal window catches glucose as it begins entering circulation, flattening the peak.",
+    },
+  },
+  {
+    id: "fermented-iru-glp1",
+    title: "Fermented Iru (Locust Beans) & GLP-1",
+    category: "Glucose Science",
+    readTime: "60 sec",
+    icon: ShieldCheck,
+    headline: "The ancestral seasoning that stimulates natural incretin hormone release",
+    storySlides: [
+      "Fermented locust beans (Iru / Dawadawa / Ogiri) are a cornerstone of traditional West African soups, produced through alkaline fermentation by Bacillus subtilis.",
+      "Recent 2026 peptide research shows that bio-peptides released during Iru fermentation stimulate enteroendocrine L-cells in the gut to release GLP-1 (Glucagon-Like Peptide-1).",
+      "Natural GLP-1 slows stomach emptying, signals satiety to the brain, and enhances glucose-dependent insulin secretion from the pancreas.",
+      "Cooking with authentic Iru not only replaces high-sodium seasoning cubes but also provides ancestral, food-based GLP-1 metabolic support! 🍲",
+    ],
+    takeaway: "Fermented locust beans (Iru) contain natural bioactive peptides that stimulate gut GLP-1, boosting satiety and steady glucose control.",
+    quiz: {
+      question: "What beneficial metabolic hormone is stimulated by fermented locust bean peptides?",
+      options: ["Natural GLP-1", "Adrenaline", "Cortisol"],
+      correctIndex: 0,
+      explanation: "Exactly! Iru peptides stimulate gut L-cells to release GLP-1, enhancing natural satiety and glucose buffering.",
+    },
+  },
+  {
+    id: "akamu-protein-buffer",
+    title: "The Akamu (Pap) Glucose Buffer",
+    category: "Glucose Science",
+    readTime: "60 sec",
+    icon: Flame,
+    headline: "Why eating Pap alone causes rapid blood sugar spikes—and how to shield it",
+    storySlides: [
+      "Akamu (Ogi / Pap) made from refined corn or millet paste has a high glycemic index (GI > 75). When consumed with added sugar or evaporated milk alone, it spikes blood sugar within 20 minutes.",
+      "The rapid glucose rise is because refined cornstarch liquid has almost zero gastric delay and enters the bloodstream immediately.",
+      "The Nigerian Breakfast Shield: Never drink Akamu alone! Always pair it with Akara (steamed bean cakes), boiled eggs, or peanut butter.",
+      "The dense protein and lipid matrix in beans and eggs delays stomach emptying by up to 90 minutes, converting a spike into a steady plateau! 🥞",
+    ],
+    takeaway: "Always anchor high-GI Akamu with protein like Akara or boiled eggs to slow glucose absorption and prevent energy crashes.",
+    quiz: {
+      question: "Why should Akamu (Pap) always be paired with Akara or boiled eggs?",
+      options: [
+        "To make the plate look colorful",
+        "Protein & lipids delay gastric emptying and prevent a glucose surge",
+        "To add extra sugar",
+      ],
+      correctIndex: 1,
+      explanation: "Correct! Protein and healthy fats buffer the carb absorption, preventing blood sugar from spiking uncontrollably.",
+    },
+  },
+  {
+    id: "moringa-antioxidants",
+    title: "Moringa Oleifera & Fasting Sugar",
+    category: "Glucose Science",
+    readTime: "60 sec",
+    icon: ShieldCheck,
+    headline: "The molecular power of Quercetin & Chlorogenic Acid in Moringa leaves",
+    storySlides: [
+      "Moringa Oleifera (known as Zogale in Northern Nigeria) is celebrated as a 'miracle tree' because of its extraordinary density of polyphenol antioxidants.",
+      "Two primary compounds in Moringa—Chlorogenic Acid and Quercetin—specifically inhibit the enzyme Glucose-6-Phosphatase in the liver.",
+      "By inhibiting this enzyme, Moringa prevents your liver from releasing excess stored glucose into your blood during overnight fasting periods.",
+      "Adding dried Moringa leaf powder to soups or drinking fresh Moringa tea in the morning supports lower waking fasting glucose levels! 🌿",
+    ],
+    takeaway: "Moringa leaves contain chlorogenic acid which helps regulate liver glucose release, keeping morning fasting numbers steady.",
+    quiz: {
+      question: "Which organ's glucose release does Moringa help regulate during fasting?",
+      options: ["The Liver", "The Kidneys", "The Lungs"],
+      correctIndex: 0,
+      explanation: "Correct! Moringa regulates liver glucose production, preventing high fasting blood sugar in the morning.",
+    },
+  },
+  {
+    id: "vinegar-acid-buffer",
+    title: "The Acid Shield (Citrus & Vinegar)",
+    category: "Glucose Science",
+    readTime: "60 sec",
+    icon: Brain,
+    headline: "How lemon, lime, or apple cider vinegar deactivates alpha-amylase",
+    storySlides: [
+      "Salivary and pancreatic alpha-amylase are the primary enzymes that break complex starches into simple glucose sugars in your mouth and upper intestine.",
+      "Alpha-amylase enzymes require a neutral pH to function efficiently. Adding organic acids (such as fresh lime juice, unsweetened Zobo, or 1 tbsp apple cider vinegar) lowers the digestive pH.",
+      "This temporary pH drop deactivates up to 30% of alpha-amylase activity, slowing the rate at which starches like rice or yam are broken down into sugar.",
+      "Enjoying a glass of warm lemon water or unsweetened hibiscus tea 10 minutes before starch meals acts as a natural enzymatic brake! 🍋",
+    ],
+    takeaway: "Organic acids from citrus or vinegar temporarily inhibit amylase enzymes, reducing the speed of carbohydrate digestion.",
+    quiz: {
+      question: "What digestive enzyme is temporarily slowed down by organic acids from citrus or vinegar?",
+      options: ["Alpha-amylase", "Pepsin", "Lactase"],
+      correctIndex: 0,
+      explanation: "Spot on! Alpha-amylase is inhibited by lower pH, giving your body more time to process starch safely.",
+    },
+  },
+  {
     id: "jollof-sequencing",
     title: "The Jollof Rice Sequencing Secret",
     category: "Cooking Hacks",
@@ -136,94 +278,6 @@ export const ACADEMY_LESSONS: AcademyLesson[] = [
     },
   },
   {
-    id: "palm-oil-science",
-    title: "Unbleached Red Palm Oil vs Bleached",
-    category: "Heart & BP",
-    readTime: "60 sec",
-    icon: Flame,
-    headline: "Why raw unbleached red palm oil protects arteries while bleached oil damages them",
-    storySlides: [
-      "Red palm oil in its raw, unrefined state is nature's richest source of Tocotrienols (a potent form of Vitamin E) and Beta-Carotene (giving it a vivid orange-red color).",
-      "These fat-soluble antioxidants protect LDL cholesterol from oxidizing on your arterial walls, supporting cardiovascular elasticity.",
-      "However, when palm oil is 'bleached' at high heat for commercial frying (turning clear/brown), the heat oxidizes the beneficial fats and destroys over 90% of the tocotrienols.",
-      "The Golden Rule: Use raw, deep red palm oil in moderate cooking amounts (1–2 tbsp) and avoid smoking or burning the oil during stew prep! 🥘",
-    ],
-    takeaway: "Unbleached red palm oil is rich in arterial-protective tocotrienols. Never overheat or bleach palm oil until it turns clear.",
-    quiz: {
-      question: "What key antioxidant is destroyed when red palm oil is over-bleached at high heat?",
-      options: ["Vitamin C", "Tocotrienols & Beta-Carotene", "Calcium"],
-      correctIndex: 1,
-      explanation: "Correct! Tocotrienols and carotenoids give red palm oil its healing properties and vibrant color—protect them by avoiding smoking the oil.",
-    },
-  },
-  {
-    id: "fermented-cassava",
-    title: "Fermented Cassava & Gut Flora",
-    category: "Gut & Fiber",
-    readTime: "60 sec",
-    icon: Leaf,
-    headline: "Why traditional 3-day Garri / Fufu fermentation creates gut-friendly probiotics",
-    storySlides: [
-      "Traditional West African processing of cassava requires peeling, grating, and fermenting in sacks under heavy stones for 3 to 5 days before frying or pounding.",
-      "This anaerobic fermentation encourages colonies of beneficial lactic acid bacteria (Lactobacillus and Leuconostoc) that eliminate toxic cyanogenic glucosides naturally.",
-      "The fermentation process also generates organic lactic acid and short-chain fatty acids that nourish the intestinal epithelial barrier.",
-      "Properly fermented traditional garri or fufu has a lower impact on gut inflammation than quick, unfermented industrial cassava flours! 🌿",
-    ],
-    takeaway: "Traditional 3-day lactic fermentation detoxifies cassava and produces gut-nourishing organic acids that support microbiome diversity.",
-    quiz: {
-      question: "What beneficial bacteria drive traditional cassava fermentation in West Africa?",
-      options: ["Lactic acid bacteria (Lactobacillus)", "E. coli", "Salmonella"],
-      correctIndex: 0,
-      explanation: "Exactly! Lactic acid bacteria naturally detoxify cassava, boost digestibility, and strengthen your gut lining.",
-    },
-  },
-  {
-    id: "egusi-arginine",
-    title: "Egusi Seeds & Nitric Oxide Flow",
-    category: "Heart & BP",
-    readTime: "60 sec",
-    icon: HeartPulse,
-    headline: "How melon seed L-Arginine supports vascular dilation and healthy blood pressure",
-    storySlides: [
-      "Egusi seeds (Citrullus lanatus) are prized for their rich, nutty texture in soups, but biochemically they are one of the most concentrated plant sources of L-Arginine.",
-      "L-Arginine is the direct biological precursor to Nitric Oxide (NO)—a signaling molecule inside your blood vessels that signals endothelial smooth muscles to relax and dilate.",
-      "Dilated blood vessels decrease systemic vascular resistance, naturally helping to lower high blood pressure and improve circulation.",
-      "To maximize benefits, prepare Egusi soup with lots of leafy greens (Spinach, Bitterleaf, or Ugwu) and lean fish rather than excessive fatty meats! 🥣",
-    ],
-    takeaway: "Egusi seeds supply L-Arginine, which boosts Nitric Oxide to naturally relax arteries and support healthy blood pressure.",
-    quiz: {
-      question: "What critical blood-vessel relaxing molecule is produced from Egusi's L-Arginine?",
-      options: ["Nitric Oxide (NO)", "Adrenaline", "Cortisol"],
-      correctIndex: 0,
-      explanation: "Spot on! Nitric Oxide dilates your arteries and allows blood to circulate freely with less strain on your heart.",
-    },
-  },
-  {
-    id: "akamu-protein-buffer",
-    title: "The Akamu (Pap) Glucose Buffer",
-    category: "Glucose Science",
-    readTime: "60 sec",
-    icon: Flame,
-    headline: "Why eating Pap alone causes rapid blood sugar spikes—and how to shield it",
-    storySlides: [
-      "Akamu (Ogi / Pap) made from refined corn or millet paste has a high glycemic index (GI > 75). When consumed with added sugar or evaporated milk alone, it spikes blood sugar within 20 minutes.",
-      "The rapid glucose rise is because refined cornstarch liquid has almost zero gastric delay and enters the bloodstream immediately.",
-      "The Nigerian Breakfast Shield: Never drink Akamu alone! Always pair it with Akara (steamed bean cakes), boiled eggs, or peanut butter.",
-      "The dense protein and lipid matrix in beans and eggs delays stomach emptying by up to 90 minutes, converting a spike into a steady plateau! 🥞",
-    ],
-    takeaway: "Always anchor high-GI Akamu with protein like Akara or boiled eggs to slow glucose absorption and prevent energy crashes.",
-    quiz: {
-      question: "Why should Akamu (Pap) always be paired with Akara or boiled eggs?",
-      options: [
-        "To make the plate look colorful",
-        "Protein & lipids delay gastric emptying and prevent a glucose surge",
-        "To add extra sugar",
-      ],
-      correctIndex: 1,
-      explanation: "Correct! Protein and healthy fats buffer the carb absorption, preventing blood sugar from spiking uncontrollably.",
-    },
-  },
-  {
     id: "okra-mucilage-trap",
     title: "Okra (Ila) & The Glucose Trap",
     category: "Gut & Fiber",
@@ -249,27 +303,6 @@ export const ACADEMY_LESSONS: AcademyLesson[] = [
     },
   },
   {
-    id: "moringa-antioxidants",
-    title: "Moringa Oleifera & Fasting Sugar",
-    category: "Glucose Science",
-    readTime: "60 sec",
-    icon: ShieldCheck,
-    headline: "The molecular power of Quercetin & Chlorogenic Acid in Moringa leaves",
-    storySlides: [
-      "Moringa Oleifera (known as Zogale in Northern Nigeria) is celebrated as a 'miracle tree' because of its extraordinary density of polyphenol antioxidants.",
-      "Two primary compounds in Moringa—Chlorogenic Acid and Quercetin—specifically inhibit the enzyme Glucose-6-Phosphatase in the liver.",
-      "By inhibiting this enzyme, Moringa prevents your liver from releasing excess stored glucose into your blood during overnight fasting periods.",
-      "Adding dried Moringa leaf powder to soups or drinking fresh Moringa tea in the morning supports lower waking fasting glucose levels! 🌿",
-    ],
-    takeaway: "Moringa leaves contain chlorogenic acid which helps regulate liver glucose release, keeping morning fasting numbers steady.",
-    quiz: {
-      question: "Which organ's glucose release does Moringa help regulate during fasting?",
-      options: ["The Liver", "The Kidneys", "The Lungs"],
-      correctIndex: 0,
-      explanation: "Correct! Moringa regulates liver glucose production, preventing high fasting blood sugar in the morning.",
-    },
-  },
-  {
     id: "sodium-potassium-balance",
     title: "Seasoning Cubes & Potassium Buffering",
     category: "Heart & BP",
@@ -290,81 +323,67 @@ export const ACADEMY_LESSONS: AcademyLesson[] = [
       explanation: "Spot on! Potassium balances sodium levels and relaxes arterial walls for healthy blood pressure.",
     },
   },
+];
+
+// SWALLOW GLYCEMIC SIMULATOR DATA
+const SWALLOW_SIMULATOR_DATA = [
   {
-    id: "ewedu-gastric-motility",
-    title: "Ewedu (Jute Leaves) & Lipid Shield",
-    category: "Cooking Hacks",
-    readTime: "60 sec",
-    icon: Brain,
-    headline: "Why Yoruba cuisine pairs Amala with Ewedu soup first before stew",
-    storySlides: [
-      "Ewedu (Corchorus olitorius / Jute mallow) is one of the most culturally revered soups in Western Nigeria, traditionally prepared with a short broom (Ijabe) and potash.",
-      "Ewedu contains high concentrations of polyphenols and soluble mucilage that coat the stomach lining and slow down lipase enzyme activity.",
-      "By moderating lipase activity, Ewedu prevents the rapid spike of saturated fatty acids and glucose simultaneously when eating Amala or Stew.",
-      "Tradition meets biochemistry: The ancestral practice of ladling Ewedu over Amala first provides an instant biochemical buffer! 🥣",
-    ],
-    takeaway: "Ewedu mucilage coats the stomach and moderates digestive lipase, preventing sharp surges in blood lipids and sugars.",
-    quiz: {
-      question: "What digestive enzyme activity does Ewedu mucilage help moderate?",
-      options: ["Lipase (fat breakdown) and amylase", "Pepsin only", "Insulin"],
-      correctIndex: 0,
-      explanation: "Exactly! Ewedu buffers both fat and starch breakdown, ensuring a smooth, steady metabolic digestion.",
-    },
+    id: "pounded-yam",
+    name: "Pounded Yam (Iyan)",
+    glycemicIndex: 85,
+    peakSpike: "172 mg/dL",
+    velocityTime: "22 mins",
+    spikeRisk: "High Spike Risk ⚠️",
+    color: "from-rose-500 to-red-600",
+    bgColor: "bg-rose-50 border-rose-200 text-rose-800",
+    barWidth: "90%",
+    insight: "Rapid starch hydrolysis. Causes a sharp 55 mg/dL glucose surge within 25 minutes unless paired with heavy fiber."
   },
   {
-    id: "circadian-meal-timing",
-    title: "The 7 PM Fasting Window Hack",
-    category: "Cooking Hacks",
-    readTime: "60 sec",
-    icon: Clock,
-    headline: "Why your body processes the exact same bowl of Eba differently at 1 PM vs 9 PM",
-    storySlides: [
-      "Human insulin sensitivity follows a strict circadian rhythm governed by clock genes (BMAL1 and CLOCK). Insulin sensitivity peaks around midday and drops sharply after sunset.",
-      "When you eat a large starch-heavy meal (like Eba or Pounded Yam) at 9:30 PM, your melatonin levels are rising. Melatonin suppresses insulin secretion from the pancreas.",
-      "As a result, late-night carbohydrates remain in the bloodstream up to 3x longer, causing nighttime glucose elevation and fat storage.",
-      "The 7 PM Rule: Shift your heaviest swallow meals to lunch (12 PM–2 PM) and choose light pepper soup or grilled fish with greens for late dinners! 🌙",
-    ],
-    takeaway: "Your body is much more insulin sensitive at lunch than at night. Eat heavier traditional carbs early, and keep late dinners light.",
-    quiz: {
-      question: "Why does eating heavy starch late at night cause higher blood sugar spikes?",
-      options: [
-        "Rising melatonin at night suppresses pancreatic insulin release",
-        "The stomach stops digesting food after 6 PM",
-        "Yam becomes sweeter at night",
-      ],
-      correctIndex: 0,
-      explanation: "Correct! Melatonin naturally lowers insulin secretion at night, so late carbs stay in your blood much longer.",
-    },
+    id: "white-garri",
+    name: "White Garri (Eba)",
+    glycemicIndex: 78,
+    peakSpike: "158 mg/dL",
+    velocityTime: "28 mins",
+    spikeRisk: "Moderate-High Spike ⚠️",
+    color: "from-amber-500 to-orange-600",
+    bgColor: "bg-amber-50 border-amber-200 text-amber-800",
+    barWidth: "78%",
+    insight: "Processed cassava with moderate gelatinization. Spikes faster when prepared with boiling water and eaten without vegetable soups."
   },
   {
-    id: "hydration-blood-viscosity",
-    title: "Hydration & Artificial High BP",
-    category: "Heart & BP",
-    readTime: "60 sec",
-    icon: Droplets,
-    headline: "How mild dehydration thickens your blood and elevates blood pressure readings",
-    storySlides: [
-      "Your blood plasma is over 90% water. When you are mildly dehydrated, your blood plasma volume shrinks, making your blood thicker and more viscous.",
-      "To pump thicker blood through narrow capillaries, your heart must pump harder, and your brain triggers the release of Vasopressin (antidiuretic hormone).",
-      "Vasopressin constricts your blood vessels, which artificially spikes your systolic blood pressure reading by 5 to 10 mmHg!",
-      "Drinking 2 full glasses of water upon waking up and tracking 8 glasses daily keeps blood viscosity low and pressure steady all day! 💧",
-    ],
-    takeaway: "Dehydration thickens blood and releases vasopressin, artificially raising blood pressure. Keep hydrated to maintain smooth blood flow.",
-    quiz: {
-      question: "What hormone is released during dehydration that constricts blood vessels and raises BP?",
-      options: ["Vasopressin", "Thyroxine", "Insulin"],
-      correctIndex: 0,
-      explanation: "Spot on! Vasopressin constricts blood vessels to conserve water, which temporarily spikes your blood pressure.",
-    },
+    id: "plantain-flour",
+    name: "Unripe Plantain Flour",
+    glycemicIndex: 52,
+    peakSpike: "132 mg/dL",
+    velocityTime: "55 mins",
+    spikeRisk: "Gentle Plateau ✅",
+    color: "from-teal-500 to-emerald-600",
+    bgColor: "bg-teal-50 border-teal-200 text-teal-800",
+    barWidth: "50%",
+    insight: "Rich in Type-2 Resistant Starch. Ferments in the colon, releasing butyrate and flattening post-meal glucose."
   },
+  {
+    id: "oat-swallow",
+    name: "Oat Flour Swallow + Okra",
+    glycemicIndex: 42,
+    peakSpike: "118 mg/dL",
+    velocityTime: "75 mins",
+    spikeRisk: "Low Spike Shield 🛡️",
+    color: "from-emerald-500 to-teal-600",
+    bgColor: "bg-emerald-50 border-emerald-200 text-emerald-800",
+    barWidth: "35%",
+    insight: "Beta-glucan soluble fibers create a protective gel matrix, slowing gastric emptying and reducing peak spike by ~38%."
+  }
 ];
 
 export default function AvoAcademy() {
-  const [selectedCategory, setSelectedCategory] = useState<string>("All");
+  const [selectedCategory, setSelectedCategory] = useState<string>("Glucose Science");
   const [activeLesson, setActiveLesson] = useState<AcademyLesson | null>(null);
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
   const [quizSubmitted, setQuizSubmitted] = useState(false);
+  const [selectedSwallowIdx, setSelectedSwallowIdx] = useState(0);
 
   const [completedIds, setCompletedIds] = useState<string[]>(() => {
     try {
@@ -384,7 +403,41 @@ export default function AvoAcademy() {
     }
   });
 
-  // Calculate the Lesson of the Day based on calendar day (changes automatically every 24h)
+  // Real-time Circadian Glucose Clock Detection
+  const currentHour = new Date().getHours();
+  const circadianWindow = useMemo(() => {
+    if (currentHour >= 5 && currentHour < 10) {
+      return {
+        label: "Dawn Phenomenon Window (5 AM - 10 AM)",
+        status: "Cortisol is waking the liver. Drink lemon water or Moringa before carbs to block liver gluconeogenesis.",
+        badge: "🌅 Morning Phase",
+        color: "text-amber-700 bg-amber-50 border-amber-200"
+      };
+    } else if (currentHour >= 10 && currentHour < 16) {
+      return {
+        label: "Peak Insulin Sensitivity Window (10 AM - 4 PM)",
+        status: "Your cells are primed to process complex swallows and grains efficiently. Optimal window for heavier meals.",
+        badge: "☀️ Midday Prime",
+        color: "text-teal-800 bg-teal-50 border-teal-200"
+      };
+    } else if (currentHour >= 16 && currentHour < 21) {
+      return {
+        label: "Post-Dusk Glucose Deceleration (4 PM - 9 PM)",
+        status: "Melatonin levels begin rising, reducing insulin secretion. Pair evening dinners with Okra, greens, and lean fish.",
+        badge: "🌆 Evening Decel",
+        color: "text-indigo-800 bg-indigo-50 border-indigo-200"
+      };
+    } else {
+      return {
+        label: "Nocturnal Fasting Repair (9 PM - 5 AM)",
+        status: "Cellular autophagy and glycogen replenishment. Maintain a clear 12-hour overnight fasting window for insulin receptor reset.",
+        badge: "🌙 Fasting Mode",
+        color: "text-purple-800 bg-purple-50 border-purple-200"
+      };
+    }
+  }, [currentHour]);
+
+  // Daily Dynamic Lesson Calculator (Rotates automatically every 24 hours)
   const todayLessonIndex = useMemo(() => {
     const now = new Date();
     const start = new Date(now.getFullYear(), 0, 0);
@@ -431,70 +484,62 @@ export default function AvoAcademy() {
 
     const isCorrect = selectedAnswer === activeLesson.quiz.correctIndex;
     if (isCorrect) {
-      triggerHaptic("milestone");
+      triggerHaptic("success");
       triggerConfetti("burst");
-      toast.success("Correct! +25 Metabolic XP Earned 🏆");
+      toast.success("Mastery Complete! +25 Metabolic XP 🧠✨");
 
-      const nextCompleted = Array.from(new Set([...completedIds, activeLesson.id]));
-      setCompletedIds(nextCompleted);
-      const nextXp = userXp + 25;
-      setUserXp(nextXp);
-
-      try {
+      if (!completedIds.includes(activeLesson.id)) {
+        const nextCompleted = [...completedIds, activeLesson.id];
+        setCompletedIds(nextCompleted);
         localStorage.setItem("completed_academy_lessons", JSON.stringify(nextCompleted));
+
+        const nextXp = userXp + 25;
+        setUserXp(nextXp);
         localStorage.setItem("metabolic_xp", nextXp.toString());
-      } catch {
-        /* ignore */
       }
     } else {
-      triggerHaptic("medium");
-      toast.info("Not quite! Read the explanation below to learn the science.");
+      triggerHaptic("warning");
+      toast.error("Not quite! Read the clinical explanation below.");
     }
   };
 
   return (
-    <div className="w-full space-y-4">
-      {/* 1. Header Banner with XP Counter */}
-      <div className="bg-gradient-to-r from-[#1f7a8c] via-teal-700 to-emerald-800 text-white rounded-3xl p-5 sm:p-6 shadow-lg relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-36 h-36 bg-white/10 rounded-full blur-2xl pointer-events-none" />
-
-        <div className="flex items-center justify-between gap-3 mb-2">
-          <div className="flex items-center gap-2.5">
-            <div className="p-2.5 bg-white/20 rounded-2xl">
-              <BookOpen className="h-6 w-6 text-white" />
+    <div className="space-y-4">
+      {/* 1. Header Banner with Live XP */}
+      <div className="bg-gradient-to-br from-[#126778] via-[#1f7a8c] to-[#38b2ac] rounded-3xl p-5 text-white shadow-md relative overflow-hidden">
+        <div className="relative z-10 flex items-start justify-between">
+          <div>
+            <div className="flex items-center gap-1.5 text-xs font-bold text-teal-200 uppercase tracking-wider mb-1">
+              <Sparkles size={14} className="text-amber-300 animate-pulse" />
+              <span>Metabolic Culinary Academy • 2026 Edition</span>
             </div>
-            <div>
-              <span className="text-[10px] uppercase font-bold tracking-wider text-teal-200 block">
-                Avo Academy 🥑
-              </span>
-              <h3 className="text-base sm:text-lg font-black text-white">
-                60-Second Food Science Masterclasses
-              </h3>
-            </div>
+            <h2 className="text-lg sm:text-xl font-black text-white leading-tight">
+              Glucose Science &amp; Food Chemistry 🧬
+            </h2>
+            <p className="text-xs text-teal-50/90 mt-1 max-w-sm leading-relaxed">
+              Evidence-based nutritional science translated into practical, delicious African food hacks.
+            </p>
           </div>
 
-          <div className="flex items-center gap-2">
-            <div className="flex items-center gap-1.5 bg-black/30 backdrop-blur-md px-3 py-1.5 rounded-2xl border border-amber-400/30">
-              <Trophy size={14} className="text-amber-400" />
-              <span className="text-xs font-black text-amber-300 tabular-nums">
-                {userXp} XP
-              </span>
+          <div className="bg-white/15 backdrop-blur-md px-3 py-2 rounded-2xl border border-white/20 text-center shrink-0">
+            <div className="flex items-center gap-1 text-amber-300 font-black text-sm justify-center">
+              <Trophy size={14} />
+              <span>{userXp} XP</span>
             </div>
+            <span className="text-[9px] text-teal-100 uppercase font-extrabold tracking-wider block mt-0.5">
+              Knowledge Score
+            </span>
           </div>
         </div>
 
-        <p className="text-xs text-teal-100/90 leading-relaxed max-w-xl">
-          14 clinical, bite-sized lessons explaining how authentic African foods, spices, and cooking hacks interact with your blood sugar, insulin, and blood pressure.
-        </p>
-
         {/* Progress Bar */}
-        <div className="mt-4 pt-3 border-t border-white/10 flex items-center justify-between text-xs">
-          <span className="text-teal-200 font-bold">
-            Curriculum Progress: {completedIds.length} / {ACADEMY_LESSONS.length} Complete
+        <div className="mt-4 pt-3 border-t border-white/15 flex items-center justify-between text-xs text-teal-100">
+          <span className="text-[11px] font-semibold">
+            Curriculum: {completedIds.length} / {ACADEMY_LESSONS.length} Completed
           </span>
-          <div className="w-24 bg-black/30 rounded-full h-2 overflow-hidden">
+          <div className="w-28 bg-white/20 rounded-full h-2 overflow-hidden">
             <div
-              className="bg-emerald-400 h-full rounded-full transition-all duration-500"
+              className="bg-emerald-300 h-full rounded-full transition-all duration-500"
               style={{
                 width: `${Math.round((completedIds.length / ACADEMY_LESSONS.length) * 100)}%`,
               }}
@@ -503,69 +548,118 @@ export default function AvoAcademy() {
         </div>
       </div>
 
-      {/* 2. ROTATING "TODAY'S DAILY MASTERCLASS" SPOTLIGHT */}
-      <div className="relative bg-gradient-to-br from-amber-500/10 via-teal-500/10 to-emerald-500/10 dark:from-zinc-900 dark:to-zinc-800 border-2 border-amber-400/80 rounded-3xl p-5 shadow-md overflow-hidden">
-        <div className="flex items-center justify-between gap-2 mb-2">
-          <div className="flex items-center gap-2">
-            <span className="px-3 py-1 bg-amber-500 text-slate-950 font-black text-[10px] uppercase tracking-wider rounded-full shadow-xs flex items-center gap-1">
-              <Sparkles size={12} className="animate-spin" />
-              <span>Today&apos;s Daily Masterclass</span>
-            </span>
-            <span className="text-[11px] font-bold text-amber-700 dark:text-amber-300">
-              +25 Daily XP
-            </span>
+      {/* 2. DYNAMIC REAL-TIME CIRCADIAN GLUCOSE BIO-CLOCK */}
+      <div className={`p-4 rounded-3xl border shadow-xs transition-all ${circadianWindow.color}`}>
+        <div className="flex items-center justify-between mb-1.5">
+          <div className="flex items-center gap-2 font-black text-xs">
+            <Clock size={14} />
+            <span>{circadianWindow.label}</span>
           </div>
-
-          {isTodayLessonDone ? (
-            <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400 flex items-center gap-1 bg-emerald-50 dark:bg-emerald-950/60 px-2.5 py-0.5 rounded-full">
-              <CheckCircle2 size={13} />
-              <span>Completed Today</span>
-            </span>
-          ) : (
-            <span className="text-[10px] font-bold text-slate-500 flex items-center gap-1">
-              <Clock size={11} />
-              <span>Rotates at midnight</span>
-            </span>
-          )}
+          <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded-full bg-white/80 border shadow-2xs">
+            {circadianWindow.badge}
+          </span>
         </div>
-
-        <h4 className="text-base sm:text-lg font-black text-slate-900 dark:text-zinc-100 mt-1 mb-1">
-          {todayLesson.title}
-        </h4>
-        <p className="text-xs text-slate-600 dark:text-zinc-300 leading-snug mb-3">
-          {todayLesson.headline}
+        <p className="text-[11px] leading-relaxed font-medium">
+          {circadianWindow.status}
         </p>
-
-        <Button
-          onClick={() => openLesson(todayLesson)}
-          className="w-full sm:w-auto bg-gradient-to-r from-[#1f7a8c] to-[#2a9d8f] hover:from-[#176270] hover:to-[#227f74] text-white font-extrabold text-xs rounded-2xl shadow-sm transition-all flex items-center justify-center gap-2 cursor-pointer"
-        >
-          <Zap size={14} />
-          <span>{isTodayLessonDone ? "Review Today's Lesson" : "Start 60-Second Lesson (+25 XP)"}</span>
-        </Button>
       </div>
 
-      {/* 3. Category Filter Tabs */}
-      <div className="flex items-center gap-1.5 overflow-x-auto pb-1 no-scrollbar text-xs">
-        {["All", "Glucose Science", "Heart & BP", "Gut & Fiber", "Cooking Hacks"].map((cat) => (
+      {/* 3. INTERACTIVE AFRICAN SWALLOW GLYCEMIC SIMULATOR (Live in Glucose Science) */}
+      <div className="bg-white rounded-3xl p-5 shadow-xs border border-teal-100/90 space-y-3.5">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <div className="p-2 rounded-xl bg-teal-50 text-[#126778]">
+              <Sliders size={16} />
+            </div>
+            <div>
+              <h3 className="text-xs font-black text-slate-900 uppercase tracking-wider">
+                Live Swallow Glycemic Simulator 🥣
+              </h3>
+              <p className="text-[10px] text-slate-500">
+                Compare post-meal glucose spikes across traditional and modern swallows
+              </p>
+            </div>
+          </div>
+          <span className="text-[9px] font-black uppercase text-teal-800 bg-teal-50 px-2 py-0.5 rounded-md">
+            2026 Data
+          </span>
+        </div>
+
+        {/* Swallow Selector Pills */}
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5">
+          {SWALLOW_SIMULATOR_DATA.map((swallow, idx) => (
+            <button
+              key={swallow.id}
+              onClick={() => {
+                triggerHaptic("light");
+                setSelectedSwallowIdx(idx);
+              }}
+              className={`p-2 rounded-xl text-left border transition-all cursor-pointer ${
+                selectedSwallowIdx === idx
+                  ? "bg-[#126778] text-white border-[#126778] shadow-xs"
+                  : "bg-slate-50 text-slate-700 border-slate-200/80 hover:bg-slate-100"
+              }`}
+            >
+              <span className="text-[11px] font-bold block truncate">{swallow.name}</span>
+              <span className={`text-[9px] font-black block mt-0.5 ${selectedSwallowIdx === idx ? "text-teal-200" : "text-slate-500"}`}>
+                GI: {swallow.glycemicIndex}
+              </span>
+            </button>
+          ))}
+        </div>
+
+        {/* Selected Swallow Live Visualization Card */}
+        {(() => {
+          const s = SWALLOW_SIMULATOR_DATA[selectedSwallowIdx];
+          return (
+            <div className={`p-3.5 rounded-2xl border ${s.bgColor} space-y-2`}>
+              <div className="flex items-center justify-between text-xs font-black">
+                <span>Peak Glucose: {s.peakSpike}</span>
+                <span>Time to Peak: {s.velocityTime}</span>
+              </div>
+
+              {/* Dynamic Progress Bar */}
+              <div className="w-full bg-slate-200/80 rounded-full h-2.5 overflow-hidden">
+                <div
+                  className={`h-full bg-gradient-to-r ${s.color} transition-all duration-500 rounded-full`}
+                  style={{ width: s.barWidth }}
+                />
+              </div>
+
+              <div className="flex items-center justify-between text-[10px] font-bold">
+                <span>{s.spikeRisk}</span>
+                <span className="text-slate-600">Glycemic Load Rating</span>
+              </div>
+
+              <p className="text-[11px] text-slate-700 leading-snug pt-1 border-t border-slate-200/60 font-medium">
+                💡 <strong>Clinical Takeaway:</strong> {s.insight}
+              </p>
+            </div>
+          );
+        })()}
+      </div>
+
+      {/* 4. Category Filter Tabs */}
+      <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none text-xs">
+        {["Glucose Science", "Heart & BP", "Gut & Fiber", "Cooking Hacks", "All"].map((cat) => (
           <button
             key={cat}
             onClick={() => {
               triggerHaptic("light");
               setSelectedCategory(cat);
             }}
-            className={`px-3 py-1.5 rounded-xl font-extrabold whitespace-nowrap transition-all cursor-pointer ${
+            className={`px-3.5 py-1.5 rounded-full font-black whitespace-nowrap transition-all cursor-pointer ${
               selectedCategory === cat
-                ? "bg-[#1f7a8c] text-white shadow-xs"
-                : "bg-white dark:bg-zinc-800 text-slate-600 dark:text-zinc-300 border border-slate-200 dark:border-zinc-700 hover:bg-slate-50"
+                ? "bg-[#126778] text-white shadow-xs"
+                : "bg-white text-slate-600 border border-slate-200 hover:bg-slate-50"
             }`}
           >
-            {cat}
+            {cat === "Glucose Science" ? "🩸 Glucose Science (8)" : cat}
           </button>
         ))}
       </div>
 
-      {/* 4. Lesson Cards Grid */}
+      {/* 5. Dynamic Lesson Cards Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         {filteredLessons.map((lesson) => {
           const Icon = lesson.icon;
@@ -578,26 +672,26 @@ export default function AvoAcademy() {
               onClick={() => openLesson(lesson)}
               className={`p-4 rounded-3xl border transition-all cursor-pointer flex flex-col justify-between group hover:shadow-md ${
                 isDone
-                  ? "bg-teal-50/50 dark:bg-teal-950/20 border-teal-200 dark:border-teal-900/60"
+                  ? "bg-teal-50/50 border-teal-200"
                   : isCurrentToday
-                  ? "bg-white dark:bg-zinc-900 border-amber-300 dark:border-amber-700 ring-1 ring-amber-300/60"
-                  : "bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800"
+                  ? "bg-white border-amber-300 ring-2 ring-amber-300/40"
+                  : "bg-white border-slate-200/80 hover:border-teal-300"
               }`}
             >
               <div>
                 <div className="flex items-center justify-between gap-2 mb-2">
                   <div className="flex items-center gap-1.5">
-                    <span className="text-[10px] uppercase font-extrabold tracking-wider text-[#1f7a8c] dark:text-teal-400 bg-teal-50 dark:bg-teal-950/60 px-2 py-0.5 rounded-lg">
+                    <span className="text-[10px] uppercase font-black tracking-wider text-[#126778] bg-teal-50 px-2 py-0.5 rounded-lg">
                       {lesson.category}
                     </span>
                     {isCurrentToday && (
                       <span className="text-[9.5px] uppercase font-black bg-amber-100 text-amber-800 px-1.5 py-0.5 rounded-md">
-                        Today
+                        Today's Pick
                       </span>
                     )}
                   </div>
 
-                  <span className="text-[10px] text-zinc-400 font-bold flex items-center gap-1">
+                  <span className="text-[10px] text-slate-400 font-bold flex items-center gap-1">
                     <Clock size={11} />
                     <span>{lesson.readTime}</span>
                   </span>
@@ -607,32 +701,32 @@ export default function AvoAcademy() {
                   <div
                     className={`p-2.5 rounded-2xl shrink-0 ${
                       isDone
-                        ? "bg-emerald-100 dark:bg-emerald-900/50 text-emerald-700 dark:text-emerald-300"
-                        : "bg-teal-50 dark:bg-teal-950/50 text-[#1f7a8c] dark:text-teal-400"
+                        ? "bg-emerald-100 text-emerald-700"
+                        : "bg-teal-50 text-[#126778]"
                     }`}
                   >
                     <Icon className="h-5 w-5" />
                   </div>
                   <div>
-                    <h4 className="text-sm font-extrabold text-slate-900 dark:text-zinc-100 group-hover:text-[#1f7a8c] transition-colors leading-tight">
+                    <h4 className="text-sm font-extrabold text-slate-900 group-hover:text-[#126778] transition-colors leading-tight">
                       {lesson.title}
                     </h4>
-                    <p className="text-[11px] text-slate-500 dark:text-zinc-400 mt-1 leading-snug line-clamp-2">
+                    <p className="text-[11px] text-slate-500 mt-1 leading-snug line-clamp-2 font-medium">
                       {lesson.headline}
                     </p>
                   </div>
                 </div>
               </div>
 
-              <div className="mt-3 pt-2.5 border-t border-slate-100 dark:border-zinc-800 flex items-center justify-between">
+              <div className="mt-3 pt-2.5 border-t border-slate-100 flex items-center justify-between">
                 {isDone ? (
-                  <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
+                  <span className="text-xs font-bold text-emerald-600 flex items-center gap-1">
                     <CheckCircle2 size={14} />
-                    <span>Completed (+25 XP)</span>
+                    <span>Mastered (+25 XP)</span>
                   </span>
                 ) : (
-                  <span className="text-xs font-bold text-[#1f7a8c] dark:text-teal-400 flex items-center gap-1 group-hover:translate-x-0.5 transition-transform">
-                    <span>Read Lesson</span>
+                  <span className="text-xs font-bold text-[#126778] flex items-center gap-1 group-hover:translate-x-0.5 transition-transform">
+                    <span>Read 60s Lesson</span>
                     <ChevronRight size={14} />
                   </span>
                 )}
@@ -642,7 +736,7 @@ export default function AvoAcademy() {
         })}
       </div>
 
-      {/* 5. INTERACTIVE STORY & QUIZ READER MODAL */}
+      {/* 6. INTERACTIVE STORY & QUIZ READER MODAL */}
       {activeLesson && (
         <Dialog open={!!activeLesson} onOpenChange={() => setActiveLesson(null)}>
           <DialogContent className="max-w-md p-6 rounded-3xl max-h-[92vh] overflow-y-auto border-teal-500/30">
@@ -652,16 +746,16 @@ export default function AvoAcademy() {
             </DialogHeader>
 
             {/* Modal Header */}
-            <div className="flex items-center justify-between border-b border-zinc-100 dark:border-zinc-800 pb-3 mb-4">
-              <div className="flex items-center gap-2">
-                <div className="p-2 rounded-xl bg-teal-50 dark:bg-teal-950 text-[#1f7a8c] dark:text-teal-400">
+            <div className="flex items-center justify-between border-b border-slate-100 pb-3 mb-4">
+              <div className="flex items-center gap-2.5">
+                <div className="p-2 rounded-xl bg-teal-50 text-[#126778]">
                   <activeLesson.icon className="h-5 w-5" />
                 </div>
                 <div>
-                  <span className="text-[10px] uppercase font-bold text-teal-600 dark:text-teal-400">
-                    {activeLesson.category} • 60s Lesson
+                  <span className="text-[10px] uppercase font-black text-teal-700">
+                    {activeLesson.category} • 60s Masterclass
                   </span>
-                  <h3 className="text-base font-extrabold text-slate-900 dark:text-zinc-100 leading-tight">
+                  <h3 className="text-base font-extrabold text-slate-900 leading-tight">
                     {activeLesson.title}
                   </h3>
                 </div>
@@ -672,14 +766,14 @@ export default function AvoAcademy() {
             {currentSlideIndex < activeLesson.storySlides.length ? (
               <div className="space-y-4">
                 {/* Story Slide Content Card */}
-                <div className="bg-gradient-to-br from-teal-50/50 to-emerald-50/30 dark:from-zinc-900 dark:to-zinc-800/80 p-5 rounded-2xl border border-teal-100 dark:border-zinc-700">
+                <div className="bg-gradient-to-br from-teal-50/60 to-emerald-50/40 p-5 rounded-2xl border border-teal-100">
                   <div className="flex items-center justify-between mb-3">
-                    <span className="text-[10px] font-black uppercase tracking-wider text-teal-700 dark:text-teal-300">
+                    <span className="text-[10px] font-black uppercase tracking-wider text-teal-800">
                       Slide {currentSlideIndex + 1} of {activeLesson.storySlides.length}
                     </span>
                     <Mascot gesture="wave" size={32} />
                   </div>
-                  <p className="text-sm text-slate-800 dark:text-zinc-200 leading-relaxed font-medium">
+                  <p className="text-sm text-slate-800 leading-relaxed font-medium">
                     {activeLesson.storySlides[currentSlideIndex]}
                   </p>
                 </div>
@@ -691,10 +785,10 @@ export default function AvoAcademy() {
                       key={i}
                       className={`h-1.5 rounded-full transition-all duration-300 ${
                         i === currentSlideIndex
-                          ? "w-6 bg-[#1f7a8c]"
+                          ? "w-6 bg-[#126778]"
                           : i < currentSlideIndex
                           ? "w-2 bg-teal-400"
-                          : "w-2 bg-slate-200 dark:bg-zinc-700"
+                          : "w-2 bg-slate-200"
                       }`}
                     />
                   ))}
@@ -703,11 +797,11 @@ export default function AvoAcademy() {
                 {/* Next Button */}
                 <Button
                   onClick={handleNextSlide}
-                  className="w-full bg-gradient-to-r from-[#1f7a8c] to-[#2a9d8f] text-white h-12 rounded-2xl font-black text-sm shadow-md flex items-center justify-center gap-2 cursor-pointer"
+                  className="w-full bg-gradient-to-r from-[#126778] to-[#2a9d8f] text-white h-12 rounded-2xl font-black text-sm shadow-md flex items-center justify-center gap-2 cursor-pointer active:scale-98"
                 >
                   <span>
                     {currentSlideIndex === activeLesson.storySlides.length - 1
-                      ? "Take Quick 1-Question Quiz 🎯"
+                      ? "Take 1-Question Mastery Quiz 🎯"
                       : "Next Slide"}
                   </span>
                   <ChevronRight size={16} />
@@ -716,12 +810,12 @@ export default function AvoAcademy() {
             ) : (
               /* QUIZ PHASE */
               <div className="space-y-4">
-                <div className="bg-amber-50 dark:bg-amber-950/40 p-4 rounded-2xl border border-amber-200 dark:border-amber-800">
-                  <div className="flex items-center gap-2 text-xs font-extrabold text-amber-800 dark:text-amber-300 mb-1">
+                <div className="bg-amber-50 p-4 rounded-2xl border border-amber-200">
+                  <div className="flex items-center gap-2 text-xs font-black text-amber-800 mb-1">
                     <Sparkles size={14} />
                     <span>Quick Science Mastery Quiz (+25 XP)</span>
                   </div>
-                  <h4 className="text-sm font-bold text-slate-900 dark:text-zinc-100">
+                  <h4 className="text-sm font-bold text-slate-900">
                     {activeLesson.quiz.question}
                   </h4>
                 </div>
@@ -732,15 +826,15 @@ export default function AvoAcademy() {
                     const isSelected = selectedAnswer === idx;
                     const isCorrect = idx === activeLesson.quiz.correctIndex;
 
-                    let btnClass = "border-slate-200 dark:border-zinc-700 bg-white dark:bg-zinc-800";
+                    let btnClass = "border-slate-200 bg-white";
                     if (quizSubmitted) {
                       if (isCorrect) {
-                        btnClass = "border-emerald-500 bg-emerald-50 dark:bg-emerald-950 text-emerald-900 dark:text-emerald-100 font-bold";
+                        btnClass = "border-emerald-500 bg-emerald-50 text-emerald-900 font-bold";
                       } else if (isSelected && !isCorrect) {
-                        btnClass = "border-rose-500 bg-rose-50 dark:bg-rose-950 text-rose-900 dark:text-rose-100";
+                        btnClass = "border-rose-500 bg-rose-50 text-rose-900";
                       }
                     } else if (isSelected) {
-                      btnClass = "border-[#1f7a8c] bg-teal-50/70 text-[#1f7a8c] font-bold";
+                      btnClass = "border-[#126778] bg-teal-50/80 text-[#126778] font-bold";
                     }
 
                     return (
@@ -764,11 +858,11 @@ export default function AvoAcademy() {
 
                 {/* Explanation on submit */}
                 {quizSubmitted && (
-                  <div className="p-3.5 bg-slate-50 dark:bg-zinc-800 rounded-2xl border border-slate-200 dark:border-zinc-700 text-xs space-y-2">
-                    <p className="font-bold text-slate-800 dark:text-zinc-200">
+                  <div className="p-3.5 bg-slate-50 rounded-2xl border border-slate-200 text-xs space-y-2">
+                    <p className="font-bold text-slate-800">
                       {activeLesson.quiz.explanation}
                     </p>
-                    <div className="p-2.5 bg-teal-50 dark:bg-teal-950/60 rounded-xl text-teal-800 dark:text-teal-300 font-medium">
+                    <div className="p-2.5 bg-teal-50 rounded-xl text-teal-800 font-medium">
                       💡 <strong>Clinical Takeaway:</strong> {activeLesson.takeaway}
                     </div>
                   </div>
@@ -779,7 +873,7 @@ export default function AvoAcademy() {
                   <Button
                     onClick={handleSubmitQuiz}
                     disabled={selectedAnswer === null}
-                    className="w-full bg-gradient-to-r from-[#1f7a8c] to-[#2a9d8f] text-white h-12 rounded-2xl font-black text-sm shadow-md cursor-pointer disabled:opacity-60"
+                    className="w-full bg-gradient-to-r from-[#126778] to-[#2a9d8f] text-white h-12 rounded-2xl font-black text-sm shadow-md cursor-pointer disabled:opacity-60"
                   >
                     Submit Answer
                   </Button>
