@@ -5,7 +5,7 @@ import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { supabase } from "../../lib/supabase";
 import { toast } from "sonner";
-import logoImage from "figma:asset/efbe2a1ac833b032474ac203bb52c6fe4e93cfbb.png";
+import logoImage from "../../assets/efbe2a1ac833b032474ac203bb52c6fe4e93cfbb.png";
 
 export default function ResetPassword() {
   const navigate = useNavigate();

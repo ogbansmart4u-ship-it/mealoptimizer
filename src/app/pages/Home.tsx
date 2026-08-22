@@ -41,7 +41,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { Alert, AlertTitle, AlertDescription } from "../components/ui/alert";
 import { Button } from "../components/ui/button";
 import { Progress } from "../components/ui/progress";
-import logoImage from "figma:asset/efbe2a1ac833b032474ac203bb52c6fe4e93cfbb.png";
+import logoImage from "../../assets/efbe2a1ac833b032474ac203bb52c6fe4e93cfbb.png";
 import { initializeSampleData } from "../../utils/sampleData";
 import { projectId } from '/utils/supabase/info';
 import { getAccessToken } from '../../lib/supabase';

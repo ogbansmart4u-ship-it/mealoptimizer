@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { ChevronRight, MapPin, Target, Sparkles, ArrowRight, CheckCircle } from "lucide-react";
 import { useNavigate } from "react-router";
-import logoImage from "figma:asset/efbe2a1ac833b032474ac203bb52c6fe4e93cfbb.png";
+import logoImage from "../../assets/efbe2a1ac833b032474ac203bb52c6fe4e93cfbb.png";
 import { useAppMode } from "../contexts/AppModeContext";
 import { useAuth } from "../contexts/AuthContext";
 import { EMAIL_CONFIRMATION_REQUIRED } from "../../lib/supabase";
