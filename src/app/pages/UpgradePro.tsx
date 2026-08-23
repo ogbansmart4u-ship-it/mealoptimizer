@@ -37,13 +37,9 @@ export default function UpgradePro() {
   const [cycle, setCycle] = useState<BillingCycle>("annual");
   const [loadingPlan, setLoadingPlan] = useState<string | null>(null);
   const [isSyncing, setIsSyncing] = useState(false);
-  const [currentSub, setCurrentSub] = useState(getSubscriptionStatus(profile?.id));
+  const [currentSub, setCurrentSub] = useState(() => getSubscriptionStatus(profile?.id));
 
-  const activePlanId: PlanTier = currentSub.isPro
-    ? currentSub.plan === "family"
-      ? "family"
-      : "pro"
-    : "free";
+  const activePlanId: PlanTier = currentSub.plan === "free" ? "free" : (currentSub.plan || (currentSub.isPro ? "pro" : "free"));
 
   const handleSelectPlan = async (plan: PlanTier) => {
     if (plan === "free") {

@@ -92,28 +92,33 @@ export function getSubscriptionStatus(userId?: string): { isPro: boolean; plan: 
       const userSaved = localStorage.getItem(`user_subscription_status_${userId}`);
       if (userSaved) {
         const parsed = JSON.parse(userSaved);
-        if (parsed.isPro || parsed.plan === "pro" || parsed.plan === "family") {
-          return { isPro: true, plan: parsed.plan || "pro", expiresAt: parsed.expiresAt };
-        }
+        const isPro = parsed.plan === "pro" || parsed.plan === "family";
+        return { isPro, plan: (parsed.plan as PlanTier) || "free", expiresAt: parsed.expiresAt };
       }
       const userProfile = localStorage.getItem(`user-profile-${userId}`);
       if (userProfile) {
         const p = JSON.parse(userProfile);
-        if (p.isPro || p.plan === "pro" || p.plan === "family") {
-          return { isPro: true, plan: p.plan || "pro", expiresAt: p.subscriptionExpiresAt };
-        }
+        const isPro = p.plan === "pro" || p.plan === "family";
+        return { isPro, plan: (p.plan as PlanTier) || "free", expiresAt: p.subscriptionExpiresAt };
       }
     }
 
     const saved = localStorage.getItem("user_subscription_status");
     if (saved) {
       const parsed = JSON.parse(saved);
-      const isPro = parsed.plan === "pro" || parsed.plan === "family" || parsed.isPro === true;
+      const isPro = parsed.plan === "pro" || parsed.plan === "family";
       return {
         isPro,
-        plan: isPro ? (parsed.plan || "pro") : "free",
+        plan: (parsed.plan as PlanTier) || "free",
         expiresAt: parsed.expiresAt,
       };
+    }
+
+    const lastActive = localStorage.getItem("mealoptimizer_last_active_profile");
+    if (lastActive) {
+      const p = JSON.parse(lastActive);
+      const isPro = p.plan === "pro" || p.plan === "family";
+      return { isPro, plan: (p.plan as PlanTier) || "free", expiresAt: p.subscriptionExpiresAt };
     }
   } catch {
     /* fallback to free */
@@ -131,11 +136,15 @@ export function setSubscriptionStatus(plan: PlanTier, durationMonths = 1, userId
     plan,
     isPro: plan !== "free",
     activatedAt: new Date().toISOString(),
-    expiresAt: expiry.toISOString(),
+    expiresAt: plan === "free" ? undefined : expiry.toISOString(),
   };
 
   try {
     localStorage.setItem("user_subscription_status", JSON.stringify(data));
+    localStorage.removeItem("mealoptimizer_pro_unlocked");
+    if (plan !== "free") {
+      localStorage.setItem("mealoptimizer_pro_unlocked", "true");
+    }
 
     if (userId) {
       localStorage.setItem(`user_subscription_status_${userId}`, JSON.stringify(data));
@@ -144,9 +153,18 @@ export function setSubscriptionStatus(plan: PlanTier, durationMonths = 1, userId
         const prof = JSON.parse(userProfRaw);
         prof.plan = plan;
         prof.isPro = plan !== "free";
-        prof.subscriptionExpiresAt = expiry.toISOString();
+        prof.subscriptionExpiresAt = data.expiresAt;
         localStorage.setItem(`user-profile-${userId}`, JSON.stringify(prof));
       }
+    }
+
+    const lastActive = localStorage.getItem("mealoptimizer_last_active_profile");
+    if (lastActive) {
+      const prof = JSON.parse(lastActive);
+      prof.plan = plan;
+      prof.isPro = plan !== "free";
+      prof.subscriptionExpiresAt = data.expiresAt;
+      localStorage.setItem("mealoptimizer_last_active_profile", JSON.stringify(prof));
     }
   } catch {
     /* ignore */

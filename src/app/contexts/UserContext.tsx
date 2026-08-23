@@ -66,8 +66,8 @@ const DEFAULT_GUEST_PROFILE: UserProfile = {
   medicalCondition: "Metabolic Optimization",
   location: "Nigeria",
   profilePicture: "",
-  plan: "pro",
-  isPro: true,
+  plan: "free",
+  isPro: false,
 };
 
 export function UserProvider({

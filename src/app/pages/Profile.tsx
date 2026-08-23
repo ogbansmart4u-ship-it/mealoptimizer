@@ -87,8 +87,8 @@ export default function Profile() {
     medicalCondition: profile?.medicalCondition || "Metabolic Optimization & Glycemic Health",
     location: profile?.location || selectedLocation?.displayName || "Nigeria",
     profilePicture: profile?.profilePicture || "",
-    plan: profile?.plan || "pro",
-    isPro: profile?.isPro ?? true,
+    plan: profile?.plan || "free",
+    isPro: profile?.isPro ?? false,
     gender: profile?.gender || "male",
   };
 
