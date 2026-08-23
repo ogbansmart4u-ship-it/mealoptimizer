@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router';
+import React, { useState } from "react";
+import { useNavigate } from "react-router";
 import {
   ArrowLeft,
   Sun,
@@ -15,31 +15,102 @@ import {
   GripVertical,
   RotateCcw,
   Save,
-} from 'lucide-react';
-import { useTheme } from '../contexts/ThemeContext';
-import { useUnits } from '../contexts/UnitsContext';
-import { useLanguage, supportedLanguages } from '../contexts/LanguageContext';
-import { useDashboard, DashboardWidget } from '../contexts/DashboardContext';
-import { Button } from '../components/ui/button';
+  Palette,
+  ChefHat,
+  ShieldCheck,
+  Heart,
+  Flame,
+  Sparkles,
+  Sliders,
+  Check,
+  CheckCircle2,
+  Volume2,
+  Smartphone,
+  ShieldAlert,
+  Zap,
+} from "lucide-react";
+import { useTheme } from "../contexts/ThemeContext";
+import { useUnits } from "../contexts/UnitsContext";
+import { useLanguage, supportedLanguages } from "../contexts/LanguageContext";
+import { useDashboard, DashboardWidget } from "../contexts/DashboardContext";
+import { Button } from "../components/ui/button";
+import AmbientBackground from "../components/AmbientBackground";
+import { toast } from "sonner";
+import { triggerConfetti, triggerHaptic } from "../utils/celebration";
+import { motion, AnimatePresence } from "motion/react";
+
+type PersonalizationTab = "theme" | "dietary" | "clinical" | "language" | "dashboard";
 
 export default function Personalization() {
   const navigate = useNavigate();
-  const { theme, effectiveTheme, setTheme } = useTheme();
+  const { theme, setTheme } = useTheme();
   const { unitSystem, setUnitSystem } = useUnits();
   const { language, setLanguage } = useLanguage();
   const { widgets, updateWidgetVisibility, reorderWidgets, resetToDefault } = useDashboard();
 
-  const [activeTab, setActiveTab] = useState<'theme' | 'units' | 'language' | 'dashboard' | 'reminders'>('theme');
+  const [activeTab, setActiveTab] = useState<PersonalizationTab>("theme");
   const [localWidgets, setLocalWidgets] = useState<DashboardWidget[]>(widgets);
   const [draggedWidget, setDraggedWidget] = useState<string | null>(null);
 
-  // Debug: Log theme changes
-  console.log('Current theme:', theme, 'Effective:', effectiveTheme);
-  console.log('HTML has dark class:', document.documentElement.classList.contains('dark'));
+  // Cultural & Dietary Customization state (stored in localStorage)
+  const [allergies, setAllergies] = useState<string[]>(() => {
+    try {
+      return JSON.parse(localStorage.getItem("allergies") || '["None"]');
+    } catch {
+      return ["None"];
+    }
+  });
+
+  const [swallowPreference, setSwallowPreference] = useState<string>(() => {
+    return localStorage.getItem("preferred_swallow") || "unripe_plantain";
+  });
+
+  const [spiceTolerance, setSpiceTolerance] = useState<string>(() => {
+    return localStorage.getItem("spice_tolerance") || "medium";
+  });
+
+  const [primaryGoal, setPrimaryGoal] = useState<string>(() => {
+    return localStorage.getItem("userPrimaryGoal") || "glucose_control";
+  });
+
+  const [avoPersonality, setAvoPersonality] = useState<string>(() => {
+    return localStorage.getItem("avo_personality") || "friendly";
+  });
+
+  // Allergy toggle
+  const toggleAllergy = (allergy: string) => {
+    triggerHaptic("light");
+    let next: string[];
+    if (allergy === "None") {
+      next = ["None"];
+    } else {
+      const filtered = allergies.filter((a) => a !== "None");
+      if (filtered.includes(allergy)) {
+        next = filtered.filter((a) => a !== allergy);
+        if (next.length === 0) next = ["None"];
+      } else {
+        next = [...filtered, allergy];
+      }
+    }
+    setAllergies(next);
+    localStorage.setItem("allergies", JSON.stringify(next));
+    toast.success("Allergy profile updated");
+  };
+
+  const handleSaveDietary = () => {
+    localStorage.setItem("preferred_swallow", swallowPreference);
+    localStorage.setItem("spice_tolerance", spiceTolerance);
+    localStorage.setItem("userPrimaryGoal", primaryGoal);
+    localStorage.setItem("avo_personality", avoPersonality);
+    triggerHaptic("milestone");
+    triggerConfetti("cannon");
+    toast.success("✨ Personalization Preferences Saved!");
+  };
 
   const handleSaveWidgets = () => {
     reorderWidgets(localWidgets);
-    alert('Dashboard layout saved!');
+    triggerHaptic("milestone");
+    toast.success("📱 Dashboard Layout Saved!");
   };
 
   const handleDragStart = (widgetId: string) => {
@@ -65,216 +136,465 @@ export default function Personalization() {
   };
 
   const toggleWidgetVisibility = (widgetId: string) => {
+    triggerHaptic("light");
     setLocalWidgets((prev) =>
       prev.map((w) => (w.id === widgetId ? { ...w, visible: !w.visible } : w))
     );
     updateWidgetVisibility(widgetId, !localWidgets.find((w) => w.id === widgetId)?.visible!);
   };
 
+  const tabs: { id: PersonalizationTab; label: string; icon: any }[] = [
+    { id: "theme", label: "Appearance", icon: Palette },
+    { id: "dietary", label: "Food & Swallows", icon: ChefHat },
+    { id: "clinical", label: "Health Targets", icon: ShieldCheck },
+    { id: "language", label: "Language & Units", icon: Globe },
+    { id: "dashboard", label: "Dashboard", icon: Layout },
+  ];
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#B8E5E5] to-[#E8F5F5] pb-20">
-      {/* Debug Indicator */}
-      <div className="fixed top-2 right-2 bg-black/80 text-white px-3 py-1 rounded-full text-xs z-50">
-        Theme: {theme} | Effective: {effectiveTheme}
-      </div>
+    <div className="min-h-screen bg-gradient-to-b from-[#B8E5E5] via-[#E8F5F5] to-[#F8FBFB] pb-28 text-slate-800 relative select-none">
+      <AmbientBackground />
+
       {/* Header */}
-      <div className="bg-gradient-to-r from-[#1f7a8c] to-[#4ecdc4] px-6 pt-12 pb-8 rounded-b-3xl shadow-lg">
-        <div className="flex items-center gap-4 mb-4">
+      <div className="relative z-10 bg-gradient-to-r from-[#0b3c47] via-[#125e6d] to-[#1f7a8c] text-white pt-10 pb-6 px-5 sm:px-6 rounded-b-[2.5rem] shadow-xl border-b border-teal-500/20">
+        <div className="max-w-3xl mx-auto flex items-center justify-between mb-3">
           <button
-            onClick={() => navigate('/profile')}
-            className="p-2 hover:bg-white/20 rounded-full transition"
+            onClick={() => navigate("/profile")}
+            className="p-2.5 rounded-full bg-white/10 hover:bg-white/20 text-white backdrop-blur-md transition-transform active:scale-95 cursor-pointer"
+            aria-label="Back"
           >
-            <ArrowLeft className="h-6 w-6 text-white" />
+            <ArrowLeft className="h-5 w-5" />
           </button>
-          <div className="flex-1">
-            <h1 className="text-3xl font-bold text-white">Personalization</h1>
-            <p className="text-white/90 text-sm">Customize your experience</p>
+          <div className="flex items-center gap-1.5 bg-white/10 backdrop-blur-md px-3 py-1 rounded-full text-xs font-bold text-teal-200">
+            <Sliders size={14} />
+            <span>Preferences Engine</span>
           </div>
-          <Settings className="h-8 w-8 text-white" />
+        </div>
+
+        <div className="max-w-3xl mx-auto">
+          <h1 className="text-2xl sm:text-3xl font-black text-white leading-tight">
+            Personalization & Settings ⚙️
+          </h1>
+          <p className="text-xs text-teal-100/90 font-medium mt-1">
+            Customize your visual theme, cultural swallow staples, health targets, and language.
+          </p>
         </div>
       </div>
 
-      <div className="px-6 py-6 space-y-6">
-        {/* Tab Navigation */}
-        <div className="bg-white rounded-2xl shadow-lg p-2 flex gap-2 overflow-x-auto">
-          {[
-            { id: 'theme', icon: Sun, label: 'Theme' },
-            { id: 'units', icon: Ruler, label: 'Units' },
-            { id: 'language', icon: Globe, label: 'Language' },
-            { id: 'dashboard', icon: Layout, label: 'Dashboard' },
-            { id: 'reminders', icon: Bell, label: 'Reminders' },
-          ].map(({ id, icon: Icon, label }) => (
-            <button
-              key={id}
-              onClick={() => setActiveTab(id as any)}
-              className={`flex-1 flex flex-col items-center gap-1 py-3 px-4 rounded-xl transition-all ${
-                activeTab === id
-                  ? 'bg-gradient-to-r from-[#1f7a8c] to-[#4ecdc4] text-white'
-                  : 'text-gray-600 hover:bg-gray-100'
-              }`}
-            >
-              <Icon className="h-5 w-5" />
-              <span className="text-xs font-medium whitespace-nowrap">{label}</span>
-            </button>
-          ))}
+      <div className="max-w-3xl mx-auto px-4 sm:px-6 pt-5 space-y-5 relative z-10">
+        {/* Horizontal Navigation Tabs */}
+        <div className="bg-white/90 backdrop-blur-md rounded-3xl p-1.5 shadow-sm border border-teal-100 flex items-center gap-1 overflow-x-auto scrollbar-none">
+          {tabs.map(({ id, label, icon: Icon }) => {
+            const active = activeTab === id;
+            return (
+              <button
+                key={id}
+                onClick={() => {
+                  triggerHaptic("light");
+                  setActiveTab(id);
+                }}
+                className={`flex-1 min-w-[90px] py-2.5 px-3 rounded-2xl flex flex-col items-center gap-1 transition-all cursor-pointer ${
+                  active
+                    ? "bg-gradient-to-r from-[#1f7a8c] to-[#4ecdc4] text-white shadow-sm font-black scale-[1.02]"
+                    : "text-slate-600 hover:bg-slate-100 font-bold text-xs"
+                }`}
+              >
+                <Icon size={16} />
+                <span className="text-[11px] whitespace-nowrap">{label}</span>
+              </button>
+            );
+          })}
         </div>
 
-        {/* Theme Settings */}
-        {activeTab === 'theme' && (
-          <div className="space-y-4">
-            <div className="bg-white rounded-3xl shadow-lg p-6">
-              <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
-                <Sun className="h-6 w-6 text-[#1f7a8c]" />
-                Appearance Theme
-              </h2>
-              <div className="space-y-3">
+        {/* Tab 1: Appearance & Theme */}
+        {activeTab === "theme" && (
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="space-y-4"
+          >
+            <div className="bg-white/95 rounded-3xl p-5 shadow-sm border border-slate-100 space-y-4">
+              <div>
+                <h2 className="text-sm font-black text-slate-900 uppercase tracking-wider flex items-center gap-2">
+                  <Sun size={18} className="text-[#1f7a8c]" />
+                  <span>Display Theme</span>
+                </h2>
+                <p className="text-xs text-slate-500 mt-0.5">
+                  Select your comfortable color mode for reading and logging.
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 {[
-                  { value: 'light', icon: Sun, label: 'Light Mode', desc: 'Bright and clean interface' },
-                  { value: 'dark', icon: Moon, label: 'Dark Mode', desc: 'Easy on the eyes at night' },
-                  { value: 'auto', icon: Monitor, label: 'Auto', desc: 'Match system preference' },
-                ].map(({ value, icon: Icon, label, desc }) => (
-                  <button
-                    key={value}
-                    onClick={() => setTheme(value as any)}
-                    className={`w-full flex items-center gap-4 p-4 rounded-2xl border-2 transition-all ${
-                      theme === value
-                        ? 'border-[#1f7a8c] bg-[#E8F5F5]'
-                        : 'border-gray-200 hover:border-gray-300'
-                    }`}
-                  >
-                    <div
-                      className={`p-3 rounded-xl ${
-                        theme === value ? 'bg-[#1f7a8c] text-white' : 'bg-gray-100 text-gray-600'
+                  { value: "light", icon: Sun, label: "Light Mode", desc: "Crisp white & teal for bright days" },
+                  { value: "dark", icon: Moon, label: "Dark Mode", desc: "Reduced glare & OLED contrast" },
+                  { value: "auto", icon: Monitor, label: "System Sync", desc: "Follows device schedule" },
+                ].map(({ value, icon: Icon, label, desc }) => {
+                  const isSelected = theme === value;
+                  return (
+                    <button
+                      key={value}
+                      onClick={() => {
+                        triggerHaptic("light");
+                        setTheme(value as any);
+                        toast.success(`Theme set to ${label}`);
+                      }}
+                      className={`p-4 rounded-3xl border-2 text-left transition-all cursor-pointer flex flex-col justify-between ${
+                        isSelected
+                          ? "border-[#1f7a8c] bg-teal-50/60 shadow-xs"
+                          : "border-slate-200/80 bg-slate-50 hover:bg-slate-100"
                       }`}
                     >
-                      <Icon className="h-6 w-6" />
-                    </div>
-                    <div className="flex-1 text-left">
-                      <p className="font-semibold text-gray-800">{label}</p>
-                      <p className="text-xs text-gray-600">{desc}</p>
-                    </div>
-                    {theme === value && (
-                      <div className="w-6 h-6 bg-[#1f7a8c] rounded-full flex items-center justify-center">
-                        <div className="w-2 h-2 bg-white rounded-full"></div>
+                      <div className="flex items-center justify-between mb-3">
+                        <div className={`p-2.5 rounded-2xl ${isSelected ? "bg-[#1f7a8c] text-white" : "bg-slate-200 text-slate-600"}`}>
+                          <Icon size={18} />
+                        </div>
+                        {isSelected && (
+                          <div className="h-5 w-5 rounded-full bg-[#1f7a8c] text-white flex items-center justify-center">
+                            <Check size={12} strokeWidth={3} />
+                          </div>
+                        )}
                       </div>
-                    )}
-                  </button>
-                ))}
+                      <div>
+                        <span className="text-xs font-black text-slate-900 block">{label}</span>
+                        <span className="text-[10px] text-slate-500 block mt-0.5">{desc}</span>
+                      </div>
+                    </button>
+                  );
+                })}
               </div>
             </div>
-          </div>
+          </motion.div>
         )}
 
-        {/* Units Settings */}
-        {activeTab === 'units' && (
-          <div className="space-y-4">
-            <div className="bg-white rounded-3xl shadow-lg p-6">
-              <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
-                <Ruler className="h-6 w-6 text-[#1f7a8c]" />
-                Measurement Units
-              </h2>
-              <div className="space-y-3">
-                {[
-                  {
-                    value: 'metric',
-                    label: 'Metric',
-                    desc: 'kg, cm, °C, ml',
-                    examples: '70 kg, 175 cm, 36.5°C',
-                  },
-                  {
-                    value: 'imperial',
-                    label: 'Imperial',
-                    desc: 'lbs, in, °F, fl oz',
-                    examples: '154 lbs, 69 in, 97.7°F',
-                  },
-                ].map(({ value, label, desc, examples }) => (
-                  <button
-                    key={value}
-                    onClick={() => setUnitSystem(value as any)}
-                    className={`w-full flex items-center gap-4 p-4 rounded-2xl border-2 transition-all ${
-                      unitSystem === value
-                        ? 'border-[#1f7a8c] bg-[#E8F5F5]'
-                        : 'border-gray-200 hover:border-gray-300'
-                    }`}
-                  >
-                    <div className="flex-1 text-left">
-                      <p className="font-semibold text-gray-800">{label}</p>
-                      <p className="text-xs text-gray-600">{desc}</p>
-                      <p className="text-xs text-[#1f7a8c] mt-1">Example: {examples}</p>
-                    </div>
-                    {unitSystem === value && (
-                      <div className="w-6 h-6 bg-[#1f7a8c] rounded-full flex items-center justify-center">
-                        <div className="w-2 h-2 bg-white rounded-full"></div>
-                      </div>
-                    )}
-                  </button>
-                ))}
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Language Settings */}
-        {activeTab === 'language' && (
-          <div className="space-y-4">
-            <div className="bg-white rounded-3xl shadow-lg p-6">
-              <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
-                <Globe className="h-6 w-6 text-[#1f7a8c]" />
-                Language / Èdè / Asụsụ / Harshe
-              </h2>
-              <div className="space-y-3">
-                {supportedLanguages.map(({ code, name, flag }) => (
-                  <button
-                    key={code}
-                    onClick={() => setLanguage(code as any)}
-                    className={`w-full flex items-center gap-4 p-4 rounded-2xl border-2 transition-all ${
-                      language === code
-                        ? 'border-[#1f7a8c] bg-[#E8F5F5]'
-                        : 'border-gray-200 hover:border-gray-300'
-                    }`}
-                  >
-                    <span className="text-3xl">{flag}</span>
-                    <div className="flex-1 text-left">
-                      <p className="font-semibold text-gray-800">{name}</p>
-                    </div>
-                    {language === code && (
-                      <div className="w-6 h-6 bg-[#1f7a8c] rounded-full flex items-center justify-center">
-                        <div className="w-2 h-2 bg-white rounded-full"></div>
-                      </div>
-                    )}
-                  </button>
-                ))}
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Dashboard Customization */}
-        {activeTab === 'dashboard' && (
-          <div className="space-y-4">
-            <div className="bg-white rounded-3xl shadow-lg p-6">
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-xl font-bold text-gray-800 flex items-center gap-2">
-                  <Layout className="h-6 w-6 text-[#1f7a8c]" />
-                  Customize Dashboard
+        {/* Tab 2: Food & Cultural Swallows */}
+        {activeTab === "dietary" && (
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="space-y-4"
+          >
+            {/* Preferred Swallow Staple */}
+            <div className="bg-white/95 rounded-3xl p-5 shadow-sm border border-slate-100 space-y-4">
+              <div>
+                <h2 className="text-sm font-black text-slate-900 uppercase tracking-wider flex items-center gap-2">
+                  <ChefHat size={18} className="text-[#1f7a8c]" />
+                  <span>Preferred Swallow Base</span>
                 </h2>
+                <p className="text-xs text-slate-500 mt-0.5">
+                  Choose your default staple for meals and swallow portion guidance.
+                </p>
+              </div>
+
+              <div className="grid grid-cols-2 gap-2.5">
+                {[
+                  { id: "unripe_plantain", name: "Unripe Plantain Flour", badge: "Low GI (-35% Spike)", bg: "bg-emerald-50 text-emerald-800 border-emerald-200" },
+                  { id: "oat_swallow", name: "Oat Swallow + Psyllium", badge: "High Beta-Glucan", bg: "bg-teal-50 text-teal-800 border-teal-200" },
+                  { id: "pounded_yam", name: "Pounded Yam (Moderate)", badge: "Traditional Fuel", bg: "bg-amber-50 text-amber-800 border-amber-200" },
+                  { id: "yellow_garri", name: "Yellow Garri / Eba", badge: "Palm Oil Infused", bg: "bg-orange-50 text-orange-800 border-orange-200" },
+                ].map((item) => {
+                  const selected = swallowPreference === item.id;
+                  return (
+                    <button
+                      key={item.id}
+                      onClick={() => {
+                        triggerHaptic("light");
+                        setSwallowPreference(item.id);
+                      }}
+                      className={`p-3 rounded-2xl border text-left transition-all cursor-pointer ${
+                        selected
+                          ? "border-[#1f7a8c] bg-teal-50/70 shadow-xs ring-1 ring-[#1f7a8c]"
+                          : "border-slate-200/80 bg-slate-50 hover:bg-slate-100"
+                      }`}
+                    >
+                      <div className="flex items-center justify-between mb-1">
+                        <span className="text-xs font-black text-slate-900">{item.name}</span>
+                        {selected && <Check size={14} className="text-[#1f7a8c] font-black" />}
+                      </div>
+                      <span className={`text-[9px] font-extrabold px-2 py-0.5 rounded-md border ${item.bg}`}>
+                        {item.badge}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Allergy Filters */}
+            <div className="bg-white/95 rounded-3xl p-5 shadow-sm border border-slate-100 space-y-4">
+              <div>
+                <h2 className="text-sm font-black text-slate-900 uppercase tracking-wider flex items-center gap-2">
+                  <ShieldAlert size={18} className="text-rose-600" />
+                  <span>Allergies & Intolerances</span>
+                </h2>
+                <p className="text-xs text-slate-500 mt-0.5">
+                  Select ingredients to filter out from recipe recommendations.
+                </p>
+              </div>
+
+              <div className="flex flex-wrap gap-2">
+                {[
+                  "None",
+                  "Peanuts (Groundnut)",
+                  "Shellfish / Crayfish",
+                  "Lactose / Dairy",
+                  "Egg",
+                  "Gluten / Wheat",
+                  "Soy",
+                ].map((allergy) => {
+                  const isChecked = allergies.includes(allergy);
+                  return (
+                    <button
+                      key={allergy}
+                      onClick={() => toggleAllergy(allergy)}
+                      className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer border ${
+                        isChecked
+                          ? "bg-rose-50 border-rose-300 text-rose-800 shadow-2xs font-extrabold"
+                          : "bg-slate-50 border-slate-200 text-slate-600 hover:bg-slate-100"
+                      }`}
+                    >
+                      {isChecked ? "✓ " : "+ "}
+                      {allergy}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            <Button
+              onClick={handleSaveDietary}
+              className="w-full py-6 rounded-2xl bg-gradient-to-r from-[#1f7a8c] to-[#4ecdc4] text-white font-black text-sm shadow-md cursor-pointer active:scale-98"
+            >
+              Save Food Preferences
+            </Button>
+          </motion.div>
+        )}
+
+        {/* Tab 3: Clinical Targets & Coaching */}
+        {activeTab === "clinical" && (
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="space-y-4"
+          >
+            <div className="bg-white/95 rounded-3xl p-5 shadow-sm border border-slate-100 space-y-4">
+              <div>
+                <h2 className="text-sm font-black text-slate-900 uppercase tracking-wider flex items-center gap-2">
+                  <ShieldCheck size={18} className="text-emerald-600" />
+                  <span>Primary Metabolic Focus</span>
+                </h2>
+                <p className="text-xs text-slate-500 mt-0.5">
+                  Tailors AI meal scores, glycemic buffers, and morning dawn protocols.
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                {[
+                  { id: "glucose_control", label: "Glycemic Stability (Type 2 Diabetes / Pre-Diabetes)", icon: ShieldCheck, color: "text-emerald-700 bg-emerald-50" },
+                  { id: "blood_pressure", label: "Blood Pressure & Sodium Defense (DASH Protocol)", icon: Heart, color: "text-rose-700 bg-rose-50" },
+                  { id: "fat_loss", label: "Metabolic Fat Loss & Caloric Deficit", icon: Flame, color: "text-amber-700 bg-amber-50" },
+                  { id: "energy_focus", label: "All-Day Energy & Cognitive Clarity", icon: Zap, color: "text-purple-700 bg-purple-50" },
+                ].map((goal) => {
+                  const selected = primaryGoal === goal.id;
+                  const Icon = goal.icon;
+                  return (
+                    <button
+                      key={goal.id}
+                      onClick={() => {
+                        triggerHaptic("light");
+                        setPrimaryGoal(goal.id);
+                      }}
+                      className={`p-3.5 rounded-2xl border text-left transition-all cursor-pointer flex items-start gap-3 ${
+                        selected
+                          ? "border-[#1f7a8c] bg-teal-50/70 shadow-xs ring-1 ring-[#1f7a8c]"
+                          : "border-slate-200/80 bg-slate-50 hover:bg-slate-100"
+                      }`}
+                    >
+                      <div className={`p-2 rounded-xl shrink-0 ${goal.color}`}>
+                        <Icon size={16} />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <span className="text-xs font-black text-slate-900 leading-snug block">
+                          {goal.label}
+                        </span>
+                      </div>
+                      {selected && <Check size={16} className="text-[#1f7a8c] shrink-0 font-black" />}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Avo Coaching Style */}
+            <div className="bg-white/95 rounded-3xl p-5 shadow-sm border border-slate-100 space-y-4">
+              <div>
+                <h2 className="text-sm font-black text-slate-900 uppercase tracking-wider flex items-center gap-2">
+                  <Sparkles size={18} className="text-teal-600" />
+                  <span>Avo AI Coach Style</span>
+                </h2>
+                <p className="text-xs text-slate-500 mt-0.5">
+                  Choose how your AI health coach interacts with you during meal analysis.
+                </p>
+              </div>
+
+              <div className="grid grid-cols-3 gap-2 text-center text-xs">
+                {[
+                  { id: "friendly", label: "Warm & Encouraging 🤗" },
+                  { id: "clinical", label: "Clinical & Direct 🔬" },
+                  { id: "strict", label: "High Discipline 💪" },
+                ].map((style) => (
+                  <button
+                    key={style.id}
+                    onClick={() => {
+                      triggerHaptic("light");
+                      setAvoPersonality(style.id);
+                    }}
+                    className={`p-3 rounded-2xl border font-bold transition-all cursor-pointer ${
+                      avoPersonality === style.id
+                        ? "bg-[#1f7a8c] text-white border-[#1f7a8c] shadow-xs"
+                        : "bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100"
+                    }`}
+                  >
+                    {style.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <Button
+              onClick={handleSaveDietary}
+              className="w-full py-6 rounded-2xl bg-gradient-to-r from-[#1f7a8c] to-[#4ecdc4] text-white font-black text-sm shadow-md cursor-pointer active:scale-98"
+            >
+              Save Health Targets
+            </Button>
+          </motion.div>
+        )}
+
+        {/* Tab 4: Language & Units */}
+        {activeTab === "language" && (
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="space-y-4"
+          >
+            {/* Units System */}
+            <div className="bg-white/95 rounded-3xl p-5 shadow-sm border border-slate-100 space-y-4">
+              <div>
+                <h2 className="text-sm font-black text-slate-900 uppercase tracking-wider flex items-center gap-2">
+                  <Ruler size={18} className="text-[#1f7a8c]" />
+                  <span>Measurement Units</span>
+                </h2>
+                <p className="text-xs text-slate-500 mt-0.5">
+                  Choose how your weight, height, liquids, and temperatures are formatted.
+                </p>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                {[
+                  { value: "metric", label: "Metric (Standard)", desc: "kg, cm, ml, °C" },
+                  { value: "imperial", label: "Imperial (US/UK)", desc: "lbs, inches, fl oz, °F" },
+                ].map(({ value, label, desc }) => {
+                  const isSelected = unitSystem === value;
+                  return (
+                    <button
+                      key={value}
+                      onClick={() => {
+                        triggerHaptic("light");
+                        setUnitSystem(value as any);
+                        toast.success(`Units set to ${label}`);
+                      }}
+                      className={`p-4 rounded-3xl border-2 text-left transition-all cursor-pointer ${
+                        isSelected
+                          ? "border-[#1f7a8c] bg-teal-50/70 shadow-xs"
+                          : "border-slate-200/80 bg-slate-50 hover:bg-slate-100"
+                      }`}
+                    >
+                      <div className="flex items-center justify-between mb-1">
+                        <span className="text-xs font-black text-slate-900">{label}</span>
+                        {isSelected && <Check size={14} className="text-[#1f7a8c] font-black" />}
+                      </div>
+                      <span className="text-[10px] text-slate-500 font-bold">{desc}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Language Selector */}
+            <div className="bg-white/95 rounded-3xl p-5 shadow-sm border border-slate-100 space-y-4">
+              <div>
+                <h2 className="text-sm font-black text-slate-900 uppercase tracking-wider flex items-center gap-2">
+                  <Globe size={18} className="text-[#1f7a8c]" />
+                  <span>Application Language</span>
+                </h2>
+                <p className="text-xs text-slate-500 mt-0.5">
+                  Select your regional African or international language.
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                {supportedLanguages.map(({ code, name, flag }) => {
+                  const isSelected = language === code;
+                  return (
+                    <button
+                      key={code}
+                      onClick={() => {
+                        triggerHaptic("light");
+                        setLanguage(code as any);
+                        toast.success(`Language set to ${name}`);
+                      }}
+                      className={`p-3 rounded-2xl border transition-all cursor-pointer flex items-center justify-between ${
+                        isSelected
+                          ? "bg-teal-50 border-teal-400 text-teal-900 font-black shadow-xs ring-1 ring-teal-400"
+                          : "bg-slate-50 hover:bg-slate-100 border-slate-200 text-slate-700 font-bold text-xs"
+                      }`}
+                    >
+                      <div className="flex items-center gap-2.5">
+                        <span className="text-xl">{flag}</span>
+                        <span className="text-xs">{name}</span>
+                      </div>
+                      {isSelected && <Check size={14} className="text-teal-700 stroke-[3]" />}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          </motion.div>
+        )}
+
+        {/* Tab 5: Dashboard Layout */}
+        {activeTab === "dashboard" && (
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="space-y-4"
+          >
+            <div className="bg-white/95 rounded-3xl p-5 shadow-sm border border-slate-100 space-y-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h2 className="text-sm font-black text-slate-900 uppercase tracking-wider flex items-center gap-2">
+                    <Layout size={18} className="text-[#1f7a8c]" />
+                    <span>Home Dashboard Layout</span>
+                  </h2>
+                  <p className="text-xs text-slate-500 mt-0.5">
+                    Drag to reorder cards or toggle card visibility.
+                  </p>
+                </div>
                 <button
                   onClick={() => {
                     resetToDefault();
                     setLocalWidgets(widgets);
+                    triggerHaptic("light");
+                    toast.success("Dashboard reset to default");
                   }}
-                  className="flex items-center gap-2 text-sm text-red-600 hover:text-red-700"
+                  className="flex items-center gap-1 text-[11px] font-bold text-rose-600 hover:text-rose-700 p-1.5 rounded-xl hover:bg-rose-50"
                 >
-                  <RotateCcw className="h-4 w-4" />
-                  Reset
+                  <RotateCcw size={12} />
+                  <span>Reset</span>
                 </button>
               </div>
 
-              <p className="text-sm text-gray-600 mb-4">
-                Drag to reorder • Toggle visibility • Changes apply to home screen
-              </p>
-
-              <div className="space-y-2 mb-4">
+              <div className="space-y-2">
                 {localWidgets.map((widget) => (
                   <div
                     key={widget.id}
@@ -282,25 +602,28 @@ export default function Personalization() {
                     onDragStart={() => handleDragStart(widget.id)}
                     onDragOver={(e) => handleDragOver(e, widget.id)}
                     onDragEnd={handleDragEnd}
-                    className={`flex items-center gap-3 p-4 rounded-2xl border-2 transition-all cursor-move ${
+                    className={`flex items-center gap-3 p-3.5 rounded-2xl border transition-all cursor-move ${
                       draggedWidget === widget.id
-                        ? 'border-[#1f7a8c] bg-[#E8F5F5] opacity-50'
-                        : 'border-gray-200 hover:border-gray-300'
+                        ? "border-[#1f7a8c] bg-teal-50 opacity-60"
+                        : "border-slate-200/80 bg-slate-50 hover:bg-slate-100"
                     }`}
                   >
-                    <GripVertical className="h-5 w-5 text-gray-400" />
-                    <div className="flex-1">
-                      <p className="font-semibold text-gray-800">{widget.name}</p>
+                    <GripVertical size={16} className="text-slate-400" />
+                    <div className="flex-1 min-w-0">
+                      <span className="text-xs font-bold text-slate-800 truncate block">
+                        {widget.name}
+                      </span>
                     </div>
                     <button
                       onClick={() => toggleWidgetVisibility(widget.id)}
-                      className={`p-2 rounded-lg transition ${
+                      className={`p-1.5 rounded-xl transition-all ${
                         widget.visible
-                          ? 'bg-green-100 text-green-700'
-                          : 'bg-gray-100 text-gray-400'
+                          ? "bg-emerald-100 text-emerald-800"
+                          : "bg-slate-200 text-slate-400"
                       }`}
+                      title={widget.visible ? "Hide on Home" : "Show on Home"}
                     >
-                      {widget.visible ? <Eye className="h-5 w-5" /> : <EyeOff className="h-5 w-5" />}
+                      {widget.visible ? <Eye size={14} /> : <EyeOff size={14} />}
                     </button>
                   </div>
                 ))}
@@ -308,34 +631,13 @@ export default function Personalization() {
 
               <Button
                 onClick={handleSaveWidgets}
-                className="w-full bg-gradient-to-r from-[#1f7a8c] to-[#4ecdc4] text-white"
+                className="w-full py-6 rounded-2xl bg-gradient-to-r from-[#1f7a8c] to-[#4ecdc4] text-white font-black text-sm shadow-md cursor-pointer active:scale-98"
               >
-                <Save className="h-4 w-4 mr-2" />
+                <Save size={16} className="mr-1.5" />
                 Save Dashboard Layout
               </Button>
             </div>
-          </div>
-        )}
-
-        {/* Reminders Settings */}
-        {activeTab === 'reminders' && (
-          <div className="space-y-4">
-            <div className="bg-white rounded-3xl shadow-lg p-6">
-              <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
-                <Bell className="h-6 w-6 text-[#1f7a8c]" />
-                Custom Reminders
-              </h2>
-              <p className="text-sm text-gray-600 mb-4">
-                Manage reminder times for each health tracker
-              </p>
-              <Button
-                onClick={() => navigate('/reminders')}
-                className="w-full bg-gradient-to-r from-[#1f7a8c] to-[#4ecdc4] text-white"
-              >
-                Manage Reminders
-              </Button>
-            </div>
-          </div>
+          </motion.div>
         )}
       </div>
     </div>
