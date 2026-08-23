@@ -40,6 +40,7 @@ import { SkeletonGoalList } from "../components/SkeletonLoader";
 import { getGoals, createGoal, updateGoal, deleteGoal } from "../../lib/api";
 import AmbientBackground from "../components/AmbientBackground";
 import Mascot from "../components/Mascot";
+import MascotEmptyState from "../components/MascotEmptyState";
 import { toast } from "sonner";
 import { triggerConfetti, triggerHaptic } from "../utils/celebration";
 
