@@ -28,6 +28,7 @@ import CircadianArc from "../components/CircadianArc";
 import WhatsAppConnectDialog from "../components/WhatsAppConnectDialog";
 import CGMSensorVisualizer from "../components/CGMSensorVisualizer";
 import QuickLogShelf, { QuickFoodItem } from "../components/QuickLogShelf";
+import DailyGoalSlider from "../components/DailyGoalSlider";
 import { useSmartNudges } from "../hooks/useSmartNudges";
 import ModeToggle from "../components/ModeToggle";
 import LocationSelector from "../components/LocationSelector";
@@ -670,82 +671,26 @@ export default function Home() {
             transition={{ duration: 0.25 }}
             className="space-y-5"
           >
-            {/* Daily Fuel Gauge Card */}
-            <div className="bg-gradient-to-br from-white via-[#F4FBFA] to-[#E2F4F3] rounded-3xl shadow-lg border border-teal-100/80 p-5 sm:p-6">
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-xs font-bold uppercase tracking-wider text-[#1f7a8c]">
-                  {t('home.todaysCalories')}
-                </span>
-                <span className="text-xs font-extrabold px-2 py-0.5 rounded-full bg-teal-100 text-teal-800">
-                  {caloriesConsumed} / {caloriesTarget} kcal
-                </span>
-              </div>
-
-              {/* Clickable SVG Gauge */}
-              <button 
-                onClick={() => setShowGaugeDetails(true)}
-                className="w-full hover:scale-[1.02] active:scale-[0.99] transition-transform duration-200 focus:outline-none rounded-2xl cursor-pointer"
-                aria-label={`Daily nutrition progress: ${animatedPercentage}% of goal achieved. Tap for detailed breakdown.`}
-              >
-                <div className="relative flex flex-col items-center justify-center my-2">
-                  <svg className="w-48 h-28" viewBox="0 0 200 115">
-                    <path
-                      d="M 30 95 A 70 70 0 0 1 170 95"
-                      fill="none"
-                      stroke="#e5e7eb"
-                      strokeWidth="16"
-                      strokeLinecap="round"
-                    />
-                    <path
-                      d="M 30 95 A 70 70 0 0 1 170 95"
-                      fill="none"
-                      stroke="url(#gaugeGradient)"
-                      strokeWidth="16"
-                      strokeLinecap="round"
-                      strokeDasharray={`${animatedProgress * 2.2} 1000`}
-                      style={{
-                        transition: "stroke-dasharray 1.2s cubic-bezier(0.4, 0, 0.2, 1)",
-                      }}
-                    />
-                    <defs>
-                      <linearGradient id="gaugeGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                        <stop offset="0%" stopColor="#1f7a8c" />
-                        <stop offset="100%" stopColor="#4ecdc4" />
-                      </linearGradient>
-                    </defs>
-                  </svg>
-                  
-                  <div className="absolute top-8 flex flex-col items-center">
-                    <div className="text-[#1f7a8c] text-2xl font-black">
-                      {animatedPercentage}%
-                    </div>
-                    <div className="text-[10px] text-gray-500 uppercase font-semibold">{t('home.ofDailyGoal')}</div>
-                    <div className="text-[10px] text-teal-700 font-bold mt-0.5 bg-teal-50 px-2 py-0.5 rounded-full">
-                      {t('home.tapForDetails')} 📊
-                    </div>
-                  </div>
-                </div>
-              </button>
-
-              {/* Quick Macro Breakdown Row */}
-              <div className="grid grid-cols-3 gap-2 pt-3 border-t border-teal-100 text-center">
-                <div className="bg-white/80 rounded-2xl p-2 shadow-xs border border-teal-50">
-                  <span className="text-[10px] text-gray-500 font-bold block">Protein</span>
-                  <span className="text-xs font-extrabold text-blue-700">{proteinConsumed}g</span>
-                  <span className="text-[9px] text-gray-400 block">/ {proteinTarget}g</span>
-                </div>
-                <div className="bg-white/80 rounded-2xl p-2 shadow-xs border border-teal-50">
-                  <span className="text-[10px] text-gray-500 font-bold block">Carbs</span>
-                  <span className="text-xs font-extrabold text-emerald-700">{carbsConsumed}g</span>
-                  <span className="text-[9px] text-gray-400 block">/ {carbsTarget}g</span>
-                </div>
-                <div className="bg-white/80 rounded-2xl p-2 shadow-xs border border-teal-50">
-                  <span className="text-[10px] text-gray-500 font-bold block">Fats</span>
-                  <span className="text-xs font-extrabold text-purple-700">{fatsConsumed}g</span>
-                  <span className="text-[9px] text-gray-400 block">/ {fatsTarget}g</span>
-                </div>
-              </div>
-            </div>
+            {/* Daily Goal / Metabolic Score Card Slider (Right-to-Left) */}
+            <DailyGoalSlider
+              caloriesConsumed={caloriesConsumed}
+              caloriesTarget={caloriesTarget}
+              animatedPercentage={animatedPercentage}
+              animatedProgress={animatedProgress}
+              proteinConsumed={proteinConsumed}
+              proteinTarget={proteinTarget}
+              carbsConsumed={carbsConsumed}
+              carbsTarget={carbsTarget}
+              fatsConsumed={fatsConsumed}
+              fatsTarget={fatsTarget}
+              waterGlasses={waterGlasses}
+              waterGoal={waterGoal}
+              trackingStreak={trackingStreak}
+              todayMealsCount={todayLogs.length}
+              onDrinkWater={handleWaterIncrease}
+              onOpenGaugeDetails={() => setShowGaugeDetails(true)}
+              t={t}
+            />
 
             {/* 1-Tap Quick-Log Shelf with Voice AI */}
             <div id="tour-quick-shelf" className="my-2">
