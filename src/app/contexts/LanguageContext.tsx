@@ -18,7 +18,7 @@ const translations: Translations = {
   'nav.logs':    { en: 'Logs',    es: 'Registros', fr: 'Journaux',  yo: 'Àkọsílẹ̀',   ig: 'Ndekọ',      ha: 'Bayanai', pcm: 'Logs' },
   'nav.health':  { en: 'Health',  es: 'Salud',     fr: 'Santé',     yo: 'Ìlera',     ig: 'Ahụike',     ha: 'Lafiya',  pcm: 'Health' },
   'nav.recipe':  { en: 'Recipe',  es: 'Receta',    fr: 'Recette',   yo: 'Àdàpọ̀',     ig: 'Uzọ nri',    ha: 'Girke',   pcm: 'Recipe' },
-  'nav.profile': { en: 'Profile', es: 'Perfil',    fr: 'Profil',    yo: 'Profaili',  ig: 'Profaịlụ',   ha: 'Bayani',  pcm: 'My Profile' },
+  'nav.profile': { en: 'Me',      es: 'Yo',        fr: 'Moi',       yo: 'Èmi',       ig: 'Mụ',         ha: 'Ni',      pcm: 'Me' },
   // Common actions
   'common.save':   { en: 'Save',   es: 'Guardar',  fr: 'Enregistrer', yo: 'Fipamọ́',  ig: 'Chekwaa',  ha: 'Ajiye',   pcm: 'Save' },
   'common.cancel': { en: 'Cancel', es: 'Cancelar', fr: 'Annuler',     yo: 'Fagilé',  ig: 'Kagbuo',   ha: 'Soke',    pcm: 'Cancel' },
