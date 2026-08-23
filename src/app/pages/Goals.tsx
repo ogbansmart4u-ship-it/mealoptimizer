@@ -160,12 +160,52 @@ export default function Goals() {
   });
 
   useEffect(() => {
+    // 1. Check local storage for instant responsive display
+    try {
+      const cached = localStorage.getItem("user_goals_data");
+      if (cached) {
+        const parsed = JSON.parse(cached);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          setGoals(parsed);
+          setIsLoading(false);
+        }
+      }
+    } catch {
+      /* ignore */
+    }
+
+    // 2. Fetch from API or initialize defaults
     getGoals()
       .then((data) => {
         if (Array.isArray(data) && data.length > 0) {
           setGoals(data);
+          localStorage.setItem("user_goals_data", JSON.stringify(data));
         } else {
-          // Initialize with clinical starter goals
+          setGoals((current) => {
+            if (current.length > 0) return current;
+            const defaults: Goal[] = CLINICAL_GOAL_PRESETS.slice(0, 3).map((p, idx) => ({
+              id: `goal-init-${idx}`,
+              title: p.title,
+              category: p.category,
+              targetValue: p.targetValue,
+              currentValue: p.currentValue,
+              initialValue: p.initialValue || p.currentValue,
+              unit: p.unit,
+              deadline: new Date(Date.now() + p.deadlineOffsetDays * 86400000).toISOString().split("T")[0],
+              status: "active",
+              icon: p.icon,
+              color: p.color,
+              bgColor: p.bgColor,
+              clinicalPurpose: p.clinicalPurpose,
+            }));
+            localStorage.setItem("user_goals_data", JSON.stringify(defaults));
+            return defaults;
+          });
+        }
+      })
+      .catch(() => {
+        setGoals((current) => {
+          if (current.length > 0) return current;
           const defaults: Goal[] = CLINICAL_GOAL_PRESETS.slice(0, 3).map((p, idx) => ({
             id: `goal-init-${idx}`,
             title: p.title,
@@ -181,10 +221,10 @@ export default function Goals() {
             bgColor: p.bgColor,
             clinicalPurpose: p.clinicalPurpose,
           }));
-          setGoals(defaults);
-        }
+          localStorage.setItem("user_goals_data", JSON.stringify(defaults));
+          return defaults;
+        });
       })
-      .catch(() => {})
       .finally(() => setIsLoading(false));
   }, []);
 
@@ -198,8 +238,8 @@ export default function Goals() {
       return Math.max(0, Math.min(100, Math.round((lostSoFar / totalToLose) * 100)));
     }
     // Normal goal: e.g. Protein, Water, Walks
-    if (targetValue <= 0) return 0;
-    return Math.max(0, Math.min(100, Math.round((currentValue / targetValue) * 100)));
+    if (targetValue <= 0) return 100;
+    return Math.min(100, Math.round((currentValue / targetValue) * 100));
   };
 
   const handleApplyPreset = (preset: typeof CLINICAL_GOAL_PRESETS[0]) => {
@@ -228,7 +268,7 @@ export default function Goals() {
       lifestyle: { icon: "💪", color: "#f59e0b", bgColor: "#fffbeb" },
     };
 
-    const config = catConfigs[newGoalForm.category];
+    const config = catConfigs[newGoalForm.category] || catConfigs.nutrition;
     const target = parseFloat(newGoalForm.targetValue);
     const current = parseFloat(newGoalForm.currentValue) || 0;
 
@@ -248,24 +288,30 @@ export default function Goals() {
       clinicalPurpose: newGoalForm.clinicalPurpose || "Personal metabolic optimization target.",
     };
 
-    try {
-      await createGoal(goalPayload);
-      setGoals((prev) => [goalPayload, ...prev]);
-      triggerConfetti("burst");
-      toast.success("Goal Created Successfully! 🎯");
-      setShowAddGoal(false);
-      setNewGoalForm({
-        title: "",
-        category: "nutrition",
-        targetValue: "",
-        currentValue: "",
-        unit: "g/day",
-        deadline: new Date(Date.now() + 30 * 86400000).toISOString().split("T")[0],
-        clinicalPurpose: "",
-      });
-    } catch {
-      toast.error("Failed to save goal");
-    }
+    // 1. Optimistic Local Persistence (Guaranteed Instant Save)
+    const updatedGoals = [goalPayload, ...goals];
+    setGoals(updatedGoals);
+    localStorage.setItem("user_goals_data", JSON.stringify(updatedGoals));
+    
+    triggerConfetti("burst");
+    triggerHaptic("success");
+    toast.success("Goal Created Successfully! 🎯");
+    setShowAddGoal(false);
+    
+    setNewGoalForm({
+      title: "",
+      category: "nutrition",
+      targetValue: "",
+      currentValue: "",
+      unit: "g/day",
+      deadline: new Date(Date.now() + 30 * 86400000).toISOString().split("T")[0],
+      clinicalPurpose: "",
+    });
+
+    // 2. Background Server Sync
+    createGoal(goalPayload).catch(() => {
+      console.log("Goal preserved in local vault");
+    });
   };
 
   const handleUpdateProgressSubmit = async () => {
@@ -283,36 +329,39 @@ export default function Goals() {
       status: isCompleted ? "completed" : "active",
     };
 
-    setGoals((prev) => prev.map((g) => (g.id === selectedGoal.id ? updated : g)));
-    try {
-      await updateGoal(selectedGoal.id, updated);
-      triggerHaptic(isCompleted ? "success" : "medium");
+    const updatedGoals = goals.map((g) => (g.id === selectedGoal.id ? updated : g));
+    setGoals(updatedGoals);
+    localStorage.setItem("user_goals_data", JSON.stringify(updatedGoals));
 
-      if (isCompleted) {
-        setCelebrationMessage(`🎉 Goal Achieved: ${selectedGoal.title}! You earned +100 XP!`);
-        setShowCelebration(true);
-        triggerConfetti("cannon");
-      } else {
-        toast.success(`Progress updated! ${newCurrent} ${selectedGoal.unit}`);
-      }
-      setShowUpdateProgress(false);
-      setSelectedGoal(null);
-      setProgressDelta("");
-    } catch {
-      toast.error("Failed to update goal progress");
+    triggerHaptic(isCompleted ? "success" : "medium");
+
+    if (isCompleted) {
+      setCelebrationMessage(`🎉 Goal Achieved: ${selectedGoal.title}! You earned +100 XP!`);
+      setShowCelebration(true);
+      triggerConfetti("cannon");
+    } else {
+      toast.success(`Progress updated! ${newCurrent} ${selectedGoal.unit}`);
     }
+    setShowUpdateProgress(false);
+    setSelectedGoal(null);
+    setProgressDelta("");
+
+    // Background server sync
+    updateGoal(selectedGoal.id, updated).catch(() => {});
   };
 
   const handleDeleteGoal = async (id: string, e?: React.MouseEvent) => {
     e?.stopPropagation();
     if (!confirm("Are you sure you want to delete this goal?")) return;
-    try {
-      await deleteGoal(id);
-      setGoals((prev) => prev.filter((g) => g.id !== id));
-      toast.success("Goal deleted");
-    } catch {
-      toast.error("Failed to delete goal");
-    }
+    
+    const updatedGoals = goals.filter((g) => g.id !== id);
+    setGoals(updatedGoals);
+    localStorage.setItem("user_goals_data", JSON.stringify(updatedGoals));
+    triggerHaptic("light");
+    toast.success("Goal deleted");
+
+    // Background server sync
+    deleteGoal(id).catch(() => {});
   };
 
   const filteredGoals = useMemo(() => {
