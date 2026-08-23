@@ -62,6 +62,7 @@ import { uploadUserAvatar } from "../../lib/avatarStorage";
 import { getSubscriptionStatus } from "../../lib/payment";
 import { toast } from "sonner";
 import WhatsAppConnectDialog from "../components/WhatsAppConnectDialog";
+import GoogleTranslateWidget from "../components/GoogleTranslateWidget";
 
 export default function Profile() {
   const navigate = useNavigate();
@@ -784,6 +785,11 @@ export default function Profile() {
                     </button>
                   );
                 })}
+              </div>
+
+              {/* Google Universal Translate Element */}
+              <div className="pt-2 border-t border-slate-100">
+                <GoogleTranslateWidget />
               </div>
             </DialogContent>
           </Dialog>

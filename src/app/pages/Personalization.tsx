@@ -35,6 +35,7 @@ import { useLanguage, supportedLanguages } from "../contexts/LanguageContext";
 import { useDashboard, DashboardWidget } from "../contexts/DashboardContext";
 import { Button } from "../components/ui/button";
 import AmbientBackground from "../components/AmbientBackground";
+import GoogleTranslateWidget from "../components/GoogleTranslateWidget";
 import { toast } from "sonner";
 import { triggerConfetti, triggerHaptic } from "../utils/celebration";
 import { motion, AnimatePresence } from "motion/react";
@@ -557,6 +558,11 @@ export default function Personalization() {
                     </button>
                   );
                 })}
+              </div>
+
+              {/* Google Universal Translate Element */}
+              <div className="pt-3 border-t border-slate-100">
+                <GoogleTranslateWidget />
               </div>
             </div>
           </motion.div>
