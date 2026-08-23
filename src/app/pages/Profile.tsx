@@ -63,6 +63,7 @@ import { getSubscriptionStatus } from "../../lib/payment";
 import { toast } from "sonner";
 import WhatsAppConnectDialog from "../components/WhatsAppConnectDialog";
 import GoogleTranslateWidget from "../components/GoogleTranslateWidget";
+import MedicalDisclaimerFooter from "../components/MedicalDisclaimerFooter";
 
 export default function Profile() {
   const navigate = useNavigate();
@@ -928,8 +929,8 @@ export default function Profile() {
             <ShieldCheck className="h-3.5 w-3.5 text-teal-600" />
             <span>MealOptimizer v3.0 • Clinical African Metabolic AI</span>
           </div>
-          <p className="text-[10px]">Encrypted & Protected with Supabase HIPAA-Compliant Architecture</p>
-        </div>
+        {/* Medical Governance & Disclaimer Footer */}
+        <MedicalDisclaimerFooter />
       </div>
 
       <BottomNav activeTab="profile" />

@@ -17,6 +17,7 @@ import { VoiceInput } from './VoiceInput';
 import { TemplateManager } from './TemplateManager';
 import MealOptimizingLoader from './MealOptimizingLoader';
 import { celebrate } from './celebrate';
+import VisualPortionEstimator, { PortionTier } from './VisualPortionEstimator';
 
 type MealType = 'breakfast' | 'lunch' | 'dinner' | 'snack';
 
@@ -64,6 +65,22 @@ export default function AddMealLog({ isOpen, onClose, onSave, selectedDate }: Ad
 
   // Active medications, for food-interaction flags
   const [activeMeds, setActiveMeds] = useState<string[]>([]);
+  const [portionTier, setPortionTier] = useState<PortionTier>('medium');
+
+  const handlePortionSelect = (tier: PortionTier, grams: number, carbs: number) => {
+    setPortionTier(tier);
+    const caloriesEst = Math.round(carbs * 4 + 18 * 4 + 10 * 9);
+    const proteinEst = tier === 'small' ? 14 : tier === 'medium' ? 24 : 36;
+    const fatsEst = tier === 'small' ? 8 : tier === 'medium' ? 14 : 22;
+
+    setFormData((prev) => ({
+      ...prev,
+      carbs: String(carbs),
+      calories: String(caloriesEst),
+      protein: String(proteinEst),
+      fats: String(fatsEst),
+    }));
+  };
   useEffect(() => {
     if (!isOpen) return;
     getMedications()
@@ -573,6 +590,12 @@ export default function AddMealLog({ isOpen, onClose, onSave, selectedDate }: Ad
                     </div>
                   )}
                 </div>
+
+                {/* Visual Portion Estimator */}
+                <VisualPortionEstimator
+                  selectedTier={portionTier}
+                  onSelectTier={handlePortionSelect}
+                />
 
                 {/* Nutrition Grid */}
                 <div className="grid grid-cols-2 gap-3">
