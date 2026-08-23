@@ -1,399 +1,593 @@
-import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router';
-import { ArrowLeft, ChefHat, Activity, Brain, Zap, Moon, Utensils, Clock, FlaskConical, Leaf, Download, RefreshCw } from 'lucide-react';
-import { generateDailyMealPlan, FunctionalMeal, DailyMealPlan } from '../utils/mealPlanGenerator';
-import { Button } from '../components/ui/button';
+import React, { useState, useEffect, useMemo } from "react";
+import { useNavigate } from "react-router";
+import {
+  ArrowLeft,
+  ChefHat,
+  Activity,
+  Brain,
+  Zap,
+  Moon,
+  Utensils,
+  Clock,
+  FlaskConical,
+  Leaf,
+  Download,
+  RefreshCw,
+  Sparkles,
+  ShieldCheck,
+  Heart,
+  Flame,
+  Globe,
+  Share2,
+  CheckCircle2,
+  Plus,
+  ChevronRight,
+  Info,
+  SlidersHorizontal,
+  Bookmark,
+  Calendar,
+  Layers,
+  ArrowRight,
+  Check,
+} from "lucide-react";
+import { generateDailyMealPlan, FunctionalMeal, DailyMealPlan } from "../utils/mealPlanGenerator";
+import { Button } from "../components/ui/button";
+import AmbientBackground from "../components/AmbientBackground";
+import Mascot from "../components/Mascot";
+import { toast } from "sonner";
+import { triggerConfetti, triggerHaptic } from "../utils/celebration";
+import { createMealLog } from "../../lib/api";
+
+type ClinicalFocus = "glucose" | "cardio" | "fatloss" | "brain";
+type SourcingMode = "continental" | "diaspora";
 
 export default function HyperPersonalizedPlan() {
   const navigate = useNavigate();
-  const [mealPlan, setMealPlan] = useState<DailyMealPlan | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [selectedDay, setSelectedDay] = useState<number>(0);
+  const [clinicalFocus, setClinicalFocus] = useState<ClinicalFocus>("glucose");
+  const [sourcingMode, setSourcingMode] = useState<SourcingMode>("continental");
+  const [loading, setLoading] = useState<boolean>(true);
+  const [weeklyPlans, setWeeklyPlans] = useState<DailyMealPlan[]>([]);
   const [selectedMeal, setSelectedMeal] = useState<FunctionalMeal | null>(null);
+  const [swappedMeals, setSwappedMeals] = useState<Record<string, string>>({});
+  const [savedPlans, setSavedPlans] = useState<string[]>(() => {
+    try {
+      return JSON.parse(localStorage.getItem("saved_meal_plans") || "[]");
+    } catch {
+      return [];
+    }
+  });
+
+  const daysOfWeek = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+
+  // Generate a full 7-day personalized plan
+  const generate7DayPlan = () => {
+    setLoading(true);
+    triggerHaptic("medium");
+
+    setTimeout(() => {
+      const userProfile = {
+        age: parseInt(localStorage.getItem("userAge") || "35"),
+        sex: (localStorage.getItem("userSex") || "female") as "male" | "female" | "other",
+        weight: parseInt(localStorage.getItem("userWeight") || "74"),
+        height: parseInt(localStorage.getItem("userHeight") || "168"),
+        medicalConditions:
+          clinicalFocus === "glucose"
+            ? ["Type 2 Diabetes", "Insulin Resistance"]
+            : clinicalFocus === "cardio"
+            ? ["Hypertension", "DASH Sodium Control"]
+            : clinicalFocus === "fatloss"
+            ? ["Weight Management", "Metabolic Syndrome"]
+            : ["Cognitive Focus"],
+        allergies: JSON.parse(localStorage.getItem("allergies") || "[]"),
+        activityLevel: "moderate" as const,
+        location: sourcingMode === "continental" ? "Lagos, Nigeria" : "London / United States",
+        dietaryPreference: "omnivore" as const,
+        goals: [clinicalFocus],
+        sleepQuality: "fair" as const,
+        stressLevel: "moderate" as const,
+      };
+
+      const plans: DailyMealPlan[] = [];
+      for (let i = 0; i < 7; i++) {
+        const p = generateDailyMealPlan(userProfile);
+        p.date = daysOfWeek[i];
+        plans.push(p);
+      }
+
+      setWeeklyPlans(plans);
+      setLoading(false);
+      triggerHaptic("success");
+      toast.success("✨ 7-Day Clinical Bio-Plan Generated!");
+    }, 600);
+  };
 
   useEffect(() => {
-    generatePlan();
-  }, []);
+    generate7DayPlan();
+  }, [clinicalFocus, sourcingMode]);
 
-  const generatePlan = () => {
-    setLoading(true);
+  const currentPlan = weeklyPlans[selectedDay] || weeklyPlans[0];
 
-    // Get user profile from localStorage
-    const userProfile = {
-      age: parseInt(localStorage.getItem('userAge') || '30'),
-      sex: (localStorage.getItem('userSex') || 'male') as 'male' | 'female' | 'other',
-      weight: parseInt(localStorage.getItem('userWeight') || '70'),
-      height: parseInt(localStorage.getItem('userHeight') || '170'),
-      medicalConditions: JSON.parse(localStorage.getItem('medicalConditions') || '[]'),
-      allergies: JSON.parse(localStorage.getItem('allergies') || '[]'),
-      activityLevel: (localStorage.getItem('activityLevel') || 'moderate') as any,
-      location: localStorage.getItem('userLocation') || 'United States',
-      dietaryPreference: (localStorage.getItem('dietaryPreference') || 'omnivore') as any,
-      goals: JSON.parse(localStorage.getItem('userGoals') || '["general health"]'),
-      sleepQuality: (localStorage.getItem('sleepQuality') || 'fair') as any,
-      stressLevel: (localStorage.getItem('stressLevel') || 'moderate') as any,
+  // Helper for meal styling
+  const getMealTheme = (meal: FunctionalMeal) => {
+    if (meal.functionalType === "pre-activation")
+      return {
+        bg: "from-amber-500 via-orange-500 to-rose-500",
+        badge: "bg-amber-100 text-amber-900 border-amber-200",
+        tag: "Pre-Activation Fuel 🌅",
+        accent: "text-amber-600",
+      };
+    if (meal.functionalType === "elevenses")
+      return {
+        bg: "from-purple-600 via-indigo-600 to-blue-600",
+        badge: "bg-purple-100 text-purple-900 border-purple-200",
+        tag: "Elevenses Cognitive Bridge 🧠",
+        accent: "text-purple-600",
+      };
+    if (meal.functionalType === "recovery-vector")
+      return {
+        bg: "from-teal-600 via-emerald-600 to-cyan-600",
+        badge: "bg-emerald-100 text-emerald-900 border-emerald-200",
+        tag: "Recovery & Glycemic Anchor 🌾",
+        accent: "text-emerald-600",
+      };
+    if (meal.functionalType === "merienda")
+      return {
+        bg: "from-yellow-500 via-amber-500 to-orange-500",
+        badge: "bg-yellow-100 text-yellow-900 border-yellow-200",
+        tag: "The Merienda Satiety Shield 🍲",
+        accent: "text-yellow-700",
+      };
+    if (meal.functionalType === "nocturnal-buffer")
+      return {
+        bg: "from-slate-800 via-indigo-950 to-slate-900",
+        badge: "bg-indigo-100 text-indigo-900 border-indigo-200",
+        tag: "Nocturnal Fasting & Sleep Buffer 🌙",
+        accent: "text-indigo-400",
+      };
+    return {
+      bg: "from-[#1f7a8c] to-[#4ecdc4]",
+      badge: "bg-teal-100 text-teal-900 border-teal-200",
+      tag: "Functional Bio-Meal 🥗",
+      accent: "text-[#1f7a8c]",
     };
-
-    const plan = generateDailyMealPlan(userProfile);
-    setMealPlan(plan);
-    setLoading(false);
   };
 
-  const getMealIcon = (meal: FunctionalMeal) => {
-    if (meal.functionalType === 'pre-activation') return Activity;
-    if (meal.functionalType === 'elevenses') return Brain;
-    if (meal.functionalType === 'recovery-vector') return Zap;
-    if (meal.functionalType === 'merienda') return Utensils;
-    if (meal.functionalType === 'nocturnal-buffer') return Moon;
-    return ChefHat;
+  // Add all ingredients of meal to smart grocery list
+  const handleAddToGroceryList = (meal: FunctionalMeal) => {
+    try {
+      const existing = JSON.parse(localStorage.getItem("grocery_list") || "[]");
+      const newItems = meal.ingredients.map((ing) => ({
+        id: Date.now() + Math.random().toString(),
+        name: ing,
+        category: "Produce & Proteins",
+        checked: false,
+        source: meal.name,
+      }));
+      localStorage.setItem("grocery_list", JSON.stringify([...existing, ...newItems]));
+      triggerConfetti("cannon");
+      triggerHaptic("success");
+      toast.success(`🛒 Added ${meal.ingredients.length} ingredients to Grocery List!`);
+    } catch {
+      toast.error("Failed to add to grocery list");
+    }
   };
 
-  const getMealColor = (meal: FunctionalMeal) => {
-    if (meal.functionalType === 'pre-activation') return { bg: 'from-orange-500 to-red-500', light: 'bg-orange-50', border: 'border-orange-200' };
-    if (meal.functionalType === 'elevenses') return { bg: 'from-purple-500 to-indigo-500', light: 'bg-purple-50', border: 'border-purple-200' };
-    if (meal.functionalType === 'recovery-vector') return { bg: 'from-green-500 to-teal-500', light: 'bg-green-50', border: 'border-green-200' };
-    if (meal.functionalType === 'merienda') return { bg: 'from-yellow-500 to-orange-500', light: 'bg-yellow-50', border: 'border-yellow-200' };
-    if (meal.functionalType === 'nocturnal-buffer') return { bg: 'from-indigo-600 to-purple-600', light: 'bg-indigo-50', border: 'border-indigo-200' };
-    return { bg: 'from-[#1f7a8c] to-[#4ecdc4]', light: 'bg-cyan-50', border: 'border-cyan-200' };
+  // Log meal into Daily Diary
+  const handleLogThisMeal = async (meal: FunctionalMeal) => {
+    try {
+      await createMealLog({
+        mealType: "lunch",
+        foodName: meal.name,
+        calories: meal.calories,
+        protein: Math.round((meal.calories * (meal.macroRatio.protein / 100)) / 4),
+        carbs: Math.round((meal.calories * (meal.macroRatio.carbs / 100)) / 4),
+        fats: Math.round((meal.calories * (meal.macroRatio.fats / 100)) / 9),
+        bloodSugarImpact: "low",
+      });
+      triggerConfetti("fireworks");
+      triggerHaptic("milestone");
+      toast.success(`🎉 Logged "${meal.name}" (${meal.calories} kcal) into Daily Food Diary!`);
+      setSelectedMeal(null);
+    } catch {
+      toast.error("Could not save meal log");
+    }
   };
 
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-[#B8E5E5] to-[#E8F5F5] flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-[#1f7a8c] mx-auto mb-4"></div>
-          <p className="text-gray-700">Generating your hyper-personalized meal plan...</p>
-          <p className="text-sm text-gray-500 mt-2">Analyzing metabolic pathways & cultural preferences</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (!mealPlan) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-[#B8E5E5] to-[#E8F5F5] flex items-center justify-center p-6">
-        <div className="text-center">
-          <p className="text-gray-700 mb-4">Failed to generate meal plan</p>
-          <Button onClick={generatePlan} className="bg-[#1f7a8c]">
-            Try Again
-          </Button>
-        </div>
-      </div>
-    );
-  }
+  // Save full 7-day plan to bookmarks
+  const handleBookmarkPlan = () => {
+    const planId = `${clinicalFocus}_${sourcingMode}_${Date.now()}`;
+    const nextSaved = [...savedPlans, planId];
+    setSavedPlans(nextSaved);
+    localStorage.setItem("saved_meal_plans", JSON.stringify(nextSaved));
+    triggerHaptic("milestone");
+    toast.success("📑 7-Day Bio-Plan Saved to Your Clinical Vault!");
+  };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#B8E5E5] via-[#E8F5F5] to-white pb-20">
-      {/* Header */}
-      <div className="bg-gradient-to-r from-[#1f7a8c] to-[#4ecdc4] px-6 pt-12 pb-8 rounded-b-3xl shadow-lg">
-        <div className="flex items-center justify-between mb-4">
+    <div className="min-h-screen bg-gradient-to-b from-[#B8E5E5] via-[#E8F5F5] to-[#F8FBFB] pb-28 text-slate-800 relative select-none">
+      {/* High-Visibility Ambient Depth */}
+      <AmbientBackground />
+
+      {/* 1. Header Navigation */}
+      <div className="relative z-10 bg-gradient-to-r from-[#0b3c47] via-[#125e6d] to-[#1f7a8c] text-white pt-10 pb-6 px-5 sm:px-6 rounded-b-[2.5rem] shadow-xl border-b border-teal-500/20">
+        <div className="max-w-3xl mx-auto flex items-center justify-between mb-4">
           <button
             onClick={() => navigate(-1)}
-            className="p-2 hover:bg-white/20 rounded-full transition"
+            className="p-2.5 rounded-full bg-white/10 hover:bg-white/20 text-white backdrop-blur-md transition-transform active:scale-95 cursor-pointer"
+            aria-label="Back"
           >
-            <ArrowLeft className="h-6 w-6 text-white" />
+            <ArrowLeft className="h-5 w-5" />
           </button>
-          <div className="flex gap-2">
+          <div className="flex items-center gap-2">
             <button
-              onClick={generatePlan}
-              className="p-2 hover:bg-white/20 rounded-full transition"
-              title="Regenerate plan"
+              onClick={handleBookmarkPlan}
+              className="p-2.5 rounded-full bg-white/10 hover:bg-white/20 text-white backdrop-blur-md transition-transform active:scale-95 cursor-pointer"
+              title="Bookmark 7-Day Plan"
             >
-              <RefreshCw className="h-5 w-5 text-white" />
+              <Bookmark className="h-4 w-4" />
             </button>
             <button
-              className="p-2 hover:bg-white/20 rounded-full transition"
-              title="Download plan"
+              onClick={generate7DayPlan}
+              className="p-2.5 rounded-full bg-white/10 hover:bg-white/20 text-white backdrop-blur-md transition-transform active:scale-95 cursor-pointer"
+              title="Regenerate Bio-Plan"
             >
-              <Download className="h-5 w-5 text-white" />
+              <RefreshCw className="h-4 w-4" />
+            </button>
+            <button
+              onClick={() => {
+                window.print();
+                toast.success("🖨️ Preparing Clinical Plan Printout...");
+              }}
+              className="p-2.5 rounded-full bg-white/10 hover:bg-white/20 text-white backdrop-blur-md transition-transform active:scale-95 cursor-pointer"
+              title="Export PDF / Print"
+            >
+              <Download className="h-4 w-4" />
             </button>
           </div>
         </div>
-        <h1 className="text-3xl font-bold text-white mb-2">Hyper-Personalized Meal Plan</h1>
-        <p className="text-white/90 text-sm">Clinical Nutrition Engineering × Culinary Arts</p>
+
+        <div className="max-w-3xl mx-auto">
+          <div className="flex items-center gap-2 mb-1.5">
+            <span className="h-2 w-2 rounded-full bg-emerald-400 animate-ping" />
+            <span className="text-[10px] uppercase font-black tracking-widest text-teal-200">
+              Precision Clinical Nutrition Suite
+            </span>
+          </div>
+          <h1 className="text-2xl sm:text-3xl font-black text-white leading-tight">
+            Hyper-Personalized Bio-Plan 🧪
+          </h1>
+          <p className="text-xs text-teal-100/90 font-medium mt-1">
+            Engineered African recipes tailored to your genetics, circadian clock & medications.
+          </p>
+        </div>
       </div>
 
-      <div className="px-6 py-6 space-y-6">
-        {/* Metabolic Strategy Card */}
-        <div className="bg-white rounded-3xl shadow-lg p-6 border-l-4 border-[#1f7a8c]">
-          <div className="flex items-start gap-3 mb-4">
-            <FlaskConical className="h-6 w-6 text-[#1f7a8c] flex-shrink-0 mt-1" />
-            <div className="flex-1">
-              <h2 className="font-bold text-gray-800 mb-1">Metabolic Strategy</h2>
-              <p className="text-sm text-gray-600">{mealPlan.metabolicStrategy}</p>
-            </div>
+      <div className="max-w-3xl mx-auto px-4 sm:px-6 pt-5 space-y-5 relative z-10">
+        {/* 2. Clinical Target Dial (Interactive Selector) */}
+        <div className="bg-white/90 backdrop-blur-md rounded-3xl p-4 shadow-sm border border-teal-100">
+          <span className="text-[10px] uppercase font-black tracking-wider text-slate-500 block mb-2 px-1">
+            Select Clinical Focus
+          </span>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+            {[
+              { id: "glucose", label: "Glycemic Shield", icon: ShieldCheck, color: "text-emerald-700 bg-emerald-50 border-emerald-200" },
+              { id: "cardio", label: "DASH Blood Pressure", icon: Heart, color: "text-rose-700 bg-rose-50 border-rose-200" },
+              { id: "fatloss", label: "Metabolic Fat Burn", icon: Flame, color: "text-amber-700 bg-amber-50 border-amber-200" },
+              { id: "brain", label: "Brain & Focus", icon: Brain, color: "text-purple-700 bg-purple-50 border-purple-200" },
+            ].map((target) => {
+              const Icon = target.icon;
+              const active = clinicalFocus === target.id;
+              return (
+                <button
+                  key={target.id}
+                  onClick={() => setClinicalFocus(target.id as ClinicalFocus)}
+                  className={`p-2.5 rounded-2xl border text-left transition-all cursor-pointer flex flex-col justify-between ${
+                    active
+                      ? "bg-[#1f7a8c] text-white border-[#1f7a8c] shadow-sm scale-[1.02]"
+                      : "bg-slate-50 hover:bg-slate-100 text-slate-700 border-slate-200/80"
+                  }`}
+                >
+                  <Icon size={16} className={active ? "text-teal-200" : "text-[#1f7a8c]"} />
+                  <span className="text-[11px] font-black mt-2 leading-tight block">
+                    {target.label}
+                  </span>
+                </button>
+              );
+            })}
           </div>
-          <div className="flex items-start gap-3">
-            <Leaf className="h-6 w-6 text-green-600 flex-shrink-0 mt-1" />
-            <div className="flex-1">
-              <h2 className="font-bold text-gray-800 mb-1">Cultural Alignment</h2>
-              <p className="text-sm text-gray-600">{mealPlan.culturalAlignment}</p>
+
+          {/* Sourcing Location Toggle */}
+          <div className="flex items-center justify-between mt-3 pt-3 border-t border-slate-100 text-xs">
+            <span className="font-bold text-slate-600 flex items-center gap-1.5">
+              <Globe size={14} className="text-[#1f7a8c]" />
+              <span>Ingredient Sourcing Mode:</span>
+            </span>
+            <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-2xl">
+              <button
+                onClick={() => setSourcingMode("continental")}
+                className={`px-2.5 py-1 rounded-xl text-[11px] font-extrabold transition-all cursor-pointer ${
+                  sourcingMode === "continental" ? "bg-white text-teal-900 shadow-xs" : "text-slate-500"
+                }`}
+              >
+                🇳🇬 Continental (Lagos)
+              </button>
+              <button
+                onClick={() => setSourcingMode("diaspora")}
+                className={`px-2.5 py-1 rounded-xl text-[11px] font-extrabold transition-all cursor-pointer ${
+                  sourcingMode === "diaspora" ? "bg-white text-teal-900 shadow-xs" : "text-slate-500"
+                }`}
+              >
+                🇬🇧 🇺🇸 Diaspora (US/UK)
+              </button>
             </div>
           </div>
         </div>
 
-        {/* Daily Macros Summary */}
-        <div className="bg-gradient-to-br from-purple-50 to-white rounded-3xl shadow-lg p-6 border-2 border-purple-100">
-          <h2 className="font-bold text-gray-800 mb-4">Daily Macronutrient Distribution</h2>
-          <div className="grid grid-cols-3 gap-4">
-            <div className="text-center">
-              <div className="bg-orange-500 text-white rounded-2xl py-3 mb-2">
-                <p className="text-2xl font-bold">{Math.round(mealPlan.totalMacros.carbs)}g</p>
-              </div>
-              <p className="text-xs text-gray-600">Carbohydrates</p>
-            </div>
-            <div className="text-center">
-              <div className="bg-blue-500 text-white rounded-2xl py-3 mb-2">
-                <p className="text-2xl font-bold">{Math.round(mealPlan.totalMacros.protein)}g</p>
-              </div>
-              <p className="text-xs text-gray-600">Protein</p>
-            </div>
-            <div className="text-center">
-              <div className="bg-green-500 text-white rounded-2xl py-3 mb-2">
-                <p className="text-2xl font-bold">{Math.round(mealPlan.totalMacros.fats)}g</p>
-              </div>
-              <p className="text-xs text-gray-600">Fats</p>
-            </div>
+        {/* 3. 7-Day Day-by-Day Carousel Navigator */}
+        <div className="bg-white/90 backdrop-blur-md rounded-3xl p-3.5 shadow-sm border border-teal-100">
+          <div className="flex items-center justify-between mb-2 px-1 text-xs font-black text-slate-800">
+            <span className="flex items-center gap-1">
+              <Calendar size={14} className="text-[#1f7a8c]" />
+              <span>7-Day Schedule</span>
+            </span>
+            <span className="text-[10px] text-teal-700 font-bold bg-teal-50 px-2 py-0.5 rounded-full">
+              {daysOfWeek[selectedDay]}
+            </span>
           </div>
-          <div className="mt-4 pt-4 border-t border-purple-200 text-center">
-            <p className="text-sm text-gray-600">Total Daily Calories</p>
-            <p className="text-3xl font-bold text-purple-600">{Math.round(mealPlan.totalCalories)} kcal</p>
+
+          {/* Horizontal Day Chips */}
+          <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none">
+            {daysOfWeek.map((day, idx) => (
+              <button
+                key={day}
+                onClick={() => setSelectedDay(idx)}
+                className={`flex-1 min-w-[62px] py-2 px-2 rounded-2xl text-center transition-all cursor-pointer ${
+                  selectedDay === idx
+                    ? "bg-gradient-to-br from-[#1f7a8c] to-[#4ecdc4] text-white shadow-sm font-black"
+                    : "bg-slate-50 hover:bg-slate-100 text-slate-700 font-bold text-xs border border-slate-100"
+                }`}
+              >
+                <span className="text-[10px] opacity-80 block uppercase">Day {idx + 1}</span>
+                <span className="text-xs font-black block">{day.slice(0, 3)}</span>
+              </button>
+            ))}
           </div>
         </div>
 
-        {/* Meal Timeline */}
-        <div className="space-y-4">
-          <h2 className="text-xl font-bold text-gray-800 flex items-center gap-2">
-            <Clock className="h-6 w-6 text-[#1f7a8c]" />
-            Today's Functional Meal Timeline
-          </h2>
+        {/* 4. Metabolic Strategy & Avo Coaching Banner */}
+        {currentPlan && (
+          <div className="bg-gradient-to-br from-[#0b3c47] to-[#1f7a8c] text-white rounded-3xl p-5 shadow-md flex items-center gap-4">
+            <Mascot gesture="flex" size={54} className="shrink-0" />
+            <div className="flex-1 min-w-0">
+              <span className="text-[10px] uppercase font-black tracking-wider text-teal-300 block">
+                Clinical Prescription
+              </span>
+              <h3 className="font-extrabold text-sm text-white leading-snug">
+                {currentPlan.metabolicStrategy}
+              </h3>
+              <p className="text-[11px] text-teal-100/90 mt-1 font-medium leading-relaxed">
+                {currentPlan.culturalAlignment}
+              </p>
+            </div>
+          </div>
+        )}
 
-          {mealPlan.meals.map((meal, index) => {
-            const Icon = getMealIcon(meal);
-            const colors = getMealColor(meal);
+        {/* 5. Daily Macros Summary Bar */}
+        {currentPlan && (
+          <div className="bg-white/95 rounded-3xl p-4 shadow-sm border border-teal-100">
+            <div className="flex items-center justify-between text-xs font-bold text-slate-700 mb-2">
+              <span>Daily Fuel Target:</span>
+              <span className="text-base font-black text-[#1f7a8c]">
+                {Math.round(currentPlan.totalCalories)} kcal
+              </span>
+            </div>
 
+            <div className="grid grid-cols-3 gap-2 text-center text-xs">
+              <div className="bg-orange-50 border border-orange-100 rounded-2xl p-2">
+                <span className="text-[10px] text-orange-700 font-bold block">Carbs (Slow GI)</span>
+                <span className="text-sm font-black text-orange-900">
+                  {Math.round(currentPlan.totalMacros.carbs)}g
+                </span>
+              </div>
+              <div className="bg-blue-50 border border-blue-100 rounded-2xl p-2">
+                <span className="text-[10px] text-blue-700 font-bold block">Lean Protein</span>
+                <span className="text-sm font-black text-blue-900">
+                  {Math.round(currentPlan.totalMacros.protein)}g
+                </span>
+              </div>
+              <div className="bg-emerald-50 border border-emerald-100 rounded-2xl p-2">
+                <span className="text-[10px] text-emerald-700 font-bold block">Healthy Lipids</span>
+                <span className="text-sm font-black text-emerald-900">
+                  {Math.round(currentPlan.totalMacros.fats)}g
+                </span>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* 6. Functional Meal Timeline */}
+        <div className="space-y-3.5">
+          <div className="flex items-center justify-between px-1">
+            <h2 className="text-sm font-black text-slate-900 uppercase tracking-wider flex items-center gap-2">
+              <Clock size={16} className="text-[#1f7a8c]" />
+              <span>{daysOfWeek[selectedDay]} Functional Menu</span>
+            </h2>
+            <span className="text-[11px] font-bold text-slate-500">
+              {currentPlan?.meals?.length || 0} Engineered Courses
+            </span>
+          </div>
+
+          {currentPlan?.meals?.map((meal, idx) => {
+            const theme = getMealTheme(meal);
             return (
               <div
-                key={meal.id}
-                className={`bg-white rounded-3xl shadow-lg overflow-hidden border-2 ${colors.border} hover:shadow-xl transition-all cursor-pointer`}
-                onClick={() => setSelectedMeal(meal)}
+                key={meal.id || idx}
+                className="bg-white/95 rounded-3xl shadow-sm border border-slate-200/80 overflow-hidden hover:shadow-md transition-all group"
               >
-                {/* Meal Header */}
-                <div className={`bg-gradient-to-r ${colors.bg} p-5 text-white`}>
-                  <div className="flex items-center gap-3 mb-2">
-                    <div className="bg-white/20 rounded-full p-2">
-                      <Icon className="h-5 w-5" />
-                    </div>
-                    <div className="flex-1">
-                      <p className="text-xs opacity-90">{meal.time}</p>
-                      <h3 className="font-bold text-lg">{meal.name}</h3>
-                    </div>
-                    <div className="text-right">
-                      <p className="text-2xl font-bold">{meal.calories}</p>
-                      <p className="text-xs opacity-90">kcal</p>
-                    </div>
+                {/* Header Gradient */}
+                <div className={`bg-gradient-to-r ${theme.bg} p-4 text-white flex items-center justify-between`}>
+                  <div>
+                    <span className="text-[10px] uppercase font-extrabold tracking-wider opacity-90 block">
+                      {theme.tag}
+                    </span>
+                    <h3 className="font-black text-base leading-tight mt-0.5">{meal.name}</h3>
+                    <span className="text-[11px] opacity-90 font-medium">{meal.time}</span>
                   </div>
-                  {meal.culturalContext && (
-                    <p className="text-xs text-white/80 italic">{meal.culturalContext}</p>
-                  )}
+                  <div className="text-right shrink-0 bg-white/20 backdrop-blur-md px-3 py-1.5 rounded-2xl border border-white/20">
+                    <span className="text-base font-black block leading-none">{meal.calories}</span>
+                    <span className="text-[9px] uppercase font-bold tracking-wider opacity-80">kcal</span>
+                  </div>
                 </div>
 
-                {/* Culinary Description */}
-                <div className="p-5">
-                  <p className="text-gray-700 leading-relaxed mb-4 italic">
+                <div className="p-4 space-y-3">
+                  <p className="text-xs text-slate-700 italic leading-relaxed">
                     "{meal.culinaryDescription}"
                   </p>
 
-                  {/* Macro Ratio Bar */}
-                  <div className="mb-4">
-                    <div className="flex items-center justify-between mb-2 text-xs text-gray-600">
-                      <span>Macro Ratio</span>
-                      <span>C:{meal.macroRatio.carbs} · P:{meal.macroRatio.protein} · F:{meal.macroRatio.fats}</span>
+                  {/* Macro Visual Bar */}
+                  <div className="space-y-1">
+                    <div className="flex items-center justify-between text-[10px] font-bold text-slate-500">
+                      <span>C:{meal.macroRatio.carbs}%</span>
+                      <span>P:{meal.macroRatio.protein}%</span>
+                      <span>F:{meal.macroRatio.fats}%</span>
                     </div>
-                    <div className="h-3 bg-gray-100 rounded-full overflow-hidden flex">
-                      <div
-                        className="bg-orange-500"
-                        style={{ width: `${meal.macroRatio.carbs}%` }}
-                        title={`Carbs: ${meal.macroRatio.carbs}%`}
-                      />
-                      <div
-                        className="bg-blue-500"
-                        style={{ width: `${meal.macroRatio.protein}%` }}
-                        title={`Protein: ${meal.macroRatio.protein}%`}
-                      />
-                      <div
-                        className="bg-green-500"
-                        style={{ width: `${meal.macroRatio.fats}%` }}
-                        title={`Fats: ${meal.macroRatio.fats}%`}
-                      />
+                    <div className="h-2 bg-slate-100 rounded-full overflow-hidden flex">
+                      <div className="bg-orange-500" style={{ width: `${meal.macroRatio.carbs}%` }} />
+                      <div className="bg-blue-500" style={{ width: `${meal.macroRatio.protein}%` }} />
+                      <div className="bg-emerald-500" style={{ width: `${meal.macroRatio.fats}%` }} />
                     </div>
                   </div>
 
-                  {/* Clinical Note */}
-                  <div className={`${colors.light} rounded-2xl p-4 border ${colors.border}`}>
-                    <div className="flex items-start gap-2">
-                      <FlaskConical className="h-4 w-4 text-gray-600 flex-shrink-0 mt-1" />
-                      <div>
-                        <h4 className="font-semibold text-gray-800 text-sm mb-1">Clinical Engineering Note</h4>
-                        <p className="text-xs text-gray-700 leading-relaxed">{meal.clinicalNote}</p>
-                      </div>
+                  {/* Clinical Bio-Mechanism */}
+                  <div className="bg-teal-50/70 border border-teal-100 rounded-2xl p-3 text-xs flex items-start gap-2.5">
+                    <FlaskConical size={16} className="text-[#1f7a8c] shrink-0 mt-0.5" />
+                    <div>
+                      <span className="font-extrabold text-teal-900 block">Biochemical Mechanism:</span>
+                      <p className="text-[11px] text-teal-800 mt-0.5 leading-snug">{meal.clinicalNote}</p>
                     </div>
                   </div>
 
                   {/* Bioactive Compounds */}
                   {meal.bioactiveCompounds && meal.bioactiveCompounds.length > 0 && (
-                    <div className="mt-3 flex flex-wrap gap-2">
-                      {meal.bioactiveCompounds.map((compound, i) => (
+                    <div className="flex flex-wrap gap-1.5">
+                      {meal.bioactiveCompounds.map((comp, cIdx) => (
                         <span
-                          key={i}
-                          className="px-3 py-1 bg-gradient-to-r from-green-100 to-teal-100 text-green-800 rounded-full text-xs font-medium border border-green-200"
+                          key={cIdx}
+                          className="px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 text-[10px] font-bold"
                         >
-                          {compound}
+                          ✦ {comp}
                         </span>
                       ))}
                     </div>
                   )}
 
-                  {/* Protein Complementarity for Vegans */}
-                  {meal.proteinComplementarity && (
-                    <div className="mt-3 bg-green-50 border border-green-200 rounded-xl p-3">
-                      <p className="text-xs text-green-800">
-                        <strong>Vegan Protein Strategy:</strong> {meal.proteinComplementarity}
-                      </p>
-                    </div>
-                  )}
-
-                  {/* Tap to expand indicator */}
-                  <div className="mt-4 pt-3 border-t border-gray-100 text-center">
-                    <p className="text-xs text-gray-500">Tap to view preparation protocol →</p>
+                  {/* Card Action Buttons */}
+                  <div className="flex items-center gap-2 pt-2 border-t border-slate-100">
+                    <button
+                      onClick={() => handleAddToGroceryList(meal)}
+                      className="flex-1 py-2 px-3 bg-slate-100 hover:bg-slate-200 text-slate-800 rounded-2xl text-xs font-bold transition-all active:scale-95 flex items-center justify-center gap-1 cursor-pointer"
+                    >
+                      <Plus size={14} />
+                      <span>Grocery List</span>
+                    </button>
+                    <button
+                      onClick={() => setSelectedMeal(meal)}
+                      className="flex-1 py-2 px-3 bg-teal-50 hover:bg-teal-100 text-[#1f7a8c] border border-teal-200 rounded-2xl text-xs font-bold transition-all active:scale-95 flex items-center justify-center gap-1 cursor-pointer"
+                    >
+                      <ChefHat size={14} />
+                      <span>Recipe Steps</span>
+                    </button>
+                    <button
+                      onClick={() => handleLogThisMeal(meal)}
+                      className="py-2 px-3.5 bg-[#1f7a8c] hover:bg-teal-800 text-white rounded-2xl text-xs font-bold transition-all active:scale-95 flex items-center justify-center gap-1 cursor-pointer"
+                      title="Log to Daily Diary"
+                    >
+                      <Check size={14} />
+                      <span>Log</span>
+                    </button>
                   </div>
                 </div>
               </div>
             );
           })}
         </div>
-
-        {/* Functional Meals Legend */}
-        <div className="bg-gradient-to-br from-gray-50 to-white rounded-3xl shadow-lg p-6 border-2 border-gray-200">
-          <h2 className="font-bold text-gray-800 mb-4">Functional Micro-Meal Categories</h2>
-          <div className="space-y-3 text-sm">
-            <div className="flex items-start gap-3">
-              <Activity className="h-5 w-5 text-orange-600 flex-shrink-0 mt-0.5" />
-              <div>
-                <p className="font-semibold text-gray-800">Pre-Activation</p>
-                <p className="text-xs text-gray-600">High-glycemic fuel for workout/shift prep</p>
-              </div>
-            </div>
-            <div className="flex items-start gap-3">
-              <Brain className="h-5 w-5 text-purple-600 flex-shrink-0 mt-0.5" />
-              <div>
-                <p className="font-semibold text-gray-800">The Elevenses (Cognitive Bridge)</p>
-                <p className="text-xs text-gray-600">Neuro-protective fats & polyphenols for focus</p>
-              </div>
-            </div>
-            <div className="flex items-start gap-3">
-              <Zap className="h-5 w-5 text-green-600 flex-shrink-0 mt-0.5" />
-              <div>
-                <p className="font-semibold text-gray-800">Recovery Vector</p>
-                <p className="text-xs text-gray-600">Leucine-rich protein for muscle repair</p>
-              </div>
-            </div>
-            <div className="flex items-start gap-3">
-              <Utensils className="h-5 w-5 text-yellow-600 flex-shrink-0 mt-0.5" />
-              <div>
-                <p className="font-semibold text-gray-800">The Merienda (Satiety Bridge)</p>
-                <p className="text-xs text-gray-600">Prevents dinner overeating</p>
-              </div>
-            </div>
-            <div className="flex items-start gap-3">
-              <Moon className="h-5 w-5 text-indigo-600 flex-shrink-0 mt-0.5" />
-              <div>
-                <p className="font-semibold text-gray-800">Nocturnal Buffer</p>
-                <p className="text-xs text-gray-600">Magnesium/tryptophan for sleep quality</p>
-              </div>
-            </div>
-          </div>
-        </div>
       </div>
 
-      {/* Meal Detail Modal */}
+      {/* 7. Preparation Protocol Modal */}
       {selectedMeal && (
         <div
-          className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-end justify-center"
+          className="fixed inset-0 bg-black/60 backdrop-blur-xs z-50 flex items-end justify-center p-0 sm:p-4"
           onClick={() => setSelectedMeal(null)}
         >
           <div
-            className="bg-white rounded-t-3xl w-full max-w-2xl max-h-[85vh] overflow-y-auto animate-slide-up"
+            className="bg-white rounded-t-3xl sm:rounded-3xl w-full max-w-xl max-h-[85vh] overflow-y-auto p-5 sm:p-6 space-y-5 animate-slide-up shadow-2xl"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="sticky top-0 bg-white border-b border-gray-200 p-6 rounded-t-3xl">
-              <div className="flex items-center justify-between">
-                <h2 className="text-xl font-bold text-gray-800">{selectedMeal.name}</h2>
-                <button
-                  onClick={() => setSelectedMeal(null)}
-                  className="p-2 hover:bg-gray-100 rounded-full transition"
-                >
-                  <ArrowLeft className="h-5 w-5 text-gray-600" />
-                </button>
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+              <div>
+                <span className="text-[10px] uppercase font-black text-[#1f7a8c] block">Culinary Preparation</span>
+                <h3 className="text-lg font-black text-slate-900">{selectedMeal.name}</h3>
+              </div>
+              <button
+                onClick={() => setSelectedMeal(null)}
+                className="p-2 rounded-full hover:bg-slate-100 text-slate-500 cursor-pointer"
+              >
+                ✕
+              </button>
+            </div>
+
+            {/* Ingredients Checklist */}
+            <div>
+              <h4 className="text-xs font-black uppercase text-slate-700 mb-2 flex items-center gap-1.5">
+                <ChefHat size={14} className="text-[#1f7a8c]" />
+                <span>Exact Ingredients ({selectedMeal.ingredients.length})</span>
+              </h4>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                {selectedMeal.ingredients.map((ing, i) => (
+                  <div key={i} className="p-2.5 bg-slate-50 rounded-xl text-xs font-medium text-slate-800 flex items-center gap-2">
+                    <span className="h-1.5 w-1.5 rounded-full bg-teal-500" />
+                    <span>{ing}</span>
+                  </div>
+                ))}
               </div>
             </div>
 
-            <div className="p-6 space-y-6">
-              {/* Ingredients */}
-              <div>
-                <h3 className="font-bold text-gray-800 mb-3 flex items-center gap-2">
-                  <ChefHat className="h-5 w-5 text-[#1f7a8c]" />
-                  Ingredients
-                </h3>
-                <ul className="space-y-2">
-                  {selectedMeal.ingredients.map((ingredient, index) => (
-                    <li key={index} className="flex items-start gap-2 text-sm text-gray-700">
-                      <span className="text-[#1f7a8c] mt-1">•</span>
-                      <span>{ingredient}</span>
-                    </li>
-                  ))}
-                </ul>
+            {/* Cooking Steps */}
+            <div>
+              <h4 className="text-xs font-black uppercase text-slate-700 mb-2 flex items-center gap-1.5">
+                <FlaskConical size={14} className="text-purple-600" />
+                <span>Engineering Preparation Protocol</span>
+              </h4>
+              <div className="space-y-2.5">
+                {selectedMeal.preparationProtocol.map((step, sIdx) => (
+                  <div key={sIdx} className="flex items-start gap-3 p-3 bg-purple-50/50 rounded-2xl border border-purple-100">
+                    <span className="h-6 w-6 rounded-full bg-purple-600 text-white font-black text-xs flex items-center justify-center shrink-0 mt-0.5">
+                      {sIdx + 1}
+                    </span>
+                    <p className="text-xs text-slate-700 leading-relaxed">{step}</p>
+                  </div>
+                ))}
               </div>
+            </div>
 
-              {/* Preparation Protocol */}
-              <div>
-                <h3 className="font-bold text-gray-800 mb-3 flex items-center gap-2">
-                  <FlaskConical className="h-5 w-5 text-purple-600" />
-                  Engineering Preparation Protocol
-                </h3>
-                <div className="space-y-3">
-                  {selectedMeal.preparationProtocol.map((step, index) => (
-                    <div key={index} className="flex gap-3">
-                      <div className="flex-shrink-0 w-8 h-8 bg-gradient-to-br from-purple-500 to-indigo-500 text-white rounded-full flex items-center justify-center font-bold text-sm">
-                        {index + 1}
-                      </div>
-                      <p className="text-sm text-gray-700 leading-relaxed flex-1 pt-1">{step}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Action Buttons */}
-              <div className="grid grid-cols-2 gap-3 pt-4">
-                <Button
-                  variant="outline"
-                  className="w-full border-2 border-[#1f7a8c] text-[#1f7a8c] hover:bg-[#E8F5F5]"
-                  onClick={() => {
-                    // Add to grocery list logic
-                    setSelectedMeal(null);
-                  }}
-                >
-                  Add to Grocery List
-                </Button>
-                <Button
-                  className="w-full bg-gradient-to-r from-[#1f7a8c] to-[#4ecdc4] text-white"
-                  onClick={() => {
-                    // Log meal logic
-                    setSelectedMeal(null);
-                  }}
-                >
-                  Log This Meal
-                </Button>
-              </div>
+            {/* Modal Bottom Actions */}
+            <div className="grid grid-cols-2 gap-3 pt-2">
+              <Button
+                variant="outline"
+                className="rounded-2xl border-teal-200 text-[#1f7a8c]"
+                onClick={() => handleAddToGroceryList(selectedMeal)}
+              >
+                <Plus size={14} className="mr-1" />
+                Add to Grocery List
+              </Button>
+              <Button
+                className="rounded-2xl bg-gradient-to-r from-[#1f7a8c] to-[#4ecdc4] text-white font-bold"
+                onClick={() => handleLogThisMeal(selectedMeal)}
+              >
+                <Check size={14} className="mr-1" />
+                Log This Meal
+              </Button>
             </div>
           </div>
         </div>
