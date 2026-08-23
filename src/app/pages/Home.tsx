@@ -28,7 +28,6 @@ import CircadianArc from "../components/CircadianArc";
 import WhatsAppConnectDialog from "../components/WhatsAppConnectDialog";
 import CGMSensorVisualizer from "../components/CGMSensorVisualizer";
 import QuickLogShelf, { QuickFoodItem } from "../components/QuickLogShelf";
-import DailyGoalSlider from "../components/DailyGoalSlider";
 import { useSmartNudges } from "../hooks/useSmartNudges";
 import ModeToggle from "../components/ModeToggle";
 import LocationSelector from "../components/LocationSelector";

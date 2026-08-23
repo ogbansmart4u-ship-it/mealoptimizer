@@ -15,7 +15,7 @@ import {
   Clock,
   ArrowRight,
 } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "motion/react";
 import { triggerConfetti, triggerHaptic } from "../utils/celebration";
 
 export interface HabitItem {

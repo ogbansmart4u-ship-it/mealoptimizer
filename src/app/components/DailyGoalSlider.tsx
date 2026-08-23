@@ -13,7 +13,7 @@ import {
   ArrowRight,
   Sparkles,
 } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "motion/react";
 import Mascot from "./Mascot";
 
 export interface DailyGoalSliderProps {
