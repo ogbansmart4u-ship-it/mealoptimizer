@@ -747,8 +747,81 @@ export default function Home() {
               </div>
             </div>
 
+            {/* ============================================================ */}
+            {/* PRIME HERO ACTIONS: MEAL ANALYSER & PLANNER (Above the fold) */}
+            {/* ============================================================ */}
+            <div>
+              <div className="flex items-center justify-between mb-2.5 px-0.5">
+                <h3 className="text-xs font-black text-gray-900 uppercase tracking-wider flex items-center gap-1.5">
+                  <span>{t('home.analyserPlanner')}</span>
+                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping" />
+                </h3>
+                <span className="text-[10px] font-extrabold text-[#1f7a8c] bg-teal-50 px-2 py-0.5 rounded-full border border-teal-100/60 shadow-2xs">
+                  AI Core Active ⚡
+                </span>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                {/* 1. Snap & Know Card with Animated Laser Scan Line & Radar Pulse */}
+                <button
+                  onClick={() => setShowLocalFoodScanner(true)}
+                  className="relative overflow-hidden bg-gradient-to-br from-teal-500 via-teal-600 to-cyan-600 rounded-3xl p-4 text-white text-left shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] cursor-pointer flex flex-col justify-between h-36 border border-teal-400/30 group"
+                >
+                  {/* Glowing Laser Scan Sweep Line */}
+                  <div className="absolute left-0 right-0 h-1 bg-gradient-to-r from-transparent via-white to-transparent shadow-[0_0_12px_#fff] pointer-events-none animate-laser-sweep opacity-85" />
+
+                  {/* Top Icon Row */}
+                  <div className="flex items-center justify-between relative z-10">
+                    <div className="relative">
+                      {/* Pulsing Radar Ring */}
+                      <span className="absolute -inset-1 rounded-2xl bg-white/30 animate-pulse-radar pointer-events-none" />
+                      <div className="relative bg-white/25 backdrop-blur-xs rounded-2xl p-2.5 w-fit group-hover:rotate-6 transition-transform">
+                        <Camera className="h-5 w-5 text-white" />
+                      </div>
+                    </div>
+                    <span className="text-[9px] font-black tracking-wider uppercase px-1.5 py-0.5 rounded-md bg-white/20 backdrop-blur-xs text-teal-50">
+                      SCANNER
+                    </span>
+                  </div>
+
+                  {/* Bottom Text */}
+                  <div className="relative z-10">
+                    <span className="text-xs font-black block leading-tight tracking-tight">
+                      {t('home.snapKnow')}
+                    </span>
+                    <span className="text-[10px] text-teal-50/90 font-semibold block mt-0.5">
+                      Food photo AI vision
+                    </span>
+                  </div>
+                </button>
+
+                {/* 2. Plan My Meal Card with Floating Bobbing Emoji & Shimmer */}
+                <button
+                  onClick={() => navigate("/plan-meal")}
+                  className="bg-white rounded-3xl p-4 text-left shadow-lg hover:shadow-xl border-2 border-teal-100/80 hover:border-[#1f7a8c] transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] cursor-pointer flex flex-col justify-between h-36 group"
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="bg-orange-50 border border-orange-200/60 rounded-2xl p-2.5 w-fit text-xl animate-float-bob">
+                      🍽️
+                    </div>
+                    <span className="text-[9px] font-black uppercase px-1.5 py-0.5 rounded-md bg-amber-50 text-amber-700 border border-amber-200/50">
+                      PLANNER
+                    </span>
+                  </div>
+                  <div>
+                    <span className="text-xs font-black text-gray-900 block leading-tight group-hover:text-[#1f7a8c] transition-colors">
+                      {t('home.planMyMeal')}
+                    </span>
+                    <span className="text-[10px] text-gray-500 font-semibold block mt-0.5">
+                      Swallows & Diaspora swaps
+                    </span>
+                  </div>
+                </button>
+              </div>
+            </div>
+
             {/* 1-Tap Quick-Log Shelf with Voice AI */}
-            <div id="tour-quick-shelf" className="my-2">
+            <div id="tour-quick-shelf" className="my-1">
               <QuickLogShelf
                 onLogItem={handleQuickLogItem}
                 onOpenVoice={() => setShowVoiceLogger(true)}
@@ -792,72 +865,6 @@ export default function Home() {
                 </p>
               </div>
             </div>
-
-            {/* Core Action Grid (2x2) with CSS Animations */}
-            <div>
-              <div className="flex items-center justify-between mb-3">
-                <h3 className="text-sm font-black text-gray-800 uppercase tracking-wider flex items-center gap-1.5">
-                  <span>{t('home.analyserPlanner')}</span>
-                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping" />
-                </h3>
-                <span className="text-[10px] font-bold text-[#1f7a8c] bg-teal-50 px-2 py-0.5 rounded-full border border-teal-100/60">
-                  AI Core Active ⚡
-                </span>
-              </div>
-
-              <div className="grid grid-cols-2 gap-3">
-                {/* 1. Snap & Know Card with Animated Laser Scan Line & Radar Pulse */}
-                <button
-                  onClick={() => setShowLocalFoodScanner(true)}
-                  className="relative overflow-hidden bg-gradient-to-br from-teal-500 via-teal-600 to-cyan-600 rounded-3xl p-4 text-white text-left shadow-md hover:shadow-xl transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] cursor-pointer flex flex-col justify-between h-36 border border-teal-400/30 group"
-                >
-                  {/* Glowing Laser Scan Sweep Line */}
-                  <div className="absolute left-0 right-0 h-1 bg-gradient-to-r from-transparent via-white to-transparent shadow-[0_0_12px_#fff] pointer-events-none animate-laser-sweep opacity-80" />
-
-                  {/* Top Icon Row */}
-                  <div className="flex items-center justify-between relative z-10">
-                    <div className="relative">
-                      {/* Pulsing Radar Ring */}
-                      <span className="absolute -inset-1 rounded-2xl bg-white/30 animate-pulse-radar pointer-events-none" />
-                      <div className="relative bg-white/25 backdrop-blur-xs rounded-2xl p-2.5 w-fit group-hover:rotate-6 transition-transform">
-                        <Camera className="h-5 w-5 text-white" />
-                      </div>
-                    </div>
-                    <span className="text-[9px] font-black tracking-wider uppercase px-1.5 py-0.5 rounded-md bg-white/20 backdrop-blur-xs text-teal-100">
-                      SCANNER
-                    </span>
-                  </div>
-
-                  {/* Bottom Text */}
-                  <div className="relative z-10">
-                    <span className="text-xs font-black block leading-tight tracking-tight">
-                      {t('home.snapKnow')}
-                    </span>
-                    <span className="text-[10px] text-teal-50/90 font-medium block mt-0.5">
-                      Food photo AI vision
-                    </span>
-                  </div>
-                </button>
-
-                {/* 2. Plan My Meal Card with Floating Bobbing Emoji & Shimmer */}
-                <button
-                  onClick={() => navigate("/plan-meal")}
-                  className="bg-white rounded-3xl p-4 text-left shadow-md hover:shadow-xl border-2 border-teal-100/80 hover:border-[#1f7a8c] transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] cursor-pointer flex flex-col justify-between h-36 group"
-                >
-                  <div className="flex items-center justify-between">
-                    <div className="bg-orange-50 border border-orange-200/60 rounded-2xl p-2.5 w-fit text-xl animate-float-bob">
-                      🍽️
-                    </div>
-                    <span className="text-[9px] font-black uppercase px-1.5 py-0.5 rounded-md bg-amber-50 text-amber-700 border border-amber-200/50">
-                      PLANNER
-                    </span>
-                  </div>
-                  <div>
-                    <span className="text-xs font-black text-gray-900 block leading-tight group-hover:text-[#1f7a8c] transition-colors">
-                      {t('home.planMyMeal')}
-                    </span>
-                    <span className="text-[10px] text-gray-500 font-medium block mt-0.5">
-                      Swallows & Diaspora swaps
                     </span>
                   </div>
                 </button>
