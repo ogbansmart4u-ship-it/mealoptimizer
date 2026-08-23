@@ -239,13 +239,20 @@ export default function PlanMeal() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#B8E5E5] to-[#E8F5F5] pb-8">
+    <div className="min-h-screen bg-gradient-to-b from-[#B8E5E5] via-[#E8F5F5] to-[#F8FBFB] pb-28 relative overflow-hidden">
+      {/* Subtle Ambient Background Motion Layers */}
+      <div className="absolute -top-20 -left-20 w-80 h-80 rounded-full bg-gradient-to-br from-teal-400/25 to-emerald-300/20 blur-3xl pointer-events-none animate-ambient-drift-1" />
+      <div className="absolute top-1/2 -right-28 w-96 h-96 rounded-full bg-gradient-to-bl from-cyan-300/25 to-teal-200/20 blur-3xl pointer-events-none animate-ambient-drift-2" />
+      <div className="absolute bottom-20 left-10 w-72 h-72 rounded-full bg-gradient-to-tr from-emerald-300/20 to-teal-100/25 blur-3xl pointer-events-none animate-pulse-glow-soft" />
+
       {/* Header */}
-      <PageHeader
-        title={t("planmeal.title")}
-        showHome
-        actions={<Calendar className="h-6 w-6 text-white" />}
-      />
+      <div className="relative z-10">
+        <PageHeader
+          title={t("planmeal.title")}
+          showHome
+          actions={<Calendar className="h-6 w-6 text-white" />}
+        />
+      </div>
 
       {/* Content */}
       <div className="px-6 mt-6">

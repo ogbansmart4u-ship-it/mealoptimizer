@@ -47,6 +47,48 @@ html, body, #root { max-width: 100%; overflow-x: hidden; }
   animation: gradientShift 4s ease infinite;
 }
 
+/* Subtle Ambient Page Background Motion */
+@keyframes ambientDrift1 {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); opacity: 0.45; }
+  50% { transform: translate3d(25px, -20px, 0) scale(1.08); opacity: 0.7; }
+}
+
+@keyframes ambientDrift2 {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1.05); opacity: 0.35; }
+  50% { transform: translate3d(-25px, 25px, 0) scale(0.95); opacity: 0.65; }
+}
+
+@keyframes subtleWave {
+  0% { background-position: 0% 0%; }
+  50% { background-position: 50% 100%; }
+  100% { background-position: 0% 0%; }
+}
+
+@keyframes pulseGlowSoft {
+  0%, 100% { opacity: 0.35; transform: scale(1); }
+  50% { opacity: 0.65; transform: scale(1.08); }
+}
+
+.animate-ambient-drift-1 {
+  animation: ambientDrift1 14s ease-in-out infinite;
+  will-change: transform, opacity;
+}
+
+.animate-ambient-drift-2 {
+  animation: ambientDrift2 18s ease-in-out infinite;
+  will-change: transform, opacity;
+}
+
+.animate-pulse-glow-soft {
+  animation: pulseGlowSoft 9s ease-in-out infinite;
+  will-change: transform, opacity;
+}
+
+.bg-animated-mesh {
+  background-size: 200% 200%;
+  animation: subtleWave 20s ease infinite;
+}
+
 /* Dark mode overrides for page backgrounds */
 .dark body {
   background: #0f172a;
