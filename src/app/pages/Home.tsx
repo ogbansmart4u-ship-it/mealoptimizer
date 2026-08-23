@@ -898,25 +898,25 @@ export default function Home() {
                   </div>
                 </button>
 
-                {/* 2. Custom Bio-Plan with Shifting Animated Gradient Background */}
+                {/* 2. My 7-Day Meal Plan with Shifting Animated Gradient Background */}
                 <button
                   onClick={() => navigate("/hyper-personalized-plan")}
                   className="relative overflow-hidden bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-600 animate-gradient-shift rounded-3xl p-4 text-white text-left shadow-md hover:shadow-xl transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] cursor-pointer flex flex-col justify-between h-36 border border-purple-400/30 group"
                 >
                   <div className="flex items-center justify-between relative z-10">
                     <div className="bg-white/20 backdrop-blur-xs rounded-2xl p-2.5 w-fit group-hover:scale-110 transition-transform">
-                      <FlaskConical className="h-5 w-5 text-white" />
+                      <ChefHat className="h-5 w-5 text-white" />
                     </div>
                     <span className="text-[9px] font-black uppercase px-1.5 py-0.5 rounded-md bg-white/20 backdrop-blur-xs text-purple-100">
-                      BIO-AI
+                      7-DAY PLAN
                     </span>
                   </div>
                   <div className="relative z-10">
                     <span className="text-xs font-black block leading-tight">
-                      Custom Bio-Plan
+                      My 7-Day Meal Plan
                     </span>
                     <span className="text-[10px] text-purple-100/90 font-medium block mt-0.5">
-                      Hyper-personalized recipes
+                      Tailored weekly recipes
                     </span>
                   </div>
                 </button>

@@ -251,14 +251,14 @@ export default function HyperPersonalizedPlan() {
           <div className="flex items-center gap-2 mb-1.5">
             <span className="h-2 w-2 rounded-full bg-emerald-400 animate-ping" />
             <span className="text-[10px] uppercase font-black tracking-widest text-teal-200">
-              Precision Clinical Nutrition Suite
+              Personalized Cultural Nutrition
             </span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-black text-white leading-tight">
-            Hyper-Personalized Bio-Plan 🧪
+            My 7-Day Meal Plan 🍲
           </h1>
           <p className="text-xs text-teal-100/90 font-medium mt-1">
-            Engineered African recipes tailored to your genetics, circadian clock & medications.
+            Real African & diaspora meals balanced for your blood sugar, blood pressure, and daily energy.
           </p>
         </div>
       </div>
