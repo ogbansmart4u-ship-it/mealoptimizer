@@ -37,6 +37,7 @@ import Mascot from "../components/Mascot";
 import { toast } from "sonner";
 import { triggerConfetti, triggerHaptic } from "../utils/celebration";
 import { createMealLog } from "../../lib/api";
+import { motion, AnimatePresence } from "motion/react";
 
 type ClinicalFocus = "glucose" | "cardio" | "fatloss" | "brain";
 type SourcingMode = "continental" | "diaspora";
@@ -514,84 +515,105 @@ export default function HyperPersonalizedPlan() {
         </div>
       </div>
 
-      {/* 7. Preparation Protocol Modal */}
-      {selectedMeal && (
-        <div
-          className="fixed inset-0 bg-black/70 backdrop-blur-sm z-[100] flex items-center justify-center p-4 sm:p-6"
-          onClick={() => setSelectedMeal(null)}
-        >
-          <div
-            className="bg-white rounded-3xl w-full max-w-lg max-h-[82vh] overflow-y-auto p-5 sm:p-6 space-y-5 shadow-2xl border border-slate-100 animate-in fade-in zoom-in-95 duration-200"
-            onClick={(e) => e.stopPropagation()}
+      {/* 7. Preparation Protocol Modal with Smooth Slow-Glide Zoom-In */}
+      <AnimatePresence>
+        {selectedMeal && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.35, ease: "easeOut" }}
+            className="fixed inset-0 bg-slate-950/70 backdrop-blur-md z-[100] flex items-center justify-center p-4 sm:p-6"
+            onClick={() => setSelectedMeal(null)}
           >
-            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.88, y: 24 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.92, y: 16 }}
+              transition={{
+                duration: 0.45,
+                ease: [0.16, 1, 0.3, 1], // Smooth luxury apple-style spring curve
+              }}
+              className="bg-white/95 backdrop-blur-xl rounded-3xl w-full max-w-lg max-h-[82vh] overflow-y-auto p-5 sm:p-6 space-y-5 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.35)] border border-teal-100/80"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+                <div>
+                  <span className="text-[10px] uppercase font-black tracking-widest text-[#1f7a8c] block">
+                    Culinary Preparation
+                  </span>
+                  <h3 className="text-lg font-black text-slate-900 leading-snug">{selectedMeal.name}</h3>
+                </div>
+                <button
+                  onClick={() => setSelectedMeal(null)}
+                  className="p-2 rounded-full hover:bg-slate-100 text-slate-500 transition-transform active:scale-90 cursor-pointer"
+                >
+                  ✕
+                </button>
+              </div>
+
+              {/* Ingredients Checklist */}
               <div>
-                <span className="text-[10px] uppercase font-black text-[#1f7a8c] block">Culinary Preparation</span>
-                <h3 className="text-lg font-black text-slate-900">{selectedMeal.name}</h3>
+                <h4 className="text-xs font-black uppercase text-slate-700 mb-2 flex items-center gap-1.5">
+                  <ChefHat size={14} className="text-[#1f7a8c]" />
+                  <span>Exact Ingredients ({selectedMeal.ingredients.length})</span>
+                </h4>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  {selectedMeal.ingredients.map((ing, i) => (
+                    <div
+                      key={i}
+                      className="p-2.5 bg-slate-50/80 rounded-xl text-xs font-medium text-slate-800 flex items-center gap-2 border border-slate-100"
+                    >
+                      <span className="h-1.5 w-1.5 rounded-full bg-teal-500" />
+                      <span>{ing}</span>
+                    </div>
+                  ))}
+                </div>
               </div>
-              <button
-                onClick={() => setSelectedMeal(null)}
-                className="p-2 rounded-full hover:bg-slate-100 text-slate-500 cursor-pointer"
-              >
-                ✕
-              </button>
-            </div>
 
-            {/* Ingredients Checklist */}
-            <div>
-              <h4 className="text-xs font-black uppercase text-slate-700 mb-2 flex items-center gap-1.5">
-                <ChefHat size={14} className="text-[#1f7a8c]" />
-                <span>Exact Ingredients ({selectedMeal.ingredients.length})</span>
-              </h4>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                {selectedMeal.ingredients.map((ing, i) => (
-                  <div key={i} className="p-2.5 bg-slate-50 rounded-xl text-xs font-medium text-slate-800 flex items-center gap-2">
-                    <span className="h-1.5 w-1.5 rounded-full bg-teal-500" />
-                    <span>{ing}</span>
-                  </div>
-                ))}
+              {/* Cooking Steps */}
+              <div>
+                <h4 className="text-xs font-black uppercase text-slate-700 mb-2 flex items-center gap-1.5">
+                  <FlaskConical size={14} className="text-purple-600" />
+                  <span>Engineering Preparation Protocol</span>
+                </h4>
+                <div className="space-y-2.5">
+                  {selectedMeal.preparationProtocol.map((step, sIdx) => (
+                    <div
+                      key={sIdx}
+                      className="flex items-start gap-3 p-3 bg-purple-50/60 rounded-2xl border border-purple-100/80 shadow-2xs"
+                    >
+                      <span className="h-6 w-6 rounded-full bg-purple-600 text-white font-black text-xs flex items-center justify-center shrink-0 mt-0.5 shadow-xs">
+                        {sIdx + 1}
+                      </span>
+                      <p className="text-xs text-slate-700 leading-relaxed">{step}</p>
+                    </div>
+                  ))}
+                </div>
               </div>
-            </div>
 
-            {/* Cooking Steps */}
-            <div>
-              <h4 className="text-xs font-black uppercase text-slate-700 mb-2 flex items-center gap-1.5">
-                <FlaskConical size={14} className="text-purple-600" />
-                <span>Engineering Preparation Protocol</span>
-              </h4>
-              <div className="space-y-2.5">
-                {selectedMeal.preparationProtocol.map((step, sIdx) => (
-                  <div key={sIdx} className="flex items-start gap-3 p-3 bg-purple-50/50 rounded-2xl border border-purple-100">
-                    <span className="h-6 w-6 rounded-full bg-purple-600 text-white font-black text-xs flex items-center justify-center shrink-0 mt-0.5">
-                      {sIdx + 1}
-                    </span>
-                    <p className="text-xs text-slate-700 leading-relaxed">{step}</p>
-                  </div>
-                ))}
+              {/* Modal Bottom Actions */}
+              <div className="grid grid-cols-2 gap-3 pt-2">
+                <Button
+                  variant="outline"
+                  className="rounded-2xl border-teal-200 text-[#1f7a8c] hover:bg-teal-50 font-bold transition-transform active:scale-95"
+                  onClick={() => handleAddToGroceryList(selectedMeal)}
+                >
+                  <Plus size={14} className="mr-1" />
+                  Add to Grocery List
+                </Button>
+                <Button
+                  className="rounded-2xl bg-gradient-to-r from-[#1f7a8c] to-[#4ecdc4] text-white font-bold shadow-sm hover:shadow-md transition-transform active:scale-95"
+                  onClick={() => handleLogThisMeal(selectedMeal)}
+                >
+                  <Check size={14} className="mr-1" />
+                  Log This Meal
+                </Button>
               </div>
-            </div>
-
-            {/* Modal Bottom Actions */}
-            <div className="grid grid-cols-2 gap-3 pt-2">
-              <Button
-                variant="outline"
-                className="rounded-2xl border-teal-200 text-[#1f7a8c]"
-                onClick={() => handleAddToGroceryList(selectedMeal)}
-              >
-                <Plus size={14} className="mr-1" />
-                Add to Grocery List
-              </Button>
-              <Button
-                className="rounded-2xl bg-gradient-to-r from-[#1f7a8c] to-[#4ecdc4] text-white font-bold"
-                onClick={() => handleLogThisMeal(selectedMeal)}
-              >
-                <Check size={14} className="mr-1" />
-                Log This Meal
-              </Button>
-            </div>
-          </div>
-        </div>
-      )}
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
