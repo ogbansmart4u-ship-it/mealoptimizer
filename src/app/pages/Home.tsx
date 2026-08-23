@@ -339,6 +339,8 @@ export default function Home() {
     waterGlasses,
     mealsLoggedCount: todayLogs.length,
     streak: trackingStreak,
+    disabled: showSpotlightTour || showHealthWizard || showWhatsAppModal || showVoiceLogger || showAnalyseFoodOptions,
+    delayMs: 45000, // Wait 45 seconds after the user is settled on the home page before prompting
     onDrinkWater: () => handleWaterIncrease(),
     onLogMeal: () => navigate("/plan-meal"),
   });

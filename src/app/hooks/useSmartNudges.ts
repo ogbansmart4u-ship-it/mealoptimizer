@@ -18,6 +18,8 @@ export interface UseSmartNudgesProps {
   waterGlasses?: number;
   mealsLoggedCount?: number;
   streak?: number;
+  disabled?: boolean;
+  delayMs?: number;
   onDrinkWater?: () => Promise<void> | void;
   onLogMeal?: () => void;
 }
@@ -31,6 +33,8 @@ export function useSmartNudges({
   waterGlasses = 0,
   mealsLoggedCount = 0,
   streak = 0,
+  disabled = false,
+  delayMs = 45000, // Peaceful 45-second default delay after page arrival
   onDrinkWater,
   onLogMeal,
 }: UseSmartNudgesProps = {}) {
@@ -48,6 +52,7 @@ export function useSmartNudges({
 
   const showNudge = useCallback(
     (data: Omit<SmartNudgeState, "isOpen">) => {
+      if (disabled) return;
       setNudge({
         ...data,
         isOpen: true,
@@ -59,10 +64,15 @@ export function useSmartNudges({
         /* ignore */
       }
     },
-    []
+    [disabled]
   );
 
   useEffect(() => {
+    if (disabled) {
+      setNudge((prev) => (prev.isOpen ? { ...prev, isOpen: false } : prev));
+      return;
+    }
+
     let lastGeneralTime = 0;
     let lastHydrationTime = 0;
     try {
@@ -77,6 +87,7 @@ export function useSmartNudges({
     const timeSinceHydration = now - lastHydrationTime;
 
     const timer = setTimeout(() => {
+      if (disabled) return;
       const currentHour = new Date().getHours();
 
       // Rule 1: Smart Ambient Hydration Reminder (Every 2-3 Hours during waking hours 8 AM - 9 PM)
@@ -201,10 +212,10 @@ export function useSmartNudges({
         });
         return;
       }
-    }, 2500);
+    }, delayMs);
 
     return () => clearTimeout(timer);
-  }, [waterGlasses, mealsLoggedCount, streak, onDrinkWater, onLogMeal, showNudge, closeNudge]);
+  }, [waterGlasses, mealsLoggedCount, streak, disabled, delayMs, onDrinkWater, onLogMeal, showNudge, closeNudge]);
 
   return {
     nudge,
