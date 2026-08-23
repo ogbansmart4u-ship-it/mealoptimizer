@@ -54,7 +54,7 @@ import {
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
 import { useAuth } from "../contexts/AuthContext";
-import { useLanguage } from "../contexts/LanguageContext";
+import { useLanguage, supportedLanguages } from "../contexts/LanguageContext";
 import { useUser, UserProfile } from "../contexts/UserContext";
 import { useLocation, availableRegions } from "../contexts/LocationContext";
 import { updateUserProfile } from "../../lib/api";
@@ -66,9 +66,11 @@ import WhatsAppConnectDialog from "../components/WhatsAppConnectDialog";
 export default function Profile() {
   const navigate = useNavigate();
   const { signOut } = useAuth();
-  const { t } = useLanguage();
+  const { t, language, setLanguage } = useLanguage();
   const { profile, updateProfile, refreshProfile } = useUser();
   const { selectedLocation, setSelectedLocation } = useLocation();
+  const [showLanguageDialog, setShowLanguageDialog] = useState(false);
+  const currentLang = supportedLanguages.find((l) => l.code === language) || supportedLanguages[0];
 
   // Instant resilient fallback data — guarantees 0 blank frames or error screens
   const safeProfile: UserProfile = {
@@ -723,13 +725,98 @@ export default function Profile() {
             </DialogContent>
           </Dialog>
 
-          {/* Dietary Preferences */}
+          {/* Language Selector Dialog Trigger */}
+          <Dialog open={showLanguageDialog} onOpenChange={setShowLanguageDialog}>
+            <DialogTrigger asChild>
+              <button className="w-full flex items-center justify-between py-3.5 hover:bg-slate-50/80 px-2 rounded-2xl transition-colors cursor-pointer">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-teal-50 text-[#126778] rounded-xl">
+                    <Globe className="h-4 w-4" />
+                  </div>
+                  <div className="text-left">
+                    <div className="flex items-center gap-2">
+                      <p className="text-xs font-bold text-slate-800">Language</p>
+                      <span className="text-[10px] font-black px-2 py-0.5 rounded-full bg-teal-100 text-teal-800 border border-teal-200">
+                        {currentLang.flag} {currentLang.name}
+                      </span>
+                    </div>
+                    <p className="text-[10px] text-slate-400">English, Yorùbá, Igbo, Hausa, Pidgin, Français, Español</p>
+                  </div>
+                </div>
+                <ChevronRight className="h-4 w-4 text-slate-400" />
+              </button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-md rounded-3xl z-[110]">
+              <DialogHeader>
+                <DialogTitle className="text-lg font-black text-[#126778] flex items-center gap-2">
+                  <Globe className="h-5 w-5" />
+                  <span>Select App Language</span>
+                </DialogTitle>
+                <DialogDescription className="text-xs text-slate-500">
+                  Choose your preferred cultural and regional language.
+                </DialogDescription>
+              </DialogHeader>
+              <div className="grid grid-cols-1 gap-2 py-2 max-h-[60vh] overflow-y-auto">
+                {supportedLanguages.map((lang) => {
+                  const isSelected = language === lang.code;
+                  return (
+                    <button
+                      key={lang.code}
+                      onClick={() => {
+                        setLanguage(lang.code as any);
+                        setShowLanguageDialog(false);
+                        toast.success(`Language set to ${lang.name}`);
+                      }}
+                      className={`w-full flex items-center justify-between p-3 rounded-2xl border transition-all cursor-pointer ${
+                        isSelected
+                          ? "bg-teal-50 border-teal-300 text-teal-900 font-extrabold shadow-xs"
+                          : "bg-slate-50 hover:bg-slate-100 border-slate-200/80 text-slate-700 font-medium"
+                      }`}
+                    >
+                      <div className="flex items-center gap-3">
+                        <span className="text-xl">{lang.flag}</span>
+                        <div className="text-left">
+                          <p className="text-xs font-bold">{lang.name}</p>
+                          <p className="text-[10px] text-slate-400 uppercase">{lang.code}</p>
+                        </div>
+                      </div>
+                      {isSelected && <Check className="h-4 w-4 text-teal-700 stroke-[3]" />}
+                    </button>
+                  );
+                })}
+              </div>
+            </DialogContent>
+          </Dialog>
+
+          {/* App Personalization Suite */}
           <button
             onClick={() => navigate("/personalization")}
             className="w-full flex items-center justify-between py-3.5 hover:bg-slate-50/80 px-2 rounded-2xl transition-colors cursor-pointer"
           >
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-slate-100 text-slate-600 rounded-xl">
+              <div className="p-2 bg-indigo-50 text-indigo-600 rounded-xl">
+                <Sliders className="h-4 w-4" />
+              </div>
+              <div className="text-left">
+                <div className="flex items-center gap-2">
+                  <p className="text-xs font-bold text-slate-800">Personalization & Theme</p>
+                  <span className="text-[9px] font-black px-1.5 py-0.5 rounded-md bg-indigo-50 text-indigo-700 border border-indigo-200">
+                    DASHBOARD
+                  </span>
+                </div>
+                <p className="text-[10px] text-slate-400">Dark/Light theme, metric/imperial units, widget layout</p>
+              </div>
+            </div>
+            <ChevronRight className="h-4 w-4 text-slate-400" />
+          </button>
+
+          {/* Dietary Preferences & Cultural Swaps */}
+          <button
+            onClick={() => navigate("/personalization")}
+            className="w-full flex items-center justify-between py-3.5 hover:bg-slate-50/80 px-2 rounded-2xl transition-colors cursor-pointer"
+          >
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-emerald-50 text-emerald-600 rounded-xl">
                 <Palette className="h-4 w-4" />
               </div>
               <div className="text-left">
