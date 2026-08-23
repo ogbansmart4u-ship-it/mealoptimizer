@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import {
   Camera, Sparkles, TrendingUp, MapPin, Globe, AlertCircle, AlertTriangle, ChevronDown, ChevronUp, X,
   Activity, Clock, Flame, Calendar, Bell, BellRing, ChevronRight, Heart,
-  Droplet, Droplets, Minus, Plus, Upload, Zap, Target, BarChart3, ScanBarcode, Shield, ShieldCheck, Moon, Search, FlaskConical, BookOpen, Stethoscope, Mic, ShoppingCart, Compass, FileText, CheckCircle2, Trophy, Pill, FileSpreadsheet
+  Droplet, Droplets, Minus, Plus, Upload, Zap, Target, BarChart3, ScanBarcode, Shield, ShieldCheck, Moon, Search, FlaskConical, ChefHat, BookOpen, Stethoscope, Mic, ShoppingCart, Compass, FileText, CheckCircle2, Trophy, Pill, FileSpreadsheet
 } from "lucide-react";
 import BottomNav from "../components/BottomNav";
 import StreakCard from "../components/StreakCard";
