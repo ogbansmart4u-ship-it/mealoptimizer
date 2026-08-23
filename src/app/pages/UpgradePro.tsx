@@ -39,8 +39,21 @@ export default function UpgradePro() {
   const [isSyncing, setIsSyncing] = useState(false);
   const [currentSub, setCurrentSub] = useState(getSubscriptionStatus(profile?.id));
 
-  const handleSubscribe = async (plan: PlanTier) => {
-    if (plan === "free") return;
+  const activePlanId: PlanTier = currentSub.isPro
+    ? currentSub.plan === "family"
+      ? "family"
+      : "pro"
+    : "free";
+
+  const handleSelectPlan = async (plan: PlanTier) => {
+    if (plan === "free") {
+      setSubscriptionStatus("free", 0, profile?.id);
+      updateProfile?.({ plan: "free", isPro: false });
+      setCurrentSub({ isPro: false, plan: "free" });
+      triggerHaptic("light");
+      toast.success("Switched to Starter (Free) Plan");
+      return;
+    }
 
     setLoadingPlan(plan);
     triggerHaptic("medium");
@@ -51,13 +64,18 @@ export default function UpgradePro() {
         currency,
         cycle,
         userEmail: profile?.email,
+        userId: profile?.id,
         onSuccess: () => {
           setSubscriptionStatus(plan, cycle === "annual" ? 12 : 1, profile?.id);
           updateProfile?.({ plan, isPro: true });
           setCurrentSub(getSubscriptionStatus(profile?.id));
           triggerHaptic("milestone");
           triggerConfetti("fireworks");
-          toast.success(`🎉 You are now subscribed to ${plan === "family" ? "Diaspora Family Care" : "MealOptimizer PRO"}!`);
+          toast.success(
+            `🎉 You are now subscribed to ${
+              plan === "family" ? "Diaspora Family Care" : "MealOptimizer PRO"
+            }!`
+          );
         },
       });
     } catch {
@@ -133,8 +151,12 @@ export default function UpgradePro() {
               <ShieldCheck size={16} />
             </div>
             <div>
-              <span className="font-extrabold text-white block">Already Subscribed on PC or another phone?</span>
-              <span className="text-slate-400 text-[11px]">Tap to sync your active PRO membership to this device in 1 click.</span>
+              <span className="font-extrabold text-white block">
+                Already Subscribed on PC or another phone?
+              </span>
+              <span className="text-slate-400 text-[11px]">
+                Tap to sync your active PRO membership to this device in 1 click.
+              </span>
             </div>
           </div>
           <button
@@ -143,7 +165,9 @@ export default function UpgradePro() {
             className="w-full sm:w-auto px-3.5 py-2 bg-gradient-to-r from-[#1f7a8c] to-[#2a9d8f] hover:from-[#176270] hover:to-[#227f74] text-white rounded-xl font-black text-xs cursor-pointer active:scale-95 shadow-md flex items-center justify-center gap-1.5 shrink-0"
           >
             <RotateCw size={13} className={isSyncing ? "animate-spin" : ""} />
-            <span>{currentSub.isPro ? "PRO Active (Re-Sync)" : "Activate PRO on This Phone"}</span>
+            <span>
+              {activePlanId !== "free" ? "PRO Active (Re-Sync)" : "Activate PRO on This Phone"}
+            </span>
           </button>
         </div>
 
@@ -207,23 +231,30 @@ export default function UpgradePro() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
           {SUBSCRIPTION_PLANS.map((plan) => {
             const price = plan.prices[currency][cycle];
-            const isCurrent = (currentSub.plan === plan.id) || (plan.id === "pro" && currentSub.isPro);
+            const isCurrent = activePlanId === plan.id;
 
             return (
               <div
                 key={plan.id}
                 className={`relative rounded-3xl p-6 transition-all flex flex-col justify-between ${
-                  plan.popular
+                  isCurrent
+                    ? "bg-slate-900 border-2 border-teal-400 shadow-xl shadow-teal-500/10"
+                    : plan.popular
                     ? "bg-gradient-to-b from-slate-900 via-[#0e2c33] to-slate-900 border-2 border-amber-400 shadow-2xl shadow-amber-500/10"
                     : "bg-slate-900/80 border border-slate-800 hover:border-slate-700"
                 }`}
               >
-                {/* Popular / Badge banner */}
-                {plan.badge && (
+                {/* Active / Popular Badge */}
+                {isCurrent ? (
+                  <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-teal-500 text-slate-950 px-3.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider shadow-md flex items-center gap-1">
+                    <Check size={11} strokeWidth={3} />
+                    <span>Active Plan</span>
+                  </div>
+                ) : plan.badge ? (
                   <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 px-3.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider shadow-md">
                     {plan.badge}
                   </div>
-                )}
+                ) : null}
 
                 <div>
                   <div className="flex items-center justify-between mb-2">
@@ -266,11 +297,13 @@ export default function UpgradePro() {
 
                 {/* CTA Button */}
                 <Button
-                  onClick={() => handleSubscribe(plan.id)}
+                  onClick={() => handleSelectPlan(plan.id)}
                   disabled={loadingPlan !== null || isCurrent}
                   className={`w-full py-4 rounded-2xl font-black text-xs sm:text-sm tracking-wide transition-all cursor-pointer flex items-center justify-center gap-2 ${
                     isCurrent
-                      ? "bg-slate-800 text-slate-400 border border-slate-700 cursor-default"
+                      ? "bg-slate-800 text-teal-300 border border-teal-500/40 cursor-default opacity-90"
+                      : plan.id === "free"
+                      ? "bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 active:scale-95"
                       : plan.popular
                       ? "bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 shadow-lg shadow-amber-500/20 active:scale-95"
                       : "bg-[#1f7a8c] hover:bg-[#176270] text-white active:scale-95"
@@ -279,9 +312,11 @@ export default function UpgradePro() {
                   {loadingPlan === plan.id ? (
                     "Activating..."
                   ) : isCurrent ? (
-                    <span className="flex items-center gap-1.5">
-                      <Check size={16} /> Active Plan
+                    <span className="flex items-center gap-1.5 font-bold">
+                      <Check size={16} /> Active Current Plan
                     </span>
+                  ) : plan.id === "free" ? (
+                    <span>Switch to Starter (Free)</span>
                   ) : (
                     <>
                       <span>{plan.cta}</span>
@@ -319,17 +354,20 @@ export default function UpgradePro() {
               a: "PRO members can link their WhatsApp number in 1 tap. Whenever you snap a meal photo or send a voice note on WhatsApp, Gemini AI instantly parses the macros and updates your dashboard.",
             },
             {
-              q: "What is the Diaspora Parent Care plan?",
-              a: "Designed for families living in the UK, US, or Canada who want to monitor aging parents in Africa. Your parents text or snap their meals on WhatsApp, and you receive weekly clinical summaries and glucose spike alerts.",
+              q: "What is the Diaspora Parent Care Plan?",
+              a: "It covers remote health monitoring for up to 3 family members in Nigeria/Africa. Your elderly parents can simply log meals through WhatsApp without downloading any app, and you receive weekly clinical PDF reports and high glucose alerts.",
             },
             {
-              q: "What payment methods are supported?",
-              a: "We support Visa, Mastercard, Apple Pay, and Google Pay in USD/GBP, as well as instant Naira debit cards and bank transfers via Paystack.",
+              q: "Can I cancel or switch plans anytime?",
+              a: "Yes, you can upgrade, downgrade, or switch between plans at any time with 1 tap directly from your profile settings.",
             },
           ].map((faq, idx) => (
-            <div key={idx} className="p-4 rounded-2xl bg-slate-900 border border-slate-800 text-xs">
-              <span className="font-bold text-white block mb-1">{faq.q}</span>
-              <p className="text-slate-400 leading-relaxed">{faq.a}</p>
+            <div
+              key={idx}
+              className="bg-slate-900/60 border border-slate-800/80 rounded-2xl p-4 text-left"
+            >
+              <h4 className="text-xs sm:text-sm font-bold text-white mb-1.5">{faq.q}</h4>
+              <p className="text-xs text-slate-400 leading-relaxed">{faq.a}</p>
             </div>
           ))}
         </div>

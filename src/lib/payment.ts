@@ -38,7 +38,7 @@ export const SUBSCRIPTION_PLANS: PlanPricing[] = [
       "Daily water tracker",
       "Basic weight logs",
     ],
-    cta: "Current Plan",
+    cta: "Select Free Plan",
   },
   {
     id: "pro",
