@@ -39,6 +39,7 @@ import {
   Settings,
 } from "lucide-react";
 import BottomNav from "../components/BottomNav";
+import AmbientBackground from "../components/AmbientBackground";
 import { Button } from "../components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
 import { Switch } from "../components/ui/switch";
@@ -281,13 +282,12 @@ export default function Profile() {
   const subStatus = getSubscriptionStatus(safeProfile.id);
 
   return (
-    <div className="min-h-screen bg-[#F3F8F8] pb-28 text-slate-800 antialiased selection:bg-teal-500 selection:text-white relative overflow-hidden">
-      {/* Subtle Ambient Body Orbs */}
-      <div className="absolute top-1/3 -left-24 w-80 h-80 bg-teal-300/20 rounded-full blur-3xl pointer-events-none animate-ambient-drift-1" />
-      <div className="absolute bottom-1/4 -right-28 w-96 h-96 bg-cyan-300/20 rounded-full blur-3xl pointer-events-none animate-ambient-drift-2" />
+    <div className="min-h-screen bg-[#F3F8F8] pb-28 text-slate-800 antialiased selection:bg-teal-500 selection:text-white relative">
+      {/* High-Visibility Ambient Background Animation */}
+      <AmbientBackground />
 
       {/* 1. 10X Hero Header Section */}
-      <div className="relative bg-gradient-to-br from-[#0b3c47] via-[#125e6d] to-[#1f7a8c] text-white pt-12 pb-10 px-6 rounded-b-[3rem] shadow-2xl overflow-hidden">
+      <div className="relative z-10 bg-gradient-to-br from-[#0b3c47] via-[#125e6d] to-[#1f7a8c] text-white pt-12 pb-10 px-6 rounded-b-[3rem] shadow-2xl overflow-hidden">
         {/* Ambient Glow Orbs */}
         <div className="absolute top-0 right-0 w-80 h-80 bg-teal-400/20 rounded-full blur-3xl -mr-20 -mt-20 pointer-events-none animate-ambient-drift-1" />
         <div className="absolute bottom-0 left-0 w-64 h-64 bg-emerald-400/15 rounded-full blur-3xl -ml-20 -mb-20 pointer-events-none animate-ambient-drift-2" />

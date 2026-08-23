@@ -5,6 +5,7 @@ import PageHeader from "../components/PageHeader";
 import BottomNav from "../components/BottomNav";
 import { SkeletonList } from "../components/SkeletonLoader";
 import MascotEmptyState from "../components/MascotEmptyState";
+import AmbientBackground from "../components/AmbientBackground";
 import { toast } from "sonner";
 import { getMealLogs, getBiometrics } from "../../lib/api";
 
@@ -100,8 +101,11 @@ export default function GlucoseInsights() {
     .sort((a, b) => b.avg - a.avg);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#B8E5E5] to-[#E8F5F5] pb-24">
-      <PageHeader title="Meal & Glucose Insights" showHome actions={<TrendingUp className="h-6 w-6 text-white" />} />
+    <div className="min-h-screen bg-gradient-to-b from-[#B8E5E5] via-[#E8F5F5] to-[#F8FBFB] pb-28 relative">
+      <AmbientBackground />
+      <div className="relative z-10">
+        <PageHeader title="Meal & Glucose Insights" showHome actions={<TrendingUp className="h-6 w-6 text-white" />} />
+      </div>
 
       <div className="px-6 mt-6 space-y-6">
         {/* How it works */}

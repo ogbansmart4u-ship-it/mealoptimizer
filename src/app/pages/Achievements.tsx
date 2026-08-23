@@ -6,6 +6,7 @@ import BottomNav from '../components/BottomNav';
 import ProfilePictureUpload from '../components/ProfilePictureUpload';
 import StreakCard from '../components/StreakCard';
 import MascotEmptyState from '../components/MascotEmptyState';
+import AmbientBackground from '../components/AmbientBackground';
 
 export default function Achievements() {
   const navigate = useNavigate();
@@ -25,9 +26,10 @@ export default function Achievements() {
     unlockedAchievements.find(a => a.id === achievementId);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#B8E5E5] to-[#E8F5F5] pb-24">
+    <div className="min-h-screen bg-gradient-to-b from-[#B8E5E5] via-[#E8F5F5] to-[#F8FBFB] pb-28 relative">
+      <AmbientBackground />
       {/* Header */}
-      <div className="bg-gradient-to-r from-[#1f7a8c] to-[#4ecdc4] px-6 pt-12 pb-8">
+      <div className="relative z-10 bg-gradient-to-r from-[#1f7a8c] to-[#4ecdc4] px-6 pt-12 pb-8">
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-3">
             <button

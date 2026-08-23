@@ -38,6 +38,7 @@ import { Button } from "../components/ui/button";
 import { CelebrationAnimation } from "../components/CelebrationAnimation";
 import { SkeletonGoalList } from "../components/SkeletonLoader";
 import { getGoals, createGoal, updateGoal, deleteGoal } from "../../lib/api";
+import AmbientBackground from "../components/AmbientBackground";
 import Mascot from "../components/Mascot";
 import { toast } from "sonner";
 import { triggerConfetti, triggerHaptic } from "../utils/celebration";
@@ -325,11 +326,9 @@ export default function Goals() {
   const completedCount = goals.filter((g) => g.status === "completed").length;
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#B8E5E5] via-[#E8F5F5] to-[#F8FBFB] pb-28 relative overflow-hidden">
-      {/* Subtle Ambient Background Motion Layers */}
-      <div className="absolute -top-24 -left-24 w-80 h-80 rounded-full bg-gradient-to-br from-teal-400/30 to-emerald-300/20 blur-3xl pointer-events-none animate-ambient-drift-1" />
-      <div className="absolute top-1/3 -right-28 w-96 h-96 rounded-full bg-gradient-to-bl from-cyan-300/25 to-teal-200/20 blur-3xl pointer-events-none animate-ambient-drift-2" />
-      <div className="absolute bottom-24 left-6 w-72 h-72 rounded-full bg-gradient-to-tr from-emerald-300/20 to-teal-100/30 blur-3xl pointer-events-none animate-pulse-glow-soft" />
+    <div className="min-h-screen bg-gradient-to-b from-[#B8E5E5] via-[#E8F5F5] to-[#F8FBFB] pb-28 relative">
+      {/* High-Visibility Ambient Background Animation */}
+      <AmbientBackground />
 
       {/* Header */}
       <div className="relative z-10 bg-gradient-to-b from-[#A5DBDB] to-[#B8E5E5] px-4 sm:px-6 pt-9 pb-5 border-b border-teal-500/15">
