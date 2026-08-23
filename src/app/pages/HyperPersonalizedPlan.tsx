@@ -517,11 +517,11 @@ export default function HyperPersonalizedPlan() {
       {/* 7. Preparation Protocol Modal */}
       {selectedMeal && (
         <div
-          className="fixed inset-0 bg-black/60 backdrop-blur-xs z-50 flex items-end justify-center p-0 sm:p-4"
+          className="fixed inset-0 bg-black/70 backdrop-blur-sm z-[100] flex items-center justify-center p-4 sm:p-6"
           onClick={() => setSelectedMeal(null)}
         >
           <div
-            className="bg-white rounded-t-3xl sm:rounded-3xl w-full max-w-xl max-h-[85vh] overflow-y-auto p-5 sm:p-6 space-y-5 animate-slide-up shadow-2xl"
+            className="bg-white rounded-3xl w-full max-w-lg max-h-[82vh] overflow-y-auto p-5 sm:p-6 space-y-5 shadow-2xl border border-slate-100 animate-in fade-in zoom-in-95 duration-200"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between pb-3 border-b border-slate-100">
