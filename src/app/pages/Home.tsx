@@ -865,11 +865,17 @@ export default function Home() {
                 </p>
               </div>
             </div>
-                    </span>
-                  </div>
-                </button>
 
-                {/* 3. Smart Grocery List with Rolling Cart Pulse */}
+            {/* Smart Grocery & Bio-Plan Quick Actions */}
+            <div>
+              <div className="flex items-center justify-between mb-2.5 px-0.5">
+                <h3 className="text-xs font-black text-gray-900 uppercase tracking-wider flex items-center gap-1.5">
+                  <span>Smart Market & Personalized Bio-Plans</span>
+                </h3>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                {/* 1. Smart Grocery List with Rolling Cart Pulse */}
                 <button
                   onClick={() => navigate("/grocery-list")}
                   className="bg-white rounded-3xl p-4 text-left shadow-md hover:shadow-xl border-2 border-teal-100 hover:border-teal-400 transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] cursor-pointer flex flex-col justify-between h-36 group"
@@ -892,7 +898,7 @@ export default function Home() {
                   </div>
                 </button>
 
-                {/* 4. Custom Bio-Plan with Shifting Animated Gradient Background */}
+                {/* 2. Custom Bio-Plan with Shifting Animated Gradient Background */}
                 <button
                   onClick={() => navigate("/hyper-personalized-plan")}
                   className="relative overflow-hidden bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-600 animate-gradient-shift rounded-3xl p-4 text-white text-left shadow-md hover:shadow-xl transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] cursor-pointer flex flex-col justify-between h-36 border border-purple-400/30 group"
