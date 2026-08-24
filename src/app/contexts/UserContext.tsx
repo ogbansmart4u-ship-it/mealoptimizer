@@ -132,8 +132,11 @@ export function UserProvider({
           const profileData = await getUserProfile();
           const savedPic = readSavedPicture(user.id);
           const currentSub = getSubscriptionStatus(user.id);
-          const resolvedPlan = profileData?.plan || localCached.plan || currentSub.plan || (currentSub.isPro ? "pro" : "free");
-          const resolvedIsPro = profileData?.isPro ?? localCached.isPro ?? currentSub.isPro ?? (resolvedPlan === "pro" || resolvedPlan === "family");
+          const resolvedPlan: "free" | "pro" | "family" =
+            currentSub.plan === "free"
+              ? "free"
+              : (currentSub.plan || profileData?.plan || localCached.plan || "free");
+          const resolvedIsPro = resolvedPlan === "pro" || resolvedPlan === "family";
 
           const merged: UserProfile = {
             ...localCached,
@@ -158,7 +161,6 @@ export function UserProvider({
           };
 
           setProfile(merged);
-          syncSubscriptionFromProfile(merged, user.id);
 
           try {
             localStorage.setItem(`user-profile-${user.id}`, JSON.stringify(merged));
@@ -181,8 +183,12 @@ export function UserProvider({
       if (storedProfile) {
         const parsed = JSON.parse(storedProfile);
         if (!parsed.profilePicture) parsed.profilePicture = readSavedPicture(activeUid);
+        const currentSub = getSubscriptionStatus(activeUid);
+        if (currentSub.plan === "free") {
+          parsed.plan = "free";
+          parsed.isPro = false;
+        }
         setProfile(parsed);
-        syncSubscriptionFromProfile(parsed);
         setLoading(false);
         setIsFetching(false);
         return;
@@ -213,13 +219,12 @@ export function UserProvider({
                  localStorage.getItem("userLocation") ||
                  "Nigeria",
         profilePicture: user?.user_metadata?.profilePicture || readSavedPicture(activeUid) || localCached.profilePicture || "",
-        plan: "pro",
-        isPro: true,
+        plan: currentSub.plan || "free",
+        isPro: currentSub.isPro || false,
         subscriptionExpiresAt: currentSub.expiresAt,
       };
 
       setProfile(fallbackProfile);
-      syncSubscriptionFromProfile(fallbackProfile, activeUid);
 
       try {
         localStorage.setItem(`user-profile-${activeUid}`, JSON.stringify(fallbackProfile));

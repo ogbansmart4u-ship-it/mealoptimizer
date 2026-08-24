@@ -172,6 +172,17 @@ export function setSubscriptionStatus(plan: PlanTier, durationMonths = 1, userId
 }
 
 /**
+ * Syncs subscription from the user's backend profile into local storage
+ */
+export function syncSubscriptionFromProfile(profile: any, userId?: string): boolean {
+  if (!profile) return false;
+  const isPro = profile.plan === "pro" || profile.plan === "family" || profile.isPro === true;
+  const plan: PlanTier = isPro ? (profile.plan === "family" ? "family" : "pro") : "free";
+  setSubscriptionStatus(plan, isPro ? 12 : 0, userId || profile.id);
+  return isPro;
+}
+
+/**
  * Helper to dynamically load Paystack Inline JS
  */
 function loadPaystackScript(): Promise<boolean> {

@@ -39,7 +39,13 @@ export default function UpgradePro() {
   const [isSyncing, setIsSyncing] = useState(false);
   const [currentSub, setCurrentSub] = useState(() => getSubscriptionStatus(profile?.id));
 
-  const activePlanId: PlanTier = currentSub.plan === "free" ? "free" : (currentSub.plan || (currentSub.isPro ? "pro" : "free"));
+  // Sync state if profile changes
+  useEffect(() => {
+    const sub = getSubscriptionStatus(profile?.id);
+    setCurrentSub(sub);
+  }, [profile?.id, profile?.plan, profile?.isPro]);
+
+  const activePlanId: PlanTier = currentSub.plan || (profile?.plan as PlanTier) || "free";
 
   const handleSelectPlan = async (plan: PlanTier) => {
     if (plan === "free") {
