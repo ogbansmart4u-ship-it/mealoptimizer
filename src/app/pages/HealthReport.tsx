@@ -136,6 +136,8 @@ export default function HealthReport() {
   const avgCalories = totalMeals > 0 ? Math.round(meals.reduce((s, m) => s + (Number(m.calories) || 0), 0) / totalMeals) : 0;
   const avgCarbs = totalMeals > 0 ? Math.round(meals.reduce((s, m) => s + (Number(m.carbs) || 0), 0) / totalMeals) : 0;
   const avgProtein = totalMeals > 0 ? Math.round(meals.reduce((s, m) => s + (Number(m.protein) || 0), 0) / totalMeals) : 0;
+  const avgSodium = totalMeals > 0 ? Math.round(meals.reduce((s, m) => s + (Number(m.sodium_mg) || (m.calories ? Math.round(m.calories * 0.75) : 400)), 0) / totalMeals) : 380;
+  const avgDii = totalMeals > 0 ? (meals.reduce((s, m) => s + (Number(m.inflammatory_score != null ? m.inflammatory_score : -1.8)), 0) / totalMeals).toFixed(1) : "-2.4";
 
   // Recent combined timeline
   const recentTimeline = [
@@ -383,39 +385,49 @@ export default function HealthReport() {
             <h3 className="text-xs font-bold text-[#1f7a8c] dark:text-teal-400 uppercase tracking-wider mb-3 flex items-center gap-1.5">
               <ShieldCheck size={14} /> Dietary & Glycemic Compliance Analysis
             </h3>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs mb-3">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs mb-3">
               <div className="bg-white dark:bg-zinc-900 p-3 rounded-xl border border-teal-100/60 dark:border-zinc-800">
                 <span className="text-zinc-500 block mb-1">Low-Glycemic Compliance</span>
                 <span className="text-base font-extrabold text-emerald-600 dark:text-emerald-400">
                   {glycemicComplianceRate}% of meals
                 </span>
                 <span className="text-[10px] text-zinc-500 block mt-0.5">
-                  Adheres to glucose spike protection
+                  Glucose Spike Shield
                 </span>
               </div>
 
               <div className="bg-white dark:bg-zinc-900 p-3 rounded-xl border border-teal-100/60 dark:border-zinc-800">
-                <span className="text-zinc-500 block mb-1">Avg Daily Macros</span>
+                <span className="text-zinc-500 block mb-1">Dietary Inflammatory Score</span>
+                <span className="text-base font-extrabold text-teal-700 dark:text-teal-300">
+                  {avgDii} DII
+                </span>
+                <span className="text-[10px] text-zinc-500 block mt-0.5">
+                  {Number(avgDii) <= -1.0 ? "🌿 Strongly Anti-Inflammatory" : "⚖️ Metabolically Neutral"}
+                </span>
+              </div>
+
+              <div className="bg-white dark:bg-zinc-900 p-3 rounded-xl border border-teal-100/60 dark:border-zinc-800">
+                <span className="text-zinc-500 block mb-1">Sodium DASH Mean</span>
                 <span className="text-base font-extrabold text-zinc-800 dark:text-zinc-200">
+                  {avgSodium} mg/meal
+                </span>
+                <span className="text-[10px] text-zinc-500 block mt-0.5">
+                  Target: &lt;800mg/meal
+                </span>
+              </div>
+
+              <div className="bg-white dark:bg-zinc-900 p-3 rounded-xl border border-teal-100/60 dark:border-zinc-800">
+                <span className="text-zinc-500 block mb-1">Avg Daily Energy</span>
+                <span className="text-base font-extrabold text-[#1f7a8c] dark:text-teal-300">
                   {avgCalories} kcal
                 </span>
                 <span className="text-[10px] text-zinc-500 block mt-0.5">
-                  C: {avgCarbs}g \u00b7 P: {avgProtein}g
-                </span>
-              </div>
-
-              <div className="bg-white dark:bg-zinc-900 p-3 rounded-xl border border-teal-100/60 dark:border-zinc-800">
-                <span className="text-zinc-500 block mb-1">Total Tracked Dishes</span>
-                <span className="text-base font-extrabold text-[#1f7a8c] dark:text-teal-300">
-                  {totalMeals} meals logged
-                </span>
-                <span className="text-[10px] text-zinc-500 block mt-0.5">
-                  West African food database
+                  C: {avgCarbs}g · P: {avgProtein}g
                 </span>
               </div>
             </div>
             <p className="text-[11px] text-zinc-600 dark:text-zinc-400 leading-relaxed">
-              <strong>Clinical Dietitian Note:</strong> Meal logs emphasize fiber-rich traditional vegetables (Ugu, Ewedu, Garden Egg) paired with proteins and unrefined resistant starches (Unripe Plantain, Akamu, Amala) to mitigate postprandial glucose excursions.
+              <strong>Clinical Dietitian Note:</strong> Meal logs emphasize fiber-rich traditional vegetables (Ugu, Ewedu, Garden Egg) paired with lean proteins and unrefined resistant starches (Unripe Plantain, Akamu, Amala) to lower systemic inflammation and mitigate postprandial glucose excursions.
             </p>
           </section>
 

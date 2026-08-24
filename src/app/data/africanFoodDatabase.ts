@@ -25,6 +25,8 @@ export interface AfricanFoodDish {
   carbs_g: number;
   fat_g: number;
   fiber_g: number;
+  sodium_mg?: number;
+  inflammatory_score?: number; // -5.0 (highly anti-inflammatory) to +5.0 (pro-inflammatory)
   glycemic_index: number;
   glycemicLoad: "Low" | "Medium" | "High";
   bloodSugarImpact: "low" | "medium" | "high";
@@ -785,5 +787,70 @@ export const AFRICAN_FOOD_DATABASE: AfricanFoodDish[] = [
     bloodSugarImpact: "low",
     healthBenefits: "High in prebiotic pulse fibers, cilantro, and parsley micronutrients.",
     aliases: ["Moroccan Ramadan soup", "Harira soup"],
+    sodium_mg: 480,
+    inflammatory_score: -2.8,
   },
 ];
+
+export function getInflammatoryLabel(score: number): {
+  label: string;
+  badgeClass: string;
+  icon: string;
+  description: string;
+} {
+  if (score <= -2.0) {
+    return {
+      label: "Strongly Anti-Inflammatory",
+      badgeClass: "bg-emerald-50 text-emerald-800 border-emerald-300",
+      icon: "🌿",
+      description: "Rich in antioxidants, omega-3s, and polyphenols that lower systemic CRP & vascular inflammation.",
+    };
+  } else if (score < 0) {
+    return {
+      label: "Anti-Inflammatory",
+      badgeClass: "bg-teal-50 text-teal-800 border-teal-300",
+      icon: "🍃",
+      description: "Supports healthy metabolic recovery with anti-inflammatory fibers and micronutrients.",
+    };
+  } else if (score <= 1.5) {
+    return {
+      label: "Metabolically Neutral",
+      badgeClass: "bg-blue-50 text-blue-800 border-blue-300",
+      icon: "⚖️",
+      description: "Balanced macronutrient profile with neutral systemic inflammatory impact.",
+    };
+  } else {
+    return {
+      label: "Pro-Inflammatory Load",
+      badgeClass: "bg-amber-50 text-amber-800 border-amber-300",
+      icon: "🔥",
+      description: "Higher in cooking fats, starches or sodium. Pair with dark greens or hibiscus (Zobo) to neutralize.",
+    };
+  }
+}
+
+export function getSodiumDASHStatus(sodiumMg: number): {
+  status: "Safe" | "Moderate" | "Elevated";
+  badgeClass: string;
+  message: string;
+} {
+  if (sodiumMg <= 400) {
+    return {
+      status: "Safe",
+      badgeClass: "bg-emerald-50 text-emerald-800 border-emerald-200",
+      message: "DASH Compliant (<400mg per meal)",
+    };
+  } else if (sodiumMg <= 800) {
+    return {
+      status: "Moderate",
+      badgeClass: "bg-amber-50 text-amber-800 border-amber-200",
+      message: "Moderate Sodium (400-800mg)",
+    };
+  } else {
+    return {
+      status: "Elevated",
+      badgeClass: "bg-rose-50 text-rose-800 border-rose-200",
+      message: "High Sodium Load (>800mg) - Drink extra water",
+    };
+  }
+}

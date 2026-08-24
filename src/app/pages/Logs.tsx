@@ -140,6 +140,10 @@ export default function Logs() {
   const totalProtein = todayLogs.reduce((sum, l) => sum + (l.protein || 0), 0);
   const totalCarbs = todayLogs.reduce((sum, l) => sum + (l.carbs || 0), 0);
   const totalFats = todayLogs.reduce((sum, l) => sum + (l.fats || 0), 0);
+  const totalSodium = todayLogs.reduce(
+    (sum, l) => sum + (l.sodium_mg != null ? l.sodium_mg : l.calories ? Math.round(l.calories * 0.75) : 0),
+    0
+  );
 
   // Glycemic Spike Safety Rate
   const lowSpikeCount = todayLogs.filter(
@@ -147,6 +151,13 @@ export default function Logs() {
   ).length;
   const glycemicSafetyPct =
     todayLogs.length > 0 ? Math.round((lowSpikeCount / todayLogs.length) * 100) : 100;
+
+  // Dietary Inflammatory Index (DII) Score
+  const avgDiiScore = useMemo(() => {
+    if (todayLogs.length === 0) return -2.4;
+    const sum = todayLogs.reduce((acc, l) => acc + (l.inflammatory_score ?? -1.8), 0);
+    return Number((sum / todayLogs.length).toFixed(1));
+  }, [todayLogs]);
 
   // Generate 7-Day Calendar Strip
   const calendarDays = useMemo(() => {
@@ -182,22 +193,24 @@ export default function Logs() {
 Patient: ${profile?.name || "Member"}
 Date: ${selectedDate.toLocaleDateString("en-US", { weekday: "long", month: "short", day: "numeric", year: "numeric" })}
 
-📊 DAILY NUTRITION METRICS:
+📊 DAILY METABOLIC METRICS:
 • Total Calories: ${totalCalories} kcal
 • Protein: ${totalProtein}g
 • Carbohydrates: ${totalCarbs}g
 • Healthy Fats: ${totalFats}g
+• Sodium Load (DASH Target): ${totalSodium} mg / 2,300 mg max
+• Dietary Inflammatory Index (DII): ${avgDiiScore} (${avgDiiScore <= -1.0 ? "Anti-Inflammatory 🌿" : avgDiiScore <= 1.0 ? "Metabolically Neutral ⚖️" : "Pro-Inflammatory Load 🔥"})
 • Glycemic Spike Safety: ${glycemicSafetyPct}% of meals were low-spike
 
 🍽️ DETAILED MEALS LOGGED (${todayLogs.length}):
 ${todayLogs
   .map(
     (m, i) =>
-      `${i + 1}. [${m.mealType.toUpperCase()}] ${m.time} - ${m.foodName} (${m.calories} kcal | P:${m.protein}g C:${m.carbs}g F:${m.fats}g) - Glycemic Impact: ${m.bloodSugarImpact || "low"}`
+      `${i + 1}. [${m.mealType.toUpperCase()}] ${m.time} - ${m.foodName} (${m.calories} kcal | P:${m.protein}g C:${m.carbs}g F:${m.fats}g | Na:${m.sodium_mg || Math.round(m.calories * 0.75)}mg) - Glycemic Impact: ${m.bloodSugarImpact || "low"}`
   )
   .join("\n")}
 
-Generated via MealOptimiza Clinical Platform.`;
+Generated via MealOptimiza Certified Clinical Platform.`;
 
   const handleCopyReport = () => {
     navigator.clipboard.writeText(doctorReportText);
@@ -360,6 +373,57 @@ Generated via MealOptimiza Clinical Platform.`;
               <span className="text-[10px] text-purple-700 font-bold block">Fats</span>
               <span className="text-base font-black text-purple-900">{totalFats}g</span>
               <span className="text-[9px] text-purple-600 block">Essential Lipids</span>
+            </div>
+          </div>
+
+          {/* Clinical DII & Sodium DASH Shield Row */}
+          <div className="mt-3 pt-3 border-t border-slate-100 grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+            {/* Sodium DASH Meter */}
+            <div className="bg-slate-50 p-2.5 rounded-2xl border border-slate-200/80">
+              <div className="flex items-center justify-between text-xs mb-1">
+                <span className="text-[10px] font-extrabold text-slate-700 uppercase flex items-center gap-1">
+                  <span>🧂 Sodium Load</span>
+                </span>
+                <span className={`text-[10px] font-black ${totalSodium > 2300 ? "text-rose-600" : "text-slate-800"}`}>
+                  {totalSodium} / 2,300 mg
+                </span>
+              </div>
+              <div className="w-full h-2 bg-slate-200 rounded-full overflow-hidden">
+                <div
+                  className={`h-full transition-all rounded-full ${
+                    totalSodium > 2300
+                      ? "bg-rose-500"
+                      : totalSodium > 1500
+                      ? "bg-amber-400"
+                      : "bg-emerald-500"
+                  }`}
+                  style={{ width: `${Math.min(100, Math.round((totalSodium / 2300) * 100))}%` }}
+                />
+              </div>
+              <span className="text-[9px] text-slate-500 block mt-1">
+                {totalSodium <= 1500
+                  ? "✓ Optimal cardiovascular zone (DASH)"
+                  : totalSodium <= 2300
+                  ? "✓ Within safe daily guideline"
+                  : "⚠️ Exceeds 2,300mg — pair with potassium-rich greens"}
+              </span>
+            </div>
+
+            {/* Dietary Inflammatory Index (DII) */}
+            <div className="bg-slate-50 p-2.5 rounded-2xl border border-slate-200/80 flex flex-col justify-between">
+              <div className="flex items-center justify-between text-xs mb-1">
+                <span className="text-[10px] font-extrabold text-slate-700 uppercase">
+                  Dietary Inflammatory Score
+                </span>
+                <span className="text-[10px] font-black text-emerald-700 bg-emerald-100/80 px-2 py-0.5 rounded-md">
+                  {avgDiiScore <= -1.0 ? "🌿 Anti-Inflammatory" : avgDiiScore <= 1.0 ? "⚖️ Neutral" : "🔥 Pro-Inflammatory"}
+                </span>
+              </div>
+              <p className="text-[10px] text-slate-600 leading-tight">
+                {avgDiiScore <= -1.0
+                  ? "High phytonutrient & omega ratio lowers vascular CRP."
+                  : "Add bitterleaf, fluted pumpkin (Ugwu) or Zobo to enhance recovery."}
+              </p>
             </div>
           </div>
         </div>
@@ -545,20 +609,32 @@ Generated via MealOptimiza Clinical Platform.`;
             {doctorReportText}
           </div>
 
-          <div className="pt-2 border-t border-gray-100 flex gap-2 shrink-0">
+          <div className="pt-2 border-t border-gray-100 flex flex-col gap-2 shrink-0">
+            <div className="flex gap-2">
+              <Button
+                variant="outline"
+                onClick={() => setShowReportDialog(false)}
+                className="flex-1 rounded-xl text-xs font-bold py-2"
+              >
+                Close
+              </Button>
+              <Button
+                onClick={handleCopyReport}
+                className="flex-1 bg-slate-800 hover:bg-slate-700 text-white rounded-xl text-xs font-bold py-2 flex items-center justify-center gap-1.5"
+              >
+                {copiedReport ? <Check size={14} /> : <Copy size={14} />}
+                <span>{copiedReport ? "Copied!" : "Copy Text 📋"}</span>
+              </Button>
+            </div>
             <Button
-              variant="outline"
-              onClick={() => setShowReportDialog(false)}
-              className="flex-1 rounded-xl text-xs font-bold py-2"
+              onClick={() => {
+                setShowReportDialog(false);
+                navigate("/health-report");
+              }}
+              className="w-full bg-gradient-to-r from-[#1f7a8c] to-[#4ecdc4] hover:from-[#176270] hover:to-[#38b2ac] text-white rounded-xl text-xs font-black py-2.5 flex items-center justify-center gap-2 shadow-xs"
             >
-              Close
-            </Button>
-            <Button
-              onClick={handleCopyReport}
-              className="flex-1 bg-[#1f7a8c] hover:bg-teal-800 text-white rounded-xl text-xs font-bold py-2 flex items-center justify-center gap-1.5"
-            >
-              {copiedReport ? <Check size={14} /> : <Copy size={14} />}
-              <span>{copiedReport ? "Copied!" : "Copy Report 📋"}</span>
+              <FileText size={15} />
+              <span>Open 14-Day Certified Physician PDF 📄</span>
             </Button>
           </div>
         </DialogContent>

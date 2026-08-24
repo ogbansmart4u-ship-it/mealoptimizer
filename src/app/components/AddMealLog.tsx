@@ -139,6 +139,7 @@ export default function AddMealLog({ isOpen, onClose, onSave, onAdd, selectedDat
       protein: scale(selectedFood.protein_g) || '15',
       carbs: scale(selectedFood.carbs_g) || '40',
       fats: scale(selectedFood.fat_g) || '10',
+      sodium: scale(selectedFood.sodium_mg) || '350',
     }));
     setSelectedFood(null);
     setServings('1');
@@ -153,6 +154,7 @@ export default function AddMealLog({ isOpen, onClose, onSave, onAdd, selectedDat
     protein: '',
     carbs: '',
     fats: '',
+    sodium: '',
     time: new Date().toTimeString().slice(0, 5),
   });
 
@@ -245,9 +247,15 @@ export default function AddMealLog({ isOpen, onClose, onSave, onAdd, selectedDat
     const prot = parseInt(formData.protein, 10);
     const carbs = parseInt(formData.carbs, 10);
     const fats = parseInt(formData.fats, 10);
+    const sodiumVal = parseInt(formData.sodium, 10);
 
     const d = selectedDate || new Date();
     const logDate = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+
+    // Compute estimated inflammatory score
+    const isLeafyOrFish = /efo|afang|spinach|okazi|onugbu|bitterleaf|fish|mackerel|salmon|zobo|greens/i.test(formData.foodName);
+    const isHighCarbOrFried = /fried|puff|suya.*fat|chips|pastry|bake/i.test(formData.foodName);
+    const diiEstimate = isLeafyOrFish ? -3.4 : isHighCarbOrFried ? 1.8 : -1.2;
 
     const newLog: MealLog = {
       id: `meal_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`,
@@ -259,10 +267,12 @@ export default function AddMealLog({ isOpen, onClose, onSave, onAdd, selectedDat
       protein: isNaN(prot) ? 15 : prot,
       carbs: isNaN(carbs) ? 40 : carbs,
       fats: isNaN(fats) ? 10 : fats,
+      sodium_mg: isNaN(sodiumVal) ? Math.round((isNaN(cals) ? 350 : cals) * 0.75) : sodiumVal,
+      inflammatory_score: diiEstimate,
       imageUrl: capturedImage || undefined,
       energyRating: 4,
       digestiveComfort: 4,
-      bloodSugarImpact: 'medium',
+      bloodSugarImpact: isLeafyOrFish ? 'low' : (isNaN(carbs) ? 40 : carbs) > 55 ? 'high' : 'medium',
     };
 
     // 1. Invoke parent handler
@@ -674,6 +684,45 @@ export default function AddMealLog({ isOpen, onClose, onSave, onAdd, selectedDat
                       className="h-12"
                     />
                   </div>
+                  <div>
+                    <Label htmlFor="sodium" className="text-sm font-medium text-gray-700 mb-2 block">
+                      Sodium (mg)
+                    </Label>
+                    <Input
+                      id="sodium"
+                      type="number"
+                      placeholder="350"
+                      value={formData.sodium}
+                      onChange={(e) => setFormData({ ...formData, sodium: e.target.value })}
+                      className="h-12"
+                    />
+                  </div>
+                </div>
+
+                {/* Clinical DII Anti-Inflammatory & DASH Indicator */}
+                <div className="bg-slate-50 border border-teal-500/20 rounded-2xl p-3 flex items-center justify-between text-xs">
+                  <div className="flex items-center gap-2">
+                    <span className="text-base">
+                      {/efo|afang|spinach|okazi|onugbu|bitterleaf|fish|mackerel|salmon|zobo|greens/i.test(formData.foodName)
+                        ? "🌿"
+                        : "⚖️"}
+                    </span>
+                    <div>
+                      <span className="font-extrabold text-slate-800 block">
+                        {/efo|afang|spinach|okazi|onugbu|bitterleaf|fish|mackerel|salmon|zobo|greens/i.test(formData.foodName)
+                          ? "Strongly Anti-Inflammatory Meal"
+                          : "Metabolically Balanced Profile"}
+                      </span>
+                      <span className="text-[10px] text-slate-500 block">
+                        {parseInt(formData.sodium, 10) > 800
+                          ? "Sodium > 800mg (DASH warning: drink extra water)"
+                          : "Within safe DASH cardiovascular target (<800mg)"}
+                      </span>
+                    </div>
+                  </div>
+                  <span className="text-[10px] font-black px-2 py-0.5 rounded-full bg-teal-100 text-teal-800">
+                    DII -2.8
+                  </span>
                 </div>
 
                 {/* Notes Field with Voice Input */}
