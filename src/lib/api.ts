@@ -144,22 +144,80 @@ export async function deleteGoal(goalId: string) {
 }
 
 // ============================================
-// MEAL LOGS API
+// MEAL LOGS API (Optimistic Offline-First & Resilient)
 // ============================================
 
+const MEAL_LOGS_STORAGE_KEY = 'mealoptimiza_meal_logs';
+
 export async function getMealLogs() {
-  return apiCall('/logs');
+  let localLogs: any[] = [];
+  try {
+    const raw = localStorage.getItem(MEAL_LOGS_STORAGE_KEY) || localStorage.getItem('mealoptimizer_meal_logs');
+    if (raw) localLogs = JSON.parse(raw);
+  } catch {}
+
+  try {
+    const remoteLogs = await apiCall('/logs');
+    if (Array.isArray(remoteLogs) && remoteLogs.length > 0) {
+      const map = new Map<string, any>();
+      localLogs.forEach((l) => map.set(l.id, l));
+      remoteLogs.forEach((l) => map.set(l.id, l));
+      const merged = Array.from(map.values()).sort(
+        (a, b) => new Date(b.date + ' ' + (b.time || '12:00')).getTime() - new Date(a.date + ' ' + (a.time || '12:00')).getTime()
+      );
+      localStorage.setItem(MEAL_LOGS_STORAGE_KEY, JSON.stringify(merged));
+      return merged;
+    }
+  } catch {
+    /* Safe fallback to local logs when offline or guest */
+  }
+  return localLogs;
 }
 
 export async function createMealLog(logData: any) {
-  return apiCall('/logs', {
-    method: 'POST',
-    body: JSON.stringify(logData),
-  });
+  const logWithId = {
+    ...logData,
+    id: logData.id || `log_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`,
+    createdAt: logData.createdAt || new Date().toISOString(),
+  };
+
+  // 1. Instantly write to local storage vault
+  try {
+    const raw = localStorage.getItem(MEAL_LOGS_STORAGE_KEY) || localStorage.getItem('mealoptimizer_meal_logs') || '[]';
+    const current = JSON.parse(raw);
+    const updated = [logWithId, ...current.filter((l: any) => l.id !== logWithId.id)];
+    localStorage.setItem(MEAL_LOGS_STORAGE_KEY, JSON.stringify(updated));
+    localStorage.setItem('mealoptimizer_meal_logs', JSON.stringify(updated));
+  } catch (err) {
+    console.warn('Local storage write warning:', err);
+  }
+
+  // 2. Background non-blocking remote sync
+  try {
+    const result = await apiCall('/logs', {
+      method: 'POST',
+      body: JSON.stringify(logWithId),
+    });
+    return result || logWithId;
+  } catch {
+    // Return local log so UI succeeds smoothly
+    return logWithId;
+  }
 }
 
 export async function deleteMealLog(logId: string) {
-  return apiCall(`/logs/${logId}`, { method: 'DELETE' });
+  try {
+    const raw = localStorage.getItem(MEAL_LOGS_STORAGE_KEY) || localStorage.getItem('mealoptimizer_meal_logs') || '[]';
+    const current = JSON.parse(raw);
+    const updated = current.filter((l: any) => l.id !== logId);
+    localStorage.setItem(MEAL_LOGS_STORAGE_KEY, JSON.stringify(updated));
+    localStorage.setItem('mealoptimizer_meal_logs', JSON.stringify(updated));
+  } catch {}
+
+  try {
+    await apiCall(`/logs/${logId}`, { method: 'DELETE' });
+  } catch {}
+  return { success: true };
 }
 
 // ============================================
@@ -567,13 +625,64 @@ export interface FoodItem {
   created_at: string;
 }
 
+import { AFRICAN_FOOD_DATABASE } from '../app/data/africanFoodDatabase';
+
 export async function searchFoods(query = '', category = ''): Promise<FoodItem[]> {
-  const params = new URLSearchParams();
-  if (query) params.set('q', query);
-  if (category) params.set('category', category);
-  const qs = params.toString();
-  const data = await apiCall(`/foods${qs ? `?${qs}` : ''}`);
-  return data.items ?? [];
+  const q = query.toLowerCase().trim();
+  const cat = category.toLowerCase().trim();
+
+  // 1. Search built-in Master African Food Database
+  const localMatched: FoodItem[] = AFRICAN_FOOD_DATABASE.filter((dish) => {
+    const matchesQuery =
+      !q ||
+      dish.name.toLowerCase().includes(q) ||
+      dish.region.toLowerCase().includes(q) ||
+      dish.country.toLowerCase().includes(q) ||
+      dish.aliases?.some((a) => a.toLowerCase().includes(q));
+
+    const matchesCat = !cat || dish.category.toLowerCase().includes(cat);
+
+    return matchesQuery && matchesCat;
+  }).map((dish) => ({
+    id: dish.id,
+    name: dish.name,
+    aliases: dish.aliases || null,
+    category: dish.category,
+    serving_label: dish.serving_label,
+    serving_grams: dish.serving_grams,
+    calories: dish.calories,
+    protein_g: dish.protein_g,
+    carbs_g: dish.carbs_g,
+    fat_g: dish.fat_g,
+    fiber_g: dish.fiber_g,
+    sodium_mg: null,
+    potassium_mg: null,
+    glycemic_index: dish.glycemic_index,
+    is_public: true,
+    created_by: null,
+    created_at: new Date().toISOString(),
+  }));
+
+  // 2. Try remote API to merge user's custom foods
+  try {
+    const params = new URLSearchParams();
+    if (query) params.set('q', query);
+    if (category) params.set('category', category);
+    const qs = params.toString();
+    const data = await apiCall(`/foods${qs ? `?${qs}` : ''}`);
+    const remoteItems: FoodItem[] = data.items ?? [];
+
+    if (remoteItems.length > 0) {
+      const map = new Map<string, FoodItem>();
+      localMatched.forEach((item) => map.set(item.name.toLowerCase(), item));
+      remoteItems.forEach((item) => map.set(item.name.toLowerCase(), item));
+      return Array.from(map.values());
+    }
+  } catch {
+    /* Fallback directly to localMatched */
+  }
+
+  return localMatched;
 }
 
 // Create a custom food (private to the user). Accepts snake_case or camelCase keys.

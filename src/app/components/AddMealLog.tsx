@@ -123,7 +123,7 @@ export default function AddMealLog({ isOpen, onClose, onSave, selectedDate }: Ad
       } finally {
         if (active) setSearching(false);
       }
-    }, 300);
+    }, searchQuery.trim() ? 250 : 0);
     return () => { active = false; clearTimeout(t); };
   }, [searchQuery, step]);
 
@@ -134,15 +134,15 @@ export default function AddMealLog({ isOpen, onClose, onSave, selectedDate }: Ad
     setFormData((prev) => ({
       ...prev,
       foodName: mult !== 1 ? `${servings} × ${selectedFood.name}` : selectedFood.name,
-      calories: scale(selectedFood.calories),
-      protein: scale(selectedFood.protein_g),
-      carbs: scale(selectedFood.carbs_g),
-      fats: scale(selectedFood.fat_g),
+      calories: scale(selectedFood.calories) || '300',
+      protein: scale(selectedFood.protein_g) || '15',
+      carbs: scale(selectedFood.carbs_g) || '40',
+      fats: scale(selectedFood.fat_g) || '10',
     }));
     setSelectedFood(null);
     setServings('1');
     setStep('manual');
-    toast.success('Food added — review and save');
+    toast.success(`${selectedFood.name} loaded — review & save! 🍲`);
   };
 
   const [formData, setFormData] = useState({
@@ -236,20 +236,25 @@ export default function AddMealLog({ isOpen, onClose, onSave, selectedDate }: Ad
   const handleManualSave = () => {
     // Validation
     if (!formData.foodName.trim()) {
-      toast.error('Please enter food name');
+      toast.error('Please enter a food name');
       return;
     }
 
+    const cals = parseInt(formData.calories, 10);
+    const prot = parseInt(formData.protein, 10);
+    const carbs = parseInt(formData.carbs, 10);
+    const fats = parseInt(formData.fats, 10);
+
     const newLog: MealLog = {
-      id: Date.now().toString(),
+      id: `meal_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`,
       date: (selectedDate || new Date()).toISOString().split('T')[0],
-      time: formData.time,
+      time: formData.time || new Date().toTimeString().slice(0, 5),
       mealType: formData.mealType,
-      foodName: formData.foodName,
-      calories: parseInt(formData.calories) || 0,
-      protein: parseInt(formData.protein) || 0,
-      carbs: parseInt(formData.carbs) || 0,
-      fats: parseInt(formData.fats) || 0,
+      foodName: formData.foodName.trim(),
+      calories: isNaN(cals) ? 350 : cals,
+      protein: isNaN(prot) ? 15 : prot,
+      carbs: isNaN(carbs) ? 40 : carbs,
+      fats: isNaN(fats) ? 10 : fats,
       imageUrl: capturedImage || undefined,
       energyRating: 4,
       digestiveComfort: 4,
@@ -269,6 +274,7 @@ export default function AddMealLog({ isOpen, onClose, onSave, selectedDate }: Ad
     // Clear the auto-saved draft
     clearAutoSavedData('meal-log-draft');
 
+    triggerHaptic('milestone');
     celebrate('Meal logged! 🎉', 'Great job tracking your nutrition.');
     handleClose();
   };

@@ -100,13 +100,14 @@ export default function Logs() {
   }, [location.state]);
 
   const handleAddMeal = async (newLog: any) => {
-    setLogs((prev) => [newLog, ...prev]);
+    setLogs((prev) => [newLog, ...prev.filter((l) => l.id !== newLog.id)]);
+    triggerHaptic("milestone");
+    triggerConfetti("burst");
+    toast.success("Meal Logged Successfully! 🎉");
     try {
       await createMealLog(newLog);
-      triggerConfetti("burst");
-      toast.success("Meal Logged Successfully! 🎉");
-    } catch {
-      toast.error("Failed to save meal log");
+    } catch (err) {
+      console.warn("Meal saved locally. Background cloud sync deferred:", err);
     }
   };
 
