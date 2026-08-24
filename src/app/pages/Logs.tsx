@@ -121,6 +121,8 @@ export default function Logs() {
     } catch {
       toast.error("Failed to delete log");
     }
+  };
+
   const getLocalDateString = (d: Date) => {
     const year = d.getFullYear();
     const month = String(d.getMonth() + 1).padStart(2, "0");
