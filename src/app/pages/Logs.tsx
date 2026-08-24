@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from "react";
-import { useLocation } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 import {
   Calendar,
   Clock,
@@ -27,6 +27,7 @@ import {
   AlertCircle,
   Copy,
   Check,
+  FileText,
 } from "lucide-react";
 import BottomNav from "../components/BottomNav";
 import { useAppMode } from "../contexts/AppModeContext";
@@ -65,6 +66,7 @@ export type MealLog = {
 };
 
 export default function Logs() {
+  const navigate = useNavigate();
   const { mode } = useAppMode();
   const location = useLocation();
   const { t } = useLanguage();
