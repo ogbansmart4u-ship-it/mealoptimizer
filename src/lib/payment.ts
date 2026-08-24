@@ -42,7 +42,7 @@ export const SUBSCRIPTION_PLANS: PlanPricing[] = [
   },
   {
     id: "pro",
-    name: "MealOptimizer PRO 👑",
+    name: "MealOptimiza PRO 👑",
     badge: "Most Popular",
     popular: true,
     description: "Complete clinical metabolic disease management & AI vision",
@@ -73,7 +73,7 @@ export const SUBSCRIPTION_PLANS: PlanPricing[] = [
       NGN: { monthly: 14000, annual: 120000, symbol: "₦" },
     },
     features: [
-      "Everything in MealOptimizer PRO for up to 3 family members",
+      "Everything in MealOptimiza PRO for up to 3 family members",
       "Elderly Parents log meals simply via WhatsApp (No app download required)",
       "Live WhatsApp & Email alerts for high glucose spikes",
       "Weekly Clinical Doctor PDF summaries sent straight to your email",

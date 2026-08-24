@@ -75,7 +75,7 @@ export default function UpgradePro() {
           triggerConfetti("fireworks");
           toast.success(
             `🎉 You are now subscribed to ${
-              plan === "family" ? "Diaspora Family Care" : "MealOptimizer PRO"
+              plan === "family" ? "Diaspora Family Care" : "MealOptimiza PRO"
             }!`
           );
         },
@@ -119,7 +119,7 @@ export default function UpgradePro() {
           <ChevronLeft className="h-5 w-5" />
         </button>
         <span className="font-bold text-sm text-teal-300 flex items-center gap-1.5">
-          <Crown size={16} className="text-amber-400" /> MealOptimizer PRO
+          <Crown size={16} className="text-amber-400" /> MealOptimiza PRO
         </span>
         <button
           onClick={handleRestoreSubscription}

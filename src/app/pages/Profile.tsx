@@ -376,7 +376,7 @@ export default function Profile() {
             </div>
             <div className="min-w-0">
               <div className="flex items-center gap-2">
-                <h3 className="font-black text-sm text-white">MealOptimizer PRO Status</h3>
+                <h3 className="font-black text-sm text-white">MealOptimiza PRO Status</h3>
                 <span className="text-[9px] font-black px-2 py-0.5 rounded-full bg-emerald-400 text-slate-950 uppercase tracking-wider">
                   {subStatus.isPro ? "ACTIVE 👑" : "UPGRADE"}
                 </span>
