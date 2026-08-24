@@ -224,7 +224,9 @@ export async function processPayment({
   if (!targetPlan || plan === "free") return;
 
   const price = targetPlan.prices[currency][cycle];
-  const paystackKey = (import.meta as any).env?.VITE_PAYSTACK_PUBLIC_KEY || "pk_test_placeholder_key";
+  const paystackKey =
+    (import.meta as any).env?.VITE_PAYSTACK_PUBLIC_KEY ||
+    "pk_test_ee87c46323a030f22ed20933cb3de9a077978f64";
 
   console.log(`[Payment] Initializing checkout for ${plan} (${currency} ${price})`);
 
