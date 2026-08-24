@@ -228,16 +228,16 @@ export async function processPayment({
 
   console.log(`[Payment] Initializing checkout for ${plan} (${currency} ${price})`);
 
-  // NGN / GHS: Paystack Inline Popup
-  if (currency === "NGN") {
+  // Paystack Inline Popup (NGN, GHS, USD)
+  if (currency === "NGN" || currency === "GHS" || currency === "USD") {
     const isScriptLoaded = await loadPaystackScript();
 
     if (isScriptLoaded && (window as any).PaystackPop && paystackKey && !paystackKey.includes("placeholder")) {
       const handler = (window as any).PaystackPop.setup({
         key: paystackKey,
         email: userEmail,
-        amount: Math.round(price * 100), // amount in kobo
-        currency: "NGN",
+        amount: Math.round(price * 100), // amount in lowest unit (kobo/cents/pesewas)
+        currency: currency,
         metadata: {
           custom_fields: [
             { display_name: "User ID", variable_name: "user_id", value: userId || "anonymous" },
