@@ -101,7 +101,7 @@ export async function handleWhatsAppWebhook(c: any, supabaseAdmin: any) {
 
     if (!userProfile) {
       const notLinkedMsg =
-        `🥑 *Welcome to MealOptimizer AI!*\n\n` +
+        `🥑 *Welcome to MealOptimiza AI!*\n\n` +
         `We noticed your phone number (+${senderPhone}) is not linked to an account yet.\n\n` +
         `👉 Link your number in 1 tap:\n` +
         `1. Open https://mealoptimiza.com/profile\n` +
@@ -172,7 +172,7 @@ export async function handleWhatsAppWebhook(c: any, supabaseAdmin: any) {
 
     // Format WhatsApp reply message
     const replyText =
-      `🥑 *MealOptimizer AI Logged!* 🍲\n\n` +
+      `🥑 *MealOptimiza AI Logged!* 🍲\n\n` +
       `✅ *${nutrition.dishName}*\n` +
       `🔥 *Calories:* ${nutrition.calories} kcal\n` +
       `💪 *Protein:* ${nutrition.protein}g | 🍚 *Carbs:* ${nutrition.carbs}g | 🥑 *Fats:* ${nutrition.fats}g\n` +
