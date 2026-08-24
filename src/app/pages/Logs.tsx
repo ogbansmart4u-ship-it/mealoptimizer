@@ -121,9 +121,14 @@ export default function Logs() {
     } catch {
       toast.error("Failed to delete log");
     }
+  const getLocalDateString = (d: Date) => {
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, "0");
+    const day = String(d.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
   };
 
-  const selectedIso = selectedDate.toISOString().split("T")[0];
+  const selectedIso = getLocalDateString(selectedDate);
   const todayLogs = useMemo(() => logs.filter((l) => l.date === selectedIso), [logs, selectedIso]);
   const filteredLogs = useMemo(
     () => (filterMealType === "all" ? todayLogs : todayLogs.filter((l) => l.mealType === filterMealType)),
@@ -510,7 +515,9 @@ Generated via MealOptimiza Clinical Platform.`;
         <AddMealLog
           isOpen={showAddMeal}
           onClose={() => setShowAddMeal(false)}
+          onSave={handleAddMeal}
           onAdd={handleAddMeal}
+          selectedDate={selectedDate}
         />
       )}
 

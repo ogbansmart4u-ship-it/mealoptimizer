@@ -40,11 +40,12 @@ type MealLog = {
 type AddMealLogProps = {
   isOpen: boolean;
   onClose: () => void;
-  onSave: (log: MealLog) => void;
+  onSave?: (log: MealLog) => void;
+  onAdd?: (log: MealLog) => void;
   selectedDate?: Date;
 };
 
-export default function AddMealLog({ isOpen, onClose, onSave, selectedDate }: AddMealLogProps) {
+export default function AddMealLog({ isOpen, onClose, onSave, onAdd, selectedDate }: AddMealLogProps) {
   const { profile } = useUser();
   const { selectedLocation } = useLocation();
   const [step, setStep] = useState<'method' | 'manual' | 'camera' | 'search'>('method');
@@ -245,9 +246,12 @@ export default function AddMealLog({ isOpen, onClose, onSave, selectedDate }: Ad
     const carbs = parseInt(formData.carbs, 10);
     const fats = parseInt(formData.fats, 10);
 
+    const d = selectedDate || new Date();
+    const logDate = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+
     const newLog: MealLog = {
       id: `meal_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`,
-      date: (selectedDate || new Date()).toISOString().split('T')[0],
+      date: logDate,
       time: formData.time || new Date().toTimeString().slice(0, 5),
       mealType: formData.mealType,
       foodName: formData.foodName.trim(),
@@ -261,7 +265,20 @@ export default function AddMealLog({ isOpen, onClose, onSave, selectedDate }: Ad
       bloodSugarImpact: 'medium',
     };
 
-    onSave(newLog);
+    // 1. Invoke parent handler
+    const saveHandler = onSave || onAdd;
+    if (saveHandler) {
+      saveHandler(newLog);
+    }
+
+    // 2. Direct guarantee write to local storage vault
+    try {
+      const raw = localStorage.getItem('mealoptimiza_meal_logs') || localStorage.getItem('mealoptimizer_meal_logs') || '[]';
+      const existing = JSON.parse(raw);
+      const updated = [newLog, ...existing.filter((l: any) => l.id !== newLog.id)];
+      localStorage.setItem('mealoptimiza_meal_logs', JSON.stringify(updated));
+      localStorage.setItem('mealoptimizer_meal_logs', JSON.stringify(updated));
+    } catch {}
 
     // Save smart defaults for next entry
     localStorage.setItem('last-meal-defaults', JSON.stringify({
