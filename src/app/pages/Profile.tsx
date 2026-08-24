@@ -927,8 +927,10 @@ export default function Profile() {
         <div className="text-center pt-2 text-[11px] text-slate-400 space-y-1">
           <div className="flex items-center justify-center gap-1.5 text-teal-800/80 font-bold">
             <ShieldCheck className="h-3.5 w-3.5 text-teal-600" />
-            <span>MealOptimizer v3.0 • Clinical African Metabolic AI</span>
+            <span>MealOptimiza v3.0 • Clinical African Metabolic AI</span>
           </div>
+        </div>
+
         {/* Medical Governance & Disclaimer Footer */}
         <MedicalDisclaimerFooter />
       </div>
