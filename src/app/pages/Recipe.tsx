@@ -544,7 +544,7 @@ export default function Recipe() {
         carbs: scaledCarbs,
         fats: scaledFats,
         bloodSugarImpact: recipe.glycemicIndex.toLowerCase(),
-        notes: `Cooked from MealOptimizer Recipes (${recipe.healthBenefits})`,
+        notes: `Cooked from MealOptimiza Recipes (${recipe.healthBenefits})`,
       };
 
       await createMealLog(newLog);

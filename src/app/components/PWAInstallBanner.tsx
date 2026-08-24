@@ -72,7 +72,7 @@ export default function PWAInstallBanner() {
 
     if (outcome === "accepted") {
       triggerConfetti("burst");
-      toast.success("MealOptimizer Installed! 🥑🎉");
+      toast.success("MealOptimiza Installed! 🥑🎉");
       setShowBanner(false);
     }
     setDeferredPrompt(null);
@@ -98,7 +98,7 @@ export default function PWAInstallBanner() {
             <Mascot gesture="waving" size={42} className="flex-shrink-0" />
             <div className="min-w-0">
               <span className="text-xs font-black text-white flex items-center gap-1 leading-tight">
-                Install MealOptimizer <Sparkles size={12} className="text-amber-400" />
+                Install MealOptimiza <Sparkles size={12} className="text-amber-400" />
               </span>
               <p className="text-[10px] text-teal-200 truncate mt-0.5">
                 Fast 1-tap launch & full offline logging
@@ -137,7 +137,7 @@ export default function PWAInstallBanner() {
               Install on iPhone / iPad 📱
             </DialogTitle>
             <DialogDescription className="text-xs text-gray-600">
-              Install MealOptimizer to your Home Screen in 2 simple steps:
+              Install MealOptimiza to your Home Screen in 2 simple steps:
             </DialogDescription>
           </DialogHeader>
 

@@ -102,7 +102,7 @@ export default function HealthProfileWizardModal({
       localStorage.setItem("hasCompletedHealthSetup", "true");
       triggerHaptic("milestone");
       triggerConfetti("fireworks");
-      toast.success("Health profile calibrated! Welcome to MealOptimizer.");
+      toast.success("Health profile calibrated! Welcome to MealOptimiza.");
       onComplete();
     } catch (err) {
       console.warn("Profile update warning:", err);

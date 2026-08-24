@@ -141,14 +141,14 @@ export default function FoodWrappedModal({
     triggerConfetti("burst");
 
     const message =
-      `🥑 *My MealOptimizer ${monthName} Food Wrapped* 📊\n\n` +
+      `🥑 *My MealOptimiza ${monthName} Food Wrapped* 📊\n\n` +
       `🏆 Archetype: *${archetype.title}* (${archetype.badge})\n\n` +
       `🍲 *${monthlyMealsCount}* Authentic African meals optimized\n` +
       `🌿 Top Superfood: *${topSuperfood}*\n` +
       `⚡ *${glucoseStabilityPercent}%* Glucose Stability Score\n` +
       `🛡️ *${spikesPrevented}* Glycemic spikes prevented with Fix My Plate\n` +
       `💧 *${waterGlassesCount}* Hydration glasses logged\n\n` +
-      `Transform your cultural foods into metabolic medicine 👉 https://mealoptimizer-two.vercel.app`;
+      `Transform your cultural foods into metabolic medicine 👉 https://mealoptimiza.com`;
 
     const waUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
     window.open(waUrl, "_blank");
@@ -161,9 +161,9 @@ export default function FoodWrappedModal({
     if (navigator.share) {
       try {
         await navigator.share({
-          title: `MealOptimizer Food Wrapped: ${displayName}`,
-          text: `I just unlocked "${archetype.title}" in my MealOptimizer ${monthName} Food Wrapped! 🥑 94% Glucose Stability with West African foods.`,
-          url: "https://mealoptimizer-two.vercel.app",
+          title: `MealOptimiza Food Wrapped: ${displayName}`,
+          text: `I just unlocked "${archetype.title}" in my MealOptimiza ${monthName} Food Wrapped! 🥑 94% Glucose Stability with West African foods.`,
+          url: "https://mealoptimiza.com",
         });
       } catch (err) {
         /* share dismissed */
@@ -217,7 +217,7 @@ export default function FoodWrappedModal({
       ctx.textAlign = "center";
       ctx.fillStyle = "#4ecdc4";
       ctx.font = "bold 32px sans-serif";
-      ctx.fillText("🥑 MEALOPTIMIZER", 540, 140);
+      ctx.fillText("🥑 MEALOPTIMIZA", 540, 140);
 
       ctx.fillStyle = "#ffffff";
       ctx.font = "bold 26px sans-serif";
@@ -327,7 +327,7 @@ export default function FoodWrappedModal({
       // 9. Footer Call-to-Action
       ctx.fillStyle = "#ffffff";
       ctx.font = "bold 34px sans-serif";
-      ctx.fillText("mealoptimizer-two.vercel.app", 540, 1720);
+      ctx.fillText("mealoptimiza.com", 540, 1720);
 
       ctx.fillStyle = "#64748b";
       ctx.font = "26px sans-serif";
@@ -336,7 +336,7 @@ export default function FoodWrappedModal({
       // Export as PNG and trigger download
       const imageUri = canvas.toDataURL("image/png");
       const link = document.createElement("a");
-      link.download = `MealOptimizer-${monthName}-Wrapped.png`;
+      link.download = `MealOptimiza-${monthName}-Wrapped.png`;
       link.href = imageUri;
       link.click();
 

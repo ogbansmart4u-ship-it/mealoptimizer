@@ -100,7 +100,7 @@ export default function ProfilePictureUpload() {
               ? "ring-2 ring-amber-400 ring-offset-2 ring-offset-[#B8E5E5] shadow-[0_0_12px_rgba(245,158,11,0.5)]"
               : "ring-2 ring-[#1f7a8c]/50 ring-offset-1 ring-offset-[#B8E5E5] hover:ring-[#1f7a8c]"
           }`}
-          title={isPro ? "MealOptimizer PRO Member" : "Free Plan - Tap to manage photo or upgrade"}
+          title={isPro ? "MealOptimiza PRO Member" : "Free Plan - Tap to manage photo or upgrade"}
         >
           {profilePicture ? (
             <img
@@ -124,7 +124,7 @@ export default function ProfilePictureUpload() {
               navigate("/upgrade");
             }}
             className="absolute -top-2 -right-2.5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white rounded-full px-1.5 py-0.5 shadow-md flex items-center gap-0.5 text-[8.5px] font-black tracking-wider uppercase border-2 border-white cursor-pointer hover:scale-105 active:scale-95 transition-all z-10"
-            title="MealOptimizer PRO Member - Tap to view plan"
+            title="MealOptimiza PRO Member - Tap to view plan"
           >
             <Crown className="h-2.5 w-2.5 fill-current text-amber-100" />
             <span>PRO</span>
@@ -180,7 +180,7 @@ export default function ProfilePictureUpload() {
               <div className="min-w-0">
                 <div className="flex items-center gap-1.5">
                   <span className="text-xs font-black">
-                    {isPro ? "MealOptimizer PRO Active 👑" : "Free Starter Plan"}
+                    {isPro ? "MealOptimiza PRO Active 👑" : "Free Starter Plan"}
                   </span>
                 </div>
                 <p

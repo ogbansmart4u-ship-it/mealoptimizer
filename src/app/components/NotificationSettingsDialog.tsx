@@ -68,7 +68,7 @@ export default function NotificationSettingsDialog({
       triggerConfetti("burst");
       toast.success("Web Push Notifications enabled! 🔔✨");
       triggerLocalNotification(
-        "🥑 MealOptimizer Active",
+        "🥑 MealOptimiza Active",
         "Your metabolic alerts and pre-meal glucose shields are now primed and active!"
       );
     } else {
@@ -323,7 +323,7 @@ export default function NotificationSettingsDialog({
                   </div>
 
                   <a
-                    href="https://wa.me/?text=Hi%20Avo!%20I%20am%20ready%20to%20log%20my%20meals%20on%20MealOptimizer"
+                    href="https://wa.me/?text=Hi%20Avo!%20I%20am%20ready%20to%20log%20my%20meals%20on%20MealOptimiza"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="w-full bg-[#25D366] hover:bg-[#20bd5a] text-white rounded-2xl h-11 font-bold flex items-center justify-center gap-2 shadow-md transition-all text-xs cursor-pointer"

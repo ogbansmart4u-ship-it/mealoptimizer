@@ -216,7 +216,7 @@ export default function Login() {
             <Leaf className="h-4 w-4 text-[#1f7a8c]" />
           </div>
           <span className="font-extrabold text-lg text-[#1f7a8c] tracking-tight">
-            MealOptimizer
+            MealOptimiza
           </span>
         </div>
 
@@ -548,7 +548,7 @@ export default function Login() {
           </span>
         </div>
         <p className="text-[10px] text-slate-400">
-          MealOptimizer &copy; {new Date().getFullYear()} • Engineered for African &amp; Diaspora Health
+          MealOptimiza &copy; {new Date().getFullYear()} • Engineered for African &amp; Diaspora Health
         </p>
       </div>
 

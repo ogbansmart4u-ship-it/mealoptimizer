@@ -558,7 +558,7 @@ export default function Home() {
           <div className="flex items-center gap-2">
             <img
               src={logoImage}
-              alt="MealOptimizer"
+              alt="MealOptimiza"
               className="h-8 sm:h-9 object-contain drop-shadow-xs"
             />
           </div>

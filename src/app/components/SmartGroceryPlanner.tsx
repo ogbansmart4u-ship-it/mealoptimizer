@@ -118,14 +118,14 @@ export default function SmartGroceryPlanner({ isOpen, onClose }: SmartGroceryPla
     const checked = items.filter((i) => i.checked);
 
     const listText =
-      `🥑 *MealOptimizer Market Run Checklist* 🛒\n` +
+      `🥑 *MealOptimiza Market Run Checklist* 🛒\n` +
       `📍 Location: *${selectedLocation.displayName}*\n\n` +
       `*TO BUY (${unchecked.length}):*\n` +
       unchecked.map((i) => `◻️ ${i.name}${i.diasporaSwap ? ` _(Tip: ${i.diasporaSwap})_` : ""}`).join("\n") +
       (checked.length > 0
         ? `\n\n*ALREADY PICKED (${checked.length}):*\n` + checked.map((i) => `✅ ~${i.name}~`).join("\n")
         : "") +
-      `\n\n_Generated from MealOptimizer · Cultural Health Intelligence_`;
+      `\n\n_Generated from MealOptimiza · Cultural Health Intelligence_`;
 
     const waUrl = `https://wa.me/?text=${encodeURIComponent(listText)}`;
     window.open(waUrl, "_blank");

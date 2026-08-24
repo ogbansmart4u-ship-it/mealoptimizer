@@ -128,7 +128,7 @@ export default function WhatsAppConnectDialog({ isOpen, onClose }: WhatsAppConne
                 </div>
 
                 <a
-                  href="https://wa.me/?text=Hi%20Avo!%20I%20am%20ready%20to%20log%20my%20meals%20on%20MealOptimizer"
+                  href="https://wa.me/?text=Hi%20Avo!%20I%20am%20ready%20to%20log%20my%20meals%20on%20MealOptimiza"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="w-full bg-[#25D366] hover:bg-[#20bd5a] text-white rounded-xl h-11 font-bold flex items-center justify-center gap-2 shadow-sm transition-all text-xs"

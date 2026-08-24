@@ -172,7 +172,7 @@ export default function Logs() {
   };
 
   // Generate Doctor/Dietitian Report Text
-  const doctorReportText = `📋 MEALOPTIMIZER CLINICAL DIARY REPORT
+  const doctorReportText = `📋 MEALOPTIMIZA CLINICAL DIARY REPORT
 Patient: ${profile?.name || "Member"}
 Date: ${selectedDate.toLocaleDateString("en-US", { weekday: "long", month: "short", day: "numeric", year: "numeric" })}
 
@@ -191,7 +191,7 @@ ${todayLogs
   )
   .join("\n")}
 
-Generated via MealOptimizer Clinical Platform.`;
+Generated via MealOptimiza Clinical Platform.`;
 
   const handleCopyReport = () => {
     navigator.clipboard.writeText(doctorReportText);

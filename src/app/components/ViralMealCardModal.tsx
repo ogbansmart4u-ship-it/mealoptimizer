@@ -62,7 +62,7 @@ export default function ViralMealCardModal({
       ? "8.4 / 10"
       : "7.8 / 10");
 
-  const shareText = `🥑 Just scanned my meal on MealOptimizer!\n🍲 ${mealData.dishName}\n⭐ Plate Grade: ${grade} (${mealData.glycemicLoad || "Balanced"} Spike Shield)\n💪 Protein: ${mealData.protein || 32}g • 🌿 Fiber: ${mealData.fiber || 5}g\n\nTrack your African & Diaspora meals with 0 glucose spikes: https://mealoptimizer-two.vercel.app`;
+  const shareText = `🥑 Just scanned my meal on MealOptimiza!\n🍲 ${mealData.dishName}\n⭐ Plate Grade: ${grade} (${mealData.glycemicLoad || "Balanced"} Spike Shield)\n💪 Protein: ${mealData.protein || 32}g • 🌿 Fiber: ${mealData.fiber || 5}g\n\nTrack your African & Diaspora meals with 0 glucose spikes: https://mealoptimiza.com`;
 
   const handleShareWhatsApp = () => {
     triggerHaptic("medium");
@@ -89,9 +89,9 @@ export default function ViralMealCardModal({
     if (navigator.share) {
       try {
         await navigator.share({
-          title: `MealOptimizer Plate Grade: ${mealData.dishName}`,
+          title: `MealOptimiza Plate Grade: ${mealData.dishName}`,
           text: shareText,
-          url: "https://mealoptimizer-two.vercel.app",
+          url: "https://mealoptimiza.com",
         });
         triggerConfetti("cannons");
       } catch (err) {
@@ -140,7 +140,7 @@ export default function ViralMealCardModal({
               <div className="flex items-center gap-1.5 bg-black/60 backdrop-blur-md px-2.5 py-1 rounded-full border border-teal-500/40">
                 <Leaf size={12} className="text-teal-400" />
                 <span className="text-[10px] font-black tracking-wider uppercase text-teal-200">
-                  MealOptimizer OS
+                  MealOptimiza OS
                 </span>
               </div>
               <div className="flex items-center gap-1 bg-emerald-500/20 text-emerald-400 border border-emerald-400/40 px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase tracking-wide">
@@ -226,7 +226,7 @@ export default function ViralMealCardModal({
 
             {/* Card Footer Watermark */}
             <div className="w-full flex items-center justify-between border-t border-teal-500/20 pt-2 text-[9.5px] text-teal-300/60">
-              <span className="font-mono uppercase">mealoptimizer.app</span>
+              <span className="font-mono uppercase">mealoptimiza.com</span>
               <span className="flex items-center gap-1 font-bold text-teal-400">
                 <QrCode size={11} />
                 <span>Scan Your Plate</span>

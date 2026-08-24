@@ -167,7 +167,7 @@ export default function HealthReport() {
       try {
         await navigator.share({
           title: `${profile?.name || "Patient"} - Clinical Health Report`,
-          text: `Medical health summary for ${profile?.name || "Patient"} generated from MealOptimizer.`,
+          text: `Medical health summary for ${profile?.name || "Patient"} generated from MealOptimiza.`,
           url: window.location.href,
         });
       } catch {
@@ -252,7 +252,7 @@ export default function HealthReport() {
                   Clinical Nutrition & Vitals Report
                 </h2>
                 <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">
-                  MealOptimizer Health Intelligence System \u00b7 Generated on {fmtDate(new Date())}
+                  MealOptimiza Health Intelligence System • Generated on {fmtDate(new Date())}
                 </p>
               </div>
             </div>
@@ -542,7 +542,7 @@ export default function HealthReport() {
           {/* Legal / Medical Disclaimer */}
           <div className="border-t border-zinc-200 dark:border-zinc-800 pt-4 text-[11px] text-zinc-400 leading-relaxed">
             <p>
-              <strong>Disclaimer:</strong> This document compiles patient self-logged biometrics, hydration records, and West African dietary entries gathered via the MealOptimizer application. It is intended to support clinical consultations between patients and healthcare providers. It is not an autonomous diagnostic instrument.
+              <strong>Disclaimer:</strong> This document compiles patient self-logged biometrics, hydration records, and West African dietary entries gathered via the MealOptimiza application. It is intended to support clinical consultations between patients and healthcare providers. It is not an autonomous diagnostic instrument.
             </p>
           </div>
         </div>

@@ -33,7 +33,7 @@ export default function UpgradeProModal({
         onSuccess: () => {
           triggerHaptic("milestone");
           triggerConfetti("fireworks");
-          toast.success("🎉 Welcome to MealOptimizer PRO!");
+          toast.success("🎉 Welcome to MealOptimiza PRO!");
           onClose();
         },
       });
@@ -52,7 +52,7 @@ export default function UpgradeProModal({
             <Crown className="h-7 w-7" />
           </div>
           <DialogTitle className="text-xl font-black text-white">
-            Unlock MealOptimizer PRO 👑
+            Unlock MealOptimiza PRO 👑
           </DialogTitle>
           <DialogDescription className="text-xs text-slate-400">
             Upgrade to access {featureTriggerName} and full clinical health intelligence.

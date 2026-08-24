@@ -188,14 +188,14 @@ export default function GroceryList() {
     const checked = groceryItems.filter((i) => i.checked);
 
     const listText =
-      `🥑 *MealOptimizer Grocery List* 🛒\n` +
+      `🥑 *MealOptimiza Grocery List* 🛒\n` +
       `📍 Market: *${selectedLocation.displayName}*\n\n` +
       `*TO BUY (${unchecked.length}):*\n` +
       unchecked.map((i) => `◻️ ${i.ingredient} (${i.mealName || "General"})`).join("\n") +
       (checked.length > 0
         ? `\n\n*ALREADY PICKED (${checked.length}):*\n` + checked.map((i) => `✅ ~${i.ingredient}~`).join("\n")
         : "") +
-      `\n\n_Generated from MealOptimizer · Cultural Health Intelligence_`;
+      `\n\n_Generated from MealOptimiza · Cultural Health Intelligence_`;
 
     const waUrl = `https://wa.me/?text=${encodeURIComponent(listText)}`;
     window.open(waUrl, "_blank");
