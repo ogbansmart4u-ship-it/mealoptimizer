@@ -11,8 +11,9 @@
 // (src/app/types/mascot.ts), install `lottie-react`, and render <Lottie/> in the
 // marked spot below. Everything else stays the same.
 
-import { GESTURES, MASCOT_KEYFRAMES, lottieSources, type MascotGesture } from "../types/mascot";
 import { useMascot } from "../hooks/useMascot";
+import type { MascotGesture } from "../types/mascot";
+import MascotVectorRig from "./MascotVectorRig";
 
 interface MascotProps {
   /** Override the shared gesture for this instance. Omit to follow MascotContext. */
@@ -26,36 +27,14 @@ interface MascotProps {
 
 export default function Mascot({ gesture: override, size = 96, className = "", alt }: MascotProps) {
   const { gesture: shared } = useMascot();
-  const gesture = override ?? shared;
-  const config = (gesture && (GESTURES as Record<string, any>)[gesture]) || GESTURES.idle;
-  const decorative = !alt;
-
-  // LOTTIE-READY: if a Lottie source is registered for this gesture, prefer it.
-  // (No-op today — `lottieSources` is empty and lottie-react isn't a dependency.)
-  const lottie = gesture ? (lottieSources as Record<string, string | undefined>)[gesture] : undefined;
-  if (lottie) {
-    // Example once lottie-react is installed:
-    //   return <Lottie animationData={loaded[gesture]} loop style={{ width: size, height: size }} />;
-  }
+  const gesture = override ?? shared ?? "idle";
 
   return (
-    <>
-      <style>{MASCOT_KEYFRAMES}</style>
-      <img
-        // `key` restarts the CSS animation cleanly whenever the gesture changes.
-        key={gesture || "idle"}
-        src="/assets/mascot-v2.png"
-        alt={alt ?? ""}
-        aria-hidden={decorative ? true : undefined}
-        draggable={false}
-        style={{
-          width: size,
-          height: size,
-          transformOrigin: "bottom center",
-          animation: config?.css || GESTURES.idle.css,
-        }}
-        className={`avo-mascot object-contain drop-shadow-sm select-none pointer-events-none ${className}`}
-      />
-    </>
+    <MascotVectorRig
+      gesture={gesture}
+      size={size}
+      className={className}
+      alt={alt}
+    />
   );
 }
