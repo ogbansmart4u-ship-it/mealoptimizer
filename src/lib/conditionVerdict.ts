@@ -380,3 +380,53 @@ export function computeVerdict(macros: Macros, conditions: UserCondition[] = [])
     hasConditions: true,
   };
 }
+
+export function isConsultationSupportCondition(conditionName: string): {
+  isHighRisk: boolean;
+  guardrailLabel: string;
+  contraindications: string[];
+  clinicalAdvice: string;
+} {
+  const c = (conditionName || "").toLowerCase();
+  if (c.includes("kidney") || c.includes("renal") || c.includes("ckd") || c.includes("nephro")) {
+    return {
+      isHighRisk: true,
+      guardrailLabel: "Renal & Potassium Guardrail Active",
+      contraindications: [
+        "High-potassium vegetables (e.g. concentrated plantain flour, garden egg leaves)",
+        "Excessive phosphorus from concentrated melon seed (Egusi)",
+        "High sodium bouillon seasoning cubes",
+      ],
+      clinicalAdvice: "MealOptimiza operates in Consultation Support Mode: Please review strict potassium, phosphorus, and fluid limits directly with your nephrologist or renal dietitian.",
+    };
+  }
+  if (c.includes("gout") || c.includes("uric")) {
+    return {
+      isHighRisk: true,
+      guardrailLabel: "Purine & Uric Acid Guardrail Active",
+      contraindications: [
+        "Organ meats (Shaki, liver, kidney, roundabout)",
+        "High-purine concentrated seafood powders (crayfish dust)",
+        "Excessive red meat bone broths",
+      ],
+      clinicalAdvice: "Prioritize low-purine vegetable soups (Ewedu, Waterleaf), plant-based proteins, and target 3L+ daily hydration.",
+    };
+  }
+  if (c.includes("type 1") || c.includes("t1d") || c.includes("insulin-dependent") || c.includes("gestational")) {
+    return {
+      isHighRisk: true,
+      guardrailLabel: "Insulin-to-Carb Clinical Guardrail",
+      contraindications: [
+        "Unmonitored high-glycemic swallow starches (Eba, Pounded Yam, Fufu)",
+        "Concentrated fruit juices & malt beverages",
+      ],
+      clinicalAdvice: "Cross-reference calculated carbohydrate grams directly with your prescribed basal-bolus insulin injection regimen.",
+    };
+  }
+  return {
+    isHighRisk: false,
+    guardrailLabel: "Standard Metabolic Wellness Mode",
+    contraindications: [],
+    clinicalAdvice: "",
+  };
+}

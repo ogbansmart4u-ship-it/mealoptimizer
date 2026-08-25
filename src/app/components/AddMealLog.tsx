@@ -81,7 +81,43 @@ export default function AddMealLog({ isOpen, onClose, onSave, onAdd, selectedDat
       protein: String(proteinEst),
       fats: String(fatsEst),
     }));
+  const [cookingMethod, setCookingMethod] = useState<'steamed_boiled' | 'grilled_baked' | 'stewed' | 'fried'>('steamed_boiled');
+
+  const handleCookingMethodChange = (method: 'steamed_boiled' | 'grilled_baked' | 'stewed' | 'fried') => {
+    setCookingMethod(method);
+    triggerHaptic('selection');
+    
+    // Auto-adjust oil and sodium shifts
+    const curCals = parseInt(formData.calories, 10) || 350;
+    const curFats = parseInt(formData.fats, 10) || 10;
+    const curSodium = parseInt(formData.sodium, 10) || 350;
+
+    let deltaCals = 0;
+    let deltaFats = 0;
+    let deltaSodium = 0;
+
+    if (method === 'fried') {
+      deltaCals = 120;
+      deltaFats = 12;
+      deltaSodium = 140;
+    } else if (method === 'stewed') {
+      deltaCals = 50;
+      deltaFats = 6;
+      deltaSodium = 80;
+    } else if (method === 'grilled_baked') {
+      deltaCals = 15;
+      deltaFats = 2;
+      deltaSodium = 20;
+    }
+
+    setFormData((prev) => ({
+      ...prev,
+      calories: String(Math.max(80, curCals + deltaCals)),
+      fats: String(Math.max(2, curFats + deltaFats)),
+      sodium: String(Math.max(50, curSodium + deltaSodium)),
+    }));
   };
+
   useEffect(() => {
     if (!isOpen) return;
     getMedications()
@@ -629,6 +665,52 @@ export default function AddMealLog({ isOpen, onClose, onSave, onAdd, selectedDat
                   selectedTier={portionTier}
                   onSelectTier={handlePortionSelect}
                 />
+
+                {/* Cooking Method Modifier (Clinical Preparation Variance) */}
+                <div className="bg-slate-50 border border-slate-200/80 rounded-2xl p-3.5 space-y-2">
+                  <div className="flex items-center justify-between">
+                    <Label className="text-xs font-black text-slate-800 uppercase tracking-wide flex items-center gap-1.5">
+                      <span>🍳 Preparation Method</span>
+                    </Label>
+                    <span className="text-[10px] font-bold text-teal-700 bg-teal-50 px-2 py-0.5 rounded-full border border-teal-200">
+                      {cookingMethod === 'steamed_boiled'
+                        ? '0% Added Fat (Base)'
+                        : cookingMethod === 'grilled_baked'
+                        ? '+15 kcal (Lean Roast)'
+                        : cookingMethod === 'stewed'
+                        ? '+50 kcal (Sauced)'
+                        : '+120 kcal (Oil Absorbed)'}
+                    </span>
+                  </div>
+
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5">
+                    {[
+                      { id: 'steamed_boiled', label: 'Boiled / Steamed', icon: '🥬', desc: 'Base yield' },
+                      { id: 'grilled_baked', label: 'Grilled / Roasted', icon: '🍗', desc: 'Minimal oil' },
+                      { id: 'stewed', label: 'Stewed in Sauce', icon: '🍲', desc: 'Medium fat' },
+                      { id: 'fried', label: 'Deep Fried', icon: '🍟', desc: 'High oil absorbed' },
+                    ].map((m) => (
+                      <button
+                        key={m.id}
+                        type="button"
+                        onClick={() => handleCookingMethodChange(m.id as any)}
+                        className={`p-2 rounded-xl text-left border transition-all cursor-pointer flex flex-col justify-between ${
+                          cookingMethod === m.id
+                            ? 'bg-[#1f7a8c] text-white border-[#1f7a8c] shadow-xs'
+                            : 'bg-white text-slate-700 border-slate-200 hover:border-teal-300'
+                        }`}
+                      >
+                        <div className="flex items-center gap-1">
+                          <span className="text-xs">{m.icon}</span>
+                          <span className="text-[10.5px] font-bold leading-tight">{m.label}</span>
+                        </div>
+                        <span className={`text-[8.5px] mt-0.5 block ${cookingMethod === m.id ? 'text-teal-100' : 'text-slate-400'}`}>
+                          {m.desc}
+                        </span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
 
                 {/* Nutrition Grid */}
                 <div className="grid grid-cols-2 gap-3">

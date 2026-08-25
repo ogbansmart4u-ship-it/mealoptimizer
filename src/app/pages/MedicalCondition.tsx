@@ -1,9 +1,10 @@
-import { Stethoscope, ChevronLeft, Plus, X, AlertCircle, Check, Loader2 } from "lucide-react";
+import { Stethoscope, ChevronLeft, Plus, X, AlertCircle, Check, Loader2, AlertTriangle, ShieldCheck } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import OnboardingProgress from "../components/OnboardingProgress";
 import { useLanguage } from "../contexts/LanguageContext";
 import { getCollection, createCollectionItem, deleteCollectionItem } from "../../lib/api";
+import { isConsultationSupportCondition } from "../../lib/conditionVerdict";
 
 type Severity = "mild" | "moderate" | "severe";
 
@@ -232,6 +233,41 @@ export default function MedicalCondition() {
             </div>
           )}
         </div>
+
+        {/* Clinical Consultation Support Guardrails for High-Risk Comorbidities */}
+        {(() => {
+          const highRiskGuards = conditions
+            .map((c) => ({ ...isConsultationSupportCondition(c.name), name: c.name }))
+            .filter((g) => g.isHighRisk);
+
+          if (highRiskGuards.length === 0) return null;
+
+          return (
+            <div className="bg-amber-50/90 border-2 border-amber-300/80 rounded-3xl p-5 mb-6 shadow-sm">
+              <div className="flex items-center gap-2.5 mb-2 text-amber-900 font-black text-sm">
+                <AlertTriangle className="h-5 w-5 text-amber-600 flex-shrink-0" />
+                <span>Clinical Consultation Support Mode Active</span>
+              </div>
+              <p className="text-xs text-amber-800 leading-relaxed mb-3">
+                You have selected clinical condition(s) requiring specialist monitoring. MealOptimiza automatically activates safety guardrails rather than rigid automated prescriptions:
+              </p>
+              <div className="space-y-2.5">
+                {highRiskGuards.map((g, idx) => (
+                  <div key={idx} className="bg-white/90 border border-amber-200 rounded-2xl p-3 text-xs shadow-2xs">
+                    <div className="font-extrabold text-amber-900 mb-1 flex items-center gap-1.5">
+                      <ShieldCheck className="h-4 w-4 text-amber-600" />
+                      <span>{g.guardrailLabel}</span>
+                    </div>
+                    <p className="text-amber-800 text-[11px] mb-1.5 leading-snug">{g.clinicalAdvice}</p>
+                    <div className="text-[10px] text-amber-700 bg-amber-50/60 p-2 rounded-xl border border-amber-100">
+                      <strong>Clinical Contraindications:</strong> {g.contraindications.join(" • ")}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          );
+        })()}
 
         {/* Selected conditions (with severity + diagnosis detail) */}
         <div className="bg-white rounded-3xl shadow-lg p-6 mb-6">

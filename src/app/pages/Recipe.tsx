@@ -1021,8 +1021,24 @@ export default function Recipe() {
                   </button>
                 </div>
 
+                {/* Feasibility & Satiety Index (Clinical Feasibility Scoring) */}
+                <div className="flex items-center gap-2 mt-2.5 pt-2 border-t border-slate-100/80 text-[10px] text-slate-600 font-semibold overflow-x-auto scrollbar-none">
+                  <span className="bg-teal-50 text-teal-800 px-2 py-0.5 rounded-md border border-teal-100 flex items-center gap-1 shrink-0">
+                    <span>⏱️</span>
+                    <span>{recipe.prepTime + recipe.cookTime}m prep</span>
+                  </span>
+                  <span className="bg-blue-50 text-blue-800 px-2 py-0.5 rounded-md border border-blue-100 flex items-center gap-1 shrink-0">
+                    <span>💰</span>
+                    <span>{recipe.baseCalories > 450 ? "Household Budget" : "Low Cost"}</span>
+                  </span>
+                  <span className="bg-emerald-50 text-emerald-800 px-2 py-0.5 rounded-md border border-emerald-100 flex items-center gap-1 shrink-0 font-bold">
+                    <span>🔋</span>
+                    <span>{recipe.baseProtein >= 25 ? "High Satiety (Full 4-5h)" : "Balanced Satiety (3h)"}</span>
+                  </span>
+                </div>
+
                 {/* Macro Strip */}
-                <div className="grid grid-cols-4 gap-1.5 mt-3 pt-3 border-t border-slate-100 text-center">
+                <div className="grid grid-cols-4 gap-1.5 mt-2 text-center">
                   <div className="bg-slate-50 p-1.5 rounded-xl border border-slate-200/60">
                     <span className="text-[9px] text-gray-400 font-bold block">Calories</span>
                     <span className="text-xs font-black text-orange-600">{recipe.baseCalories}</span>
