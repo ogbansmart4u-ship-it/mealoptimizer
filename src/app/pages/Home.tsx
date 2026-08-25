@@ -673,9 +673,15 @@ export default function Home() {
             className="space-y-4"
           >
             {/* 👩🏾‍⚕️ Nurse Amina AI Concierge Card */}
-            <div className="bg-gradient-to-r from-[#1f7a8c] via-[#0d9488] to-[#115e59] rounded-3xl p-4 sm:p-5 text-white shadow-lg border border-teal-200/40 relative overflow-hidden flex items-center justify-between gap-3 sm:gap-4">
+            <div
+              onClick={() => {
+                triggerHaptic("medium");
+                setShowConciergeModal(true);
+              }}
+              className="bg-gradient-to-r from-[#1f7a8c] via-[#0d9488] to-[#115e59] rounded-3xl p-4 sm:p-5 text-white shadow-lg border border-teal-200/40 relative overflow-hidden flex items-center justify-between gap-3 sm:gap-4 cursor-pointer hover:shadow-xl hover:scale-[1.01] active:scale-[0.99] transition-all group"
+            >
               <div className="relative z-10 flex items-center gap-3 min-w-0">
-                <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-white/20 border-2 border-amber-300 flex items-center justify-center text-2xl sm:text-3xl shrink-0 shadow-xs">
+                <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-white/20 border-2 border-amber-300 flex items-center justify-center text-2xl sm:text-3xl shrink-0 shadow-xs group-hover:scale-105 transition-transform">
                   👩🏾‍⚕️
                 </div>
                 <div className="min-w-0">
@@ -694,16 +700,10 @@ export default function Home() {
                 </div>
               </div>
 
-              <button
-                onClick={() => {
-                  triggerHaptic("medium");
-                  setShowConciergeModal(true);
-                }}
-                className="relative z-10 bg-white hover:bg-teal-50 text-[#1f7a8c] font-black text-xs px-3.5 py-2.5 rounded-2xl shadow-sm shrink-0 cursor-pointer active:scale-95 transition-all flex items-center gap-1.5"
-              >
+              <div className="relative z-10 bg-white group-hover:bg-teal-50 text-[#1f7a8c] font-black text-xs px-3.5 py-2.5 rounded-2xl shadow-sm shrink-0 flex items-center gap-1.5 transition-colors">
                 <span>▶️ Talk</span>
-                <ChevronRight size={14} />
-              </button>
+                <ChevronRight size={14} className="group-hover:translate-x-0.5 transition-transform" />
+              </div>
             </div>
 
             {/* Daily Fuel Gauge Card */}
