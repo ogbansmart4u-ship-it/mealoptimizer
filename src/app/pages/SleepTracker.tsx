@@ -1,4 +1,4 @@
-import { useState, useEffect, useId } from "react";
+import React, { useState, useEffect, useId, useMemo } from "react";
 import { useNavigate } from "react-router";
 import {
   Moon,
@@ -15,20 +15,41 @@ import {
   Calendar,
   Info,
   Sparkles,
+  ShieldCheck,
+  Flame,
+  Check,
+  ChevronLeft,
+  Activity,
+  BedDouble,
+  Coffee,
 } from "lucide-react";
-import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Area, AreaChart } from "recharts";
-import PageHeader from "../components/PageHeader";
+import {
+  BarChart,
+  Bar,
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  Area,
+  AreaChart,
+} from "recharts";
 import BottomNav from "../components/BottomNav";
-import { SkeletonList } from '../components/SkeletonLoader';
+import { SkeletonList } from "../components/SkeletonLoader";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "../components/ui/dialog";
 import { Button } from "../components/ui/button";
 import { Label } from "../components/ui/label";
 import { Input } from "../components/ui/input";
 import { toast } from "sonner";
 import { useLanguage } from "../contexts/LanguageContext";
+import { useMascot } from "../hooks/useMascot";
+import Mascot from "../components/Mascot";
 import { getSleepLogs, createSleepLog } from "../../lib/api";
+import { triggerHaptic, triggerConfetti } from "../utils/celebration";
 
-type SleepStage = 'deep' | 'light' | 'rem' | 'awake';
+type SleepStage = "deep" | "light" | "rem" | "awake";
 
 type SleepSession = {
   id: string;
@@ -43,82 +64,27 @@ type SleepSession = {
     awake: number;
   };
   quality: number;
-  mood: 'excellent' | 'good' | 'fair' | 'poor';
+  mood: "excellent" | "good" | "fair" | "poor";
   notes?: string;
 };
 
 const SLEEP_STAGE_INFO = {
-  deep: { labelKey: 'sleep.stageDeep', color: '#3b82f6', descKey: 'sleep.descDeep' },
-  light: { labelKey: 'sleep.stageLight', color: '#60a5fa', descKey: 'sleep.descLight' },
-  rem: { labelKey: 'sleep.stageRem', color: '#a78bfa', descKey: 'sleep.descRem' },
-  awake: { labelKey: 'sleep.stageAwake', color: '#f59e0b', descKey: 'sleep.descAwake' },
+  deep: { labelKey: "sleep.stageDeep", color: "#3b82f6", descKey: "sleep.descDeep" },
+  light: { labelKey: "sleep.stageLight", color: "#60a5fa", descKey: "sleep.descLight" },
+  rem: { labelKey: "sleep.stageRem", color: "#a78bfa", descKey: "sleep.descRem" },
+  awake: { labelKey: "sleep.stageAwake", color: "#f59e0b", descKey: "sleep.descAwake" },
 };
 
-const generateMockSleepData = (): SleepSession[] => {
-  const sessions: SleepSession[] = [];
-  const now = new Date();
-
-  for (let i = 6; i >= 0; i--) {
-    const date = new Date(now);
-    date.setDate(date.getDate() - i);
-    const dateStr = date.toISOString().split('T')[0];
-
-    const totalMinutes = 360 + Math.random() * 120; // 6-8 hours
-    const deepMinutes = totalMinutes * (0.15 + Math.random() * 0.1);
-    const remMinutes = totalMinutes * (0.2 + Math.random() * 0.1);
-    const awakeMinutes = totalMinutes * (0.05 + Math.random() * 0.05);
-    const lightMinutes = totalMinutes - deepMinutes - remMinutes - awakeMinutes;
-
-    const quality = Math.round(
-      (deepMinutes / totalMinutes) * 100 * 0.4 +
-      (remMinutes / totalMinutes) * 100 * 0.3 +
-      (1 - awakeMinutes / totalMinutes) * 100 * 0.3
-    );
-
-    sessions.push({
-      id: `session-${i}`,
-      date: dateStr,
-      bedtime: '23:00',
-      wakeTime: '07:00',
-      totalMinutes: Math.round(totalMinutes),
-      stages: {
-        deep: Math.round(deepMinutes),
-        light: Math.round(lightMinutes),
-        rem: Math.round(remMinutes),
-        awake: Math.round(awakeMinutes),
-      },
-      quality,
-      mood: quality >= 80 ? 'excellent' : quality >= 65 ? 'good' : quality >= 50 ? 'fair' : 'poor',
-    });
-  }
-
-  return sessions;
-};
-
-const calculateBedtimeRecommendation = (sleepSessions: SleepSession[]) => {
-  if (sleepSessions.length === 0) {
-    return {
-      recommendedBedtime: '22:30',
-      recommendedWakeTime: '06:30',
-      targetHours: 8,
-      reasonKey: 'sleep.reasonDefault',
-    };
-  }
-
-  const avgQuality = sleepSessions.reduce((sum, s) => sum + s.quality, 0) / sleepSessions.length;
-  const avgDuration = sleepSessions.reduce((sum, s) => sum + s.totalMinutes, 0) / sleepSessions.length / 60;
-
-  let targetHours = 8;
-  if (avgQuality < 60) targetHours = 8.5;
-  if (avgDuration < 6.5) targetHours = 8;
-
-  return {
-    recommendedBedtime: '22:30',
-    recommendedWakeTime: '06:30',
-    targetHours,
-    reasonKey: avgQuality >= 70 ? 'sleep.reasonGood' : 'sleep.reasonIncrease',
-  };
-};
+// Realistic baseline preview dataset for users with 0 logged sessions
+const PREVIEW_SLEEP_SESSIONS: SleepSession[] = [
+  { id: "prev-6", date: "Mon", bedtime: "23:00", wakeTime: "07:00", totalMinutes: 480, stages: { deep: 95, light: 245, rem: 115, awake: 25 }, quality: 82, mood: "excellent" },
+  { id: "prev-5", date: "Tue", bedtime: "23:30", wakeTime: "07:00", totalMinutes: 450, stages: { deep: 80, light: 240, rem: 105, awake: 25 }, quality: 78, mood: "good" },
+  { id: "prev-4", date: "Wed", bedtime: "00:00", wakeTime: "06:30", totalMinutes: 390, stages: { deep: 65, light: 215, rem: 85, awake: 25 }, quality: 68, mood: "fair" },
+  { id: "prev-3", date: "Thu", bedtime: "22:45", wakeTime: "07:00", totalMinutes: 495, stages: { deep: 100, light: 255, rem: 115, awake: 25 }, quality: 85, mood: "excellent" },
+  { id: "prev-2", date: "Fri", bedtime: "23:15", wakeTime: "07:15", totalMinutes: 480, stages: { deep: 90, light: 250, rem: 115, awake: 25 }, quality: 80, mood: "good" },
+  { id: "prev-1", date: "Sat", bedtime: "23:45", wakeTime: "08:15", totalMinutes: 510, stages: { deep: 105, light: 260, rem: 120, awake: 25 }, quality: 88, mood: "excellent" },
+  { id: "prev-0", date: "Sun", bedtime: "22:30", wakeTime: "06:30", totalMinutes: 480, stages: { deep: 95, light: 245, rem: 115, awake: 25 }, quality: 84, mood: "excellent" },
+];
 
 const mapApiItem = (item: any): SleepSession => {
   const start = new Date(item.sleep_start);
@@ -135,7 +101,7 @@ const mapApiItem = (item: any): SleepSession => {
   );
   return {
     id: item.id,
-    date: start.toISOString().split('T')[0],
+    date: start.toISOString().split("T")[0],
     bedtime: start.toTimeString().slice(0, 5),
     wakeTime: end.toTimeString().slice(0, 5),
     totalMinutes,
@@ -146,7 +112,7 @@ const mapApiItem = (item: any): SleepSession => {
       awake: Math.round(awakeMinutes),
     },
     quality,
-    mood: quality >= 80 ? 'excellent' : quality >= 65 ? 'good' : quality >= 50 ? 'fair' : 'poor',
+    mood: quality >= 80 ? "excellent" : quality >= 65 ? "good" : quality >= 50 ? "fair" : "poor",
     notes: item.notes,
   };
 };
@@ -154,7 +120,7 @@ const mapApiItem = (item: any): SleepSession => {
 export default function SleepTracker() {
   const navigate = useNavigate();
   const { t } = useLanguage();
-  const uniqueId = useId();
+  const mascot = useMascot();
 
   const [sleepSessions, setSleepSessions] = useState<SleepSession[]>([]);
   const [logsLoading, setLogsLoading] = useState(true);
@@ -163,11 +129,11 @@ export default function SleepTracker() {
   const [showAddDialog, setShowAddDialog] = useState(false);
   const [saving, setSaving] = useState(false);
   const [formData, setFormData] = useState({
-    date: new Date().toISOString().split('T')[0],
-    bedtime: '23:00',
-    wakeTime: '07:00',
-    mood: 'good' as SleepSession['mood'],
-    notes: '',
+    date: new Date().toISOString().split("T")[0],
+    bedtime: "23:00",
+    wakeTime: "07:00",
+    mood: "good" as SleepSession["mood"],
+    notes: "",
   });
 
   useEffect(() => {
@@ -177,32 +143,76 @@ export default function SleepTracker() {
         sessions.sort((a, b) => a.date.localeCompare(b.date));
         setSleepSessions(sessions);
       })
-      .catch((err: any) => setLogsError(err.message ?? t('sleep.loadError')))
+      .catch((err: any) => setLogsError(err.message ?? t("sleep.loadError")))
       .finally(() => setLogsLoading(false));
   }, []);
 
-  const todaySession = sleepSessions.find(s => s.date === new Date().toISOString().split('T')[0]);
-  const last7Days = sleepSessions.slice(-7);
-  const avgQuality = last7Days.length > 0
-    ? last7Days.reduce((sum, s) => sum + s.quality, 0) / last7Days.length
-    : 0;
-  const avgDuration = last7Days.length > 0
-    ? last7Days.reduce((sum, s) => sum + s.totalMinutes, 0) / last7Days.length
-    : 0;
-  const recommendation = calculateBedtimeRecommendation(sleepSessions);
+  const isUsingPreview = sleepSessions.length === 0;
+  const activeSessions = isUsingPreview ? PREVIEW_SLEEP_SESSIONS : sleepSessions;
+  const last7Days = activeSessions.slice(-7);
+
+  const avgQuality = useMemo(() => {
+    if (activeSessions.length === 0) return 0;
+    return activeSessions.reduce((sum, s) => sum + s.quality, 0) / activeSessions.length;
+  }, [activeSessions]);
+
+  const avgDurationHours = useMemo(() => {
+    if (activeSessions.length === 0) return 0;
+    const totalMins = activeSessions.reduce((sum, s) => sum + s.totalMinutes, 0) / activeSessions.length;
+    return Number((totalMins / 60).toFixed(1));
+  }, [activeSessions]);
+
+  const todaySession = sleepSessions.find((s) => s.date === new Date().toISOString().split("T")[0]);
+
+  // 1-Tap Quick Sleep Logger
+  const handleQuickLogPreset = async (preset: { bedtime: string; wakeTime: string; hours: number; mood: SleepSession["mood"] }) => {
+    const today = new Date().toISOString().split("T")[0];
+    const sleepStart = new Date(`${today}T${preset.bedtime}:00`).toISOString();
+    const sleepEnd = new Date(`${today}T${preset.wakeTime}:00`).toISOString();
+    const totalMinutes = preset.hours * 60;
+    const deepMinutes = totalMinutes * 0.22;
+    const remMinutes = totalMinutes * 0.25;
+    const awakeMinutes = totalMinutes * 0.04;
+
+    const quality = Math.round(
+      (deepMinutes / totalMinutes) * 100 * 0.4 +
+      (remMinutes / totalMinutes) * 100 * 0.3 +
+      (1 - awakeMinutes / totalMinutes) * 100 * 0.3
+    );
+
+    triggerHaptic("medium");
+    mascot.write();
+    try {
+      const item = await createSleepLog({
+        sleep_start: sleepStart,
+        sleep_end: sleepEnd,
+        quality,
+        notes: `Quick logged ${preset.hours}h sleep (${preset.mood})`,
+      });
+      const newSession = mapApiItem(item);
+      setSleepSessions((prev) => {
+        const filtered = prev.filter((s) => s.date !== newSession.date);
+        return [...filtered, newSession].sort((a, b) => a.date.localeCompare(b.date));
+      });
+      triggerConfetti("burst");
+      mascot.jump();
+      toast.success("Sleep logged successfully! 🌙");
+    } catch (err: any) {
+      toast.error(err.message ?? "Could not save sleep log");
+    }
+  };
 
   const handleAddSleep = async () => {
-    const bedtimeParts = formData.bedtime.split(':');
-    const wakeTimeParts = formData.wakeTime.split(':');
-
+    const bedtimeParts = formData.bedtime.split(":");
+    const wakeTimeParts = formData.wakeTime.split(":");
     const bedtimeMinutes = parseInt(bedtimeParts[0]) * 60 + parseInt(bedtimeParts[1]);
     const wakeTimeMinutes = parseInt(wakeTimeParts[0]) * 60 + parseInt(wakeTimeParts[1]);
 
-    // Build ISO timestamps; wake on next day if earlier than bedtime
     const sleepStart = new Date(`${formData.date}T${formData.bedtime}:00`).toISOString();
-    const wakeDateStr = wakeTimeMinutes < bedtimeMinutes
-      ? new Date(new Date(formData.date).getTime() + 86400000).toISOString().split('T')[0]
-      : formData.date;
+    const wakeDateStr =
+      wakeTimeMinutes < bedtimeMinutes
+        ? new Date(new Date(formData.date).getTime() + 86400000).toISOString().split("T")[0]
+        : formData.date;
     const sleepEnd = new Date(`${wakeDateStr}T${formData.wakeTime}:00`).toISOString();
 
     let totalMinutes = wakeTimeMinutes - bedtimeMinutes;
@@ -220,6 +230,7 @@ export default function SleepTracker() {
 
     setSaving(true);
     try {
+      mascot.write();
       const item = await createSleepLog({
         sleep_start: sleepStart,
         sleep_end: sleepEnd,
@@ -227,21 +238,16 @@ export default function SleepTracker() {
         notes: formData.notes,
       });
       const newSession = mapApiItem(item);
-      setSleepSessions(prev => {
-        const filtered = prev.filter(s => s.date !== newSession.date);
+      setSleepSessions((prev) => {
+        const filtered = prev.filter((s) => s.date !== newSession.date);
         return [...filtered, newSession].sort((a, b) => a.date.localeCompare(b.date));
       });
-      toast.success(t('sleep.logged'));
+      triggerConfetti("burst");
+      mascot.jump();
+      toast.success(t("sleep.logged"));
       setShowAddDialog(false);
-      setFormData({
-        date: new Date().toISOString().split('T')[0],
-        bedtime: '23:00',
-        wakeTime: '07:00',
-        mood: 'good',
-        notes: '',
-      });
     } catch (err: any) {
-      toast.error(err.message ?? t('sleep.saveError'));
+      toast.error(err.message ?? t("sleep.saveError"));
     } finally {
       setSaving(false);
     }
@@ -249,417 +255,411 @@ export default function SleepTracker() {
 
   const chartData = last7Days.map((session, index) => ({
     id: `sleep-${index}`,
-    date: session.date, // ISO YYYY-MM-DD — always unique, used as recharts key
+    day: session.date.includes("-")
+      ? new Date(session.date + "T12:00:00").toLocaleDateString("en-US", { weekday: "short" })
+      : session.date,
     hours: Number((session.totalMinutes / 60).toFixed(1)),
     quality: session.quality,
-    deep: session.stages.deep,
-    light: session.stages.light,
-    rem: session.stages.rem,
-    awake: session.stages.awake,
+    deep: Number((session.stages.deep / 60).toFixed(1)),
+    light: Number((session.stages.light / 60).toFixed(1)),
+    rem: Number((session.stages.rem / 60).toFixed(1)),
   }));
 
-  const formatDateTick = (iso: string) =>
-    new Date(iso + 'T12:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-
   return (
-    <div className="min-h-screen bg-gradient-to-b from-indigo-50 via-purple-50 to-pink-50 pb-24">
-      <PageHeader
-        title={t('sleep.title')}
-        showHome
-        className="bg-gradient-to-r from-indigo-600 to-purple-600"
-        actions={
+    <div className="min-h-screen bg-gradient-to-b from-[#0f172a] via-[#1e1b4b] to-[#0f172a] text-slate-100 pb-28">
+      {/* Top Header */}
+      <div className="bg-slate-900/80 backdrop-blur-md px-4 sm:px-6 pt-9 pb-5 border-b border-indigo-500/20 sticky top-0 z-20">
+        <div className="max-w-2xl mx-auto flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => navigate(-1)}
+              className="text-indigo-200 hover:bg-white/10 rounded-full p-2 transition-colors cursor-pointer"
+              aria-label="Go back"
+            >
+              <ChevronLeft className="h-6 w-6" />
+            </button>
+            <div>
+              <h1 className="text-xl sm:text-2xl font-black text-white leading-tight flex items-center gap-2">
+                <span>{t("sleep.title")}</span>
+                <span className="text-xs px-2 py-0.5 rounded-full bg-indigo-500/20 text-indigo-300 font-bold border border-indigo-500/30">
+                  Circadian Hub
+                </span>
+              </h1>
+              <p className="text-xs text-indigo-200/80 font-medium">
+                Metabolic Recovery &amp; Overnight Glucose Optimization
+              </p>
+            </div>
+          </div>
           <button
-            onClick={() => setShowAddDialog(true)}
-            className="p-2 hover:bg-white/10 rounded-full transition-colors"
+            onClick={() => {
+              triggerHaptic("light");
+              setShowAddDialog(true);
+            }}
+            className="bg-indigo-600 hover:bg-indigo-500 text-white rounded-full p-2.5 shadow-md shadow-indigo-900/50 transition-all cursor-pointer active:scale-95 flex items-center gap-1 text-xs font-bold px-3.5"
           >
-            <Plus className="h-5 w-5 text-white" />
+            <Plus size={15} />
+            <span className="hidden sm:inline">Log Sleep</span>
           </button>
-        }
-      />
+        </div>
+      </div>
 
-      <div className="px-6 mt-6 space-y-6">
+      {/* Main Responsive Body */}
+      <div className="max-w-2xl mx-auto px-4 sm:px-6 mt-5 space-y-5">
         {/* API error banner */}
         {logsError && (
-          <div className="bg-red-50 border border-red-200 rounded-2xl p-4 flex items-center gap-3">
-            <AlertCircle className="h-5 w-5 text-red-500 flex-shrink-0" />
-            <span className="text-sm text-red-700">{logsError}</span>
+          <div className="bg-red-950/80 border border-red-500/50 rounded-2xl p-4 flex items-center gap-3 text-red-200 text-xs shadow-xs">
+            <AlertCircle className="h-5 w-5 text-red-400 shrink-0" />
+            <span>{logsError}</span>
           </div>
         )}
 
-        {/* Loading state */}
-        {logsLoading && <SkeletonList count={2} />}
-
-        {/* Sleep Quality Score */}
-        <div className="bg-white rounded-3xl shadow-xl p-8">
-          <div className="text-center mb-6">
-            <div className="inline-flex items-center gap-2 px-4 py-2 bg-purple-100 rounded-full mb-4">
-              <Moon className="h-5 w-5 text-purple-600" />
-              <span className="text-sm font-semibold text-purple-700">{t('sleep.sevenDayAvg')}</span>
-            </div>
-
-            <div className="text-6xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600 mb-2">
-              {Math.round(avgQuality)}
-            </div>
-            <div className="text-gray-600 mb-4">{t('sleep.qualityScore')}</div>
-
-            <div className="flex items-center justify-center gap-6 text-sm">
-              <div className="flex items-center gap-2">
-                <Clock className="h-4 w-4 text-gray-500" />
-                <span className="text-gray-700">{(avgDuration / 60).toFixed(1)}h {t('sleep.avgSuffix')}</span>
-              </div>
-              <div className="flex items-center gap-2">
-                {avgQuality >= 70 ? (
-                  <TrendingUp className="h-4 w-4 text-green-500" />
-                ) : (
-                  <TrendingDown className="h-4 w-4 text-orange-500" />
-                )}
-                <span className={avgQuality >= 70 ? 'text-green-600' : 'text-orange-600'}>
-                  {avgQuality >= 70 ? t('sleep.good') : t('sleep.needsImprovement')}
+        {/* 🥑 10X Animated Avo Sleep Scientist Card */}
+        <div className="bg-gradient-to-r from-indigo-900/90 via-purple-900/80 to-slate-900 rounded-3xl p-4 sm:p-5 text-white shadow-xl border border-indigo-400/30 relative overflow-hidden flex items-center justify-between gap-4">
+          <div className="relative z-10 flex items-center gap-3.5 min-w-0">
+            <Mascot size={68} className="shrink-0 drop-shadow-lg" />
+            <div className="min-w-0">
+              <div className="flex items-center gap-1.5 mb-0.5">
+                <span className="text-[9.5px] font-black uppercase tracking-wider bg-amber-400 text-slate-950 px-2 py-0.2 rounded-full shadow-2xs">
+                  Avo Sleep &amp; Glucose Lab
                 </span>
+                <span className="text-[10px] text-indigo-300 font-bold hidden sm:inline">Circadian Health</span>
               </div>
+              <h3 className="text-sm sm:text-base font-black text-white leading-tight">
+                Overnight Insulin &amp; Deep REM Recovery
+              </h3>
+              <p className="text-[11px] sm:text-xs text-indigo-100/90 line-clamp-2 mt-0.5 font-medium leading-relaxed">
+                "Getting 7.5+ hours lowers morning cortisol and prevents post-breakfast glucose spikes by up to 28%."
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* 🌙 10X Hero Sleep Recovery Gauge & Score Card */}
+        <div className="bg-slate-900/90 rounded-3xl border border-indigo-500/30 p-5 sm:p-6 shadow-xl relative overflow-hidden">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-5 text-center sm:text-left">
+            {/* Left: Score Gauge */}
+            <div className="flex items-center gap-4">
+              <div className="relative flex items-center justify-center h-24 w-24 rounded-full bg-gradient-to-tr from-indigo-600 to-purple-500 p-1 shadow-lg shadow-indigo-950">
+                <div className="h-full w-full bg-slate-950 rounded-full flex flex-col items-center justify-center">
+                  <span className="text-3xl font-black text-white leading-none">
+                    {Math.round(avgQuality)}
+                  </span>
+                  <span className="text-[10px] font-bold text-indigo-300 uppercase tracking-wider mt-0.5">
+                    Score
+                  </span>
+                </div>
+              </div>
+
+              <div>
+                <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-indigo-500/20 text-indigo-300 text-xs font-bold mb-1 border border-indigo-500/30">
+                  <Moon size={13} />
+                  <span>7-Day Quality Index</span>
+                </div>
+                <h3 className="text-base sm:text-lg font-black text-white">
+                  {avgQuality >= 80 ? "Optimal Metabolic Recovery 🌟" : avgQuality >= 65 ? "Good Sleep Rhythm 🛌" : "Needs Optimization 😴"}
+                </h3>
+                <p className="text-xs text-slate-400 mt-0.5">
+                  Avg Duration: <strong className="text-white">{avgDurationHours} hrs / night</strong>
+                </p>
+              </div>
+            </div>
+
+            {/* Right: Quick Recommendation Pill */}
+            <div className="bg-slate-800/80 border border-slate-700/80 rounded-2xl p-3.5 text-xs text-slate-300 space-y-1 max-w-xs">
+              <div className="flex items-center gap-1.5 text-indigo-300 font-bold text-[11px]">
+                <Sparkles size={13} />
+                <span>Tonight's Circadian Window</span>
+              </div>
+              <div className="text-sm font-black text-white flex items-center gap-2">
+                <span>🌙 10:30 PM</span>
+                <span>→</span>
+                <span>☀️ 06:30 AM</span>
+              </div>
+              <p className="text-[10px] text-slate-400">Target: 8.0 Hours for optimal deep REM repair</p>
             </div>
           </div>
 
-          {/* Sleep Stage Breakdown - Last Night */}
-          {todaySession && (
-            <div className="mt-6 pt-6 border-t border-gray-200">
-              <h4 className="text-sm font-semibold text-gray-700 mb-3 text-center">{t('sleep.lastNight')}</h4>
-
-              <div className="w-full bg-gray-200 rounded-full h-8 overflow-hidden mb-3">
-                {Object.entries(todaySession.stages).map(([stage, minutes]) => {
-                  const percentage = (minutes / todaySession.totalMinutes) * 100;
-                  const stageInfo = SLEEP_STAGE_INFO[stage as SleepStage];
-                  return (
-                    <div
-                      key={stage}
-                      className="inline-block h-full transition-all"
-                      style={{
-                        width: `${percentage}%`,
-                        backgroundColor: stageInfo.color,
-                      }}
-                      title={`${t(stageInfo.labelKey)}: ${minutes}min`}
-                    />
-                  );
-                })}
-              </div>
-
-              <div className="grid grid-cols-2 gap-3">
-                {Object.entries(todaySession.stages).map(([stage, minutes]) => {
-                  const stageInfo = SLEEP_STAGE_INFO[stage as SleepStage];
-                  const Icon = stage === 'deep' ? Zap : stage === 'rem' ? Brain : stage === 'awake' ? AlertCircle : Moon;
-                  return (
-                    <div key={stage} className="flex items-center gap-2">
-                      <div className="w-3 h-3 rounded-full" style={{ backgroundColor: stageInfo.color }} />
-                      <div className="flex-1">
-                        <div className="text-xs font-medium text-gray-700">{t(stageInfo.labelKey)}</div>
-                        <div className="text-xs text-gray-500">{minutes}min</div>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
+          {isUsingPreview && (
+            <div className="mt-4 p-2.5 bg-indigo-950/70 border border-indigo-500/40 rounded-xl text-center text-xs text-indigo-200 flex items-center justify-center gap-2">
+              <Info size={14} className="text-indigo-400 shrink-0" />
+              <span>Showing sample recovery benchmark. Tap below to log last night's real sleep!</span>
             </div>
           )}
         </div>
 
-        {/* Bedtime Recommendation */}
-        <div className="bg-gradient-to-br from-indigo-50 to-purple-50 rounded-3xl shadow-xl p-6 border-2 border-indigo-200">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="bg-gradient-to-br from-indigo-500 to-purple-500 rounded-xl p-2">
-              <Sparkles className="h-5 w-5 text-white" />
+        {/* ⚡ 1-Tap Quick Sleep Presets */}
+        <div className="bg-slate-900/90 rounded-3xl border border-indigo-500/30 p-5 space-y-3 shadow-xl">
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="text-sm sm:text-base font-black text-white flex items-center gap-2">
+                <span>⚡ 1-Tap Quick Sleep Logger</span>
+              </h2>
+              <p className="text-xs text-slate-400">Log last night with one touch</p>
             </div>
-            <h3 className="text-lg font-semibold text-gray-800">{t('sleep.recommendation')}</h3>
+            <button
+              onClick={() => setShowAddDialog(true)}
+              className="text-xs font-bold text-indigo-400 hover:text-indigo-300 cursor-pointer"
+            >
+              Custom Time ⏱️
+            </button>
           </div>
 
-          <div className="space-y-3">
-            <div className="flex items-center justify-between p-4 bg-white rounded-xl">
-              <div className="flex items-center gap-3">
-                <Moon className="h-6 w-6 text-indigo-600" />
-                <div>
-                  <div className="text-sm font-semibold text-gray-700">{t('sleep.bedtime')}</div>
-                  <div className="text-xs text-gray-500">{t('sleep.bedtimeDesc')}</div>
-                </div>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+            <button
+              onClick={() => handleQuickLogPreset({ bedtime: "23:00", wakeTime: "07:00", hours: 8.0, mood: "excellent" })}
+              className="bg-slate-800/90 hover:bg-indigo-900/60 border border-indigo-500/30 hover:border-indigo-400 rounded-2xl p-3 text-left transition-all cursor-pointer group shadow-2xs"
+            >
+              <div className="text-xs font-black text-white flex items-center justify-between">
+                <span>🌙 11:00 PM → 07:00 AM</span>
+                <span className="text-base group-hover:scale-110 transition-transform">🤩</span>
               </div>
-              <div className="text-2xl font-bold text-indigo-600">{recommendation.recommendedBedtime}</div>
-            </div>
+              <div className="text-[11px] text-indigo-300 font-bold mt-1">8.0 hrs • Fully Rested</div>
+            </button>
 
-            <div className="flex items-center justify-between p-4 bg-white rounded-xl">
-              <div className="flex items-center gap-3">
-                <Sun className="h-6 w-6 text-amber-500" />
-                <div>
-                  <div className="text-sm font-semibold text-gray-700">{t('sleep.wakeTime')}</div>
-                  <div className="text-xs text-gray-500">{t('sleep.wakeTimeDesc')}</div>
-                </div>
+            <button
+              onClick={() => handleQuickLogPreset({ bedtime: "23:30", wakeTime: "07:00", hours: 7.5, mood: "good" })}
+              className="bg-slate-800/90 hover:bg-indigo-900/60 border border-indigo-500/30 hover:border-indigo-400 rounded-2xl p-3 text-left transition-all cursor-pointer group shadow-2xs"
+            >
+              <div className="text-xs font-black text-white flex items-center justify-between">
+                <span>🌙 11:30 PM → 07:00 AM</span>
+                <span className="text-base group-hover:scale-110 transition-transform">😊</span>
               </div>
-              <div className="text-2xl font-bold text-amber-600">{recommendation.recommendedWakeTime}</div>
-            </div>
+              <div className="text-[11px] text-indigo-300 font-bold mt-1">7.5 hrs • Good Rhythm</div>
+            </button>
 
-            <div className="p-4 bg-white rounded-xl">
-              <div className="flex items-start gap-3">
-                <Info className="h-5 w-5 text-purple-600 flex-shrink-0 mt-0.5" />
-                <div>
-                  <div className="text-sm font-semibold text-gray-800 mb-1">
-                    {t('sleep.targetPrefix')}: {recommendation.targetHours} {t('sleep.hours')}
-                  </div>
-                  <div className="text-sm text-gray-600">
-                    {t(recommendation.reasonKey)}
-                  </div>
-                </div>
+            <button
+              onClick={() => handleQuickLogPreset({ bedtime: "00:00", wakeTime: "06:30", hours: 6.5, mood: "fair" })}
+              className="bg-slate-800/90 hover:bg-indigo-900/60 border border-indigo-500/30 hover:border-indigo-400 rounded-2xl p-3 text-left transition-all cursor-pointer group shadow-2xs"
+            >
+              <div className="text-xs font-black text-white flex items-center justify-between">
+                <span>🌙 12:00 AM → 06:30 AM</span>
+                <span className="text-base group-hover:scale-110 transition-transform">🥱</span>
               </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Sleep Duration Chart */}
-        <div className="bg-white rounded-3xl shadow-xl p-6">
-          <h3 className="text-lg font-semibold text-gray-800 mb-4">{t('sleep.durationChart')}</h3>
-
-          <ResponsiveContainer width="100%" height={200}>
-            <BarChart data={chartData}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-              <XAxis dataKey="date" tickFormatter={formatDateTick} stroke="#6b7280" style={{ fontSize: '12px' }} />
-              <YAxis stroke="#6b7280" style={{ fontSize: '12px' }} />
-              <Tooltip
-                contentStyle={{
-                  backgroundColor: '#ffffff',
-                  border: '1px solid #e5e7eb',
-                  borderRadius: '8px',
-                }}
-              />
-              <defs>
-                <linearGradient id={`sleepGradient-${uniqueId}`} x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#6366f1" stopOpacity={0.8}/>
-                  <stop offset="95%" stopColor="#a855f7" stopOpacity={0.8}/>
-                </linearGradient>
-              </defs>
-              <Bar dataKey="hours" fill={`url(#sleepGradient-${uniqueId})`} radius={[8, 8, 0, 0]} />
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
-
-        {/* Sleep Quality Trend */}
-        <div className="bg-white rounded-3xl shadow-xl p-6">
-          <h3 className="text-lg font-semibold text-gray-800 mb-4">{t('sleep.qualityTrend')}</h3>
-
-          <ResponsiveContainer width="100%" height={180}>
-            <AreaChart data={chartData}>
-              <defs>
-                <linearGradient id={`qualityGradient-${uniqueId}`} x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#a855f7" stopOpacity={0.3}/>
-                  <stop offset="95%" stopColor="#a855f7" stopOpacity={0}/>
-                </linearGradient>
-              </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-              <XAxis dataKey="date" tickFormatter={formatDateTick} stroke="#6b7280" style={{ fontSize: '12px' }} />
-              <YAxis stroke="#6b7280" style={{ fontSize: '12px' }} domain={[0, 100]} />
-              <Tooltip
-                contentStyle={{
-                  backgroundColor: '#ffffff',
-                  border: '1px solid #e5e7eb',
-                  borderRadius: '8px',
-                }}
-              />
-              <Area
-                type="monotone"
-                dataKey="quality"
-                stroke="#a855f7"
-                strokeWidth={2}
-                fill={`url(#qualityGradient-${uniqueId})`}
-                name="Quality Score"
-              />
-            </AreaChart>
-          </ResponsiveContainer>
-
-          <div className="flex items-center justify-center gap-2 mt-3">
-            <div className="w-3 h-3 rounded-full bg-purple-500" />
-            <span className="text-sm text-gray-600">{t('sleep.qualityLegend')}</span>
+              <div className="text-[11px] text-indigo-300 font-bold mt-1">6.5 hrs • Slight Fatigue</div>
+            </button>
           </div>
         </div>
 
-        {/* Sleep Science Tips */}
-        <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-3xl shadow-xl p-6 border border-blue-200">
-          <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
-            <Brain className="h-5 w-5 text-indigo-600" />
-            {t('sleep.science')}
-          </h3>
+        {/* 📊 7-Day Sleep Duration & Stage Breakdown Chart */}
+        <div className="bg-slate-900/90 rounded-3xl border border-indigo-500/30 p-5 space-y-4 shadow-xl">
+          <div className="flex items-center justify-between">
+            <div>
+              <h3 className="text-sm sm:text-base font-black text-white flex items-center gap-2">
+                <BarChart className="h-4 w-4 text-indigo-400" />
+                <span>7-Day Sleep Duration &amp; Rhythm</span>
+              </h3>
+              <p className="text-xs text-slate-400">Total hours logged per night</p>
+            </div>
+            <div className="flex items-center gap-3 text-[11px] font-bold text-slate-400">
+              <span className="flex items-center gap-1">
+                <span className="h-2 w-2 rounded-full bg-indigo-500" /> Deep
+              </span>
+              <span className="flex items-center gap-1">
+                <span className="h-2 w-2 rounded-full bg-purple-400" /> REM
+              </span>
+              <span className="flex items-center gap-1">
+                <span className="h-2 w-2 rounded-full bg-blue-400" /> Light
+              </span>
+            </div>
+          </div>
 
-          <div className="space-y-3">
-            <div className="flex items-start gap-3 p-3 bg-white rounded-xl">
-              <Zap className="h-5 w-5 text-blue-600 flex-shrink-0 mt-0.5" />
-              <div>
-                <div className="text-sm font-semibold text-gray-800 mb-1">{t('sleep.tip1Title')}</div>
-                <div className="text-sm text-gray-600">
-                  {t('sleep.tip1Body')}
-                </div>
+          <div className="h-56 w-full pt-2">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#334155" opacity={0.4} />
+                <XAxis dataKey="day" stroke="#94a3b8" fontSize={11} tickLine={false} />
+                <YAxis stroke="#94a3b8" fontSize={11} tickLine={false} domain={[0, 10]} />
+                <Tooltip
+                  contentStyle={{
+                    backgroundColor: "#0f172a",
+                    borderColor: "#6366f1",
+                    borderRadius: "1rem",
+                    fontSize: "12px",
+                    color: "#ffffff",
+                  }}
+                />
+                <Bar dataKey="deep" name="Deep Sleep (h)" stackId="a" fill="#3b82f6" radius={[0, 0, 0, 0]} />
+                <Bar dataKey="rem" name="REM Sleep (h)" stackId="a" fill="#a78bfa" radius={[0, 0, 0, 0]} />
+                <Bar dataKey="light" name="Light Sleep (h)" stackId="a" fill="#60a5fa" radius={[4, 4, 0, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+
+        {/* 🍲 African Meal & Metabolic Sleep Advisory */}
+        <div className="bg-slate-900/90 rounded-3xl border border-indigo-500/30 p-5 space-y-3.5 shadow-xl">
+          <div className="flex items-center gap-2 text-indigo-300 font-black text-sm">
+            <ShieldCheck className="h-5 w-5 text-indigo-400" />
+            <span>Cultural Metabolic Sleep Advisory</span>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div className="bg-slate-800/70 border border-slate-700 rounded-2xl p-3.5 text-xs space-y-1">
+              <div className="font-black text-amber-300 flex items-center gap-1.5">
+                <span>🍲 Late Heavy Starch Rule</span>
               </div>
+              <p className="text-[11px] text-slate-300 leading-relaxed">
+                Avoid heavy yam, eba, or oily stew past <strong>8:30 PM</strong>. High nocturnal digestive demand delays deep restorative stage 3 sleep.
+              </p>
             </div>
 
-            <div className="flex items-start gap-3 p-3 bg-white rounded-xl">
-              <Brain className="h-5 w-5 text-purple-600 flex-shrink-0 mt-0.5" />
-              <div>
-                <div className="text-sm font-semibold text-gray-800 mb-1">{t('sleep.tip2Title')}</div>
-                <div className="text-sm text-gray-600">
-                  {t('sleep.tip2Body')}
-                </div>
+            <div className="bg-slate-800/70 border border-slate-700 rounded-2xl p-3.5 text-xs space-y-1">
+              <div className="font-black text-emerald-300 flex items-center gap-1.5">
+                <span>🍵 Calming Herbal Infusions</span>
               </div>
-            </div>
-
-            <div className="flex items-start gap-3 p-3 bg-white rounded-xl">
-              <CheckCircle className="h-5 w-5 text-green-600 flex-shrink-0 mt-0.5" />
-              <div>
-                <div className="text-sm font-semibold text-gray-800 mb-1">{t('sleep.tip3Title')}</div>
-                <div className="text-sm text-gray-600">
-                  {t('sleep.tip3Body')}
-                </div>
-              </div>
-            </div>
-
-            <div className="flex items-start gap-3 p-3 bg-white rounded-xl">
-              <Heart className="h-5 w-5 text-red-600 flex-shrink-0 mt-0.5" />
-              <div>
-                <div className="text-sm font-semibold text-gray-800 mb-1">{t('sleep.tip4Title')}</div>
-                <div className="text-sm text-gray-600">
-                  {t('sleep.tip4Body')}
-                </div>
-              </div>
+              <p className="text-[11px] text-slate-300 leading-relaxed">
+                Unsweetened Lemongrass, Chamomile, or warm Zobo tea 45 mins before bedtime relaxes vascular tension and supports melatonin release.
+              </p>
             </div>
           </div>
         </div>
 
-        {/* Recent Sleep Sessions */}
-        <div className="bg-white rounded-3xl shadow-xl p-6">
-          <h3 className="text-lg font-semibold text-gray-800 mb-4">{t('sleep.recentSessions')}</h3>
+        {/* Recent Sleep Sessions List */}
+        <div className="bg-slate-900/90 rounded-3xl border border-indigo-500/30 p-5 shadow-xl">
+          <div className="flex items-center justify-between mb-3.5">
+            <h3 className="text-sm sm:text-base font-black text-white">Recent Sleep Logs</h3>
+            <span className="text-xs font-bold text-indigo-300 bg-indigo-500/20 px-2 py-0.5 rounded-full border border-indigo-500/30">
+              {sleepSessions.length} Logged
+            </span>
+          </div>
 
-          <div className="space-y-3">
-            {last7Days.slice().reverse().map((session) => (
-              <div key={session.id} className="p-4 bg-gray-50 rounded-xl">
-                <div className="flex items-center justify-between mb-2">
+          {sleepSessions.length === 0 ? (
+            <div className="text-center py-6 text-slate-400 space-y-2">
+              <Moon className="h-8 w-8 mx-auto text-indigo-400/50" />
+              <p className="text-xs font-bold text-slate-300">No real logs recorded yet</p>
+              <p className="text-[11px] text-slate-500">Tap "Log Sleep" above to start your personalized recovery tracker!</p>
+            </div>
+          ) : (
+            <div className="space-y-2.5">
+              {sleepSessions.slice().reverse().map((session) => (
+                <div
+                  key={session.id}
+                  className="p-3.5 bg-slate-800/80 border border-slate-700/80 rounded-2xl flex items-center justify-between gap-3 text-xs shadow-2xs"
+                >
                   <div className="flex items-center gap-3">
-                    <Calendar className="h-4 w-4 text-gray-500" />
-                    <span className="text-sm font-semibold text-gray-800">
-                      {new Date(session.date).toLocaleDateString('en-US', {
-                        month: 'short',
-                        day: 'numeric'
-                      })}
+                    <div className="p-2 bg-indigo-500/20 text-indigo-300 rounded-xl">
+                      <BedDouble size={16} />
+                    </div>
+                    <div>
+                      <div className="font-black text-white">
+                        {new Date(session.date + "T12:00:00").toLocaleDateString("en-US", { month: "short", day: "numeric", weekday: "short" })}
+                      </div>
+                      <div className="text-[11px] text-slate-400 flex items-center gap-2 mt-0.5">
+                        <span>{session.bedtime} → {session.wakeTime}</span>
+                        <span>•</span>
+                        <span className="text-indigo-300 font-bold">{(session.totalMinutes / 60).toFixed(1)} hrs</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="text-right">
+                    <span className={`px-2 py-0.5 rounded-full font-black text-[10px] ${
+                      session.quality >= 80 ? "bg-emerald-500/20 text-emerald-300 border border-emerald-500/30" : "bg-indigo-500/20 text-indigo-300 border border-indigo-500/30"
+                    }`}>
+                      {session.quality} Score
                     </span>
                   </div>
-                  <div className={`px-2 py-1 rounded-full text-xs font-semibold ${
-                    session.quality >= 80 ? 'bg-green-100 text-green-700' :
-                    session.quality >= 65 ? 'bg-blue-100 text-blue-700' :
-                    session.quality >= 50 ? 'bg-amber-100 text-amber-700' :
-                    'bg-red-100 text-red-700'
-                  }`}>
-                    {session.quality} {t('sleep.scoreSuffix')}
-                  </div>
                 </div>
-
-                <div className="flex items-center justify-between text-sm text-gray-600">
-                  <div className="flex items-center gap-2">
-                    <Moon className="h-4 w-4" />
-                    <span>{session.bedtime}</span>
-                  </div>
-                  <span>→</span>
-                  <div className="flex items-center gap-2">
-                    <Sun className="h-4 w-4" />
-                    <span>{session.wakeTime}</span>
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <Clock className="h-4 w-4" />
-                    <span>{(session.totalMinutes / 60).toFixed(1)}h</span>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </div>
       </div>
 
-      {/* Add Sleep Dialog */}
+      {/* Add Sleep Custom Modal */}
       <Dialog open={showAddDialog} onOpenChange={setShowAddDialog}>
-        <DialogContent className="max-w-md">
+        <DialogContent className="max-w-md bg-slate-900 border border-indigo-500/30 text-white rounded-3xl p-6">
           <DialogHeader>
-            <DialogTitle className="text-2xl text-indigo-600">{t('sleep.logSession')}</DialogTitle>
-            <DialogDescription>{t('sleep.logSessionDesc')}</DialogDescription>
+            <DialogTitle className="text-lg font-black text-indigo-300 flex items-center gap-2">
+              <Moon size={18} />
+              <span>Log Sleep Session</span>
+            </DialogTitle>
+            <DialogDescription className="text-xs text-slate-400">
+              Record bedtime and wake time to analyze your metabolic sleep quality
+            </DialogDescription>
           </DialogHeader>
 
-          <div className="space-y-4 mt-4">
+          <div className="space-y-4 mt-3">
             <div>
-              <Label htmlFor="date" className="text-sm font-medium text-gray-700 mb-2 block">
-                {t('sleep.date')}
+              <Label htmlFor="date" className="text-xs font-bold text-slate-300 mb-1 block">
+                Date
               </Label>
               <Input
                 id="date"
                 type="date"
                 value={formData.date}
                 onChange={(e) => setFormData({ ...formData, date: e.target.value })}
-                className="h-12"
+                className="bg-slate-800 border-slate-700 text-white text-xs h-10 rounded-xl"
               />
             </div>
 
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <Label htmlFor="bedtime" className="text-sm font-medium text-gray-700 mb-2 block">
-                  {t('sleep.bedtime')}
+                <Label htmlFor="bedtime" className="text-xs font-bold text-slate-300 mb-1 block">
+                  Bedtime 🌙
                 </Label>
                 <Input
                   id="bedtime"
                   type="time"
                   value={formData.bedtime}
                   onChange={(e) => setFormData({ ...formData, bedtime: e.target.value })}
-                  className="h-12"
+                  className="bg-slate-800 border-slate-700 text-white text-xs h-10 rounded-xl"
                 />
               </div>
 
               <div>
-                <Label htmlFor="wakeTime" className="text-sm font-medium text-gray-700 mb-2 block">
-                  {t('sleep.wakeTime')}
+                <Label htmlFor="wakeTime" className="text-xs font-bold text-slate-300 mb-1 block">
+                  Wake Time ☀️
                 </Label>
                 <Input
                   id="wakeTime"
                   type="time"
                   value={formData.wakeTime}
                   onChange={(e) => setFormData({ ...formData, wakeTime: e.target.value })}
-                  className="h-12"
+                  className="bg-slate-800 border-slate-700 text-white text-xs h-10 rounded-xl"
                 />
               </div>
             </div>
 
             <div>
-              <Label className="text-sm font-medium text-gray-700 mb-2 block">
-                {t('sleep.howFeel')}
+              <Label className="text-xs font-bold text-slate-300 mb-1.5 block">
+                How rested do you feel?
               </Label>
               <div className="grid grid-cols-4 gap-2">
-                {(['excellent', 'good', 'fair', 'poor'] as const).map((mood) => (
+                {(["excellent", "good", "fair", "poor"] as const).map((mood) => (
                   <button
                     key={mood}
+                    type="button"
                     onClick={() => setFormData({ ...formData, mood })}
-                    className={`p-3 rounded-xl border-2 text-sm font-medium transition-all ${
+                    className={`p-2.5 rounded-xl border text-xs font-bold transition-all cursor-pointer ${
                       formData.mood === mood
-                        ? 'border-indigo-500 bg-indigo-50 text-indigo-700'
-                        : 'border-gray-200 hover:border-gray-300 text-gray-600'
+                        ? "border-indigo-400 bg-indigo-600/40 text-white shadow-xs"
+                        : "border-slate-700 bg-slate-800/60 hover:bg-slate-800 text-slate-400"
                     }`}
                   >
-                    {mood === 'excellent' ? '😄' : mood === 'good' ? '🙂' : mood === 'fair' ? '😐' : '😴'}
-                    <div className="text-xs mt-1">{t(mood === 'excellent' ? 'sleep.moodExcellent' : mood === 'good' ? 'sleep.moodGood' : mood === 'fair' ? 'sleep.moodFair' : 'sleep.moodPoor')}</div>
+                    <div className="text-lg">{mood === "excellent" ? "😄" : mood === "good" ? "🙂" : mood === "fair" ? "😐" : "😴"}</div>
+                    <div className="capitalize mt-0.5 text-[10px]">{mood}</div>
                   </button>
                 ))}
               </div>
             </div>
 
-            <div className="flex gap-3 pt-4">
+            <div className="flex gap-2.5 pt-2">
               <Button
+                type="button"
                 onClick={() => setShowAddDialog(false)}
                 variant="outline"
-                className="flex-1"
+                className="flex-1 bg-transparent border-slate-700 text-slate-300 hover:bg-slate-800 text-xs rounded-xl"
               >
-                {t('common.cancel')}
+                Cancel
               </Button>
               <Button
+                type="button"
                 onClick={handleAddSleep}
                 disabled={saving}
-                className="flex-1 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-60"
+                className="flex-1 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-black rounded-xl shadow-md cursor-pointer"
               >
-                {saving ? t('common.saving') : t('sleep.saveSession')}
+                {saving ? "Saving..." : "Save Sleep Log"}
               </Button>
             </div>
           </div>
