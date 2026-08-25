@@ -13,11 +13,13 @@
 
 import { useMascot } from "../hooks/useMascot";
 import type { MascotGesture } from "../types/mascot";
-import MascotVectorRig from "./MascotVectorRig";
+import MascotVectorRig, { type MascotLookDirection } from "./MascotVectorRig";
 
 interface MascotProps {
   /** Override the shared gesture for this instance. Omit to follow MascotContext. */
   gesture?: MascotGesture | string;
+  /** Direction Avo looks with his eyes ('left', 'right', 'center', 'down', 'auto'). Default 'auto'. */
+  lookDirection?: MascotLookDirection;
   /** Width/height in pixels. Default 96. */
   size?: number;
   className?: string;
@@ -25,13 +27,20 @@ interface MascotProps {
   alt?: string;
 }
 
-export default function Mascot({ gesture: override, size = 96, className = "", alt }: MascotProps) {
+export default function Mascot({
+  gesture: override,
+  lookDirection = "auto",
+  size = 96,
+  className = "",
+  alt,
+}: MascotProps) {
   const { gesture: shared } = useMascot();
   const gesture = override ?? shared ?? "idle";
 
   return (
     <MascotVectorRig
       gesture={gesture}
+      lookDirection={lookDirection}
       size={size}
       className={className}
       alt={alt}
