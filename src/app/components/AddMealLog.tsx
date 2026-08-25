@@ -81,6 +81,8 @@ export default function AddMealLog({ isOpen, onClose, onSave, onAdd, selectedDat
       protein: String(proteinEst),
       fats: String(fatsEst),
     }));
+  };
+
   const [cookingMethod, setCookingMethod] = useState<'steamed_boiled' | 'grilled_baked' | 'stewed' | 'fried'>('steamed_boiled');
 
   const handleCookingMethodChange = (method: 'steamed_boiled' | 'grilled_baked' | 'stewed' | 'fried') => {
