@@ -23,6 +23,7 @@ import { useAuth } from "../contexts/AuthContext";
 import { useLanguage } from "../contexts/LanguageContext";
 import Mascot from "../components/Mascot";
 import WhatsAppConnectDialog from "../components/WhatsAppConnectDialog";
+import SmartVideoConcierge from "../components/SmartVideoConcierge";
 import { toast } from "sonner";
 import { triggerHaptic } from "../utils/celebration";
 import { motion, useReducedMotion, AnimatePresence } from "motion/react";
@@ -557,6 +558,9 @@ export default function Login() {
         isOpen={showWhatsAppModal}
         onClose={() => setShowWhatsAppModal(false)}
       />
+
+      {/* Smart Video Concierge Guide */}
+      <SmartVideoConcierge />
     </div>
   );
 }
