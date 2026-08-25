@@ -37,6 +37,7 @@ import LocalFoodScanner from "../components/LocalFoodScanner";
 import QuickActionsFAB from "../components/QuickActionsFAB";
 import GlobalSearch from "../components/GlobalSearch";
 import TutorialTooltip from "../components/TutorialTooltip";
+import SmartVideoConcierge from "../components/SmartVideoConcierge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "../components/ui/dialog";
 import { Alert, AlertTitle, AlertDescription } from "../components/ui/alert";
 import { Button } from "../components/ui/button";
@@ -1463,6 +1464,12 @@ export default function Home() {
           </div>
         </DialogContent>
       </Dialog>
+
+      {/* Smart Video Concierge Patient Guide */}
+      <SmartVideoConcierge
+        onOpenScanner={() => setShowCamera(true)}
+        onOpenWhatsApp={() => setShowWhatsAppDialog(true)}
+      />
     </div>
   );
 }
