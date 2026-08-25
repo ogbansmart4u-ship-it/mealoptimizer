@@ -132,6 +132,7 @@ export default function Home() {
   const [showAnalyseFoodOptions, setShowAnalyseFoodOptions] = useState(false);
   const [showLocalFoodOptions, setShowLocalFoodOptions] = useState(false);
   const [showGlobalSearch, setShowGlobalSearch] = useState(false);
+  const [showConciergeModal, setShowConciergeModal] = useState(false);
 
   // Animation states for Daily Fuel Gauge
   const [animatedProgress, setAnimatedProgress] = useState(0);
@@ -669,8 +670,42 @@ export default function Home() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.25 }}
-            className="space-y-5"
+            className="space-y-4"
           >
+            {/* 👩🏾‍⚕️ Nurse Amina AI Concierge Card */}
+            <div className="bg-gradient-to-r from-[#1f7a8c] via-[#0d9488] to-[#115e59] rounded-3xl p-4 sm:p-5 text-white shadow-lg border border-teal-200/40 relative overflow-hidden flex items-center justify-between gap-3 sm:gap-4">
+              <div className="relative z-10 flex items-center gap-3 min-w-0">
+                <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-white/20 border-2 border-amber-300 flex items-center justify-center text-2xl sm:text-3xl shrink-0 shadow-xs">
+                  👩🏾‍⚕️
+                </div>
+                <div className="min-w-0">
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-[9.5px] font-black uppercase tracking-wider bg-amber-400 text-slate-950 px-2 py-0.2 rounded-full shadow-2xs">
+                      AI Concierge
+                    </span>
+                    <span className="text-[10px] text-teal-200 font-bold hidden sm:inline">24/7 Patient Guide</span>
+                  </div>
+                  <h3 className="text-sm sm:text-base font-black text-white leading-tight mt-0.5 truncate">
+                    Welcome to MealOptimiza!
+                  </h3>
+                  <p className="text-[11px] sm:text-xs text-teal-100 line-clamp-1 mt-0.5 font-medium">
+                    "I'm Nurse Amina. Tap to start your 30s interactive tour."
+                  </p>
+                </div>
+              </div>
+
+              <button
+                onClick={() => {
+                  triggerHaptic("medium");
+                  setShowConciergeModal(true);
+                }}
+                className="relative z-10 bg-white hover:bg-teal-50 text-[#1f7a8c] font-black text-xs px-3.5 py-2.5 rounded-2xl shadow-sm shrink-0 cursor-pointer active:scale-95 transition-all flex items-center gap-1.5"
+              >
+                <span>▶️ Talk</span>
+                <ChevronRight size={14} />
+              </button>
+            </div>
+
             {/* Daily Fuel Gauge Card */}
             <div className="bg-gradient-to-br from-white via-[#F4FBFA] to-[#E2F4F3] rounded-3xl shadow-lg border border-teal-100/80 p-5 sm:p-6">
               <div className="flex items-center justify-between mb-2">
@@ -1467,6 +1502,8 @@ export default function Home() {
 
       {/* Smart Video Concierge Patient Guide */}
       <SmartVideoConcierge
+        isOpen={showConciergeModal}
+        onClose={() => setShowConciergeModal(false)}
         onOpenScanner={() => setShowCamera(true)}
         onOpenWhatsApp={() => setShowWhatsAppDialog(true)}
       />

@@ -23,17 +23,26 @@ import { useUser } from "../contexts/UserContext";
 import { triggerHaptic } from "../utils/celebration";
 
 interface SmartVideoConciergeProps {
+  isOpen?: boolean;
+  onClose?: () => void;
   onOpenScanner?: () => void;
   onOpenWhatsApp?: () => void;
 }
 
 export default function SmartVideoConcierge({
+  isOpen: externalIsOpen,
+  onClose: externalOnClose,
   onOpenScanner,
   onOpenWhatsApp,
 }: SmartVideoConciergeProps) {
   const navigate = useNavigate();
   const { profile } = useUser();
-  const [isOpen, setIsOpen] = useState(false);
+  const [internalIsOpen, setInternalIsOpen] = useState(false);
+  const isOpen = externalIsOpen !== undefined ? externalIsOpen : internalIsOpen;
+  const setIsOpen = (val: boolean) => {
+    setInternalIsOpen(val);
+    if (!val && externalOnClose) externalOnClose();
+  };
   const [isPlaying, setIsPlaying] = useState(true);
   const [isMuted, setIsMuted] = useState(false);
   const [selectedLanguage, setSelectedLanguage] = useState<"en" | "pcm" | "yo" | "ig" | "ha" | "fr">("en");
@@ -89,14 +98,14 @@ export default function SmartVideoConcierge({
             initial={{ scale: 0, opacity: 0, y: 20 }}
             animate={{ scale: 1, opacity: 1, y: 0 }}
             exit={{ scale: 0, opacity: 0 }}
-            className="fixed bottom-20 right-4 z-40"
+            className="fixed bottom-20 left-4 z-40"
           >
             <button
               onClick={() => {
                 triggerHaptic("medium");
                 setIsOpen(true);
               }}
-              className="group relative flex items-center gap-2.5 bg-gradient-to-r from-[#1f7a8c] to-[#0d9488] text-white pl-2 pr-4 py-2 rounded-full shadow-lg hover:shadow-xl hover:scale-105 active:scale-95 transition-all cursor-pointer border-2 border-white/40"
+              className="group relative flex items-center gap-2.5 bg-gradient-to-r from-[#1f7a8c] to-[#0d9488] text-white pl-2 pr-4 py-2 rounded-full shadow-lg hover:shadow-xl hover:scale-105 active:scale-95 transition-all cursor-pointer border-2 border-white/40 ring-4 ring-teal-500/20"
             >
               <div className="relative w-9 h-9 rounded-full overflow-hidden bg-teal-800 border-2 border-amber-300 shadow-xs flex items-center justify-center text-lg">
                 <span>👩🏾‍⚕️</span>
