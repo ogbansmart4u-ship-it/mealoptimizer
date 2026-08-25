@@ -49,6 +49,7 @@ import { getAccessToken } from '../../lib/supabase';
 import { createMealLog, getMealLogs, getHydrationLogs, createHydrationLog, deleteHydrationLog } from "../../lib/api";
 import { toast } from "sonner";
 import { celebrate } from "../components/celebrate";
+import { triggerHaptic } from "../utils/celebration";
 
 const FOOD_API_URL = `https://${projectId}.supabase.co/functions/v1/make-server-ba6f1f45/ai/analyze-food`;
 

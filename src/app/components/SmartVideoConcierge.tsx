@@ -65,7 +65,7 @@ export default function SmartVideoConcierge({
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={(open) => { if (!open) onClose(); }}>
+    <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DialogContent className="max-w-md p-0 overflow-hidden rounded-3xl border border-teal-100 shadow-2xl z-50 bg-white">
         <DialogTitle className="sr-only">Nurse Amina AI Concierge</DialogTitle>
         <DialogDescription className="sr-only">Interactive patient guide for MealOptimiza</DialogDescription>
