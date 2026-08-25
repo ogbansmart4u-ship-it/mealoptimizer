@@ -1,4 +1,4 @@
-import { useState, useEffect, useId } from "react";
+import React, { useState, useEffect, useMemo, useRef } from "react";
 import { useNavigate } from "react-router";
 import {
   Clock,
@@ -15,9 +15,19 @@ import {
   Activity,
   Info,
   CheckCircle,
+  Sparkles,
+  ChevronLeft,
+  ShieldCheck,
+  Heart,
+  Brain,
+  Dna,
+  RefreshCw,
+  Plus,
+  Coffee,
+  Soup,
+  Check,
+  ChevronRight,
 } from "lucide-react";
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Area, AreaChart } from "recharts";
-import PageHeader from "../components/PageHeader";
 import BottomNav from "../components/BottomNav";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "../components/ui/dialog";
 import { Button } from "../components/ui/button";
@@ -25,9 +35,11 @@ import { Label } from "../components/ui/label";
 import { Input } from "../components/ui/input";
 import { toast } from "sonner";
 import { useLanguage } from "../contexts/LanguageContext";
+import { useMascot } from "../hooks/useMascot";
+import Mascot from "../components/Mascot";
+import { triggerHaptic, triggerConfetti } from "../utils/celebration";
 
-type FastingProtocol = '16:8' | '18:6' | '20:4' | 'omad' | 'custom';
-type FastingPhase = 'anabolic' | 'catabolic' | 'fat-burning' | 'ketosis' | 'autophagy' | 'deep-autophagy';
+type FastingProtocol = "14:10" | "16:8" | "18:6" | "20:4" | "omad" | "circadian";
 
 type FastingSession = {
   id: string;
@@ -40,485 +52,535 @@ type FastingSession = {
   completed: boolean;
 };
 
-const FASTING_PROTOCOLS = [
-  { value: '16:8', label: '16:8', fast: 16, eat: 8, descKey: 'fasting.protoBeginner' },
-  { value: '18:6', label: '18:6', fast: 18, eat: 6, descKey: 'fasting.protoIntermediate' },
-  { value: '20:4', label: '20:4', fast: 20, eat: 4, descKey: 'fasting.protoAdvanced' },
-  { value: 'omad', label: 'OMAD', fast: 23, eat: 1, descKey: 'fasting.protoOmad' },
+const FASTING_PROTOCOLS: Array<{
+  value: FastingProtocol;
+  label: string;
+  fast: number;
+  eat: number;
+  title: string;
+  desc: string;
+  badge: string;
+}> = [
+  { value: "16:8", label: "16:8", fast: 16, eat: 8, title: "Lean Gains Standard", desc: "The gold standard for fat loss, autophagy, and stable blood sugar.", badge: "Most Popular 🌟" },
+  { value: "14:10", label: "14:10", fast: 14, eat: 10, title: "Gentle Metabolic Rest", desc: "Perfect for beginners and busy work schedules.", badge: "Beginner Friendly 🌱" },
+  { value: "18:6", label: "18:6", fast: 18, eat: 6, title: "Deep Fat Burn", desc: "Enhanced ketosis and cellular cleanup.", badge: "Accelerated ⚡" },
+  { value: "20:4", label: "20:4", fast: 20, eat: 4, title: "The Warrior Window", desc: "Intense cellular regeneration and autophagy.", badge: "Advanced 🛡️" },
+  { value: "circadian", label: "12:12", fast: 12, eat: 12, title: "Circadian Sync", desc: "Syncs with sunrise and sunset to rest digestion.", badge: "Everyday 🌅" },
 ];
 
-const FASTING_PHASES = [
-  { phase: 'anabolic', start: 0, end: 4, labelKey: 'fasting.phaseAnabolic', color: '#94a3b8', descKey: 'fasting.descAnabolic' },
-  { phase: 'catabolic', start: 4, end: 8, labelKey: 'fasting.phaseCatabolic', color: '#06b6d4', descKey: 'fasting.descCatabolic' },
-  { phase: 'fat-burning', start: 8, end: 12, labelKey: 'fasting.phaseFatBurning', color: '#10b981', descKey: 'fasting.descFatBurning' },
-  { phase: 'ketosis', start: 12, end: 16, labelKey: 'fasting.phaseKetosis', color: '#f59e0b', descKey: 'fasting.descKetosis' },
-  { phase: 'autophagy', start: 16, end: 24, labelKey: 'fasting.phaseAutophagy', color: '#8b5cf6', descKey: 'fasting.descAutophagy' },
-  { phase: 'deep-autophagy', start: 24, end: 48, labelKey: 'fasting.phaseDeepAutophagy', color: '#ec4899', descKey: 'fasting.descDeepAutophagy' },
+const AUTOPHAGY_STAGES = [
+  {
+    hours: 4,
+    title: "Blood Sugar Normalization",
+    icon: "🩸",
+    color: "#38bdf8",
+    desc: "Digestion finishes. Blood glucose and circulating insulin begin dropping to baseline.",
+  },
+  {
+    hours: 8,
+    title: "Glycogen Depletion & Insulin Rest",
+    icon: "📉",
+    color: "#34d399",
+    desc: "Liver glycogen stores deplete. Pancreatic beta-cells enter restorative resting mode.",
+  },
+  {
+    hours: 12,
+    title: "Ketosis & Fat-Burning Ignition",
+    icon: "⚡",
+    color: "#fbbf24",
+    desc: "Body flips the metabolic switch to burn stored visceral fat for fuel.",
+  },
+  {
+    hours: 16,
+    title: "Autophagy (Cellular Cleanup)",
+    icon: "🧬",
+    color: "#a78bfa",
+    desc: "Autophagy cleans out senescent, damaged cell proteins and rejuvenates mitochondria.",
+  },
+  {
+    hours: 20,
+    title: "Deep Cellular & Stem Cell Renewal",
+    icon: "🌟",
+    color: "#f472b6",
+    desc: "Growth hormone surges by up to 2000% to preserve lean muscle and repair gut lining.",
+  },
 ];
 
-const generateMockSessions = (): FastingSession[] => {
-  const sessions: FastingSession[] = [];
-  const now = new Date();
-
-  for (let i = 13; i >= 0; i--) {
-    const date = new Date(now);
-    date.setDate(date.getDate() - i);
-    date.setHours(20, 0, 0, 0);
-
-    const endDate = new Date(date);
-    endDate.setHours(endDate.getHours() + 16 + Math.floor(Math.random() * 4));
-
-    sessions.push({
-      id: `session-${i}`,
-      startTime: date.toISOString(),
-      endTime: endDate.toISOString(),
-      duration: 16 + Math.floor(Math.random() * 4),
-      protocol: '16:8',
-      weight: 75 + (Math.random() - 0.5) * 2,
-      completed: true,
-    });
-  }
-
-  return sessions;
-};
+const FASTING_BENEFITS = [
+  {
+    title: "Reverses Insulin Resistance",
+    desc: "Giving your pancreas 16 hours of rest restores insulin sensitivity and flattens post-meal glucose spikes.",
+    icon: "🩸",
+    color: "bg-teal-500/10 text-teal-300 border-teal-500/30",
+  },
+  {
+    title: "Autophagy (Anti-Aging)",
+    desc: "Your cells recycle damaged mitochondria and waste proteins, promoting longevity and tissue renewal.",
+    icon: "🧬",
+    color: "bg-purple-500/10 text-purple-300 border-purple-500/30",
+  },
+  {
+    title: "Mental Clarity & Brain BDNF",
+    desc: "Ketone production stimulates Brain-Derived Neurotrophic Factor (BDNF) for razor-sharp focus.",
+    icon: "🧠",
+    color: "bg-blue-500/10 text-blue-300 border-blue-500/30",
+  },
+  {
+    title: "Visceral Belly Fat Loss",
+    desc: "Low insulin unlocks stubborn abdominal fat stores without sacrificing lean active muscle tissue.",
+    icon: "🔥",
+    color: "bg-amber-500/10 text-amber-300 border-amber-500/30",
+  },
+];
 
 export default function FastingTimer() {
   const navigate = useNavigate();
   const { t } = useLanguage();
-  const uniqueId = useId();
+  const mascot = useMascot();
 
-  const [sessions, setSessions] = useState<FastingSession[]>(() => {
-    const stored = localStorage.getItem('fasting-sessions');
-    if (stored) return JSON.parse(stored);
-    return generateMockSessions();
-  });
+  const [selectedProtocol, setSelectedProtocol] = useState<FastingProtocol>("16:8");
+  const [selectedStageInfo, setSelectedStageInfo] = useState<number | null>(null);
+  const [waterCups, setWaterCups] = useState(4);
 
+  // Active fast session state
   const [currentSession, setCurrentSession] = useState<FastingSession | null>(() => {
-    const stored = localStorage.getItem('current-fasting-session');
-    if (stored) return JSON.parse(stored);
-    return null;
+    try {
+      const stored = localStorage.getItem("current-fasting-session");
+      if (stored) return JSON.parse(stored);
+      // Default to an active fast starting 13.5 hours ago for immediate lively demonstration
+      const defaultStart = new Date(Date.now() - 13.5 * 3600 * 1000).toISOString();
+      return {
+        id: "demo-fast",
+        startTime: defaultStart,
+        duration: 0,
+        protocol: "16:8",
+        completed: false,
+      };
+    } catch {
+      return null;
+    }
   });
 
+  const [elapsedHours, setElapsedHours] = useState(13.5);
   const [isPaused, setIsPaused] = useState(false);
-  const [elapsedHours, setElapsedHours] = useState(0);
-  const [selectedProtocol, setSelectedProtocol] = useState<FastingProtocol>('16:8');
-  const [showStartDialog, setShowStartDialog] = useState(false);
-  const [showStatsDialog, setShowStatsDialog] = useState(false);
-  const [currentWeight, setCurrentWeight] = useState('');
+  const [showProtocolModal, setShowProtocolModal] = useState(false);
+  const [showCustomModal, setShowCustomModal] = useState(false);
 
-  useEffect(() => {
-    localStorage.setItem('fasting-sessions', JSON.stringify(sessions));
-  }, [sessions]);
-
+  // Save active session
   useEffect(() => {
     if (currentSession) {
-      localStorage.setItem('current-fasting-session', JSON.stringify(currentSession));
+      localStorage.setItem("current-fasting-session", JSON.stringify(currentSession));
     } else {
-      localStorage.removeItem('current-fasting-session');
+      localStorage.removeItem("current-fasting-session");
     }
   }, [currentSession]);
 
-  // Timer update
+  // Live real-time tick
   useEffect(() => {
     if (!currentSession || isPaused) return;
 
-    const interval = setInterval(() => {
-      const start = new Date(currentSession.startTime);
-      const now = new Date();
-      const hours = (now.getTime() - start.getTime()) / (1000 * 60 * 60);
-      setElapsedHours(hours);
-    }, 1000);
+    const tick = () => {
+      const start = new Date(currentSession.startTime).getTime();
+      const now = Date.now();
+      const diffHours = Math.max(0, (now - start) / (1000 * 3600));
+      setElapsedHours(diffHours);
+    };
 
+    tick();
+    const interval = setInterval(tick, 1000);
     return () => clearInterval(interval);
   }, [currentSession, isPaused]);
 
-  const completedSessions = sessions.filter(s => s.completed);
-  const currentStreak = calculateStreak(sessions);
-  const avgFastingHours = completedSessions.reduce((sum, s) => sum + s.duration, 0) / completedSessions.length || 0;
-  const totalFasts = completedSessions.length;
+  const activeProtoConfig = useMemo(() => {
+    return FASTING_PROTOCOLS.find((p) => p.value === (currentSession?.protocol || selectedProtocol)) || FASTING_PROTOCOLS[0];
+  }, [currentSession, selectedProtocol]);
 
-  function calculateStreak(sessions: FastingSession[]): number {
-    let streak = 0;
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
+  const targetHours = activeProtoConfig.fast;
+  const progressPercent = Math.min(100, Math.max(0, (elapsedHours / targetHours) * 100));
+  const remainingHours = Math.max(0, targetHours - elapsedHours);
 
-    for (let i = 0; i < 30; i++) {
-      const checkDate = new Date(today);
-      checkDate.setDate(checkDate.getDate() - i);
-      const dateStr = checkDate.toISOString().split('T')[0];
+  const formattedElapsed = useMemo(() => {
+    const totalSecs = Math.floor(elapsedHours * 3600);
+    const h = Math.floor(totalSecs / 3600);
+    const m = Math.floor((totalSecs % 3600) / 60);
+    const s = totalSecs % 60;
+    return `${h.toString().padStart(2, "0")}:${m.toString().padStart(2, "0")}:${s.toString().padStart(2, "0")}`;
+  }, [elapsedHours]);
 
-      const hasFast = sessions.some(s => {
-        const sessionDate = new Date(s.startTime).toISOString().split('T')[0];
-        return sessionDate === dateStr && s.completed;
-      });
+  const formattedRemaining = useMemo(() => {
+    const totalSecs = Math.floor(remainingHours * 3600);
+    const h = Math.floor(totalSecs / 3600);
+    const m = Math.floor((totalSecs % 3600) / 60);
+    return `${h}h ${m}m remaining`;
+  }, [remainingHours]);
 
-      if (hasFast) {
-        streak++;
-      } else {
-        break;
-      }
-    }
+  const estimatedEndTime = useMemo(() => {
+    if (!currentSession) return "Tap Start to Begin";
+    const start = new Date(currentSession.startTime).getTime();
+    const end = new Date(start + targetHours * 3600 * 1000);
+    return end.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+  }, [currentSession, targetHours]);
 
-    return streak;
-  }
+  const currentAutophagyStage = useMemo(() => {
+    if (elapsedHours >= 20) return AUTOPHAGY_STAGES[4];
+    if (elapsedHours >= 16) return AUTOPHAGY_STAGES[3];
+    if (elapsedHours >= 12) return AUTOPHAGY_STAGES[2];
+    if (elapsedHours >= 8) return AUTOPHAGY_STAGES[1];
+    return AUTOPHAGY_STAGES[0];
+  }, [elapsedHours]);
 
-  const getCurrentPhase = (hours: number): typeof FASTING_PHASES[0] | null => {
-    return FASTING_PHASES.find(p => hours >= p.start && hours < p.end) || FASTING_PHASES[FASTING_PHASES.length - 1];
-  };
-
-  const handleStartFast = () => {
+  // Handlers
+  const handleStartFast = (proto: FastingProtocol = selectedProtocol) => {
+    triggerHaptic("success");
+    mascot.write();
     const newSession: FastingSession = {
       id: Date.now().toString(),
       startTime: new Date().toISOString(),
       duration: 0,
-      protocol: selectedProtocol,
-      weight: currentWeight ? parseFloat(currentWeight) : undefined,
+      protocol: proto,
       completed: false,
     };
-
     setCurrentSession(newSession);
     setElapsedHours(0);
     setIsPaused(false);
-    setShowStartDialog(false);
-    toast.success(t('fasting.started'));
+    setShowProtocolModal(false);
+    toast.success(`Started ${proto} Intermittent Fast! ⏳`);
   };
 
   const handleEndFast = () => {
-    if (!currentSession) return;
-
-    const endedSession: FastingSession = {
-      ...currentSession,
-      endTime: new Date().toISOString(),
-      duration: elapsedHours,
-      completed: true,
-    };
-
-    setSessions(prev => [...prev, endedSession].sort((a, b) =>
-      new Date(a.startTime).getTime() - new Date(b.startTime).getTime()
-    ));
-
+    triggerHaptic("milestone");
+    triggerConfetti("cannons");
+    mascot.jump();
+    toast.success(`🎉 Fast Complete! You completed ${elapsedHours.toFixed(1)} hours of metabolic rejuvenation!`);
     setCurrentSession(null);
     setElapsedHours(0);
-    toast.success(`${t('fasting.completedToast')} ${elapsedHours.toFixed(1)} ${t('fasting.hours')}`);
   };
 
-  const formatTime = (hours: number) => {
-    const h = Math.floor(hours);
-    const m = Math.floor((hours - h) * 60);
-    const s = Math.floor(((hours - h) * 60 - m) * 60);
-    return `${h}h ${m}m ${s}s`;
+  const handleAddWater = () => {
+    triggerHaptic("light");
+    setWaterCups((prev) => prev + 1);
+    toast.success("Hydration logged! +250ml 💧");
   };
-
-  const currentPhase = getCurrentPhase(elapsedHours);
-  const protocol = FASTING_PROTOCOLS.find(p => p.value === selectedProtocol);
-  const targetHours = protocol?.fast || 16;
-  const progressPercentage = Math.min((elapsedHours / targetHours) * 100, 100);
-
-  // Weight correlation chart
-  const weightData = sessions
-    .filter(s => s.weight)
-    .slice(-14)
-    .map((s, index) => ({
-      id: `weight-${index}`,
-      date: new Date(s.startTime).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
-      weight: s.weight,
-      duration: s.duration,
-    }));
-
-  // Fasting duration trend
-  const durationData = sessions
-    .slice(-14)
-    .map((s, index) => ({
-      id: `duration-${index}`,
-      date: new Date(s.startTime).toLocaleDateString('en-US', { weekday: 'short' }),
-      duration: s.duration,
-    }));
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-purple-50 via-pink-50 to-orange-50 pb-24">
-      <PageHeader
-        title={t('fasting.title')}
-        showHome
-        className="bg-gradient-to-r from-purple-600 to-pink-600"
-        actions={
-          <button
-            onClick={() => setShowStatsDialog(true)}
-            className="p-2 hover:bg-white/10 rounded-full transition-colors"
-          >
-            <Activity className="h-5 w-5 text-white" />
-          </button>
-        }
-      />
-
-      <div className="px-6 mt-6 space-y-6">
-        {/* Current Fast Timer */}
-        {currentSession ? (
-          <div className="bg-white rounded-3xl shadow-2xl p-8">
-            <div className="text-center mb-6">
-              <div className="inline-flex items-center gap-2 px-4 py-2 bg-purple-100 rounded-full mb-4">
-                <Flame className="h-5 w-5 text-purple-600 animate-pulse" />
-                <span className="text-sm font-semibold text-purple-700">{t('fasting.inProgress')}</span>
-              </div>
-
-              {/* Circular Progress */}
-              <div className="relative w-64 h-64 mx-auto mb-6">
-                <svg className="transform -rotate-90 w-64 h-64">
-                  <circle
-                    cx="128"
-                    cy="128"
-                    r="100"
-                    stroke="#e0e7ff"
-                    strokeWidth="20"
-                    fill="none"
-                  />
-                  <circle
-                    cx="128"
-                    cy="128"
-                    r="100"
-                    stroke={currentPhase?.color || '#8b5cf6'}
-                    strokeWidth="20"
-                    fill="none"
-                    strokeDasharray={`${(progressPercentage / 100) * 628.32} 628.32`}
-                    className="transition-all duration-1000"
-                    strokeLinecap="round"
-                  />
-                </svg>
-
-                <div className="absolute inset-0 flex flex-col items-center justify-center">
-                  <div className="text-4xl font-bold text-gray-800">
-                    {formatTime(elapsedHours).split(' ')[0]}
-                  </div>
-                  <div className="text-sm text-gray-600">
-                    {formatTime(elapsedHours).split(' ').slice(1).join(' ')}
-                  </div>
-                  <div className="mt-2 text-xs text-gray-500">
-                    {t('fasting.targetPrefix')}: {targetHours}h
-                  </div>
-                </div>
-              </div>
-
-              {/* Current Phase */}
-              {currentPhase && (
-                <div className="p-4 bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl mb-4">
-                  <div className="flex items-center justify-center gap-2 mb-2">
-                    <div className="w-3 h-3 rounded-full" style={{ backgroundColor: currentPhase.color }} />
-                    <div className="text-lg font-bold" style={{ color: currentPhase.color }}>
-                      {t(currentPhase.labelKey)}
-                    </div>
-                  </div>
-                  <div className="text-sm text-gray-600">{t(currentPhase.descKey)}</div>
-                </div>
-              )}
-
-              {/* Controls */}
-              <div className="flex gap-3 justify-center">
-                <Button
-                  onClick={() => setIsPaused(!isPaused)}
-                  variant="outline"
-                  className="flex-1 max-w-xs"
-                >
-                  {isPaused ? <Play className="h-4 w-4 mr-2" /> : <Pause className="h-4 w-4 mr-2" />}
-                  {isPaused ? t('fasting.resume') : t('fasting.pause')}
-                </Button>
-                <Button
-                  onClick={handleEndFast}
-                  className="flex-1 max-w-xs bg-red-600 hover:bg-red-700"
-                >
-                  <StopCircle className="h-4 w-4 mr-2" />
-                  {t('fasting.endFast')}
-                </Button>
-              </div>
-            </div>
-          </div>
-        ) : (
-          <div className="bg-white rounded-3xl shadow-xl p-8 text-center">
-            <Clock className="h-16 w-16 mx-auto mb-4 text-purple-600" />
-            <h3 className="text-2xl font-bold text-gray-800 mb-2">{t('fasting.readyTitle')}</h3>
-            <p className="text-gray-600 mb-6">{t('fasting.readySubtitle')}</p>
-            <Button
-              onClick={() => setShowStartDialog(true)}
-              className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
+    <div className="min-h-screen bg-gradient-to-b from-[#090d16] via-[#0f172a] to-[#090d16] text-slate-100 pb-28">
+      {/* Top Header */}
+      <div className="bg-slate-900/80 backdrop-blur-md px-4 sm:px-6 pt-9 pb-5 border-b border-amber-500/20 sticky top-0 z-20">
+        <div className="max-w-2xl mx-auto flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => navigate(-1)}
+              className="text-amber-200 hover:bg-white/10 rounded-full p-2 transition-colors cursor-pointer"
+              aria-label="Go back"
             >
-              <Play className="h-4 w-4 mr-2" />
-              {t('fasting.startFast')}
-            </Button>
-          </div>
-        )}
-
-        {/* Stats Cards */}
-        <div className="grid grid-cols-2 gap-4">
-          <div className="bg-white rounded-2xl p-5 shadow-lg">
-            <div className="flex items-center gap-3 mb-3">
-              <div className="bg-orange-100 rounded-full p-2">
-                <Flame className="h-5 w-5 text-orange-600" />
-              </div>
-              <span className="text-sm text-gray-600">{t('fasting.streak')}</span>
+              <ChevronLeft className="h-6 w-6" />
+            </button>
+            <div>
+              <h1 className="text-xl sm:text-2xl font-black text-white leading-tight flex items-center gap-2">
+                <span>Fasting &amp; Autophagy</span>
+                <span className="text-xs px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 font-bold border border-amber-500/30">
+                  {activeProtoConfig.label}
+                </span>
+              </h1>
+              <p className="text-xs text-amber-200/80 font-medium">
+                Metabolic Flexibility, Autophagy, &amp; Insulin Sensitivity Hub
+              </p>
             </div>
-            <div className="text-3xl font-bold text-gray-800">{currentStreak}</div>
-            <div className="text-xs text-gray-500">{t('fasting.days')}</div>
           </div>
 
-          <div className="bg-white rounded-2xl p-5 shadow-lg">
-            <div className="flex items-center gap-3 mb-3">
-              <div className="bg-purple-100 rounded-full p-2">
-                <Award className="h-5 w-5 text-purple-600" />
-              </div>
-              <span className="text-sm text-gray-600">{t('fasting.totalFasts')}</span>
-            </div>
-            <div className="text-3xl font-bold text-gray-800">{totalFasts}</div>
-            <div className="text-xs text-gray-500">{t('fasting.completed')}</div>
-          </div>
+          <button
+            onClick={() => setShowProtocolModal(true)}
+            className="bg-amber-500/20 hover:bg-amber-500/30 border border-amber-500/40 text-amber-300 rounded-full text-xs font-bold px-3 py-1.5 transition-all cursor-pointer"
+          >
+            Change Plan ⚙️
+          </button>
+        </div>
+      </div>
 
-          <div className="bg-white rounded-2xl p-5 shadow-lg">
-            <div className="flex items-center gap-3 mb-3">
-              <div className="bg-blue-100 rounded-full p-2">
-                <Clock className="h-5 w-5 text-blue-600" />
+      {/* Main Container */}
+      <div className="max-w-2xl mx-auto px-4 sm:px-6 mt-5 space-y-5">
+        {/* 🥑 10X Animated Avo Fasting Coach */}
+        <div className="bg-gradient-to-r from-amber-950/90 via-slate-900 to-[#1f7a8c]/80 rounded-3xl p-4 sm:p-5 text-white shadow-xl border border-amber-400/30 relative overflow-hidden flex items-center justify-between gap-4">
+          <div className="relative z-10 flex items-center gap-3.5 min-w-0">
+            <Mascot size={68} className="shrink-0 drop-shadow-lg" />
+            <div className="min-w-0">
+              <div className="flex items-center gap-1.5 mb-0.5">
+                <span className="text-[9.5px] font-black uppercase tracking-wider bg-amber-400 text-slate-950 px-2 py-0.2 rounded-full shadow-2xs">
+                  Avo Fasting Coach
+                </span>
+                <span className="text-[10px] text-amber-200 font-bold hidden sm:inline">Active Metabolic Phase</span>
               </div>
-              <span className="text-sm text-gray-600">{t('fasting.avgFast')}</span>
+              <h3 className="text-sm sm:text-base font-black text-white leading-tight">
+                {currentAutophagyStage.icon} {currentAutophagyStage.title}
+              </h3>
+              <p className="text-[11px] sm:text-xs text-amber-100/90 line-clamp-2 mt-0.5 font-medium leading-relaxed">
+                "{currentAutophagyStage.desc}"
+              </p>
             </div>
-            <div className="text-3xl font-bold text-gray-800">{avgFastingHours.toFixed(1)}</div>
-            <div className="text-xs text-gray-500">{t('fasting.hours')}</div>
-          </div>
-
-          <div className="bg-white rounded-2xl p-5 shadow-lg">
-            <div className="flex items-center gap-3 mb-3">
-              <div className="bg-green-100 rounded-full p-2">
-                <TrendingDown className="h-5 w-5 text-green-600" />
-              </div>
-              <span className="text-sm text-gray-600">{t('fasting.weight')}</span>
-            </div>
-            <div className="text-3xl font-bold text-gray-800">
-              {weightData.length > 0 ? weightData[weightData.length - 1].weight?.toFixed(1) : '--'}
-            </div>
-            <div className="text-xs text-gray-500">kg</div>
           </div>
         </div>
 
-        {/* Fasting Phases Timeline */}
-        <div className="bg-white rounded-3xl shadow-xl p-6">
-          <h3 className="text-lg font-semibold text-gray-800 mb-4">{t('fasting.phasesTitle')}</h3>
+        {/* ⏳ 10X Live Circular Fasting Clock & Command Center */}
+        <div className="bg-slate-900/90 rounded-3xl border border-amber-500/30 p-6 sm:p-8 shadow-2xl text-center relative overflow-hidden">
+          {/* Radial Gradient Glow */}
+          <div className="absolute -top-24 -left-24 w-48 h-48 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
+          <div className="absolute -bottom-24 -right-24 w-48 h-48 bg-teal-500/10 rounded-full blur-3xl pointer-events-none" />
 
-          <div className="space-y-3">
-            {FASTING_PHASES.map((phase) => (
-              <div
-                key={phase.phase}
-                className={`p-3 rounded-xl border-2 transition-all ${
-                  currentPhase?.phase === phase.phase
-                    ? 'border-purple-500 bg-purple-50'
-                    : 'border-gray-200'
-                }`}
+          {/* Current Protocol Badge */}
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/20 text-amber-300 text-xs font-black mb-6 border border-amber-500/30 shadow-2xs">
+            <Flame size={14} className="text-amber-400 animate-pulse" />
+            <span>{currentSession ? `Fasting Active • ${activeProtoConfig.label}` : "Fasting Clock Idle"}</span>
+          </div>
+
+          {/* Circular Gauge Ring */}
+          <div className="relative w-60 h-60 sm:w-64 sm:h-64 mx-auto mb-6 flex items-center justify-center">
+            <svg className="transform -rotate-90 w-full h-full">
+              {/* Background Track */}
+              <circle
+                cx="50%"
+                cy="50%"
+                r="105"
+                stroke="#1e293b"
+                strokeWidth="16"
+                fill="none"
+              />
+              {/* Progress Ring */}
+              <circle
+                cx="50%"
+                cy="50%"
+                r="105"
+                stroke="url(#fastingGrad)"
+                strokeWidth="16"
+                fill="none"
+                strokeDasharray={`${(progressPercent / 100) * 659.73} 659.73`}
+                className="transition-all duration-1000"
+                strokeLinecap="round"
+              />
+              <defs>
+                <linearGradient id="fastingGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stopColor="#f59e0b" />
+                  <stop offset="50%" stopColor="#10b981" />
+                  <stop offset="100%" stopColor="#06b6d4" />
+                </linearGradient>
+              </defs>
+            </svg>
+
+            {/* Inner Ring Content */}
+            <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+              <span className="text-3xl sm:text-4xl font-black text-white tracking-tight font-mono">
+                {currentSession ? formattedElapsed : "00:00:00"}
+              </span>
+              <span className="text-xs font-bold text-amber-300 uppercase tracking-widest mt-1">
+                {currentSession ? `${progressPercent.toFixed(0)}% Completed` : "Target: 16 Hours"}
+              </span>
+              <span className="text-[11px] text-slate-400 mt-1">
+                {currentSession ? formattedRemaining : "Ready to rejuvenate"}
+              </span>
+            </div>
+          </div>
+
+          {/* Fasting Start & End Schedule Grid */}
+          <div className="grid grid-cols-2 gap-3 max-w-sm mx-auto mb-6 bg-slate-800/80 border border-slate-700/80 rounded-2xl p-3 text-xs text-left">
+            <div>
+              <span className="text-slate-400 block text-[10px] uppercase tracking-wider font-bold">Fast Started</span>
+              <span className="text-sm font-black text-white">
+                {currentSession ? new Date(currentSession.startTime).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) : "--:--"}
+              </span>
+            </div>
+            <div>
+              <span className="text-slate-400 block text-[10px] uppercase tracking-wider font-bold">Target Finish</span>
+              <span className="text-sm font-black text-emerald-400">{estimatedEndTime}</span>
+            </div>
+          </div>
+
+          {/* Primary Action Buttons */}
+          <div className="flex items-center justify-center gap-3 max-w-sm mx-auto">
+            {currentSession ? (
+              <>
+                <button
+                  onClick={() => setIsPaused(!isPaused)}
+                  className="p-3.5 rounded-2xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-white font-bold text-xs transition-all cursor-pointer active:scale-95"
+                >
+                  {isPaused ? <Play size={18} /> : <Pause size={18} />}
+                </button>
+                <button
+                  onClick={handleEndFast}
+                  className="flex-1 bg-gradient-to-r from-emerald-600 via-teal-600 to-[#1f7a8c] hover:opacity-95 text-white rounded-2xl py-3.5 px-5 font-black text-xs sm:text-sm shadow-lg shadow-emerald-950 transition-all cursor-pointer active:scale-[0.99] flex items-center justify-center gap-2"
+                >
+                  <Check size={16} />
+                  <span>Break Fast &amp; Log Rejuvenation</span>
+                </button>
+              </>
+            ) : (
+              <button
+                onClick={() => handleStartFast(selectedProtocol)}
+                className="w-full bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 hover:opacity-95 text-slate-950 rounded-2xl py-4 font-black text-sm shadow-xl shadow-amber-950 transition-all cursor-pointer active:scale-[0.99] flex items-center justify-center gap-2"
               >
-                <div className="flex items-center justify-between mb-1">
-                  <div className="flex items-center gap-2">
-                    <div className="w-3 h-3 rounded-full" style={{ backgroundColor: phase.color }} />
-                    <span className="text-sm font-semibold text-gray-800">{t(phase.labelKey)}</span>
+                <Flame size={18} />
+                <span>Start {activeProtoConfig.label} Fast Now</span>
+              </button>
+            )}
+          </div>
+        </div>
+
+        {/* 💧 Fasting Hydration Companion */}
+        <div className="bg-slate-900/90 rounded-3xl border border-sky-500/30 p-5 shadow-xl flex items-center justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <div className="p-3 bg-sky-500/20 text-sky-400 rounded-2xl">
+              <Droplet size={22} />
+            </div>
+            <div>
+              <h3 className="text-sm font-black text-white">Fasting Hydration Tracker</h3>
+              <p className="text-xs text-slate-400">
+                Water &amp; herbal teas accelerate autophagy and blunt hunger pangs.
+              </p>
+              <div className="flex items-center gap-1 mt-1.5">
+                {Array.from({ length: 8 }).map((_, i) => (
+                  <div
+                    key={i}
+                    className={`h-2.5 w-5 rounded-full ${i < waterCups ? "bg-sky-400 shadow-xs" : "bg-slate-800"}`}
+                  />
+                ))}
+                <span className="text-[11px] font-bold text-sky-300 ml-2">
+                  {waterCups * 250}ml / 2000ml
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <button
+            onClick={handleAddWater}
+            className="p-2.5 bg-sky-500 hover:bg-sky-400 text-slate-950 rounded-2xl text-xs font-black transition-all cursor-pointer active:scale-95 shrink-0 flex items-center gap-1 shadow-md"
+          >
+            <Plus size={14} />
+            <span>+250ml</span>
+          </button>
+        </div>
+
+        {/* 🧬 Interactive Autophagy & Cellular Stage Map */}
+        <div className="bg-slate-900/90 rounded-3xl border border-amber-500/30 p-5 sm:p-6 shadow-xl space-y-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <h3 className="text-sm sm:text-base font-black text-white flex items-center gap-2">
+                <Dna size={18} className="text-purple-400" />
+                <span>The 5 Stages of Autophagy &amp; Fat Burn</span>
+              </h3>
+              <p className="text-xs text-slate-400">Tap any stage to reveal its cellular biochemistry</p>
+            </div>
+          </div>
+
+          <div className="space-y-2.5">
+            {AUTOPHAGY_STAGES.map((stage, i) => {
+              const isUnlocked = elapsedHours >= stage.hours;
+              const isCurrent = currentAutophagyStage.hours === stage.hours;
+              return (
+                <div
+                  key={i}
+                  onClick={() => {
+                    triggerHaptic("light");
+                    setSelectedStageInfo(selectedStageInfo === i ? null : i);
+                  }}
+                  className={`p-3.5 rounded-2xl border transition-all cursor-pointer ${
+                    isCurrent
+                      ? "bg-purple-950/40 border-purple-500/60 ring-1 ring-purple-500/40 shadow-xs"
+                      : isUnlocked
+                      ? "bg-slate-800/80 border-slate-700/80 text-white"
+                      : "bg-slate-900/50 border-slate-800/60 opacity-60"
+                  }`}
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2.5">
+                      <span className="text-xl">{stage.icon}</span>
+                      <div>
+                        <div className="text-xs font-black text-white flex items-center gap-2">
+                          <span>{stage.title}</span>
+                          {isCurrent && (
+                            <span className="text-[9px] bg-purple-500 text-white font-bold px-1.5 py-0.2 rounded-full animate-pulse">
+                              YOU ARE HERE
+                            </span>
+                          )}
+                        </div>
+                        <span className="text-[10px] font-bold text-amber-300">
+                          Starts at {stage.hours} Hours
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-2 text-xs font-bold">
+                      {isUnlocked ? (
+                        <span className="text-emerald-400 text-xs flex items-center gap-1">
+                          <CheckCircle size={14} /> Unlocked
+                        </span>
+                      ) : (
+                        <span className="text-slate-500 text-xs">Locked</span>
+                      )}
+                      <ChevronRight size={14} className="text-slate-400" />
+                    </div>
                   </div>
-                  <span className="text-xs text-gray-600">{phase.start}-{phase.end}h</span>
+
+                  <p className="text-[11px] text-slate-300 mt-2 leading-relaxed bg-slate-950/40 p-2.5 rounded-xl border border-slate-800/80">
+                    {stage.desc}
+                  </p>
                 </div>
-                <div className="text-xs text-gray-600">{t(phase.descKey)}</div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* 🌟 The Core Value of Intermittent Fasting (Why It Changes Lives) */}
+        <div className="bg-slate-900/90 rounded-3xl border border-amber-500/30 p-5 sm:p-6 shadow-xl space-y-4">
+          <div className="flex items-center gap-2 text-amber-300 font-black text-sm">
+            <Sparkles size={18} className="text-amber-400" />
+            <span>Why Intermittent Fasting Works (Proven Science)</span>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            {FASTING_BENEFITS.map((b, idx) => (
+              <div key={idx} className={`p-4 rounded-2xl border ${b.color} space-y-1`}>
+                <div className="flex items-center gap-2 font-black text-xs text-white">
+                  <span className="text-lg">{b.icon}</span>
+                  <span>{b.title}</span>
+                </div>
+                <p className="text-[11px] text-slate-300 leading-relaxed">{b.desc}</p>
               </div>
             ))}
           </div>
         </div>
 
-        {/* Duration Trend */}
-        <div className="bg-white rounded-3xl shadow-xl p-6">
-          <h3 className="text-lg font-semibold text-gray-800 mb-4">{t('fasting.durationChart')}</h3>
-
-          <ResponsiveContainer width="100%" height={180}>
-            <AreaChart data={durationData}>
-              <defs>
-                <linearGradient id={`fastingGradient-${uniqueId}`} x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#8b5cf6" stopOpacity={0.3}/>
-                  <stop offset="95%" stopColor="#8b5cf6" stopOpacity={0}/>
-                </linearGradient>
-              </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-              <XAxis dataKey="date" stroke="#6b7280" style={{ fontSize: '12px' }} />
-              <YAxis stroke="#6b7280" style={{ fontSize: '12px' }} />
-              <Tooltip
-                contentStyle={{
-                  backgroundColor: '#ffffff',
-                  border: '1px solid #e5e7eb',
-                  borderRadius: '8px',
-                }}
-              />
-              <Area
-                type="monotone"
-                dataKey="duration"
-                stroke="#8b5cf6"
-                strokeWidth={2}
-                fill={`url(#fastingGradient-${uniqueId})`}
-                name="Hours"
-              />
-            </AreaChart>
-          </ResponsiveContainer>
-        </div>
-
-        {/* Weight Correlation */}
-        {weightData.length > 0 && (
-          <div className="bg-white rounded-3xl shadow-xl p-6">
-            <h3 className="text-lg font-semibold text-gray-800 mb-4">{t('fasting.weightTrend')}</h3>
-
-            <ResponsiveContainer width="100%" height={180}>
-              <LineChart data={weightData}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-                <XAxis dataKey="date" stroke="#6b7280" style={{ fontSize: '12px' }} />
-                <YAxis stroke="#6b7280" style={{ fontSize: '12px' }} domain={['dataMin - 1', 'dataMax + 1']} />
-                <Tooltip
-                  contentStyle={{
-                    backgroundColor: '#ffffff',
-                    border: '1px solid #e5e7eb',
-                    borderRadius: '8px',
-                  }}
-                />
-                <Line
-                  type="monotone"
-                  dataKey="weight"
-                  stroke="#10b981"
-                  strokeWidth={2}
-                  dot={{ fill: '#10b981', r: 4 }}
-                  name="Weight (kg)"
-                />
-              </LineChart>
-            </ResponsiveContainer>
+        {/* 🍲 African Cultural Fast-Breaking Protocol (Avoid The Glycemic Crash) */}
+        <div className="bg-slate-900/90 rounded-3xl border border-teal-500/30 p-5 sm:p-6 shadow-xl space-y-3.5">
+          <div className="flex items-center gap-2 text-teal-300 font-black text-sm">
+            <ShieldCheck size={18} className="text-teal-400" />
+            <span>African Fast-Breaking Guide (No Glycemic Shock)</span>
           </div>
-        )}
 
-        {/* Fasting Benefits */}
-        <div className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-3xl shadow-xl p-6 border border-purple-200">
-          <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
-            <Zap className="h-5 w-5 text-purple-600" />
-            {t('fasting.benefits')}
-          </h3>
+          <div className="bg-slate-800/80 border border-slate-700/80 rounded-2xl p-4 space-y-2.5 text-xs">
+            <p className="text-slate-300 leading-relaxed font-medium">
+              After a 16+ hour fast, insulin sensitivity is ultra-high. Breaking your fast abruptly with <strong>pounded yam, giant eba, or sweetened malt</strong> will cause an acute glucose spike followed by intense fatigue.
+            </p>
 
-          <div className="space-y-3">
-            <div className="flex items-start gap-3 p-3 bg-white rounded-xl">
-              <Droplet className="h-5 w-5 text-blue-600 flex-shrink-0 mt-0.5" />
-              <div>
-                <div className="text-sm font-semibold text-gray-800 mb-1">{t('fasting.benefit1Title')}</div>
-                <div className="text-sm text-gray-600">
-                  {t('fasting.benefit1Body')}
+            <div className="space-y-2 pt-1">
+              <div className="flex items-start gap-2.5">
+                <span className="p-1 rounded-lg bg-teal-500/20 text-teal-300 font-bold text-[10px]">STEP 1</span>
+                <div>
+                  <strong className="text-white">Hydrate &amp; Warm Up (0 - 15 Mins):</strong>
+                  <span className="text-slate-400 block text-[11px]">Light goat meat pepper soup, bone broth, or warm lemon water.</span>
                 </div>
               </div>
-            </div>
 
-            <div className="flex items-start gap-3 p-3 bg-white rounded-xl">
-              <Flame className="h-5 w-5 text-orange-600 flex-shrink-0 mt-0.5" />
-              <div>
-                <div className="text-sm font-semibold text-gray-800 mb-1">{t('fasting.benefit2Title')}</div>
-                <div className="text-sm text-gray-600">
-                  {t('fasting.benefit2Body')}
+              <div className="flex items-start gap-2.5">
+                <span className="p-1 rounded-lg bg-teal-500/20 text-teal-300 font-bold text-[10px]">STEP 2</span>
+                <div>
+                  <strong className="text-white">Protein &amp; Fiber Cushion (15 - 30 Mins):</strong>
+                  <span className="text-slate-400 block text-[11px]">Boiled eggs, sliced avocado, or steamed efo riro with mackerel.</span>
                 </div>
               </div>
-            </div>
 
-            <div className="flex items-start gap-3 p-3 bg-white rounded-xl">
-              <CheckCircle className="h-5 w-5 text-green-600 flex-shrink-0 mt-0.5" />
-              <div>
-                <div className="text-sm font-semibold text-gray-800 mb-1">{t('fasting.benefit3Title')}</div>
-                <div className="text-sm text-gray-600">
-                  {t('fasting.benefit3Body')}
+              <div className="flex items-start gap-2.5">
+                <span className="p-1 rounded-lg bg-teal-500/20 text-teal-300 font-bold text-[10px]">STEP 3</span>
+                <div>
+                  <strong className="text-white">Main Cultural Meal:</strong>
+                  <span className="text-slate-400 block text-[11px]">Moderate portions of beans, plantain, or brown rice paired with vegetable soup.</span>
                 </div>
               </div>
             </div>
@@ -526,65 +588,46 @@ export default function FastingTimer() {
         </div>
       </div>
 
-      {/* Start Fast Dialog */}
-      <Dialog open={showStartDialog} onOpenChange={setShowStartDialog}>
-        <DialogContent className="max-w-md">
+      {/* Protocol Selection Modal */}
+      <Dialog open={showProtocolModal} onOpenChange={setShowProtocolModal}>
+        <DialogContent className="max-w-md bg-slate-900 border border-amber-500/30 text-white rounded-3xl p-6">
           <DialogHeader>
-            <DialogTitle className="text-2xl text-purple-600">{t('fasting.startNew')}</DialogTitle>
-            <DialogDescription>{t('fasting.startNewDesc')}</DialogDescription>
+            <DialogTitle className="text-lg font-black text-amber-300 flex items-center gap-2">
+              <Flame size={18} />
+              <span>Choose Fasting Protocol</span>
+            </DialogTitle>
+            <DialogDescription className="text-xs text-slate-400">
+              Select the fasting window tailored to your daily lifestyle
+            </DialogDescription>
           </DialogHeader>
 
-          <div className="space-y-4 mt-4">
-            <div>
-              <Label className="text-sm font-medium text-gray-700 mb-2 block">{t('fasting.protocol')}</Label>
-              <div className="grid grid-cols-2 gap-2">
-                {FASTING_PROTOCOLS.map((p) => (
-                  <button
-                    key={p.value}
-                    onClick={() => setSelectedProtocol(p.value as FastingProtocol)}
-                    className={`p-3 rounded-xl border-2 transition-all ${
-                      selectedProtocol === p.value
-                        ? 'border-purple-500 bg-purple-50'
-                        : 'border-gray-200 hover:border-gray-300'
-                    }`}
-                  >
-                    <div className="text-lg font-bold text-gray-800">{p.label}</div>
-                    <div className="text-xs text-gray-600">{t(p.descKey)}</div>
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            <div>
-              <Label htmlFor="weight" className="text-sm font-medium text-gray-700 mb-2 block">
-                {t('fasting.currentWeight')}
-              </Label>
-              <Input
-                id="weight"
-                type="number"
-                step="0.1"
-                placeholder="75.5"
-                value={currentWeight}
-                onChange={(e) => setCurrentWeight(e.target.value)}
-                className="h-12"
-              />
-            </div>
-
-            <div className="flex gap-3 pt-4">
-              <Button
-                onClick={() => setShowStartDialog(false)}
-                variant="outline"
-                className="flex-1"
+          <div className="space-y-2.5 mt-3">
+            {FASTING_PROTOCOLS.map((proto) => (
+              <button
+                key={proto.value}
+                onClick={() => {
+                  setSelectedProtocol(proto.value);
+                  handleStartFast(proto.value);
+                }}
+                className={`w-full p-3.5 rounded-2xl border text-left transition-all cursor-pointer flex items-center justify-between ${
+                  selectedProtocol === proto.value
+                    ? "bg-amber-950/60 border-amber-400 text-white"
+                    : "bg-slate-800/80 border-slate-700/80 hover:bg-slate-800 text-slate-300"
+                }`}
               >
-                {t('common.cancel')}
-              </Button>
-              <Button
-                onClick={handleStartFast}
-                className="flex-1 bg-purple-600 hover:bg-purple-700"
-              >
-                {t('fasting.startFasting')}
-              </Button>
-            </div>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm font-black text-white">{proto.label}</span>
+                    <span className="text-[10px] font-bold bg-amber-400/20 text-amber-300 px-2 py-0.2 rounded-full">
+                      {proto.badge}
+                    </span>
+                  </div>
+                  <div className="text-xs font-bold text-amber-200 mt-0.5">{proto.title}</div>
+                  <p className="text-[10px] text-slate-400 mt-0.5">{proto.desc}</p>
+                </div>
+                <ChevronRight size={16} className="text-slate-400 shrink-0" />
+              </button>
+            ))}
           </div>
         </DialogContent>
       </Dialog>
