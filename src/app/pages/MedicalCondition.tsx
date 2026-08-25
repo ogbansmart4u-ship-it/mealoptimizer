@@ -3,6 +3,8 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import OnboardingProgress from "../components/OnboardingProgress";
 import { useLanguage } from "../contexts/LanguageContext";
+import { useMascot } from "../hooks/useMascot";
+import Mascot from "../components/Mascot";
 import { getCollection, createCollectionItem, deleteCollectionItem } from "../../lib/api";
 import { isConsultationSupportCondition } from "../../lib/conditionVerdict";
 
@@ -51,6 +53,7 @@ export default function MedicalCondition() {
   const { t } = useLanguage();
   const sevLabel = (s: string) => t(`medcond.sev.${s}`);
 
+  const mascot = useMascot();
   const [conditions, setConditions] = useState<Condition[]>([]);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
@@ -94,6 +97,7 @@ export default function MedicalCondition() {
         await deleteCollectionItem("conditions", existing.id);
         setConditions((prev) => prev.filter((c) => c.id !== existing.id));
       } else {
+        mascot.write();
         const item: Condition = { id: uid(), name, severity: "moderate", diagnosedDate: "" };
         await createCollectionItem("conditions", item);
         setConditions((prev) => [...prev, item]);
@@ -195,8 +199,13 @@ export default function MedicalCondition() {
 
         {/* Quick multi-select */}
         <div className="bg-white rounded-3xl shadow-lg p-6 mb-6">
-          <h2 className="text-lg text-[#1f7a8c] mb-1">{t("medcond.selectTitle")}</h2>
-          <p className="text-sm text-gray-500 mb-4">{t("medcond.selectDesc")}</p>
+          <div className="flex items-center justify-between mb-2">
+            <div>
+              <h2 className="text-lg text-[#1f7a8c] mb-0.5">{t("medcond.selectTitle")}</h2>
+              <p className="text-xs text-gray-500">{t("medcond.selectDesc")}</p>
+            </div>
+            <Mascot size={44} className="shrink-0" />
+          </div>
 
           {loading ? (
             <div className="flex items-center justify-center gap-2 py-6 text-gray-400 text-sm">

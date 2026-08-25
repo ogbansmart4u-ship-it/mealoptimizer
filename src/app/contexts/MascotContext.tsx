@@ -14,13 +14,17 @@ export interface MascotContextValue {
   /** Set the gesture directly. Transient gestures revert to idle automatically. */
   setGesture: (g: MascotGesture) => void;
   // Convenience triggers (self-documenting at call sites):
-  wave: () => void;        // greeting: app load, login, onboarding
-  thumbsUp: () => void;    // small win: meal logged, goal saved, macro calculated
-  clap: () => void;        // task/daily goal completed
-  dance: () => void;       // big celebration (persistent until stop)
-  startRunning: () => void;// background work / loading (persistent)
-  showError: () => void;   // error / validation failure (persistent scratching)
-  stop: () => void;        // clear any persistent gesture back to idle
+  wave: () => void;            // greeting: app load, login, onboarding
+  thumbsUp: () => void;        // small win: meal logged, goal saved, macro calculated
+  doubleThumbsUp: () => void;  // major win / low-glycemic meal choice
+  write: () => void;           // biodata input, onboarding selection, medical update
+  jump: () => void;            // goal reached, streak milestone, celebratory leap
+  sad: () => void;             // missed meal, delay nudge, low energy check-in
+  clap: () => void;            // task/daily goal completed
+  dance: () => void;           // big celebration (persistent until stop)
+  startRunning: () => void;    // background work / loading (persistent)
+  showError: () => void;       // error / validation failure (persistent scratching)
+  stop: () => void;            // clear any persistent gesture back to idle
 }
 
 export const MascotContext = createContext<MascotContextValue | undefined>(undefined);
@@ -39,7 +43,7 @@ export function MascotProvider({ children }: { children: ReactNode }) {
   const setGesture = useCallback((g: MascotGesture) => {
     clearTimer();
     setGestureState(g);
-    const hold = GESTURES[g].hold;
+    const hold = GESTURES[g]?.hold ?? "persistent";
     // Transient gestures play for `hold` ms, then fall back to idle.
     if (typeof hold === "number") {
       revertTimer.current = setTimeout(() => {
@@ -56,6 +60,10 @@ export function MascotProvider({ children }: { children: ReactNode }) {
     setGesture,
     wave: useCallback(() => setGesture("waving"), [setGesture]),
     thumbsUp: useCallback(() => setGesture("thumbsup"), [setGesture]),
+    doubleThumbsUp: useCallback(() => setGesture("double_thumbsup"), [setGesture]),
+    write: useCallback(() => setGesture("writing"), [setGesture]),
+    jump: useCallback(() => setGesture("jumping"), [setGesture]),
+    sad: useCallback(() => setGesture("sad"), [setGesture]),
     clap: useCallback(() => setGesture("clapping"), [setGesture]),
     dance: useCallback(() => setGesture("dancing"), [setGesture]),
     startRunning: useCallback(() => setGesture("running"), [setGesture]),

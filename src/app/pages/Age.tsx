@@ -4,12 +4,15 @@ import { useNavigate } from "react-router";
 import OnboardingProgress from "../components/OnboardingProgress";
 import { useUser } from "../contexts/UserContext";
 import { useLanguage } from "../contexts/LanguageContext";
+import { useMascot } from "../hooks/useMascot";
+import Mascot from "../components/Mascot";
 import { updateUserProfile } from "../../lib/api";
 
 export default function Age() {
   const navigate = useNavigate();
   const { profile, updateProfile } = useUser();
   const { t } = useLanguage();
+  const mascot = useMascot();
   const [birthDate, setBirthDate] = useState("1990-01-01");
   const [gender, setGender] = useState<"male" | "female" | "other">("female");
   const [saving, setSaving] = useState(false);
@@ -90,9 +93,12 @@ export default function Age() {
 
       {/* Content */}
       <div className="px-6 mt-6">
-        {/* Current Age Display */}
+        {/* Current Age Display with Avo Tablet Guide */}
         <div className="bg-white rounded-3xl shadow-lg p-6 mb-6">
-          <h2 className="text-lg text-[#1f7a8c] mb-4">{t("age.yourAge")}</h2>
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-lg text-[#1f7a8c]">{t("age.yourAge")}</h2>
+            <Mascot size={52} className="shrink-0" />
+          </div>
           <div className={`bg-gradient-to-r ${lifeStage.color} rounded-2xl p-8 text-center text-white mb-4`}>
             <div className="text-6xl mb-3">{lifeStage.icon}</div>
             <div className="text-5xl mb-2">{age}</div>
@@ -107,7 +113,10 @@ export default function Age() {
           <input
             type="date"
             value={birthDate}
-            onChange={(e) => setBirthDate(e.target.value)}
+            onChange={(e) => {
+              setBirthDate(e.target.value);
+              mascot.write();
+            }}
             className="w-full text-lg text-center text-[#1f7a8c] bg-gray-50 rounded-2xl p-4 outline-none focus:ring-2 focus:ring-[#4ecdc4]"
           />
         </div>
@@ -117,7 +126,10 @@ export default function Age() {
           <h2 className="text-lg text-[#1f7a8c] mb-4">{t("age.gender")}</h2>
           <div className="grid grid-cols-3 gap-3">
             <button
-              onClick={() => setGender("male")}
+              onClick={() => {
+                setGender("male");
+                mascot.write();
+              }}
               className={`p-6 rounded-2xl transition-all ${
                 gender === "male"
                   ? "bg-gradient-to-r from-[#1f7a8c] to-[#4ecdc4] text-white shadow-lg"
@@ -128,7 +140,10 @@ export default function Age() {
               <div className="text-sm">{t("goalsetup.sex.male")}</div>
             </button>
             <button
-              onClick={() => setGender("female")}
+              onClick={() => {
+                setGender("female");
+                mascot.write();
+              }}
               className={`p-6 rounded-2xl transition-all ${
                 gender === "female"
                   ? "bg-gradient-to-r from-[#1f7a8c] to-[#4ecdc4] text-white shadow-lg"
@@ -139,7 +154,10 @@ export default function Age() {
               <div className="text-sm">{t("goalsetup.sex.female")}</div>
             </button>
             <button
-              onClick={() => setGender("other")}
+              onClick={() => {
+                setGender("other");
+                mascot.write();
+              }}
               className={`p-6 rounded-2xl transition-all ${
                 gender === "other"
                   ? "bg-gradient-to-r from-[#1f7a8c] to-[#4ecdc4] text-white shadow-lg"
