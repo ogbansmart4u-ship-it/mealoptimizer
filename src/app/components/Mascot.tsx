@@ -1,16 +1,4 @@
-// Mascot — renders "Avo" and plays the current gesture with CSS keyframes.
-//
-// Uses the same dependency-free CSS-animation approach as MascotLoader (proven to
-// work here) rather than Framer Motion. By default it follows the shared gesture
-// from MascotContext, so triggering a gesture anywhere (mascot.thumbsUp(),
-// mascot.startRunning(), …) animates every on-screen mascot at once. Pass an
-// explicit `gesture` prop to drive one mascot independently (e.g. a card that
-// should always "run").
-//
-// LOTTIE-READY: when you add real Lottie exports, set the paths in `lottieSources`
-// (src/app/types/mascot.ts), install `lottie-react`, and render <Lottie/> in the
-// marked spot below. Everything else stays the same.
-
+import React, { useState } from "react";
 import { useMascot } from "../hooks/useMascot";
 import type { MascotGesture } from "../types/mascot";
 import MascotVectorRig, { type MascotLookDirection } from "./MascotVectorRig";
@@ -27,23 +15,76 @@ interface MascotProps {
   alt?: string;
 }
 
+const GESTURE_ASSETS: Record<string, { webm: string; webp: string }> = {
+  wave: { webm: "/assets/mascot/avo-wave.webm", webp: "/assets/mascot/avo-wave.webp" },
+  waving: { webm: "/assets/mascot/avo-wave.webm", webp: "/assets/mascot/avo-wave.webp" },
+  write: { webm: "/assets/mascot/avo-write.webm", webp: "/assets/mascot/avo-write.webp" },
+  writing: { webm: "/assets/mascot/avo-write.webm", webp: "/assets/mascot/avo-write.webp" },
+  notetaking: { webm: "/assets/mascot/avo-write.webm", webp: "/assets/mascot/avo-write.webp" },
+  thumbsup: { webm: "/assets/mascot/avo-thumbsup.webm", webp: "/assets/mascot/avo-thumbsup.webp" },
+  pointing: { webm: "/assets/mascot/avo-thumbsup.webm", webp: "/assets/mascot/avo-thumbsup.webp" },
+  double_thumbsup: { webm: "/assets/mascot/avo-thumbsup.webm", webp: "/assets/mascot/avo-thumbsup.webp" },
+  clapping: { webm: "/assets/mascot/avo-thumbsup.webm", webp: "/assets/mascot/avo-thumbsup.webp" },
+  jump: { webm: "/assets/mascot/avo-jump.webm", webp: "/assets/mascot/avo-jump.webp" },
+  jumping: { webm: "/assets/mascot/avo-jump.webm", webp: "/assets/mascot/avo-jump.webp" },
+  dancing: { webm: "/assets/mascot/avo-jump.webm", webp: "/assets/mascot/avo-jump.webp" },
+  running: { webm: "/assets/mascot/avo-jump.webm", webp: "/assets/mascot/avo-jump.webp" },
+  sad: { webm: "/assets/mascot/avo-sad.webm", webp: "/assets/mascot/avo-sad.webp" },
+  concerned: { webm: "/assets/mascot/avo-sad.webm", webp: "/assets/mascot/avo-sad.webp" },
+  scratching: { webm: "/assets/mascot/avo-sad.webm", webp: "/assets/mascot/avo-sad.webp" },
+  idle: { webm: "/assets/mascot/avo-idle.webm", webp: "/assets/mascot/avo-idle.webp" },
+};
+
 export default function Mascot({
   gesture: override,
   lookDirection = "auto",
   size = 96,
   className = "",
-  alt,
+  alt = "Avo the Mascot",
 }: MascotProps) {
   const { gesture: shared } = useMascot();
-  const gesture = override ?? shared ?? "idle";
+  const gesture = (override ?? shared ?? "idle").toLowerCase();
+  const [videoError, setVideoError] = useState(false);
+
+  const asset = GESTURE_ASSETS[gesture] || GESTURE_ASSETS.idle;
+
+  // If video format fails or is unsupported on very old legacy browser, fallback gracefully to SVG Rig
+  if (videoError) {
+    return (
+      <MascotVectorRig
+        gesture={gesture}
+        lookDirection={lookDirection}
+        size={size}
+        className={className}
+        alt={alt}
+      />
+    );
+  }
 
   return (
-    <MascotVectorRig
-      gesture={gesture}
-      lookDirection={lookDirection}
-      size={size}
-      className={className}
-      alt={alt}
-    />
+    <div
+      className={`inline-block relative select-none pointer-events-none ${className}`}
+      style={{ width: size, height: size * 1.15 }}
+      aria-label={alt}
+      role="img"
+    >
+      <video
+        key={asset.webm}
+        autoPlay
+        loop
+        muted
+        playsInline
+        onError={() => setVideoError(true)}
+        className="w-full h-full object-contain drop-shadow-md transition-opacity duration-200"
+        style={{ filter: "drop-shadow(0 4px 10px rgba(0, 0, 0, 0.12))" }}
+      >
+        <source src={asset.webm} type="video/webm" />
+        <img
+          src={asset.webp}
+          alt={alt}
+          className="w-full h-full object-contain"
+        />
+      </video>
+    </div>
   );
 }
