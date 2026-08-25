@@ -147,13 +147,20 @@ export async function deleteGoal(goalId: string) {
 // MEAL LOGS API (Optimistic Offline-First & Resilient)
 // ============================================
 
+import { setSecureItem, getSecureItem } from '../utils/secureStorage';
+
 const MEAL_LOGS_STORAGE_KEY = 'mealoptimiza_meal_logs';
 
 export async function getMealLogs() {
   let localLogs: any[] = [];
   try {
-    const raw = localStorage.getItem(MEAL_LOGS_STORAGE_KEY) || localStorage.getItem('mealoptimizer_meal_logs');
-    if (raw) localLogs = JSON.parse(raw);
+    const encryptedLogs = await getSecureItem<any[]>(MEAL_LOGS_STORAGE_KEY);
+    if (encryptedLogs && Array.isArray(encryptedLogs)) {
+      localLogs = encryptedLogs;
+    } else {
+      const raw = localStorage.getItem(MEAL_LOGS_STORAGE_KEY) || localStorage.getItem('mealoptimizer_meal_logs');
+      if (raw) localLogs = JSON.parse(raw);
+    }
   } catch {}
 
   try {
@@ -165,6 +172,7 @@ export async function getMealLogs() {
       const merged = Array.from(map.values()).sort(
         (a, b) => new Date(b.date + ' ' + (b.time || '12:00')).getTime() - new Date(a.date + ' ' + (a.time || '12:00')).getTime()
       );
+      await setSecureItem(MEAL_LOGS_STORAGE_KEY, merged);
       localStorage.setItem(MEAL_LOGS_STORAGE_KEY, JSON.stringify(merged));
       return merged;
     }
@@ -181,11 +189,12 @@ export async function createMealLog(logData: any) {
     createdAt: logData.createdAt || new Date().toISOString(),
   };
 
-  // 1. Instantly write to local storage vault
+  // 1. Instantly write to encrypted local storage vault
   try {
     const raw = localStorage.getItem(MEAL_LOGS_STORAGE_KEY) || localStorage.getItem('mealoptimizer_meal_logs') || '[]';
     const current = JSON.parse(raw);
     const updated = [logWithId, ...current.filter((l: any) => l.id !== logWithId.id)];
+    await setSecureItem(MEAL_LOGS_STORAGE_KEY, updated);
     localStorage.setItem(MEAL_LOGS_STORAGE_KEY, JSON.stringify(updated));
     localStorage.setItem('mealoptimizer_meal_logs', JSON.stringify(updated));
   } catch (err) {
