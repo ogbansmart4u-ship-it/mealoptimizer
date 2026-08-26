@@ -10,7 +10,7 @@ import ViralMealCardModal from "./ViralMealCardModal";
 import { createMealLog, getCollection } from "../../lib/api";
 import { computeVerdict } from "../../lib/conditionVerdict";
 import { toast } from "sonner";
-import { celebrate } from "./celebrate";
+import { celebrate, triggerHaptic } from "./celebrate";
 import { projectId } from '/utils/supabase/info';
 import { getAccessToken } from '../../lib/supabase';
 
@@ -502,6 +502,13 @@ export default function LocalFoodScanner({ isOpen, onClose }: LocalFoodScannerPr
   const streamRef = useRef<MediaStream | null>(null);
   const [isLiveCameraActive, setIsLiveCameraActive] = useState(false);
 
+  // Safe haptic feedback trigger
+  const safeHaptic = (pattern: "light" | "medium" | "heavy" | "success" | "warning" | "error" = "light") => {
+    try {
+      triggerHaptic(pattern);
+    } catch {}
+  };
+
   // Stop live camera
   const stopLiveCamera = () => {
     if (streamRef.current) {
@@ -513,29 +520,39 @@ export default function LocalFoodScanner({ isOpen, onClose }: LocalFoodScannerPr
 
   // Start live in-frame camera
   const startLiveCamera = async () => {
-    triggerHaptic("medium");
-    setIsLiveCameraActive(true);
+    safeHaptic("medium");
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: { ideal: "environment" } },
+        video: { facingMode: { ideal: "environment" }, width: { ideal: 1280 } },
         audio: false,
       });
       streamRef.current = stream;
+      setIsLiveCameraActive(true);
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
+        videoRef.current.play().catch(() => {});
       }
-    } catch (err) {
+    } catch (err: any) {
       console.warn("Could not start live camera:", err);
-      toast.info("Opening device photo capture...");
+      toast.info("Opening device camera app / photo capture...");
       document.getElementById("local-food-native-camera")?.click();
       setIsLiveCameraActive(false);
+    }
+  };
+
+  // Callback ref to attach stream as soon as video element mounts in DOM
+  const setVideoRef = (element: HTMLVideoElement | null) => {
+    videoRef.current = element;
+    if (element && streamRef.current) {
+      element.srcObject = streamRef.current;
+      element.play().catch(() => {});
     }
   };
 
   // Take snapshot from live video stream
   const takeLiveSnapshot = () => {
     if (!videoRef.current) return;
-    triggerHaptic("medium");
+    safeHaptic("medium");
     const video = videoRef.current;
     const canvas = document.createElement("canvas");
     canvas.width = video.videoWidth || 640;
@@ -563,20 +580,20 @@ export default function LocalFoodScanner({ isOpen, onClose }: LocalFoodScannerPr
   }, [isOpen]);
 
   // Load a suggested cultural dish & scroll to results
-  const loadSuggestedDish = (match: LocalFoodData) => {
-    triggerHaptic("medium");
+  const loadSuggestedDish = (dish: LocalFoodData) => {
+    safeHaptic("medium");
     stopLiveCamera();
     setCapturedImage(null);
-    setFoodData(match);
+    setFoodData(dish);
     setTimeout(() => {
       scrollContainerRef.current?.scrollTo({ top: 0, behavior: "smooth" });
     }, 50);
-    celebrate("Dish Loaded! 🍲", match.dishName, { confettiStyle: "burst", hapticPattern: "success" });
+    celebrate("Dish Loaded! 🍲", dish.dishName, { confettiStyle: "burst", hapticPattern: "success" });
   };
 
   // Reset back to scanner launcher
   const handleBackToScanner = () => {
-    triggerHaptic("light");
+    safeHaptic("light");
     setFoodData(null);
     setCapturedImage(null);
     setAnalyzeError(null);
@@ -844,7 +861,7 @@ export default function LocalFoodScanner({ isOpen, onClose }: LocalFoodScannerPr
                     key={item.val}
                     type="button"
                     onClick={() => {
-                      triggerHaptic("light");
+                      safeHaptic("light");
                       setPortionMultiplier(item.val);
                     }}
                     className={`text-xs font-black px-2.5 py-1 rounded-xl cursor-pointer transition-all ${
@@ -893,7 +910,7 @@ export default function LocalFoodScanner({ isOpen, onClose }: LocalFoodScannerPr
             {isLiveCameraActive ? (
               <div className="space-y-3">
                 <div className="relative aspect-square w-full rounded-3xl overflow-hidden bg-slate-950 border-2 border-teal-500 shadow-2xl flex items-center justify-center">
-                  <video ref={videoRef} autoPlay playsInline muted className="w-full h-full object-cover" />
+                  <video ref={setVideoRef} autoPlay playsInline muted className="w-full h-full object-cover" />
                   
                   {/* Laser Sweeper Line */}
                   <div className="absolute inset-x-8 h-1 bg-gradient-to-r from-transparent via-red-500 to-transparent shadow-[0_0_15px_rgba(239,68,68,0.8)] animate-laser-sweep" />
@@ -1011,31 +1028,34 @@ export default function LocalFoodScanner({ isOpen, onClose }: LocalFoodScannerPr
                   </span>
                   <div className="grid grid-cols-2 gap-2 text-xs">
                     {[
-                      { name: "Jollof Rice & Chicken", calories: 520, gi: "High", emoji: "🍛" },
-                      { name: "Pounded Yam & Egusi", calories: 680, gi: "High", emoji: "🍲" },
-                      { name: "Amala & Ewedu Abula", calories: 520, gi: "High", emoji: "🥣" },
-                      { name: "Beef Suya Skewers", calories: 260, gi: "Low", emoji: "🍢" },
-                    ].map((item, idx) => (
-                      <button
-                        key={idx}
-                        onClick={() => {
-                          const match = mockFoodDatabase["Nigeria"]?.find((d) => d.dishName.toLowerCase().includes(item.name.toLowerCase().split(" ")[0]));
-                          if (match) {
-                            loadSuggestedDish(match);
-                          }
-                        }}
-                        className="p-3 bg-slate-50 dark:bg-zinc-800 hover:bg-teal-50 dark:hover:bg-zinc-700/80 border border-slate-200 dark:border-zinc-700 rounded-2xl text-left transition-all flex flex-col justify-between gap-1 cursor-pointer shadow-2xs group"
-                      >
-                        <div className="flex items-center justify-between">
-                          <span className="text-lg">{item.emoji}</span>
-                          <span className={`text-[9px] font-black px-1.5 py-0.2 rounded-full ${item.gi === "Low" ? "bg-emerald-100 text-emerald-800" : "bg-red-100 text-red-800"}`}>
-                            {item.gi} GI
-                          </span>
-                        </div>
-                        <div className="font-bold text-slate-900 dark:text-white truncate mt-1">{item.name}</div>
-                        <div className="text-[10px] text-slate-500 font-medium">~{item.calories} kcal</div>
-                      </button>
-                    ))}
+                      { name: "Jollof Rice with Chicken", calories: 520, gi: "High", emoji: "🍛", index: 0 },
+                      { name: "Pounded Yam & Egusi Soup", calories: 680, gi: "High", emoji: "🍲", index: 1 },
+                      { name: "Amala & Ewedu with Gbegiri", calories: 520, gi: "High", emoji: "🥣", index: 2 },
+                      { name: "Suya (Beef Skewers)", calories: 260, gi: "Low", emoji: "🍢", index: 3 },
+                    ].map((item, idx) => {
+                      const dish = mockFoodDatabase["Nigeria"]?.[item.index] || mockFoodDatabase["Nigeria"]?.[0];
+                      return (
+                        <button
+                          key={idx}
+                          type="button"
+                          onClick={() => {
+                            if (dish) {
+                              loadSuggestedDish(dish);
+                            }
+                          }}
+                          className="p-3 bg-slate-50 dark:bg-zinc-800 hover:bg-teal-50 dark:hover:bg-zinc-700/80 border border-slate-200 dark:border-zinc-700 rounded-2xl text-left transition-all flex flex-col justify-between gap-1 cursor-pointer shadow-2xs group active:scale-95"
+                        >
+                          <div className="flex items-center justify-between">
+                            <span className="text-lg">{item.emoji}</span>
+                            <span className={`text-[9px] font-black px-1.5 py-0.2 rounded-full ${item.gi === "Low" ? "bg-emerald-100 text-emerald-800" : "bg-red-100 text-red-800"}`}>
+                              {item.gi} GI
+                            </span>
+                          </div>
+                          <div className="font-bold text-slate-900 dark:text-white truncate mt-1">{item.name}</div>
+                          <div className="text-[10px] text-slate-500 font-medium">~{item.calories} kcal</div>
+                        </button>
+                      );
+                    })}
                   </div>
                 </div>
 
