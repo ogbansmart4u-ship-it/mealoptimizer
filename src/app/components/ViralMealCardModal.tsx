@@ -21,6 +21,8 @@ import {
   QrCode,
   Leaf,
   Loader2,
+  Globe,
+  Award,
 } from "lucide-react";
 import Mascot from "./Mascot";
 import { toast } from "sonner";
@@ -52,17 +54,26 @@ export default function ViralMealCardModal({
   const cardRef = useRef<HTMLDivElement>(null);
   const [copied, setCopied] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
+  const [selectedBadge, setSelectedBadge] = useState<string>("🇳🇬 Lagos Safe Plate");
+
+  const DIASPORA_BADGES = [
+    { label: "🇳🇬 Lagos Safe Plate", flag: "🇳🇬" },
+    { label: "🇬🇭 Accra Clean Fuel", flag: "🇬🇭" },
+    { label: "🇬🇧 London Suya Balancer", flag: "🇬🇧" },
+    { label: "🇺🇸 Diaspora Glucose Guardian", flag: "🇺🇸" },
+    { label: "🌍 Global Metabolic Shield", flag: "🌍" },
+  ];
 
   // Compute a dynamic score based on Glycemic Load & Fiber
   const grade =
     mealData.grade ||
     (mealData.glycemicLoad === "Low"
-      ? "9.5 / 10"
+      ? "9.6 / 10"
       : mealData.glycemicLoad === "Medium"
-      ? "8.4 / 10"
+      ? "8.5 / 10"
       : "7.8 / 10");
 
-  const shareText = `🥑 Just scanned my meal on MealOptimiza!\n🍲 ${mealData.dishName}\n⭐ Plate Grade: ${grade} (${mealData.glycemicLoad || "Balanced"} Spike Shield)\n💪 Protein: ${mealData.protein || 32}g • 🌿 Fiber: ${mealData.fiber || 5}g\n\nTrack your African & Diaspora meals with 0 glucose spikes: https://mealoptimiza.com`;
+  const shareText = `🥑 Just scanned my meal on MealOptimiza!\n🍲 ${mealData.dishName}\n🏆 Community: ${selectedBadge}\n⭐ Plate Grade: ${grade} (${mealData.glycemicLoad || "Balanced"} Spike Shield)\n💪 Protein: ${mealData.protein || 34}g • 🌿 Fiber: ${mealData.fiber || 6}g\n\nTrack your African & Diaspora meals with 0 glucose spikes: https://mealoptimiza.com`;
 
   const handleShareWhatsApp = () => {
     triggerHaptic("medium");
@@ -81,6 +92,210 @@ export default function ViralMealCardModal({
       setTimeout(() => setCopied(false), 2500);
     } catch {
       toast.error("Could not copy text to clipboard");
+    }
+  };
+
+  // High-Resolution Canvas Generator for Instagram Story (9:16 ratio - 1080x1920)
+  const handleExportInstagramStory = async () => {
+    setIsExporting(true);
+    triggerHaptic("medium");
+    try {
+      const canvas = document.createElement("canvas");
+      canvas.width = 1080;
+      canvas.height = 1920;
+      const ctx = canvas.getContext("2d");
+      if (!ctx) throw new Error("Canvas not supported");
+
+      // 1. Background Gradient
+      const grad = ctx.createLinearGradient(0, 0, 1080, 1920);
+      grad.addColorStop(0, "#081b21");
+      grad.addColorStop(0.35, "#0d313a");
+      grad.addColorStop(0.75, "#06151a");
+      grad.addColorStop(1, "#02090c");
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, 1080, 1920);
+
+      // 2. Glowing Orbs
+      const glow1 = ctx.createRadialGradient(900, 200, 10, 900, 200, 450);
+      glow1.addColorStop(0, "rgba(78, 205, 196, 0.35)");
+      glow1.addColorStop(1, "rgba(78, 205, 196, 0)");
+      ctx.fillStyle = glow1;
+      ctx.fillRect(0, 0, 1080, 1920);
+
+      const glow2 = ctx.createRadialGradient(200, 1600, 10, 200, 1600, 500);
+      glow2.addColorStop(0, "rgba(31, 122, 140, 0.4)");
+      glow2.addColorStop(1, "rgba(31, 122, 140, 0)");
+      ctx.fillStyle = glow2;
+      ctx.fillRect(0, 0, 1080, 1920);
+
+      // 3. Header Branding
+      ctx.fillStyle = "#4ecdc4";
+      ctx.font = "bold 36px sans-serif";
+      ctx.textAlign = "center";
+      ctx.fillText("🥑 MEALOPTIMIZA • METABOLIC INTELLIGENCE", 540, 140);
+
+      // 4. Community Badge
+      ctx.fillStyle = "rgba(255, 255, 255, 0.12)";
+      ctx.beginPath();
+      ctx.roundRect(290, 175, 500, 60, 30);
+      ctx.fill();
+      ctx.strokeStyle = "rgba(78, 205, 196, 0.5)";
+      ctx.lineWidth = 2;
+      ctx.stroke();
+
+      ctx.fillStyle = "#ffffff";
+      ctx.font = "bold 26px sans-serif";
+      ctx.fillText(selectedBadge, 540, 215);
+
+      // 5. Dish Title & Region
+      ctx.fillStyle = "#ffffff";
+      ctx.font = "900 64px sans-serif";
+      ctx.fillText(mealData.dishName, 540, 320);
+
+      ctx.fillStyle = "#4ecdc4";
+      ctx.font = "bold 32px sans-serif";
+      ctx.fillText(`📍 ${mealData.region || "West African Culinary Staple"}`, 540, 375);
+
+      // 6. Plate Card Visual Box
+      ctx.fillStyle = "rgba(0, 0, 0, 0.55)";
+      ctx.beginPath();
+      ctx.roundRect(140, 440, 800, 650, 40);
+      ctx.fill();
+      ctx.strokeStyle = "rgba(78, 205, 196, 0.6)";
+      ctx.lineWidth = 4;
+      ctx.stroke();
+
+      // If image exists, draw it
+      if (mealData.imageSrc) {
+        const img = new Image();
+        img.crossOrigin = "anonymous";
+        await new Promise((resolve) => {
+          img.onload = () => {
+            ctx.save();
+            ctx.beginPath();
+            ctx.roundRect(160, 460, 760, 610, 30);
+            ctx.clip();
+            ctx.drawImage(img, 160, 460, 760, 610);
+            ctx.restore();
+            resolve(true);
+          };
+          img.onerror = () => resolve(false);
+          img.src = mealData.imageSrc!;
+        });
+      } else {
+        ctx.fillStyle = "#4ecdc4";
+        ctx.font = "bold 90px sans-serif";
+        ctx.fillText("🍲", 540, 780);
+      }
+
+      // 7. Plate Grade Floating Badge
+      ctx.fillStyle = "rgba(0, 0, 0, 0.85)";
+      ctx.beginPath();
+      ctx.roundRect(580, 980, 320, 90, 24);
+      ctx.fill();
+      ctx.strokeStyle = "#4ecdc4";
+      ctx.lineWidth = 3;
+      ctx.stroke();
+
+      ctx.fillStyle = "#ffffff";
+      ctx.font = "bold 24px sans-serif";
+      ctx.fillText("PLATE GRADE", 660, 1035);
+      ctx.fillStyle = "#4ecdc4";
+      ctx.font = "900 36px sans-serif";
+      ctx.fillText(grade, 820, 1038);
+
+      // 8. 4-Box Nutrition Metrics
+      const stats = [
+        { label: "CALORIES", val: `${mealData.calories || 480} kcal`, col: "#fbbf24" },
+        { label: "PROTEIN", val: `${mealData.protein || 34}g`, col: "#60a5fa" },
+        { label: "CARBS", val: `${mealData.carbs || 52}g`, col: "#f87171" },
+        { label: "SPIKE SHIELD", val: `${mealData.glycemicLoad || "Low"} GI`, col: "#34d399" },
+      ];
+
+      const startX = 140;
+      const boxW = 185;
+      const boxGap = 20;
+      const boxY = 1130;
+
+      stats.forEach((s, idx) => {
+        const x = startX + idx * (boxW + boxGap);
+        ctx.fillStyle = "rgba(255, 255, 255, 0.08)";
+        ctx.beginPath();
+        ctx.roundRect(x, boxY, boxW, 140, 24);
+        ctx.fill();
+        ctx.strokeStyle = "rgba(255, 255, 255, 0.15)";
+        ctx.lineWidth = 2;
+        ctx.stroke();
+
+        ctx.fillStyle = "rgba(255, 255, 255, 0.7)";
+        ctx.font = "bold 20px sans-serif";
+        ctx.fillText(s.label, x + boxW / 2, boxY + 45);
+
+        ctx.fillStyle = s.col;
+        ctx.font = "900 30px sans-serif";
+        ctx.fillText(s.val, x + boxW / 2, boxY + 95);
+      });
+
+      // 9. Clinical Avo Scribe Verdict Card
+      ctx.fillStyle = "rgba(13, 49, 58, 0.85)";
+      ctx.beginPath();
+      ctx.roundRect(140, 1310, 800, 220, 32);
+      ctx.fill();
+      ctx.strokeStyle = "rgba(78, 205, 196, 0.4)";
+      ctx.lineWidth = 3;
+      ctx.stroke();
+
+      ctx.fillStyle = "#4ecdc4";
+      ctx.font = "900 28px sans-serif";
+      ctx.textAlign = "left";
+      ctx.fillText("🥑 AVO BIOCHEMICAL VERDICT", 180, 1370);
+
+      ctx.fillStyle = "#ffffff";
+      ctx.font = "26px sans-serif";
+      const impactText =
+        mealData.impactStatement ||
+        "Engineered with high-fiber pairings to stabilize glucose response and support sustained metabolic energy.";
+      
+      const words = impactText.split(" ");
+      let line = "";
+      let curY = 1420;
+      for (let n = 0; n < words.length; n++) {
+        const testLine = line + words[n] + " ";
+        const metrics = ctx.measureText(testLine);
+        if (metrics.width > 720 && n > 0) {
+          ctx.fillText(line, 180, curY);
+          line = words[n] + " ";
+          curY += 40;
+        } else {
+          line = testLine;
+        }
+      }
+      ctx.fillText(line, 180, curY);
+
+      // 10. Footer CTA with QR / URL
+      ctx.textAlign = "center";
+      ctx.fillStyle = "#ffffff";
+      ctx.font = "bold 32px sans-serif";
+      ctx.fillText("Scan Your Cultural Meals Free at mealoptimiza.com", 540, 1720);
+
+      ctx.fillStyle = "rgba(78, 205, 196, 0.9)";
+      ctx.font = "24px sans-serif";
+      ctx.fillText("Join the Avo 21-Day Blood Sugar Reset Challenge 🔥", 540, 1770);
+
+      // 11. Trigger Download
+      const dataUrl = canvas.toDataURL("image/png");
+      const a = document.createElement("a");
+      a.href = dataUrl;
+      a.download = `MealOptimiza-Plate-${mealData.dishName.replace(/\s+/g, "-")}.png`;
+      a.click();
+
+      triggerConfetti("fireworks");
+      toast.success("Instagram Story card (9:16) saved to your device! 📸");
+    } catch (err: any) {
+      console.error("Story export error:", err);
+      toast.error("Could not generate story image. Please try copying report text instead.");
+    } finally {
+      setIsExporting(false);
     }
   };
 
@@ -122,6 +337,26 @@ export default function ViralMealCardModal({
           >
             <X size={16} />
           </button>
+        </div>
+
+        {/* Diaspora Regional Badge Selector Shelf */}
+        <div className="px-4 py-1.5 flex items-center gap-1.5 overflow-x-auto no-scrollbar border-b border-teal-900/40">
+          {DIASPORA_BADGES.map((b) => (
+            <button
+              key={b.label}
+              onClick={() => {
+                triggerHaptic("light");
+                setSelectedBadge(b.label);
+              }}
+              className={`text-[10px] font-black px-2.5 py-1 rounded-full whitespace-nowrap cursor-pointer transition-all ${
+                selectedBadge === b.label
+                  ? "bg-teal-500 text-slate-950 shadow-xs"
+                  : "bg-white/10 text-white/80 hover:bg-white/15"
+              }`}
+            >
+              {b.label}
+            </button>
+          ))}
         </div>
 
         {/* Scrollable Story Preview Area */}
@@ -246,14 +481,24 @@ export default function ViralMealCardModal({
             <span>Share Plate Grade to WhatsApp 🚀</span>
           </button>
 
-          {/* Secondary Actions: Native Share / Copy */}
+          {/* Secondary Actions: Export Story (9:16) / Copy */}
           <div className="grid grid-cols-2 gap-2">
             <button
-              onClick={handleNativeShare}
-              className="py-2.5 px-3 bg-white/10 hover:bg-white/15 text-white rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer"
+              onClick={handleExportInstagramStory}
+              disabled={isExporting}
+              className="py-2.5 px-3 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white rounded-xl text-xs font-black transition-all flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-50"
             >
-              <Share2 size={14} className="text-teal-400" />
-              <span>Share to Instagram</span>
+              {isExporting ? (
+                <>
+                  <Loader2 size={14} className="animate-spin" />
+                  <span>Generating...</span>
+                </>
+              ) : (
+                <>
+                  <Download size={14} />
+                  <span>Save IG Story (9:16)</span>
+                </>
+              )}
             </button>
 
             <button

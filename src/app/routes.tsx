@@ -50,6 +50,7 @@ const Personalization = lazy(() => import("./pages/Personalization"));
 const Reminders = lazy(() => import("./pages/Reminders"));
 const Achievements = lazy(() => import("./pages/Achievements"));
 const Health = lazy(() => import("./pages/Health"));
+const Challenge = lazy(() => import("./pages/Challenge"));
 
 // Lightweight fallback shown while a page chunk loads.
 function PageLoader() {
@@ -282,6 +283,14 @@ export const router = createBrowserRouter([
     element: (
       <ProtectedRoute>
         <Achievements />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/challenge",
+    element: (
+      <ProtectedRoute>
+        <Challenge />
       </ProtectedRoute>
     ),
   },

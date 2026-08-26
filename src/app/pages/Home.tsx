@@ -707,6 +707,77 @@ export default function Home() {
               </div>
             </div>
 
+            {/* 🔥 Avo 21-Day Blood Sugar Reset Challenge Hero Banner */}
+            <div
+              onClick={() => {
+                triggerHaptic("medium");
+                navigate("/challenge");
+              }}
+              className="bg-gradient-to-r from-amber-500 via-orange-600 to-red-600 rounded-3xl p-4 sm:p-5 text-white shadow-lg border border-amber-300/40 relative overflow-hidden flex items-center justify-between gap-3 sm:gap-4 cursor-pointer hover:shadow-xl hover:scale-[1.01] active:scale-[0.99] transition-all group"
+            >
+              <div className="relative z-10 flex items-center gap-3 min-w-0">
+                <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-white/20 border-2 border-yellow-200 flex items-center justify-center text-2xl sm:text-3xl shrink-0 shadow-xs group-hover:scale-105 transition-transform">
+                  🔥
+                </div>
+                <div className="min-w-0">
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-[9.5px] font-black uppercase tracking-wider bg-yellow-300 text-slate-950 px-2 py-0.2 rounded-full shadow-2xs">
+                      Live Challenge
+                    </span>
+                    <span className="text-[10px] text-yellow-100 font-bold hidden sm:inline">Leaderboard &amp; Swaps</span>
+                  </div>
+                  <h3 className="text-sm sm:text-base font-black text-white leading-tight mt-0.5 truncate">
+                    Avo 21-Day Blood Sugar Reset
+                  </h3>
+                  <p className="text-[11px] sm:text-xs text-yellow-100 line-clamp-1 mt-0.5 font-medium">
+                    Day 8 Active: Swallow Revolution • +140 XP Today
+                  </p>
+                </div>
+              </div>
+
+              <div className="relative z-10 bg-white group-hover:bg-amber-50 text-orange-600 font-black text-xs px-3.5 py-2.5 rounded-2xl shadow-sm shrink-0 flex items-center gap-1.5 transition-colors">
+                <span>Join</span>
+                <ChevronRight size={14} className="group-hover:translate-x-0.5 transition-transform" />
+              </div>
+            </div>
+
+            {/* 📊 Food Wrapped Viral Share Pill */}
+            <div className="grid grid-cols-2 gap-2.5">
+              <button
+                type="button"
+                onClick={() => {
+                  triggerHaptic("medium");
+                  setShowFoodWrapped(true);
+                }}
+                className="p-3 bg-gradient-to-br from-teal-900 to-slate-900 border border-teal-500/30 hover:border-teal-400 rounded-2xl text-left transition-all flex items-center gap-2.5 cursor-pointer shadow-xs group active:scale-98"
+              >
+                <span className="p-2 bg-teal-500/20 text-teal-300 rounded-xl group-hover:scale-110 transition-transform">
+                  🥑
+                </span>
+                <div className="min-w-0 flex-1">
+                  <div className="text-xs font-black text-white truncate">Food Wrapped 📊</div>
+                  <div className="text-[10px] text-teal-300/80 font-bold">Monthly Story Card</div>
+                </div>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  triggerHaptic("medium");
+                  navigate("/challenge");
+                }}
+                className="p-3 bg-gradient-to-br from-amber-950 to-slate-900 border border-amber-500/30 hover:border-amber-400 rounded-2xl text-left transition-all flex items-center gap-2.5 cursor-pointer shadow-xs group active:scale-98"
+              >
+                <span className="p-2 bg-amber-500/20 text-amber-300 rounded-xl group-hover:scale-110 transition-transform">
+                  🏆
+                </span>
+                <div className="min-w-0 flex-1">
+                  <div className="text-xs font-black text-white truncate">Leaderboards 🌍</div>
+                  <div className="text-[10px] text-amber-300/80 font-bold">Diaspora Top 5%</div>
+                </div>
+              </button>
+            </div>
+
             {/* Daily Fuel Gauge Card */}
             <div className="bg-gradient-to-br from-white via-[#F4FBFA] to-[#E2F4F3] rounded-3xl shadow-lg border border-teal-100/80 p-5 sm:p-6">
               <div className="flex items-center justify-between mb-2">
@@ -1508,6 +1579,12 @@ export default function Home() {
         onOpenScanner={() => setShowCameraCapture(true)}
         onOpenWhatsApp={() => setShowWhatsAppModal(true)}
         onOpenHealthSetup={() => setShowHealthWizard(true)}
+      />
+
+      {/* Monthly Food Wrapped Story Modal */}
+      <FoodWrappedModal
+        isOpen={showFoodWrapped}
+        onClose={() => setShowFoodWrapped(false)}
       />
     </div>
   );
