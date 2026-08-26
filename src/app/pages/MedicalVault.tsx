@@ -249,42 +249,93 @@ export default function MedicalVault() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#B8E5E5] to-[#E8F5F5] pb-24">
-      <PageHeader
-        title={t("vault.title")}
-        showHome
-        actions={
-          <Shield className="h-6 w-6 text-white" />
-        }
-      />
-
-      <div className="px-6 mt-6 space-y-6">
-        {/* Security Banner */}
-        <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-2xl p-5 shadow-lg">
-          <div className="flex items-start gap-3">
-            <Lock className="h-6 w-6 flex-shrink-0 mt-0.5" />
-            <div>
-              <div className="font-semibold mb-1">{t("vault.secureTitle")}</div>
-              <div className="text-sm text-white/90">
-                {t("vault.secureDesc")}
-              </div>
+    <div className="min-h-screen bg-slate-950 text-slate-100 pb-28">
+      {/* Top Header */}
+      <div className="sticky top-0 z-30 bg-slate-950/90 backdrop-blur-xl border-b border-teal-900/40 px-4 py-3.5 flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => navigate("/home")}
+            className="p-2 rounded-2xl bg-white/10 hover:bg-white/15 text-white transition-colors cursor-pointer"
+          >
+            <Shield className="h-5 w-5 text-teal-400" />
+          </button>
+          <div>
+            <div className="flex items-center gap-1.5">
+              <Lock size={15} className="text-teal-400" />
+              <h1 className="text-base font-black text-white tracking-wide">
+                Medical Vault &amp; Lab Reports
+              </h1>
             </div>
+            <span className="text-[10.5px] text-teal-300 font-bold">
+              Encrypted Clinical Records &amp; 1-Tap Doctor PDF
+            </span>
           </div>
         </div>
 
-        {/* Documents */}
-        <div className="bg-white rounded-2xl shadow-lg p-5">
-          <div className="flex items-center justify-between mb-3">
-            <h3 className="text-lg font-semibold text-gray-800 flex items-center gap-2">
-              <FileText className="h-5 w-5 text-[#1f7a8c]" />
-              {t("vault.myDocuments")}
-            </h3>
+        {/* Doctor Export Pill */}
+        <button
+          onClick={() => navigate("/health-report")}
+          className="flex items-center gap-1.5 bg-gradient-to-r from-teal-500 to-emerald-500 text-slate-950 font-black px-3 py-1.5 rounded-xl text-xs shadow-md cursor-pointer hover:opacity-95 transition-all"
+        >
+          <FileText size={13} />
+          <span>Doctor PDF</span>
+        </button>
+      </div>
+
+      <div className="px-4 pt-4 space-y-4 max-w-xl mx-auto">
+        {/* 10X 1-TAP DOCTOR CLINICAL REPORT HERO BANNER */}
+        <div className="bg-gradient-to-br from-[#0c2a33] via-[#093540] to-slate-950 rounded-3xl p-5 border-2 border-teal-400/40 shadow-2xl relative overflow-hidden">
+          <div className="flex items-center justify-between relative z-10 mb-3">
+            <div className="max-w-[70%]">
+              <span className="text-[10px] uppercase font-black tracking-wider text-teal-300 bg-teal-950 px-2.5 py-0.5 rounded-full border border-teal-800">
+                Physician &amp; Clinic Ready
+              </span>
+              <h2 className="text-xl font-black text-white mt-1.5 leading-tight">
+                14-Day Doctor Health Report 📄
+              </h2>
+              <p className="text-xs text-teal-100/90 mt-1 leading-snug">
+                Export an organized medical summary showing your blood pressure trends, meal scans, and glucose stability to take straight to your doctor.
+              </p>
+            </div>
+
+            <div className="shrink-0 flex flex-col items-center">
+              <div className="p-3 bg-teal-500/20 text-teal-300 rounded-2xl border border-teal-500/30">
+                <FileText size={32} />
+              </div>
+            </div>
+          </div>
+
+          <button
+            onClick={() => navigate("/health-report")}
+            className="w-full py-3 bg-gradient-to-r from-teal-400 to-emerald-400 hover:from-teal-500 hover:to-emerald-500 text-slate-950 font-black text-xs rounded-2xl shadow-lg flex items-center justify-center gap-2 cursor-pointer active:scale-98 transition-all"
+          >
+            <span>Generate Doctor Health PDF (14-Day Dossier)</span>
+            <ChevronRight size={15} />
+          </button>
+        </div>
+
+        {/* SECURE LAB LOCKER (DOCUMENTS & LAB SLIPS) */}
+        <div className="bg-slate-900/90 border border-teal-500/20 rounded-3xl p-5 shadow-xl space-y-3">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <div className="p-2 bg-teal-500/20 text-teal-300 rounded-xl">
+                <Upload className="h-5 w-5" />
+              </div>
+              <div>
+                <h3 className="text-sm font-black text-white">
+                  My Lab Results &amp; Hospital Scans
+                </h3>
+                <p className="text-[11px] text-slate-400">
+                  Upload photos of clinic lab slips, prescriptions &amp; tests
+                </p>
+              </div>
+            </div>
             <button
               onClick={() => setShowUploadDialog(true)}
-              className="flex items-center gap-2 px-4 py-2 bg-[#1f7a8c] text-white rounded-xl hover:bg-[#1a6273] transition-colors"
+              className="flex items-center gap-1.5 px-3 py-1.5 bg-teal-500 text-slate-950 font-black rounded-xl text-xs cursor-pointer hover:bg-teal-400 transition-colors shadow-sm"
             >
-              <Upload className="h-4 w-4" />
-              <span className="text-sm font-medium">{t("vault.upload")}</span>
+              <Plus size={14} />
+              <span>Upload</span>
             </button>
           </div>
 
@@ -293,70 +344,98 @@ export default function MedicalVault() {
           ) : documents.length === 0 ? (
             <button
               onClick={() => setShowUploadDialog(true)}
-              className="w-full border-2 border-dashed border-gray-300 rounded-xl p-8 hover:border-[#1f7a8c] hover:bg-[#E8F5F5] transition-all group"
+              className="w-full border-2 border-dashed border-slate-700 hover:border-teal-400 rounded-2xl p-6 text-center transition-all bg-white/5 group cursor-pointer"
             >
-              <FileText className="h-12 w-12 text-gray-400 mx-auto mb-3 group-hover:text-[#1f7a8c]" />
-              <div className="text-sm font-semibold text-gray-700 group-hover:text-[#1f7a8c]">
-                {t("vault.uploadPrompt")}
+              <FileText className="h-10 w-10 text-slate-500 mx-auto mb-2 group-hover:text-teal-300" />
+              <div className="text-xs font-bold text-white group-hover:text-teal-200">
+                Tap here to upload a photo of your Lab Test or Prescription
               </div>
-              <div className="text-xs text-gray-500 mt-1">
-                {t("vault.uploadHint")}
+              <div className="text-[10px] text-slate-400 mt-1">
+                Encrypted &amp; private. Stored securely on your account.
               </div>
             </button>
           ) : (
-            <div className="space-y-2">
+            <div className="space-y-2 max-h-56 overflow-y-auto pr-1">
               {documents.map((doc) => (
                 <div
                   key={doc.id}
-                  className="flex items-center gap-3 p-3 rounded-xl border border-gray-100 hover:bg-gray-50 transition-colors"
+                  className="flex items-center justify-between p-3 rounded-2xl bg-white/5 border border-white/5 hover:border-teal-500/30 transition-all text-xs"
                 >
-                  <div className="rounded-lg bg-[#E8F5F5] p-2 flex-shrink-0">
-                    <FileText className="h-5 w-5 text-[#1f7a8c]" />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="text-sm font-semibold text-gray-800 truncate">{doc.title}</div>
-                    <div className="text-xs text-gray-500 truncate">
-                      {[docCatLabel(doc.category), doc.provider, formatFileSize(doc.file_size)]
-                        .filter(Boolean)
-                        .join(' · ')}
+                  <div className="flex items-center gap-2.5 min-w-0">
+                    <div className="p-2 bg-teal-500/20 text-teal-300 rounded-xl shrink-0">
+                      <FileText size={16} />
+                    </div>
+                    <div className="min-w-0">
+                      <div className="font-bold text-white truncate">{doc.title}</div>
+                      <div className="text-[10px] text-slate-400 truncate">
+                        {[docCatLabel(doc.category), doc.provider, formatFileSize(doc.file_size)].filter(Boolean).join(" · ")}
+                      </div>
                     </div>
                   </div>
-                  <button
-                    onClick={() => handleViewDocument(doc)}
-                    disabled={openingId === doc.id}
-                    className="p-2 text-gray-500 hover:text-[#1f7a8c] disabled:opacity-50"
-                    aria-label={`${t("vault.view")} ${doc.title}`}
-                  >
-                    {openingId === doc.id ? (
-                      <Loader2 className="h-4 w-4 animate-spin" />
-                    ) : (
-                      <Eye className="h-4 w-4" />
-                    )}
-                  </button>
-                  <button
-                    onClick={() => handleDeleteDocument(doc)}
-                    className="p-2 text-gray-500 hover:text-red-600"
-                    aria-label={`${t("common.delete")} ${doc.title}`}
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </button>
+
+                  <div className="flex items-center gap-1 shrink-0">
+                    <button
+                      onClick={() => handleViewDocument(doc)}
+                      disabled={openingId === doc.id}
+                      className="p-1.5 text-teal-300 hover:text-white bg-white/10 rounded-lg cursor-pointer"
+                      title="View file"
+                    >
+                      {openingId === doc.id ? <Loader2 size={13} className="animate-spin" /> : <Eye size={13} />}
+                    </button>
+                    <button
+                      onClick={() => handleDeleteDocument(doc)}
+                      className="p-1.5 text-red-400 hover:text-red-300 bg-white/10 rounded-lg cursor-pointer"
+                      title="Delete file"
+                    >
+                      <Trash2 size={13} />
+                    </button>
+                  </div>
                 </div>
               ))}
             </div>
           )}
         </div>
 
-        {/* Biomarker Summary */}
-        <div className="bg-white rounded-2xl shadow-lg p-5">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-semibold text-gray-800">{t("vault.biomarkerOverview")}</h3>
+        {/* BIOMARKERS OVERVIEW */}
+        <div className="bg-slate-900/90 border border-teal-500/20 rounded-3xl p-5 shadow-xl space-y-3">
+          <div className="flex items-center justify-between">
+            <div>
+              <h3 className="text-sm font-black text-white">
+                Key Health Numbers (Biomarkers)
+              </h3>
+              <p className="text-[11px] text-slate-400">
+                Track your blood sugar, blood pressure, and cholesterol
+              </p>
+            </div>
             <button
               onClick={() => setShowAddBiomarker(true)}
-              className="flex items-center gap-2 px-4 py-2 bg-[#1f7a8c] text-white rounded-xl hover:bg-[#1a6273] transition-colors"
+              className="flex items-center gap-1 px-3 py-1.5 bg-white/10 text-white font-bold rounded-xl text-xs cursor-pointer hover:bg-white/20 transition-colors"
             >
-              <Plus className="h-4 w-4" />
-              <span className="text-sm font-medium">{t("common.add")}</span>
+              <Plus size={14} />
+              <span>Add</span>
             </button>
+          </div>
+
+          {/* Status summary pill counts */}
+          <div className="grid grid-cols-3 gap-2">
+            <div className="bg-emerald-950/60 border border-emerald-500/30 rounded-2xl p-2.5 text-center">
+              <div className="text-lg font-black text-emerald-300">
+                {biomarkers.filter(b => b.status === 'normal').length}
+              </div>
+              <div className="text-[10px] text-emerald-400 font-bold uppercase">Optimal Range 🟢</div>
+            </div>
+            <div className="bg-amber-950/60 border border-amber-500/30 rounded-2xl p-2.5 text-center">
+              <div className="text-lg font-black text-amber-300">
+                {biomarkers.filter(b => b.status === 'high').length}
+              </div>
+              <div className="text-[10px] text-amber-400 font-bold uppercase">Elevated 🟡</div>
+            </div>
+            <div className="bg-blue-950/60 border border-blue-500/30 rounded-2xl p-2.5 text-center">
+              <div className="text-lg font-black text-blue-300">
+                {biomarkers.filter(b => b.status === 'low').length}
+              </div>
+              <div className="text-[10px] text-blue-400 font-bold uppercase">Below Target 🔵</div>
+            </div>
           </div>
 
           {/* Status Cards */}

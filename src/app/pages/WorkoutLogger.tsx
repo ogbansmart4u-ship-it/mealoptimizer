@@ -447,70 +447,112 @@ export default function WorkoutLogger() {
             <Mascot gesture="wave" size={54} />
           </div>
           <div className="flex-1 min-w-0">
-            <div className="flex items-center justify-between gap-2">
-              <span className="text-[10px] uppercase font-black tracking-wider text-orange-800">
-                Metabolic Movement Coach
-              </span>
-              <span className="text-[10px] font-bold px-2 py-0.5 bg-orange-100 text-orange-900 rounded-full">
-                WHO Target: 150m/wk
-              </span>
+  return (
+    <div className="min-h-screen bg-slate-950 text-slate-100 pb-28">
+      {/* Top Header */}
+      <div className="sticky top-0 z-30 bg-slate-950/90 backdrop-blur-xl border-b border-orange-900/40 px-4 py-3.5 flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => navigate("/home")}
+            className="p-2 rounded-2xl bg-white/10 hover:bg-white/15 text-white transition-colors cursor-pointer"
+          >
+            <ArrowLeft size={18} />
+          </button>
+          <div>
+            <div className="flex items-center gap-1.5">
+              <Dumbbell size={16} className="text-orange-400 animate-pulse" />
+              <h1 className="text-base font-black text-white tracking-wide">
+                Movement &amp; Energy Hub
+              </h1>
             </div>
-            <h3 className="text-sm font-black text-gray-900 mt-0.5">
-              {weeklyMinutes >= 150
-                ? "🎉 Target Crushed! High Insulin Sensitivity"
-                : "🚶 10-Min Post-Meal Walks Buffer Blood Sugar Spikes by 30%"}
-            </h3>
-            <p className="text-xs text-gray-600 mt-1 leading-snug">
-              Light muscular contraction activates GLUT4 transporters to clear glucose from your bloodstream without relying solely on insulin.
-            </p>
-
-            {/* Weekly Target Progress Bar */}
-            <div className="mt-3">
-              <div className="flex justify-between items-center text-[10px] font-bold text-gray-700 mb-1">
-                <span>Weekly Movement Progress</span>
-                <span>{weeklyMinutes} / 150 min ({weeklyGoalPct}%)</span>
-              </div>
-              <div className="w-full bg-gray-200 h-2 rounded-full overflow-hidden">
-                <div
-                  className="bg-gradient-to-r from-orange-500 to-teal-500 h-full rounded-full transition-all duration-700"
-                  style={{ width: `${weeklyGoalPct}%` }}
-                />
-              </div>
-            </div>
+            <span className="text-[10.5px] text-orange-300 font-bold">
+              Turn Your Muscles into Natural Blood Sugar Sponges
+            </span>
           </div>
         </div>
 
-        {/* ============================================================ */}
-        {/* 1. LIVE POST-MEAL GLUCOSE WALK & WORKOUT STOPWATCH           */}
-        {/* ============================================================ */}
-        <div className="bg-white rounded-3xl p-5 shadow-sm border border-teal-100">
-          <div className="flex items-center justify-between mb-3">
+        {/* Weekly Minutes Pill */}
+        <div className="flex items-center gap-1.5 bg-orange-500/20 text-orange-300 border border-orange-500/30 px-3 py-1 rounded-xl text-xs font-black">
+          <Flame size={13} className="text-orange-400 fill-orange-400" />
+          <span>{weeklyMinutes} / 150m Target</span>
+        </div>
+      </div>
+
+      <div className="px-4 pt-4 space-y-4 max-w-xl mx-auto">
+        {/* API error banner */}
+        {logsError && (
+          <div className="bg-red-950/50 border border-red-500/30 rounded-2xl p-3 flex items-center gap-3 text-red-200 text-xs">
+            <AlertCircle className="h-5 w-5 text-red-400 shrink-0" />
+            <span>{logsError}</span>
+          </div>
+        )}
+
+        {/* 10X HERO BANNER WITH AVO MASCOT */}
+        <div className="bg-gradient-to-br from-[#2a1306] via-[#3a1d0a] to-slate-950 rounded-3xl p-5 border-2 border-orange-500/40 shadow-2xl relative overflow-hidden">
+          {/* Ambient Glows */}
+          <div className="absolute top-0 right-0 w-48 h-48 bg-orange-500/10 rounded-full blur-3xl pointer-events-none" />
+
+          <div className="flex items-center justify-between relative z-10 mb-4">
+            <div className="max-w-[70%]">
+              <span className="text-[10px] uppercase font-black tracking-wider text-orange-300 bg-orange-950 px-2.5 py-0.5 rounded-full border border-orange-800">
+                Weekly Milestone: 150 Minutes
+              </span>
+              <h2 className="text-xl font-black text-white mt-1.5 leading-tight">
+                {weeklyMinutes >= 150
+                  ? "🎉 Weekly Target Achieved! Peak Energy!"
+                  : "🚶 15-Minute Walks Buffer Post-Meal Spikes"}
+              </h2>
+              <p className="text-xs text-orange-100/90 mt-1 leading-snug">
+                When you move after eating, your leg muscles absorb meal carbohydrates immediately without needing extra insulin.
+              </p>
+            </div>
+
+            <div className="shrink-0 flex flex-col items-center">
+              <Mascot gesture={weeklyMinutes >= 150 ? "celebrate" : "thumbsup"} size={68} />
+              <span className="text-[10px] font-black text-amber-300 mt-1">
+                {weeklyGoalPct}% of Goal
+              </span>
+            </div>
+          </div>
+
+          {/* Weekly Target Progress Bar */}
+          <div className="w-full h-3 bg-black/50 rounded-full overflow-hidden p-0.5 border border-orange-500/30">
+            <div
+              className="h-full bg-gradient-to-r from-orange-400 via-amber-400 to-emerald-400 rounded-full transition-all duration-700"
+              style={{ width: `${weeklyGoalPct}%` }}
+            />
+          </div>
+        </div>
+
+        {/* LIVE POST-MEAL GLUCOSE WALK & WORKOUT STOPWATCH */}
+        <div className="bg-slate-900/90 border border-orange-500/30 rounded-3xl p-5 shadow-xl space-y-3">
+          <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <div className="p-2 bg-teal-50 text-[#1f7a8c] rounded-xl">
+              <div className="p-2 bg-orange-500/20 text-orange-400 rounded-xl">
                 <Clock className="h-5 w-5" />
               </div>
               <div>
-                <h3 className="text-sm font-black text-gray-900">
+                <h3 className="text-sm font-black text-white">
                   Live Post-Meal Movement Timer ⏱️
                 </h3>
-                <p className="text-[11px] text-gray-500">
-                  Track your stroll or session in real-time
+                <p className="text-[11px] text-slate-400">
+                  Track your walk or Afrobeats dance in real time
                 </p>
               </div>
             </div>
             {timerActive && (
-              <span className="text-[10px] font-bold px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded-full animate-pulse flex items-center gap-1">
-                <span className="h-1.5 w-1.5 rounded-full bg-emerald-600" /> Live Tracking
+              <span className="text-[10px] font-black px-2.5 py-1 bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 rounded-full animate-pulse flex items-center gap-1.5">
+                <span className="h-2 w-2 rounded-full bg-emerald-400" /> Active Session
               </span>
             )}
           </div>
 
-          <div className="bg-slate-50 border border-slate-200/80 rounded-2xl p-4 text-center">
-            <div className="text-3xl sm:text-4xl font-black text-gray-900 tracking-wider font-mono">
+          <div className="bg-slate-950 border border-orange-950/60 rounded-2xl p-4 text-center">
+            <div className="text-4xl font-black text-white tracking-widest font-mono">
               {formatTimerTime(timerSeconds)}
             </div>
-            <div className="text-[11px] text-gray-500 mt-0.5 font-semibold">
-              Estimated Burn: ~{Math.round((timerSeconds / 60) * 5)} kcal • Zone 2 Fat Burn
+            <div className="text-[11px] text-amber-300 mt-1 font-semibold">
+              Estimated Burn: ~{Math.round((timerSeconds / 60) * 6)} kcal • Active Glucose Buffer
             </div>
 
             {/* Quick Type Selector for Timer */}
@@ -520,35 +562,35 @@ export default function WorkoutLogger() {
                   <button
                     key={t}
                     onClick={() => setTimerWorkoutType(t)}
-                    className={`px-2.5 py-1 rounded-xl text-[11px] font-bold transition-all cursor-pointer ${
+                    className={`px-3 py-1 rounded-xl text-[11px] font-bold transition-all cursor-pointer ${
                       timerWorkoutType === t
-                        ? "bg-[#1f7a8c] text-white shadow-2xs"
-                        : "bg-white text-gray-600 border border-gray-200"
+                        ? "bg-orange-500 text-slate-950 shadow-md font-black"
+                        : "bg-white/10 text-slate-300 hover:bg-white/15"
                     }`}
                   >
-                    {t === 'walking' ? '🚶 Post-Meal Walk' : t === 'cardio' ? '💃 Afrobeats' : t === 'strength' ? '💪 Resistance' : '⚡ HIIT'}
+                    {t === 'walking' ? '🚶 15-Min Walk' : t === 'cardio' ? '💃 Afrobeats' : t === 'strength' ? '💪 Strength' : '⚡ HIIT'}
                   </button>
                 ))}
               </div>
             )}
 
-            {/* Stopwatch Controls */}
-            <div className="flex items-center justify-center gap-2 mt-3.5">
+            {/* Controls */}
+            <div className="flex items-center justify-center gap-2 mt-4">
               {!timerActive ? (
                 <button
                   onClick={() => handleStartTimer(timerWorkoutType)}
-                  className="px-5 py-2 bg-gradient-to-r from-orange-500 to-amber-500 hover:opacity-95 text-white font-bold rounded-xl text-xs flex items-center gap-1.5 shadow-sm cursor-pointer active:scale-95 transition-all"
+                  className="px-6 py-2.5 bg-gradient-to-r from-orange-500 to-amber-500 text-slate-950 font-black rounded-xl text-xs flex items-center gap-1.5 shadow-lg cursor-pointer active:scale-95 transition-all"
                 >
-                  <Play size={14} className="fill-current" />
-                  <span>{timerSeconds > 0 ? "Resume" : "Start Walk / Workout"}</span>
+                  <Play size={15} className="fill-current" />
+                  <span>{timerSeconds > 0 ? "Resume Session" : "Start Walk / Workout"}</span>
                 </button>
               ) : (
                 <button
                   onClick={handlePauseTimer}
-                  className="px-5 py-2 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-xl text-xs flex items-center gap-1.5 shadow-sm cursor-pointer active:scale-95 transition-all"
+                  className="px-6 py-2.5 bg-amber-500 text-slate-950 font-black rounded-xl text-xs flex items-center gap-1.5 shadow-md cursor-pointer active:scale-95 transition-all"
                 >
-                  <Pause size={14} className="fill-current" />
-                  <span>Pause</span>
+                  <Pause size={15} className="fill-current" />
+                  <span>Pause Timer</span>
                 </button>
               )}
 
@@ -556,14 +598,14 @@ export default function WorkoutLogger() {
                 <>
                   <button
                     onClick={handleFinishTimer}
-                    className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs flex items-center gap-1.5 shadow-sm cursor-pointer active:scale-95 transition-all"
+                    className="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-black rounded-xl text-xs flex items-center gap-1.5 shadow-md cursor-pointer active:scale-95 transition-all"
                   >
-                    <Check size={14} />
+                    <Check size={15} />
                     <span>Save &amp; Log</span>
                   </button>
                   <button
                     onClick={handleResetTimer}
-                    className="p-2 text-gray-500 hover:bg-gray-200 rounded-xl cursor-pointer transition-colors"
+                    className="p-2.5 text-slate-400 hover:text-white bg-white/10 rounded-xl cursor-pointer transition-colors"
                     title="Reset timer"
                   >
                     <RotateCcw size={15} />
@@ -574,15 +616,14 @@ export default function WorkoutLogger() {
           </div>
         </div>
 
-        {/* ============================================================ */}
-        {/* 2. 1-TAP QUICK-LOG MOVEMENT SHELF                            */}
-        {/* ============================================================ */}
-        <div>
-          <div className="flex items-center justify-between mb-2">
-            <h3 className="text-xs font-black text-gray-800 uppercase tracking-wider">
-              1-Tap Metabolic Presets
+        {/* 1-TAP QUICK MOVEMENT PRESETS */}
+        <div className="bg-slate-900/90 border border-orange-500/20 rounded-3xl p-4 space-y-3">
+          <div className="flex items-center justify-between">
+            <h3 className="text-sm font-black text-white flex items-center gap-1.5">
+              <Sparkles size={14} className="text-orange-400" />
+              <span>1-Tap African &amp; Everyday Presets</span>
             </h3>
-            <span className="text-[10px] text-gray-500 font-semibold">Instant Log</span>
+            <span className="text-[10px] text-slate-400 font-bold">Instant 1-Click Log</span>
           </div>
 
           <div className="grid grid-cols-2 gap-2.5">
@@ -590,225 +631,169 @@ export default function WorkoutLogger() {
               <button
                 key={idx}
                 onClick={() => handleQuickPresetLog(preset)}
-                className="bg-white hover:bg-orange-50/50 border border-orange-100 hover:border-orange-300 rounded-2xl p-3 text-left transition-all cursor-pointer shadow-2xs group flex flex-col justify-between"
+                className="bg-slate-950/80 hover:bg-orange-950/40 border border-orange-900/40 hover:border-orange-400 rounded-2xl p-3 text-left transition-all cursor-pointer shadow-sm group flex flex-col justify-between min-h-[110px] active:scale-95"
               >
                 <div>
                   <div className="flex items-center justify-between mb-1">
                     <span className="text-2xl">{preset.emoji}</span>
-                    <span className="text-[9px] font-bold px-1.5 py-0.5 bg-orange-100 text-orange-900 rounded-md">
+                    <span className="text-[9px] font-black px-1.5 py-0.5 bg-orange-950 text-orange-300 border border-orange-800 rounded-md">
                       {preset.benefit}
                     </span>
                   </div>
-                  <h4 className="text-xs font-extrabold text-gray-900 group-hover:text-orange-700 leading-snug line-clamp-1">
+                  <h4 className="text-xs font-black text-white group-hover:text-orange-200 leading-snug line-clamp-1">
                     {preset.name}
                   </h4>
                 </div>
-                <div className="flex items-center justify-between mt-2 pt-2 border-t border-gray-100 text-[10px] text-gray-500 font-semibold">
+                <div className="flex items-center justify-between mt-2 pt-2 border-t border-white/5 text-[10px] text-slate-400 font-semibold">
                   <span>⏱️ {preset.duration} min</span>
-                  <span className="text-orange-600 font-bold">~{preset.calories} kcal</span>
+                  <span className="text-amber-300 font-bold">~{preset.calories} kcal</span>
                 </div>
               </button>
             ))}
           </div>
         </div>
 
-        {/* ============================================================ */}
-        {/* 3. METRIC TILES SUMMARY                                      */}
-        {/* ============================================================ */}
+        {/* 4 REASONS MOVEMENT PROTECTS YOUR METABOLISM */}
+        <div className="bg-slate-900/90 border border-orange-500/20 rounded-3xl p-4 space-y-3">
+          <div className="flex items-center gap-2">
+            <ShieldCheck size={18} className="text-orange-400" />
+            <div>
+              <h3 className="text-sm font-black text-white">How Movement Protects Your Body</h3>
+              <p className="text-[10.5px] text-slate-400">Simple science for everyday African wellness</p>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+            <div className="p-3 bg-white/5 border border-white/5 rounded-2xl flex items-start gap-2.5">
+              <span className="p-2 bg-orange-500/20 text-orange-300 rounded-xl shrink-0 text-lg">
+                🩸
+              </span>
+              <div>
+                <h4 className="text-xs font-black text-orange-200">Natural Sugar Sponges</h4>
+                <p className="text-[10.5px] text-slate-300 leading-snug mt-0.5">
+                  Walking for 15 mins after heavy swallows pulls glucose straight from your blood into muscles with zero insulin crash.
+                </p>
+              </div>
+            </div>
+
+            <div className="p-3 bg-white/5 border border-white/5 rounded-2xl flex items-start gap-2.5">
+              <span className="p-2 bg-emerald-500/20 text-emerald-300 rounded-xl shrink-0 text-lg">
+                ❤️
+              </span>
+              <div>
+                <h4 className="text-xs font-black text-emerald-200">Relaxes Blood Vessels</h4>
+                <p className="text-[10.5px] text-slate-300 leading-snug mt-0.5">
+                  Rhythmic Afrobeats dancing and brisk walking expand arteries naturally, helping keep your blood pressure smooth.
+                </p>
+              </div>
+            </div>
+
+            <div className="p-3 bg-white/5 border border-white/5 rounded-2xl flex items-start gap-2.5">
+              <span className="p-2 bg-blue-500/20 text-blue-300 rounded-xl shrink-0 text-lg">
+                💪
+              </span>
+              <div>
+                <h4 className="text-xs font-black text-blue-200">Builds Metabolism Base</h4>
+                <p className="text-[10.5px] text-slate-300 leading-snug mt-0.5">
+                  Simple bodyweight squats and pushups build active muscle tissue that burns calories even while you rest.
+                </p>
+              </div>
+            </div>
+
+            <div className="p-3 bg-white/5 border border-white/5 rounded-2xl flex items-start gap-2.5">
+              <span className="p-2 bg-purple-500/20 text-purple-300 rounded-xl shrink-0 text-lg">
+                🌿
+              </span>
+              <div>
+                <h4 className="text-xs font-black text-purple-200">Clears Stress &amp; Bloat</h4>
+                <p className="text-[10.5px] text-slate-300 leading-snug mt-0.5">
+                  Releases joyful endorphins that wash away workday tension and help food digest with zero heaviness.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* METRICS SUMMARY TILES */}
         <div className="grid grid-cols-4 gap-2">
-          <div className="bg-white rounded-2xl p-3 shadow-2xs border border-orange-100 text-center">
-            <Flame className="h-4 w-4 text-orange-500 mx-auto mb-1" />
-            <div className="text-base font-black text-gray-900">{currentStreak}d</div>
-            <span className="text-[9px] text-gray-500 font-bold block uppercase">Streak</span>
+          <div className="bg-slate-900 border border-white/5 rounded-2xl p-3 text-center">
+            <Flame className="h-4 w-4 text-orange-400 mx-auto mb-1" />
+            <div className="text-base font-black text-white">{currentStreak}d</div>
+            <span className="text-[9px] text-slate-400 font-bold block uppercase">Streak</span>
           </div>
 
-          <div className="bg-white rounded-2xl p-3 shadow-2xs border border-orange-100 text-center">
-            <Dumbbell className="h-4 w-4 text-amber-500 mx-auto mb-1" />
-            <div className="text-base font-black text-gray-900">{totalWorkouts}</div>
-            <span className="text-[9px] text-gray-500 font-bold block uppercase">Sessions</span>
+          <div className="bg-slate-900 border border-white/5 rounded-2xl p-3 text-center">
+            <Dumbbell className="h-4 w-4 text-amber-400 mx-auto mb-1" />
+            <div className="text-base font-black text-white">{totalWorkouts}</div>
+            <span className="text-[9px] text-slate-400 font-bold block uppercase">Sessions</span>
           </div>
 
-          <div className="bg-white rounded-2xl p-3 shadow-2xs border border-orange-100 text-center">
-            <Clock className="h-4 w-4 text-blue-500 mx-auto mb-1" />
-            <div className="text-base font-black text-gray-900">{totalMinutes}m</div>
-            <span className="text-[9px] text-gray-500 font-bold block uppercase">Total Min</span>
+          <div className="bg-slate-900 border border-white/5 rounded-2xl p-3 text-center">
+            <Clock className="h-4 w-4 text-cyan-400 mx-auto mb-1" />
+            <div className="text-base font-black text-white">{totalMinutes}m</div>
+            <span className="text-[9px] text-slate-400 font-bold block uppercase">Total Min</span>
           </div>
 
-          <div className="bg-white rounded-2xl p-3 shadow-2xs border border-orange-100 text-center">
-            <Zap className="h-4 w-4 text-rose-500 mx-auto mb-1" />
-            <div className="text-base font-black text-gray-900">{Math.round(totalCalories / 1000)}k</div>
-            <span className="text-[9px] text-gray-500 font-bold block uppercase">Burned</span>
+          <div className="bg-slate-900 border border-white/5 rounded-2xl p-3 text-center">
+            <Zap className="h-4 w-4 text-rose-400 mx-auto mb-1" />
+            <div className="text-base font-black text-white">{Math.round(totalCalories / 1000)}k</div>
+            <span className="text-[9px] text-slate-400 font-bold block uppercase">Burned</span>
           </div>
         </div>
 
-        {/* ============================================================ */}
-        {/* 4. ACTIVITY & CALORIE CHARTS                                 */}
-        {/* ============================================================ */}
-        <div className="bg-white rounded-3xl shadow-sm p-5 border border-teal-100">
-          <h3 className="text-xs font-extrabold text-gray-800 uppercase tracking-wider mb-3">
-            {t('workout.weeklyActivity')} (Minutes)
-          </h3>
-
-          <ResponsiveContainer width="100%" height={180}>
-            <BarChart data={chartData}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
-              <XAxis dataKey="date" stroke="#94a3b8" style={{ fontSize: '10px' }} tickFormatter={formatWeekdayTick} />
-              <YAxis stroke="#94a3b8" style={{ fontSize: '10px' }} />
-              <Tooltip
-                contentStyle={{
-                  backgroundColor: '#ffffff',
-                  border: '1px solid #e2e8f0',
-                  borderRadius: '12px',
-                  fontSize: '11px',
-                }}
-              />
-              <defs>
-                <linearGradient id={`workoutGradient-${uniqueId}`} x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#f97316" stopOpacity={0.9} />
-                  <stop offset="95%" stopColor="#0d9488" stopOpacity={0.9} />
-                </linearGradient>
-              </defs>
-              <Bar dataKey="duration" fill={`url(#workoutGradient-${uniqueId})`} radius={[6, 6, 0, 0]} />
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
-
-        {/* Calorie Trend */}
-        <div className="bg-white rounded-3xl shadow-sm p-5 border border-teal-100">
-          <h3 className="text-xs font-extrabold text-gray-800 uppercase tracking-wider mb-3">
-            {t('workout.calorieTrend')}
-          </h3>
-
-          <ResponsiveContainer width="100%" height={160}>
-            <AreaChart data={performanceTrend}>
-              <defs>
-                <linearGradient id={`calorieGradient-${uniqueId}`} x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#f97316" stopOpacity={0.3} />
-                  <stop offset="95%" stopColor="#f97316" stopOpacity={0} />
-                </linearGradient>
-              </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
-              <XAxis dataKey="date" stroke="#94a3b8" style={{ fontSize: '10px' }} tickFormatter={formatMonthDayTick} />
-              <YAxis stroke="#94a3b8" style={{ fontSize: '10px' }} />
-              <Tooltip
-                contentStyle={{
-                  backgroundColor: '#ffffff',
-                  border: '1px solid #e2e8f0',
-                  borderRadius: '12px',
-                  fontSize: '11px',
-                }}
-              />
-              <Area
-                type="monotone"
-                dataKey="calories"
-                stroke="#f97316"
-                strokeWidth={2}
-                fill={`url(#calorieGradient-${uniqueId})`}
-                name="Calories"
-              />
-            </AreaChart>
-          </ResponsiveContainer>
-        </div>
-
-        {/* ============================================================ */}
-        {/* 5. RECENT WORKOUT LOGS                                       */}
-        {/* ============================================================ */}
-        <div className="bg-white rounded-3xl shadow-sm p-5 border border-teal-100">
-          <div className="flex items-center justify-between mb-3">
-            <h3 className="text-xs font-extrabold text-gray-800 uppercase tracking-wider">
-              {t('workout.recent')}
+        {/* RECENT WORKOUT LOGS */}
+        <div className="bg-slate-900/90 border border-orange-500/20 rounded-3xl p-4 space-y-3">
+          <div className="flex items-center justify-between">
+            <h3 className="text-sm font-black text-white uppercase tracking-wider">
+              Recent Movement Sessions
             </h3>
             <button
               onClick={() => setShowAddDialog(true)}
-              className="text-xs text-[#1f7a8c] font-bold hover:underline cursor-pointer"
+              className="text-xs text-orange-400 font-black hover:underline cursor-pointer"
             >
               + Log Custom
             </button>
           </div>
 
           {workouts.length === 0 && !logsLoading ? (
-            <div className="text-center py-6 text-gray-400 text-xs">
-              <Dumbbell className="h-8 w-8 mx-auto text-gray-300 mb-2" />
-              <p>No workouts logged yet. Tap a 1-tap preset above to log your first session!</p>
+            <div className="text-center py-6 text-slate-500 text-xs">
+              <Dumbbell className="h-8 w-8 mx-auto text-slate-600 mb-2" />
+              <p>No workouts logged yet. Tap a preset above to log your first session!</p>
             </div>
           ) : (
-            <div className="space-y-2.5">
+            <div className="space-y-2 max-h-56 overflow-y-auto pr-1">
               {last7Days.slice().reverse().map((workout) => {
                 const workoutType = WORKOUT_TYPES.find((t) => t.value === workout.type);
                 return (
                   <div
                     key={workout.id}
-                    className={`p-3.5 rounded-2xl border transition-all ${
-                      workout.restDay
-                        ? 'bg-slate-50 border-slate-200'
-                        : 'bg-gradient-to-r from-orange-50/60 to-amber-50/50 border-orange-100'
-                    }`}
+                    className="p-3 bg-white/5 border border-white/5 rounded-2xl flex items-center justify-between text-xs"
                   >
-                    <div className="flex items-start justify-between gap-2">
-                      <div className="flex items-start gap-3 min-w-0">
-                        <span className="text-2xl shrink-0 p-1.5 bg-white rounded-xl shadow-2xs">
-                          {workoutType?.emoji || '💪'}
-                        </span>
-                        <div className="min-w-0">
-                          <div className="text-xs font-extrabold text-gray-900 truncate">
-                            {workout.name}
-                          </div>
-                          <div className="text-[10px] text-gray-500 font-medium">
-                            {new Date(workout.date).toLocaleDateString('en-US', {
-                              weekday: 'short',
-                              month: 'short',
-                              day: 'numeric',
-                            })}
-                          </div>
-
-                          {!workout.restDay && (
-                            <div className="flex items-center gap-3 mt-1.5 text-[11px] text-gray-700 font-semibold">
-                              <span className="flex items-center gap-1">
-                                <Clock className="h-3 w-3 text-blue-500" />
-                                {workout.duration}m
-                              </span>
-                              <span className="flex items-center gap-1">
-                                <Flame className="h-3 w-3 text-orange-500" />
-                                {workout.calories} kcal
-                              </span>
-                              {workout.heartRateAvg && (
-                                <span className="flex items-center gap-1">
-                                  <Heart className="h-3 w-3 text-red-500" />
-                                  {workout.heartRateAvg} bpm
-                                </span>
-                              )}
-                            </div>
-                          )}
-
-                          {workout.restDay && (
-                            <div className="flex items-center gap-1.5 mt-1 text-[11px] text-gray-500">
-                              <Coffee className="h-3.5 w-3.5" />
-                              <span>{t('workout.recoveryDay')}</span>
-                            </div>
-                          )}
-
-                          {workout.notes && (
-                            <p className="text-[10px] text-gray-500 mt-1 italic line-clamp-1">
-                              "{workout.notes}"
-                            </p>
-                          )}
+                    <div className="flex items-center gap-2.5">
+                      <span className="text-xl p-1 bg-white/10 rounded-xl">
+                        {workoutType?.emoji || '💪'}
+                      </span>
+                      <div>
+                        <div className="font-bold text-white">{workout.name}</div>
+                        <div className="text-[10px] text-slate-400">
+                          {workout.duration} min • ~{workout.calories} kcal burned
                         </div>
                       </div>
+                    </div>
 
-                      <div className="flex gap-1 shrink-0">
-                        <button
-                          onClick={() => handleEdit(workout)}
-                          className="p-1.5 hover:bg-white rounded-lg text-gray-500 hover:text-gray-900 cursor-pointer"
-                        >
-                          <Edit className="h-3.5 w-3.5" />
-                        </button>
-                        <button
-                          onClick={() => handleDelete(workout.id)}
-                          className="p-1.5 hover:bg-rose-50 rounded-lg text-rose-500 cursor-pointer"
-                        >
-                          <Trash2 className="h-3.5 w-3.5" />
-                        </button>
-                      </div>
+                    <div className="flex items-center gap-1">
+                      <button
+                        onClick={() => handleEditWorkout(workout)}
+                        className="p-1.5 text-slate-400 hover:text-white rounded-lg cursor-pointer"
+                      >
+                        <Edit size={13} />
+                      </button>
+                      <button
+                        onClick={() => handleDeleteWorkout(workout.id)}
+                        className="p-1.5 text-red-400 hover:text-red-300 rounded-lg cursor-pointer"
+                      >
+                        <Trash2 size={13} />
+                      </button>
                     </div>
                   </div>
                 );
