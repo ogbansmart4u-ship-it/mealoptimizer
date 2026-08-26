@@ -518,24 +518,39 @@ export default function LocalFoodScanner({ isOpen, onClose }: LocalFoodScannerPr
     setIsLiveCameraActive(false);
   };
 
-  // Start live in-frame camera
+  // Start live in-frame camera with multi-platform progressive fallback (Phones, Tablets & PCs)
   const startLiveCamera = async () => {
     safeHaptic("medium");
+    let stream: MediaStream | null = null;
+
+    // 1. Try back/environment camera (phones & tablets)
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: { ideal: "environment" }, width: { ideal: 1280 } },
+      stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: { ideal: "environment" } },
         audio: false,
       });
+    } catch {
+      // 2. Try default PC / Laptop webcam
+      try {
+        console.log("Falling back to standard PC webcam...");
+        stream = await navigator.mediaDevices.getUserMedia({
+          video: true,
+          audio: false,
+        });
+      } catch (err: any) {
+        console.warn("Could not start camera on this device:", err);
+      }
+    }
+
+    if (stream) {
       streamRef.current = stream;
       setIsLiveCameraActive(true);
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
         videoRef.current.play().catch(() => {});
       }
-    } catch (err: any) {
-      console.warn("Could not start live camera:", err);
-      toast.info("Opening device camera app / photo capture...");
-      document.getElementById("local-food-native-camera")?.click();
+    } else {
+      toast.error("Camera access was not granted or no camera was detected on this device. You can choose a photo with Photo Gallery!");
       setIsLiveCameraActive(false);
     }
   };
@@ -1022,16 +1037,16 @@ export default function LocalFoodScanner({ isOpen, onClose }: LocalFoodScannerPr
                 </button>
 
                 {/* Popular Cultural Test Plates Shelf */}
-                <div className="pt-2 space-y-2">
-                  <span className="text-[10.5px] uppercase font-black tracking-wider text-slate-400 block">
+                <div className="pt-2 space-y-2.5">
+                  <span className="text-[11px] uppercase font-black tracking-wider text-slate-500 dark:text-slate-400 block">
                     ⚡ Or Select a Popular Regional Dish:
                   </span>
-                  <div className="grid grid-cols-2 gap-2 text-xs">
+                  <div className="grid grid-cols-2 gap-2.5">
                     {[
-                      { name: "Jollof Rice with Chicken", calories: 520, gi: "High", emoji: "🍛", index: 0 },
-                      { name: "Pounded Yam & Egusi Soup", calories: 680, gi: "High", emoji: "🍲", index: 1 },
-                      { name: "Amala & Ewedu with Gbegiri", calories: 520, gi: "High", emoji: "🥣", index: 2 },
-                      { name: "Suya (Beef Skewers)", calories: 260, gi: "Low", emoji: "🍢", index: 3 },
+                      { name: "Jollof Rice & Chicken", calories: 520, gi: "High", emoji: "🍛", index: 0 },
+                      { name: "Pounded Yam & Egusi", calories: 680, gi: "High", emoji: "🍲", index: 1 },
+                      { name: "Amala & Ewedu Abula", calories: 520, gi: "High", emoji: "🥣", index: 2 },
+                      { name: "Beef Suya Skewers", calories: 260, gi: "Low", emoji: "🍢", index: 3 },
                     ].map((item, idx) => {
                       const dish = mockFoodDatabase["Nigeria"]?.[item.index] || mockFoodDatabase["Nigeria"]?.[0];
                       return (
@@ -1043,16 +1058,22 @@ export default function LocalFoodScanner({ isOpen, onClose }: LocalFoodScannerPr
                               loadSuggestedDish(dish);
                             }
                           }}
-                          className="p-3 bg-slate-50 dark:bg-zinc-800 hover:bg-teal-50 dark:hover:bg-zinc-700/80 border border-slate-200 dark:border-zinc-700 rounded-2xl text-left transition-all flex flex-col justify-between gap-1 cursor-pointer shadow-2xs group active:scale-95"
+                          className="p-3 bg-slate-50 dark:bg-zinc-800 hover:bg-teal-50 dark:hover:bg-zinc-700/80 border border-slate-200 dark:border-zinc-700 rounded-2xl text-left transition-all flex flex-col justify-between min-h-[96px] cursor-pointer shadow-2xs group active:scale-95"
                         >
-                          <div className="flex items-center justify-between">
-                            <span className="text-lg">{item.emoji}</span>
-                            <span className={`text-[9px] font-black px-1.5 py-0.2 rounded-full ${item.gi === "Low" ? "bg-emerald-100 text-emerald-800" : "bg-red-100 text-red-800"}`}>
+                          <div className="flex items-center justify-between w-full">
+                            <span className="text-xl">{item.emoji}</span>
+                            <span className={`text-[9.5px] font-black px-2 py-0.5 rounded-full shrink-0 ${item.gi === "Low" ? "bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300" : "bg-red-100 text-red-800 dark:bg-red-950 dark:text-red-300"}`}>
                               {item.gi} GI
                             </span>
                           </div>
-                          <div className="font-bold text-slate-900 dark:text-white truncate mt-1">{item.name}</div>
-                          <div className="text-[10px] text-slate-500 font-medium">~{item.calories} kcal</div>
+                          <div className="my-1.5 flex-1 flex items-center">
+                            <div className="text-[12px] font-extrabold text-slate-900 dark:text-white leading-tight break-words line-clamp-2">
+                              {item.name}
+                            </div>
+                          </div>
+                          <div className="text-[10.5px] text-slate-500 dark:text-slate-400 font-semibold">
+                            ~{item.calories} kcal
+                          </div>
                         </button>
                       );
                     })}
@@ -1179,10 +1200,16 @@ export default function LocalFoodScanner({ isOpen, onClose }: LocalFoodScannerPr
 
             {/* Tabs */}
             <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-              <TabsList className="grid w-full grid-cols-3 mb-6">
-                <TabsTrigger value="traditional">Traditional</TabsTrigger>
-                <TabsTrigger value="engineer">Engineer's Tweak</TabsTrigger>
-                <TabsTrigger value="macros">Macro Breakdown</TabsTrigger>
+              <TabsList className="grid w-full grid-cols-3 mb-5 p-1 bg-slate-100 dark:bg-zinc-800/80 rounded-2xl h-auto gap-1">
+                <TabsTrigger value="traditional" className="py-2 text-[11px] sm:text-xs font-bold rounded-xl truncate">
+                  Traditional
+                </TabsTrigger>
+                <TabsTrigger value="engineer" className="py-2 text-[11px] sm:text-xs font-bold rounded-xl truncate">
+                  Smart Swaps
+                </TabsTrigger>
+                <TabsTrigger value="macros" className="py-2 text-[11px] sm:text-xs font-bold rounded-xl truncate">
+                  Macros &amp; GI
+                </TabsTrigger>
               </TabsList>
 
               {/* Traditional Prep Tab */}
