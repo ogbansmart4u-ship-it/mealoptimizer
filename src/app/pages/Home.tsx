@@ -1505,8 +1505,9 @@ export default function Home() {
       <SmartVideoConcierge
         isOpen={showConciergeModal}
         onClose={() => setShowConciergeModal(false)}
-        onOpenScanner={() => setShowCamera(true)}
-        onOpenWhatsApp={() => setShowWhatsAppDialog(true)}
+        onOpenScanner={() => setShowCameraCapture(true)}
+        onOpenWhatsApp={() => setShowWhatsAppModal(true)}
+        onOpenHealthSetup={() => setShowHealthWizard(true)}
       />
     </div>
   );

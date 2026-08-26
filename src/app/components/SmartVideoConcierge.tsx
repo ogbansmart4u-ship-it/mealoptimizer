@@ -22,22 +22,32 @@ import {
   HeartPulse,
   Flame,
   CheckCircle,
+  UserCheck,
+  Dna,
+  Zap,
+  Target,
 } from "lucide-react";
 import { useNavigate } from "react-router";
 import { useUser } from "../contexts/UserContext";
 import { triggerHaptic } from "../utils/celebration";
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from "./ui/dialog";
 import { toast } from "sonner";
+import { speakWithSarah, stopSarahSpeech } from "../services/voiceService";
 
 interface SmartVideoConciergeProps {
   isOpen: boolean;
   onClose: () => void;
   onOpenScanner?: () => void;
   onOpenWhatsApp?: () => void;
+  onOpenHealthSetup?: () => void;
 }
 
 // Preset Clinical & African Nutrition Knowledge Base for instant conversational answers
 const CLINICAL_KNOWLEDGE_BASE: Record<string, string> = {
+  profile_importance:
+    "Calibrating your Health Profile is the single most important step in MealOptimiza! When you enter your age, biological sex, current weight, height, and medical conditions (like Diabetes, Hypertension, or PCOS), our clinical AI fine-tunes your daily calorie targets, calculates your basal metabolic rate, and activates customized Food-Drug Safety Shields. Without your profile, recommendations remain generic—with it, every meal plan is 100% tailored to your unique body chemistry!",
+  app_superpowers:
+    "MealOptimiza does 4 transformative things for your health: 1) AI Cultural Food Scanning: Snap any African dish to analyze calories, carbs, and glycemic spike ratings in seconds. 2) Glycemic Spike Shields: Enjoy traditional swallows and soups safely without blood sugar spikes or blood pressure surges. 3) Intermittent Fasting & Autophagy Clock: Track fat burning and cellular repair. 4) Certified Doctor Visit PDF Reports: Generate 14-day dossiers with eA1c curves to share with your physician!",
   swallow:
     "To enjoy swallow with diabetes or insulin resistance: 1) Choose high-fiber, resistant-starch swallows like Unripe Plantain flour, Oat swallow, or Amala over pounded yam. 2) Pair with slimy viscous soups like Ewedu or Okra—their soluble mucilage forms a gel matrix in your gut that slows glucose absorption by up to 38%. 3) Always eat 3-4 spoonfuls of soup or vegetable first before your first swallow bite!",
   bp:
@@ -46,20 +56,14 @@ const CLINICAL_KNOWLEDGE_BASE: Record<string, string> = {
     "Flavonoids in unsweetened Zobo (hibiscus calyx) have mild ACE-inhibiting properties that naturally support blood pressure. However, if you take prescription blood pressure medication (like Lisinopril, Amlodipine, or Losartan), drink Zobo in moderation and separate it by at least 2 hours to avoid hypotensive dizziness. Always sweeten with ginger, clove, or pineapple skin rather than refined sugar.",
   fasting:
     "To break an intermittent fast without causing an acute glycemic surge: Step 1: Drink warm lemon water or a small cup of light pepper soup (15 mins). Step 2: Eat a protein/fiber cushion such as boiled eggs, avocado, or garden egg. Step 3: Consume your main meal with complex carbohydrates (beans, boiled plantain). This protects your pancreas and prevents digestive fatigue.",
-  cholesterol:
-    "Egusi (melon seed) is rich in healthy polyunsaturated fats and plant phytosterols that actually support heart health! The key is preparation: avoid bleaching the palm oil (which generates oxidized trans-fats), add plenty of chopped bitter leaf or spinach, and pair with lean fish or chicken instead of fatty red meat.",
 };
-
-const DEFAULT_INTRO_SPEECH =
-  "Welcome to MealOptimiza! I am Sarah, your Nutrition Assistant. Whether you're managing blood sugar, blood pressure, or enjoying delicious African meals, I'm here to ensure you eat well without giving up your favorite foods. You can ask me any nutrition question or tap an option below!";
-
-import { speakWithSarah, stopSarahSpeech } from "../services/voiceService";
 
 export default function SmartVideoConcierge({
   isOpen,
   onClose,
   onOpenScanner,
   onOpenWhatsApp,
+  onOpenHealthSetup,
 }: SmartVideoConciergeProps) {
   const navigate = useNavigate();
   const { profile } = useUser();
@@ -72,13 +76,17 @@ export default function SmartVideoConcierge({
   const [isThinking, setIsThinking] = useState(false);
   const [isListening, setIsListening] = useState(false);
 
+  const isProfileComplete = Boolean(
+    profile?.age && profile?.weight && (profile?.medicalCondition || (profile?.conditions && profile.conditions.length > 0))
+  );
+
   const subtitles: Record<string, string> = {
-    en: `Welcome to MealOptimiza! I am Sarah, your Nutrition Assistant. Whether you're tracking blood sugar, blood pressure, or enjoying authentic African meals, I'm here to ensure you eat well without giving up your favorite foods. Ask me any nutrition question or tap below!`,
-    pcm: `Welcome to MealOptimiza! I be Sarah, your Nutrition Assistant. Whether you dey check blood sugar, BP, or enjoy better African food, I dey here to help you chop well and stay strong. Ask me any question or choose below!`,
-    yo: `Ẹ kú àbọ̀ sí MealOptimiza! Èmi ni Sarah, Olùrànlọ́wọ́ Oúnjẹ yín. Bóyá ẹ fẹ́ ṣàyẹ̀wò ìwọ̀n ṣúgà, ẹ̀jẹ̀ ríru, tàbí gbádùn oúnjẹ ilẹ̀ Áfíríkà, mo wà níhìn-ín láti ràn yín lọ́wog!`,
-    ig: `Nnọọ na MealOptimiza! Abụ m Sarah, Onye na-enyere gị aka na Nri na-edozi ahụ. Ma ị na-elele shuga dị n'ọbara, ọbara mgbali elu, ma ọ bụ rie nri ọdịnala Africa, anọ m ebe a iji nyere gị aka.`,
-    ha: `Barka da zuwa MealOptimiza! Ni ce Sarah, Mataimakiyar ku kan Abinci. Ko kuna duba sukarin jini, hawan jini, ko jin daɗin abincin gargajiya na Afirka, ina nan don taimaka muku.`,
-    fr: `Bienvenue sur MealOptimiza ! Je suis Sarah, votre Assistante en Nutrition. Que vous surveilliez votre glycémie, votre tension ou savouriez des plats africains, je suis là pour vous aider !`,
+    en: `Welcome to MealOptimiza! I am Sarah, your Nutrition Assistant. Here is what I can do for you: Snap photos of your African meals for instant AI calorie & glycemic spike analysis, protect your blood sugar & blood pressure without giving up cultural delicacies, and track your fasting! Most importantly, please take a moment to calibrate your Health Profile below—when you share your age, weight, and health conditions, our AI tailors every recommendation with 100% clinical precision to your body!`,
+    pcm: `Welcome to MealOptimiza! I be Sarah, your Nutrition Assistant. See wetin this app fit do for you: Snap your food to check calories and sugar spikes, enjoy your favorite swallow without fear of high BP or diabetes, and download report for your doctor. Make sure say you fill your Health Profile below—na so we fit give you correct advice tailored to your body!`,
+    yo: `Ẹ kú àbọ̀ sí MealOptimiza! Èmi ni Sarah, Olùrànlọ́wọ́ Oúnjẹ yín. Ẹ ya fọ́tò oúnjẹ yín fún àtúnyẹ̀wò kíákíá, tọ́jú ìwọ̀n ṣúgà àti ẹ̀jẹ̀ ríru yín. Jọ̀wọ́ kọ àwọn ẹ̀kúnrẹ́rẹ́ ìlera yín sínú Health Profile kí a lè fún yín ní ìmọ̀ràn tó bá ara yín mu dáradára!`,
+    ig: `Nnọọ na MealOptimiza! Abụ m Sarah, Onye na-enyere gị aka na Nri. Se foto nri gị maka nyocha shuga na kalori ngwa ngwa, ma chebe ahụike gị. Biko mejupụta Health Profile gị ka anyị wee hazie ndụmọdụ dabara ahụ gị kpọmkwem!`,
+    ha: `Barka da zuwa MealOptimiza! Ni ce Sarah, Mataimakiyar ku kan Abinci. Ɗauki hoton abincinku don sanin sukarin jini da kalori, ku kiyaye lafiyarku. Da fatan za ku cika Bayanan Lafiyarku a ƙasa don samun keɓantaccen shiri na musamman!`,
+    fr: `Bienvenue sur MealOptimiza ! Je suis Sarah, votre Assistante en Nutrition. Prenez des photos de vos plats pour une analyse glycémique instantanée et protégez votre santé métabolique. Complétez votre profil de santé ci-dessous pour des recommandations 100% personnalisées !`,
   };
 
   // Speak function with ElevenLabs Voice ID & WebSpeech Fallback
@@ -109,9 +117,7 @@ export default function SmartVideoConcierge({
   const toggleMute = () => {
     triggerHaptic("light");
     if (!isMuted) {
-      if (typeof window !== "undefined" && "speechSynthesis" in window) {
-        window.speechSynthesis.cancel();
-      }
+      stopSarahSpeech();
       setIsSpeaking(false);
       setIsMuted(true);
     } else {
@@ -129,7 +135,11 @@ export default function SmartVideoConcierge({
     const q = query.toLowerCase();
     let answer = "";
 
-    if (q.includes("swallow") || q.includes("pounded yam") || q.includes("garri") || q.includes("eba") || q.includes("diabetes") || q.includes("sugar")) {
+    if (q.includes("profile") || q.includes("demographic") || q.includes("importance") || q.includes("why fill") || q.includes("setup")) {
+      answer = CLINICAL_KNOWLEDGE_BASE.profile_importance;
+    } else if (q.includes("app") || q.includes("feature") || q.includes("can do") || q.includes("what can") || q.includes("superpower")) {
+      answer = CLINICAL_KNOWLEDGE_BASE.app_superpowers;
+    } else if (q.includes("swallow") || q.includes("pounded yam") || q.includes("garri") || q.includes("eba") || q.includes("diabetes") || q.includes("sugar")) {
       answer = CLINICAL_KNOWLEDGE_BASE.swallow;
     } else if (q.includes("bp") || q.includes("blood pressure") || q.includes("hypertension") || q.includes("salt") || q.includes("sodium")) {
       answer = CLINICAL_KNOWLEDGE_BASE.bp;
@@ -137,10 +147,8 @@ export default function SmartVideoConcierge({
       answer = CLINICAL_KNOWLEDGE_BASE.zobo;
     } else if (q.includes("fast") || q.includes("fasting") || q.includes("autophagy") || q.includes("break")) {
       answer = CLINICAL_KNOWLEDGE_BASE.fasting;
-    } else if (q.includes("egusi") || q.includes("cholesterol") || q.includes("oil") || q.includes("fat") || q.includes("soup")) {
-      answer = CLINICAL_KNOWLEDGE_BASE.cholesterol;
     } else {
-      answer = `Great question regarding ${query}! For optimal metabolic wellness on African dishes, pair every carbohydrate with fiber-rich leafy greens (Ewedu/Okra/Ugu) and lean protein. This blunts glucose spikes, supports healthy blood pressure, and keeps you energized!`;
+      answer = `Great question regarding ${query}! For optimal personalized accuracy, ensure your Health Profile is calibrated. When paired with high-fiber African vegetable soups (Ewedu/Okra/Ugu) and unrefined starches, your body maintains steady blood sugar and balanced vitality!`;
     }
 
     setTimeout(() => {
@@ -184,6 +192,15 @@ export default function SmartVideoConcierge({
     };
 
     recognition.start();
+  };
+
+  const handleStartHealthProfileSetup = () => {
+    onClose();
+    if (onOpenHealthSetup) {
+      onOpenHealthSetup();
+    } else {
+      navigate("/profile");
+    }
   };
 
   return (
@@ -254,14 +271,14 @@ export default function SmartVideoConcierge({
               </div>
 
               <span className="text-[11px] font-black text-amber-300 uppercase tracking-widest block mb-0.5">
-                {isThinking ? "Sarah is Analyzing Nutrition Data..." : "Sarah · Clinical Food Guide"}
+                {isThinking ? "Sarah is Analyzing Nutrition Data..." : "Sarah · Clinical Food & AI Guide"}
               </span>
 
               {/* Subtitle / Dialogue Bubble */}
               <div className="bg-black/75 backdrop-blur-md text-teal-200 text-xs font-medium p-3.5 rounded-2xl border border-white/10 shadow-lg text-left leading-relaxed mt-2 max-w-sm">
                 <p className="text-white font-bold mb-1 flex items-center gap-1.5">
                   <Sparkles size={13} className="text-amber-400" />
-                  <span>{aiResponse ? "Sarah's Clinical Recommendation:" : "Sarah's Welcome Brief:"}</span>
+                  <span>{aiResponse ? "Sarah's Clinical Recommendation:" : "Sarah's Guide & Welcome Brief:"}</span>
                 </p>
                 <p className="text-[11.5px] text-teal-100/90 leading-relaxed">
                   {aiResponse || subtitles[selectedLanguage]}
@@ -298,6 +315,42 @@ export default function SmartVideoConcierge({
             </div>
           </div>
 
+          {/* 🎯 THE IMPORTANCE OF CALIBRATING HEALTH PROFILE (CRITICAL ACTION BANNER) */}
+          <div className="bg-gradient-to-r from-teal-50 via-cyan-50 to-emerald-50 dark:from-teal-950/70 dark:via-slate-900 dark:to-emerald-950/70 rounded-2xl p-3.5 border-2 border-teal-300 dark:border-teal-700 shadow-sm space-y-2">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <div className="p-1.5 bg-[#1f7a8c] text-white rounded-lg shadow-2xs">
+                  <Target size={15} />
+                </div>
+                <div>
+                  <h4 className="text-xs font-black text-slate-900 dark:text-white leading-tight">
+                    Calibrate Your Health Profile 🎯
+                  </h4>
+                  <p className="text-[10.5px] text-teal-800 dark:text-teal-300 font-medium">
+                    Unlock 100% accurate, personalized nutrition &amp; safety shields
+                  </p>
+                </div>
+              </div>
+
+              {isProfileComplete ? (
+                <span className="text-[10px] font-black bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 px-2 py-0.5 rounded-full border border-emerald-300">
+                  Calibrated ✅
+                </span>
+              ) : (
+                <button
+                  onClick={handleStartHealthProfileSetup}
+                  className="bg-[#1f7a8c] hover:bg-[#0d9488] text-white text-[10.5px] font-black px-3 py-1.5 rounded-xl shadow-xs cursor-pointer transition-all active:scale-95 shrink-0"
+                >
+                  Setup Now ⚡
+                </button>
+              )}
+            </div>
+
+            <p className="text-[11px] text-slate-600 dark:text-slate-300 leading-relaxed font-medium">
+              "By entering your <strong>Age, Weight, Baseline BP, &amp; Medical Conditions</strong>, Sarah and Avo calculate your exact metabolic rate and personalize every carbohydrate limit to your body!"
+            </p>
+          </div>
+
           {/* ⚡ 1-Tap Quick Clinical Nutrition Question Chips */}
           <div className="space-y-2">
             <span className="text-[10.5px] uppercase font-black tracking-wider text-slate-400 block">
@@ -305,6 +358,8 @@ export default function SmartVideoConcierge({
             </span>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
               {[
+                { q: "Why must I fill my Health Profile?", key: "profile", icon: Target },
+                { q: "What can MealOptimiza do for me?", key: "features", icon: Zap },
                 { q: "How to eat Swallow with Diabetes?", key: "swallow", icon: Activity },
                 { q: "Best Soups for High Blood Pressure?", key: "bp", icon: HeartPulse },
                 { q: "Can I drink Zobo with BP medicine?", key: "zobo", icon: Sparkles },
