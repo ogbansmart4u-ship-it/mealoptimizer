@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">MealOptimiza</string>
+    <string name="title_activity_main">MealOptimiza</string>
+    <string name="package_name">com.mealoptimiza.app</string>
+    <string name="custom_url_scheme">com.mealoptimiza.app</string>
+</resources>
