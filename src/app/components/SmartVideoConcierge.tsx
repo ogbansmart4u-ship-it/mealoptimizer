@@ -33,6 +33,7 @@ import { triggerHaptic } from "../utils/celebration";
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from "./ui/dialog";
 import { toast } from "sonner";
 import { speakWithSarah, stopSarahSpeech } from "../services/voiceService";
+import SarahAvatar, { VisemeShape } from "./SarahAvatar";
 
 interface SmartVideoConciergeProps {
   isOpen: boolean;
@@ -69,6 +70,7 @@ export default function SmartVideoConcierge({
   const { profile } = useUser();
 
   const [isSpeaking, setIsSpeaking] = useState(false);
+  const [currentViseme, setCurrentViseme] = useState<VisemeShape>("closed");
   const [isMuted, setIsMuted] = useState(false);
   const [selectedLanguage, setSelectedLanguage] = useState<"en" | "pcm" | "yo" | "ig" | "ha" | "fr">("en");
   const [userQuery, setUserQuery] = useState("");
@@ -89,14 +91,21 @@ export default function SmartVideoConcierge({
     fr: `Bienvenue sur MealOptimiza ! Je suis Sarah, votre Assistante en Nutrition. Prenez des photos de vos plats pour une analyse glycémique instantanée et protégez votre santé métabolique. Complétez votre profil de santé ci-dessous pour des recommandations 100% personnalisées !`,
   };
 
-  // Speak function with ElevenLabs Voice ID & WebSpeech Fallback
+  // Speak function with ElevenLabs Voice ID & Punctuation-Aware WebSpeech Fallback
   const speakText = (text: string) => {
     if (isMuted) return;
     speakWithSarah(text, {
       voiceId: "YIgPmt6aTfZFf6mjP9RC",
       onStart: () => setIsSpeaking(true),
-      onEnd: () => setIsSpeaking(false),
-      onError: () => setIsSpeaking(false),
+      onEnd: () => {
+        setIsSpeaking(false);
+        setCurrentViseme("closed");
+      },
+      onError: () => {
+        setIsSpeaking(false);
+        setCurrentViseme("closed");
+      },
+      onVisemeChange: (viseme) => setCurrentViseme(viseme),
     });
   };
 
@@ -251,21 +260,14 @@ export default function SmartVideoConcierge({
         <div className="overflow-y-auto p-4 space-y-4 flex-1">
           {/* Animated Speaking Stage / Waveform Stage */}
           <div className="relative bg-gradient-to-b from-slate-950 via-slate-900 to-teal-950 rounded-3xl p-5 border border-teal-500/20 text-center shadow-inner overflow-hidden">
-            {/* Audio Waves / Ripple */}
+            {/* Audio Waves / Ripple & Live Lip-Sync Sarah Avatar */}
             <div className="relative z-10 flex flex-col items-center justify-center">
               <div className="relative mb-2">
-                <div
-                  className={`w-16 h-16 rounded-full bg-gradient-to-tr from-[#1f7a8c] to-emerald-400 p-1 shadow-lg flex items-center justify-center ${
-                    isSpeaking ? "scale-105 ring-4 ring-emerald-400/40 animate-pulse" : ""
-                  } transition-all duration-300`}
-                >
-                  <div className="w-full h-full rounded-full bg-slate-900 flex items-center justify-center text-3xl">
-                    👩🏾‍💼
-                  </div>
-                </div>
+                <SarahAvatar isSpeaking={isSpeaking} viseme={currentViseme} size={150} />
                 {isSpeaking && (
-                  <span className="absolute -top-1 -right-1 bg-emerald-500 text-white text-[9px] font-black px-1.5 py-0.2 rounded-full animate-pulse shadow-xs">
-                    Speaking
+                  <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-950 text-[10px] font-black px-2.5 py-0.5 rounded-full animate-pulse shadow-md flex items-center gap-1 border border-emerald-300/40">
+                    <span className="h-1.5 w-1.5 rounded-full bg-slate-950 animate-ping" />
+                    <span>Speaking</span>
                   </span>
                 )}
               </div>
