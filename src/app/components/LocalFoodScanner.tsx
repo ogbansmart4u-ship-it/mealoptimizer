@@ -495,6 +495,7 @@ export default function LocalFoodScanner({ isOpen, onClose }: LocalFoodScannerPr
   const [isSaving, setIsSaving] = useState(false);
   const [showFixModal, setShowFixModal] = useState(false);
   const [showViralShareModal, setShowViralShareModal] = useState(false);
+  const [portionMultiplier, setPortionMultiplier] = useState(1);
   const [conditions, setConditions] = useState<{ name: string; severity?: string }[]>([]);
 
   // Load the user's medical conditions so every result gets a personal verdict.
@@ -539,15 +540,20 @@ export default function LocalFoodScanner({ isOpen, onClose }: LocalFoodScannerPr
     const gl = foodData.macroBreakdown.glycemicLoad;
     const bloodSugarImpact = gl === "Low" ? "low" : gl === "High" ? "high" : "medium";
 
+    const scaledCalories = Math.round(foodData.macroBreakdown.calories * portionMultiplier);
+    const scaledProtein = Math.round(foodData.macroBreakdown.protein * portionMultiplier);
+    const scaledCarbs = Math.round(foodData.macroBreakdown.carbs * portionMultiplier);
+    const scaledFats = Math.round(foodData.macroBreakdown.fats * portionMultiplier);
+
     const logData = {
       date: now.toISOString().split("T")[0],
       time: now.toTimeString().slice(0, 5),
       mealType,
-      foodName: foodData.dishName,
-      calories: foodData.macroBreakdown.calories,
-      protein: foodData.macroBreakdown.protein,
-      carbs: foodData.macroBreakdown.carbs,
-      fats: foodData.macroBreakdown.fats,
+      foodName: portionMultiplier === 1 ? foodData.dishName : `${foodData.dishName} (${portionMultiplier}x portion)`,
+      calories: scaledCalories,
+      protein: scaledProtein,
+      carbs: scaledCarbs,
+      fats: scaledFats,
       energyRating: 3,
       digestiveComfort: 3,
       bloodSugarImpact,
@@ -709,7 +715,7 @@ export default function LocalFoodScanner({ isOpen, onClose }: LocalFoodScannerPr
             <FoodScanningSkeleton imageSrc={capturedImage} />
           </div>
         ) : capturedImage && !foodData ? (
-          /* Step 2 — preview + Analyze button */
+          /* Step 2 — preview + Interactive Modifiers + Analyze button */
           <div className="p-5 sm:p-6 flex flex-col items-center gap-4">
             <div className="w-full flex items-center justify-between">
               <span className="text-xs font-bold text-gray-700 dark:text-zinc-300">Plate Photo Ready</span>
@@ -717,19 +723,63 @@ export default function LocalFoodScanner({ isOpen, onClose }: LocalFoodScannerPr
                 AI Vision Ready
               </span>
             </div>
-            <div className="relative w-full rounded-2xl overflow-hidden shadow-md border-2 border-teal-200 dark:border-zinc-700">
+
+            <div className="relative w-full rounded-3xl overflow-hidden shadow-lg border-2 border-teal-200 dark:border-zinc-700">
               <img
                 src={capturedImage}
                 alt="Food to analyse"
                 className="w-full max-h-64 object-cover"
               />
-              <div className="absolute top-2 right-2 px-2.5 py-1 bg-black/70 backdrop-blur-md rounded-full text-white text-[10px] font-bold">
-                Tap Scan Below
+              <div className="absolute top-2.5 right-2.5 px-3 py-1 bg-black/75 backdrop-blur-md rounded-full text-white text-[10px] font-black tracking-wider flex items-center gap-1.5 shadow-md">
+                <Sparkles size={12} className="text-amber-400" />
+                <span>Ready to Scan</span>
               </div>
             </div>
+
+            {/* Interactive Portion Multiplier */}
+            <div className="w-full bg-slate-50 dark:bg-zinc-800/80 rounded-2xl p-3 border border-slate-200/80 dark:border-zinc-700 flex items-center justify-between">
+              <div>
+                <span className="text-xs font-bold text-slate-800 dark:text-slate-200 block leading-tight">Portion Size:</span>
+                <span className="text-[10px] text-slate-500 font-medium">Estimated meal volume</span>
+              </div>
+              <div className="flex items-center gap-1">
+                {[
+                  { label: "0.5x", val: 0.5 },
+                  { label: "1.0x", val: 1.0 },
+                  { label: "1.5x", val: 1.5 },
+                  { label: "2.0x", val: 2.0 },
+                ].map((item) => (
+                  <button
+                    key={item.val}
+                    type="button"
+                    onClick={() => {
+                      triggerHaptic("light");
+                      setPortionMultiplier(item.val);
+                    }}
+                    className={`text-xs font-black px-2.5 py-1 rounded-xl cursor-pointer transition-all ${
+                      portionMultiplier === item.val
+                        ? "bg-[#1f7a8c] text-white shadow-xs"
+                        : "bg-white dark:bg-zinc-700 hover:bg-slate-100 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-zinc-600"
+                    }`}
+                  >
+                    {item.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Avo Scribe Active Note Badge */}
+            <div className="w-full p-2.5 bg-teal-50/70 dark:bg-teal-950/40 border border-teal-200/80 dark:border-teal-800/60 rounded-2xl text-[11px] text-teal-900 dark:text-teal-200 flex items-center gap-2">
+              <span className="text-sm">🥑</span>
+              <span className="leading-tight font-medium">
+                <strong>Avo AI:</strong> "I'll detect regional carbs, saturated palm oil ratios, and compute your personalized Glycemic Spike Shield!"
+              </span>
+            </div>
+
             {analyzeError && (
               <p className="text-red-600 text-xs text-center bg-red-50 dark:bg-red-950/40 rounded-xl px-4 py-2.5 w-full border border-red-200 dark:border-red-900">{analyzeError}</p>
             )}
+
             <button
               onClick={handleAnalyze}
               className="w-full bg-gradient-to-r from-[#1f7a8c] via-[#2a9d8f] to-[#4ecdc4] text-white py-4 rounded-2xl text-base font-extrabold shadow-lg hover:shadow-xl hover:scale-[1.01] active:scale-[0.98] transition-all flex items-center justify-center gap-2 cursor-pointer"
@@ -737,6 +787,7 @@ export default function LocalFoodScanner({ isOpen, onClose }: LocalFoodScannerPr
               <Sparkles className="h-5 w-5 animate-pulse" />
               <span>Scan Plate &amp; Compute Spike Shield</span>
             </button>
+
             <button
               onClick={() => { setCapturedImage(null); setAnalyzeError(null); }}
               className="w-full bg-gray-100 dark:bg-zinc-800 text-gray-700 dark:text-zinc-300 py-2.5 rounded-2xl font-bold text-xs hover:bg-gray-200 dark:hover:bg-zinc-700 transition-colors cursor-pointer"
@@ -745,42 +796,113 @@ export default function LocalFoodScanner({ isOpen, onClose }: LocalFoodScannerPr
             </button>
           </div>
         ) : !foodData ? (
-          /* Step 1 — upload / camera picker */
-          <div className="p-6">
-            <p className="text-gray-600 mb-6 text-center">
-              Scan or upload a photo of your meal to get region-specific nutritional engineering
-            </p>
+          /* Step 1 — Unified 10X Scanner Launchpad */
+          <div className="p-5 sm:p-6 space-y-4">
+            <div className="text-center space-y-1">
+              <h3 className="text-base font-black text-slate-900 dark:text-white">
+                Snap or Upload Any Cultural Dish 🍲
+              </h3>
+              <p className="text-xs text-gray-600 dark:text-gray-400 max-w-sm mx-auto leading-relaxed">
+                Instant biochemical macro analysis, glycemic load ranking, and authentic West African ingredient swaps!
+              </p>
+            </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            {/* Direct Action Launch Grid (No Nested Popups!) */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {/* Option 1: Native Phone Camera */}
               <button
-                onClick={() => setShowCamera(true)}
-                className="bg-gradient-to-br from-[#1f7a8c] to-[#4ecdc4] text-white rounded-2xl p-8 flex flex-col items-center gap-3 hover:scale-105 transition-transform shadow-lg"
+                onClick={() => document.getElementById("local-food-native-camera")?.click()}
+                className="bg-gradient-to-br from-[#1f7a8c] to-[#0d9488] hover:from-[#1a6877] hover:to-[#0b7c72] text-white rounded-3xl p-5 text-left shadow-lg hover:shadow-xl transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer flex items-center justify-between group"
               >
-                <Camera className="h-12 w-12" />
-                <span className="font-semibold">Take Photo</span>
+                <div className="flex items-center gap-3.5">
+                  <div className="p-3 bg-white/20 rounded-2xl group-hover:scale-110 transition-transform">
+                    <Camera className="h-6 w-6 text-white" />
+                  </div>
+                  <div>
+                    <div className="font-black text-sm text-white leading-tight">Take Photo 📸</div>
+                    <div className="text-[11px] text-teal-100 mt-0.5">High-res device camera</div>
+                  </div>
+                </div>
+                <ChevronRight size={18} className="text-white/70 group-hover:translate-x-1 transition-transform" />
               </button>
 
+              {/* Option 2: Gallery Upload */}
               <button
-                onClick={() => document.getElementById('local-food-upload')?.click()}
-                className="bg-gradient-to-br from-[#2a9d8f] to-[#4ecdc4] text-white rounded-2xl p-8 flex flex-col items-center gap-3 hover:scale-105 transition-transform shadow-lg"
+                onClick={() => document.getElementById("local-food-gallery-upload")?.click()}
+                className="bg-gradient-to-br from-[#2a9d8f] to-[#4ecdc4] hover:from-[#248277] hover:to-[#42b3ab] text-white rounded-3xl p-5 text-left shadow-lg hover:shadow-xl transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer flex items-center justify-between group"
               >
-                <Upload className="h-12 w-12" />
-                <span className="font-semibold">Upload Photo</span>
+                <div className="flex items-center gap-3.5">
+                  <div className="p-3 bg-white/20 rounded-2xl group-hover:scale-110 transition-transform">
+                    <Upload className="h-6 w-6 text-white" />
+                  </div>
+                  <div>
+                    <div className="font-black text-sm text-white leading-tight">Photo Gallery 🖼️</div>
+                    <div className="text-[11px] text-teal-100 mt-0.5">Upload existing plate</div>
+                  </div>
+                </div>
+                <ChevronRight size={18} className="text-white/70 group-hover:translate-x-1 transition-transform" />
               </button>
             </div>
 
+            {/* Option 3: Barcode Scanner Switcher Button */}
             <button
               onClick={() => { onClose(); navigate("/scan-barcode"); }}
-              className="mt-4 w-full bg-white border-2 border-[#1f7a8c] text-[#1f7a8c] rounded-2xl p-4 flex items-center justify-center gap-3 hover:bg-[#1f7a8c]/5 transition-colors font-semibold"
+              className="w-full bg-slate-50 dark:bg-zinc-800/60 hover:bg-teal-50 dark:hover:bg-zinc-800 border-2 border-dashed border-teal-300 dark:border-zinc-700 hover:border-teal-500 rounded-2xl p-3.5 flex items-center justify-between transition-all cursor-pointer group shadow-2xs"
             >
-              <ScanBarcode className="h-6 w-6" />
-              <span>Scan a Barcode instead</span>
+              <div className="flex items-center gap-3">
+                <div className="p-2 bg-teal-100 dark:bg-teal-950 text-teal-800 dark:text-teal-300 rounded-xl group-hover:scale-105 transition-transform">
+                  <ScanBarcode className="h-5 w-5" />
+                </div>
+                <div className="text-left">
+                  <div className="text-xs font-black text-slate-900 dark:text-white">Scan Packaged Food Barcode 🏷️</div>
+                  <div className="text-[10.5px] text-slate-500">Noodles, canned fish, milk, cereals &amp; beverages</div>
+                </div>
+              </div>
+              <ChevronRight size={16} className="text-slate-400 group-hover:text-teal-600" />
             </button>
 
+            {/* Popular Cultural Test Plates Shelf */}
+            <div className="pt-2 space-y-2">
+              <span className="text-[10.5px] uppercase font-black tracking-wider text-slate-400 block">
+                ⚡ Or Select a Popular Regional Dish:
+              </span>
+              <div className="grid grid-cols-2 gap-2 text-xs">
+                {[
+                  { name: "Jollof Rice & Chicken", calories: 520, gi: "High", emoji: "🍛" },
+                  { name: "Pounded Yam & Egusi", calories: 680, gi: "High", emoji: "🍲" },
+                  { name: "Amala & Ewedu Abula", calories: 520, gi: "High", emoji: "🥣" },
+                  { name: "Beef Suya Skewers", calories: 260, gi: "Low", emoji: "🍢" },
+                ].map((item, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => {
+                      const match = mockFoodDatabase["Nigeria"]?.find((d) => d.dishName.toLowerCase().includes(item.name.toLowerCase().split(" ")[0]));
+                      if (match) {
+                        setFoodData(match);
+                        celebrate("Dish Loaded! 🍲", match.dishName, { confettiStyle: "burst", hapticPattern: "success" });
+                      }
+                    }}
+                    className="p-3 bg-slate-50 dark:bg-zinc-800 hover:bg-teal-50 dark:hover:bg-zinc-700/80 border border-slate-200 dark:border-zinc-700 rounded-2xl text-left transition-all flex flex-col justify-between gap-1 cursor-pointer shadow-2xs group"
+                  >
+                    <div className="flex items-center justify-between">
+                      <span className="text-lg">{item.emoji}</span>
+                      <span className={`text-[9px] font-black px-1.5 py-0.2 rounded-full ${item.gi === "Low" ? "bg-emerald-100 text-emerald-800" : "bg-red-100 text-red-800"}`}>
+                        {item.gi} GI
+                      </span>
+                    </div>
+                    <div className="font-bold text-slate-900 dark:text-white truncate mt-1">{item.name}</div>
+                    <div className="text-[10px] text-slate-500 font-medium">~{item.calories} kcal</div>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Hidden Native File Inputs for Instant Capture */}
             <input
-              id="local-food-upload"
+              id="local-food-native-camera"
               type="file"
               accept="image/*"
+              capture="environment"
               className="hidden"
               onChange={(e) => {
                 const file = e.target.files?.[0];
@@ -792,12 +914,19 @@ export default function LocalFoodScanner({ isOpen, onClose }: LocalFoodScannerPr
               }}
             />
 
-            <CameraCapture
-              isOpen={showCamera}
-              onClose={() => setShowCamera(false)}
-              onCapture={(imageData) => handleImageCaptured(imageData)}
-              mode="food"
-              title="Scan Local Food"
+            <input
+              id="local-food-gallery-upload"
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                if (file) {
+                  const reader = new FileReader();
+                  reader.onloadend = () => handleImageCaptured(reader.result as string);
+                  reader.readAsDataURL(file);
+                }
+              }}
             />
           </div>
         ) : (
