@@ -1,10 +1,9 @@
-import { useState, useEffect } from "react";
-import { MapPin, Sparkles, TrendingUp, ChevronRight, X, Camera, Upload, ScanBarcode, CheckCircle2, AlertTriangle, Ban, Lightbulb, Share2 } from "lucide-react";
+import { useState, useEffect, useRef } from "react";
+import { MapPin, Sparkles, TrendingUp, ChevronRight, X, Camera, Upload, ScanBarcode, CheckCircle2, AlertTriangle, Ban, Lightbulb, Share2, ArrowLeft, RefreshCw } from "lucide-react";
 import { useNavigate } from "react-router";
 import { useLocation } from "../contexts/LocationContext";
 import { useUser } from "../contexts/UserContext";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
-import CameraCapture from "./CameraCapture";
 import FixMyPlateModal from "./FixMyPlateModal";
 import FoodScanningSkeleton from "./FoodScanningSkeleton";
 import ViralMealCardModal from "./ViralMealCardModal";
@@ -498,6 +497,95 @@ export default function LocalFoodScanner({ isOpen, onClose }: LocalFoodScannerPr
   const [portionMultiplier, setPortionMultiplier] = useState(1);
   const [conditions, setConditions] = useState<{ name: string; severity?: string }[]>([]);
 
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const streamRef = useRef<MediaStream | null>(null);
+  const [isLiveCameraActive, setIsLiveCameraActive] = useState(false);
+
+  // Stop live camera
+  const stopLiveCamera = () => {
+    if (streamRef.current) {
+      streamRef.current.getTracks().forEach((t) => t.stop());
+      streamRef.current = null;
+    }
+    setIsLiveCameraActive(false);
+  };
+
+  // Start live in-frame camera
+  const startLiveCamera = async () => {
+    triggerHaptic("medium");
+    setIsLiveCameraActive(true);
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: { ideal: "environment" } },
+        audio: false,
+      });
+      streamRef.current = stream;
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream;
+      }
+    } catch (err) {
+      console.warn("Could not start live camera:", err);
+      toast.info("Opening device photo capture...");
+      document.getElementById("local-food-native-camera")?.click();
+      setIsLiveCameraActive(false);
+    }
+  };
+
+  // Take snapshot from live video stream
+  const takeLiveSnapshot = () => {
+    if (!videoRef.current) return;
+    triggerHaptic("medium");
+    const video = videoRef.current;
+    const canvas = document.createElement("canvas");
+    canvas.width = video.videoWidth || 640;
+    canvas.height = video.videoHeight || 480;
+    const ctx = canvas.getContext("2d");
+    if (ctx) {
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+      const dataUrl = canvas.toDataURL("image/jpeg", 0.88);
+      stopLiveCamera();
+      handleImageCaptured(dataUrl);
+    }
+  };
+
+  // Cleanup camera stream when modal closes
+  useEffect(() => {
+    if (!isOpen) {
+      stopLiveCamera();
+      setCapturedImage(null);
+      setFoodData(null);
+      setAnalyzeError(null);
+    }
+    return () => {
+      stopLiveCamera();
+    };
+  }, [isOpen]);
+
+  // Load a suggested cultural dish & scroll to results
+  const loadSuggestedDish = (match: LocalFoodData) => {
+    triggerHaptic("medium");
+    stopLiveCamera();
+    setCapturedImage(null);
+    setFoodData(match);
+    setTimeout(() => {
+      scrollContainerRef.current?.scrollTo({ top: 0, behavior: "smooth" });
+    }, 50);
+    celebrate("Dish Loaded! 🍲", match.dishName, { confettiStyle: "burst", hapticPattern: "success" });
+  };
+
+  // Reset back to scanner launcher
+  const handleBackToScanner = () => {
+    triggerHaptic("light");
+    setFoodData(null);
+    setCapturedImage(null);
+    setAnalyzeError(null);
+    stopLiveCamera();
+    setTimeout(() => {
+      scrollContainerRef.current?.scrollTo({ top: 0, behavior: "smooth" });
+    }, 50);
+  };
+
   // Load the user's medical conditions so every result gets a personal verdict.
   useEffect(() => {
     if (!isOpen) return;
@@ -686,9 +774,9 @@ export default function LocalFoodScanner({ isOpen, onClose }: LocalFoodScannerPr
 
   return (
     <div className="fixed inset-0 bg-black/50 z-50 flex items-end justify-center">
-      <div className="bg-white rounded-t-3xl w-full max-w-2xl h-[90vh] overflow-y-auto">
+      <div ref={scrollContainerRef} className="bg-white rounded-t-3xl w-full max-w-2xl h-[90vh] overflow-y-auto">
         {/* Header */}
-        <div className="sticky top-0 bg-gradient-to-r from-[#1f7a8c] to-[#4ecdc4] px-6 py-4 flex items-center justify-between">
+        <div className="sticky top-0 bg-gradient-to-r from-[#1f7a8c] to-[#4ecdc4] px-6 py-4 flex items-center justify-between z-20 shadow-md">
           <div className="flex items-center gap-3">
             <div className="bg-white/20 rounded-full p-2">
               <Sparkles className="h-6 w-6 text-white" />
@@ -702,8 +790,11 @@ export default function LocalFoodScanner({ isOpen, onClose }: LocalFoodScannerPr
             </div>
           </div>
           <button
-            onClick={onClose}
-            className="p-2 hover:bg-white/20 rounded-full transition-colors"
+            onClick={() => {
+              stopLiveCamera();
+              onClose();
+            }}
+            className="p-2 hover:bg-white/20 rounded-full transition-colors cursor-pointer"
           >
             <X className="h-6 w-6 text-white" />
           </button>
@@ -798,140 +889,201 @@ export default function LocalFoodScanner({ isOpen, onClose }: LocalFoodScannerPr
         ) : !foodData ? (
           /* Step 1 — Unified 10X Scanner Launchpad */
           <div className="p-5 sm:p-6 space-y-4">
-            <div className="text-center space-y-1">
-              <h3 className="text-base font-black text-slate-900 dark:text-white">
-                Snap or Upload Any Cultural Dish 🍲
-              </h3>
-              <p className="text-xs text-gray-600 dark:text-gray-400 max-w-sm mx-auto leading-relaxed">
-                Instant biochemical macro analysis, glycemic load ranking, and authentic West African ingredient swaps!
-              </p>
-            </div>
-
-            {/* Direct Action Launch Grid (No Nested Popups!) */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              {/* Option 1: Native Phone Camera */}
-              <button
-                onClick={() => document.getElementById("local-food-native-camera")?.click()}
-                className="bg-gradient-to-br from-[#1f7a8c] to-[#0d9488] hover:from-[#1a6877] hover:to-[#0b7c72] text-white rounded-3xl p-5 text-left shadow-lg hover:shadow-xl transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer flex items-center justify-between group"
-              >
-                <div className="flex items-center gap-3.5">
-                  <div className="p-3 bg-white/20 rounded-2xl group-hover:scale-110 transition-transform">
-                    <Camera className="h-6 w-6 text-white" />
-                  </div>
-                  <div>
-                    <div className="font-black text-sm text-white leading-tight">Take Photo 📸</div>
-                    <div className="text-[11px] text-teal-100 mt-0.5">High-res device camera</div>
-                  </div>
-                </div>
-                <ChevronRight size={18} className="text-white/70 group-hover:translate-x-1 transition-transform" />
-              </button>
-
-              {/* Option 2: Gallery Upload */}
-              <button
-                onClick={() => document.getElementById("local-food-gallery-upload")?.click()}
-                className="bg-gradient-to-br from-[#2a9d8f] to-[#4ecdc4] hover:from-[#248277] hover:to-[#42b3ab] text-white rounded-3xl p-5 text-left shadow-lg hover:shadow-xl transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer flex items-center justify-between group"
-              >
-                <div className="flex items-center gap-3.5">
-                  <div className="p-3 bg-white/20 rounded-2xl group-hover:scale-110 transition-transform">
-                    <Upload className="h-6 w-6 text-white" />
-                  </div>
-                  <div>
-                    <div className="font-black text-sm text-white leading-tight">Photo Gallery 🖼️</div>
-                    <div className="text-[11px] text-teal-100 mt-0.5">Upload existing plate</div>
-                  </div>
-                </div>
-                <ChevronRight size={18} className="text-white/70 group-hover:translate-x-1 transition-transform" />
-              </button>
-            </div>
-
-            {/* Option 3: Barcode Scanner Switcher Button */}
-            <button
-              onClick={() => { onClose(); navigate("/scan-barcode"); }}
-              className="w-full bg-slate-50 dark:bg-zinc-800/60 hover:bg-teal-50 dark:hover:bg-zinc-800 border-2 border-dashed border-teal-300 dark:border-zinc-700 hover:border-teal-500 rounded-2xl p-3.5 flex items-center justify-between transition-all cursor-pointer group shadow-2xs"
-            >
-              <div className="flex items-center gap-3">
-                <div className="p-2 bg-teal-100 dark:bg-teal-950 text-teal-800 dark:text-teal-300 rounded-xl group-hover:scale-105 transition-transform">
-                  <ScanBarcode className="h-5 w-5" />
-                </div>
-                <div className="text-left">
-                  <div className="text-xs font-black text-slate-900 dark:text-white">Scan Packaged Food Barcode 🏷️</div>
-                  <div className="text-[10.5px] text-slate-500">Noodles, canned fish, milk, cereals &amp; beverages</div>
-                </div>
-              </div>
-              <ChevronRight size={16} className="text-slate-400 group-hover:text-teal-600" />
-            </button>
-
-            {/* Popular Cultural Test Plates Shelf */}
-            <div className="pt-2 space-y-2">
-              <span className="text-[10.5px] uppercase font-black tracking-wider text-slate-400 block">
-                ⚡ Or Select a Popular Regional Dish:
-              </span>
-              <div className="grid grid-cols-2 gap-2 text-xs">
-                {[
-                  { name: "Jollof Rice & Chicken", calories: 520, gi: "High", emoji: "🍛" },
-                  { name: "Pounded Yam & Egusi", calories: 680, gi: "High", emoji: "🍲" },
-                  { name: "Amala & Ewedu Abula", calories: 520, gi: "High", emoji: "🥣" },
-                  { name: "Beef Suya Skewers", calories: 260, gi: "Low", emoji: "🍢" },
-                ].map((item, idx) => (
-                  <button
-                    key={idx}
-                    onClick={() => {
-                      const match = mockFoodDatabase["Nigeria"]?.find((d) => d.dishName.toLowerCase().includes(item.name.toLowerCase().split(" ")[0]));
-                      if (match) {
-                        setFoodData(match);
-                        celebrate("Dish Loaded! 🍲", match.dishName, { confettiStyle: "burst", hapticPattern: "success" });
-                      }
-                    }}
-                    className="p-3 bg-slate-50 dark:bg-zinc-800 hover:bg-teal-50 dark:hover:bg-zinc-700/80 border border-slate-200 dark:border-zinc-700 rounded-2xl text-left transition-all flex flex-col justify-between gap-1 cursor-pointer shadow-2xs group"
-                  >
-                    <div className="flex items-center justify-between">
-                      <span className="text-lg">{item.emoji}</span>
-                      <span className={`text-[9px] font-black px-1.5 py-0.2 rounded-full ${item.gi === "Low" ? "bg-emerald-100 text-emerald-800" : "bg-red-100 text-red-800"}`}>
-                        {item.gi} GI
-                      </span>
+            {/* LIVE IN-FRAME CAMERA VIEWPORT */}
+            {isLiveCameraActive ? (
+              <div className="space-y-3">
+                <div className="relative aspect-square w-full rounded-3xl overflow-hidden bg-slate-950 border-2 border-teal-500 shadow-2xl flex items-center justify-center">
+                  <video ref={videoRef} autoPlay playsInline muted className="w-full h-full object-cover" />
+                  
+                  {/* Laser Sweeper Line */}
+                  <div className="absolute inset-x-8 h-1 bg-gradient-to-r from-transparent via-red-500 to-transparent shadow-[0_0_15px_rgba(239,68,68,0.8)] animate-laser-sweep" />
+                  
+                  {/* Viewfinder Target Reticle */}
+                  <div className="absolute inset-10 border-2 border-white/40 rounded-2xl pointer-events-none flex flex-col justify-between p-2">
+                    <div className="flex justify-between">
+                      <div className="w-5 h-5 border-t-4 border-l-4 border-teal-400" />
+                      <div className="w-5 h-5 border-t-4 border-r-4 border-teal-400" />
                     </div>
-                    <div className="font-bold text-slate-900 dark:text-white truncate mt-1">{item.name}</div>
-                    <div className="text-[10px] text-slate-500 font-medium">~{item.calories} kcal</div>
+                    <div className="flex justify-between">
+                      <div className="w-5 h-5 border-b-4 border-l-4 border-teal-400" />
+                      <div className="w-5 h-5 border-b-4 border-r-4 border-teal-400" />
+                    </div>
+                  </div>
+
+                  {/* Top Live Badge */}
+                  <div className="absolute top-3 left-3 bg-black/70 backdrop-blur-md px-3 py-1 rounded-full text-white text-[10px] font-black flex items-center gap-1.5 border border-white/10">
+                    <span className="w-2 h-2 rounded-full bg-red-500 animate-ping" />
+                    <span>Live AI Viewport</span>
+                  </div>
+                </div>
+
+                {/* Camera Shutter & Action Controls */}
+                <div className="flex items-center gap-3">
+                  <button
+                    onClick={stopLiveCamera}
+                    className="flex-1 bg-gray-100 dark:bg-zinc-800 hover:bg-gray-200 text-gray-800 dark:text-zinc-200 py-3.5 rounded-2xl font-bold text-xs cursor-pointer transition-colors"
+                  >
+                    Cancel
                   </button>
-                ))}
+
+                  <button
+                    onClick={takeLiveSnapshot}
+                    className="flex-[2] bg-gradient-to-r from-[#1f7a8c] via-[#2a9d8f] to-[#4ecdc4] text-white py-3.5 px-4 rounded-2xl font-black text-sm shadow-lg hover:shadow-xl active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer"
+                  >
+                    <Camera size={18} />
+                    <span>Capture Plate 📸</span>
+                  </button>
+                </div>
               </div>
-            </div>
+            ) : (
+              <>
+                <div className="text-center space-y-1">
+                  <h3 className="text-base font-black text-slate-900 dark:text-white">
+                    Snap or Upload Any Cultural Dish 🍲
+                  </h3>
+                  <p className="text-xs text-gray-600 dark:text-gray-400 max-w-sm mx-auto leading-relaxed">
+                    Instant biochemical macro analysis, glycemic load ranking, and authentic West African ingredient swaps!
+                  </p>
+                </div>
 
-            {/* Hidden Native File Inputs for Instant Capture */}
-            <input
-              id="local-food-native-camera"
-              type="file"
-              accept="image/*"
-              capture="environment"
-              className="hidden"
-              onChange={(e) => {
-                const file = e.target.files?.[0];
-                if (file) {
-                  const reader = new FileReader();
-                  reader.onloadend = () => handleImageCaptured(reader.result as string);
-                  reader.readAsDataURL(file);
-                }
-              }}
-            />
+                {/* Direct Action Launch Grid (No Nested Popups!) */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  {/* Option 1: Live Viewport Camera */}
+                  <button
+                    onClick={startLiveCamera}
+                    className="bg-gradient-to-br from-[#1f7a8c] to-[#0d9488] hover:from-[#1a6877] hover:to-[#0b7c72] text-white rounded-3xl p-5 text-left shadow-lg hover:shadow-xl transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer flex items-center justify-between group"
+                  >
+                    <div className="flex items-center gap-3.5">
+                      <div className="p-3 bg-white/20 rounded-2xl group-hover:scale-110 transition-transform">
+                        <Camera className="h-6 w-6 text-white" />
+                      </div>
+                      <div>
+                        <div className="font-black text-sm text-white leading-tight">Take Photo 📸</div>
+                        <div className="text-[11px] text-teal-100 mt-0.5">Live camera viewfinder</div>
+                      </div>
+                    </div>
+                    <ChevronRight size={18} className="text-white/70 group-hover:translate-x-1 transition-transform" />
+                  </button>
 
-            <input
-              id="local-food-gallery-upload"
-              type="file"
-              accept="image/*"
-              className="hidden"
-              onChange={(e) => {
-                const file = e.target.files?.[0];
-                if (file) {
-                  const reader = new FileReader();
-                  reader.onloadend = () => handleImageCaptured(reader.result as string);
-                  reader.readAsDataURL(file);
-                }
-              }}
-            />
+                  {/* Option 2: Gallery Upload */}
+                  <button
+                    onClick={() => document.getElementById("local-food-gallery-upload")?.click()}
+                    className="bg-gradient-to-br from-[#2a9d8f] to-[#4ecdc4] hover:from-[#248277] hover:to-[#42b3ab] text-white rounded-3xl p-5 text-left shadow-lg hover:shadow-xl transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer flex items-center justify-between group"
+                  >
+                    <div className="flex items-center gap-3.5">
+                      <div className="p-3 bg-white/20 rounded-2xl group-hover:scale-110 transition-transform">
+                        <Upload className="h-6 w-6 text-white" />
+                      </div>
+                      <div>
+                        <div className="font-black text-sm text-white leading-tight">Photo Gallery 🖼️</div>
+                        <div className="text-[11px] text-teal-100 mt-0.5">Upload existing plate</div>
+                      </div>
+                    </div>
+                    <ChevronRight size={18} className="text-white/70 group-hover:translate-x-1 transition-transform" />
+                  </button>
+                </div>
+
+                {/* Option 3: Barcode Scanner Switcher Button */}
+                <button
+                  onClick={() => {
+                    stopLiveCamera();
+                    onClose();
+                    navigate("/scan-barcode");
+                  }}
+                  className="w-full bg-slate-50 dark:bg-zinc-800/60 hover:bg-teal-50 dark:hover:bg-zinc-800 border-2 border-dashed border-teal-300 dark:border-zinc-700 hover:border-teal-500 rounded-2xl p-3.5 flex items-center justify-between transition-all cursor-pointer group shadow-2xs"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 bg-teal-100 dark:bg-teal-950 text-teal-800 dark:text-teal-300 rounded-xl group-hover:scale-105 transition-transform">
+                      <ScanBarcode className="h-5 w-5" />
+                    </div>
+                    <div className="text-left">
+                      <div className="text-xs font-black text-slate-900 dark:text-white">Scan Packaged Food Barcode 🏷️</div>
+                      <div className="text-[10.5px] text-slate-500">Noodles, canned fish, milk, cereals &amp; beverages</div>
+                    </div>
+                  </div>
+                  <ChevronRight size={16} className="text-slate-400 group-hover:text-teal-600" />
+                </button>
+
+                {/* Popular Cultural Test Plates Shelf */}
+                <div className="pt-2 space-y-2">
+                  <span className="text-[10.5px] uppercase font-black tracking-wider text-slate-400 block">
+                    ⚡ Or Select a Popular Regional Dish:
+                  </span>
+                  <div className="grid grid-cols-2 gap-2 text-xs">
+                    {[
+                      { name: "Jollof Rice & Chicken", calories: 520, gi: "High", emoji: "🍛" },
+                      { name: "Pounded Yam & Egusi", calories: 680, gi: "High", emoji: "🍲" },
+                      { name: "Amala & Ewedu Abula", calories: 520, gi: "High", emoji: "🥣" },
+                      { name: "Beef Suya Skewers", calories: 260, gi: "Low", emoji: "🍢" },
+                    ].map((item, idx) => (
+                      <button
+                        key={idx}
+                        onClick={() => {
+                          const match = mockFoodDatabase["Nigeria"]?.find((d) => d.dishName.toLowerCase().includes(item.name.toLowerCase().split(" ")[0]));
+                          if (match) {
+                            loadSuggestedDish(match);
+                          }
+                        }}
+                        className="p-3 bg-slate-50 dark:bg-zinc-800 hover:bg-teal-50 dark:hover:bg-zinc-700/80 border border-slate-200 dark:border-zinc-700 rounded-2xl text-left transition-all flex flex-col justify-between gap-1 cursor-pointer shadow-2xs group"
+                      >
+                        <div className="flex items-center justify-between">
+                          <span className="text-lg">{item.emoji}</span>
+                          <span className={`text-[9px] font-black px-1.5 py-0.2 rounded-full ${item.gi === "Low" ? "bg-emerald-100 text-emerald-800" : "bg-red-100 text-red-800"}`}>
+                            {item.gi} GI
+                          </span>
+                        </div>
+                        <div className="font-bold text-slate-900 dark:text-white truncate mt-1">{item.name}</div>
+                        <div className="text-[10px] text-slate-500 font-medium">~{item.calories} kcal</div>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Hidden Native File Inputs for Instant Capture */}
+                <input
+                  id="local-food-native-camera"
+                  type="file"
+                  accept="image/*"
+                  capture="environment"
+                  className="hidden"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file) {
+                      const reader = new FileReader();
+                      reader.onloadend = () => handleImageCaptured(reader.result as string);
+                      reader.readAsDataURL(file);
+                    }
+                  }}
+                />
+
+                <input
+                  id="local-food-gallery-upload"
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file) {
+                      const reader = new FileReader();
+                      reader.onloadend = () => handleImageCaptured(reader.result as string);
+                      reader.readAsDataURL(file);
+                    }
+                  }}
+                />
+              </>
+            )}
           </div>
         ) : (
-          /* Food Analysis Results */
+          /* Food Analysis Results View */
           <div className="p-6">
+            {/* Top Back to Scanner Navigation Button */}
+            <button
+              onClick={handleBackToScanner}
+              className="w-full mb-4 py-2.5 px-4 bg-teal-50 dark:bg-teal-950/50 hover:bg-teal-100 dark:hover:bg-teal-900 text-[#1f7a8c] dark:text-teal-300 rounded-2xl font-black text-xs border border-teal-200 dark:border-teal-800 flex items-center justify-center gap-2 cursor-pointer transition-all active:scale-98 shadow-xs"
+            >
+              <ArrowLeft size={15} />
+              <span>← Back to Camera Scanner</span>
+            </button>
             {/* Personal verdict — "Is this good for ME?" */}
             {verdict && (() => {
               const V = VERDICT_UI[verdict.level];
@@ -1169,10 +1321,10 @@ export default function LocalFoodScanner({ isOpen, onClose }: LocalFoodScannerPr
 
               <div className="flex gap-3">
                 <button
-                  onClick={() => { setFoodData(null); setCapturedImage(null); setAnalyzeError(null); }}
+                  onClick={handleBackToScanner}
                   className="flex-1 bg-gray-200 dark:bg-zinc-800 text-gray-800 dark:text-zinc-200 py-3 rounded-2xl font-bold text-xs hover:bg-gray-300 transition-colors cursor-pointer"
                 >
-                  Scan Another
+                  ← Scan Another Dish
                 </button>
                 <button
                   onClick={handleSaveToLog}
