@@ -25,6 +25,9 @@ import {
   Music,
   Check,
   ChevronRight,
+  ArrowLeft,
+  AlertCircle,
+  ShieldCheck,
 } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Area, AreaChart } from "recharts";
 import PageHeader from "../components/PageHeader";
@@ -414,39 +417,6 @@ export default function WorkoutLogger() {
   const formatMonthDayTick = (iso: string) =>
     new Date(iso + 'T12:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
 
-  return (
-    <div className="min-h-screen bg-gradient-to-b from-orange-50 via-amber-50/40 to-teal-50/50 pb-28">
-      {/* Header */}
-      <PageHeader
-        title="Movement & Metabolic Burn 🏋️"
-        showHome
-        className="bg-gradient-to-r from-orange-600 via-amber-600 to-teal-700 shadow-md"
-        actions={
-          <button
-            onClick={() => setShowAddDialog(true)}
-            className="p-2 bg-white/20 hover:bg-white/30 rounded-full transition-colors cursor-pointer"
-            title="Log custom workout"
-          >
-            <Plus className="h-5 w-5 text-white" />
-          </button>
-        }
-      />
-
-      <div className="px-4 sm:px-6 max-w-2xl mx-auto mt-4 space-y-5">
-        {/* API Error Banner */}
-        {logsError && (
-          <div className="bg-red-50 border border-red-200 rounded-2xl p-4 flex items-center gap-3">
-            <Activity className="h-5 w-5 text-red-500 flex-shrink-0" />
-            <span className="text-xs text-red-700">{logsError}</span>
-          </div>
-        )}
-
-        {/* Hero Avo Coaching & Weekly Target */}
-        <div className="bg-gradient-to-br from-white via-orange-50/50 to-amber-50/70 rounded-3xl p-5 shadow-sm border border-orange-100 flex items-start gap-4">
-          <div className="shrink-0 pt-1">
-            <Mascot gesture="wave" size={54} />
-          </div>
-          <div className="flex-1 min-w-0">
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 pb-28">
       {/* Top Header */}

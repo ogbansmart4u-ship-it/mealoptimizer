@@ -438,28 +438,6 @@ export default function MedicalVault() {
             </div>
           </div>
 
-          {/* Status Cards */}
-          <div className="grid grid-cols-3 gap-3 mb-4">
-            <div className="bg-green-50 rounded-xl p-3 text-center">
-              <div className="text-2xl font-bold text-green-600">
-                {biomarkers.filter(b => b.status === 'normal').length}
-              </div>
-              <div className="text-xs text-gray-600">{t("vault.statusNormal")}</div>
-            </div>
-            <div className="bg-yellow-50 rounded-xl p-3 text-center">
-              <div className="text-2xl font-bold text-yellow-600">
-                {biomarkers.filter(b => b.status === 'high').length}
-              </div>
-              <div className="text-xs text-gray-600">{t("vault.statusElevated")}</div>
-            </div>
-            <div className="bg-blue-50 rounded-xl p-3 text-center">
-              <div className="text-2xl font-bold text-blue-600">
-                {biomarkers.filter(b => b.status === 'low').length}
-              </div>
-              <div className="text-xs text-gray-600">{t("vault.statusLow")}</div>
-            </div>
-          </div>
-
           {/* Category Filters */}
           <div className="flex gap-2 overflow-x-auto pb-2">
             <button
