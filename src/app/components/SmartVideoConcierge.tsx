@@ -53,6 +53,8 @@ const CLINICAL_KNOWLEDGE_BASE: Record<string, string> = {
 const DEFAULT_INTRO_SPEECH =
   "Welcome to MealOptimiza! I am Sarah, your Nutrition Assistant. Whether you're managing blood sugar, blood pressure, or enjoying delicious African meals, I'm here to ensure you eat well without giving up your favorite foods. You can ask me any nutrition question or tap an option below!";
 
+import { speakWithSarah, stopSarahSpeech } from "../services/voiceService";
+
 export default function SmartVideoConcierge({
   isOpen,
   onClose,
@@ -69,45 +71,25 @@ export default function SmartVideoConcierge({
   const [aiResponse, setAiResponse] = useState<string | null>(null);
   const [isThinking, setIsThinking] = useState(false);
   const [isListening, setIsListening] = useState(false);
-  const speechSynthRef = useRef<SpeechSynthesisUtterance | null>(null);
 
   const subtitles: Record<string, string> = {
     en: `Welcome to MealOptimiza! I am Sarah, your Nutrition Assistant. Whether you're tracking blood sugar, blood pressure, or enjoying authentic African meals, I'm here to ensure you eat well without giving up your favorite foods. Ask me any nutrition question or tap below!`,
     pcm: `Welcome to MealOptimiza! I be Sarah, your Nutrition Assistant. Whether you dey check blood sugar, BP, or enjoy better African food, I dey here to help you chop well and stay strong. Ask me any question or choose below!`,
-    yo: `Ẹ kú àbọ̀ sí MealOptimiza! Èmi ni Sarah, Olùrànlọ́wọ́ Oúnjẹ yín. Bóyá ẹ fẹ́ ṣàyẹ̀wò ìwọ̀n ṣúgà, ẹ̀jẹ̀ ríru, tàbí gbádùn oúnjẹ ilẹ̀ Áfíríkà, mo wà níhìn-ín láti ràn yín lọ́wọ́.`,
+    yo: `Ẹ kú àbọ̀ sí MealOptimiza! Èmi ni Sarah, Olùrànlọ́wọ́ Oúnjẹ yín. Bóyá ẹ fẹ́ ṣàyẹ̀wò ìwọ̀n ṣúgà, ẹ̀jẹ̀ ríru, tàbí gbádùn oúnjẹ ilẹ̀ Áfíríkà, mo wà níhìn-ín láti ràn yín lọ́wog!`,
     ig: `Nnọọ na MealOptimiza! Abụ m Sarah, Onye na-enyere gị aka na Nri na-edozi ahụ. Ma ị na-elele shuga dị n'ọbara, ọbara mgbali elu, ma ọ bụ rie nri ọdịnala Africa, anọ m ebe a iji nyere gị aka.`,
     ha: `Barka da zuwa MealOptimiza! Ni ce Sarah, Mataimakiyar ku kan Abinci. Ko kuna duba sukarin jini, hawan jini, ko jin daɗin abincin gargajiya na Afirka, ina nan don taimaka muku.`,
     fr: `Bienvenue sur MealOptimiza ! Je suis Sarah, votre Assistante en Nutrition. Que vous surveilliez votre glycémie, votre tension ou savouriez des plats africains, je suis là pour vous aider !`,
   };
 
-  // Speak function using Web Speech API
+  // Speak function with ElevenLabs Voice ID & WebSpeech Fallback
   const speakText = (text: string) => {
-    if (typeof window === "undefined" || !("speechSynthesis" in window)) return;
-
-    window.speechSynthesis.cancel();
     if (isMuted) return;
-
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.rate = 0.95;
-    utterance.pitch = 1.05;
-
-    // Pick best available English/Female voice
-    const voices = window.speechSynthesis.getVoices();
-    const preferredVoice =
-      voices.find((v) => v.name.includes("Female") || v.name.includes("Natural") || v.name.includes("Google UK English Female") || v.lang.startsWith("en-GB") || v.lang.startsWith("en-NG")) ||
-      voices.find((v) => v.lang.startsWith("en")) ||
-      voices[0];
-
-    if (preferredVoice) {
-      utterance.voice = preferredVoice;
-    }
-
-    utterance.onstart = () => setIsSpeaking(true);
-    utterance.onend = () => setIsSpeaking(false);
-    utterance.onerror = () => setIsSpeaking(false);
-
-    speechSynthRef.current = utterance;
-    window.speechSynthesis.speak(utterance);
+    speakWithSarah(text, {
+      voiceId: "YIgPmt6aTfZFf6mjP9RC",
+      onStart: () => setIsSpeaking(true),
+      onEnd: () => setIsSpeaking(false),
+      onError: () => setIsSpeaking(false),
+    });
   };
 
   // Auto-speak on modal open
@@ -116,15 +98,11 @@ export default function SmartVideoConcierge({
       setAiResponse(null);
       speakText(subtitles[selectedLanguage]);
     } else {
-      if (typeof window !== "undefined" && "speechSynthesis" in window) {
-        window.speechSynthesis.cancel();
-      }
+      stopSarahSpeech();
       setIsSpeaking(false);
     }
     return () => {
-      if (typeof window !== "undefined" && "speechSynthesis" in window) {
-        window.speechSynthesis.cancel();
-      }
+      stopSarahSpeech();
     };
   }, [isOpen, selectedLanguage]);
 
