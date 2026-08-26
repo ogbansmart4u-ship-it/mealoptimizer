@@ -33,7 +33,7 @@ import { triggerHaptic } from "../utils/celebration";
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from "./ui/dialog";
 import { toast } from "sonner";
 import { speakWithSarah, stopSarahSpeech } from "../services/voiceService";
-import SarahAvatar, { VisemeShape } from "./SarahAvatar";
+import SarahAvatar from "./SarahAvatar";
 
 interface SmartVideoConciergeProps {
   isOpen: boolean;
@@ -70,7 +70,6 @@ export default function SmartVideoConcierge({
   const { profile } = useUser();
 
   const [isSpeaking, setIsSpeaking] = useState(false);
-  const [currentViseme, setCurrentViseme] = useState<VisemeShape>("closed");
   const [isMuted, setIsMuted] = useState(false);
   const [selectedLanguage, setSelectedLanguage] = useState<"en" | "pcm" | "yo" | "ig" | "ha" | "fr">("en");
   const [userQuery, setUserQuery] = useState("");
@@ -91,21 +90,14 @@ export default function SmartVideoConcierge({
     fr: `Bienvenue sur MealOptimiza ! Je suis Sarah, votre Assistante en Nutrition. Prenez des photos de vos plats pour une analyse glycémique instantanée et protégez votre santé métabolique. Complétez votre profil de santé ci-dessous pour des recommandations 100% personnalisées !`,
   };
 
-  // Speak function with ElevenLabs Voice ID & Punctuation-Aware WebSpeech Fallback
+  // Fluid Speech function with automatic start/stop and strict lip-sync trigger
   const speakText = (text: string) => {
     if (isMuted) return;
     speakWithSarah(text, {
       voiceId: "YIgPmt6aTfZFf6mjP9RC",
       onStart: () => setIsSpeaking(true),
-      onEnd: () => {
-        setIsSpeaking(false);
-        setCurrentViseme("closed");
-      },
-      onError: () => {
-        setIsSpeaking(false);
-        setCurrentViseme("closed");
-      },
-      onVisemeChange: (viseme) => setCurrentViseme(viseme),
+      onEnd: () => setIsSpeaking(false),
+      onError: () => setIsSpeaking(false),
     });
   };
 
@@ -263,7 +255,7 @@ export default function SmartVideoConcierge({
             {/* Audio Waves / Ripple & Live Lip-Sync Sarah Avatar */}
             <div className="relative z-10 flex flex-col items-center justify-center">
               <div className="relative mb-2">
-                <SarahAvatar isSpeaking={isSpeaking} viseme={currentViseme} size={150} />
+                <SarahAvatar isSpeaking={isSpeaking} size={150} />
                 {isSpeaking && (
                   <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-950 text-[10px] font-black px-2.5 py-0.5 rounded-full animate-pulse shadow-md flex items-center gap-1 border border-emerald-300/40">
                     <span className="h-1.5 w-1.5 rounded-full bg-slate-950 animate-ping" />

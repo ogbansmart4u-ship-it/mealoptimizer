@@ -4,67 +4,72 @@ export type VisemeShape = "closed" | "small" | "medium" | "wide" | "o_shape";
 
 interface SarahAvatarProps {
   isSpeaking: boolean;
-  viseme?: VisemeShape;
   size?: number;
   className?: string;
 }
 
 export default function SarahAvatar({
   isSpeaking,
-  viseme = "closed",
   size = 140,
   className = "",
 }: SarahAvatarProps) {
   const [blink, setBlink] = useState(false);
   const [headTilt, setHeadTilt] = useState(0);
-  const [internalViseme, setInternalViseme] = useState<VisemeShape>("closed");
+  const [viseme, setViseme] = useState<VisemeShape>("closed");
   const mouthTimerRef = useRef<any>(null);
 
-  // Micro-blinking loop (every 3.5 - 5 seconds)
+  // Micro-blinking loop (every 3.5 - 5.5 seconds)
   useEffect(() => {
     const blinkInterval = setInterval(() => {
       setBlink(true);
-      setTimeout(() => setBlink(false), 160);
+      setTimeout(() => setBlink(false), 150);
     }, Math.random() * 2000 + 3500);
 
     return () => clearInterval(blinkInterval);
   }, []);
 
-  // Subtle natural head sway while speaking
-  useEffect(() => {
-    if (isSpeaking) {
-      const swayInterval = setInterval(() => {
-        setHeadTilt((prev) => (prev === 1.5 ? -1.5 : 1.5));
-      }, 1200);
-      return () => clearInterval(swayInterval);
-    } else {
-      setHeadTilt(0);
-      setInternalViseme("closed");
-    }
-  }, [isSpeaking]);
-
-  // Real-time lip-sync mouth shape synthesizer when speaking
+  // Subtle natural head sway and rhythmic mouth movement ONLY when speaking
   useEffect(() => {
     if (!isSpeaking) {
-      setInternalViseme("closed");
-      if (mouthTimerRef.current) clearInterval(mouthTimerRef.current);
+      // STRICT RESET: When not speaking, mouth is 100% closed, head is straight
+      setHeadTilt(0);
+      setViseme("closed");
+      if (mouthTimerRef.current) {
+        clearInterval(mouthTimerRef.current);
+        mouthTimerRef.current = null;
+      }
       return;
     }
 
-    const shapes: VisemeShape[] = ["small", "medium", "wide", "small", "o_shape", "medium", "closed"];
-    let shapeIdx = 0;
+    // Head sway
+    const swayInterval = setInterval(() => {
+      setHeadTilt((prev) => (prev === 1.2 ? -1.2 : 1.2));
+    }, 1400);
+
+    // Natural rhythmic mouth movement during active speech
+    const speechShapes: VisemeShape[] = [
+      "small", "medium", "wide", "medium", "small", "o_shape", "medium", "closed",
+      "small", "medium", "wide", "small", "closed"
+    ];
+    let idx = 0;
 
     mouthTimerRef.current = setInterval(() => {
-      shapeIdx = (shapeIdx + 1) % shapes.length;
-      setInternalViseme(shapes[shapeIdx]);
-    }, 110);
+      idx = (idx + 1) % speechShapes.length;
+      setViseme(speechShapes[idx]);
+    }, 125);
 
     return () => {
-      if (mouthTimerRef.current) clearInterval(mouthTimerRef.current);
+      clearInterval(swayInterval);
+      if (mouthTimerRef.current) {
+        clearInterval(mouthTimerRef.current);
+        mouthTimerRef.current = null;
+      }
+      setViseme("closed");
     };
   }, [isSpeaking]);
 
-  const activeViseme = viseme !== "closed" ? viseme : internalViseme;
+  // If not speaking, activeViseme is ALWAYS strictly "closed"
+  const activeViseme: VisemeShape = isSpeaking ? viseme : "closed";
 
   return (
     <div
@@ -73,15 +78,15 @@ export default function SarahAvatar({
         width: size,
         height: size,
         transform: `rotate(${headTilt}deg)`,
-        transition: "transform 0.8s ease-in-out",
+        transition: "transform 0.7s ease-in-out",
       }}
     >
-      {/* Outer Halo Glow when speaking */}
+      {/* Outer Glowing Halo when speaking */}
       {isSpeaking && (
         <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-teal-400/30 to-emerald-400/40 blur-xl animate-pulse scale-110 pointer-events-none" />
       )}
 
-      {/* SVG Vector Render of Sarah */}
+      {/* High-Definition Vector Sarah Avatar */}
       <svg
         viewBox="0 0 200 200"
         className="w-full h-full drop-shadow-xl"
@@ -109,21 +114,13 @@ export default function SarahAvatar({
             <stop offset="0%" stopColor="#fde047" />
             <stop offset="100%" stopColor="#eab308" />
           </linearGradient>
-
-          <filter id="softGlow">
-            <feGaussianBlur stdDeviation="1.5" result="coloredBlur" />
-            <feMerge>
-              <feMergeNode in="coloredBlur" />
-              <feMergeNode in="SourceGraphic" />
-            </feMerge>
-          </filter>
         </defs>
 
         {/* Circular Background Badge */}
         <circle cx="100" cy="100" r="94" fill="#091e24" stroke="#1f7a8c" strokeWidth="3" />
         <circle cx="100" cy="100" r="90" fill="url(#scrubsGrad)" opacity="0.15" />
 
-        {/* Hair Bun / Braided Crown (Behind) */}
+        {/* Hair Bun / Braided Crown */}
         <ellipse cx="100" cy="52" rx="36" ry="24" fill="url(#hairGrad)" />
         <ellipse cx="100" cy="42" rx="26" ry="16" fill="#140f0c" stroke="#2b201a" strokeWidth="2" />
 
@@ -155,7 +152,7 @@ export default function SarahAvatar({
         {/* Head / Face Oval */}
         <ellipse cx="100" cy="98" rx="38" ry="46" fill="url(#skinGrad)" />
 
-        {/* Hair Front Side Strands / Braided Sweep */}
+        {/* Hair Front Side Strands */}
         <path
           d="M 62 82 Q 62 60 100 56 Q 138 60 138 82 Q 134 68 100 64 Q 66 68 62 82 Z"
           fill="url(#hairGrad)"
@@ -199,12 +196,12 @@ export default function SarahAvatar({
         <ellipse cx="124" cy="104" rx="5" ry="3" fill="#994d30" opacity="0.4" />
 
         {/* ============================================================ */}
-        {/* DYNAMIC LIP-SYNC MOUTH SHAPES (Real-time Speech Synthesis)  */}
+        {/* DYNAMIC LIP-SYNC MOUTH (Strictly closed when not speaking)   */}
         {/* ============================================================ */}
         {activeViseme === "closed" && (
           // Neutral Friendly Smile
           <path
-            d="M 88 120 Q 100 128 112 120"
+            d="M 88 121 Q 100 128 112 121"
             stroke="#9f2d3d"
             strokeWidth="3.5"
             strokeLinecap="round"
@@ -215,8 +212,8 @@ export default function SarahAvatar({
         {activeViseme === "small" && (
           // Slightly open mouth (M, N, Consonants)
           <g>
-            <path d="M 88 118 Q 100 114 112 118 Q 100 128 88 118 Z" fill="#5c111e" stroke="#9f2d3d" strokeWidth="2" />
-            <path d="M 91 118 Q 100 116 109 118" stroke="#ffffff" strokeWidth="2" strokeLinecap="round" />
+            <path d="M 88 119 Q 100 115 112 119 Q 100 128 88 119 Z" fill="#5c111e" stroke="#9f2d3d" strokeWidth="2" />
+            <path d="M 91 119 Q 100 117 109 119" stroke="#ffffff" strokeWidth="2" strokeLinecap="round" />
           </g>
         )}
 
@@ -231,7 +228,7 @@ export default function SarahAvatar({
         {activeViseme === "wide" && (
           // Wide Open Mouth (A, Ah sounds)
           <g>
-            <ellipse cx="100" cy="123" rx="13" ry="9" fill="#3b0810" stroke="#dc2626" strokeWidth="2" />
+            <ellipse cx="100" cy="123" rx="13" ry="8.5" fill="#3b0810" stroke="#dc2626" strokeWidth="2" />
             <path d="M 90 119 Q 100 116 110 119" stroke="#ffffff" strokeWidth="3" strokeLinecap="round" />
             <ellipse cx="100" cy="127" rx="7" ry="3" fill="#e11d48" opacity="0.8" />
           </g>
