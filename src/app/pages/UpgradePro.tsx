@@ -22,8 +22,8 @@ import {
   PlanTier,
   getSubscriptionStatus,
   setSubscriptionStatus,
-  processPayment,
 } from "../../lib/payment";
+import { executePurchase, restorePurchases } from "../../lib/iap";
 import { useUser } from "../contexts/UserContext";
 import { toast } from "sonner";
 import { triggerConfetti, triggerHaptic } from "../utils/celebration";
@@ -61,7 +61,7 @@ export default function UpgradePro() {
     triggerHaptic("medium");
 
     try {
-      await processPayment({
+      await executePurchase({
         plan,
         currency,
         cycle,
@@ -79,6 +79,9 @@ export default function UpgradePro() {
             }!`
           );
         },
+        onError: (err) => {
+          toast.error(err.message || "Payment could not be completed.");
+        },
       });
     } catch {
       toast.error("Payment could not be completed. Please try again.");
@@ -91,9 +94,10 @@ export default function UpgradePro() {
     setIsSyncing(true);
     triggerHaptic("medium");
     try {
+      const result = await restorePurchases(profile?.id);
       await refreshProfile?.();
-      setSubscriptionStatus("pro", 12, profile?.id);
-      updateProfile?.({ plan: "pro", isPro: true });
+      setSubscriptionStatus(result.plan, 12, profile?.id);
+      updateProfile?.({ plan: result.plan, isPro: true });
       setCurrentSub(getSubscriptionStatus(profile?.id));
       triggerHaptic("milestone");
       triggerConfetti("fireworks");
