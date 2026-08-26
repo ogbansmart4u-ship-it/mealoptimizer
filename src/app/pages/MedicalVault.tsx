@@ -16,10 +16,10 @@ import {
   Plus,
   ChevronRight,
   Sparkles,
-  ChefHat,
   Trash2,
   Eye,
   Loader2,
+  MessageSquare,
 } from "lucide-react";
 import PageHeader from "../components/PageHeader";
 import BottomNav from "../components/BottomNav";
@@ -31,6 +31,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { toast } from "sonner";
 import { useUser } from "../contexts/UserContext";
 import { useLanguage } from "../contexts/LanguageContext";
+import { shareDoctorSummaryToWhatsApp } from "../../lib/whatsapp";
 import {
   getMedicalDocuments,
   uploadMedicalDocument,
@@ -305,13 +306,23 @@ export default function MedicalVault() {
             </div>
           </div>
 
-          <button
-            onClick={() => navigate("/health-report")}
-            className="w-full py-3 bg-gradient-to-r from-teal-400 to-emerald-400 hover:from-teal-500 hover:to-emerald-500 text-slate-950 font-black text-xs rounded-2xl shadow-lg flex items-center justify-center gap-2 cursor-pointer active:scale-98 transition-all"
-          >
-            <span>Generate Doctor Health PDF (14-Day Dossier)</span>
-            <ChevronRight size={15} />
-          </button>
+          <div className="space-y-2">
+            <button
+              onClick={() => navigate("/health-report")}
+              className="w-full py-3 bg-gradient-to-r from-teal-400 to-emerald-400 hover:from-teal-500 hover:to-emerald-500 text-slate-950 font-black text-xs rounded-2xl shadow-lg flex items-center justify-center gap-2 cursor-pointer active:scale-98 transition-all"
+            >
+              <span>Generate Doctor Health PDF (14-Day Dossier)</span>
+              <ChevronRight size={15} />
+            </button>
+
+            <button
+              onClick={() => shareDoctorSummaryToWhatsApp({ userName: profile?.name })}
+              className="w-full py-2.5 bg-[#25D366]/15 hover:bg-[#25D366]/25 text-[#25D366] border border-[#25D366]/40 font-bold text-xs rounded-2xl flex items-center justify-center gap-2 cursor-pointer transition-all active:scale-98"
+            >
+              <MessageSquare size={14} />
+              <span>Forward Clinical Summary to WhatsApp 💬</span>
+            </button>
+          </div>
         </div>
 
         {/* SECURE LAB LOCKER (DOCUMENTS & LAB SLIPS) */}

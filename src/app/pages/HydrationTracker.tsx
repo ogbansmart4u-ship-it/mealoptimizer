@@ -22,6 +22,7 @@ import {
   Share2,
   Trophy,
   RotateCcw,
+  MessageSquare,
 } from "lucide-react";
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import PageHeader from "../components/PageHeader";
@@ -33,6 +34,7 @@ import { toast } from "sonner";
 import { useLanguage } from "../contexts/LanguageContext";
 import { getHydrationLogs, createHydrationLog, deleteHydrationLog } from "../../lib/api";
 import { celebrate, triggerConfetti, triggerHaptic } from "../components/celebrate";
+import { shareHydrationNudgeToWhatsApp } from "../../lib/whatsapp";
 import { motion } from "motion/react";
 
 type HydrationLog = {
@@ -327,6 +329,14 @@ export default function HydrationTracker() {
             <span className={hydrationData.totalIntake >= 1875 ? "text-cyan-300 font-black" : ""}>Afternoon Walk (75%)</span>
             <span className={hydrationData.totalIntake >= 2500 ? "text-emerald-300 font-black" : ""}>Goal (100% 🏆)</span>
           </div>
+
+          <button
+            onClick={() => shareHydrationNudgeToWhatsApp(Number((hydrationData.totalIntake / 1000).toFixed(1)), Number((dailyGoal / 1000).toFixed(1)))}
+            className="w-full mt-3 py-2 bg-[#25D366]/15 hover:bg-[#25D366]/25 text-[#25D366] border border-[#25D366]/40 font-bold text-xs rounded-2xl flex items-center justify-center gap-2 cursor-pointer transition-all active:scale-98"
+          >
+            <MessageSquare size={14} />
+            <span>Share Hydration Nudge to Family WhatsApp 💧</span>
+          </button>
         </div>
 
         {/* 10X QUICK DRINK LOGGING SHELF (AFRICAN & CLEAN PRESETS) */}
