@@ -11,6 +11,7 @@ import {
   ChefHat,
   ChevronRight,
   ShieldCheck,
+  Sparkles,
 } from "lucide-react";
 import { useNavigate } from "react-router";
 import { useUser } from "../contexts/UserContext";
@@ -38,12 +39,12 @@ export default function SmartVideoConcierge({
   const videoRef = useRef<HTMLVideoElement>(null);
 
   const subtitles: Record<string, string> = {
-    en: `Welcome to MealOptimiza! I'm Nurse Amina, your personal metabolic guide. Whether you're tracking blood sugar, blood pressure, or enjoying cultural African meals, I'm here to ensure you eat well without giving up your favorite foods. Tap an option below to get started!`,
-    pcm: `Welcome to MealOptimiza! I be Nurse Amina, your health guide. Whether you dey check blood sugar, BP, or enjoy better African food, I dey here to help you chop well and stay strong. Choose wetin you wan do below!`,
-    yo: `Ẹ kú àbọ̀ sí MealOptimiza! Èmi ni Nurse Amina, atọ́nisọ́nà ìlera yín. Bóyá ẹ fẹ́ ṣàyẹ̀wò ìwọ̀n ṣúgà, ẹ̀jẹ̀ ríru, tàbí gbádùn oúnjẹ ilẹ̀ Áfíríkà, mo wà níhìn-ín láti ràn yín lọ́wọ́.`,
-    ig: `Nnọọ na MealOptimiza! Abụ m Nọọsụ Amina, onye ndu ahụike gị. Ma ị na-elele shuga dị n'ọbara, ọbara mgbali elu, ma ọ bụ rie nri ọdịnala Africa, anọ m ebe a iji nyere gị aka.`,
-    ha: `Barka da zuwa MealOptimiza! Ni ce Nurse Amina, jagorar lafiyar ku. Ko kuna duba sukarin jini, hawan jini, ko jin daɗin abincin gargajiya na Afirka, ina nan don taimaka muku.`,
-    fr: `Bienvenue sur MealOptimiza ! Je suis l'infirmière Amina, votre guide métabolique. Que vous surveilliez votre glycémie, votre tension ou savouriez des plats africains, je suis là pour vous aider !`,
+    en: `Welcome to MealOptimiza! I am Sarah, your Nutrition Assistant. Whether you're tracking blood sugar, blood pressure, or enjoying authentic African meals, I'm here to ensure you eat well without giving up your favorite foods. Tap an option below to get started!`,
+    pcm: `Welcome to MealOptimiza! I be Sarah, your Nutrition Assistant. Whether you dey check blood sugar, BP, or enjoy better African food, I dey here to help you chop well and stay strong. Choose wetin you wan do below!`,
+    yo: `Ẹ kú àbọ̀ sí MealOptimiza! Èmi ni Sarah, Olùrànlọ́wọ́ Oúnjẹ yín. Bóyá ẹ fẹ́ ṣàyẹ̀wò ìwọ̀n ṣúgà, ẹ̀jẹ̀ ríru, tàbí gbádùn oúnjẹ ilẹ̀ Áfíríkà, mo wà níhìn-ín láti ràn yín lọ́wọ́.`,
+    ig: `Nnọọ na MealOptimiza! Abụ m Sarah, Onye na-enyere gị aka na Nri na-edozi ahụ. Ma ị na-elele shuga dị n'ọbara, ọbara mgbali elu, ma ọ bụ rie nri ọdịnala Africa, anọ m ebe a iji nyere gị aka.`,
+    ha: `Barka da zuwa MealOptimiza! Ni ce Sarah, Mataimakiyar ku kan Abinci. Ko kuna duba sukarin jini, hawan jini, ko jin daɗin abincin gargajiya na Afirka, ina nan don taimaka muku.`,
+    fr: `Bienvenue sur MealOptimiza ! Je suis Sarah, votre Assistante en Nutrition. Que vous surveilliez votre glycémie, votre tension ou savouriez des plats africains, je suis là pour vous aider !`,
   };
 
   const togglePlay = () => {
@@ -67,24 +68,24 @@ export default function SmartVideoConcierge({
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DialogContent className="max-w-md p-0 overflow-hidden rounded-3xl border border-teal-100 shadow-2xl z-50 bg-white">
-        <DialogTitle className="sr-only">Nurse Amina AI Concierge</DialogTitle>
-        <DialogDescription className="sr-only">Interactive patient guide for MealOptimiza</DialogDescription>
+        <DialogTitle className="sr-only">Sarah The Nutrition Assistant</DialogTitle>
+        <DialogDescription className="sr-only">Interactive nutrition and health guide for MealOptimiza</DialogDescription>
 
         {/* Top Header */}
         <div className="bg-gradient-to-r from-[#1f7a8c] to-[#0d9488] px-4 py-3 text-white flex items-center justify-between">
           <div className="flex items-center gap-2.5">
             <div className="relative">
-              <span className="text-xl">👩🏾‍⚕️</span>
+              <span className="text-xl">👩🏾‍💼</span>
               <span className="absolute bottom-0 right-0 h-2 w-2 bg-emerald-400 rounded-full" />
             </div>
             <div>
               <h3 className="font-extrabold text-sm leading-tight flex items-center gap-1.5">
-                <span>Nurse Amina</span>
-                <span className="text-[9px] font-bold bg-white/20 px-1.5 py-0.2 rounded-full">
-                  Clinical AI Concierge
+                <span>Sarah</span>
+                <span className="text-[9.5px] font-black bg-amber-400 text-slate-950 px-2 py-0.2 rounded-full shadow-2xs">
+                  Nutrition Assistant
                 </span>
               </h3>
-              <p className="text-[10px] text-teal-100">MealOptimiza Patient Guide</p>
+              <p className="text-[10px] text-teal-100">MealOptimiza Food &amp; Health Guide</p>
             </div>
           </div>
 
@@ -102,19 +103,19 @@ export default function SmartVideoConcierge({
           <div className="absolute inset-0 bg-gradient-to-b from-teal-950/80 via-slate-900 to-teal-950 flex flex-col items-center justify-center p-6 text-center">
             <div className="w-16 h-16 rounded-full bg-gradient-to-tr from-[#1f7a8c] to-emerald-400 p-1 mb-1.5 shadow-lg animate-pulse">
               <div className="w-full h-full rounded-full bg-slate-900 flex items-center justify-center text-3xl">
-                👩🏾‍⚕️
+                👩🏾‍💼
               </div>
             </div>
             <span className="text-[11px] font-black text-amber-300 uppercase tracking-widest block mb-0.5">
-              Live Video Consultation Guide
+              Sarah · Nutrition Assistant
             </span>
             <p className="text-[11px] text-slate-300 max-w-xs font-medium">
-              "Welcome {profile?.name || "to MealOptimiza"}! Let me show you how to protect your metabolic health."
+              "I am Sarah, your Nutrition Assistant. Welcome {profile?.name || "to MealOptimiza"}! Let me show you how to optimize your meals."
             </p>
           </div>
 
           {/* Subtitle / CC Bar */}
-          <div className="absolute bottom-10 left-3 right-3 bg-black/80 backdrop-blur-md text-emerald-300 text-[11px] font-medium p-2.5 rounded-xl border border-white/10 shadow-lg text-center leading-snug">
+          <div className="absolute bottom-10 left-3 right-3 bg-black/85 backdrop-blur-md text-emerald-300 text-[11px] font-medium p-2.5 rounded-xl border border-white/10 shadow-lg text-center leading-snug">
             {subtitles[selectedLanguage]}
           </div>
 
@@ -255,7 +256,7 @@ export default function SmartVideoConcierge({
         <div className="p-3 bg-slate-50 border-t border-slate-100 flex items-center justify-between text-xs">
           <span className="text-[10px] text-slate-500 flex items-center gap-1">
             <ShieldCheck size={13} className="text-teal-600" />
-            <span>Encrypted Patient Concierge</span>
+            <span>Encrypted Nutrition Concierge</span>
           </span>
           <button
             onClick={onClose}

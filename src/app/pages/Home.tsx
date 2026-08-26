@@ -673,7 +673,7 @@ export default function Home() {
             transition={{ duration: 0.25 }}
             className="space-y-4"
           >
-            {/* 👩🏾‍⚕️ Nurse Amina AI Concierge Card */}
+            {/* 👩🏾‍💼 Sarah The Nutrition Assistant Card */}
             <div
               onClick={() => {
                 triggerHaptic("medium");
@@ -683,20 +683,20 @@ export default function Home() {
             >
               <div className="relative z-10 flex items-center gap-3 min-w-0">
                 <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-white/20 border-2 border-amber-300 flex items-center justify-center text-2xl sm:text-3xl shrink-0 shadow-xs group-hover:scale-105 transition-transform">
-                  👩🏾‍⚕️
+                  👩🏾‍💼
                 </div>
                 <div className="min-w-0">
                   <div className="flex items-center gap-1.5">
                     <span className="text-[9.5px] font-black uppercase tracking-wider bg-amber-400 text-slate-950 px-2 py-0.2 rounded-full shadow-2xs">
-                      AI Concierge
+                      Nutrition Assistant
                     </span>
-                    <span className="text-[10px] text-teal-200 font-bold hidden sm:inline">24/7 Patient Guide</span>
+                    <span className="text-[10px] text-teal-200 font-bold hidden sm:inline">24/7 Food & Health Guide</span>
                   </div>
                   <h3 className="text-sm sm:text-base font-black text-white leading-tight mt-0.5 truncate">
                     Welcome to MealOptimiza!
                   </h3>
                   <p className="text-[11px] sm:text-xs text-teal-100 line-clamp-1 mt-0.5 font-medium">
-                    "I'm Nurse Amina. Tap to start your 30s interactive tour."
+                    "I am Sarah, your Nutrition Assistant. Tap to start."
                   </p>
                 </div>
               </div>
