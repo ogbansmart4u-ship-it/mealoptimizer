@@ -24,6 +24,7 @@ import {
 import { Button } from "./ui/button";
 import Mascot from "./Mascot";
 import { useUser } from "../contexts/UserContext";
+import { useMascot } from "../hooks/useMascot";
 import { updateUserProfile } from "../../lib/api";
 import { toast } from "sonner";
 import { triggerConfetti, triggerHaptic } from "../utils/celebration";
@@ -38,8 +39,10 @@ export default function HealthProfileWizardModal({
   onComplete,
 }: HealthProfileWizardModalProps) {
   const { profile, updateProfile } = useUser();
+  const mascot = useMascot();
   const [step, setStep] = useState(1);
   const [isSaving, setIsSaving] = useState(false);
+  const [activeGesture, setActiveGesture] = useState<string>("writing");
 
   // Form State
   const [selectedGoal, setSelectedGoal] = useState("blood_sugar");
@@ -56,8 +59,20 @@ export default function HealthProfileWizardModal({
   const h = parseFloat(heightCm) / 100 || 1.68;
   const bmi = (w / (h * h)).toFixed(1);
 
-  const toggleCondition = (cond: string) => {
+  // Trigger Avo note taking on mount / step change
+  useEffect(() => {
+    setActiveGesture("writing");
+    mascot.write();
+  }, [step]);
+
+  const triggerNoteTaking = () => {
     triggerHaptic("light");
+    setActiveGesture("writing");
+    mascot.write();
+  };
+
+  const toggleCondition = (cond: string) => {
+    triggerNoteTaking();
     if (selectedConditions.includes(cond)) {
       setSelectedConditions(selectedConditions.filter((c) => c !== cond));
     } else {
@@ -77,6 +92,8 @@ export default function HealthProfileWizardModal({
   const handleFinalSave = async () => {
     setIsSaving(true);
     triggerHaptic("medium");
+    setActiveGesture("jumping");
+    mascot.jump();
 
     try {
       const conditionString = selectedConditions.join(", ") || "General Metabolic Wellness";
@@ -102,6 +119,7 @@ export default function HealthProfileWizardModal({
       localStorage.setItem("hasCompletedHealthSetup", "true");
       triggerHaptic("milestone");
       triggerConfetti("fireworks");
+      mascot.doubleThumbsUp();
       toast.success("Health profile calibrated! Welcome to MealOptimiza.");
       onComplete();
     } catch (err) {
@@ -116,27 +134,38 @@ export default function HealthProfileWizardModal({
   return (
     <Dialog open={isOpen} onOpenChange={() => {}}>
       <DialogContent
-        className="max-w-md p-6 sm:p-7 rounded-3xl max-h-[92vh] overflow-y-auto"
+        className="max-w-md p-5 sm:p-7 rounded-3xl max-h-[92vh] overflow-y-auto bg-white dark:bg-zinc-900 border border-teal-100 dark:border-zinc-800 shadow-2xl"
         onPointerDownOutside={(e) => e.preventDefault()}
       >
-        {/* Step Indicator Header */}
-        <div className="flex items-center justify-between border-b border-zinc-100 dark:border-zinc-800 pb-3.5 mb-4">
-          <div className="flex items-center gap-2">
-            <Mascot gesture="wave" size={38} />
+        {/* Step Indicator Header with Animated 3D Avo Scribe */}
+        <div className="flex items-center justify-between border-b border-teal-100/60 dark:border-zinc-800 pb-3.5 mb-4">
+          <div className="flex items-center gap-3">
+            <Mascot gesture={activeGesture} size={54} className="shrink-0 drop-shadow-md" />
             <div>
-              <span className="text-[10px] uppercase font-bold tracking-wider text-[#1f7a8c] dark:text-teal-400">
-                Setup Step {step} of 4
-              </span>
-              <h3 className="text-sm font-extrabold text-zinc-900 dark:text-zinc-100">
+              <div className="flex items-center gap-1.5 mb-0.5">
+                <span className="text-[9.5px] uppercase font-black tracking-wider bg-teal-50 text-[#1f7a8c] dark:bg-teal-950/70 dark:text-teal-300 px-2 py-0.2 rounded-full border border-teal-200 dark:border-teal-800">
+                  Setup Step {step} of 4
+                </span>
+                <span className="text-[10px] text-amber-600 dark:text-amber-400 font-bold flex items-center gap-0.5">
+                  ✍️ Avo Scribe
+                </span>
+              </div>
+              <h3 className="text-sm sm:text-base font-black text-zinc-900 dark:text-zinc-100 leading-tight">
                 {step === 1 && "Primary Health Focus 🎯"}
                 {step === 2 && "Age & Biology 👤"}
                 {step === 3 && "Weight & BMI Range ⚖️"}
                 {step === 4 && "Health Conditions 🩺"}
               </h3>
+              <p className="text-[10.5px] text-zinc-500 dark:text-zinc-400 font-medium">
+                {step === 1 && "Avo is recording your clinical target..."}
+                {step === 2 && "Avo is calibrating your metabolic age & rate..."}
+                {step === 3 && "Avo is calculating your West African baseline BMI..."}
+                {step === 4 && "Avo is setting up your nutrition safety shields..."}
+              </p>
             </div>
           </div>
 
-          <div className="flex gap-1">
+          <div className="flex gap-1 shrink-0">
             {[1, 2, 3, 4].map((i) => (
               <div
                 key={i}
@@ -151,7 +180,7 @@ export default function HealthProfileWizardModal({
         {/* STEP 1: GOALS */}
         {step === 1 && (
           <div className="space-y-3 animate-in fade-in duration-200">
-            <p className="text-xs text-zinc-600 dark:text-zinc-400">
+            <p className="text-xs text-zinc-600 dark:text-zinc-400 font-medium">
               What is your primary clinical or nutritional goal?
             </p>
 
@@ -188,20 +217,20 @@ export default function HealthProfileWizardModal({
                   <div
                     key={g.id}
                     onClick={() => {
-                      triggerHaptic("light");
+                      triggerNoteTaking();
                       setSelectedGoal(g.id);
                     }}
                     className={`p-3.5 rounded-2xl border transition-all cursor-pointer flex items-center justify-between gap-3 ${
                       isSelected
-                        ? "bg-teal-50 dark:bg-teal-950/40 border-teal-400 dark:border-teal-700 shadow-sm"
-                        : "bg-white dark:bg-zinc-800/40 border-zinc-200 dark:border-zinc-700/60"
+                        ? "bg-teal-50 dark:bg-teal-950/40 border-teal-400 dark:border-teal-700 shadow-xs scale-[1.01]"
+                        : "bg-white dark:bg-zinc-800/40 border-zinc-200 dark:border-zinc-700/60 hover:border-teal-200"
                     }`}
                   >
                     <div className="flex items-center gap-3">
                       <div
-                        className={`p-2 rounded-xl ${
+                        className={`p-2.5 rounded-xl ${
                           isSelected
-                            ? "bg-[#1f7a8c] text-white"
+                            ? "bg-[#1f7a8c] text-white shadow-xs"
                             : "bg-zinc-100 text-zinc-600 dark:bg-zinc-700 dark:text-zinc-300"
                         }`}
                       >
@@ -214,7 +243,7 @@ export default function HealthProfileWizardModal({
                         <span className="text-[11px] text-zinc-500 block">{g.desc}</span>
                       </div>
                     </div>
-                    {isSelected && <Check size={16} className="text-[#1f7a8c] dark:text-teal-400 font-bold" />}
+                    {isSelected && <Check size={16} className="text-[#1f7a8c] dark:text-teal-400 font-black" />}
                   </div>
                 );
               })}
@@ -235,13 +264,13 @@ export default function HealthProfileWizardModal({
                     key={ar}
                     type="button"
                     onClick={() => {
-                      triggerHaptic("light");
+                      triggerNoteTaking();
                       setAgeRange(ar);
                     }}
                     className={`py-3 px-4 rounded-2xl border text-xs font-bold transition-all cursor-pointer ${
                       ageRange === ar
-                        ? "bg-[#1f7a8c] text-white border-[#1f7a8c] shadow-sm"
-                        : "bg-white dark:bg-zinc-800 border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300"
+                        ? "bg-[#1f7a8c] text-white border-[#1f7a8c] shadow-xs scale-[1.02]"
+                        : "bg-white dark:bg-zinc-800 border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 hover:border-teal-200"
                     }`}
                   >
                     {ar} years
@@ -260,13 +289,13 @@ export default function HealthProfileWizardModal({
                     key={g}
                     type="button"
                     onClick={() => {
-                      triggerHaptic("light");
+                      triggerNoteTaking();
                       setGender(g);
                     }}
                     className={`py-3 px-4 rounded-2xl border text-xs font-bold transition-all cursor-pointer ${
                       gender === g
-                        ? "bg-[#1f7a8c] text-white border-[#1f7a8c] shadow-sm"
-                        : "bg-white dark:bg-zinc-800 border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300"
+                        ? "bg-[#1f7a8c] text-white border-[#1f7a8c] shadow-xs scale-[1.02]"
+                        : "bg-white dark:bg-zinc-800 border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 hover:border-teal-200"
                     }`}
                   >
                     {g}
@@ -288,8 +317,11 @@ export default function HealthProfileWizardModal({
                 <input
                   type="number"
                   value={weightKg}
-                  onChange={(e) => setWeightKg(e.target.value)}
-                  className="w-full px-3.5 py-2.5 text-sm font-bold rounded-2xl border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 text-center"
+                  onChange={(e) => {
+                    setWeightKg(e.target.value);
+                    triggerNoteTaking();
+                  }}
+                  className="w-full px-3.5 py-2.5 text-sm font-bold rounded-2xl border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 text-center focus:border-teal-500 focus:outline-none"
                 />
               </div>
 
@@ -300,8 +332,11 @@ export default function HealthProfileWizardModal({
                 <input
                   type="number"
                   value={heightCm}
-                  onChange={(e) => setHeightCm(e.target.value)}
-                  className="w-full px-3.5 py-2.5 text-sm font-bold rounded-2xl border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 text-center"
+                  onChange={(e) => {
+                    setHeightCm(e.target.value);
+                    triggerNoteTaking();
+                  }}
+                  className="w-full px-3.5 py-2.5 text-sm font-bold rounded-2xl border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 text-center focus:border-teal-500 focus:outline-none"
                 />
               </div>
             </div>
@@ -314,7 +349,7 @@ export default function HealthProfileWizardModal({
               <div className="text-2xl font-black text-[#1f7a8c] dark:text-teal-300">
                 {bmi} <span className="text-xs font-semibold text-zinc-500">kg/m²</span>
               </div>
-              <p className="text-[11px] text-zinc-600 dark:text-zinc-400 mt-1">
+              <p className="text-[11px] text-zinc-600 dark:text-zinc-400 mt-1 font-medium">
                 Calibrated against West African metabolic guidelines.
               </p>
             </div>
@@ -324,7 +359,7 @@ export default function HealthProfileWizardModal({
         {/* STEP 4: MEDICAL CONDITIONS */}
         {step === 4 && (
           <div className="space-y-3 animate-in fade-in duration-200">
-            <p className="text-xs text-zinc-600 dark:text-zinc-400">
+            <p className="text-xs text-zinc-600 dark:text-zinc-400 font-medium">
               Select any conditions for real-time glycemic and sodium safety warnings:
             </p>
 
@@ -345,8 +380,8 @@ export default function HealthProfileWizardModal({
                     onClick={() => toggleCondition(cond)}
                     className={`p-3 rounded-2xl border transition-all cursor-pointer flex items-center justify-between gap-3 ${
                       isSelected
-                        ? "bg-teal-50/70 dark:bg-teal-950/40 border-teal-400 dark:border-teal-700"
-                        : "bg-white dark:bg-zinc-800/40 border-zinc-200 dark:border-zinc-700"
+                        ? "bg-teal-50/70 dark:bg-teal-950/40 border-teal-400 dark:border-teal-700 shadow-xs"
+                        : "bg-white dark:bg-zinc-800/40 border-zinc-200 dark:border-zinc-700 hover:border-teal-200"
                     }`}
                   >
                     <span className="text-xs font-bold text-zinc-900 dark:text-zinc-100">
@@ -388,7 +423,7 @@ export default function HealthProfileWizardModal({
           <Button
             onClick={handleNext}
             disabled={isSaving}
-            className="bg-gradient-to-r from-[#1f7a8c] to-[#4ecdc4] hover:opacity-95 text-white font-bold px-6 py-2.5 rounded-2xl text-xs shadow-md flex items-center gap-2 cursor-pointer"
+            className="bg-gradient-to-r from-[#1f7a8c] to-[#4ecdc4] hover:opacity-95 text-white font-black px-6 py-2.5 rounded-2xl text-xs shadow-md flex items-center gap-2 cursor-pointer"
           >
             {isSaving ? (
               <>
@@ -397,7 +432,7 @@ export default function HealthProfileWizardModal({
               </>
             ) : step === 4 ? (
               <>
-                <span>Complete & Start Tour</span>
+                <span>Complete &amp; Start Tour</span>
                 <Sparkles size={14} />
               </>
             ) : (
