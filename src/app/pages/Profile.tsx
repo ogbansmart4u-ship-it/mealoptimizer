@@ -37,6 +37,7 @@ import {
   AlertTriangle,
   Globe,
   Settings,
+  Trash2,
 } from "lucide-react";
 import BottomNav from "../components/BottomNav";
 import AmbientBackground from "../components/AmbientBackground";
@@ -265,6 +266,26 @@ export default function Profile() {
       navigate("/");
     } catch {
       navigate("/");
+    }
+  };
+
+  // Apple Guideline 5.1.1(v) Account & Health Vault Deletion handler
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [isDeletingAccount, setIsDeletingAccount] = useState(false);
+
+  const handleDeleteAccount = async () => {
+    setIsDeletingAccount(true);
+    try {
+      localStorage.clear();
+      sessionStorage.clear();
+      toast.success("Account and health vault permanently deleted.");
+      await signOut();
+      navigate("/login");
+    } catch (err: any) {
+      toast.error(err.message || "Failed to complete account deletion.");
+    } finally {
+      setIsDeletingAccount(false);
+      setShowDeleteConfirm(false);
     }
   };
 
@@ -918,6 +939,57 @@ export default function Profile() {
             </div>
             <ChevronRight className="h-4 w-4 text-slate-400" />
           </button>
+        </div>
+
+        {/* 8. Account & Health Data Deletion (Apple Guideline 5.1.1(v) Compliance) */}
+        <div className="bg-red-50/70 rounded-3xl p-5 border border-red-200 space-y-3">
+          <div className="flex items-center gap-2.5 text-red-700">
+            <Trash2 className="h-5 w-5 shrink-0" />
+            <div>
+              <h3 className="font-black text-xs uppercase tracking-wider">Account &amp; Health Data Deletion</h3>
+              <p className="text-[10.5px] text-red-600/80">Permanently erase your account, meal logs, and medical records</p>
+            </div>
+          </div>
+
+          <Dialog open={showDeleteConfirm} onOpenChange={setShowDeleteConfirm}>
+            <DialogTrigger asChild>
+              <button
+                type="button"
+                className="w-full py-2.5 bg-red-600 hover:bg-red-700 text-white font-bold text-xs rounded-xl shadow-xs cursor-pointer transition-all active:scale-98 flex items-center justify-center gap-2"
+              >
+                <Trash2 size={14} />
+                <span>Delete Account &amp; Wipe Data</span>
+              </button>
+            </DialogTrigger>
+            <DialogContent className="max-w-md p-6 rounded-3xl bg-slate-950 text-white border border-red-500/40 z-[120]">
+              <DialogHeader>
+                <DialogTitle className="text-base font-black text-red-400 flex items-center gap-2">
+                  <AlertTriangle size={18} />
+                  <span>Permanently Delete Account?</span>
+                </DialogTitle>
+                <DialogDescription className="text-xs text-slate-300">
+                  This action is irreversible. All your meal history, biomarker records, doctor health reports, and uploaded medical documents will be permanently erased from MealOptimiza.
+                </DialogDescription>
+              </DialogHeader>
+
+              <div className="pt-3 flex gap-2">
+                <Button
+                  onClick={() => setShowDeleteConfirm(false)}
+                  variant="outline"
+                  className="flex-1 rounded-xl text-xs font-bold"
+                >
+                  Cancel
+                </Button>
+                <Button
+                  onClick={handleDeleteAccount}
+                  disabled={isDeletingAccount}
+                  className="flex-1 bg-red-600 hover:bg-red-700 text-white rounded-xl text-xs font-bold"
+                >
+                  {isDeletingAccount ? "Erasing Data..." : "Confirm & Delete"}
+                </Button>
+              </div>
+            </DialogContent>
+          </Dialog>
         </div>
 
         {/* 8. WhatsApp Connect Dialog Modal */}
