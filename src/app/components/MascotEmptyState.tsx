@@ -1,16 +1,14 @@
-// MascotEmptyState — friendly empty-state block featuring the "Avo" mascot.
-// Reusable across screens that have nothing to show yet (no meals logged,
-// no medications, etc.). Self-contained; uses a plain <img> for the asset.
-
 import type { ReactNode } from "react";
+import Mascot from "./Mascot";
 
 interface MascotEmptyStateProps {
   title: string;
   subtitle?: string;
   /** Optional call-to-action button/element rendered under the text. */
   action?: ReactNode;
-  /** Tailwind size for the mascot; defaults to a compact 28 (7rem). */
+  /** Size for the mascot; defaults to md. */
   size?: "sm" | "md";
+  gesture?: "wave" | "thumbs_up" | "writing" | "thinking" | "celebrate";
 }
 
 export default function MascotEmptyState({
@@ -18,19 +16,16 @@ export default function MascotEmptyState({
   subtitle,
   action,
   size = "md",
+  gesture = "wave",
 }: MascotEmptyStateProps) {
-  const imgSize = size === "sm" ? "w-24 h-24" : "w-32 h-32";
+  const pixelSize = size === "sm" ? 72 : 96;
   return (
-    <div className="flex flex-col items-center justify-center text-center py-8 px-4">
-      <img
-        src="/assets/mascot-v2.png"
-        alt="MealOptimiza mascot"
-        className={`${imgSize} object-contain drop-shadow-sm mb-4`}
-        loading="lazy"
-        decoding="async"
-      />
-      <h3 className="text-gray-800 font-semibold mb-1">{title}</h3>
-      {subtitle && <p className="text-sm text-gray-600 max-w-xs">{subtitle}</p>}
+    <div className="flex flex-col items-center justify-center text-center py-6 px-4">
+      <div className="mb-3 transform hover:scale-105 transition-transform duration-300">
+        <Mascot gesture={gesture} size={pixelSize} />
+      </div>
+      <h3 className="text-zinc-900 dark:text-zinc-100 font-extrabold text-sm sm:text-base mb-1">{title}</h3>
+      {subtitle && <p className="text-xs text-zinc-500 dark:text-zinc-400 max-w-xs leading-relaxed">{subtitle}</p>}
       {action && <div className="mt-4">{action}</div>}
     </div>
   );
