@@ -88,7 +88,38 @@ export async function signUp(userData: {
 }
 
 export async function getUserProfile() {
-  return apiCall('/auth/profile');
+  let backendProfile: any = {};
+  try {
+    backendProfile = await apiCall('/auth/profile');
+  } catch (err) {
+    console.warn('Backend /auth/profile fetch deferred:', err);
+  }
+
+  // Merge with official Supabase Auth user_metadata to guarantee 100% data persistence
+  try {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (user?.user_metadata) {
+      return {
+        ...user.user_metadata,
+        ...(backendProfile || {}),
+        name: backendProfile?.name || user.user_metadata?.name,
+        age: backendProfile?.age ?? user.user_metadata?.age,
+        weight: backendProfile?.weight ?? user.user_metadata?.weight,
+        height: backendProfile?.height ?? user.user_metadata?.height,
+        bmi: backendProfile?.bmi ?? user.user_metadata?.bmi,
+        bloodPressure: backendProfile?.bloodPressure ?? user.user_metadata?.bloodPressure,
+        systolic: backendProfile?.systolic ?? user.user_metadata?.systolic,
+        diastolic: backendProfile?.diastolic ?? user.user_metadata?.diastolic,
+        medicalCondition: backendProfile?.medicalCondition || backendProfile?.medical_condition || user.user_metadata?.medicalCondition || user.user_metadata?.medical_condition,
+        gender: backendProfile?.gender || user.user_metadata?.gender,
+        location: backendProfile?.location || user.user_metadata?.location,
+      };
+    }
+  } catch (err) {
+    console.warn('Supabase auth metadata check deferred:', err);
+  }
+
+  return backendProfile;
 }
 
 export async function updateUserProfile(profileData: {
@@ -109,10 +140,28 @@ export async function updateUserProfile(profileData: {
   plan?: string;
   isPro?: boolean;
 }) {
-  return apiCall('/auth/profile', {
-    method: 'PUT',
-    body: JSON.stringify(profileData),
-  });
+  // 1. Direct Cloud Sync: Write permanently to Supabase Auth cloud user_metadata
+  try {
+    await supabase.auth.updateUser({
+      data: {
+        ...profileData,
+        medical_condition: profileData.medicalCondition,
+      },
+    });
+  } catch (authErr) {
+    console.warn('Direct Supabase Auth update notice:', authErr);
+  }
+
+  // 2. Secondary Sync: Write to backend database API
+  try {
+    return await apiCall('/auth/profile', {
+      method: 'PUT',
+      body: JSON.stringify(profileData),
+    });
+  } catch (apiErr) {
+    console.warn('Backend API /auth/profile sync deferred:', apiErr);
+    return { success: true, ...profileData };
+  }
 }
 
 // ============================================

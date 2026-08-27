@@ -5,7 +5,7 @@ import React, {
   useEffect,
   ReactNode,
 } from "react";
-import { getUserProfile } from "../../lib/api";
+import { getUserProfile, updateUserProfile } from "../../lib/api";
 import { syncSubscriptionFromProfile, getSubscriptionStatus } from "../../lib/payment";
 import { useAuth } from "./AuthContext";
 
@@ -117,16 +117,16 @@ export function UserProvider({
       setIsFetching(true);
       setLoading(true);
 
-      // Read local cached profile first so we never drop biodata
+      // 1. Read local cached profile first so we never drop biodata
       let localCached: any = {};
       try {
-        const storedProfileRaw = localStorage.getItem(`user-profile-${activeUid}`);
+        const storedProfileRaw = localStorage.getItem("user-profile-" + activeUid) || localStorage.getItem("mealoptimizer_last_active_profile");
         if (storedProfileRaw) localCached = JSON.parse(storedProfileRaw);
       } catch {
         /* ignore */
       }
 
-      // If user is authenticated, attempt backend fetch
+      // 2. If user is authenticated, retrieve cloud data
       if (user) {
         try {
           const profileData = await getUserProfile();
@@ -138,23 +138,41 @@ export function UserProvider({
               : (currentSub.plan || profileData?.plan || localCached.plan || "free");
           const resolvedIsPro = resolvedPlan === "pro" || resolvedPlan === "family";
 
+          // Extract auth metadata
+          const authMeta = user.user_metadata || {};
+
+          // Extract values prioritizing actual user entered values over generic defaults
+          const resolvedName = profileData?.name || authMeta.name || localCached.name || user.email?.split('@')[0] || "Friend";
+          const resolvedAge = profileData?.age ?? authMeta.age ?? localCached.age ?? 28;
+          const resolvedWeight = profileData?.weight ?? authMeta.weight ?? localCached.weight ?? "70";
+          const resolvedHeight = profileData?.height ?? authMeta.height ?? localCached.height ?? "170";
+          const resolvedBmi = profileData?.bmi ?? authMeta.bmi ?? localCached.bmi ?? 24.2;
+          const resolvedBp = profileData?.bloodPressure ?? authMeta.bloodPressure ?? localCached.bloodPressure ?? "120/80";
+          const resolvedSystolic = profileData?.systolic ?? authMeta.systolic ?? localCached.systolic ?? 120;
+          const resolvedDiastolic = profileData?.diastolic ?? authMeta.diastolic ?? localCached.diastolic ?? 80;
+          const resolvedGender = profileData?.gender || authMeta.gender || localCached.gender || "male";
+          const resolvedCondition = profileData?.medicalCondition || profileData?.medical_condition || authMeta.medicalCondition || authMeta.medical_condition || localCached.medicalCondition || "Metabolic Optimization";
+          const resolvedLocation = profileData?.location || authMeta.location || localCached.location || localStorage.getItem("userLocation") || "Nigeria";
+          const resolvedPic = profileData?.profilePicture || authMeta.profilePicture || savedPic || localCached.profilePicture || "";
+
           const merged: UserProfile = {
             ...localCached,
             ...profileData,
+            ...authMeta,
             id: user.id,
             email: user.email || profileData?.email || localCached.email || "user@mealoptimizer.app",
-            name: profileData?.name || localCached.name || user.user_metadata?.name || "Frank Ogban",
-            age: profileData?.age || localCached.age || 28,
-            weight: profileData?.weight || localCached.weight || "74",
-            height: profileData?.height || localCached.height || "175",
-            bmi: profileData?.bmi || localCached.bmi || 24.2,
-            bloodPressure: profileData?.bloodPressure || localCached.bloodPressure || "120/80",
-            systolic: profileData?.systolic || localCached.systolic || 120,
-            diastolic: profileData?.diastolic || localCached.diastolic || 80,
-            gender: profileData?.gender || localCached.gender || "male",
-            medicalCondition: profileData?.medicalCondition || localCached.medicalCondition || "Metabolic Optimization",
-            location: profileData?.location || localCached.location || localStorage.getItem("userLocation") || "Nigeria",
-            profilePicture: profileData?.profilePicture || savedPic || localCached.profilePicture || "",
+            name: resolvedName,
+            age: Number(resolvedAge) || 28,
+            weight: String(resolvedWeight),
+            height: String(resolvedHeight),
+            bmi: Number(resolvedBmi) || 24.2,
+            bloodPressure: String(resolvedBp),
+            systolic: Number(resolvedSystolic) || 120,
+            diastolic: Number(resolvedDiastolic) || 80,
+            gender: resolvedGender,
+            medicalCondition: resolvedCondition,
+            location: resolvedLocation,
+            profilePicture: resolvedPic,
             plan: resolvedPlan,
             isPro: resolvedIsPro,
             subscriptionExpiresAt: profileData?.subscriptionExpiresAt || localCached.subscriptionExpiresAt || currentSub.expiresAt,
@@ -163,10 +181,10 @@ export function UserProvider({
           setProfile(merged);
 
           try {
-            localStorage.setItem(`user-profile-${user.id}`, JSON.stringify(merged));
+            localStorage.setItem("user-profile-" + user.id, JSON.stringify(merged));
             localStorage.setItem("mealoptimizer_last_active_profile", JSON.stringify(merged));
             if (merged.profilePicture) {
-              localStorage.setItem(`profile-picture-${user.id}`, merged.profilePicture);
+              localStorage.setItem("profile-picture-" + user.id, merged.profilePicture);
             }
           } catch {}
 
@@ -179,7 +197,7 @@ export function UserProvider({
       }
 
       // Fallback: Check localStorage
-      const storedProfile = localStorage.getItem(`user-profile-${activeUid}`);
+      const storedProfile = localStorage.getItem("user-profile-" + activeUid) || localStorage.getItem("mealoptimizer_last_active_profile");
       if (storedProfile) {
         const parsed = JSON.parse(storedProfile);
         if (!parsed.profilePicture) parsed.profilePicture = readSavedPicture(activeUid);
@@ -194,22 +212,23 @@ export function UserProvider({
         return;
       }
 
-      // Fallback: Create initial healthy metabolic profile
+      // Initial guest fallback
       const currentSub = getSubscriptionStatus(activeUid);
       const fallbackProfile: UserProfile = {
+        ...DEFAULT_GUEST_PROFILE,
         id: activeUid,
         email: user?.email || "user@mealoptimizer.app",
-        name: user?.user_metadata?.name || localCached.name || "Frank Ogban",
+        name: user?.user_metadata?.name || localCached.name || "Friend",
         age: Number(user?.user_metadata?.age) || localCached.age || 28,
         bmi: Number(user?.user_metadata?.bmi) || localCached.bmi || 24.2,
-        weight: user?.user_metadata?.weight || localCached.weight || "74",
-        height: user?.user_metadata?.height || localCached.height || "175",
-        bloodPressure: user?.user_metadata?.bloodPressure || localCached.bloodPressure || "120/80",
+        weight: String(user?.user_metadata?.weight || localCached.weight || "70"),
+        height: String(user?.user_metadata?.height || localCached.height || "170"),
+        bloodPressure: String(user?.user_metadata?.bloodPressure || localCached.bloodPressure || "120/80"),
         systolic: Number(user?.user_metadata?.systolic) || localCached.systolic || 120,
         diastolic: Number(user?.user_metadata?.diastolic) || localCached.diastolic || 80,
         gender: user?.user_metadata?.gender || localCached.gender || "male",
         medicalCondition: user?.user_metadata?.medical_condition ||
-                         user?.user_metadata?.goal ||
+                         user?.user_metadata?.medicalCondition ||
                          localCached.medicalCondition ||
                          "Metabolic Optimization",
         medications: user?.user_metadata?.medications || localCached.medications || "",
@@ -227,7 +246,7 @@ export function UserProvider({
       setProfile(fallbackProfile);
 
       try {
-        localStorage.setItem(`user-profile-${activeUid}`, JSON.stringify(fallbackProfile));
+        localStorage.setItem("user-profile-" + activeUid, JSON.stringify(fallbackProfile));
         localStorage.setItem("mealoptimizer_last_active_profile", JSON.stringify(fallbackProfile));
       } catch {}
 
@@ -245,7 +264,7 @@ export function UserProvider({
     refreshProfile();
   }, [user?.id]);
 
-  // Update profile locally and lock in permanently
+  // Update profile locally and lock in permanently to cloud
   const updateProfile = (updates: Partial<UserProfile>) => {
     const base = profile || DEFAULT_GUEST_PROFILE;
     const updatedProfile = { ...base, ...updates };
@@ -254,12 +273,19 @@ export function UserProvider({
 
     const activeUid = user?.id || "guest-user";
     try {
-      localStorage.setItem(`user-profile-${activeUid}`, JSON.stringify(updatedProfile));
+      localStorage.setItem("user-profile-" + activeUid, JSON.stringify(updatedProfile));
       localStorage.setItem("mealoptimizer_last_active_profile", JSON.stringify(updatedProfile));
       if (updates.profilePicture) {
-        localStorage.setItem(`profile-picture-${activeUid}`, updates.profilePicture);
+        localStorage.setItem("profile-picture-" + activeUid, updates.profilePicture);
       }
     } catch {}
+
+    // Auto-sync to Supabase cloud if user is logged in
+    if (user?.id) {
+      updateUserProfile(updates).catch((err) => {
+        console.warn("Background cloud profile sync deferred:", err);
+      });
+    }
   };
 
   // Legacy setters for backward compatibility
