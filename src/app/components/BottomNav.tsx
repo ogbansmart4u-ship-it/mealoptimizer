@@ -82,25 +82,48 @@ function BottomNavBar() {
         {navItems.map(({ path, icon: Icon, label }) => {
           const isActive = location.pathname === path;
           const badge = badges[path];
+          const isHealth = path === "/health";
+          const isGoals = path === "/goals";
 
           return (
             <Link
               key={path}
               to={path}
-              className="flex flex-col items-center gap-1 transition-opacity hover:opacity-80 min-w-[44px] relative"
+              className={`flex flex-col items-center gap-1 transition-all duration-300 min-w-[46px] relative group ${
+                isActive ? "text-white" : "text-white/70 hover:text-white"
+              }`}
             >
-              <div className="relative">
+              <div className={`relative p-1 rounded-2xl transition-all duration-300 ${
+                isActive
+                  ? "animate-nav-pop bg-white/15 shadow-inner"
+                  : "group-hover:scale-105"
+              }`}>
                 <Icon
-                  className={`h-6 w-6 ${isActive ? 'fill-white' : ''}`}
-                  strokeWidth={isActive ? 2.5 : 2}
+                  className={`h-5.5 w-5.5 transition-transform duration-300 ${
+                    isActive ? "fill-white/20" : ""
+                  } ${
+                    isHealth && isActive
+                      ? "animate-heartbeat text-emerald-300"
+                      : isGoals && isActive
+                      ? "animate-pulse-radar text-amber-300"
+                      : ""
+                  }`}
+                  strokeWidth={isActive ? 2.6 : 2}
                 />
                 {badge && badge.count > 0 && (
-                  <div className={`absolute -top-2 -right-2 ${badge.color || 'bg-red-500'} text-white text-xs font-bold rounded-full min-w-[18px] h-[18px] flex items-center justify-center px-1`}>
+                  <div className={`absolute -top-1.5 -right-2 ${badge.color || 'bg-rose-500'} animate-badge-bounce text-white text-[10px] font-black rounded-full min-w-[17px] h-[17px] flex items-center justify-center px-1 shadow-md border border-white/40`}>
                     {badge.count > 9 ? '9+' : badge.count}
                   </div>
                 )}
               </div>
-              <span className="text-xs font-medium">{label}</span>
+              <span className={`text-[11px] font-bold tracking-tight transition-all ${
+                isActive ? "text-white scale-105" : "text-white/75 group-hover:text-white"
+              }`}>
+                {label}
+              </span>
+              {isActive && (
+                <span className="w-1.5 h-1.5 rounded-full bg-amber-300 shadow-xs animate-fade-in -mt-0.5" />
+              )}
             </Link>
           );
         })}

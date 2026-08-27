@@ -183,3 +183,81 @@ button:not([disabled]):active,
     transform: none;
   }
 }
+
+
+/* Key Section Icon Micro-Animations */
+@keyframes heartbeat {
+  0%, 100% { transform: scale(1); }
+  14% { transform: scale(1.18); }
+  28% { transform: scale(1); }
+  42% { transform: scale(1.12); }
+  70% { transform: scale(1); }
+}
+
+@keyframes iconWiggle {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(-8deg); }
+  75% { transform: rotate(8deg); }
+}
+
+@keyframes navPop {
+  0% { transform: scale(0.92); }
+  50% { transform: scale(1.18) translateY(-2px); }
+  100% { transform: scale(1.08) translateY(-1px); }
+}
+
+@keyframes badgeBounce {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.18) translateY(-1px); }
+}
+
+@keyframes waterPulse {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-2px) scale(1.08); }
+}
+
+@keyframes micRipple {
+  0% { box-shadow: 0 0 0 0 rgba(244, 63, 94, 0.6); }
+  70% { box-shadow: 0 0 0 10px rgba(244, 63, 94, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(244, 63, 94, 0); }
+}
+
+@keyframes waGreenPulse {
+  0% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.6); }
+  70% { box-shadow: 0 0 0 8px rgba(37, 211, 102, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0); }
+}
+
+@keyframes shieldGlow {
+  0%, 100% { transform: scale(1); filter: drop-shadow(0 0 2px rgba(78, 205, 196, 0.4)); }
+  50% { transform: scale(1.06); filter: drop-shadow(0 0 8px rgba(78, 205, 196, 0.8)); }
+}
+
+.animate-heartbeat {
+  animation: heartbeat 2.2s ease-in-out infinite;
+  transform-origin: center;
+}
+
+.animate-nav-pop {
+  animation: navPop 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+.animate-badge-bounce {
+  animation: badgeBounce 2.5s ease-in-out infinite;
+}
+
+.animate-water-pulse {
+  animation: waterPulse 2.8s ease-in-out infinite;
+}
+
+.animate-mic-ripple {
+  animation: micRipple 2s cubic-bezier(0, 0.2, 0.8, 1) infinite;
+}
+
+.animate-wa-pulse {
+  animation: waGreenPulse 2.4s cubic-bezier(0, 0.2, 0.8, 1) infinite;
+}
+
+.animate-shield-glow {
+  animation: shieldGlow 3s ease-in-out infinite;
+}
