@@ -3,12 +3,15 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
-import { Camera, Utensils, Coffee, Apple, Zap, Plus, X, Sparkles, Save, Search, Loader2, AlertTriangle } from 'lucide-react';
+import { Camera, MessageSquare, Mic, Utensils, Coffee, Apple, Zap, Plus, X, Sparkles, Save, Search, Loader2, AlertTriangle } from 'lucide-react';
 import { searchFoods, getMedications, analyzeFoodImage, type FoodItem } from '../../lib/api';
 import { useUser } from '../contexts/UserContext';
 import { useLocation } from '../contexts/LocationContext';
 import { getMedicationFoodFlags, type InteractionFlag } from '../data/medicationInteractions';
 import CameraCapture from './CameraCapture';
+import Mascot from './Mascot';
+import { launchWhatsAppFoodBot } from '../../lib/whatsapp';
+import VoiceFoodLogger from './VoiceFoodLogger';
 import SmartPlateAdvisor from './SmartPlateAdvisor';
 import { findMatchingPairings } from '../data/nutrientPairings';
 import { toast } from 'sonner';
@@ -50,6 +53,7 @@ export default function AddMealLog({ isOpen, onClose, onSave, onAdd, selectedDat
   const { selectedLocation } = useLocation();
   const [step, setStep] = useState<'method' | 'manual' | 'camera' | 'search'>('method');
   const [showCameraCapture, setShowCameraCapture] = useState(false);
+  const [showVoiceLogger, setShowVoiceLogger] = useState(false);
   const [capturedImage, setCapturedImage] = useState<string | null>(null);
   const [analyzing, setAnalyzing] = useState(false);
   const [showSmartPlate, setShowSmartPlate] = useState(false);
@@ -383,61 +387,136 @@ export default function AddMealLog({ isOpen, onClose, onSave, onAdd, selectedDat
     <>
       <Dialog open={isOpen && !showCameraCapture} onOpenChange={handleClose}>
         <DialogContent className="max-w-lg">
-          {/* Method Selection */}
+          {/* Method Selection - 10X Upgraded */}
           {step === 'method' && (
-            <div>
-              <DialogHeader>
-                <div className="flex items-center justify-between">
-                  <DialogTitle className="text-2xl text-[#1f7a8c]">Log a Meal</DialogTitle>
-                  <button onClick={handleClose} className="p-2 hover:bg-gray-100 rounded-full">
-                    <X className="h-5 w-5 text-gray-600" />
-                  </button>
+            <div className="space-y-4">
+              <DialogHeader className="text-left pb-1">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-gradient-to-br from-teal-500/20 to-emerald-500/20 rounded-2xl border border-teal-500/30 shrink-0">
+                    <Mascot gesture="wave" size={42} />
+                  </div>
+                  <div>
+                    <span className="text-[10px] uppercase font-black tracking-wider text-teal-600 dark:text-teal-400 bg-teal-50 dark:bg-teal-950 px-2 py-0.5 rounded-full border border-teal-200 dark:border-teal-800">
+                      Smart Food Diary
+                    </span>
+                    <DialogTitle className="text-xl font-black text-slate-900 dark:text-white mt-1">
+                      Log a Meal 🍽️
+                    </DialogTitle>
+                    <DialogDescription className="text-xs text-slate-500 dark:text-slate-400">
+                      Choose your preferred way to log your African or diaspora meal.
+                    </DialogDescription>
+                  </div>
                 </div>
-                <DialogDescription>Choose how you'd like to log your meal.</DialogDescription>
               </DialogHeader>
 
-              <div className="space-y-3 mt-6">
-                {/* Analyze with Camera */}
+              {/* 5 High-Converting Entry Methods */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1">
+                {/* 1. AI Camera Scanner */}
                 <button
                   onClick={() => setShowCameraCapture(true)}
-                  className="w-full flex items-center gap-4 p-5 bg-gradient-to-r from-[#1f7a8c] to-[#4ecdc4] text-white rounded-xl hover:shadow-lg transition-all"
+                  className="sm:col-span-2 flex items-center gap-3.5 p-4 bg-gradient-to-r from-[#1f7a8c] via-[#0d9488] to-[#115e59] hover:opacity-95 text-white rounded-2xl shadow-md transition-all cursor-pointer group active:scale-98 text-left"
                 >
-                  <div className="bg-white/20 rounded-full p-3">
-                    <Camera className="h-6 w-6" />
+                  <div className="bg-white/20 rounded-xl p-2.5 shrink-0 group-hover:scale-105 transition-transform">
+                    <Camera className="h-6 w-6 text-white" />
                   </div>
-                  <div className="text-left flex-1">
-                    <div className="font-semibold">Analyze Food with Camera</div>
-                    <div className="text-sm text-white/80">Take photo for automatic analysis</div>
+                  <div className="flex-1 min-w-0">
+                    <div className="font-extrabold text-sm flex items-center gap-1.5">
+                      <span>Analyze Food with AI Camera</span>
+                      <span className="text-[9px] bg-amber-400 text-slate-950 px-1.5 py-0.2 rounded-full font-black">Fastest</span>
+                    </div>
+                    <div className="text-[11px] text-teal-100/90 truncate">Snap a photo for instant calories, macros &amp; glycemic spike score</div>
                   </div>
                 </button>
 
-                {/* Search Food Database */}
+                {/* 2. Voice AI Dictation */}
+                <button
+                  onClick={() => setShowVoiceLogger(true)}
+                  className="flex items-center gap-3 p-3.5 bg-gradient-to-br from-rose-50 to-amber-50 dark:from-rose-950/40 dark:to-amber-950/30 border border-rose-200 dark:border-rose-800/60 hover:border-rose-400 rounded-2xl transition-all cursor-pointer text-left group active:scale-98"
+                >
+                  <div className="bg-rose-500 text-white rounded-xl p-2.5 shrink-0 group-hover:scale-105 transition-transform shadow-xs">
+                    <Mic className="h-5 w-5 animate-pulse" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="font-bold text-xs text-slate-900 dark:text-white">Speak to Sarah (Voice AI)</div>
+                    <div className="text-[10.5px] text-rose-700 dark:text-rose-300 truncate">English, Pidgin or French</div>
+                  </div>
+                </button>
+
+                {/* 3. WhatsApp Bot */}
+                <button
+                  onClick={() => launchWhatsAppFoodBot()}
+                  className="flex items-center gap-3 p-3.5 bg-emerald-50/70 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/60 hover:border-emerald-400 rounded-2xl transition-all cursor-pointer text-left group active:scale-98"
+                >
+                  <div className="bg-[#25D366] text-slate-950 rounded-xl p-2.5 shrink-0 group-hover:scale-105 transition-transform shadow-xs font-bold">
+                    <MessageSquare className="h-5 w-5 text-white" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="font-bold text-xs text-slate-900 dark:text-white">WhatsApp Food Bot</div>
+                    <div className="text-[10.5px] text-emerald-700 dark:text-emerald-300 truncate">Snap photos on WhatsApp</div>
+                  </div>
+                </button>
+
+                {/* 4. Search Database */}
                 <button
                   onClick={() => setStep('search')}
-                  className="w-full flex items-center gap-4 p-5 bg-white border-2 border-gray-200 hover:border-[#1f7a8c] rounded-xl transition-all"
+                  className="flex items-center gap-3 p-3.5 bg-slate-50 dark:bg-slate-800/70 border border-slate-200 dark:border-slate-700 hover:border-teal-500 rounded-2xl transition-all cursor-pointer text-left group active:scale-98"
                 >
-                  <div className="bg-[#E8F5F5] rounded-full p-3">
-                    <Search className="h-6 w-6 text-[#1f7a8c]" />
+                  <div className="bg-teal-500/15 text-teal-700 dark:text-teal-300 rounded-xl p-2.5 shrink-0 group-hover:scale-105 transition-transform">
+                    <Search className="h-5 w-5" />
                   </div>
-                  <div className="text-left flex-1">
-                    <div className="font-semibold text-gray-800">Search Food Database</div>
-                    <div className="text-sm text-gray-600">Nigerian & West African foods with nutrition</div>
+                  <div className="flex-1 min-w-0">
+                    <div className="font-bold text-xs text-slate-900 dark:text-white">Search African Foods</div>
+                    <div className="text-[10.5px] text-slate-500 dark:text-slate-400 truncate">1,500+ Nigerian &amp; diaspora meals</div>
                   </div>
                 </button>
 
-                {/* Manual Entry */}
+                {/* 5. Manual Entry */}
                 <button
                   onClick={() => setStep('manual')}
-                  className="w-full flex items-center gap-4 p-5 bg-white border-2 border-gray-200 hover:border-[#1f7a8c] rounded-xl transition-all"
+                  className="flex items-center gap-3 p-3.5 bg-slate-50 dark:bg-slate-800/70 border border-slate-200 dark:border-slate-700 hover:border-teal-500 rounded-2xl transition-all cursor-pointer text-left group active:scale-98"
                 >
-                  <div className="bg-[#E8F5F5] rounded-full p-3">
-                    <Plus className="h-6 w-6 text-[#1f7a8c]" />
+                  <div className="bg-teal-500/15 text-teal-700 dark:text-teal-300 rounded-xl p-2.5 shrink-0 group-hover:scale-105 transition-transform">
+                    <Plus className="h-5 w-5" />
                   </div>
-                  <div className="text-left flex-1">
-                    <div className="font-semibold text-gray-800">Enter Manually</div>
-                    <div className="text-sm text-gray-600">Type food details yourself</div>
+                  <div className="flex-1 min-w-0">
+                    <div className="font-bold text-xs text-slate-900 dark:text-white">Enter Manually</div>
+                    <div className="text-[10.5px] text-slate-500 dark:text-slate-400 truncate">Type portion &amp; cooking method</div>
                   </div>
                 </button>
+              </div>
+
+              {/* 1-Tap Quick Cultural Starters */}
+              <div className="pt-2 border-t border-slate-100 dark:border-slate-800">
+                <span className="text-[10px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400 block mb-2">
+                  1-Tap Popular African Dishes:
+                </span>
+                <div className="flex flex-wrap gap-1.5">
+                  {[
+                    { name: "🍲 Jollof & Chicken", cals: "520", p: "32", c: "68", f: "14", type: "lunch" },
+                    { name: "🥣 Oat Swallow & Okra", cals: "430", p: "28", c: "45", f: "12", type: "dinner" },
+                    { name: "🥑 Moi Moi & Eggs", cals: "340", p: "24", c: "28", f: "11", type: "breakfast" },
+                    { name: "🥩 Beef Suya & Greens", cals: "380", p: "34", c: "12", f: "22", type: "dinner" },
+                  ].map((dish, i) => (
+                    <button
+                      key={i}
+                      onClick={() => {
+                        setFormData((prev) => ({
+                          ...prev,
+                          foodName: dish.name.replace(/^[^a-zA-Z]+/, ''),
+                          calories: dish.cals,
+                          protein: dish.p,
+                          carbs: dish.c,
+                          fats: dish.f,
+                          mealType: dish.type as MealType,
+                        }));
+                        setStep('manual');
+                      }}
+                      className="px-3 py-1.5 bg-teal-50/80 dark:bg-teal-950/60 hover:bg-teal-100 dark:hover:bg-teal-900 text-teal-900 dark:text-teal-200 border border-teal-200 dark:border-teal-800 rounded-xl text-xs font-bold transition-colors cursor-pointer active:scale-95"
+                    >
+                      {dish.name}
+                    </button>
+                  ))}
+                </div>
               </div>
             </div>
           )}
@@ -446,12 +525,7 @@ export default function AddMealLog({ isOpen, onClose, onSave, onAdd, selectedDat
           {step === 'search' && (
             <div>
               <DialogHeader>
-                <div className="flex items-center justify-between">
-                  <DialogTitle className="text-2xl text-[#1f7a8c]">Search Foods</DialogTitle>
-                  <button onClick={handleClose} className="p-2 hover:bg-gray-100 rounded-full">
-                    <X className="h-5 w-5 text-gray-600" />
-                  </button>
-                </div>
+                <DialogTitle className="text-xl font-extrabold text-[#1f7a8c] dark:text-teal-400">Search African Foods 🔍</DialogTitle>
                 <DialogDescription>Find a Nigerian / West African food and add it to your meal.</DialogDescription>
               </DialogHeader>
 
@@ -549,9 +623,8 @@ export default function AddMealLog({ isOpen, onClose, onSave, onAdd, selectedDat
           {step === 'manual' && (
             <div>
               <DialogHeader>
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <DialogTitle className="text-2xl text-[#1f7a8c]">Meal Details</DialogTitle>
+                <div className="flex items-center gap-2">
+                    <DialogTitle className="text-xl font-extrabold text-[#1f7a8c] dark:text-teal-400">Meal Details 🍲</DialogTitle>
                     {autoSaveIndicator && (
                       <div className="flex items-center gap-1 text-xs text-green-600 animate-fade-in">
                         <Save className="h-3 w-3" />
@@ -559,10 +632,6 @@ export default function AddMealLog({ isOpen, onClose, onSave, onAdd, selectedDat
                       </div>
                     )}
                   </div>
-                  <button onClick={handleClose} className="p-2 hover:bg-gray-100 rounded-full">
-                    <X className="h-5 w-5 text-gray-600" />
-                  </button>
-                </div>
                 <DialogDescription>Enter the details for your meal.</DialogDescription>
               </DialogHeader>
 
