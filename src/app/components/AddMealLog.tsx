@@ -244,7 +244,7 @@ export default function AddMealLog({ isOpen, onClose, onSave, onAdd, selectedDat
     { id: 'snack' as MealType, label: 'Snack', icon: Zap, color: 'bg-blue-50 text-blue-600' },
   ];
 
-  const handleCameraCapture = async (imageData: string, _source: 'camera' | 'upload') => {
+  const handleCameraCapture = async (imageData: string, _source: 'camera' | 'upload' | 'manual', _manualInput?: string, voiceHint?: string) => {
     setCapturedImage(imageData);
     setShowCameraCapture(false);
     setStep('manual');
@@ -257,6 +257,7 @@ export default function AddMealLog({ isOpen, onClose, onSave, onAdd, selectedDat
         age: profile?.age ?? 0,
         bmi: profile?.bmi ?? 0,
         location: selectedLocation?.displayName || 'Nigeria',
+        voiceWhisper: voiceHint || '',
       });
       // Edge fn returns { analysis: {...} }; tolerate a flat shape too.
       const a = (data?.analysis ?? data) || {};
@@ -729,6 +730,96 @@ export default function AddMealLog({ isOpen, onClose, onSave, onAdd, selectedDat
                       <span>Bio-synergy suggestions available!</span>
                     </div>
                   )}
+                </div>
+
+                
+                {/* 1-Tap Ambiguity Swap Chips for Similar & Hidden African Foods */}
+                <div className="p-3.5 bg-gradient-to-r from-amber-50/80 to-teal-50/80 dark:from-amber-950/30 dark:to-teal-950/30 rounded-2xl border border-amber-200/80 dark:border-amber-800/60 space-y-2">
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="font-extrabold text-slate-800 dark:text-slate-200 flex items-center gap-1">
+                      <span>🪄 Did we get it right? 1-Tap Quick Swaps:</span>
+                    </span>
+                    <span className="text-[10px] text-amber-700 dark:text-amber-300 font-bold bg-amber-100 dark:bg-amber-900/60 px-2 py-0.5 rounded-md">
+                      Auto-Adjusts Macros
+                    </span>
+                  </div>
+
+                  <div className="flex flex-wrap gap-1.5 pt-0.5">
+                    {/* Custard vs Pap swap */}
+                    <button
+                      type="button"
+                      onClick={() => {
+                        triggerHaptic('selection');
+                        setFormData((prev) => ({
+                          ...prev,
+                          foodName: prev.foodName.replace(/pap|akamu|ogi/i, 'Custard').includes('Custard') ? prev.foodName : `Custard & ${prev.foodName}`,
+                          calories: String((parseInt(prev.calories, 10) || 300) + 30),
+                          carbs: String((parseInt(prev.carbs, 10) || 45) + 8),
+                        }));
+                        toast.success("Swapped to Custard (+8g Carbs, +30 kcal)");
+                      }}
+                      className="px-2.5 py-1 bg-white dark:bg-slate-800 hover:bg-amber-100 text-amber-900 dark:text-amber-200 rounded-xl text-[11px] font-bold border border-amber-200 dark:border-amber-700 cursor-pointer shadow-2xs transition-colors"
+                    >
+                      🍮 Swap to Custard
+                    </button>
+
+                    {/* Egg Roll swap */}
+                    <button
+                      type="button"
+                      onClick={() => {
+                        triggerHaptic('selection');
+                        setFormData((prev) => ({
+                          ...prev,
+                          foodName: prev.foodName.replace(/puff.*puff|buns/i, 'Egg Roll').includes('Egg Roll') ? prev.foodName : `${prev.foodName} (with Egg Roll)`,
+                          calories: String((parseInt(prev.calories, 10) || 300) + 75),
+                          protein: String((parseInt(prev.protein, 10) || 10) + 7),
+                          fats: String((parseInt(prev.fats, 10) || 8) + 5),
+                        }));
+                        toast.success("Added Boiled Egg inside Egg Roll (+7g Protein, +75 kcal)");
+                      }}
+                      className="px-2.5 py-1 bg-white dark:bg-slate-800 hover:bg-amber-100 text-amber-900 dark:text-amber-200 rounded-xl text-[11px] font-bold border border-amber-200 dark:border-amber-700 cursor-pointer shadow-2xs transition-colors"
+                    >
+                      🥚 Has Boiled Egg (Egg Roll)
+                    </button>
+
+                    {/* Hot Chocolate / Milo swap */}
+                    <button
+                      type="button"
+                      onClick={() => {
+                        triggerHaptic('selection');
+                        setFormData((prev) => ({
+                          ...prev,
+                          foodName: prev.foodName.replace(/tea|coffee/i, 'Hot Chocolate (Milo)').includes('Chocolate') ? prev.foodName : `${prev.foodName} & Hot Chocolate (Milo)`,
+                          calories: String((parseInt(prev.calories, 10) || 200) + 90),
+                          carbs: String((parseInt(prev.carbs, 10) || 20) + 16),
+                          protein: String((parseInt(prev.protein, 10) || 4) + 3),
+                        }));
+                        toast.success("Swapped to Hot Chocolate / Milo (+16g Carbs, +90 kcal)");
+                      }}
+                      className="px-2.5 py-1 bg-white dark:bg-slate-800 hover:bg-amber-100 text-amber-900 dark:text-amber-200 rounded-xl text-[11px] font-bold border border-amber-200 dark:border-amber-700 cursor-pointer shadow-2xs transition-colors"
+                    >
+                      🍫 Hot Chocolate / Milo
+                    </button>
+
+                    {/* Evaporated Milk add-on */}
+                    <button
+                      type="button"
+                      onClick={() => {
+                        triggerHaptic('selection');
+                        setFormData((prev) => ({
+                          ...prev,
+                          foodName: `${prev.foodName} + Peak Milk`,
+                          calories: String((parseInt(prev.calories, 10) || 300) + 80),
+                          protein: String((parseInt(prev.protein, 10) || 10) + 4),
+                          fats: String((parseInt(prev.fats, 10) || 8) + 4),
+                        }));
+                        toast.success("Added Evaporated Milk (+4g Protein, +80 kcal)");
+                      }}
+                      className="px-2.5 py-1 bg-white dark:bg-slate-800 hover:bg-teal-100 text-teal-900 dark:text-teal-200 rounded-xl text-[11px] font-bold border border-teal-200 dark:border-teal-700 cursor-pointer shadow-2xs transition-colors"
+                    >
+                      🥛 + Peak / Evap Milk
+                    </button>
+                  </div>
                 </div>
 
                 {/* Visual Portion Estimator */}

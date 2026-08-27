@@ -253,10 +253,16 @@ export async function analyzeFoodImage(imageBase64: string, userContext: {
   age: number;
   bmi: number;
   location: string;
+  voiceWhisper?: string;
+  userHint?: string;
 }) {
   return apiCall('/ai/analyze-food', {
     method: 'POST',
-    body: JSON.stringify({ imageBase64, userContext }),
+    body: JSON.stringify({
+      imageBase64,
+      userContext,
+      voiceWhisper: userContext.voiceWhisper || userContext.userHint || '',
+    }),
   });
 }
 

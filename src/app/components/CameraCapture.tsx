@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
-import { Camera, Upload, Keyboard, X, SwitchCamera, Circle, AlertCircle, RefreshCw, Smartphone } from 'lucide-react';
+import { Camera, Mic, Sparkles, Check, Upload, Keyboard, X, SwitchCamera, Circle, AlertCircle, RefreshCw, Smartphone } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from './ui/dialog';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
@@ -9,7 +9,7 @@ import { triggerHaptic } from '../utils/celebration';
 type CameraCaptureProps = {
   isOpen: boolean;
   onClose: () => void;
-  onCapture: (imageData: string, source: 'camera' | 'upload' | 'manual', manualInput?: string) => void;
+  onCapture: (imageData: string, source: 'camera' | 'upload' | 'manual', manualInput?: string, voiceHint?: string) => void;
   mode?: 'food' | 'barcode';
   title?: string;
 };
@@ -21,7 +21,11 @@ export default function CameraCapture({
   mode = 'food',
   title
 }: CameraCaptureProps) {
-  const [view, setView] = useState<'options' | 'camera' | 'manual'>('options');
+  const [view, setView] = useState<'options' | 'camera' | 'manual' | 'preview'>('options');
+  const [capturedPreview, setCapturedPreview] = useState<string | null>(null);
+  const [captureSource, setCaptureSource] = useState<'camera' | 'upload'>('camera');
+  const [voiceWhisperText, setVoiceWhisperText] = useState('');
+  const [isListening, setIsListening] = useState(false);
   const [stream, setStream] = useState<MediaStream | null>(null);
   const [facingMode, setFacingMode] = useState<'user' | 'environment'>('environment');
   const [manualInput, setManualInput] = useState('');
@@ -146,8 +150,9 @@ export default function CameraCapture({
       const imageData = canvas.toDataURL('image/jpeg', 0.9);
 
       stopTracks();
-      onCapture(imageData, 'camera');
-      handleClose();
+      setCapturedPreview(imageData);
+      setCaptureSource('camera');
+      setView('preview');
     }
   };
 
@@ -159,10 +164,54 @@ export default function CameraCapture({
     const reader = new FileReader();
     reader.onload = (e) => {
       const imageData = e.target?.result as string;
-      onCapture(imageData, 'upload');
-      handleClose();
+      setCapturedPreview(imageData);
+      setCaptureSource('upload');
+      setView('preview');
     };
     reader.readAsDataURL(file);
+  };
+
+  
+  const startVoiceWhisper = () => {
+    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+      toast.info("Speech recognition not supported in this browser. Please type your dish hint.");
+      return;
+    }
+
+    try {
+      const recognition = new SpeechRecognition();
+      recognition.lang = 'en-NG'; // Nigerian English with Pidgin tolerance
+      recognition.continuous = false;
+      recognition.interimResults = false;
+
+      recognition.onstart = () => {
+        setIsListening(true);
+        triggerHaptic('light');
+        toast.info("🎙️ Listening... Tell Sarah what is on the plate");
+      };
+
+      recognition.onresult = (event: any) => {
+        const transcript = event.results[0][0].transcript;
+        setVoiceWhisperText(transcript);
+        triggerHaptic('success');
+        toast.success(`Recorded: "${transcript}"`);
+      };
+
+      recognition.onerror = (event: any) => {
+        console.warn("Speech recognition error:", event.error);
+        setIsListening(false);
+      };
+
+      recognition.onend = () => {
+        setIsListening(false);
+      };
+
+      recognition.start();
+    } catch (err) {
+      console.warn("Speech recognition failed to initialize:", err);
+      setIsListening(false);
+    }
   };
 
   const handleManualSubmit = () => {
@@ -170,6 +219,26 @@ export default function CameraCapture({
       triggerHaptic('light');
       onCapture('', 'manual', manualInput.trim());
       handleClose();
+    }
+  };
+
+  
+  const handleConfirmPreview = () => {
+    if (capturedPreview) {
+      triggerHaptic('medium');
+      onCapture(capturedPreview, captureSource, undefined, voiceWhisperText.trim());
+      handleClose();
+    }
+  };
+
+  const handleRetake = () => {
+    setCapturedPreview(null);
+    setVoiceWhisperText('');
+    if (captureSource === 'camera') {
+      startCamera();
+      setView('camera');
+    } else {
+      setView('options');
     }
   };
 
