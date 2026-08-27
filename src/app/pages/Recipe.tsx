@@ -44,6 +44,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { Button } from "../components/ui/button";
 import AmbientBackground from "../components/AmbientBackground";
 import Mascot from "../components/Mascot";
+import AfricanSwapEngine from "../components/AfricanSwapEngine";
 import { toast } from "sonner";
 import { triggerConfetti, triggerHaptic } from "../utils/celebration";
 
@@ -100,550 +101,1402 @@ export interface FullRecipe {
 
 const MASTER_RECIPES: FullRecipe[] = [
   {
-    id: "1",
-    name: "Diabetic-Friendly Oat Swallow & Fresh Okra Soup",
-    emoji: "🥣",
-    category: "lunch",
-    tags: ["diabetic-friendly", "heart-healthy", "weight-loss"],
-    prepTime: 15,
-    cookTime: 25,
-    baseServings: 2,
-    difficulty: "easy",
-    baseCalories: 390,
-    baseProtein: 26,
-    baseCarbs: 48,
-    baseFats: 10,
-    glycemicIndex: "Low",
-    rating: 4.9,
-    reviews: 142,
-    healthBenefits: "Soluble oat beta-glucan and okra mucilage buffer post-meal blood sugar surges.",
-    clinicalNote: "Low Glycemic Index (~42). Viscous mucilage slows gastric carbohydrate absorption by ~35%.",
-    localMarkets: ["Oyingbo Market", "Mile 12 Market", "Tesco / Walmart International Aisle"],
-    ingredients: [
-      { amount: 0.5, unit: "cup", name: "Rolled oats ground into flour", diasporaSwap: "Spelt or almond flour" },
-      { amount: 150, unit: "g", name: "Fresh green okra finely chopped", diasporaSwap: "Frozen cut okra or Molokhia" },
-      { amount: 150, unit: "g", name: "Grilled Mackerel / Titus fish", diasporaSwap: "Salmon or cod fillets" },
-      { amount: 1, unit: "tbsp", name: "Ground crayfish", diasporaSwap: "Dried shrimp powder" },
-      { amount: 1, unit: "tsp", name: "Fermented locust beans (Iru)", lowSodiumSwap: "Garlic, ginger & black pepper" },
-      { amount: 1, unit: "cup", name: "Pumpkin leaf (Ugu) or spinach", diasporaSwap: "Baby spinach or chopped kale" },
-      { amount: 1, unit: "tsp", name: "Unbleached virgin red palm oil", lowSodiumSwap: "Extra virgin olive oil" },
+    "id": "1",
+    "name": "Diabetic-Friendly Oat Swallow & Fresh Okra Soup",
+    "emoji": "🥣",
+    "category": "lunch",
+    "tags": [
+      "diabetic-friendly",
+      "heart-healthy",
+      "weight-loss"
     ],
-    steps: [
-      {
-        stepNumber: 1,
-        instruction: "Bring 1.5 cups of water to a gentle boil in a pot. Whisk oat flour vigorously with a wooden spoon for 3 minutes until smooth, stretchy, and lump-free.",
-        flameLevel: "Medium",
-        timerMinutes: 3,
-        avoTip: "Keep stirring continuously in one direction to activate the natural beta-glucan elasticity!",
-      },
-      {
-        stepNumber: 2,
-        instruction: "In a separate saucepan, heat 1 cup of water with crayfish, Iru, and chopped peppers. Add the fresh chopped okra and stir gently for 4 minutes.",
-        flameLevel: "Medium",
-        timerMinutes: 4,
-        avoTip: "Do not cover the pot while cooking okra so it maintains its vibrant green chlorophyll and slimy mucilage.",
-      },
-      {
-        stepNumber: 3,
-        instruction: "Fold in shredded pumpkin leaves (Ugu) and grilled fish. Simmer for 2 minutes and take off heat immediately.",
-        flameLevel: "Simmer",
-        timerMinutes: 2,
-        avoTip: "Short cooking preserves heat-sensitive folates and Vitamin C in your greens.",
-      },
+    "prepTime": 15,
+    "cookTime": 25,
+    "baseServings": 2,
+    "difficulty": "easy",
+    "baseCalories": 390,
+    "baseProtein": 26,
+    "baseCarbs": 48,
+    "baseFats": 10,
+    "glycemicIndex": "Low",
+    "rating": 4.9,
+    "reviews": 142,
+    "healthBenefits": "Soluble oat beta-glucan and okra mucilage buffer post-meal blood sugar surges.",
+    "clinicalNote": "Low Glycemic Index (~42). Viscous mucilage slows gastric carbohydrate absorption by ~35%.",
+    "localMarkets": [
+      "Oyingbo Market",
+      "Mile 12 Market",
+      "Tesco / Walmart International Aisle"
     ],
+    "ingredients": [
+      {
+        "amount": 0.5,
+        "unit": "cup",
+        "name": "Rolled oats ground into flour",
+        "diasporaSwap": "Spelt or almond-psyllium flour"
+      },
+      {
+        "amount": 150,
+        "unit": "g",
+        "name": "Fresh green okra finely chopped",
+        "diasporaSwap": "Frozen cut okra or Molokhia"
+      },
+      {
+        "amount": 150,
+        "unit": "g",
+        "name": "Grilled Mackerel / Titus fish",
+        "diasporaSwap": "Salmon or cod fillets"
+      },
+      {
+        "amount": 1,
+        "unit": "tbsp",
+        "name": "Ground crayfish",
+        "diasporaSwap": "Dried shrimp powder"
+      },
+      {
+        "amount": 1,
+        "unit": "tsp",
+        "name": "Fermented locust beans (Iru)",
+        "lowSodiumSwap": "Garlic, ginger & black pepper"
+      },
+      {
+        "amount": 1,
+        "unit": "cup",
+        "name": "Pumpkin leaf (Ugu) or spinach",
+        "diasporaSwap": "Baby spinach or chopped kale"
+      },
+      {
+        "amount": 1,
+        "unit": "tsp",
+        "name": "Unbleached virgin red palm oil",
+        "lowSodiumSwap": "Extra virgin olive oil"
+      }
+    ],
+    "steps": [
+      {
+        "stepNumber": 1,
+        "instruction": "Bring 1.5 cups of water to a gentle boil in a pot. Whisk oat flour vigorously for 3 minutes until smooth, stretchy, and lump-free.",
+        "flameLevel": "Medium",
+        "timerMinutes": 3,
+        "avoTip": "Keep stirring continuously in one direction to activate natural beta-glucan elasticity!"
+      },
+      {
+        "stepNumber": 2,
+        "instruction": "In a separate saucepan, heat 1 cup of water with crayfish, Iru, and chopped peppers. Add fresh chopped okra and stir gently for 4 minutes.",
+        "flameLevel": "Medium",
+        "timerMinutes": 4,
+        "avoTip": "Do not cover the pot while cooking okra to maintain vibrant chlorophyll and slimy mucilage."
+      },
+      {
+        "stepNumber": 3,
+        "instruction": "Fold in shredded pumpkin leaves (Ugu) and grilled fish. Simmer for 2 minutes and take off heat immediately.",
+        "flameLevel": "Simmer",
+        "timerMinutes": 2,
+        "avoTip": "Short cooking preserves heat-sensitive folates and Vitamin C in greens."
+      }
+    ]
   },
   {
-    id: "2",
-    name: "Low-Sodium Native Brown Jollof Rice",
-    emoji: "🍚",
-    category: "lunch",
-    tags: ["diabetic-friendly", "low-sodium", "heart-healthy"],
-    prepTime: 20,
-    cookTime: 45,
-    baseServings: 4,
-    difficulty: "medium",
-    baseCalories: 410,
-    baseProtein: 28,
-    baseCarbs: 56,
-    baseFats: 9,
-    glycemicIndex: "Medium",
-    rating: 4.8,
-    reviews: 218,
-    healthBenefits: "Whole brown rice provides slow-release energy; umami base replaces industrial bouillon cubes.",
-    clinicalNote: "Sodium reduced by 65% compared to standard restaurant party Jollof.",
-    localMarkets: ["Tejuosho Market", "Balogun Market", "ShopRite / Whole Foods"],
-    ingredients: [
-      { amount: 0.5, unit: "cup", name: "Unpolished Brown Rice or Ofada", diasporaSwap: "Wild rice blend or Bulgur wheat" },
-      { amount: 150, unit: "g", name: "Skinless chicken breast or turkey", diasporaSwap: "Tofu or lean beef strips" },
-      { amount: 1, unit: "cup", name: "Blended plum tomatoes & red bell pepper", diasporaSwap: "Canned crushed San Marzano tomatoes" },
-      { amount: 0.5, unit: "bulb", name: "Red onion chopped", diasporaSwap: "Shallots" },
-      { amount: 1, unit: "tbsp", name: "Fermented Iru (locust beans)", lowSodiumSwap: "Ground bay leaf, thyme & garlic" },
-      { amount: 1, unit: "tbsp", name: "Ground dried crayfish", diasporaSwap: "Smoked paprika & mushroom powder" },
-      { amount: 1, unit: "tbsp", name: "Cold-pressed olive oil or sunflower oil", lowSodiumSwap: "Zero-salt vegetable broth reduction" },
+    "id": "2",
+    "name": "Low-Sodium Native Brown Jollof Rice",
+    "emoji": "🍚",
+    "category": "lunch",
+    "tags": [
+      "diabetic-friendly",
+      "low-sodium",
+      "heart-healthy"
     ],
-    steps: [
-      {
-        stepNumber: 1,
-        instruction: "Rinse brown rice thoroughly under cold water. Parboil for 15 minutes, drain, and set aside.",
-        flameLevel: "High",
-        timerMinutes: 15,
-        avoTip: "Parboiling brown rice strips excess starch surface dust, keeping the grains separate and fluffy.",
-      },
-      {
-        stepNumber: 2,
-        instruction: "In a heavy pot, saute onions, garlic, ginger, and Iru in olive oil for 3 minutes until aromatic. Pour in the blended tomato-pepper reduction.",
-        flameLevel: "Medium",
-        timerMinutes: 5,
-        avoTip: "The Iru and crayfish provide natural glutamates (umami), so you don't need sodium-heavy seasoning cubes!",
-      },
-      {
-        stepNumber: 3,
-        instruction: "Add chicken broth, bay leaves, thyme, and drained brown rice. Cover tightly with foil and pot lid. Simmer on low heat for 25 minutes until all liquid is absorbed.",
-        flameLevel: "Low",
-        timerMinutes: 25,
-        avoTip: "Tightly sealing with foil traps the steam, ensuring brown rice cooks completely tender.",
-      },
+    "prepTime": 20,
+    "cookTime": 45,
+    "baseServings": 4,
+    "difficulty": "medium",
+    "baseCalories": 410,
+    "baseProtein": 28,
+    "baseCarbs": 56,
+    "baseFats": 9,
+    "glycemicIndex": "Medium",
+    "rating": 4.8,
+    "reviews": 218,
+    "healthBenefits": "Whole brown rice provides slow-release energy; umami base replaces industrial bouillon cubes.",
+    "clinicalNote": "Sodium reduced by 65% compared to standard restaurant party Jollof.",
+    "localMarkets": [
+      "Tejuosho Market",
+      "Balogun Market",
+      "ShopRite / Whole Foods"
     ],
+    "ingredients": [
+      {
+        "amount": 0.5,
+        "unit": "cup",
+        "name": "Unpolished Brown Rice or Ofada",
+        "diasporaSwap": "Wild rice blend or Bulgur wheat"
+      },
+      {
+        "amount": 150,
+        "unit": "g",
+        "name": "Skinless chicken breast or turkey",
+        "diasporaSwap": "Tofu or lean beef strips"
+      },
+      {
+        "amount": 1,
+        "unit": "cup",
+        "name": "Blended plum tomatoes & red bell pepper",
+        "diasporaSwap": "Canned crushed San Marzano tomatoes"
+      },
+      {
+        "amount": 0.5,
+        "unit": "bulb",
+        "name": "Red onion chopped",
+        "diasporaSwap": "Shallots"
+      },
+      {
+        "amount": 1,
+        "unit": "tbsp",
+        "name": "Fermented Iru (locust beans)",
+        "lowSodiumSwap": "Ground bay leaf, thyme & garlic"
+      },
+      {
+        "amount": 1,
+        "unit": "tbsp",
+        "name": "Ground dried crayfish",
+        "diasporaSwap": "Smoked paprika & mushroom powder"
+      },
+      {
+        "amount": 1,
+        "unit": "tbsp",
+        "name": "Cold-pressed olive oil",
+        "lowSodiumSwap": "Zero-salt vegetable broth reduction"
+      }
+    ],
+    "steps": [
+      {
+        "stepNumber": 1,
+        "instruction": "Rinse brown rice thoroughly under cold water. Parboil for 15 minutes, drain, and set aside.",
+        "flameLevel": "High",
+        "timerMinutes": 15,
+        "avoTip": "Parboiling brown rice strips excess starch surface dust, keeping grains separate and fluffy."
+      },
+      {
+        "stepNumber": 2,
+        "instruction": "In a heavy pot, saute onions, garlic, ginger, and Iru in olive oil for 3 minutes until aromatic. Pour in blended tomato-pepper reduction.",
+        "flameLevel": "Medium",
+        "timerMinutes": 5,
+        "avoTip": "Iru and crayfish provide natural glutamates (umami), eliminating the need for sodium-heavy seasoning cubes!"
+      },
+      {
+        "stepNumber": 3,
+        "instruction": "Add chicken broth, bay leaves, thyme, and drained brown rice. Cover tightly with foil and pot lid. Simmer on low heat for 25 minutes until liquid is absorbed.",
+        "flameLevel": "Low",
+        "timerMinutes": 25,
+        "avoTip": "Tightly sealing with foil traps steam, ensuring brown rice cooks completely tender."
+      }
+    ]
   },
   {
-    id: "3",
-    name: "Protein-Packed Egusi & Ugu Soup (Unbleached)",
-    emoji: "🍲",
-    category: "dinner",
-    tags: ["high-protein", "pcos-safe", "heart-healthy"],
-    prepTime: 20,
-    cookTime: 35,
-    baseServings: 4,
-    difficulty: "medium",
-    baseCalories: 440,
-    baseProtein: 34,
-    baseCarbs: 16,
-    baseFats: 24,
-    glycemicIndex: "Low",
-    rating: 4.9,
-    reviews: 189,
-    healthBenefits: "High in arginine, healthy linoleic fats, and magnesium from natural melon seeds.",
-    clinicalNote: "Zero glycemic spike (Carbs < 18g). Ideal for PCOS and ketogenic-leaning metabolic diets.",
-    localMarkets: ["Mile 12 Market", "Oshodi Market", "African Grocery Store"],
-    ingredients: [
-      { amount: 0.5, unit: "cup", name: "Ground melon seeds (Egusi)", diasporaSwap: "Pumpkin seeds (Pepitas) ground" },
-      { amount: 150, unit: "g", name: "Lean beef chunks or goat meat", diasporaSwap: "Skinless chicken thighs" },
-      { amount: 100, unit: "g", name: "Steamed stockfish / smoked fish flakes", diasporaSwap: "Smoked trout or haddock" },
-      { amount: 1.5, unit: "cups", name: "Fresh fluted pumpkin leaves (Ugu)", diasporaSwap: "Collard greens or spinach" },
-      { amount: 1, unit: "tbsp", name: "Virgin unrefined red palm oil", lowSodiumSwap: "Avocado oil + paprika" },
-      { amount: 1, unit: "tbsp", name: "Locust beans (Iru)", lowSodiumSwap: "Onion powder & ground coriander" },
+    "id": "3",
+    "name": "Protein-Packed Egusi & Ugu Soup (Unbleached)",
+    "emoji": "🍲",
+    "category": "dinner",
+    "tags": [
+      "high-protein",
+      "pcos-safe",
+      "heart-healthy"
     ],
-    steps: [
-      {
-        stepNumber: 1,
-        instruction: "Mix ground egusi with 3 tablespoons of warm water and a pinch of grated onion to form small moist clumps.",
-        flameLevel: "Low",
-        timerMinutes: 2,
-        avoTip: "Forming egusi into tight paste balls creates that hearty, mouthwatering curd texture without excess oil.",
-      },
-      {
-        stepNumber: 2,
-        instruction: "Heat unbleached palm oil lightly on low heat. Drop egusi clumps into the pot with meat broth and Iru. Simmer covered for 15 minutes.",
-        flameLevel: "Medium",
-        timerMinutes: 15,
-        avoTip: "Never bleach palm oil until smoke rises—unbleached oil preserves 100% of its Vitamin E tocotrienols.",
-      },
-      {
-        stepNumber: 3,
-        instruction: "Stir in shredded Ugu leaves, smoked fish, and ground crayfish. Cook for 3 final minutes and remove from heat.",
-        flameLevel: "Simmer",
-        timerMinutes: 3,
-        avoTip: "Pair with 1 small wrap of oat swallow or cauliflower swallow for an ultra-low glycemic dinner.",
-      },
+    "prepTime": 20,
+    "cookTime": 35,
+    "baseServings": 4,
+    "difficulty": "medium",
+    "baseCalories": 440,
+    "baseProtein": 34,
+    "baseCarbs": 16,
+    "baseFats": 24,
+    "glycemicIndex": "Low",
+    "rating": 4.9,
+    "reviews": 189,
+    "healthBenefits": "High in arginine, healthy linoleic fats, and magnesium from natural melon seeds.",
+    "clinicalNote": "Zero glycemic spike (Carbs < 18g). Ideal for PCOS and ketogenic-leaning metabolic diets.",
+    "localMarkets": [
+      "Mile 12 Market",
+      "Oshodi Market",
+      "African Grocery Store"
     ],
+    "ingredients": [
+      {
+        "amount": 0.5,
+        "unit": "cup",
+        "name": "Ground melon seeds (Egusi)",
+        "diasporaSwap": "Pumpkin seeds (Pepitas) ground"
+      },
+      {
+        "amount": 150,
+        "unit": "g",
+        "name": "Lean beef chunks or goat meat",
+        "diasporaSwap": "Skinless chicken thighs"
+      },
+      {
+        "amount": 100,
+        "unit": "g",
+        "name": "Steamed stockfish / smoked fish flakes",
+        "diasporaSwap": "Smoked trout or haddock"
+      },
+      {
+        "amount": 1.5,
+        "unit": "cups",
+        "name": "Fresh fluted pumpkin leaves (Ugu)",
+        "diasporaSwap": "Collard greens or spinach"
+      },
+      {
+        "amount": 1,
+        "unit": "tbsp",
+        "name": "Virgin unrefined red palm oil",
+        "lowSodiumSwap": "Avocado oil + paprika"
+      },
+      {
+        "amount": 1,
+        "unit": "tbsp",
+        "name": "Locust beans (Iru)",
+        "lowSodiumSwap": "Onion powder & ground coriander"
+      }
+    ],
+    "steps": [
+      {
+        "stepNumber": 1,
+        "instruction": "Mix ground egusi with 3 tablespoons of warm water and a pinch of grated onion to form small moist clumps.",
+        "flameLevel": "Low",
+        "timerMinutes": 2,
+        "avoTip": "Forming egusi into tight paste balls creates that hearty curd texture without excess oil."
+      },
+      {
+        "stepNumber": 2,
+        "instruction": "Heat unbleached palm oil lightly on low heat. Drop egusi clumps into the pot with meat broth and Iru. Simmer covered for 15 minutes.",
+        "flameLevel": "Medium",
+        "timerMinutes": 15,
+        "avoTip": "Never bleach palm oil until smoke rises—unbleached oil preserves 100% of its Vitamin E tocotrienols."
+      },
+      {
+        "stepNumber": 3,
+        "instruction": "Stir in shredded Ugu leaves, smoked fish, and ground crayfish. Cook for 3 final minutes and remove from heat.",
+        "flameLevel": "Simmer",
+        "timerMinutes": 3,
+        "avoTip": "Pair with 1 small wrap of oat swallow or cauliflower swallow for an ultra-low glycemic dinner."
+      }
+    ]
   },
   {
-    id: "4",
-    name: "Heart-Healthy Anti-Inflammatory Pepper Soup",
-    emoji: "🌶️",
-    category: "dinner",
-    tags: ["low-sodium", "diabetic-friendly", "weight-loss", "heart-healthy"],
-    prepTime: 10,
-    cookTime: 25,
-    baseServings: 2,
-    difficulty: "easy",
-    baseCalories: 230,
-    baseProtein: 32,
-    baseCarbs: 6,
-    baseFats: 8,
-    glycemicIndex: "Low",
-    rating: 4.8,
-    reviews: 174,
-    healthBenefits: "Thermogenic spices (calabash nutmeg, uziza) support vascular relaxation and digestion.",
-    clinicalNote: "Nearly zero carbohydrate density. Ideal post-workout recovery and hypertension broth.",
-    localMarkets: ["Epe Fish Market", "Ikeja Market", "Asian Fish Market"],
-    ingredients: [
-      { amount: 200, unit: "g", name: "Fresh catfish or Tilapia cutlets", diasporaSwap: "Salmon steak or red snapper" },
-      { amount: 1, unit: "tbsp", name: "Traditional pepper soup spice blend (Ehuru/Uda)", diasporaSwap: "Allspice, ginger & black peppercorns" },
-      { amount: 0.5, unit: "cup", name: "Fresh scent leaf (Efirin / Nchuanwu)", diasporaSwap: "Fresh sweet basil or mint leaves" },
-      { amount: 1, unit: "tsp", name: "Freshly grated ginger & garlic", lowSodiumSwap: "Extra lime juice for tang" },
-      { amount: 1, unit: "pc", name: "Scotch bonnet pepper seeded", diasporaSwap: "Habanero or jalapeño" },
+    "id": "4",
+    "name": "Afang & Waterleaf Superfood Pot with Smoked Fish",
+    "emoji": "🥗",
+    "category": "dinner",
+    "tags": [
+      "diabetic-friendly",
+      "high-protein",
+      "heart-healthy",
+      "weight-loss"
     ],
-    steps: [
+    "prepTime": 25,
+    "cookTime": 30,
+    "baseServings": 4,
+    "difficulty": "medium",
+    "baseCalories": 360,
+    "baseProtein": 38,
+    "baseCarbs": 11,
+    "baseFats": 16,
+    "glycemicIndex": "Low",
+    "rating": 5,
+    "reviews": 245,
+    "healthBenefits": "Wild Okazi (Gnetum africanum) leaves are rich in bioactive sterols, reducing intestinal cholesterol uptake.",
+    "clinicalNote": "Extremely low glycemic load (GL 3). High natural prebiotic fiber enhances insulin sensitivity.",
+    "localMarkets": [
+      "Watt Market Calabar",
+      "Uyo Main Market",
+      "African Diaspora Grocers"
+    ],
+    "ingredients": [
       {
-        stepNumber: 1,
-        instruction: "Place catfish in a pot with 3 cups of water, grated ginger, garlic, and traditional spices. Bring to a rolling boil for 10 minutes.",
-        flameLevel: "High",
-        timerMinutes: 10,
-        avoTip: "The aromatic terpenes in Ehuru (African nutmeg) help naturally calm intestinal spasms.",
+        "amount": 2,
+        "unit": "cups",
+        "name": "Finely ground Afang / Okazi leaves",
+        "diasporaSwap": "Wild spinach / Ukazi leaves from Afro-shop"
       },
       {
-        stepNumber: 2,
-        instruction: "Toss in chopped scent leaves and simmer for 5 minutes until the fish is tender and flaky.",
-        flameLevel: "Simmer",
-        timerMinutes: 5,
-        avoTip: "Drink the rich, fragrant broth first to stimulate satiety hormones before eating the fish.",
+        "amount": 3,
+        "unit": "cups",
+        "name": "Fresh waterleaf or baby spinach",
+        "diasporaSwap": "Lamb's lettuce, purslane or baby spinach"
       },
+      {
+        "amount": 200,
+        "unit": "g",
+        "name": "Smoked catfish and periwinkles",
+        "diasporaSwap": "Smoked trout and sea clams"
+      },
+      {
+        "amount": 150,
+        "unit": "g",
+        "name": "Lean beef tripe / shaki or skinless goat meat",
+        "diasporaSwap": "Lean grass-fed beef"
+      },
+      {
+        "amount": 2,
+        "unit": "tbsp",
+        "name": "Ground crayfish",
+        "diasporaSwap": "Dried shrimp flakes"
+      },
+      {
+        "amount": 1,
+        "unit": "tbsp",
+        "name": "Unbleached virgin palm oil",
+        "lowSodiumSwap": "Cold-pressed avocado oil"
+      }
     ],
+    "steps": [
+      {
+        "stepNumber": 1,
+        "instruction": "Cook meat and smoked fish with onions, crayfish, and fresh yellow pepper in 1 cup of water until tender.",
+        "flameLevel": "Medium",
+        "timerMinutes": 20,
+        "avoTip": "Keep water minimal because waterleaf releases its own natural flavorful moisture!"
+      },
+      {
+        "stepNumber": 2,
+        "instruction": "Add washed, chopped waterleaf into the pot. Let simmer for 3 minutes until softened.",
+        "flameLevel": "Medium",
+        "timerMinutes": 3,
+        "avoTip": "Waterleaf provides vital soluble pectin fibers that protect gastric lining."
+      },
+      {
+        "stepNumber": 3,
+        "instruction": "Stir in ground Afang leaves and remaining crayfish. Simmer for 2 minutes on low flame and turn off heat.",
+        "flameLevel": "Simmer",
+        "timerMinutes": 2,
+        "avoTip": "Never overcook Afang; gentle heat preserves the crisp crunch and medicinal alkaloids."
+      }
+    ]
   },
   {
-    id: "5",
-    name: "Steamed Protein Moi-Moi with Boiled Egg",
-    emoji: "🍮",
-    category: "breakfast",
-    tags: ["high-protein", "diabetic-friendly", "weight-loss", "pcos-safe"],
-    prepTime: 25,
-    cookTime: 40,
-    baseServings: 4,
-    difficulty: "medium",
-    baseCalories: 310,
-    baseProtein: 22,
-    baseCarbs: 32,
-    baseFats: 9,
-    glycemicIndex: "Low",
-    rating: 4.9,
-    reviews: 205,
-    healthBenefits: "Slow-digesting cowpeas deliver prebiotic fiber and steady amino acid release.",
-    clinicalNote: "Low glycemic load (~8). Resistant starch nourishes beneficial gut Bifidobacteria.",
-    localMarkets: ["Idumota Market", "Oyingbo Market", "African Caribbean Food Market"],
-    ingredients: [
-      { amount: 0.5, unit: "cup", name: "Peeled brown cowpeas (Beans)", diasporaSwap: "Black-eyed peas or chickpea flour" },
-      { amount: 1, unit: "pc", name: "Hard-boiled egg sliced", diasporaSwap: "Flaked canned tuna or tofu" },
-      { amount: 0.5, unit: "cup", name: "Red bell peppers & onions blended", diasporaSwap: "Piquillo roasted peppers" },
-      { amount: 1, unit: "tbsp", name: "Ground crayfish", diasporaSwap: "Nutritional yeast for savory depth" },
-      { amount: 1, unit: "tbsp", name: "Sunflower or olive oil", lowSodiumSwap: "Cold-pressed coconut oil" },
+    "id": "5",
+    "name": "Antioxidant Ghanaian Waakye with Shito & Boiled Egg",
+    "emoji": "🍛",
+    "category": "lunch",
+    "tags": [
+      "diabetic-friendly",
+      "high-protein",
+      "heart-healthy"
     ],
-    steps: [
+    "prepTime": 20,
+    "cookTime": 40,
+    "baseServings": 3,
+    "difficulty": "medium",
+    "baseCalories": 430,
+    "baseProtein": 24,
+    "baseCarbs": 62,
+    "baseFats": 11,
+    "glycemicIndex": "Medium",
+    "rating": 4.9,
+    "reviews": 230,
+    "healthBenefits": "Red sorghum stalks (Waakye leaves) infuse dense 3-deoxyanthocyanidins that improve glucose uptake.",
+    "clinicalNote": "Cowpea-to-rice protein complementarity creates a full amino acid profile while lowering glycemic index.",
+    "localMarkets": [
+      "Makola Market Accra",
+      "Kejetia Market Kumasi",
+      "Afro-Caribbean Supermarkets"
+    ],
+    "ingredients": [
       {
-        stepNumber: 1,
-        instruction: "Blend soaked peeled beans with red bell peppers, onions, ginger, and crayfish with 1 cup of water until silky smooth.",
-        flameLevel: "Low",
-        timerMinutes: 3,
-        avoTip: "Whisk the blended batter with a spoon for 2 minutes to incorporate air for a fluffy, soufflé texture!",
+        "amount": 0.5,
+        "unit": "cup",
+        "name": "Brown rice or ofada rice",
+        "diasporaSwap": "Basmati brown rice or quinoa"
       },
       {
-        stepNumber: 2,
-        instruction: "Pour batter into silicone muffin cups or banana leaves, placing boiled egg slice inside each. Steam in a covered pot with 2 inches of boiling water for 35 minutes.",
-        flameLevel: "Medium",
-        timerMinutes: 35,
-        avoTip: "Steaming uses zero excess frying oil, keeping calories and trans fats low.",
+        "amount": 0.5,
+        "unit": "cup",
+        "name": "Black-eyed peas or red cowpeas",
+        "diasporaSwap": "Canned organic black-eyed peas"
       },
+      {
+        "amount": 3,
+        "unit": "pcs",
+        "name": "Dried sorghum leaf sheaths (Waakye leaves)",
+        "diasporaSwap": "Baking soda pinch with hibiscus petal"
+      },
+      {
+        "amount": 1,
+        "unit": "pc",
+        "name": "Hard boiled egg",
+        "diasporaSwap": "Boiled organic egg or grilled tofu"
+      },
+      {
+        "amount": 1,
+        "unit": "tbsp",
+        "name": "Black pepper Shito chili sauce",
+        "lowSodiumSwap": "Homemade low-salt ginger-garlic Shito"
+      },
+      {
+        "amount": 0.25,
+        "unit": "pc",
+        "name": "Sliced fresh avocado",
+        "diasporaSwap": "Guacamole"
+      }
     ],
+    "steps": [
+      {
+        "stepNumber": 1,
+        "instruction": "Soak black-eyed peas with sorghum leaf sheaths in 3 cups of water for 3 hours until water turns deep burgundy.",
+        "flameLevel": "Low",
+        "timerMinutes": 5,
+        "avoTip": "Sorghum leaves are among nature's highest dietary sources of longevity polyphenols!"
+      },
+      {
+        "stepNumber": 2,
+        "instruction": "Boil beans in burgundy sorghum water until 70% tender (about 20 minutes). Discard sorghum stalks.",
+        "flameLevel": "High",
+        "timerMinutes": 20,
+        "avoTip": "Cooking rice together with pulse broth reduces insulin surge by 30%."
+      },
+      {
+        "stepNumber": 3,
+        "instruction": "Add washed brown rice, sea salt pinch, and simmer covered on low flame for 20 minutes until fluffy. Serve with boiled egg and avocado.",
+        "flameLevel": "Low",
+        "timerMinutes": 20,
+        "avoTip": "Pairing with avocado healthy fats further slows carbohydrate gastric emptying."
+      }
+    ]
   },
   {
-    id: "6",
-    name: "Efo Riro (Leafy Spinach & Ugu Stir-In) with Lean Beef",
-    emoji: "🥬",
-    category: "dinner",
-    tags: ["high-protein", "heart-healthy", "diabetic-friendly"],
-    prepTime: 15,
-    cookTime: 30,
-    baseServings: 4,
-    difficulty: "easy",
-    baseCalories: 320,
-    baseProtein: 32,
-    baseCarbs: 12,
-    baseFats: 14,
-    glycemicIndex: "Low",
-    rating: 4.9,
-    reviews: 160,
-    healthBenefits: "High iron, folate, and calcium from greens; lean protein supports muscle without blood sugar spikes.",
-    clinicalNote: "Ultra-low carbohydrate density (12g). Excellent for glycemic stabilization.",
-    localMarkets: ["Balogun Market", "Mile 12 Market", "Supermarket Produce Aisle"],
-    ingredients: [
-      { amount: 2, unit: "cups", name: "Coarsely chopped spinach & Ugu leaves", diasporaSwap: "Swiss chard, baby kale & spinach" },
-      { amount: 150, unit: "g", name: "Lean diced beef or turkey", diasporaSwap: "Extra firm tofu or grilled chicken" },
-      { amount: 0.5, unit: "cup", name: "Coarsely blended pepper & tomato base", diasporaSwap: "Fire-roasted crushed tomatoes" },
-      { amount: 1, unit: "tbsp", name: "Fermented Iru", lowSodiumSwap: "Chopped garlic, ginger & thyme" },
-      { amount: 1, unit: "tbsp", name: "Ground crayfish", diasporaSwap: "Smoked dried shrimp" },
+    "id": "6",
+    "name": "Baobab (Miyan Kuka) & Ancient Fonio Supergrain",
+    "emoji": "🥣",
+    "category": "dinner",
+    "tags": [
+      "diabetic-friendly",
+      "weight-loss",
+      "pcos-safe",
+      "heart-healthy"
     ],
-    steps: [
-      {
-        stepNumber: 1,
-        instruction: "Blanch chopped spinach in boiling water for 60 seconds, drain immediately, and squeeze out excess moisture.",
-        flameLevel: "High",
-        timerMinutes: 1,
-        avoTip: "Squeezing out excess water prevents your Efo Riro stew from turning watery!",
-      },
-      {
-        stepNumber: 2,
-        instruction: "Fry pepper sauce with Iru, crayfish, and cooked beef until the oil floats on top (about 12 minutes).",
-        flameLevel: "Medium",
-        timerMinutes: 12,
-        avoTip: "Cooking the pepper base thoroughly develops deep sweetness without adding sugar.",
-      },
-      {
-        stepNumber: 3,
-        instruction: "Turn off the stove flame and stir in blanched greens. Let residual heat wilt the leaves for 2 minutes.",
-        flameLevel: "Simmer",
-        timerMinutes: 2,
-        avoTip: "Turning off heat before stirring in greens keeps them crisp, bright green, and nutrient-dense.",
-      },
+    "prepTime": 15,
+    "cookTime": 25,
+    "baseServings": 2,
+    "difficulty": "easy",
+    "baseCalories": 340,
+    "baseProtein": 30,
+    "baseCarbs": 42,
+    "baseFats": 8,
+    "glycemicIndex": "Low",
+    "rating": 4.9,
+    "reviews": 165,
+    "healthBenefits": "Dried baobab leaf powder contains over 50% dietary fiber and 7x more vitamin C than oranges.",
+    "clinicalNote": "Fonio has a low glycemic index (GI 45) and is naturally rich in sulfur-containing methionine & cystine.",
+    "localMarkets": [
+      "Kano Central Market",
+      "Wuse Market Abuja",
+      "Whole Foods Fonio Aisle / Afro-Caribbean Market"
     ],
+    "ingredients": [
+      {
+        "amount": 2,
+        "unit": "tbsp",
+        "name": "Dried baobab leaf powder (Kuka)",
+        "diasporaSwap": "Organic baobab fruit/leaf powder"
+      },
+      {
+        "amount": 0.5,
+        "unit": "cup",
+        "name": "Ancient Fonio grain",
+        "diasporaSwap": "Quinoa or pearl millet"
+      },
+      {
+        "amount": 150,
+        "unit": "g",
+        "name": "Lean beef strips or grilled guinea fowl",
+        "diasporaSwap": "Skinless chicken breast or grass-fed beef"
+      },
+      {
+        "amount": 1,
+        "unit": "tbsp",
+        "name": "Ground ginger and dried pepper",
+        "lowSodiumSwap": "Black pepper & ground coriander"
+      },
+      {
+        "amount": 1,
+        "unit": "tsp",
+        "name": "Dawadawa (fermented locust bean paste)",
+        "diasporaSwap": "Miso paste or mushroom powder"
+      }
+    ],
+    "steps": [
+      {
+        "stepNumber": 1,
+        "instruction": "Boil meat with ginger, garlic, and Dawadawa in 2 cups of water for 15 minutes to create a rich aromatic broth.",
+        "flameLevel": "Medium",
+        "timerMinutes": 15,
+        "avoTip": "Dawadawa adds depth and peptides that support healthy blood vessel tone."
+      },
+      {
+        "stepNumber": 2,
+        "instruction": "Whisk Kuka powder into boiling broth with a small whisk to prevent lumps. Simmer for 5 minutes until velvety.",
+        "flameLevel": "Low",
+        "timerMinutes": 5,
+        "avoTip": "Whisking Kuka quickly yields a smooth, rich green soup without needing palm oil!"
+      },
+      {
+        "stepNumber": 3,
+        "instruction": "Steam Fonio with 1 cup of boiling water for 3 minutes, fluff with a fork, and serve with warm Miyan Kuka.",
+        "flameLevel": "Low",
+        "timerMinutes": 3,
+        "avoTip": "Fonio cooks in just 3 minutes—it is the fastest-cooking ancient supergrain on Earth!"
+      }
+    ]
   },
   {
-    id: "7",
-    name: "Unsweetened Hibiscus (Zobo) Elixir with Ginger & Lime",
-    emoji: "🌺",
-    category: "snack",
-    tags: ["heart-healthy", "low-sodium", "diabetic-friendly", "weight-loss"],
-    prepTime: 10,
-    cookTime: 20,
-    baseServings: 6,
-    difficulty: "easy",
-    baseCalories: 35,
-    baseProtein: 1,
-    baseCarbs: 8,
-    baseFats: 0,
-    glycemicIndex: "Low",
-    rating: 4.9,
-    reviews: 310,
-    healthBenefits: "High anthocyanin bioflavonoids support arterial elasticity and natural blood pressure reduction.",
-    clinicalNote: "Zero added sugar. Clinically documented ACE-inhibitory and diuretic properties.",
-    localMarkets: ["Any local market", "Health Food Store / Mexican Hibiscus Flor de Jamaica"],
-    ingredients: [
-      { amount: 0.5, unit: "cup", name: "Dried dark red hibiscus petals (Zobo leaves)", diasporaSwap: "Flor de Jamaica (Mexican hibiscus)" },
-      { amount: 2, unit: "tbsp", name: "Freshly grated ginger", diasporaSwap: "Ginger root slices" },
-      { amount: 1, unit: "tsp", name: "Whole cloves (Kanunfari)", diasporaSwap: "Ground cloves or cinnamon stick" },
-      { amount: 1, unit: "pc", name: "Fresh lime or lemon juice", diasporaSwap: "Apple cider vinegar splash" },
+    "id": "7",
+    "name": "Medicinal Ofe Nsala (White Catfish Soup) with Utazi",
+    "emoji": "🍲",
+    "category": "dinner",
+    "tags": [
+      "heart-healthy",
+      "diabetic-friendly",
+      "pcos-safe",
+      "low-sodium"
     ],
-    steps: [
+    "prepTime": 15,
+    "cookTime": 25,
+    "baseServings": 3,
+    "difficulty": "medium",
+    "baseCalories": 290,
+    "baseProtein": 32,
+    "baseCarbs": 18,
+    "baseFats": 9,
+    "glycemicIndex": "Low",
+    "rating": 5,
+    "reviews": 198,
+    "healthBenefits": "Utazi leaves contain bitter triterpenoid saponins that enhance liver detoxification and post-meal glucose sensitivity.",
+    "clinicalNote": "Palm-oil free white soup. Light yam thickener keeps total carbohydrate load below 20g per bowl.",
+    "localMarkets": [
+      "Onitsha Main Market",
+      "Ogbete Market Enugu",
+      "African Diaspora Fish Shop"
+    ],
+    "ingredients": [
       {
-        stepNumber: 1,
-        instruction: "Rinse dried hibiscus petals in cold water quickly to remove any dust. Place in pot with 4 cups of water, ginger, and cloves.",
-        flameLevel: "High",
-        timerMinutes: 5,
-        avoTip: "Rinse fast so you don't wash away the deep red medicinal anthocyanins!",
+        "amount": 250,
+        "unit": "g",
+        "name": "Fresh catfish or tilapia fillets",
+        "diasporaSwap": "Cod or wild salmon steaks"
       },
       {
-        stepNumber: 2,
-        instruction: "Boil gently for 15 minutes. Strain the deep ruby elixir through a fine mesh sieve. Squeeze in fresh lime juice and chill in refrigerator.",
-        flameLevel: "Medium",
-        timerMinutes: 15,
-        avoTip: "Drink 1 glass daily as a refreshing, cardio-protective beverage with zero glucose impact!",
+        "amount": 50,
+        "unit": "g",
+        "name": "White yam boiled and pounded into paste (thickener)",
+        "diasporaSwap": "Cocoyam or oat paste"
       },
+      {
+        "amount": 0.25,
+        "unit": "cup",
+        "name": "Fresh Utazi leaves thinly shredded",
+        "diasporaSwap": "Dandelion greens or watercress"
+      },
+      {
+        "amount": 1,
+        "unit": "tbsp",
+        "name": "Ground Ogiri (fermented castor seeds)",
+        "lowSodiumSwap": "Garlic, ginger & coriander"
+      },
+      {
+        "amount": 1,
+        "unit": "tbsp",
+        "name": "Traditional Nsala spices (Uda & Ehuru seeds)",
+        "diasporaSwap": "Allspice and white pepper"
+      },
+      {
+        "amount": 1,
+        "unit": "tbsp",
+        "name": "Ground crayfish",
+        "diasporaSwap": "Dried shrimp"
+      }
     ],
+    "steps": [
+      {
+        "stepNumber": 1,
+        "instruction": "Bring 3 cups of water to boil with Nsala spices, Ogiri, crayfish, and scotch bonnet pepper. Add fish steaks and simmer for 10 minutes.",
+        "flameLevel": "Medium",
+        "timerMinutes": 10,
+        "avoTip": "Catfish contains anti-inflammatory Omega-3 fatty acids that support brain and heart function."
+      },
+      {
+        "stepNumber": 2,
+        "instruction": "Drop small portions of yam paste into soup. Stir gently as yam dissolves and thickens broth.",
+        "flameLevel": "Medium",
+        "timerMinutes": 6,
+        "avoTip": "Using just a touch of yam paste gives creaminess without spiking carbohydrate count!"
+      },
+      {
+        "stepNumber": 3,
+        "instruction": "Stir in shredded Utazi leaves and turn off flame after 60 seconds.",
+        "flameLevel": "Low",
+        "timerMinutes": 1,
+        "avoTip": "Utazi's pleasant bitterness stimulates digestive enzymes and bile flow."
+      }
+    ]
   },
   {
-    id: "7",
-    name: "Sukuma Wiki with Lean Beef & Kachumbari",
-    emoji: "🥬",
-    category: "lunch",
-    tags: ["diabetic-friendly", "high-protein", "heart-healthy", "weight-loss"],
-    prepTime: 15,
-    cookTime: 20,
-    baseServings: 2,
-    difficulty: "easy",
-    baseCalories: 310,
-    baseProtein: 34,
-    baseCarbs: 14,
-    baseFats: 12,
-    glycemicIndex: "Low",
-    rating: 4.9,
-    reviews: 184,
-    healthBenefits: "Collard greens and kale pack over 200% daily Vitamin K, lutein, and magnesium for glucose control.",
-    clinicalNote: "Glycemic load < 5. East African staple for stabilizing morning blood glucose levels.",
-    localMarkets: ["Kariakoo Market", "Gikomba Market", "Whole Foods / Sainsbury's Kale & Collards"],
-    ingredients: [
-      { amount: 300, unit: "g", name: "Fresh Sukuma Wiki (Collard greens or Curly Kale)", diasporaSwap: "Spring greens or Swiss chard" },
-      { amount: 200, unit: "g", name: "Extra-lean minced or diced beef", diasporaSwap: "Skinless chicken breast or grass-fed turkey" },
-      { amount: 2, unit: "pcs", name: "Ripe Roma tomatoes diced", diasporaSwap: "Cherry tomatoes diced" },
-      { amount: 1, unit: "bulb", name: "Red onion finely sliced", diasporaSwap: "Shallots" },
-      { amount: 1, unit: "tsp", name: "Royco Mchuzi mix alternative (cumin, turmeric, coriander)", lowSodiumSwap: "Turmeric, cumin & garlic powder" },
-      { amount: 1, unit: "tbsp", name: "Extra virgin olive oil", lowSodiumSwap: "Avocado oil" },
+    "id": "8",
+    "name": "Sukuma Wiki with Lean Beef & Kachumbari Salad",
+    "emoji": "🥬",
+    "category": "lunch",
+    "tags": [
+      "diabetic-friendly",
+      "high-protein",
+      "heart-healthy",
+      "weight-loss"
     ],
-    steps: [
-      {
-        stepNumber: 1,
-        instruction: "In a wide skillet, heat olive oil over medium-high flame. Brown the lean beef with garlic and sliced red onions for 6 minutes.",
-        flameLevel: "Medium",
-        timerMinutes: 6,
-        avoTip: "Searing beef at medium-high locks in natural juices without needing excess cooking fats!",
-      },
-      {
-        stepNumber: 2,
-        instruction: "Add diced tomatoes, cumin, and turmeric. Stir for 3 minutes until tomatoes soften into a fragrant pan sauce.",
-        flameLevel: "Medium",
-        timerMinutes: 3,
-        avoTip: "The acidity in tomatoes helps release iron from the greens, making it bioavailable.",
-      },
-      {
-        stepNumber: 3,
-        instruction: "Fold in shredded Sukuma Wiki greens. Toss briskly for 4 minutes until wilted yet vibrant green. Serve with fresh Kachumbari tomato salad.",
-        flameLevel: "High",
-        timerMinutes: 4,
-        avoTip: "Do not overcook greens; keeping a slight crunch preserves vitamin C and glucosinolates!",
-      },
+    "prepTime": 15,
+    "cookTime": 20,
+    "baseServings": 2,
+    "difficulty": "easy",
+    "baseCalories": 310,
+    "baseProtein": 34,
+    "baseCarbs": 14,
+    "baseFats": 12,
+    "glycemicIndex": "Low",
+    "rating": 4.9,
+    "reviews": 184,
+    "healthBenefits": "Collard greens and kale pack over 200% daily Vitamin K, lutein, and magnesium for glucose control.",
+    "clinicalNote": "Glycemic load < 5. East African staple for stabilizing morning blood glucose levels.",
+    "localMarkets": [
+      "Kariakoo Market",
+      "Gikomba Market",
+      "Whole Foods / Sainsbury's Kale & Collards"
     ],
+    "ingredients": [
+      {
+        "amount": 300,
+        "unit": "g",
+        "name": "Fresh Sukuma Wiki (Collard greens or Curly Kale)",
+        "diasporaSwap": "Spring greens or Swiss chard"
+      },
+      {
+        "amount": 200,
+        "unit": "g",
+        "name": "Extra-lean minced or diced beef",
+        "diasporaSwap": "Skinless chicken breast or grass-fed turkey"
+      },
+      {
+        "amount": 2,
+        "unit": "pcs",
+        "name": "Ripe Roma tomatoes diced",
+        "diasporaSwap": "Cherry tomatoes diced"
+      },
+      {
+        "amount": 1,
+        "unit": "bulb",
+        "name": "Red onion finely sliced",
+        "diasporaSwap": "Shallots"
+      },
+      {
+        "amount": 1,
+        "unit": "tsp",
+        "name": "Royco Mchuzi mix alternative (cumin, turmeric, coriander)",
+        "lowSodiumSwap": "Turmeric, cumin & garlic powder"
+      },
+      {
+        "amount": 1,
+        "unit": "tbsp",
+        "name": "Extra virgin olive oil",
+        "lowSodiumSwap": "Avocado oil"
+      }
+    ],
+    "steps": [
+      {
+        "stepNumber": 1,
+        "instruction": "In a wide skillet, heat olive oil over medium-high flame. Brown lean beef with garlic and sliced red onions for 6 minutes.",
+        "flameLevel": "Medium",
+        "timerMinutes": 6,
+        "avoTip": "Searing beef at medium-high locks in natural juices without needing excess cooking fats!"
+      },
+      {
+        "stepNumber": 2,
+        "instruction": "Add diced tomatoes, cumin, and turmeric. Stir for 3 minutes until tomatoes soften into a fragrant pan sauce.",
+        "flameLevel": "Medium",
+        "timerMinutes": 3,
+        "avoTip": "The acidity in tomatoes helps release iron from the greens, making it bioavailable."
+      },
+      {
+        "stepNumber": 3,
+        "instruction": "Fold in shredded Sukuma Wiki greens. Toss briskly for 4 minutes until wilted yet vibrant green. Serve with fresh Kachumbari tomato salad.",
+        "flameLevel": "High",
+        "timerMinutes": 4,
+        "avoTip": "Do not overcook greens; keeping a slight crunch preserves vitamin C and glucosinolates!"
+      }
+    ]
   },
   {
-    id: "8",
-    name: "Doro Wat (Ethiopian Spiced Chicken Stew)",
-    emoji: "🍗",
-    category: "dinner",
-    tags: ["high-protein", "heart-healthy", "pcos-safe"],
-    prepTime: 25,
-    cookTime: 40,
-    baseServings: 4,
-    difficulty: "medium",
-    baseCalories: 380,
-    baseProtein: 38,
-    baseCarbs: 12,
-    baseFats: 18,
-    glycemicIndex: "Low",
-    rating: 5.0,
-    reviews: 260,
-    healthBenefits: "Aromatic Berbere spice blend (chili, fenugreek, ginger, cloves) activates metabolism.",
-    clinicalNote: "High satiety protein index. Serve with Teff Injera for prebiotics and low GI carbs.",
-    localMarkets: ["Merkato Addis Ababa", "Ethiopian Diaspora Grocery", "Spice Specialty Stores"],
-    ingredients: [
-      { amount: 500, unit: "g", name: "Skinless chicken drumsticks & thighs", diasporaSwap: "Organic boneless chicken thighs" },
-      { amount: 3, unit: "large", name: "Red onions finely puréed", diasporaSwap: "Yellow onions puréed" },
-      { amount: 2, unit: "tbsp", name: "Authentic Berbere spice blend", lowSodiumSwap: "Smoked paprika, cayenne, ginger, cumin & cardamom" },
-      { amount: 1, unit: "tbsp", name: "Niter Kibbeh (spiced clarified butter) or olive oil", diasporaSwap: "Ghee or coconut oil" },
-      { amount: 2, unit: "pcs", name: "Hard-boiled eggs, scored", diasporaSwap: "Organic pasture-raised eggs" },
+    "id": "9",
+    "name": "Cameroonian Ndolé (Bitterleaf & Peanut Pot) with Prawns",
+    "emoji": "🍤",
+    "category": "dinner",
+    "tags": [
+      "high-protein",
+      "pcos-safe",
+      "heart-healthy",
+      "diabetic-friendly"
     ],
-    steps: [
-      {
-        stepNumber: 1,
-        instruction: "Dry sauté puréed red onions in a Dutch oven on medium heat for 12 minutes until reduced and caramelized with zero added oil.",
-        flameLevel: "Medium",
-        timerMinutes: 12,
-        avoTip: "Caramelizing onions dry is the secret Ethiopian culinary technique for rich natural sweetness without added sugar!",
-      },
-      {
-        stepNumber: 2,
-        instruction: "Add Niter Kibbeh/ghee and Berbere spice. Stir constantly for 5 minutes until deep burgundy and aromatic.",
-        flameLevel: "Low",
-        timerMinutes: 5,
-        avoTip: "Blooming Berbere in warm fat unlocks oil-soluble capsaicin and gingerols.",
-      },
-      {
-        stepNumber: 3,
-        instruction: "Add chicken pieces and 1 cup of water. Cover and simmer gently for 25 minutes. Drop in scored boiled eggs in the last 5 minutes.",
-        flameLevel: "Simmer",
-        timerMinutes: 25,
-        avoTip: "Scoring the eggs allows the rich spicy broth to penetrate into the yolk!",
-      },
+    "prepTime": 25,
+    "cookTime": 35,
+    "baseServings": 4,
+    "difficulty": "medium",
+    "baseCalories": 370,
+    "baseProtein": 36,
+    "baseCarbs": 15,
+    "baseFats": 19,
+    "glycemicIndex": "Low",
+    "rating": 5,
+    "reviews": 215,
+    "healthBenefits": "Washed bitterleaf provides hepatoprotective vernoniosides; roasted peanuts supply monounsaturated lipids.",
+    "clinicalNote": "Ketogenic-compatible macro ratio. Very high satiety with zero post-prandial glucose spike.",
+    "localMarkets": [
+      "Marché Central Douala",
+      "Mfoundi Market Yaoundé",
+      "African Specialty Supermarket"
     ],
+    "ingredients": [
+      {
+        "amount": 2,
+        "unit": "cups",
+        "name": "Thoroughly washed shredded bitterleaf",
+        "diasporaSwap": "Washed frozen bitterleaf or cavolo nero"
+      },
+      {
+        "amount": 0.5,
+        "unit": "cup",
+        "name": "Raw peeled groundnuts (peanuts) soaked & blended",
+        "diasporaSwap": "Raw almond meal blended with water"
+      },
+      {
+        "amount": 200,
+        "unit": "g",
+        "name": "Fresh or smoked tiger prawns",
+        "diasporaSwap": "Jumbo shrimp or scallops"
+      },
+      {
+        "amount": 150,
+        "unit": "g",
+        "name": "Lean beef stew chunks",
+        "diasporaSwap": "Skinless chicken breast chunks"
+      },
+      {
+        "amount": 1,
+        "unit": "bulb",
+        "name": "White onion sliced & caramelized in olive oil",
+        "diasporaSwap": "Shallots"
+      },
+      {
+        "amount": 1,
+        "unit": "tbsp",
+        "name": "Ground crayfish & garlic",
+        "lowSodiumSwap": "Ginger, garlic & cayenne"
+      }
+    ],
+    "steps": [
+      {
+        "stepNumber": 1,
+        "instruction": "Cook beef in 1.5 cups of water with garlic and onions for 20 minutes until tender. Pour in blended raw peanut paste.",
+        "flameLevel": "Medium",
+        "timerMinutes": 20,
+        "avoTip": "Peanut paste creates a naturally creamy, rich broth without dairy or butter!"
+      },
+      {
+        "stepNumber": 2,
+        "instruction": "Simmer peanut sauce for 10 minutes until aromatic. Fold in washed bitterleaf and crayfish.",
+        "flameLevel": "Medium",
+        "timerMinutes": 10,
+        "avoTip": "Washing bitterleaves well removes excess astringency while retaining blood-sugar balancing polyphenols."
+      },
+      {
+        "stepNumber": 3,
+        "instruction": "In a small skillet, sauté prawns with sliced onions in olive oil for 3 minutes until pink, then pour sizzling over the Ndolé pot.",
+        "flameLevel": "High",
+        "timerMinutes": 3,
+        "avoTip": "Pouring sizzling prawns and onions on top unlocks deep aroma."
+      }
+    ]
   },
   {
-    id: "9",
-    name: "Moroccan Chicken Tagine with Preserved Lemon",
-    emoji: "🍲",
-    category: "dinner",
-    tags: ["heart-healthy", "diabetic-friendly", "low-sodium"],
-    prepTime: 20,
-    cookTime: 35,
-    baseServings: 3,
-    difficulty: "medium",
-    baseCalories: 360,
-    baseProtein: 36,
-    baseCarbs: 11,
-    baseFats: 17,
-    glycemicIndex: "Low",
-    rating: 4.9,
-    reviews: 195,
-    healthBenefits: "Preserved lemon pectin and green olive polyphenols promote arterial and digestive health.",
-    clinicalNote: "Naturally low in sodium when using rinsed green olives; exceptional Mediterranean-African lipid profile.",
-    localMarkets: ["Souk Marrakech", "North African Halal Market", "Trader Joe's Mediterranean Aisle"],
-    ingredients: [
-      { amount: 450, unit: "g", name: "Skinless chicken breasts or thighs", diasporaSwap: "Free-range chicken thighs" },
-      { amount: 1, unit: "pc", name: "Preserved lemon sliced", diasporaSwap: "Fresh lemon zest and juice" },
-      { amount: 0.5, unit: "cup", name: "Pitted green olives rinsed", diasporaSwap: "Castelvetrano or Kalamata olives" },
-      { amount: 1, unit: "tsp", name: "Saffron threads steeped in warm water", diasporaSwap: "Ground turmeric & paprika" },
-      { amount: 1, unit: "bunch", name: "Fresh cilantro & flat-leaf parsley chopped", diasporaSwap: "Fresh parsley" },
+    "id": "10",
+    "name": "Ethiopian Doro Wat (Slow-Caramelized Berbere Chicken)",
+    "emoji": "🍗",
+    "category": "dinner",
+    "tags": [
+      "high-protein",
+      "heart-healthy",
+      "pcos-safe"
     ],
-    steps: [
-      {
-        stepNumber: 1,
-        instruction: "Rub chicken with saffron water, ginger, garlic, and chopped coriander. Marinate for 15 minutes.",
-        flameLevel: "Low",
-        timerMinutes: 15,
-        avoTip: "Saffron crocetin provides powerful neuroprotective and metabolic antioxidant properties.",
-      },
-      {
-        stepNumber: 2,
-        instruction: "In a tagine or heavy cast iron pan, arrange chicken with sliced onions. Cover and cook on low flame for 25 minutes.",
-        flameLevel: "Simmer",
-        timerMinutes: 25,
-        avoTip: "Conical tagine lids circulate steam back down, keeping lean meats juicy without extra water.",
-      },
-      {
-        stepNumber: 3,
-        instruction: "Scatter preserved lemon slices and rinsed olives over the tagine. Simmer uncovered for 5 minutes until sauce reduces to a rich glaze.",
-        flameLevel: "Medium",
-        timerMinutes: 5,
-        avoTip: "Rinsing olives in cold water cuts excess brine sodium while preserving savory flavor!",
-      },
+    "prepTime": 25,
+    "cookTime": 40,
+    "baseServings": 4,
+    "difficulty": "medium",
+    "baseCalories": 380,
+    "baseProtein": 38,
+    "baseCarbs": 12,
+    "baseFats": 18,
+    "glycemicIndex": "Low",
+    "rating": 5,
+    "reviews": 260,
+    "healthBenefits": "Aromatic Berbere spice blend (chili, fenugreek, ginger, cloves) activates thermogenesis and lipid oxidation.",
+    "clinicalNote": "Pair with fermented Teff Injera for prebiotics, high iron (15mg), and slow-release carbohydrate absorption.",
+    "localMarkets": [
+      "Merkato Addis Ababa",
+      "Ethiopian Diaspora Grocery",
+      "Spice Specialty Stores"
     ],
+    "ingredients": [
+      {
+        "amount": 500,
+        "unit": "g",
+        "name": "Skinless chicken drumsticks & thighs",
+        "diasporaSwap": "Organic boneless chicken thighs"
+      },
+      {
+        "amount": 3,
+        "unit": "large",
+        "name": "Red onions finely puréed",
+        "diasporaSwap": "Yellow onions puréed"
+      },
+      {
+        "amount": 2,
+        "unit": "tbsp",
+        "name": "Authentic Berbere spice blend",
+        "lowSodiumSwap": "Smoked paprika, cayenne, ginger, cumin & cardamom"
+      },
+      {
+        "amount": 1,
+        "unit": "tbsp",
+        "name": "Niter Kibbeh (spiced clarified butter) or olive oil",
+        "diasporaSwap": "Ghee or coconut oil"
+      },
+      {
+        "amount": 2,
+        "unit": "pcs",
+        "name": "Hard-boiled eggs, scored",
+        "diasporaSwap": "Organic pasture-raised eggs"
+      }
+    ],
+    "steps": [
+      {
+        "stepNumber": 1,
+        "instruction": "Dry sauté puréed red onions in Dutch oven on medium heat for 12 minutes until reduced and caramelized with zero added oil.",
+        "flameLevel": "Medium",
+        "timerMinutes": 12,
+        "avoTip": "Caramelizing onions dry is the secret Ethiopian technique for rich natural sweetness without added sugar!"
+      },
+      {
+        "stepNumber": 2,
+        "instruction": "Add Niter Kibbeh/ghee and Berbere spice. Stir constantly for 5 minutes until deep burgundy and aromatic.",
+        "flameLevel": "Low",
+        "timerMinutes": 5,
+        "avoTip": "Blooming Berbere in warm fat unlocks oil-soluble capsaicin and gingerols."
+      },
+      {
+        "stepNumber": 3,
+        "instruction": "Add chicken pieces and 1 cup of water. Cover and simmer gently for 25 minutes. Drop in scored boiled eggs in last 5 minutes.",
+        "flameLevel": "Simmer",
+        "timerMinutes": 25,
+        "avoTip": "Scoring eggs allows the rich spicy broth to penetrate into the yolk!"
+      }
+    ]
   },
   {
-    id: "10",
-    name: "Red Red (Ghanaian Black-Eyed Pea Stew with Plantain)",
-    emoji: "🫘",
-    category: "lunch",
-    tags: ["diabetic-friendly", "heart-healthy", "weight-loss", "pcos-safe"],
-    prepTime: 15,
-    cookTime: 30,
-    baseServings: 3,
-    difficulty: "easy",
-    baseCalories: 330,
-    baseProtein: 18,
-    baseCarbs: 45,
-    baseFats: 9,
-    glycemicIndex: "Low",
-    rating: 4.8,
-    reviews: 172,
-    healthBenefits: "Packed with 12g of prebiotic pulse fiber; outstanding satiety and cholesterol lowering power.",
-    clinicalNote: "Slow-release carbs and resistant starch provide 5+ hours of steady glucose stability.",
-    localMarkets: ["Makola Market Accra", "Kaneshie Market", "African Grocery Store"],
-    ingredients: [
-      { amount: 1.5, unit: "cups", name: "Cooked black-eyed peas / beans", diasporaSwap: "Canned organic black-eyed peas rinsed" },
-      { amount: 1, unit: "medium", name: "Semi-ripe plantain baked or air-fried", diasporaSwap: "Roasted sweet potato cubes" },
-      { amount: 1, unit: "tbsp", name: "Zomi / Unrefined red palm oil", diasporaSwap: "Avocado oil with smoked paprika" },
-      { amount: 1, unit: "cup", name: "Blended tomatoes, Scotch bonnet & ginger", diasporaSwap: "Tomato passata with chili flakes" },
-      { amount: 2, unit: "tbsp", name: "Smoked dried fish flakes or crayfish", diasporaSwap: "Smoked nutritional yeast for vegan" },
+    "id": "11",
+    "name": "South African Chakalaka & Bean Relish with Sorghum",
+    "emoji": "🫘",
+    "category": "lunch",
+    "tags": [
+      "diabetic-friendly",
+      "heart-healthy",
+      "weight-loss"
     ],
-    steps: [
-      {
-        stepNumber: 1,
-        instruction: "In a saucepan, warm unrefined palm oil with sliced onions and ginger for 4 minutes until fragrant.",
-        flameLevel: "Medium",
-        timerMinutes: 4,
-        avoTip: "Do not bleach palm oil; unbleached red palm oil preserves heat-stable carotenoids and tocotrienols!",
-      },
-      {
-        stepNumber: 2,
-        instruction: "Pour in blended tomato-pepper sauce with smoked fish flakes. Simmer for 12 minutes until oil separates.",
-        flameLevel: "Medium",
-        timerMinutes: 12,
-        avoTip: "Smoked fish adds depth of flavor and natural glutamates without synthetic bullion cubes.",
-      },
-      {
-        stepNumber: 3,
-        instruction: "Fold in cooked black-eyed peas and mash about 20% of the beans against the side of the pot to naturally thicken the stew. Simmer for 5 minutes.",
-        flameLevel: "Simmer",
-        timerMinutes: 5,
-        avoTip: "Mashing a small portion of the beans creates a creamy stew texture without needing flour or starch!",
-      },
+    "prepTime": 15,
+    "cookTime": 25,
+    "baseServings": 4,
+    "difficulty": "easy",
+    "baseCalories": 280,
+    "baseProtein": 16,
+    "baseCarbs": 46,
+    "baseFats": 6,
+    "glycemicIndex": "Low",
+    "rating": 4.8,
+    "reviews": 156,
+    "healthBenefits": "Baked beans, grated carrots, and bell peppers deliver high beta-carotene and pulse prebiotic fiber.",
+    "clinicalNote": "Very high dietary fiber (11g per serving). Enhances short-chain fatty acid (butyrate) production.",
+    "localMarkets": [
+      "Johannesburg Market",
+      "Pick n Pay",
+      "UK South African Shop / Walmart"
     ],
+    "ingredients": [
+      {
+        "amount": 1,
+        "unit": "can",
+        "name": "Baked beans in tomato sauce (low sodium)",
+        "diasporaSwap": "Organic red kidney beans or cannellini beans"
+      },
+      {
+        "amount": 2,
+        "unit": "large",
+        "name": "Carrots grated",
+        "diasporaSwap": "Organic sweet carrots"
+      },
+      {
+        "amount": 1,
+        "unit": "large",
+        "name": "Green and red bell peppers diced",
+        "diasporaSwap": "Sweet mini peppers"
+      },
+      {
+        "amount": 1,
+        "unit": "tbsp",
+        "name": "Mild curry powder & grated ginger",
+        "lowSodiumSwap": "Turmeric, coriander, cumin & ginger"
+      },
+      {
+        "amount": 1,
+        "unit": "tbsp",
+        "name": "Extra virgin olive oil",
+        "lowSodiumSwap": "Avocado oil"
+      }
+    ],
+    "steps": [
+      {
+        "stepNumber": 1,
+        "instruction": "Sauté onions, garlic, ginger, and curry powder in olive oil for 3 minutes until fragrant.",
+        "flameLevel": "Medium",
+        "timerMinutes": 3,
+        "avoTip": "Curry powder contains piperine and curcumin which boost anti-inflammatory defenses."
+      },
+      {
+        "stepNumber": 2,
+        "instruction": "Add grated carrots and bell peppers. Stir-fry for 8 minutes until tender-crisp.",
+        "flameLevel": "Medium",
+        "timerMinutes": 8,
+        "avoTip": "Grated carrots release natural sweetness, balancing curry heat."
+      },
+      {
+        "stepNumber": 3,
+        "instruction": "Stir in beans, cover, and simmer for 5 minutes. Serve warm or chilled with grilled chicken or whole grain sorghum.",
+        "flameLevel": "Simmer",
+        "timerMinutes": 5,
+        "avoTip": "Chakalaka tastes even better the next day as spices infuse into beans!"
+      }
+    ]
   },
+  {
+    "id": "12",
+    "name": "Diaspora Quinoa Jollof Bowl with Pan-Seared Salmon",
+    "emoji": "🍣",
+    "category": "dinner",
+    "tags": [
+      "high-protein",
+      "heart-healthy",
+      "diabetic-friendly",
+      "pcos-safe"
+    ],
+    "prepTime": 15,
+    "cookTime": 25,
+    "baseServings": 2,
+    "difficulty": "easy",
+    "baseCalories": 420,
+    "baseProtein": 36,
+    "baseCarbs": 38,
+    "baseFats": 14,
+    "glycemicIndex": "Low",
+    "rating": 5,
+    "reviews": 312,
+    "healthBenefits": "Complete plant protein from quinoa paired with brain & heart Omega-3 EPA/DHA from wild salmon.",
+    "clinicalNote": "Glycemic Index 45 (compared to GI 73 for white rice). Superior arterial and insulin response.",
+    "localMarkets": [
+      "Tesco / Sainsbury's",
+      "Whole Foods / Trader Joe's",
+      "Costco / Walmart"
+    ],
+    "ingredients": [
+      {
+        "amount": 0.75,
+        "unit": "cup",
+        "name": "Organic tri-color or white Quinoa",
+        "diasporaSwap": "Fonio grain or Bulgur wheat"
+      },
+      {
+        "amount": 200,
+        "unit": "g",
+        "name": "Wild Alaskan or Atlantic salmon fillet",
+        "diasporaSwap": "Grilled cod or organic tofu steaks"
+      },
+      {
+        "amount": 0.5,
+        "unit": "cup",
+        "name": "Jollof tomato-pepper purée reduction",
+        "diasporaSwap": "Fire roasted crushed tomatoes with habanero"
+      },
+      {
+        "amount": 1,
+        "unit": "tsp",
+        "name": "Thyme, bay leaf & smoked paprika",
+        "lowSodiumSwap": "Garlic powder, onion powder & dried rosemary"
+      },
+      {
+        "amount": 1,
+        "unit": "cup",
+        "name": "Steamed asparagus or tenderstem broccoli",
+        "diasporaSwap": "Green beans or baby courgettes"
+      }
+    ],
+    "steps": [
+      {
+        "stepNumber": 1,
+        "instruction": "Rinse quinoa in fine sieve to remove saponins. Sauté in pot with 1 tsp olive oil and thyme for 2 minutes to toast.",
+        "flameLevel": "Medium",
+        "timerMinutes": 2,
+        "avoTip": "Toasting quinoa before boiling unlocks a nutty aroma that mimics party jollof smokiness!"
+      },
+      {
+        "stepNumber": 2,
+        "instruction": "Add jollof tomato-pepper reduction and 1.25 cups vegetable broth. Cover tightly and simmer on low for 15 minutes until liquid is absorbed.",
+        "flameLevel": "Low",
+        "timerMinutes": 15,
+        "avoTip": "Quinoa absorbs rich tomato stew deeply and yields fluffy individual grain pearls."
+      },
+      {
+        "stepNumber": 3,
+        "instruction": "Sear salmon skin-side down in non-stick pan for 4 minutes, flip and cook for 3 minutes. Plate over steaming Jollof Quinoa with asparagus.",
+        "flameLevel": "Medium-High",
+        "timerMinutes": 7,
+        "avoTip": "Salmon crispy skin retains beneficial astaxanthin and protective lipids."
+      }
+    ]
+  },
+  {
+    "id": "13",
+    "name": "Unsweetened Hibiscus (Zobo) Elixir with Ginger & Lime",
+    "emoji": "🌺",
+    "category": "snack",
+    "tags": [
+      "heart-healthy",
+      "low-sodium",
+      "diabetic-friendly",
+      "weight-loss"
+    ],
+    "prepTime": 10,
+    "cookTime": 20,
+    "baseServings": 6,
+    "difficulty": "easy",
+    "baseCalories": 35,
+    "baseProtein": 1,
+    "baseCarbs": 8,
+    "baseFats": 0,
+    "glycemicIndex": "Low",
+    "rating": 4.9,
+    "reviews": 310,
+    "healthBenefits": "High anthocyanin bioflavonoids support arterial elasticity and natural blood pressure reduction.",
+    "clinicalNote": "Zero added sugar. Clinically documented ACE-inhibitory and diuretic properties.",
+    "localMarkets": [
+      "Any local market",
+      "Health Food Store / Mexican Hibiscus Flor de Jamaica"
+    ],
+    "ingredients": [
+      {
+        "amount": 0.5,
+        "unit": "cup",
+        "name": "Dried dark red hibiscus petals (Zobo leaves)",
+        "diasporaSwap": "Flor de Jamaica (Mexican hibiscus)"
+      },
+      {
+        "amount": 2,
+        "unit": "tbsp",
+        "name": "Freshly grated ginger",
+        "diasporaSwap": "Ginger root slices"
+      },
+      {
+        "amount": 1,
+        "unit": "tsp",
+        "name": "Whole cloves (Kanunfari)",
+        "diasporaSwap": "Ground cloves or cinnamon stick"
+      },
+      {
+        "amount": 1,
+        "unit": "pc",
+        "name": "Fresh lime or lemon juice",
+        "diasporaSwap": "Apple cider vinegar splash"
+      }
+    ],
+    "steps": [
+      {
+        "stepNumber": 1,
+        "instruction": "Rinse dried hibiscus petals in cold water quickly. Place in pot with 4 cups water, ginger, and cloves.",
+        "flameLevel": "High",
+        "timerMinutes": 5,
+        "avoTip": "Rinse fast so you don't wash away deep red medicinal anthocyanins!"
+      },
+      {
+        "stepNumber": 2,
+        "instruction": "Boil gently for 15 minutes. Strain deep ruby elixir through fine sieve. Squeeze in fresh lime juice and chill in refrigerator.",
+        "flameLevel": "Medium",
+        "timerMinutes": 15,
+        "avoTip": "Drink 1 glass daily as a refreshing, cardio-protective beverage with zero glucose impact!"
+      }
+    ]
+  },
+  {
+    "id": "14",
+    "name": "Steamed Protein Moi-Moi with Boiled Egg",
+    "emoji": "🍮",
+    "category": "breakfast",
+    "tags": [
+      "high-protein",
+      "diabetic-friendly",
+      "weight-loss",
+      "pcos-safe"
+    ],
+    "prepTime": 25,
+    "cookTime": 40,
+    "baseServings": 4,
+    "difficulty": "medium",
+    "baseCalories": 310,
+    "baseProtein": 22,
+    "baseCarbs": 32,
+    "baseFats": 9,
+    "glycemicIndex": "Low",
+    "rating": 4.9,
+    "reviews": 205,
+    "healthBenefits": "Slow-digesting cowpeas deliver prebiotic fiber and steady amino acid release.",
+    "clinicalNote": "Low glycemic load (~8). Resistant starch nourishes beneficial gut Bifidobacteria.",
+    "localMarkets": [
+      "Idumota Market",
+      "Oyingbo Market",
+      "African Caribbean Food Market"
+    ],
+    "ingredients": [
+      {
+        "amount": 0.5,
+        "unit": "cup",
+        "name": "Peeled brown cowpeas (Beans)",
+        "diasporaSwap": "Black-eyed peas or chickpea flour"
+      },
+      {
+        "amount": 1,
+        "unit": "pc",
+        "name": "Hard-boiled egg sliced",
+        "diasporaSwap": "Flaked canned tuna or tofu"
+      },
+      {
+        "amount": 0.5,
+        "unit": "cup",
+        "name": "Red bell peppers & onions blended",
+        "diasporaSwap": "Piquillo roasted peppers"
+      },
+      {
+        "amount": 1,
+        "unit": "tbsp",
+        "name": "Ground crayfish",
+        "diasporaSwap": "Nutritional yeast for savory depth"
+      },
+      {
+        "amount": 1,
+        "unit": "tbsp",
+        "name": "Sunflower or olive oil",
+        "lowSodiumSwap": "Cold-pressed coconut oil"
+      }
+    ],
+    "steps": [
+      {
+        "stepNumber": 1,
+        "instruction": "Blend soaked peeled beans with red bell peppers, onions, ginger, and crayfish with 1 cup water until silky smooth.",
+        "flameLevel": "Low",
+        "timerMinutes": 3,
+        "avoTip": "Whisk blended batter with spoon for 2 minutes to incorporate air for a fluffy texture!"
+      },
+      {
+        "stepNumber": 2,
+        "instruction": "Pour batter into silicone cups or banana leaves, placing boiled egg slice inside. Steam in covered pot with 2 inches boiling water for 35 minutes.",
+        "flameLevel": "Medium",
+        "timerMinutes": 35,
+        "avoTip": "Steaming uses zero excess frying oil, keeping calories and trans fats low."
+      }
+    ]
+  },
+  {
+    "id": "15",
+    "name": "Efo Riro (Leafy Spinach & Ugu Stir-In) with Lean Beef",
+    "emoji": "🥬",
+    "category": "dinner",
+    "tags": [
+      "high-protein",
+      "heart-healthy",
+      "diabetic-friendly"
+    ],
+    "prepTime": 15,
+    "cookTime": 30,
+    "baseServings": 4,
+    "difficulty": "easy",
+    "baseCalories": 320,
+    "baseProtein": 32,
+    "baseCarbs": 12,
+    "baseFats": 14,
+    "glycemicIndex": "Low",
+    "rating": 4.9,
+    "reviews": 160,
+    "healthBenefits": "High iron, folate, and calcium from greens; lean protein supports muscle without blood sugar spikes.",
+    "clinicalNote": "Ultra-low carbohydrate density (12g). Excellent for glycemic stabilization.",
+    "localMarkets": [
+      "Balogun Market",
+      "Mile 12 Market",
+      "Supermarket Produce Aisle"
+    ],
+    "ingredients": [
+      {
+        "amount": 2,
+        "unit": "cups",
+        "name": "Coarsely chopped spinach & Ugu leaves",
+        "diasporaSwap": "Swiss chard, baby kale & spinach"
+      },
+      {
+        "amount": 150,
+        "unit": "g",
+        "name": "Lean diced beef or turkey",
+        "diasporaSwap": "Extra firm tofu or grilled chicken"
+      },
+      {
+        "amount": 0.5,
+        "unit": "cup",
+        "name": "Coarsely blended pepper & tomato base",
+        "diasporaSwap": "Fire-roasted crushed tomatoes"
+      },
+      {
+        "amount": 1,
+        "unit": "tbsp",
+        "name": "Fermented Iru",
+        "lowSodiumSwap": "Chopped garlic, ginger & thyme"
+      },
+      {
+        "amount": 1,
+        "unit": "tbsp",
+        "name": "Ground crayfish",
+        "diasporaSwap": "Smoked dried shrimp"
+      }
+    ],
+    "steps": [
+      {
+        "stepNumber": 1,
+        "instruction": "Blanch chopped spinach in boiling water for 60 seconds, drain immediately, and squeeze out excess moisture.",
+        "flameLevel": "High",
+        "timerMinutes": 1,
+        "avoTip": "Squeezing out excess water prevents Efo Riro stew from turning watery!"
+      },
+      {
+        "stepNumber": 2,
+        "instruction": "Fry pepper sauce with Iru, crayfish, and cooked beef until oil floats on top (about 12 minutes).",
+        "flameLevel": "Medium",
+        "timerMinutes": 12,
+        "avoTip": "Cooking pepper base thoroughly develops deep sweetness without adding sugar."
+      },
+      {
+        "stepNumber": 3,
+        "instruction": "Turn off stove flame and stir in blanched greens. Let residual heat wilt leaves for 2 minutes.",
+        "flameLevel": "Simmer",
+        "timerMinutes": 2,
+        "avoTip": "Turning off heat before stirring in greens keeps them crisp, bright green, and nutrient-dense."
+      }
+    ]
+  },
+  {
+    "id": "16",
+    "name": "Swahili Kuku Paka (Charred Coconut Chicken) & Brown Rice",
+    "emoji": "🥥",
+    "category": "dinner",
+    "tags": [
+      "high-protein",
+      "heart-healthy",
+      "diabetic-friendly"
+    ],
+    "prepTime": 20,
+    "cookTime": 35,
+    "baseServings": 3,
+    "difficulty": "medium",
+    "baseCalories": 390,
+    "baseProtein": 36,
+    "baseCarbs": 22,
+    "baseFats": 16,
+    "glycemicIndex": "Low",
+    "rating": 5,
+    "reviews": 210,
+    "healthBenefits": "Coconut MCTs provide rapid cellular energy without insulin spikes; turmeric and ginger protect endothelial health.",
+    "clinicalNote": "Low glycemic index. Charring chicken over flame reduces fat content while developing deep umami.",
+    "localMarkets": [
+      "Mombasa Spice Market",
+      "Zanzibar Darajani Market",
+      "Tesco / Whole Foods Coconut Milk"
+    ],
+    "ingredients": [
+      {
+        "amount": 400,
+        "unit": "g",
+        "name": "Skinless chicken breasts or bone-in thighs",
+        "diasporaSwap": "Free-range chicken thighs"
+      },
+      {
+        "amount": 1,
+        "unit": "cup",
+        "name": "Light coconut milk (zero added sugar)",
+        "diasporaSwap": "Organic canned coconut milk"
+      },
+      {
+        "amount": 1,
+        "unit": "tbsp",
+        "name": "Fresh grated ginger & garlic paste",
+        "lowSodiumSwap": "Extra lime zest and coriander"
+      },
+      {
+        "amount": 1,
+        "unit": "tsp",
+        "name": "Ground turmeric & cumin",
+        "lowSodiumSwap": "Cardamom & coriander powder"
+      },
+      {
+        "amount": 1,
+        "unit": "pc",
+        "name": "Fresh lime juice squeezed",
+        "diasporaSwap": "Lemon juice"
+      },
+      {
+        "amount": 0.5,
+        "unit": "cup",
+        "name": "Steamed brown Basmati rice",
+        "diasporaSwap": "Cauliflower rice"
+      }
+    ],
+    "steps": [
+      {
+        "stepNumber": 1,
+        "instruction": "Marinate chicken with garlic, ginger, turmeric, and lime juice for 15 minutes. Grill or broil for 8 minutes per side until lightly charred.",
+        "flameLevel": "High",
+        "timerMinutes": 16,
+        "avoTip": "Charring before stewing gives authentic coastal Swahili smoky flavor!"
+      },
+      {
+        "stepNumber": 2,
+        "instruction": "In a saucepan, simmer coconut milk with minced green chilies and cumin for 8 minutes until thickened.",
+        "flameLevel": "Medium",
+        "timerMinutes": 8,
+        "avoTip": "Simmering coconut milk gently prevents curdling and develops silky consistency."
+      },
+      {
+        "stepNumber": 3,
+        "instruction": "Add grilled chicken pieces into coconut sauce, simmer for 5 minutes, garnish with fresh coriander and serve over brown rice.",
+        "flameLevel": "Simmer",
+        "timerMinutes": 5,
+        "avoTip": "Garnish with fresh lime wedges for Vitamin C enhancement."
+      }
+    ]
+  }
 ];
 
 export default function Recipe() {
@@ -653,6 +1506,7 @@ export default function Recipe() {
   const { profile } = useUser();
 
   const [recipes, setRecipes] = useState<FullRecipe[]>(MASTER_RECIPES);
+  const [activeView, setActiveView] = useState<"recipes" | "swaps">("recipes");
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedTag, setSelectedTag] = useState<DietaryTag>("all");
   const [selectedMealCategory, setSelectedMealCategory] = useState<"all" | "breakfast" | "lunch" | "dinner" | "snack">("all");
@@ -833,31 +1687,73 @@ export default function Recipe() {
           <ProfilePictureUpload />
         </div>
 
-        {/* Search Bar */}
-        <div className="max-w-2xl mx-auto mt-3.5 relative">
-          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search healthy Jollof, Egusi, swallows, low-sodium soups..."
-            className="w-full pl-10 pr-4 py-2.5 bg-white/95 backdrop-blur-md border border-teal-100/90 rounded-2xl text-xs text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[#1f7a8c] shadow-xs transition-all"
-          />
+        {/* Top View Switcher: Clinical Recipes vs African Swap Engine */}
+        <div className="max-w-2xl mx-auto mt-3 bg-white/60 dark:bg-zinc-800/60 p-1 rounded-2xl flex gap-1 border border-teal-100 dark:border-zinc-700/80 shadow-2xs">
+          <button
+            type="button"
+            onClick={() => {
+              triggerHaptic("light");
+              setActiveView("recipes");
+            }}
+            className={`flex-1 py-2 px-3 rounded-xl text-xs font-black transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+              activeView === "recipes"
+                ? "bg-[#1f7a8c] text-white shadow-sm"
+                : "text-slate-700 dark:text-zinc-300 hover:bg-white/40"
+            }`}
+          >
+            <span>🍲 Clinical Recipes ({recipes.length})</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => {
+              triggerHaptic("light");
+              setActiveView("swaps");
+            }}
+            className={`flex-1 py-2 px-3 rounded-xl text-xs font-black transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+              activeView === "swaps"
+                ? "bg-[#1f7a8c] text-white shadow-sm"
+                : "text-slate-700 dark:text-zinc-300 hover:bg-white/40"
+            }`}
+          >
+            <Sparkles size={13} className="text-amber-300 animate-pulse" />
+            <span>African Swap Engine 🔄</span>
+          </button>
         </div>
 
-        {/* Location & Diaspora Context Strip */}
-        <div className="max-w-2xl mx-auto mt-2.5 flex items-center justify-between text-[11px] text-teal-900 bg-white/70 backdrop-blur-xs px-3 py-1.5 rounded-xl border border-teal-100">
-          <div className="flex items-center gap-1.5 font-bold">
-            <MapPin size={13} className="text-[#1f7a8c]" />
-            <span>Region: {selectedLocation.flag} {selectedLocation.displayName}</span>
-          </div>
-          <span className="text-[10px] text-teal-700 font-semibold">
-            {diasporaMode ? "🌍 Diaspora Supermarket Swaps Active" : "🇳🇬 Local Market Sourcing"}
-          </span>
-        </div>
+        {activeView === "recipes" && (
+          <>
+            {/* Search Bar */}
+            <div className="max-w-2xl mx-auto mt-3 relative">
+              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search healthy Jollof, Egusi, swallows, low-sodium soups..."
+                className="w-full pl-10 pr-4 py-2.5 bg-white/95 backdrop-blur-md border border-teal-100/90 rounded-2xl text-xs text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[#1f7a8c] shadow-xs transition-all"
+              />
+            </div>
+
+            {/* Location & Diaspora Context Strip */}
+            <div className="max-w-2xl mx-auto mt-2 flex items-center justify-between text-[11px] text-teal-900 bg-white/70 backdrop-blur-xs px-3 py-1.5 rounded-xl border border-teal-100">
+              <div className="flex items-center gap-1.5 font-bold">
+                <MapPin size={13} className="text-[#1f7a8c]" />
+                <span>Region: {selectedLocation.flag} {selectedLocation.displayName}</span>
+              </div>
+              <span className="text-[10px] text-teal-700 font-semibold">
+                {diasporaMode ? "🌍 Diaspora Supermarket Swaps Active" : "🇳🇬 Local Market Sourcing"}
+              </span>
+            </div>
+          </>
+        )}
       </div>
 
       <div className="px-4 sm:px-6 max-w-2xl mx-auto mt-4 space-y-4">
+        {activeView === "swaps" ? (
+          <AfricanSwapEngine />
+        ) : (
+          <>
         {/* ============================================================ */}
         {/* 1. CLINICAL CONDITION & MEAL TIME FILTER PILL CHIPS          */}
         {/* ============================================================ */}
@@ -1076,6 +1972,8 @@ export default function Recipe() {
             ))
           )}
         </div>
+          </>
+        )}
       </div>
 
       <BottomNav />

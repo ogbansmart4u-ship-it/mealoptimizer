@@ -8,6 +8,7 @@ import PageHeader from "../components/PageHeader";
 import TutorialTooltip from "../components/TutorialTooltip";
 import MealOptimizingLoader from "../components/MealOptimizingLoader";
 import AmbientBackground from "../components/AmbientBackground";
+import AfricanSwapEngine from "../components/AfricanSwapEngine";
 import {
   Coffee,
   Sun,
@@ -442,6 +443,11 @@ export default function PlanMeal() {
           <p className="text-sm text-blue-800 text-center">
             {t("planmeal.infoNote")}
           </p>
+        </div>
+
+        {/* African Glycemic & Diaspora Swap Engine */}
+        <div className="mt-8">
+          <AfricanSwapEngine />
         </div>
       </div>
 
