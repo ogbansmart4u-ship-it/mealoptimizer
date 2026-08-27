@@ -23,6 +23,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const userSignedOut = useRef(false);
 
   useEffect(() => {
+    // 1. Detect if the user arrived via a password reset email link with recovery hash/params
+    const hash = typeof window !== "undefined" ? window.location.hash || "" : "";
+    const search = typeof window !== "undefined" ? window.location.search || "" : "";
+    if (hash.includes("type=recovery") || search.includes("type=recovery")) {
+      if (window.location.pathname !== "/reset-password") {
+        window.location.replace(`/reset-password${search}${hash}`);
+        return;
+      }
+    }
+
     // Check active sessions and set the user
     supabase.auth.getSession().then(({ data: { session } }) => {
       console.log('Initial session check:', session ? 'Session found' : 'No session');
@@ -35,6 +45,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((event, session) => {
       console.log('Auth state change:', event, session ? 'Session exists' : 'No session');
+
+      // 2. If Supabase fires PASSWORD_RECOVERY event, force-route to /reset-password
+      if (event === 'PASSWORD_RECOVERY') {
+        if (typeof window !== "undefined" && window.location.pathname !== '/reset-password') {
+          window.location.replace(`/reset-password${window.location.search}${window.location.hash}`);
+          return;
+        }
+      }
       
       // If user was signed out (not by their own action), show a message
       if (event === 'SIGNED_OUT' && !userSignedOut.current && !hasShownSessionExpiredToast.current) {
