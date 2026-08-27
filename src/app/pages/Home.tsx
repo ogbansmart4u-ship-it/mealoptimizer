@@ -993,6 +993,35 @@ export default function Home() {
               </div>
             </div>
 
+            {/* Daily Fruit & Vegetable Power Boost Banner */}
+            <div className="bg-gradient-to-br from-emerald-600 via-teal-700 to-slate-900 text-white rounded-3xl p-4 sm:p-5 shadow-lg border border-emerald-400/20 relative overflow-hidden">
+              <div className="flex items-center justify-between gap-3 relative z-10">
+                <div className="flex items-start gap-3">
+                  <div className="text-3xl p-2 bg-white/10 rounded-2xl shrink-0 backdrop-blur-xs">
+                    🍏🥬
+                  </div>
+                  <div>
+                    <div className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-400/20 text-emerald-300 text-[9.5px] font-black uppercase tracking-wider mb-1">
+                      <Sparkles size={10} />
+                      <span>Metabolic Super-Produce</span>
+                    </div>
+                    <h3 className="text-sm font-black text-white leading-tight">
+                      African Fruits &amp; Healing Greens Guide
+                    </h3>
+                    <p className="text-[11px] text-emerald-100/90 mt-0.5 leading-snug">
+                      Discover Garden Egg, Ugu, Agbalumo, Soursop &amp; Ube with precise glycemic scores.
+                    </p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => navigate("/recipe")}
+                  className="px-3.5 py-2.5 bg-emerald-400 hover:bg-emerald-300 text-slate-950 font-black text-xs rounded-xl shadow-md cursor-pointer transition-all active:scale-95 shrink-0"
+                >
+                  Explore 12+ 🥗
+                </button>
+              </div>
+            </div>
+
             {/* Smart Grocery & Bio-Plan Quick Actions */}
             <div>
               <div className="flex items-center justify-between mb-2.5 px-0.5">

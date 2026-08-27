@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { MapPin, Sparkles, TrendingUp, ChevronRight, X, Camera, Upload, ScanBarcode, CheckCircle2, AlertTriangle, Ban, Lightbulb, Share2, ArrowLeft, RefreshCw } from "lucide-react";
+import { MapPin, Sparkles, TrendingUp, ChevronRight, X, Camera, Upload, ScanBarcode, CheckCircle2, AlertTriangle, Ban, Lightbulb, Share2, ArrowLeft, RefreshCw, BookmarkPlus } from "lucide-react";
 import { useNavigate } from "react-router";
 import { useLocation } from "../contexts/LocationContext";
 import { useUser } from "../contexts/UserContext";
@@ -494,6 +494,7 @@ export default function LocalFoodScanner({ isOpen, onClose }: LocalFoodScannerPr
   const [isSaving, setIsSaving] = useState(false);
   const [showFixModal, setShowFixModal] = useState(false);
   const [showViralShareModal, setShowViralShareModal] = useState(false);
+  const [isSavedToDatabase, setIsSavedToDatabase] = useState(false);
   const [portionMultiplier, setPortionMultiplier] = useState(1);
   const [conditions, setConditions] = useState<{ name: string; severity?: string }[]>([]);
 
@@ -699,11 +700,83 @@ export default function LocalFoodScanner({ isOpen, onClose }: LocalFoodScannerPr
     }
   };
 
+  // Save to User's Personal Custom Food Database & Recipes
+  const handleSaveToDatabase = () => {
+    if (!foodData) return;
+    safeHaptic("success");
+    try {
+      const customItem = {
+        id: `custom-food-${Date.now()}`,
+        name: foodData.dishName,
+        region: foodData.region || selectedLocation.displayName || "Regional",
+        calories: foodData.macroBreakdown.calories,
+        protein: foodData.macroBreakdown.protein,
+        carbs: foodData.macroBreakdown.carbs,
+        fats: foodData.macroBreakdown.fats,
+        fiber: foodData.macroBreakdown.fiber || 0,
+        glycemicLoad: foodData.macroBreakdown.glycemicLoad,
+        imageSrc: capturedImage || "",
+        savedAt: new Date().toISOString(),
+        notes: foodData.engineerSwap?.impactStatement || foodData.description,
+      };
+
+      const existingDb = JSON.parse(localStorage.getItem("mealoptimizer_custom_food_database") || "[]");
+      localStorage.setItem("mealoptimizer_custom_food_database", JSON.stringify([customItem, ...existingDb]));
+
+      // Also save to custom recipes
+      const customRecipe = {
+        id: customItem.id,
+        name: customItem.name,
+        emoji: "🍲",
+        category: "lunch",
+        tags: ["custom-snapped", "favorites"],
+        prepTime: 20,
+        cookTime: 30,
+        baseServings: 2,
+        difficulty: "easy",
+        baseCalories: customItem.calories,
+        baseProtein: customItem.protein,
+        baseCarbs: customItem.carbs,
+        baseFats: customItem.fats,
+        glycemicIndex: customItem.glycemicLoad,
+        rating: 5.0,
+        reviews: 1,
+        healthBenefits: customItem.notes || "Custom scanned meal",
+        clinicalNote: `Scanned and saved to your personal Food Database on ${new Date().toLocaleDateString()}`,
+        localMarkets: [selectedLocation.displayName || "Local Market"],
+        ingredients: (foodData.engineerSwap?.healthySwap || ["1 balanced portion", "Fresh greens & vegetables"]).map((ing: string) => ({
+          amount: 1,
+          unit: "serving",
+          name: ing,
+        })),
+        steps: [
+          {
+            stepNumber: 1,
+            instruction: foodData.traditionalPrep?.method || "Prepare according to your custom healthy recipe preference.",
+            flameLevel: "Medium",
+            timerMinutes: 15,
+            avoTip: "Incorporate low-GI veggies and unrefined oils for sustained energy!",
+          },
+        ],
+        isFavorite: true,
+      };
+
+      const existingRecipes = JSON.parse(localStorage.getItem("mealoptimizer_user_custom_recipes") || "[]");
+      localStorage.setItem("mealoptimizer_user_custom_recipes", JSON.stringify([customRecipe, ...existingRecipes]));
+
+      setIsSavedToDatabase(true);
+      celebrate(`Saved to Your Food Database! 📖✨`, "Stored in personal recipes & food records.", { confettiStyle: "burst", hapticPattern: "success" });
+    } catch {
+      toast.error("Could not save to custom food database");
+    }
+  };
+
   // Step 1 — store the image, show preview + Analyze button
   const handleImageCaptured = (imageData: string) => {
     setShowCamera(false);
     setCapturedImage(imageData);
     setAnalyzeError(null);
+    setIsSavedToDatabase(false);
   };
 
   // Step 2 — Analyze button onClick: POST to backend
@@ -1357,6 +1430,29 @@ export default function LocalFoodScanner({ isOpen, onClose }: LocalFoodScannerPr
 
             {/* Actions */}
             <div className="space-y-2.5 mt-6">
+              {/* Option to Save Dish to User Food Database */}
+              <button
+                onClick={handleSaveToDatabase}
+                disabled={isSavedToDatabase}
+                className={`w-full py-3.5 px-4 rounded-2xl font-black text-xs transition-all flex items-center justify-center gap-2 cursor-pointer shadow-md active:scale-98 ${
+                  isSavedToDatabase
+                    ? "bg-teal-900 text-teal-100 border border-teal-700 opacity-95"
+                    : "bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 hover:from-amber-600 hover:to-orange-600 text-white hover:shadow-lg"
+                }`}
+              >
+                {isSavedToDatabase ? (
+                  <>
+                    <CheckCircle2 size={16} className="text-emerald-300" />
+                    <span>Saved to Your Food Database &amp; Recipes 📖✨</span>
+                  </>
+                ) : (
+                  <>
+                    <BookmarkPlus size={16} />
+                    <span>Save Dish to My Food Database &amp; Recipes 📖</span>
+                  </>
+                )}
+              </button>
+
               {/* Viral WhatsApp & IG Story Sharing Button */}
               <button
                 onClick={() => setShowViralShareModal(true)}

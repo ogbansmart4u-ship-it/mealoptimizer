@@ -45,6 +45,7 @@ import { Button } from "../components/ui/button";
 import AmbientBackground from "../components/AmbientBackground";
 import Mascot from "../components/Mascot";
 import AfricanSwapEngine from "../components/AfricanSwapEngine";
+import FruitVegetableGuide from "../components/FruitVegetableGuide";
 import { toast } from "sonner";
 import { triggerConfetti, triggerHaptic } from "../utils/celebration";
 
@@ -1506,7 +1507,7 @@ export default function Recipe() {
   const { profile } = useUser();
 
   const [recipes, setRecipes] = useState<FullRecipe[]>(MASTER_RECIPES);
-  const [activeView, setActiveView] = useState<"recipes" | "swaps">("recipes");
+  const [activeView, setActiveView] = useState<"recipes" | "swaps" | "fruits_veggies">("recipes");
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedTag, setSelectedTag] = useState<DietaryTag>("all");
   const [selectedMealCategory, setSelectedMealCategory] = useState<"all" | "breakfast" | "lunch" | "dinner" | "snack">("all");
@@ -1527,12 +1528,23 @@ export default function Recipe() {
   const [timerRunning, setTimerRunning] = useState<boolean>(false);
   const timerIntervalRef = useRef<any>(null);
 
-  // Load cloud favorites
+  // Load cloud favorites & user snapped custom recipes from database
   useEffect(() => {
+    try {
+      const customRecipes: FullRecipe[] = JSON.parse(localStorage.getItem("mealoptimizer_user_custom_recipes") || "[]");
+      if (customRecipes.length > 0) {
+        setRecipes((prev) => {
+          const existingIds = new Set(prev.map((r) => r.id));
+          const uniqueCustom = customRecipes.filter((r) => !existingIds.has(r.id));
+          return [...uniqueCustom, ...prev];
+        });
+      }
+    } catch {}
+
     getCollection("recipeFavorites")
       .then((items) => {
         const favIds = new Set((Array.isArray(items) ? items : []).map((i: any) => i.id));
-        setRecipes((prev) => prev.map((r) => ({ ...r, isFavorite: favIds.has(r.id) })));
+        setRecipes((prev) => prev.map((r) => ({ ...r, isFavorite: favIds.has(r.id) || r.isFavorite })));
       })
       .catch(() => {});
   }, []);
@@ -1687,7 +1699,7 @@ export default function Recipe() {
           <ProfilePictureUpload />
         </div>
 
-        {/* Top View Switcher: Clinical Recipes vs African Swap Engine */}
+        {/* Top View Switcher: Clinical Recipes vs African Swap Engine vs Fruits & Greens */}
         <div className="max-w-2xl mx-auto mt-3 bg-white/60 dark:bg-zinc-800/60 p-1 rounded-2xl flex gap-1 border border-teal-100 dark:border-zinc-700/80 shadow-2xs">
           <button
             type="button"
@@ -1695,13 +1707,13 @@ export default function Recipe() {
               triggerHaptic("light");
               setActiveView("recipes");
             }}
-            className={`flex-1 py-2 px-3 rounded-xl text-xs font-black transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+            className={`flex-1 py-2 px-2.5 rounded-xl text-[11px] sm:text-xs font-black transition-all flex items-center justify-center gap-1 cursor-pointer truncate ${
               activeView === "recipes"
                 ? "bg-[#1f7a8c] text-white shadow-sm"
                 : "text-slate-700 dark:text-zinc-300 hover:bg-white/40"
             }`}
           >
-            <span>🍲 Clinical Recipes ({recipes.length})</span>
+            <span>🍲 Recipes ({recipes.length})</span>
           </button>
 
           <button
@@ -1710,14 +1722,29 @@ export default function Recipe() {
               triggerHaptic("light");
               setActiveView("swaps");
             }}
-            className={`flex-1 py-2 px-3 rounded-xl text-xs font-black transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+            className={`flex-1 py-2 px-2.5 rounded-xl text-[11px] sm:text-xs font-black transition-all flex items-center justify-center gap-1 cursor-pointer truncate ${
               activeView === "swaps"
                 ? "bg-[#1f7a8c] text-white shadow-sm"
                 : "text-slate-700 dark:text-zinc-300 hover:bg-white/40"
             }`}
           >
-            <Sparkles size={13} className="text-amber-300 animate-pulse" />
-            <span>African Swap Engine 🔄</span>
+            <Sparkles size={12} className="text-amber-300 animate-pulse shrink-0" />
+            <span>Swap Engine 🔄</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => {
+              triggerHaptic("light");
+              setActiveView("fruits_veggies");
+            }}
+            className={`flex-1 py-2 px-2.5 rounded-xl text-[11px] sm:text-xs font-black transition-all flex items-center justify-center gap-1 cursor-pointer truncate ${
+              activeView === "fruits_veggies"
+                ? "bg-[#1f7a8c] text-white shadow-sm"
+                : "text-slate-700 dark:text-zinc-300 hover:bg-white/40"
+            }`}
+          >
+            <span>🥗 Fruits &amp; Greens 🍏</span>
           </button>
         </div>
 
@@ -1752,6 +1779,8 @@ export default function Recipe() {
       <div className="px-4 sm:px-6 max-w-2xl mx-auto mt-4 space-y-4">
         {activeView === "swaps" ? (
           <AfricanSwapEngine />
+        ) : activeView === "fruits_veggies" ? (
+          <FruitVegetableGuide />
         ) : (
           <>
         {/* ============================================================ */}
