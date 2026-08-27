@@ -120,11 +120,29 @@ export default function Home() {
     try {
       const isHealthDone = localStorage.getItem("hasCompletedHealthSetup") === "true";
       const isOnboardingDone = localStorage.getItem("onboardingComplete") === "true";
-      return !isHealthDone && !isOnboardingDone;
+      const userProfileRaw = localStorage.getItem("user-profile") || localStorage.getItem("user_profile");
+      let hasData = false;
+      if (userProfileRaw) {
+        try {
+          const p = JSON.parse(userProfileRaw);
+          if (p.age || p.medicalCondition || p.goal || p.weight || (p.conditions && p.conditions.length > 0)) hasData = true;
+        } catch {}
+      }
+      return !isHealthDone && !isOnboardingDone && !hasData;
     } catch {
       return false;
     }
   });
+
+  // If profile from UserContext is already calibrated, automatically suppress wizard
+  useEffect(() => {
+    if (profile?.medicalCondition || profile?.age || profile?.weight || (profile?.conditions && profile.conditions.length > 0)) {
+      setShowHealthWizard(false);
+      try {
+        localStorage.setItem("hasCompletedHealthSetup", "true");
+      } catch {}
+    }
+  }, [profile?.medicalCondition, profile?.age, profile?.weight, profile?.conditions]);
   const [showSpotlightTour, setShowSpotlightTour] = useState(false);
   const [showVoiceLogger, setShowVoiceLogger] = useState(false);
   const [showGroceryPlanner, setShowGroceryPlanner] = useState(false);

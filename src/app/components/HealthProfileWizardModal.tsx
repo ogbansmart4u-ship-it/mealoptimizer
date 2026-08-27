@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import {
+  X,
   Target,
   User,
   Scale,
@@ -89,6 +90,13 @@ export default function HealthProfileWizardModal({
     }
   };
 
+  
+  const handleDismiss = () => {
+    triggerHaptic("light");
+    localStorage.setItem("hasCompletedHealthSetup", "true");
+    onComplete();
+  };
+
   const handleFinalSave = async () => {
     setIsSaving(true);
     triggerHaptic("medium");
@@ -132,10 +140,10 @@ export default function HealthProfileWizardModal({
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={() => {}}>
+    <Dialog open={isOpen} onOpenChange={(open) => !open && handleDismiss()}>
       <DialogContent
         className="max-w-md p-5 sm:p-7 rounded-3xl max-h-[92vh] overflow-y-auto bg-white dark:bg-zinc-900 border border-teal-100 dark:border-zinc-800 shadow-2xl"
-        onPointerDownOutside={(e) => e.preventDefault()}
+        
       >
         {/* Step Indicator Header with Animated 3D Avo Scribe */}
         <div className="flex items-center justify-between border-b border-teal-100/60 dark:border-zinc-800 pb-3.5 mb-4">
@@ -165,7 +173,16 @@ export default function HealthProfileWizardModal({
             </div>
           </div>
 
-          <div className="flex gap-1 shrink-0">
+          <div className="flex items-center gap-2 shrink-0">
+            <button
+              onClick={handleDismiss}
+              className="p-1.5 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-xl text-zinc-400 hover:text-zinc-600 transition-colors cursor-pointer"
+              title="Close and do later"
+              aria-label="Close"
+            >
+              <X size={18} />
+            </button>
+            <div className="flex gap-1">
             {[1, 2, 3, 4].map((i) => (
               <div
                 key={i}
@@ -174,6 +191,7 @@ export default function HealthProfileWizardModal({
                 }`}
               />
             ))}
+          </div>
           </div>
         </div>
 
@@ -405,7 +423,14 @@ export default function HealthProfileWizardModal({
 
         {/* Footer Navigation Buttons */}
         <div className="flex items-center justify-between gap-3 pt-4 border-t border-zinc-100 dark:border-zinc-800 mt-2">
-          {step > 1 ? (
+          {step === 1 ? (
+            <button
+              onClick={handleDismiss}
+              className="p-2 text-zinc-500 dark:text-zinc-400 hover:text-zinc-800 dark:hover:text-zinc-200 text-xs font-semibold hover:underline cursor-pointer"
+            >
+              Skip &amp; explore dashboard
+            </button>
+          ) : step > 1 ? (
             <button
               onClick={() => {
                 triggerHaptic("light");
