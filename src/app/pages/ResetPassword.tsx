@@ -14,22 +14,61 @@ export default function ResetPassword() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [hasValidSession, setHasValidSession] = useState(false);
   const [formData, setFormData] = useState({
     password: "",
     confirmPassword: "",
   });
 
-  // Check if we have a valid recovery token
+  // Check if we have a valid recovery session / token
   useEffect(() => {
-    const hashParams = new URLSearchParams(window.location.hash.substring(1));
-    const accessToken = hashParams.get('access_token');
-    const type = hashParams.get('type');
+    let isMounted = true;
 
-    if (!accessToken || type !== 'recovery') {
-      toast.error("Invalid or expired reset link. Please request a new one.");
-      setTimeout(() => navigate("/forgot-password"), 3000);
-    }
-  }, [navigate]);
+    const checkSession = async () => {
+      // 1. Check for PKCE 'code' in query params and exchange
+      const code = searchParams.get("code");
+      if (code) {
+        try {
+          const { error } = await supabase.auth.exchangeCodeForSession(code);
+          if (!error && isMounted) {
+            setHasValidSession(true);
+            return;
+          }
+        } catch {}
+      }
+
+      // 2. Check hash params
+      const hashParams = new URLSearchParams(window.location.hash.substring(1));
+      const accessToken = hashParams.get("access_token");
+      const type = hashParams.get("type");
+
+      if (accessToken && type === "recovery") {
+        if (isMounted) setHasValidSession(true);
+        return;
+      }
+
+      // 3. Check existing active session
+      const { data } = await supabase.auth.getSession();
+      if (data?.session && isMounted) {
+        setHasValidSession(true);
+        return;
+      }
+    };
+
+    checkSession();
+
+    // 4. Listen for PASSWORD_RECOVERY auth event
+    const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === "PASSWORD_RECOVERY" || (event === "SIGNED_IN" && session)) {
+        if (isMounted) setHasValidSession(true);
+      }
+    });
+
+    return () => {
+      isMounted = false;
+      authListener?.subscription.unsubscribe();
+    };
+  }, [searchParams]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
