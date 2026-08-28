@@ -19,7 +19,7 @@ import {
   AlertCircle
 } from "lucide-react";
 import { useNavigate } from "react-router";
-import logoImage from "../../assets/efbe2a1ac833b032474ac203bb52c6fe4e93cfbb.png";
+import AppLogo from "../components/AppLogo";
 import { useAppMode } from "../contexts/AppModeContext";
 import { useAuth } from "../contexts/AuthContext";
 import { EMAIL_CONFIRMATION_REQUIRED } from "../../lib/supabase";
@@ -209,8 +209,8 @@ export default function Onboarding() {
         {/* ============================================================ */}
         {step === "welcome" && (
           <div className="bg-white rounded-3xl shadow-2xl p-6 sm:p-8 text-center animate-in fade-in zoom-in-95 duration-300 border border-teal-100">
-            <div className="flex justify-center mb-4">
-              <img src={logoImage} alt="MealOptimiza" className="h-16 object-contain" />
+            <div className="flex justify-center mb-3">
+              <AppLogo size="md" />
             </div>
 
             <div className="my-3 flex justify-center">

@@ -45,7 +45,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { Alert, AlertTitle, AlertDescription } from "../components/ui/alert";
 import { Button } from "../components/ui/button";
 import { Progress } from "../components/ui/progress";
-import logoImage from "../../assets/efbe2a1ac833b032474ac203bb52c6fe4e93cfbb.png";
+import AppLogo from "../components/AppLogo";
 import { initializeSampleData } from "../../utils/sampleData";
 import { projectId } from '/utils/supabase/info';
 import { getAccessToken } from '../../lib/supabase';
@@ -606,12 +606,8 @@ export default function Home() {
         {/* Top Brand & Profile Avatar Bar (Option 2: Minimalist & Spacious) */}
         <div className="flex items-center justify-between gap-3 mb-4">
           {/* Top Left: Clean Brand Anchor */}
-          <div className="flex items-center gap-2">
-            <img
-              src={logoImage}
-              alt="MealOptimiza"
-              className="h-8 sm:h-9 object-contain drop-shadow-xs"
-            />
+          <div className="flex items-center">
+            <AppLogo size="sm" />
           </div>
 
           {/* Top Right: Prominent Profile Avatar Only */}
