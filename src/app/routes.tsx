@@ -53,6 +53,7 @@ const Reminders = lazy(() => import("./pages/Reminders"));
 const Achievements = lazy(() => import("./pages/Achievements"));
 const Health = lazy(() => import("./pages/Health"));
 const Challenge = lazy(() => import("./pages/Challenge"));
+const WhatsAppLanding = lazy(() => import("./pages/WhatsAppLanding"));
 
 // Lightweight fallback shown while a page chunk loads.
 function PageLoader() {
@@ -218,6 +219,8 @@ export const router = createBrowserRouter([
   { path: "/privacy", Component: PrivacyPolicy },
   { path: "/terms-and-conditions", Component: TermsAndConditions },
   { path: "/terms", Component: TermsAndConditions },
+  { path: "/whatsapp", Component: WhatsAppLanding },
+  { path: "/whatsapp-ai", Component: WhatsAppLanding },
 
   // ============================================================
   // Onboarding / signup-flow steps — NO bottom nav (single flow)
