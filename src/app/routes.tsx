@@ -1,4 +1,4 @@
-import { lazy, Suspense } from "react";
+import { lazy, Suspense, useEffect } from "react";
 import { createBrowserRouter, useLocation, useOutlet, useNavigationType, Navigate } from "react-router";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { AppBottomNav } from "./components/BottomNav";
