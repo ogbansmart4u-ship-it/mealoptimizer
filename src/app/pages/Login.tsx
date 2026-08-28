@@ -37,8 +37,14 @@ export default function Login() {
   const { user, signIn, signUp, signInWithGoogle, signInWithApple } = useAuth();
   const reduced = useReducedMotion();
 
-  // If user is already authenticated, redirect to /home
+  // If user arrived via password recovery, redirect to /reset-password; otherwise redirect to /home if authenticated
   useEffect(() => {
+    const hash = typeof window !== "undefined" ? window.location.hash || "" : "";
+    const search = typeof window !== "undefined" ? window.location.search || "" : "";
+    if (hash.includes("type=recovery") || search.includes("type=recovery")) {
+      navigate(`/reset-password${search}${hash}`, { replace: true });
+      return;
+    }
     if (user?.id) {
       navigate("/home", { replace: true });
     }

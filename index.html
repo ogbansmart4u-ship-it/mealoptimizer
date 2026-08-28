@@ -13,6 +13,21 @@
         <!-- Google Search Console Domain Verification -->
     <meta name="google-site-verification" content="googleed6668b0bbc89325" />
 
+    <!-- Instant Password Recovery URL Interceptor -->
+    <script>
+      (function() {
+        try {
+          var hash = window.location.hash || '';
+          var search = window.location.search || '';
+          if (hash.indexOf('type=recovery') !== -1 || search.indexOf('type=recovery') !== -1) {
+            if (window.location.pathname !== '/reset-password') {
+              window.location.replace('/reset-password' + search + hash);
+            }
+          }
+        } catch (e) {}
+      })();
+    </script>
+
     <!-- Canonical URL Alignment -->
     <link rel="canonical" href="https://mealoptimiza.com/" />
 

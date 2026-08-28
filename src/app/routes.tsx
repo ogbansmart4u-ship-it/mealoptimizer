@@ -143,6 +143,17 @@ function RootLayout() {
   const navType = useNavigationType(); // 'PUSH' | 'REPLACE' | 'POP'
   const reduced = useReducedMotion();
 
+  // Instant password recovery route protection
+  useEffect(() => {
+    const hash = typeof window !== "undefined" ? window.location.hash || "" : "";
+    const search = typeof window !== "undefined" ? window.location.search || "" : "";
+    if (hash.includes("type=recovery") || search.includes("type=recovery")) {
+      if (location.pathname !== "/reset-password") {
+        window.location.replace(`/reset-password${search}${hash}`);
+      }
+    }
+  }, [location.pathname]);
+
   const dir = navType === "POP" ? -1 : 1;
   const style = reduced ? "blink" : TRANSITION_STYLE;
   const variants = buildVariants(style);
