@@ -755,6 +755,130 @@ export default function Home() {
               </div>
             </div>
 
+            {/* ============================================================ */}
+            {/* 1. TOP HERO: AI FOOD CAMERA & COMPACT FUEL GAUGE POWER DECK  */}
+            {/* ============================================================ */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {/* 📸 Card A: Instant AI Camera & Food Scanner (Top Priority) */}
+              <button
+                type="button"
+                onClick={() => {
+                  triggerHaptic("medium");
+                  setShowLocalFoodScanner(true);
+                }}
+                className="relative overflow-hidden bg-gradient-to-br from-teal-500 via-teal-600 to-cyan-600 rounded-3xl p-4 sm:p-5 text-white text-left shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.01] active:scale-[0.99] cursor-pointer flex flex-col justify-between min-h-[160px] border-2 border-teal-300/40 group"
+              >
+                {/* Glowing Laser Scan Sweep Line */}
+                <div className="absolute left-0 right-0 h-1 bg-gradient-to-r from-transparent via-white to-transparent shadow-[0_0_15px_#fff] pointer-events-none animate-laser-sweep opacity-90" />
+                <div className="absolute -top-10 -right-10 w-32 h-32 rounded-full bg-white/10 blur-xl pointer-events-none" />
+
+                {/* Top Row: Camera Lens with Radar Ring */}
+                <div className="flex items-center justify-between relative z-10">
+                  <div className="relative">
+                    <span className="absolute -inset-1 rounded-2xl bg-white/30 animate-pulse-radar pointer-events-none" />
+                    <div className="relative bg-white/25 backdrop-blur-xs rounded-2xl p-2.5 w-fit group-hover:rotate-6 transition-transform shadow-xs">
+                      <Camera className="h-6 w-6 text-white" />
+                    </div>
+                  </div>
+                  <span className="text-[9.5px] font-black tracking-wider uppercase px-2 py-0.5 rounded-full bg-white/20 backdrop-blur-xs text-teal-50 border border-white/20 shadow-2xs">
+                    AI VISION CORE ⚡
+                  </span>
+                </div>
+
+                {/* Bottom Text & 1-Tap Trigger */}
+                <div className="relative z-10 mt-3">
+                  <span className="text-base font-black block leading-tight tracking-tight text-white">
+                    {t('home.snapKnow')} 📸
+                  </span>
+                  <span className="text-[11px] text-teal-50/90 font-semibold block mt-0.5">
+                    Snap any African or diaspora meal
+                  </span>
+                  <div className="mt-2.5 inline-flex items-center gap-1.5 px-3 py-1 bg-white text-teal-900 rounded-xl text-xs font-black shadow-sm group-hover:bg-teal-50 transition-colors">
+                    <span>Open Camera</span>
+                    <ChevronRight size={13} className="group-hover:translate-x-0.5 transition-transform" />
+                  </div>
+                </div>
+              </button>
+
+              {/* ⚡ Card B: Compact Daily Fuel Gauge & Macro Pill Deck */}
+              <div className="bg-gradient-to-br from-white via-[#F4FBFA] to-[#E2F4F3] rounded-3xl shadow-lg border border-teal-100/90 p-4 sm:p-5 flex flex-col justify-between min-h-[160px]">
+                {/* Header */}
+                <div className="flex items-center justify-between">
+                  <span className="text-[11px] font-black uppercase tracking-wider text-[#1f7a8c]">
+                    {t('home.todaysCalories')}
+                  </span>
+                  <span className="text-[11px] font-black px-2 py-0.5 rounded-full bg-teal-100/90 text-teal-900 shadow-2xs">
+                    {caloriesConsumed} / {caloriesTarget} kcal
+                  </span>
+                </div>
+
+                {/* Compact Clickable Arc Gauge */}
+                <button
+                  type="button"
+                  onClick={() => setShowGaugeDetails(true)}
+                  className="w-full flex items-center justify-center my-1 hover:scale-[1.02] active:scale-[0.99] transition-transform cursor-pointer focus:outline-none"
+                  title="Tap for detailed calorie & macro breakdown"
+                >
+                  <div className="relative flex flex-col items-center justify-center">
+                    <svg className="w-36 h-20" viewBox="0 0 200 115">
+                      <path
+                        d="M 30 95 A 70 70 0 0 1 170 95"
+                        fill="none"
+                        stroke="#e5e7eb"
+                        strokeWidth="18"
+                        strokeLinecap="round"
+                      />
+                      <path
+                        d="M 30 95 A 70 70 0 0 1 170 95"
+                        fill="none"
+                        stroke="url(#compactGaugeGradient)"
+                        strokeWidth="18"
+                        strokeLinecap="round"
+                        strokeDasharray={`${animatedProgress * 2.2} 1000`}
+                        style={{
+                          transition: "stroke-dasharray 1.2s cubic-bezier(0.4, 0, 0.2, 1)",
+                        }}
+                      />
+                      <defs>
+                        <linearGradient id="compactGaugeGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                          <stop offset="0%" stopColor="#1f7a8c" />
+                          <stop offset="100%" stopColor="#4ecdc4" />
+                        </linearGradient>
+                      </defs>
+                    </svg>
+
+                    <div className="absolute top-5 flex flex-col items-center">
+                      <div className="text-[#1f7a8c] text-xl font-black leading-none">
+                        {animatedPercentage}%
+                      </div>
+                      <div className="text-[9px] text-gray-500 uppercase font-bold mt-0.5">
+                        {t('home.ofDailyGoal')}
+                      </div>
+                      <span className="text-[9px] text-teal-700 font-bold mt-0.5 bg-teal-50 px-1.5 py-0.2 rounded-full">
+                        Details 📊
+                      </span>
+                    </div>
+                  </div>
+                </button>
+
+                {/* Micro Macro Pill Row */}
+                <div className="grid grid-cols-3 gap-1.5 text-center">
+                  <div className="bg-white rounded-xl py-1 px-1 shadow-2xs border border-teal-50">
+                    <span className="text-[9px] text-gray-500 font-bold block">Protein</span>
+                    <span className="text-[11px] font-black text-blue-700">{proteinConsumed}g</span>
+                  </div>
+                  <div className="bg-white rounded-xl py-1 px-1 shadow-2xs border border-teal-50">
+                    <span className="text-[9px] text-gray-500 font-bold block">Carbs</span>
+                    <span className="text-[11px] font-black text-emerald-700">{carbsConsumed}g</span>
+                  </div>
+                  <div className="bg-white rounded-xl py-1 px-1 shadow-2xs border border-teal-50">
+                    <span className="text-[9px] text-gray-500 font-bold block">Fats</span>
+                    <span className="text-[11px] font-black text-purple-700">{fatsConsumed}g</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
             {/* 🔥 LIVE AVO CHALLENGE & GAMIFIED HEALTH HUB (UNIFIED 3-BUTTON FRAME) */}
             <div className="relative overflow-hidden bg-gradient-to-br from-amber-500 via-orange-600 to-red-600 rounded-3xl p-4 sm:p-5 text-white shadow-xl border-2 border-amber-300/40">
               {/* Dynamic Ambient Laser Sweep & Particle Light */}
@@ -844,156 +968,6 @@ export default function Home() {
                 >
                   <span className="text-base leading-none group-hover/btn:scale-125 transition-transform">🏆</span>
                   <span className="truncate">Leaderboards 🌍</span>
-                </button>
-              </div>
-            </div>
-
-            {/* Daily Fuel Gauge Card */}
-            <div className="bg-gradient-to-br from-white via-[#F4FBFA] to-[#E2F4F3] rounded-3xl shadow-lg border border-teal-100/80 p-5 sm:p-6">
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-xs font-bold uppercase tracking-wider text-[#1f7a8c]">
-                  {t('home.todaysCalories')}
-                </span>
-                <span className="text-xs font-extrabold px-2 py-0.5 rounded-full bg-teal-100 text-teal-800">
-                  {caloriesConsumed} / {caloriesTarget} kcal
-                </span>
-              </div>
-
-              {/* Clickable SVG Gauge */}
-              <button 
-                onClick={() => setShowGaugeDetails(true)}
-                className="w-full hover:scale-[1.02] active:scale-[0.99] transition-transform duration-200 focus:outline-none rounded-2xl cursor-pointer"
-                aria-label={`Daily nutrition progress: ${animatedPercentage}% of goal achieved. Tap for detailed breakdown.`}
-              >
-                <div className="relative flex flex-col items-center justify-center my-2">
-                  <svg className="w-48 h-28" viewBox="0 0 200 115">
-                    <path
-                      d="M 30 95 A 70 70 0 0 1 170 95"
-                      fill="none"
-                      stroke="#e5e7eb"
-                      strokeWidth="16"
-                      strokeLinecap="round"
-                    />
-                    <path
-                      d="M 30 95 A 70 70 0 0 1 170 95"
-                      fill="none"
-                      stroke="url(#gaugeGradient)"
-                      strokeWidth="16"
-                      strokeLinecap="round"
-                      strokeDasharray={`${animatedProgress * 2.2} 1000`}
-                      style={{
-                        transition: "stroke-dasharray 1.2s cubic-bezier(0.4, 0, 0.2, 1)",
-                      }}
-                    />
-                    <defs>
-                      <linearGradient id="gaugeGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                        <stop offset="0%" stopColor="#1f7a8c" />
-                        <stop offset="100%" stopColor="#4ecdc4" />
-                      </linearGradient>
-                    </defs>
-                  </svg>
-                  
-                  <div className="absolute top-8 flex flex-col items-center">
-                    <div className="text-[#1f7a8c] text-2xl font-black">
-                      {animatedPercentage}%
-                    </div>
-                    <div className="text-[10px] text-gray-500 uppercase font-semibold">{t('home.ofDailyGoal')}</div>
-                    <div className="text-[10px] text-teal-700 font-bold mt-0.5 bg-teal-50 px-2 py-0.5 rounded-full">
-                      {t('home.tapForDetails')} 📊
-                    </div>
-                  </div>
-                </div>
-              </button>
-
-              {/* Quick Macro Breakdown Row */}
-              <div className="grid grid-cols-3 gap-2 pt-3 border-t border-teal-100 text-center">
-                <div className="bg-white/80 rounded-2xl p-2 shadow-xs border border-teal-50">
-                  <span className="text-[10px] text-gray-500 font-bold block">Protein</span>
-                  <span className="text-xs font-extrabold text-blue-700">{proteinConsumed}g</span>
-                  <span className="text-[9px] text-gray-400 block">/ {proteinTarget}g</span>
-                </div>
-                <div className="bg-white/80 rounded-2xl p-2 shadow-xs border border-teal-50">
-                  <span className="text-[10px] text-gray-500 font-bold block">Carbs</span>
-                  <span className="text-xs font-extrabold text-emerald-700">{carbsConsumed}g</span>
-                  <span className="text-[9px] text-gray-400 block">/ {carbsTarget}g</span>
-                </div>
-                <div className="bg-white/80 rounded-2xl p-2 shadow-xs border border-teal-50">
-                  <span className="text-[10px] text-gray-500 font-bold block">Fats</span>
-                  <span className="text-xs font-extrabold text-purple-700">{fatsConsumed}g</span>
-                  <span className="text-[9px] text-gray-400 block">/ {fatsTarget}g</span>
-                </div>
-              </div>
-            </div>
-
-            {/* ============================================================ */}
-            {/* PRIME HERO ACTIONS: MEAL ANALYSER & PLANNER (Above the fold) */}
-            {/* ============================================================ */}
-            <div>
-              <div className="flex items-center justify-between mb-2.5 px-0.5">
-                <h3 className="text-xs font-black text-gray-900 uppercase tracking-wider flex items-center gap-1.5">
-                  <span>{t('home.analyserPlanner')}</span>
-                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping" />
-                </h3>
-                <span className="text-[10px] font-extrabold text-[#1f7a8c] bg-teal-50 px-2 py-0.5 rounded-full border border-teal-100/60 shadow-2xs">
-                  AI Core Active ⚡
-                </span>
-              </div>
-
-              <div className="grid grid-cols-2 gap-3">
-                {/* 1. Snap & Know Card with Animated Laser Scan Line & Radar Pulse */}
-                <button
-                  onClick={() => setShowLocalFoodScanner(true)}
-                  className="relative overflow-hidden bg-gradient-to-br from-teal-500 via-teal-600 to-cyan-600 rounded-3xl p-4 text-white text-left shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] cursor-pointer flex flex-col justify-between h-36 border border-teal-400/30 group"
-                >
-                  {/* Glowing Laser Scan Sweep Line */}
-                  <div className="absolute left-0 right-0 h-1 bg-gradient-to-r from-transparent via-white to-transparent shadow-[0_0_12px_#fff] pointer-events-none animate-laser-sweep opacity-85" />
-
-                  {/* Top Icon Row */}
-                  <div className="flex items-center justify-between relative z-10">
-                    <div className="relative">
-                      {/* Pulsing Radar Ring */}
-                      <span className="absolute -inset-1 rounded-2xl bg-white/30 animate-pulse-radar pointer-events-none" />
-                      <div className="relative bg-white/25 backdrop-blur-xs rounded-2xl p-2.5 w-fit group-hover:rotate-6 transition-transform">
-                        <Camera className="h-5 w-5 text-white" />
-                      </div>
-                    </div>
-                    <span className="text-[9px] font-black tracking-wider uppercase px-1.5 py-0.5 rounded-md bg-white/20 backdrop-blur-xs text-teal-50">
-                      SCANNER
-                    </span>
-                  </div>
-
-                  {/* Bottom Text */}
-                  <div className="relative z-10">
-                    <span className="text-xs font-black block leading-tight tracking-tight">
-                      {t('home.snapKnow')}
-                    </span>
-                    <span className="text-[10px] text-teal-50/90 font-semibold block mt-0.5">
-                      Food photo AI vision
-                    </span>
-                  </div>
-                </button>
-
-                {/* 2. Plan My Meal Card with Floating Bobbing Emoji & Shimmer */}
-                <button
-                  onClick={() => navigate("/plan-meal")}
-                  className="bg-white rounded-3xl p-4 text-left shadow-lg hover:shadow-xl border-2 border-teal-100/80 hover:border-[#1f7a8c] transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] cursor-pointer flex flex-col justify-between h-36 group"
-                >
-                  <div className="flex items-center justify-between">
-                    <div className="bg-orange-50 border border-orange-200/60 rounded-2xl p-2.5 w-fit text-xl animate-float-bob">
-                      🍽️
-                    </div>
-                    <span className="text-[9px] font-black uppercase px-1.5 py-0.5 rounded-md bg-amber-50 text-amber-700 border border-amber-200/50">
-                      PLANNER
-                    </span>
-                  </div>
-                  <div>
-                    <span className="text-xs font-black text-gray-900 block leading-tight group-hover:text-[#1f7a8c] transition-colors">
-                      {t('home.planMyMeal')}
-                    </span>
-                    <span className="text-[10px] text-gray-500 font-semibold block mt-0.5">
-                      Swallows & Diaspora swaps
-                    </span>
-                  </div>
                 </button>
               </div>
             </div>
