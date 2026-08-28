@@ -23,6 +23,8 @@ export type MascotGesture =
   | "dancing"
   | "running"
   | "pointing"
+  | "drink"
+  | "drinking"
   | "neutral";
 
 export interface GestureConfig {
@@ -51,6 +53,8 @@ export const GESTURES: Record<MascotGesture, GestureConfig> = {
   dancing:         { css: "avoDance 0.8s ease-in-out infinite",      hold: "persistent" },
   running:         { css: "avoRun 0.6s ease-in-out infinite",        hold: "persistent" },
   pointing:        { css: "avoPop 0.6s ease-out infinite",           hold: 1200 },
+  drink:           { css: "avoPop 0.8s ease-out infinite",           hold: 2200 },
+  drinking:        { css: "avoPop 0.8s ease-out infinite",           hold: 2200 },
 };
 
 // Keyframes for every gesture, plus a reduced-motion opt-out. Injected once.

@@ -305,7 +305,7 @@ export default function HydrationTracker() {
             </div>
 
             <div className="shrink-0 flex flex-col items-center">
-              <Mascot gesture={progressPercentage >= 100 ? "celebrate" : "wave"} size={68} />
+              <Mascot gesture={progressPercentage >= 100 ? "jump" : "drink"} size={76} />
               <span className="text-[10px] font-black text-cyan-300 mt-1">
                 {Math.round(progressPercentage)}% Cleanse
               </span>

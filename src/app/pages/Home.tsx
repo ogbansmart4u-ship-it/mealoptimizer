@@ -28,6 +28,8 @@ import CircadianArc from "../components/CircadianArc";
 import WhatsAppConnectDialog from "../components/WhatsAppConnectDialog";
 import CGMSensorVisualizer from "../components/CGMSensorVisualizer";
 import QuickLogShelf, { QuickFoodItem } from "../components/QuickLogShelf";
+import WaterTrackerFrame from "../components/WaterTrackerFrame";
+import WaterReminderModal from "../components/WaterReminderModal";
 import { useSmartNudges } from "../hooks/useSmartNudges";
 import ModeToggle from "../components/ModeToggle";
 import LocationSelector from "../components/LocationSelector";
@@ -366,6 +368,33 @@ export default function Home() {
     onDrinkWater: () => handleWaterIncrease(),
     onLogMeal: () => navigate("/plan-meal"),
   });
+
+  const [showWaterReminderModal, setShowWaterReminderModal] = useState(false);
+
+  const handleWaterAddCustom = async (amountMl: number = 250) => {
+    if (waterBusy) return;
+    setWaterBusy(true);
+    setWaterMl((ml) => ml + amountMl);
+    try {
+      const item = await createHydrationLog({
+        amount_ml: amountMl,
+        type: amountMl === 300 ? "zobo" : "water",
+        logged_at: new Date().toISOString(),
+      });
+      if (item?.id) setHomeWaterIds((ids) => [...ids, String(item.id)]);
+      const nextGlasses = Math.round((waterMl + amountMl) / GLASS_ML);
+      if (nextGlasses >= waterGoal) {
+        celebrate("Hydration Goal Achieved! 💧🎉", `${waterGoal} of ${waterGoal} glasses completed today!`, {
+          confettiStyle: "cannons",
+          hapticPattern: "milestone",
+        });
+      }
+    } catch {
+      setWaterMl((ml) => Math.max(0, ml - amountMl));
+    } finally {
+      setWaterBusy(false);
+    }
+  };
 
   const handleWaterDecrease = async () => {
     if (waterBusy || homeWaterIds.length === 0) return;
@@ -959,12 +988,24 @@ export default function Home() {
               />
             </div>
 
+            {/* 10X Prominent Water & Cellular Flush Station Frame */}
+            <div className="my-2">
+              <WaterTrackerFrame
+                currentGlasses={waterGlasses}
+                targetGlasses={8}
+                onAddGlass={handleWaterAddCustom}
+                onRemoveGlass={handleWaterDecrease}
+                onOpenDetails={() => navigate("/hydration")}
+                onOpenReminderModal={() => setShowWaterReminderModal(true)}
+              />
+            </div>
+
             {/* Daily Metabolic Habit Scorecard */}
             <MetabolicChecklist
               waterCount={waterGlasses}
               mealsLoggedCount={todayLogs.length}
               vitalsLoggedCount={0}
-              onOpenWater={handleWaterIncrease}
+              onOpenWater={() => setShowWaterReminderModal(true)}
               onOpenQuickLog={() => navigate("/plan-meal")}
             />
 
@@ -1633,6 +1674,15 @@ export default function Home() {
       <FoodWrappedModal
         isOpen={showFoodWrapped}
         onClose={() => setShowFoodWrapped(false)}
+      />
+
+      {/* 10X Water & Cellular Hydration Reminder Modal with Avo Drinking Water Mascot */}
+      <WaterReminderModal
+        isOpen={showWaterReminderModal}
+        onClose={() => setShowWaterReminderModal(false)}
+        currentGlasses={waterGlasses}
+        targetGlasses={8}
+        onAddGlass={handleWaterAddCustom}
       />
 
       {/* Clinical Governance & Medical Regulatory Disclaimer Modal */}

@@ -32,6 +32,11 @@ const GESTURE_ASSETS: Record<string, { webm: string; webp: string }> = {
   sad: { webm: "/assets/mascot/avo-sad.webm", webp: "/assets/mascot/avo-sad.webp" },
   concerned: { webm: "/assets/mascot/avo-sad.webm", webp: "/assets/mascot/avo-sad.webp" },
   scratching: { webm: "/assets/mascot/avo-sad.webm", webp: "/assets/mascot/avo-sad.webp" },
+  drink: { webm: "/assets/mascot/avo-drink.webm", webp: "/assets/mascot/avo-drink.webp" },
+  drinking: { webm: "/assets/mascot/avo-drink.webm", webp: "/assets/mascot/avo-drink.webp" },
+  water: { webm: "/assets/mascot/avo-drink.webm", webp: "/assets/mascot/avo-drink.webp" },
+  hydrate: { webm: "/assets/mascot/avo-drink.webm", webp: "/assets/mascot/avo-drink.webp" },
+  hydration: { webm: "/assets/mascot/avo-drink.webm", webp: "/assets/mascot/avo-drink.webp" },
   idle: { webm: "/assets/mascot/avo-idle.webm", webp: "/assets/mascot/avo-idle.webp" },
 };
 
