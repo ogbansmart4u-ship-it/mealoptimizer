@@ -2,6 +2,7 @@ import { lazy, Suspense, useEffect, useRef } from "react";
 import { createBrowserRouter, useLocation, useOutlet, useNavigationType, Navigate } from "react-router";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { AppBottomNav } from "./components/BottomNav";
+import OfflineBanner from "./components/OfflineBanner";
 import { useSwipeNavigation, MAIN_NAV_TABS } from "./hooks/useSwipeNavigation";
 
 // Structural components stay eager — they're small and needed to render the shell.
@@ -178,6 +179,7 @@ function RootLayout() {
 
   return (
     <>
+      <OfflineBanner />
       <AnimatePresence mode="wait" initial={false} custom={dir}>
         <motion.div
           key={location.pathname}
