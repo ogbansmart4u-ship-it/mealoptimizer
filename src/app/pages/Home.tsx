@@ -755,75 +755,97 @@ export default function Home() {
               </div>
             </div>
 
-            {/* 🔥 Avo 21-Day Blood Sugar Reset Challenge Hero Banner */}
-            <div
-              onClick={() => {
-                triggerHaptic("medium");
-                navigate("/challenge");
-              }}
-              className="bg-gradient-to-r from-amber-500 via-orange-600 to-red-600 rounded-3xl p-4 sm:p-5 text-white shadow-lg border border-amber-300/40 relative overflow-hidden flex items-center justify-between gap-3 sm:gap-4 cursor-pointer hover:shadow-xl hover:scale-[1.01] active:scale-[0.99] transition-all group"
-            >
-              <div className="relative z-10 flex items-center gap-3 min-w-0">
-                <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-white/20 border-2 border-yellow-200 flex items-center justify-center text-2xl sm:text-3xl shrink-0 shadow-xs group-hover:scale-105 transition-transform">
-                  🔥
-                </div>
-                <div className="min-w-0">
-                  <div className="flex items-center gap-1.5">
-                    <span className="text-[9.5px] font-black uppercase tracking-wider bg-yellow-300 text-slate-950 px-2 py-0.2 rounded-full shadow-2xs">
-                      Live Challenge
-                    </span>
-                    <span className="text-[10px] text-yellow-100 font-bold hidden sm:inline">Leaderboard &amp; Swaps</span>
+            {/* 🔥 LIVE AVO CHALLENGE & GAMIFIED HEALTH HUB (UNIFIED 3-BUTTON FRAME) */}
+            <div className="relative overflow-hidden bg-gradient-to-br from-amber-500 via-orange-600 to-red-600 rounded-3xl p-4 sm:p-5 text-white shadow-xl border-2 border-amber-300/40">
+              {/* Dynamic Ambient Laser Sweep & Particle Light */}
+              <div className="absolute left-0 right-0 top-0 h-1 bg-gradient-to-r from-transparent via-white to-transparent shadow-[0_0_15px_#fff] pointer-events-none animate-laser-sweep opacity-85" />
+              <div className="absolute -top-10 -right-10 w-44 h-44 rounded-full bg-yellow-300/20 blur-2xl pointer-events-none" />
+              <div className="absolute -bottom-10 -left-10 w-44 h-44 rounded-full bg-red-700/30 blur-2xl pointer-events-none" />
+
+              {/* Top Row: Animated Mascot Avo in Challenge Jumping/Cheering Pose + Live Indicator */}
+              <div className="flex items-center justify-between gap-3 relative z-10 mb-3">
+                <div className="flex items-center gap-3 min-w-0">
+                  <div className="relative shrink-0">
+                    <span className="absolute -inset-1 rounded-2xl bg-yellow-300/40 animate-pulse-radar pointer-events-none" />
+                    <div className="relative p-1 bg-white/20 backdrop-blur-md rounded-2xl border border-yellow-200/50 shadow-md">
+                      <Mascot gesture="jump" size={56} className="filter drop-shadow-md" />
+                    </div>
                   </div>
-                  <h3 className="text-sm sm:text-base font-black text-white leading-tight mt-0.5 truncate">
-                    Avo 21-Day Blood Sugar Reset
-                  </h3>
-                  <p className="text-[11px] sm:text-xs text-yellow-100 line-clamp-1 mt-0.5 font-medium">
-                    Day 8 Active: Swallow Revolution • +140 XP Today
-                  </p>
+
+                  <div className="min-w-0">
+                    <div className="flex items-center gap-1.5 flex-wrap">
+                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-yellow-300 text-slate-950 text-[9.5px] font-black uppercase tracking-wider shadow-2xs">
+                        <span className="w-1.5 h-1.5 rounded-full bg-red-600 animate-ping shrink-0" />
+                        LIVE CHALLENGE
+                      </span>
+                      <span className="text-[10px] text-yellow-100 font-bold bg-white/15 px-2 py-0.5 rounded-full">
+                        🔥 1,420 Warriors Active
+                      </span>
+                    </div>
+
+                    <h3 className="text-base sm:text-lg font-black text-white leading-tight mt-1 truncate">
+                      Avo 21-Day Blood Sugar Reset
+                    </h3>
+                    <p className="text-[11px] text-yellow-100 font-medium line-clamp-1">
+                      Day 8 Active: Swallow Revolution • <strong className="text-yellow-200">+140 XP Today</strong>
+                    </p>
+                  </div>
                 </div>
               </div>
 
-              <div className="relative z-10 bg-white group-hover:bg-amber-50 text-orange-600 font-black text-xs px-3.5 py-2.5 rounded-2xl shadow-sm shrink-0 flex items-center gap-1.5 transition-colors">
-                <span>Join</span>
-                <ChevronRight size={14} className="group-hover:translate-x-0.5 transition-transform" />
+              {/* Challenge XP Micro Progress Bar */}
+              <div className="relative z-10 mb-3.5 bg-black/25 backdrop-blur-xs rounded-2xl p-2 border border-white/20">
+                <div className="flex items-center justify-between text-[10px] font-bold text-yellow-100 mb-1">
+                  <span>Day 8 Challenge • Level 2 Pioneer</span>
+                  <span>4,850 / 6,000 XP</span>
+                </div>
+                <div className="w-full h-2 bg-black/30 rounded-full overflow-hidden p-0.5">
+                  <div className="h-full bg-gradient-to-r from-yellow-300 via-amber-300 to-white rounded-full w-[78%] animate-pulse" />
+                </div>
               </div>
-            </div>
 
-            {/* 📊 Food Wrapped Viral Share Pill */}
-            <div className="grid grid-cols-2 gap-2.5">
-              <button
-                type="button"
-                onClick={() => {
-                  triggerHaptic("medium");
-                  setShowFoodWrapped(true);
-                }}
-                className="p-3 bg-gradient-to-br from-teal-900 to-slate-900 border border-teal-500/30 hover:border-teal-400 rounded-2xl text-left transition-all flex items-center gap-2.5 cursor-pointer shadow-xs group active:scale-98"
-              >
-                <span className="p-2 bg-teal-500/20 text-teal-300 rounded-xl group-hover:scale-110 transition-transform">
-                  🥑
-                </span>
-                <div className="min-w-0 flex-1">
-                  <div className="text-xs font-black text-white truncate">Food Wrapped 📊</div>
-                  <div className="text-[10px] text-teal-300/80 font-bold">Monthly Story Card</div>
-                </div>
-              </button>
+              {/* 3 Unified Action Buttons */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 relative z-10">
+                {/* Button 1: Join / Active Challenge */}
+                <button
+                  type="button"
+                  onClick={() => {
+                    triggerHaptic("medium");
+                    navigate("/challenge");
+                  }}
+                  className="py-2.5 px-3 bg-white hover:bg-yellow-50 active:scale-95 text-slate-950 rounded-2xl font-black text-xs shadow-md transition-all flex items-center justify-center gap-1.5 cursor-pointer group/btn"
+                >
+                  <span className="text-base leading-none group-hover/btn:scale-125 transition-transform">🔥</span>
+                  <span className="truncate">Join Challenge</span>
+                  <ChevronRight size={13} className="text-orange-600 group-hover/btn:translate-x-0.5 transition-transform shrink-0" />
+                </button>
 
-              <button
-                type="button"
-                onClick={() => {
-                  triggerHaptic("medium");
-                  navigate("/challenge");
-                }}
-                className="p-3 bg-gradient-to-br from-amber-950 to-slate-900 border border-amber-500/30 hover:border-amber-400 rounded-2xl text-left transition-all flex items-center gap-2.5 cursor-pointer shadow-xs group active:scale-98"
-              >
-                <span className="p-2 bg-amber-500/20 text-amber-300 rounded-xl group-hover:scale-110 transition-transform">
-                  🏆
-                </span>
-                <div className="min-w-0 flex-1">
-                  <div className="text-xs font-black text-white truncate">Leaderboards 🌍</div>
-                  <div className="text-[10px] text-amber-300/80 font-bold">Diaspora Top 5%</div>
-                </div>
-              </button>
+                {/* Button 2: Food Wrapped */}
+                <button
+                  type="button"
+                  onClick={() => {
+                    triggerHaptic("medium");
+                    setShowFoodWrapped(true);
+                  }}
+                  className="py-2.5 px-3 bg-black/30 hover:bg-black/45 active:scale-95 text-white border border-white/25 rounded-2xl font-black text-xs shadow-sm transition-all flex items-center justify-center gap-1.5 cursor-pointer group/btn"
+                >
+                  <span className="text-base leading-none group-hover/btn:scale-125 transition-transform">🥑</span>
+                  <span className="truncate">Food Wrapped 📊</span>
+                </button>
+
+                {/* Button 3: Leaderboards */}
+                <button
+                  type="button"
+                  onClick={() => {
+                    triggerHaptic("medium");
+                    navigate("/challenge");
+                  }}
+                  className="py-2.5 px-3 bg-black/30 hover:bg-black/45 active:scale-95 text-white border border-white/25 rounded-2xl font-black text-xs shadow-sm transition-all flex items-center justify-center gap-1.5 cursor-pointer group/btn"
+                >
+                  <span className="text-base leading-none group-hover/btn:scale-125 transition-transform">🏆</span>
+                  <span className="truncate">Leaderboards 🌍</span>
+                </button>
+              </div>
             </div>
 
             {/* Daily Fuel Gauge Card */}
