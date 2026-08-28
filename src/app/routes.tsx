@@ -1,7 +1,8 @@
-import { lazy, Suspense, useEffect } from "react";
+import { lazy, Suspense, useEffect, useRef } from "react";
 import { createBrowserRouter, useLocation, useOutlet, useNavigationType, Navigate } from "react-router";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { AppBottomNav } from "./components/BottomNav";
+import { useSwipeNavigation, MAIN_NAV_TABS } from "./hooks/useSwipeNavigation";
 
 // Structural components stay eager — they're small and needed to render the shell.
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -142,6 +143,10 @@ function RootLayout() {
   const outlet = useOutlet();
   const navType = useNavigationType(); // 'PUSH' | 'REPLACE' | 'POP'
   const reduced = useReducedMotion();
+  const prevPathRef = useRef(location.pathname);
+
+  // Enable native-grade horizontal swipe gesture navigation across main tabs
+  useSwipeNavigation();
 
   // Instant password recovery route protection
   useEffect(() => {
@@ -154,7 +159,18 @@ function RootLayout() {
     }
   }, [location.pathname]);
 
-  const dir = navType === "POP" ? -1 : 1;
+  // Direction-aware spatial transition computation
+  const prevIndex = (MAIN_NAV_TABS as readonly string[]).indexOf(prevPathRef.current);
+  const currIndex = (MAIN_NAV_TABS as readonly string[]).indexOf(location.pathname);
+  let dir = navType === "POP" ? -1 : 1;
+  if (prevIndex !== -1 && currIndex !== -1 && prevIndex !== currIndex) {
+    dir = currIndex > prevIndex ? 1 : -1;
+  }
+
+  useEffect(() => {
+    prevPathRef.current = location.pathname;
+  }, [location.pathname]);
+
   const style = reduced ? "blink" : TRANSITION_STYLE;
   const variants = buildVariants(style);
   const duration = reduced ? 0.12 : DURATION[style];
