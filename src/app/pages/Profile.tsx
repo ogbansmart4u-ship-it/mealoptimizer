@@ -609,6 +609,22 @@ export default function Profile() {
               <p className="text-xs font-bold text-slate-800 truncate">{safeProfile.medicalCondition}</p>
             </div>
           </div>
+
+          {/* Retake 6-Question Metabolic Assessment Button */}
+          <button
+            type="button"
+            onClick={() => navigate("/onboarding")}
+            className="w-full mt-3 p-3 bg-gradient-to-r from-teal-500 via-teal-600 to-[#126778] text-white rounded-2xl text-xs font-black shadow-sm hover:shadow-md transition-all flex items-center justify-between cursor-pointer active:scale-98"
+          >
+            <div className="flex items-center gap-2">
+              <span className="text-base p-1 bg-white/20 rounded-xl">📋</span>
+              <div className="text-left">
+                <span className="block leading-tight">Retake 6-Question Metabolic Diagnostic</span>
+                <span className="text-[10px] text-teal-100 font-medium">Re-calibrate your cultural glycemic blueprint</span>
+              </div>
+            </div>
+            <ChevronRight size={16} className="text-white/80" />
+          </button>
         </div>
 
         {/* 4. Quick AI Tools Hub (WhatsApp Logger + Doctor Report) */}

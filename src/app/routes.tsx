@@ -222,14 +222,7 @@ export const router = createBrowserRouter([
   // ============================================================
   // Onboarding / signup-flow steps — NO bottom nav (single flow)
   // ============================================================
-  {
-    path: "/onboarding",
-    element: (
-      <ProtectedRoute>
-        <Onboarding />
-      </ProtectedRoute>
-    ),
-  },
+  { path: "/onboarding", Component: Onboarding },
   {
     path: "/age",
     element: (

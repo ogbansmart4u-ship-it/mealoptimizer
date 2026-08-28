@@ -266,6 +266,29 @@ export default function Login() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.38, delay: 0.05, ease }}
         >
+          {/* 45s Metabolic Assessment Launcher Pill */}
+          <button
+            type="button"
+            onClick={() => {
+              triggerHaptic("medium");
+              navigate("/onboarding");
+            }}
+            className="w-full mb-4 p-2.5 bg-gradient-to-r from-teal-500 via-teal-600 to-[#1f7a8c] text-white rounded-2xl text-xs font-black shadow-md hover:shadow-lg transition-all flex items-center justify-between cursor-pointer group"
+          >
+            <div className="flex items-center gap-2">
+              <span className="p-1 bg-white/20 rounded-xl text-base">🩺</span>
+              <div className="text-left">
+                <div className="text-[11px] font-black uppercase tracking-wider text-teal-100">
+                  New or Retaking Plan?
+                </div>
+                <div className="text-xs font-bold text-white">
+                  Take 45s Metabolic Diagnostic
+                </div>
+              </div>
+            </div>
+            <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
+          </button>
+
           {/* Segmented Auth Mode Switcher (Sign In vs Create Account) */}
           <div className="bg-slate-100 dark:bg-zinc-800/90 p-1 rounded-2xl flex gap-1 mb-5">
             <button
