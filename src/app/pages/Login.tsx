@@ -22,6 +22,7 @@ import { Checkbox } from "../components/ui/checkbox";
 import { useAuth } from "../contexts/AuthContext";
 import { useLanguage } from "../contexts/LanguageContext";
 import Mascot from "../components/Mascot";
+import AppLogo from "../components/AppLogo";
 import WhatsAppConnectDialog from "../components/WhatsAppConnectDialog";
 import { toast } from "sonner";
 import { triggerHaptic } from "../utils/celebration";
@@ -217,13 +218,8 @@ export default function Login() {
     <div className="min-h-screen bg-gradient-to-b from-[#B8E5E5] via-[#E8F5F5] to-[#F7F9F8] flex flex-col justify-between selection:bg-teal-200">
       {/* Top Header Bar */}
       <div className="px-5 pt-7 sm:pt-8 flex items-center justify-between max-w-md mx-auto w-full">
-        <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-xl bg-white/80 shadow-xs flex items-center justify-center">
-            <Leaf className="h-4 w-4 text-[#1f7a8c]" />
-          </div>
-          <span className="font-extrabold text-lg text-[#1f7a8c] tracking-tight">
-            MealOptimiza
-          </span>
+        <div className="flex items-center">
+          <AppLogo size="sm" />
         </div>
 
         <div className="flex items-center gap-1.5 text-[11px] font-black uppercase tracking-wider text-teal-800 bg-white/70 backdrop-blur-sm px-3 py-1 rounded-full border border-teal-100/70 shadow-xs">
