@@ -352,10 +352,10 @@ export default function FoodWrappedModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="max-w-md p-0 rounded-3xl overflow-hidden border-teal-500/40 bg-slate-950 text-white shadow-2xl">
+      <DialogContent className="max-w-sm sm:max-w-md w-[92vw] sm:w-full p-0 rounded-3xl overflow-hidden border-teal-500/40 bg-slate-950 text-white shadow-2xl max-h-[90vh]">
         {/* 9:16 Instagram/TikTok Story Container */}
         <div
-          className="relative bg-gradient-to-br from-slate-950 via-[#0a232a] to-slate-950 p-6 pt-6 pb-6 flex flex-col justify-between h-[640px] select-none overflow-hidden"
+          className="relative bg-gradient-to-br from-slate-950 via-[#0a232a] to-slate-950 p-5 pt-4 pb-4 flex flex-col justify-between h-[520px] max-h-[82vh] select-none overflow-hidden"
           onMouseDown={() => setIsPaused(true)}
           onMouseUp={() => setIsPaused(false)}
           onTouchStart={() => setIsPaused(true)}
@@ -423,7 +423,7 @@ export default function FoodWrappedModal({
                   </div>
 
                   <div className="my-3 flex justify-center">
-                    <Mascot gesture="waving" size={88} className="drop-shadow-lg" />
+                    <Mascot gesture="waving" size={68} className="drop-shadow-lg" />
                   </div>
 
                   <h2 className="text-2xl sm:text-3xl font-black text-white leading-tight">
@@ -594,7 +594,7 @@ export default function FoodWrappedModal({
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0, scale: 1.05 }}
                   transition={{ duration: 0.3 }}
-                  className="space-y-3.5 py-1 text-center"
+                  className="space-y-2 py-0 text-center"
                 >
                   <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-400/20 text-amber-300 text-[10px] font-extrabold border border-amber-400/30">
                     <Trophy size={13} /> Your Official Nutrition Archetype
@@ -602,7 +602,7 @@ export default function FoodWrappedModal({
 
                   <div className="flex justify-center my-1">
                     <div className="p-1 bg-white/10 backdrop-blur-md rounded-2xl border border-amber-400/30">
-                      <Mascot gesture="celebrating" size={72} className="drop-shadow-xl" />
+                      <Mascot gesture="clapping" size={64} className="drop-shadow-xl" />
                     </div>
                   </div>
 

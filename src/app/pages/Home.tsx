@@ -1197,24 +1197,35 @@ export default function Home() {
             transition={{ duration: 0.25 }}
             className="space-y-4"
           >
-            {/* Food Wrapped Story Highlight Banner */}
-            <div className="bg-gradient-to-r from-amber-500 via-orange-500 to-teal-700 rounded-3xl p-5 text-white shadow-xl flex items-center justify-between gap-4">
-              <div className="space-y-1">
-                <div className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-white/20 text-white text-[10px] font-extrabold uppercase tracking-wider">
-                  <Sparkles size={11} /> 9:16 Story Deck
+            {/* 🥑 FOOD WRAPPED 10X STORY HIGHLIGHT BANNER (Unified Brand Teal + 3D Mascot) */}
+            <div className="bg-gradient-to-r from-[#126778] via-[#1f7a8c] to-[#0d9488] rounded-3xl p-4 sm:p-5 text-white shadow-lg border border-teal-400/30 flex items-center justify-between gap-3 relative overflow-hidden">
+              <div className="flex items-center gap-3.5 min-w-0">
+                <div className="relative shrink-0 p-1 bg-white/15 backdrop-blur-md rounded-2xl border border-white/20 shadow-md">
+                  <Mascot gesture="clapping" size={48} className="filter drop-shadow-md" />
                 </div>
-                <h3 className="text-base font-black leading-tight">
-                  Your {new Date().toLocaleString("default", { month: "long" })} Food Wrapped
-                </h3>
-                <p className="text-xs text-white/90 leading-snug">
-                  See your cultural food archetype, blood sugar stability score, and share to WhatsApp Status!
-                </p>
+                <div className="min-w-0">
+                  <div className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-400 text-slate-950 text-[9.5px] font-black uppercase tracking-wider shadow-2xs">
+                    <Sparkles size={10} /> {new Date().toLocaleString("default", { month: "long" })} Food Wrapped
+                  </div>
+                  <h3 className="text-sm sm:text-base font-black leading-tight mt-1 truncate">
+                    Your Cultural Food Archetype 🏆
+                  </h3>
+                  <p className="text-[11px] text-teal-50/90 leading-snug truncate">
+                    See your monthly glucose stability score &amp; share to WhatsApp!
+                  </p>
+                </div>
               </div>
+
               <button
-                onClick={() => setShowFoodWrapped(true)}
-                className="px-4 py-3 bg-white text-slate-900 font-extrabold text-xs rounded-2xl shadow-md hover:scale-105 active:scale-95 transition-all cursor-pointer shrink-0"
+                type="button"
+                onClick={() => {
+                  triggerHaptic("medium");
+                  setShowFoodWrapped(true);
+                }}
+                className="px-4 py-2.5 bg-white hover:bg-teal-50 text-[#126778] font-black text-xs rounded-2xl shadow-md hover:scale-105 active:scale-95 transition-all cursor-pointer shrink-0 flex items-center gap-1"
               >
-                View Story ✨
+                <span>View Story</span>
+                <ChevronRight size={13} />
               </button>
             </div>
 
