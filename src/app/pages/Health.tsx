@@ -4,7 +4,7 @@ import {
   Lightbulb, BookOpen, Heart, ChevronRight,
   Shield, Droplet, Moon, Dumbbell, Clock, AlertCircle, FileText,
   Search, Sparkles, CheckCircle2, Bookmark, BookmarkCheck,
-  Zap, Share2, HelpCircle, Check, X, ArrowRight, Info, AlertTriangle
+  Zap, Share2, HelpCircle, Check, X, ArrowRight, Info, AlertTriangle, Calculator
 } from "lucide-react";
 import BottomNav from "../components/BottomNav";
 import { useNavigate } from "react-router";
@@ -493,6 +493,45 @@ export default function Health() {
       </div>
 
       <div className="px-4 sm:px-6 max-w-2xl mx-auto mt-4 space-y-6">
+        {/* ============================================================ */}
+        {/* 0. NEW: METABOLIC FOOD CALCULATORS HERO LAUNCHER             */}
+        {/* ============================================================ */}
+        <div
+          onClick={() => {
+            navigate("/calculators");
+          }}
+          className="bg-gradient-to-r from-[#1f7a8c] via-[#0d9488] to-[#115e59] text-white rounded-3xl p-4 sm:p-5 shadow-lg hover:shadow-xl transition-all cursor-pointer relative overflow-hidden group border border-teal-400/30"
+        >
+          <div className="absolute -right-6 -bottom-6 w-32 h-32 bg-white/10 rounded-full blur-xl pointer-events-none" />
+          <div className="flex items-center justify-between relative z-10">
+            <div className="flex items-center gap-3.5 min-w-0">
+              <div className="p-3 bg-white/20 backdrop-blur-md rounded-2xl text-white text-2xl shadow-inner shrink-0 group-hover:scale-110 transition-transform">
+                🥣
+              </div>
+              <div className="min-w-0">
+                <div className="flex items-center gap-1.5 flex-wrap">
+                  <span className="text-[10px] font-black uppercase tracking-wider bg-amber-400 text-slate-950 px-2 py-0.5 rounded-full shadow-2xs">
+                    Interactive Tools
+                  </span>
+                  <span className="text-[11px] font-black text-teal-100">
+                    Swallow • Sodium • Sequence
+                  </span>
+                </div>
+                <h3 className="text-sm sm:text-base font-black text-white mt-1 leading-tight">
+                  Metabolic Food Calculators 🧮
+                </h3>
+                <p className="text-[11px] text-teal-100/90 font-medium truncate mt-0.5">
+                  Calculate carb swaps, dilute soup sodium &amp; sequence meals
+                </p>
+              </div>
+            </div>
+
+            <div className="p-2 bg-white/10 group-hover:bg-white/20 rounded-2xl text-white transition-all shrink-0 ml-2">
+              <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
+            </div>
+          </div>
+        </div>
+
         {/* ============================================================ */}
         {/* 1. HEALTH TRACKERS (8-Grid Quick Portal)                     */}
         {/* ============================================================ */}
