@@ -48,11 +48,71 @@ export default function Onboarding() {
 
   const [step, setStep] = useState<OnboardingStep>("welcome");
 
-  // Diagnostic State
-  const [healthGoal, setHealthGoal] = useState<string>("Manage Diabetes & Blood Sugar");
-  const [culturalDiet, setCulturalDiet] = useState<string>("Nigerian (Egusi, Jollof, Swallow)");
-  const [mainHurdle, setMainHurdle] = useState<string>("Late-night heavy swallows (Eba, Yam, Fufu)");
-  const [medication, setMedication] = useState<string>("Metformin / Blood Sugar Meds");
+  // Diagnostic State (Multi-Select Enabled)
+  const [healthGoals, setHealthGoals] = useState<string[]>([
+    "Reverse / Manage Type 2 Diabetes & Pre-Diabetes",
+  ]);
+  const [culturalDiets, setCulturalDiets] = useState<string[]>([
+    "Nigerian (Egusi, Jollof, Yam, Eba, Soups)",
+  ]);
+  const [mainHurdles, setMainHurdles] = useState<string[]>([
+    "Heavy late-night swallows (Pounded Yam, Eba, Fufu)",
+  ]);
+  const [medications, setMedications] = useState<string[]>([
+    "Metformin / Insulin / Diabetes medications",
+  ]);
+
+  const toggleHealthGoal = (goal: string) => {
+    triggerHaptic("light");
+    setHealthGoals((prev) => {
+      if (prev.includes(goal)) {
+        if (prev.length === 1) return prev; // Keep at least one
+        return prev.filter((g) => g !== goal);
+      } else {
+        return [...prev, goal];
+      }
+    });
+  };
+
+  const toggleCulturalDiet = (diet: string) => {
+    triggerHaptic("light");
+    setCulturalDiets((prev) => {
+      if (prev.includes(diet)) {
+        if (prev.length === 1) return prev;
+        return prev.filter((d) => d !== diet);
+      } else {
+        return [...prev, diet];
+      }
+    });
+  };
+
+  const toggleMainHurdle = (hurdle: string) => {
+    triggerHaptic("light");
+    setMainHurdles((prev) => {
+      if (prev.includes(hurdle)) {
+        if (prev.length === 1) return prev;
+        return prev.filter((h) => h !== hurdle);
+      } else {
+        return [...prev, hurdle];
+      }
+    });
+  };
+
+  const toggleMedication = (med: string) => {
+    triggerHaptic("light");
+    setMedications((prev) => {
+      if (med.includes("None")) {
+        return [med];
+      }
+      const filtered = prev.filter((m) => !m.includes("None"));
+      if (filtered.includes(med)) {
+        if (filtered.length === 1) return ["None / Managing strictly through diet & lifestyle"];
+        return filtered.filter((m) => m !== med);
+      } else {
+        return [...filtered, med];
+      }
+    });
+  };
   const [ageRange, setAgeRange] = useState<string>("35-49");
   const [currentWeight, setCurrentWeight] = useState<string>("86");
   const [targetWeight, setTargetWeight] = useState<string>("74");
@@ -110,11 +170,17 @@ export default function Onboarding() {
     setMode("simple");
 
     try {
-      // Save diagnostic responses
-      localStorage.setItem("userGoal", healthGoal);
-      localStorage.setItem("userDiet", culturalDiet);
-      localStorage.setItem("userHurdle", mainHurdle);
-      localStorage.setItem("userMedication", medication);
+      // Save diagnostic responses (Multi-Select Arrays Joined)
+      const goalStr = healthGoals.join(", ");
+      const dietStr = culturalDiets.join(", ");
+      const hurdleStr = mainHurdles.join(", ");
+      const medStr = medications.join(", ");
+
+      localStorage.setItem("userGoal", goalStr);
+      localStorage.setItem("userDiet", dietStr);
+      localStorage.setItem("userHurdle", hurdleStr);
+      localStorage.setItem("userMedication", medStr);
+      localStorage.setItem("userMedicalCondition", goalStr);
       localStorage.setItem("userWeight", currentWeight);
       localStorage.setItem("targetWeight", targetWeight);
       localStorage.setItem("userHeight", heightCm);
@@ -128,11 +194,11 @@ export default function Onboarding() {
         try {
           await signUp(signupData.email, signupData.password, {
             name: signupData.fullName,
-            goal: healthGoal,
-            diet: culturalDiet,
+            goal: goalStr,
+            diet: dietStr,
             weight: currentWeight,
             target_weight: targetWeight,
-            medication: medication,
+            medication: medStr,
           });
           localStorage.removeItem("pendingSignup");
         } catch (e: any) {
@@ -284,20 +350,20 @@ export default function Onboarding() {
               </div>
             </div>
 
-            {/* Q1: Clinical Priority */}
+            {/* Q1: Clinical Priority (Multi-Select) */}
             {step === "diagnostic_goal" && (
               <div>
-                <div className="text-center mb-5">
+                <div className="text-center mb-4">
                   <span className="text-3xl">🎯</span>
                   <h2 className="text-lg sm:text-xl font-black text-gray-900 mt-2">
-                    What is your primary health &amp; metabolic priority?
+                    What are your health &amp; metabolic priorities?
                   </h2>
-                  <p className="text-xs text-gray-500 mt-1">
-                    We tailor your carbohydrate ceiling and nutrient ratios around this.
+                  <p className="text-xs text-teal-700 font-bold mt-1 bg-teal-50 py-1 px-3 rounded-full inline-block border border-teal-200/80">
+                    ✨ Select all that apply ({healthGoals.length} selected)
                   </p>
                 </div>
 
-                <div className="space-y-2 mb-6">
+                <div className="space-y-2 mb-6 max-h-[50vh] overflow-y-auto pr-1">
                   {[
                     { title: "Reverse / Manage Type 2 Diabetes & Pre-Diabetes", icon: "🩺", desc: "Lower A1c & prevent dangerous glucose spikes" },
                     { title: "Lower High Blood Pressure & Sodium Load", icon: "🫀", desc: "Artery health, kidney protection & stew salt balance" },
@@ -306,34 +372,44 @@ export default function Onboarding() {
                     { title: "Arthritis, Gout & Joint Inflammation", icon: "🦴", desc: "Anti-inflammatory spices, purine balance & cartilage protection" },
                     { title: "Burn Stubborn Visceral Belly Fat", icon: "⚖️", desc: "Target abdominal insulin resistance and waistline" },
                     { title: "PCOS, Cholesterol & General Vitality", icon: "🧬", desc: "Hormonal balance, lipid control & sustainable energy" },
-                  ].map((item) => (
-                    <button
-                      key={item.title}
-                      onClick={() => {
-                        triggerHaptic("light");
-                        setHealthGoal(item.title);
-                      }}
-                      className={`w-full p-3.5 rounded-2xl border-2 text-left transition-all flex items-start gap-3 cursor-pointer ${
-                        healthGoal === item.title
-                          ? "border-[#1f7a8c] bg-teal-50/70 shadow-sm"
-                          : "border-gray-200/80 hover:border-teal-300"
-                      }`}
-                    >
-                      <span className="text-2xl shrink-0 p-1 bg-white rounded-xl shadow-2xs">{item.icon}</span>
-                      <div className="min-w-0">
-                        <span className="text-xs font-black text-gray-900 block leading-snug">{item.title}</span>
-                        <span className="text-[10.5px] text-gray-500 font-medium block mt-0.5">{item.desc}</span>
-                      </div>
-                    </button>
-                  ))}
+                  ].map((item) => {
+                    const isSelected = healthGoals.includes(item.title);
+                    return (
+                      <button
+                        key={item.title}
+                        type="button"
+                        onClick={() => toggleHealthGoal(item.title)}
+                        className={`w-full p-3.5 rounded-2xl border-2 text-left transition-all flex items-start justify-between gap-3 cursor-pointer ${
+                          isSelected
+                            ? "border-[#1f7a8c] bg-teal-50/90 shadow-sm ring-1 ring-[#1f7a8c]/30"
+                            : "border-gray-200/80 hover:border-teal-300 bg-white"
+                        }`}
+                      >
+                        <div className="flex items-start gap-3 min-w-0">
+                          <span className="text-2xl shrink-0 p-1 bg-white rounded-xl shadow-2xs">{item.icon}</span>
+                          <div className="min-w-0">
+                            <span className="text-xs font-black text-gray-900 block leading-snug">{item.title}</span>
+                            <span className="text-[10.5px] text-gray-500 font-medium block mt-0.5">{item.desc}</span>
+                          </div>
+                        </div>
+
+                        <div className={`w-5 h-5 rounded-lg border-2 flex items-center justify-center shrink-0 mt-1 transition-colors ${
+                          isSelected ? "bg-[#1f7a8c] border-[#1f7a8c] text-white" : "border-gray-300 bg-white"
+                        }`}>
+                          {isSelected && <Check size={12} strokeWidth={3} />}
+                        </div>
+                      </button>
+                    );
+                  })}
                 </div>
 
                 <button
+                  type="button"
                   onClick={() => {
                     triggerHaptic("medium");
                     setStep("diagnostic_diet");
                   }}
-                  className="w-full bg-[#1f7a8c] hover:bg-[#1a6273] text-white rounded-2xl py-3.5 font-bold text-sm shadow-md transition-all flex items-center justify-center gap-1.5 cursor-pointer"
+                  className="w-full bg-gradient-to-r from-[#1f7a8c] to-[#0d9488] hover:from-[#1a6273] hover:to-[#0f766e] text-white rounded-2xl py-3.5 font-bold text-sm shadow-md transition-all flex items-center justify-center gap-1.5 cursor-pointer"
                 >
                   <span>Next Question</span>
                   <ArrowRight size={15} />
@@ -341,16 +417,16 @@ export default function Onboarding() {
               </div>
             )}
 
-            {/* Q2: Cultural Culinary Diet */}
+            {/* Q2: Cultural Culinary Diet (Multi-Select) */}
             {step === "diagnostic_diet" && (
               <div>
-                <div className="text-center mb-5">
+                <div className="text-center mb-4">
                   <span className="text-3xl">🍲</span>
                   <h2 className="text-lg sm:text-xl font-black text-gray-900 mt-2">
-                    What is your cultural food foundation?
+                    What are your cultural food foundations?
                   </h2>
-                  <p className="text-xs text-gray-500 mt-1">
-                    MealOptimiza customizes recipes for the exact meals you cook.
+                  <p className="text-xs text-teal-700 font-bold mt-1 bg-teal-50 py-1 px-3 rounded-full inline-block border border-teal-200/80">
+                    ✨ Select all that apply ({culturalDiets.length} selected)
                   </p>
                 </div>
 
@@ -361,38 +437,49 @@ export default function Onboarding() {
                     { name: "Afro-Caribbean (Rice & Peas, Callaloo, Plantain)", icon: "🇯🇲" },
                     { name: "East / Southern African (Ugali, Sadza, Braai)", icon: "🌍" },
                     { name: "Continental & Diaspora Fusion", icon: "🌐" },
-                  ].map((diet) => (
-                    <button
-                      key={diet.name}
-                      onClick={() => {
-                        triggerHaptic("light");
-                        setCulturalDiet(diet.name);
-                      }}
-                      className={`w-full p-3.5 rounded-2xl border-2 text-left transition-all flex items-center gap-3 cursor-pointer ${
-                        culturalDiet === diet.name
-                          ? "border-[#1f7a8c] bg-teal-50/70 shadow-sm"
-                          : "border-gray-200/80 hover:border-teal-300"
-                      }`}
-                    >
-                      <span className="text-2xl shrink-0">{diet.icon}</span>
-                      <span className="text-xs font-bold text-gray-900">{diet.name}</span>
-                    </button>
-                  ))}
+                  ].map((diet) => {
+                    const isSelected = culturalDiets.includes(diet.name);
+                    return (
+                      <button
+                        key={diet.name}
+                        type="button"
+                        onClick={() => toggleCulturalDiet(diet.name)}
+                        className={`w-full p-3.5 rounded-2xl border-2 text-left transition-all flex items-center justify-between gap-3 cursor-pointer ${
+                          isSelected
+                            ? "border-[#1f7a8c] bg-teal-50/90 shadow-sm ring-1 ring-[#1f7a8c]/30"
+                            : "border-gray-200/80 hover:border-teal-300 bg-white"
+                        }`}
+                      >
+                        <div className="flex items-center gap-3">
+                          <span className="text-2xl shrink-0">{diet.icon}</span>
+                          <span className="text-xs font-bold text-gray-900">{diet.name}</span>
+                        </div>
+
+                        <div className={`w-5 h-5 rounded-lg border-2 flex items-center justify-center shrink-0 transition-colors ${
+                          isSelected ? "bg-[#1f7a8c] border-[#1f7a8c] text-white" : "border-gray-300 bg-white"
+                        }`}>
+                          {isSelected && <Check size={12} strokeWidth={3} />}
+                        </div>
+                      </button>
+                    );
+                  })}
                 </div>
 
                 <div className="flex gap-2.5">
                   <button
+                    type="button"
                     onClick={() => setStep("diagnostic_goal")}
-                    className="flex-1 py-3 text-xs font-bold text-gray-600 border border-gray-200 rounded-xl hover:bg-gray-50"
+                    className="flex-1 py-3 text-xs font-bold text-gray-600 border border-gray-200 rounded-xl hover:bg-gray-50 cursor-pointer"
                   >
                     ← Back
                   </button>
                   <button
+                    type="button"
                     onClick={() => {
                       triggerHaptic("medium");
                       setStep("diagnostic_hurdle");
                     }}
-                    className="flex-2 bg-[#1f7a8c] hover:bg-[#1a6273] text-white rounded-xl py-3 font-bold text-xs shadow-md flex items-center justify-center gap-1"
+                    className="flex-2 bg-[#1f7a8c] hover:bg-[#1a6273] text-white rounded-xl py-3 font-bold text-xs shadow-md flex items-center justify-center gap-1 cursor-pointer"
                   >
                     <span>Next</span>
                     <ArrowRight size={14} />
@@ -401,16 +488,16 @@ export default function Onboarding() {
               </div>
             )}
 
-            {/* Q3: Top Daily Hurdle */}
+            {/* Q3: Top Daily Hurdle (Multi-Select) */}
             {step === "diagnostic_hurdle" && (
               <div>
-                <div className="text-center mb-5">
+                <div className="text-center mb-4">
                   <span className="text-3xl">⚡</span>
                   <h2 className="text-lg sm:text-xl font-black text-gray-900 mt-2">
-                    What is your biggest daily food obstacle?
+                    What are your biggest daily food obstacles?
                   </h2>
-                  <p className="text-xs text-gray-500 mt-1">
-                    We engineer specific tactical swaps to neutralize this barrier.
+                  <p className="text-xs text-teal-700 font-bold mt-1 bg-teal-50 py-1 px-3 rounded-full inline-block border border-teal-200/80">
+                    ✨ Select all that apply ({mainHurdles.length} selected)
                   </p>
                 </div>
 
@@ -420,38 +507,49 @@ export default function Onboarding() {
                     { label: "Blood sugar spikes after family parties & Jollof", icon: "📈" },
                     { label: "Cravings for sugary malt, soda, juice & fried plantain", icon: "🥤" },
                     { label: "Not knowing how to cook cultural dishes in a low-GI way", icon: "👩🏾‍🍳" },
-                  ].map((hurdle) => (
-                    <button
-                      key={hurdle.label}
-                      onClick={() => {
-                        triggerHaptic("light");
-                        setMainHurdle(hurdle.label);
-                      }}
-                      className={`w-full p-3.5 rounded-2xl border-2 text-left transition-all flex items-center gap-3 cursor-pointer ${
-                        mainHurdle === hurdle.label
-                          ? "border-[#1f7a8c] bg-teal-50/70 shadow-sm"
-                          : "border-gray-200/80 hover:border-teal-300"
-                      }`}
-                    >
-                      <span className="text-2xl shrink-0">{hurdle.icon}</span>
-                      <span className="text-xs font-bold text-gray-900 leading-snug">{hurdle.label}</span>
-                    </button>
-                  ))}
+                  ].map((hurdle) => {
+                    const isSelected = mainHurdles.includes(hurdle.label);
+                    return (
+                      <button
+                        key={hurdle.label}
+                        type="button"
+                        onClick={() => toggleMainHurdle(hurdle.label)}
+                        className={`w-full p-3.5 rounded-2xl border-2 text-left transition-all flex items-center justify-between gap-3 cursor-pointer ${
+                          isSelected
+                            ? "border-[#1f7a8c] bg-teal-50/90 shadow-sm ring-1 ring-[#1f7a8c]/30"
+                            : "border-gray-200/80 hover:border-teal-300 bg-white"
+                        }`}
+                      >
+                        <div className="flex items-center gap-3">
+                          <span className="text-2xl shrink-0">{hurdle.icon}</span>
+                          <span className="text-xs font-bold text-gray-900 leading-snug">{hurdle.label}</span>
+                        </div>
+
+                        <div className={`w-5 h-5 rounded-lg border-2 flex items-center justify-center shrink-0 transition-colors ${
+                          isSelected ? "bg-[#1f7a8c] border-[#1f7a8c] text-white" : "border-gray-300 bg-white"
+                        }`}>
+                          {isSelected && <Check size={12} strokeWidth={3} />}
+                        </div>
+                      </button>
+                    );
+                  })}
                 </div>
 
                 <div className="flex gap-2.5">
                   <button
+                    type="button"
                     onClick={() => setStep("diagnostic_diet")}
-                    className="flex-1 py-3 text-xs font-bold text-gray-600 border border-gray-200 rounded-xl hover:bg-gray-50"
+                    className="flex-1 py-3 text-xs font-bold text-gray-600 border border-gray-200 rounded-xl hover:bg-gray-50 cursor-pointer"
                   >
                     ← Back
                   </button>
                   <button
+                    type="button"
                     onClick={() => {
                       triggerHaptic("medium");
                       setStep("diagnostic_meds");
                     }}
-                    className="flex-2 bg-[#1f7a8c] hover:bg-[#1a6273] text-white rounded-xl py-3 font-bold text-xs shadow-md flex items-center justify-center gap-1"
+                    className="flex-2 bg-[#1f7a8c] hover:bg-[#1a6273] text-white rounded-xl py-3 font-bold text-xs shadow-md flex items-center justify-center gap-1 cursor-pointer"
                   >
                     <span>Next</span>
                     <ArrowRight size={14} />
@@ -460,16 +558,16 @@ export default function Onboarding() {
               </div>
             )}
 
-            {/* Q4: Medication & Clinical Profile */}
+            {/* Q4: Medication & Clinical Profile (Multi-Select) */}
             {step === "diagnostic_meds" && (
               <div>
-                <div className="text-center mb-5">
+                <div className="text-center mb-4">
                   <span className="text-3xl">💊</span>
                   <h2 className="text-lg sm:text-xl font-black text-gray-900 mt-2">
                     Are you currently taking any prescribed medication?
                   </h2>
-                  <p className="text-xs text-gray-500 mt-1">
-                    Ensures your macronutrient distribution safely complements your medical regimen.
+                  <p className="text-xs text-teal-700 font-bold mt-1 bg-teal-50 py-1 px-3 rounded-full inline-block border border-teal-200/80">
+                    ✨ Select all that apply ({medications.length} selected)
                   </p>
                 </div>
 
@@ -479,38 +577,49 @@ export default function Onboarding() {
                     { label: "Blood Pressure medication (Amlodipine, Lisinopril, etc.)", icon: "🫀" },
                     { label: "Cholesterol statins / Multiple prescriptions", icon: "💊" },
                     { label: "None / Managing strictly through diet & lifestyle", icon: "🌿" },
-                  ].map((med) => (
-                    <button
-                      key={med.label}
-                      onClick={() => {
-                        triggerHaptic("light");
-                        setMedication(med.label);
-                      }}
-                      className={`w-full p-3.5 rounded-2xl border-2 text-left transition-all flex items-center gap-3 cursor-pointer ${
-                        medication === med.label
-                          ? "border-[#1f7a8c] bg-teal-50/70 shadow-sm"
-                          : "border-gray-200/80 hover:border-teal-300"
-                      }`}
-                    >
-                      <span className="text-2xl shrink-0">{med.icon}</span>
-                      <span className="text-xs font-bold text-gray-900 leading-snug">{med.label}</span>
-                    </button>
-                  ))}
+                  ].map((med) => {
+                    const isSelected = medications.includes(med.label);
+                    return (
+                      <button
+                        key={med.label}
+                        type="button"
+                        onClick={() => toggleMedication(med.label)}
+                        className={`w-full p-3.5 rounded-2xl border-2 text-left transition-all flex items-center justify-between gap-3 cursor-pointer ${
+                          isSelected
+                            ? "border-[#1f7a8c] bg-teal-50/90 shadow-sm ring-1 ring-[#1f7a8c]/30"
+                            : "border-gray-200/80 hover:border-teal-300 bg-white"
+                        }`}
+                      >
+                        <div className="flex items-center gap-3">
+                          <span className="text-2xl shrink-0">{med.icon}</span>
+                          <span className="text-xs font-bold text-gray-900 leading-snug">{med.label}</span>
+                        </div>
+
+                        <div className={`w-5 h-5 rounded-lg border-2 flex items-center justify-center shrink-0 transition-colors ${
+                          isSelected ? "bg-[#1f7a8c] border-[#1f7a8c] text-white" : "border-gray-300 bg-white"
+                        }`}>
+                          {isSelected && <Check size={12} strokeWidth={3} />}
+                        </div>
+                      </button>
+                    );
+                  })}
                 </div>
 
                 <div className="flex gap-2.5">
                   <button
+                    type="button"
                     onClick={() => setStep("diagnostic_hurdle")}
-                    className="flex-1 py-3 text-xs font-bold text-gray-600 border border-gray-200 rounded-xl hover:bg-gray-50"
+                    className="flex-1 py-3 text-xs font-bold text-gray-600 border border-gray-200 rounded-xl hover:bg-gray-50 cursor-pointer"
                   >
                     ← Back
                   </button>
                   <button
+                    type="button"
                     onClick={() => {
                       triggerHaptic("medium");
                       setStep("diagnostic_biometrics");
                     }}
-                    className="flex-2 bg-[#1f7a8c] hover:bg-[#1a6273] text-white rounded-xl py-3 font-bold text-xs shadow-md flex items-center justify-center gap-1"
+                    className="flex-2 bg-[#1f7a8c] hover:bg-[#1a6273] text-white rounded-xl py-3 font-bold text-xs shadow-md flex items-center justify-center gap-1 cursor-pointer"
                   >
                     <span>Next</span>
                     <ArrowRight size={14} />
@@ -771,7 +880,7 @@ export default function Onboarding() {
               Your Projected Glycemic &amp; Weight Reversal 📉
             </h2>
             <p className="text-xs text-gray-500 mt-0.5">
-              Based on your {culturalDiet.split(" ")[0]} food profile and {healthGoal.split("&")[0]} goal.
+              Based on your {culturalDiets[0]?.split(" ")[0] || "African"} food profile and {healthGoals[0]?.split("&")[0] || "Metabolic"} goal.
             </p>
 
             {/* Visual Simulation Chart */}
