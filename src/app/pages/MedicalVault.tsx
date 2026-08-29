@@ -20,6 +20,7 @@ import {
   Eye,
   Loader2,
   MessageSquare,
+  ChefHat,
 } from "lucide-react";
 import PageHeader from "../components/PageHeader";
 import BottomNav from "../components/BottomNav";
