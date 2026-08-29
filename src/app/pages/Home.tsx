@@ -627,35 +627,35 @@ export default function Home() {
               </h2>
               {/* Privacy-Preserved Subtitle: Date & Quick Chips (No Medical Condition) */}
               <div className="flex items-center gap-1.5 flex-wrap mt-1 text-xs font-semibold">
-                <span className="text-[11px] text-gray-600 font-medium">{currentDate}</span>
-                <span>•</span>
+                <span className="text-[11px] text-gray-600 font-medium whitespace-nowrap">{currentDate}</span>
+                <span className="text-gray-400">•</span>
                 {/* Interactive Streak Chip */}
                 <button
                   onClick={() => navigate("/achievements")}
-                  className="inline-flex items-center gap-1 text-[11px] font-black px-2.5 py-0.5 bg-orange-100/90 hover:bg-orange-200 text-orange-900 rounded-full border border-orange-300/60 shadow-2xs cursor-pointer active:scale-95 transition-all"
+                  className="inline-flex items-center gap-1 text-[10.5px] font-black px-2 py-0.5 bg-orange-100/90 hover:bg-orange-200 text-orange-900 rounded-full border border-orange-300/60 shadow-2xs cursor-pointer active:scale-95 transition-all"
                   title="View streaks and achievements"
                 >
-                  <Flame className="h-3 w-3 text-orange-500 fill-orange-500 animate-pulse" />
-                  <span>{trackingStreak}d Streak</span>
+                  <Flame className="h-3 w-3 text-orange-500 fill-orange-500 animate-pulse shrink-0" />
+                  <span>{trackingStreak}d</span>
                 </button>
 
                 {/* Quick Search */}
                 <button
                   onClick={() => setShowGlobalSearch(true)}
-                  className="inline-flex items-center gap-1 text-[11px] font-bold px-2 py-0.5 bg-white/70 hover:bg-white text-gray-700 rounded-full border border-teal-600/15 shadow-2xs cursor-pointer active:scale-95 transition-all"
+                  className="inline-flex items-center gap-1 text-[10.5px] font-bold px-2 py-0.5 bg-white/70 hover:bg-white text-gray-700 rounded-full border border-teal-600/15 shadow-2xs cursor-pointer active:scale-95 transition-all"
                   title="Search meals, recipes, and guides"
                 >
-                  <Search className="h-3 w-3 text-teal-700" />
+                  <Search className="h-3 w-3 text-teal-700 shrink-0" />
                   <span>Search</span>
                 </button>
 
                 {/* Quick Alerts */}
                 <button
                   onClick={() => setShowNotificationSettings(true)}
-                  className="inline-flex items-center gap-1 text-[11px] font-bold px-2 py-0.5 bg-white/70 hover:bg-white text-gray-700 rounded-full border border-teal-600/15 shadow-2xs cursor-pointer active:scale-95 transition-all"
+                  className="inline-flex items-center gap-1 text-[10.5px] font-bold px-2 py-0.5 bg-white/70 hover:bg-white text-gray-700 rounded-full border border-teal-600/15 shadow-2xs cursor-pointer active:scale-95 transition-all"
                   title="Notification & WhatsApp settings"
                 >
-                  <Bell className="h-3 w-3 text-teal-700" />
+                  <Bell className="h-3 w-3 text-teal-700 shrink-0" />
                   <span>Alerts</span>
                 </button>
               </div>
@@ -736,20 +736,20 @@ export default function Home() {
                 triggerHaptic("medium");
                 setShowConciergeModal(true);
               }}
-              className="bg-gradient-to-r from-[#1f7a8c] via-[#0d9488] to-[#115e59] rounded-3xl p-4 sm:p-5 text-white shadow-lg border border-teal-200/40 relative overflow-hidden flex items-center justify-between gap-3 sm:gap-4 cursor-pointer hover:shadow-xl hover:scale-[1.01] active:scale-[0.99] transition-all group"
+              className="bg-gradient-to-r from-[#1f7a8c] via-[#0d9488] to-[#115e59] rounded-3xl p-4 sm:p-5 text-white shadow-lg border border-teal-200/40 relative overflow-hidden flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 cursor-pointer hover:shadow-xl hover:scale-[1.01] active:scale-[0.99] transition-all group"
             >
-              <div className="relative z-10 flex items-center gap-3 min-w-0">
-                <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-white/20 border-2 border-amber-300 flex items-center justify-center text-2xl sm:text-3xl shrink-0 shadow-xs group-hover:scale-105 transition-transform">
+              <div className="relative z-10 flex items-center gap-3 min-w-0 flex-1">
+                <div className="w-11 h-11 sm:w-14 sm:h-14 rounded-2xl bg-white/20 border-2 border-amber-300 flex items-center justify-center text-2xl sm:text-3xl shrink-0 shadow-xs group-hover:scale-105 transition-transform">
                   👩🏾‍💼
                 </div>
-                <div className="min-w-0">
-                  <div className="flex items-center gap-1.5">
-                    <span className="text-[9.5px] font-black uppercase tracking-wider bg-amber-400 text-slate-950 px-2 py-0.2 rounded-full shadow-2xs">
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center gap-1.5 flex-wrap">
+                    <span className="text-[9.5px] font-black uppercase tracking-wider bg-amber-400 text-slate-950 px-2 py-0.5 rounded-full shadow-2xs">
                       Nutrition Assistant
                     </span>
                     <span className="text-[10px] text-teal-200 font-bold hidden sm:inline">24/7 Food & Health Guide</span>
                   </div>
-                  <h3 className="text-sm sm:text-base font-black text-white leading-tight mt-0.5 truncate">
+                  <h3 className="text-sm sm:text-base font-black text-white leading-tight mt-1 truncate">
                     Welcome to MealOptimiza!
                   </h3>
                   <p className="text-[11px] sm:text-xs text-teal-100 line-clamp-1 mt-0.5 font-medium">
@@ -758,9 +758,9 @@ export default function Home() {
                 </div>
               </div>
 
-              <div className="relative z-10 bg-white group-hover:bg-teal-50 text-[#1f7a8c] font-black text-xs px-3.5 py-2.5 rounded-2xl shadow-sm shrink-0 flex items-center gap-1.5 transition-colors">
-                <span>▶️ Talk</span>
-                <ChevronRight size={14} className="group-hover:translate-x-0.5 transition-transform" />
+              <div className="relative z-10 w-full sm:w-auto bg-white group-hover:bg-teal-50 text-[#1f7a8c] font-black text-xs px-3.5 py-2.5 rounded-2xl shadow-sm shrink-0 flex items-center justify-center gap-1.5 transition-colors">
+                <span>▶️ Talk to Sarah</span>
+                <ChevronRight size={14} className="group-hover:translate-x-0.5 transition-transform shrink-0" />
               </div>
             </div>
 
@@ -829,19 +829,19 @@ export default function Home() {
                   title="Tap for detailed calorie & macro breakdown"
                 >
                   <div className="relative flex flex-col items-center justify-center">
-                    <svg className="w-36 h-20" viewBox="0 0 200 115">
+                    <svg className="w-36 h-22 sm:h-24" viewBox="0 0 200 120">
                       <path
-                        d="M 30 95 A 70 70 0 0 1 170 95"
+                        d="M 30 100 A 70 70 0 0 1 170 100"
                         fill="none"
                         stroke="#e5e7eb"
-                        strokeWidth="18"
+                        strokeWidth="16"
                         strokeLinecap="round"
                       />
                       <path
-                        d="M 30 95 A 70 70 0 0 1 170 95"
+                        d="M 30 100 A 70 70 0 0 1 170 100"
                         fill="none"
                         stroke="url(#compactGaugeGradient)"
-                        strokeWidth="18"
+                        strokeWidth="16"
                         strokeLinecap="round"
                         strokeDasharray={`${animatedProgress * 2.2} 1000`}
                         style={{
@@ -856,14 +856,14 @@ export default function Home() {
                       </defs>
                     </svg>
 
-                    <div className="absolute top-5 flex flex-col items-center">
+                    <div className="absolute top-4 sm:top-5 flex flex-col items-center justify-center">
                       <div className="text-[#1f7a8c] text-xl font-black leading-none">
                         {animatedPercentage}%
                       </div>
-                      <div className="text-[9px] text-gray-500 uppercase font-bold mt-0.5">
+                      <div className="text-[9px] text-gray-500 uppercase font-bold mt-0.5 leading-none">
                         {t('home.ofDailyGoal')}
                       </div>
-                      <span className="text-[9px] text-teal-700 font-bold mt-0.5 bg-teal-50 px-1.5 py-0.2 rounded-full">
+                      <span className="text-[8.5px] text-teal-700 font-bold mt-1 bg-teal-50 px-2 py-0.5 rounded-full border border-teal-100/60 shadow-2xs">
                         Details 📊
                       </span>
                     </div>
@@ -897,30 +897,30 @@ export default function Home() {
 
               {/* Top Row: Animated Mascot Avo in Challenge Jumping/Cheering Pose + Live Indicator */}
               <div className="flex items-center justify-between gap-3 relative z-10 mb-3">
-                <div className="flex items-center gap-3 min-w-0">
+                <div className="flex items-center gap-3 min-w-0 flex-1">
                   <div className="relative shrink-0">
                     <span className="absolute -inset-1 rounded-2xl bg-yellow-300/40 animate-pulse-radar pointer-events-none" />
                     <div className="relative p-1 bg-white/20 backdrop-blur-md rounded-2xl border border-yellow-200/50 shadow-md">
-                      <Mascot gesture="jump" size={56} className="filter drop-shadow-md" />
+                      <Mascot gesture="jump" size={48} className="filter drop-shadow-md" />
                     </div>
                   </div>
 
-                  <div className="min-w-0">
+                  <div className="min-w-0 flex-1">
                     <div className="flex items-center gap-1.5 flex-wrap">
                       <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-yellow-300 text-slate-950 text-[9.5px] font-black uppercase tracking-wider shadow-2xs">
                         <span className="w-1.5 h-1.5 rounded-full bg-red-600 animate-ping shrink-0" />
                         LIVE CHALLENGE
                       </span>
                       <span className="text-[10px] text-yellow-100 font-bold bg-white/15 px-2 py-0.5 rounded-full">
-                        🔥 1,420 Warriors Active
+                        🔥 1,420 Active
                       </span>
                     </div>
 
-                    <h3 className="text-base sm:text-lg font-black text-white leading-tight mt-1 truncate">
+                    <h3 className="text-sm sm:text-lg font-black text-white leading-snug mt-1 truncate">
                       Avo 21-Day Blood Sugar Reset
                     </h3>
                     <p className="text-[11px] text-yellow-100 font-medium line-clamp-1">
-                      Day 8 Active: Swallow Revolution • <strong className="text-yellow-200">+140 XP Today</strong>
+                      Day 8 Active: Swallow Revolution • <strong className="text-yellow-200">+140 XP</strong>
                     </p>
                   </div>
                 </div>
@@ -1041,12 +1041,12 @@ export default function Home() {
 
             {/* Daily Fruit & Vegetable Power Boost Banner */}
             <div className="bg-gradient-to-br from-emerald-600 via-teal-700 to-slate-900 text-white rounded-3xl p-4 sm:p-5 shadow-lg border border-emerald-400/20 relative overflow-hidden">
-              <div className="flex items-center justify-between gap-3 relative z-10">
-                <div className="flex items-start gap-3">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 relative z-10">
+                <div className="flex items-start gap-3 flex-1 min-w-0">
                   <div className="text-3xl p-2 bg-white/10 rounded-2xl shrink-0 backdrop-blur-xs">
                     🍏🥬
                   </div>
-                  <div>
+                  <div className="min-w-0 flex-1">
                     <div className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-400/20 text-emerald-300 text-[9.5px] font-black uppercase tracking-wider mb-1">
                       <Sparkles size={10} />
                       <span>Metabolic Super-Produce</span>
@@ -1054,17 +1054,19 @@ export default function Home() {
                     <h3 className="text-sm font-black text-white leading-tight">
                       African Fruits &amp; Healing Greens Guide
                     </h3>
-                    <p className="text-[11px] text-emerald-100/90 mt-0.5 leading-snug">
+                    <p className="text-[11px] text-emerald-100/90 mt-0.5 leading-snug line-clamp-2">
                       Discover Garden Egg, Ugu, Agbalumo, Soursop &amp; Ube with precise glycemic scores.
                     </p>
                   </div>
                 </div>
-                <button
-                  onClick={() => navigate("/recipe")}
-                  className="px-3.5 py-2.5 bg-emerald-400 hover:bg-emerald-300 text-slate-950 font-black text-xs rounded-xl shadow-md cursor-pointer transition-all active:scale-95 shrink-0"
-                >
-                  Explore 12+ 🥗
-                </button>
+                <div className="w-full sm:w-auto shrink-0">
+                  <button
+                    onClick={() => navigate("/recipe")}
+                    className="w-full sm:w-auto px-3.5 py-2.5 bg-emerald-400 hover:bg-emerald-300 text-slate-950 font-black text-xs rounded-xl shadow-md cursor-pointer transition-all active:scale-95 text-center flex items-center justify-center gap-1"
+                  >
+                    <span>Explore 12+ 🥗</span>
+                  </button>
+                </div>
               </div>
             </div>
 

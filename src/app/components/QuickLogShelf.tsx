@@ -310,13 +310,13 @@ export default function QuickLogShelf({
             triggerHaptic("light");
             setHubMode("quick_log");
           }}
-          className={`flex-1 py-2 px-3 rounded-xl text-xs font-black transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+          className={`flex-1 py-2 px-2 sm:px-3 rounded-xl text-[11px] sm:text-xs font-black transition-all flex items-center justify-center gap-1 sm:gap-1.5 cursor-pointer truncate ${
             hubMode === "quick_log"
               ? "bg-white dark:bg-zinc-900 text-[#1f7a8c] dark:text-teal-300 shadow-sm"
               : "text-slate-500 hover:text-slate-800 dark:text-zinc-400"
           }`}
         >
-          <Zap size={14} className={hubMode === "quick_log" ? "text-amber-500 fill-amber-500" : ""} />
+          <Zap size={13} className={hubMode === "quick_log" ? "text-amber-500 fill-amber-500 shrink-0" : "shrink-0"} />
           <span className="truncate">1-Tap Quick Log</span>
         </button>
 
@@ -327,15 +327,15 @@ export default function QuickLogShelf({
             triggerHaptic("light");
             setHubMode("calculator");
           }}
-          className={`flex-1 py-2 px-3 rounded-xl text-xs font-black transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+          className={`flex-1 py-2 px-2 sm:px-3 rounded-xl text-[11px] sm:text-xs font-black transition-all flex items-center justify-center gap-1 sm:gap-1.5 cursor-pointer truncate ${
             hubMode === "calculator"
               ? "bg-white dark:bg-zinc-900 text-[#1f7a8c] dark:text-teal-300 shadow-sm"
               : "text-slate-500 hover:text-slate-800 dark:text-zinc-400"
           }`}
         >
-          <span className="text-sm leading-none">🥣</span>
-          <span className="truncate">Metabolic Calculators</span>
-          <span className="text-[9px] font-black px-1.5 py-0.2 bg-teal-500 text-white rounded-full">
+          <span className="text-xs sm:text-sm leading-none shrink-0">🥣</span>
+          <span className="truncate">Calculators</span>
+          <span className="text-[8.5px] font-black px-1.5 py-0.2 bg-teal-500 text-white rounded-full hidden sm:inline shrink-0">
             New
           </span>
         </button>
