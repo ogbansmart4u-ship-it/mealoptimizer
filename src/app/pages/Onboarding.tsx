@@ -372,6 +372,7 @@ export default function Onboarding() {
                     { title: "Prostate Health & PSA Balance (Men 40+)", icon: "🩺", desc: "Lycopene, zinc, BPH reduction & urinary flow" },
                     { title: "Arthritis, Gout & Joint Inflammation", icon: "🦴", desc: "Anti-inflammatory spices, purine balance & cartilage protection" },
                     { title: "Burn Stubborn Visceral Belly Fat", icon: "⚖️", desc: "Target abdominal insulin resistance and waistline" },
+                    { title: "Perimenopause, Menopause & Hormonal Health", icon: "🌸", desc: "Phytoestrogens, bone density, hot flash relief & estrogen balance" },
                     { title: "PCOS, Cholesterol & General Vitality", icon: "🧬", desc: "Hormonal balance, lipid control & sustainable energy" },
                   ].map((item) => {
                     const isSelected = healthGoals.includes(item.title);
@@ -580,6 +581,7 @@ export default function Onboarding() {
                     { label: "Prostate & BPH Meds (Tamsulosin, Finasteride, Saw Palmetto)", icon: "🩺" },
                     { label: "Arthritis & Joint Meds (NSAIDs, Allopurinol, Glucosamine)", icon: "🦴" },
                     { label: "Ulcer & Acid Reducers (Omeprazole, Antacids, Sucralfate)", icon: "🥣" },
+                    { label: "HRT / Menopause Supplements (Estrogen, Progesterone, Isoflavones)", icon: "🌸" },
                     { label: "Cholesterol statins / Lipid-lowering prescriptions", icon: "💊" },
                     { label: "None / Managing strictly through diet & lifestyle", icon: "🌿" },
                   ].map((med) => {

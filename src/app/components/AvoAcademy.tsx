@@ -62,6 +62,41 @@ export interface TherapeuticMeal {
 }
 
 export const CATEGORY_MEAL_PROTOCOLS: Record<string, TherapeuticMeal[]> = {
+  "Menopause & Hormones": [
+    {
+      id: "meno-1",
+      mealType: "Breakfast",
+      dishName: "Sprouted Soya Beans Porridge with Chia Seeds & Sliced Banana",
+      emoji: "🥣",
+      calories: 320,
+      carbs: 34,
+      protein: 20,
+      keyNutrientBadge: "Isoflavone Phytoestrogen Boost 🌸",
+      whyItWorks: "Soy isoflavones act as natural selective estrogen receptor modulators (SERMs), gently buffering against hot flashes and night sweats."
+    },
+    {
+      id: "meno-2",
+      mealType: "Lunch",
+      dishName: "Plantain-Oat Swallow with Sesame (Beni-Seed) Ugwu Soup & Titus Fish",
+      emoji: "🍲",
+      calories: 430,
+      carbs: 40,
+      protein: 34,
+      keyNutrientBadge: "Calcium & Bone Density Matrix 🦴",
+      whyItWorks: "Sesame seeds and fluted pumpkin leaves (Ugwu) provide plant calcium and magnesium to counteract postmenopausal bone mineral density loss."
+    },
+    {
+      id: "meno-3",
+      mealType: "Dinner",
+      dishName: "Steamed Cod Fish with Okra & Waterleaf Greens with 1/2 Sweet Potato",
+      emoji: "🐟",
+      calories: 290,
+      carbs: 22,
+      protein: 30,
+      keyNutrientBadge: "Vasomotor Stability & Magnesium 🌙",
+      whyItWorks: "Light, steady glucose release prevents nighttime cortisol and adrenaline surges, promoting deep restorative sleep."
+    }
+  ],
   "Peptic Ulcer Health": [
     {
       id: "pud-1",
@@ -310,6 +345,31 @@ export const CATEGORY_MEAL_PROTOCOLS: Record<string, TherapeuticMeal[]> = {
 };
 
 export const ACADEMY_LESSONS: AcademyLesson[] = [
+  {
+    id: "menopause-hormonal-mastery",
+    title: "Eating for Menopause & Hormonal Vitality",
+    category: "Menopause & Hormones" as any,
+    readTime: "60 sec",
+    icon: Sparkles,
+    headline: "How dietary phytoestrogens, calcium-rich traditional greens, and steady glucose tame hot flashes and preserve bone density",
+    storySlides: [
+      "During perimenopause and menopause, declining ovarian estrogen causes metabolic shifts: increased abdominal visceral fat, rapid bone mineral loss, and hot flashes triggered by hypothalamic temperature instability.",
+      "Traditional African foods contain powerful natural phytoestrogens: Fermented Soya Beans, Locust Beans (Iru), and Flaxseed provide plant isoflavones and lignans that gently bind to estrogen receptors, calming vasomotor hot flashes.",
+      "To safeguard bone density against osteoporosis, pairing calcium-dense greens (Ugwu, Waterleaf) with crushed Sesame Seeds (Beni-seed) provides bioavailable calcium without spiking cardiovascular calcium plaque.",
+      "Stabilizing your blood sugar with low-glycemic swallow swaps prevents the sudden adrenaline surges that trigger daytime sweats and night awakenings! 🌸✨",
+    ],
+    takeaway: "Load your plate with phytoestrogen-rich beans, sesame seeds, and dark leafy greens to naturally balance hormones, support bone density, and eliminate hot flashes.",
+    quiz: {
+      question: "Which plant compounds in traditional beans and seeds act as natural estrogen modulators to relieve hot flashes?",
+      options: [
+        "Isoflavones & Lignans (Phytoestrogens)",
+        "Refined white sugar",
+        "Artificial food colorings",
+      ],
+      correctIndex: 0,
+      explanation: "Correct! Isoflavones gently bind to estrogen beta-receptors, easing hot flashes and supporting cardiovascular health.",
+    },
+  },
   {
     id: "peptic-ulcer-gastric-shield",
     title: "Eating for Peptic Ulcers (PUD) & Gastritis",
@@ -626,6 +686,7 @@ export default function AvoAcademy() {
     if (cond.includes("prostat") || cond.includes("bph")) return "Prostate Health";
     if (cond.includes("arthrit") || cond.includes("joint") || cond.includes("gout")) return "Arthritis & Joints";
     if (cond.includes("ulcer") || cond.includes("pud") || cond.includes("gastrit") || cond.includes("reflux") || cond.includes("gerd")) return "Peptic Ulcer Health";
+    if (cond.includes("menopaus") || cond.includes("perimenopaus") || cond.includes("hot flash") || cond.includes("hormon")) return "Menopause & Hormones";
     return "Glucose Science";
   });
 

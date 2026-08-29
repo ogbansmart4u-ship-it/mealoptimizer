@@ -243,6 +243,22 @@ function arthritisRule(m: Macros): RuleResult {
   };
 }
 
+
+function menopauseRule(m: Macros): RuleResult {
+  if (m.glycemicLoad === "High" || m.carbs >= 55) {
+    return {
+      level: "caution",
+      note: "Rapid blood sugar spikes can trigger vasomotor adrenaline surges and hot flashes.",
+      tip: "Pair carbs with phytoestrogens (beans, soy, flax) and calcium-rich dark greens (ugwu, waterleaf).",
+    };
+  }
+  return {
+    level: "good",
+    note: "Hormone-supportive meal rich in micronutrients for bone density and steady estrogen metabolism.",
+    tip: "Include sesame seeds (beni-seed) and stay hydrated to soothe hot flashes and promote restorative sleep.",
+  };
+}
+
 function generalRule(m: Macros): RuleResult {
   const highGlycemic = m.glycemicLoad === "High";
   const heavy = m.calories >= 650 || m.fats >= 25;
@@ -301,6 +317,8 @@ function familyFor(name: string): Family | null {
     return { key: "prostate", run: prostateRule };
   if (n.includes("arthrit") || n.includes("joint") || n.includes("osteo"))
     return { key: "arthritis", run: arthritisRule };
+  if (n.includes("menopaus") || n.includes("perimenopaus") || n.includes("estrogen") || n.includes("hot flash") || n.includes("hormon"))
+    return { key: "menopause", run: menopauseRule };
   if (n.includes("thyroid"))
     return { key: "thyroid", run: neutralRule };
   return null;
