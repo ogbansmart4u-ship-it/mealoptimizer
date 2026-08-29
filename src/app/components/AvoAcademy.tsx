@@ -62,6 +62,41 @@ export interface TherapeuticMeal {
 }
 
 export const CATEGORY_MEAL_PROTOCOLS: Record<string, TherapeuticMeal[]> = {
+  "Peptic Ulcer Health": [
+    {
+      id: "pud-1",
+      mealType: "Breakfast",
+      dishName: "Fermented Millet Pap (Ogi) with Boiled Egg & Avocado",
+      emoji: "🥣",
+      calories: 310,
+      carbs: 36,
+      protein: 16,
+      keyNutrientBadge: "Gastric Mucosal Coat 🛡️",
+      whyItWorks: "Alkalizing fermented pap provides gentle carbohydrates, while egg and avocado supply tissue-building protein and healthy fats without triggering acid surges."
+    },
+    {
+      id: "pud-2",
+      mealType: "Lunch",
+      dishName: "Steamed Fresh Fish with Gentle Okra Soup & Sweet Potato",
+      emoji: "🍲",
+      calories: 380,
+      carbs: 38,
+      protein: 32,
+      keyNutrientBadge: "Okra Mucilage Barrier 🌿",
+      whyItWorks: "Okra's natural draw (mucilage) coats the stomach wall, physically buffering sensitive ulcerated tissue against digestive acid."
+    },
+    {
+      id: "pud-3",
+      mealType: "Dinner",
+      dishName: "Simmered Cabbage & Shredded Chicken Soup with Boiled Plantain",
+      emoji: "🥬",
+      calories: 290,
+      carbs: 24,
+      protein: 30,
+      keyNutrientBadge: "L-Glutamine Epithelial Repair 🥣",
+      whyItWorks: "Cooked cabbage is dense in natural glutamine and S-methylmethionine, promoting rapid nighttime mucosal cell regeneration."
+    }
+  ],
   "Pregnancy Health": [
     {
       id: "preg-1",
@@ -275,6 +310,31 @@ export const CATEGORY_MEAL_PROTOCOLS: Record<string, TherapeuticMeal[]> = {
 };
 
 export const ACADEMY_LESSONS: AcademyLesson[] = [
+  {
+    id: "peptic-ulcer-gastric-shield",
+    title: "Eating for Peptic Ulcers (PUD) & Gastritis",
+    category: "Peptic Ulcer Health" as any,
+    readTime: "60 sec",
+    icon: Droplets,
+    headline: "How cabbage glutamine, gentle okra mucilage, and non-acidic seasoning heal stomach lining",
+    storySlides: [
+      "Peptic Ulcer Disease (PUD) and Gastritis develop when the stomach's protective mucosal lining is compromised by H. pylori bacteria, NSAID medications, or excess acid exposure.",
+      "Traditional African culinary wisdom offers potent healing botanicals: Steamed Cabbage and Waterleaf contain high concentrations of Glutamine and S-methylmethionine, which stimulate gastric mucus secretion and speed up epithelial cell repair.",
+      "Okra (Ila) and Ewedu soup provide water-soluble mucilage that creates a protective gelatinous layer over the stomach wall, shielding exposed ulcer sores from digestive enzymes.",
+      "To prevent flare-ups: avoid high-heat pepper soups on an empty stomach, replace fried oils with steamed stews, and eat smaller, well-timed meals! 🥣✨",
+    ],
+    takeaway: "Incorporate cabbage, gentle okra, and steamed sweet potato while easing up on hot pepper to soothe and rebuild your stomach lining.",
+    quiz: {
+      question: "Which vegetable nutrient helps soothe and repair the stomach mucosal lining in ulcer patients?",
+      options: [
+        "Glutamine & S-methylmethionine found in steamed cabbage & greens",
+        "Concentrated raw chili pepper",
+        "Undiluted lime juice",
+      ],
+      correctIndex: 0,
+      explanation: "Correct! Glutamine promotes cellular regeneration in the gastric lining, providing natural ulcer relief.",
+    },
+  },
   {
     id: "pregnancy-gestational-shield",
     title: "Eating for Pregnancy & Gestational Shield",
@@ -565,6 +625,7 @@ export default function AvoAcademy() {
     if (cond.includes("pregnan") || cond.includes("gestat")) return "Pregnancy Health";
     if (cond.includes("prostat") || cond.includes("bph")) return "Prostate Health";
     if (cond.includes("arthrit") || cond.includes("joint") || cond.includes("gout")) return "Arthritis & Joints";
+    if (cond.includes("ulcer") || cond.includes("pud") || cond.includes("gastrit") || cond.includes("reflux") || cond.includes("gerd")) return "Peptic Ulcer Health";
     return "Glucose Science";
   });
 
@@ -775,6 +836,7 @@ export default function AvoAcademy() {
           className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none py-1 px-0.5 select-none"
         >
           {[
+            { id: "Peptic Ulcer Health", label: "🥣 Eating for Ulcers & Gastritis (PUD)" },
             { id: "Pregnancy Health", label: "🤰 Eating for Pregnancy" },
             { id: "Prostate Health", label: "🩺 Eating for Prostate Health" },
             { id: "Arthritis & Joints", label: "🦴 Eating for Arthritis & Joints" },

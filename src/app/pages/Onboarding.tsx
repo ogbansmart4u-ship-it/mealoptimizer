@@ -367,6 +367,7 @@ export default function Onboarding() {
                   {[
                     { title: "Reverse / Manage Type 2 Diabetes & Pre-Diabetes", icon: "🩺", desc: "Lower A1c & prevent dangerous glucose spikes" },
                     { title: "Lower High Blood Pressure & Sodium Load", icon: "🫀", desc: "Artery health, kidney protection & stew salt balance" },
+                    { title: "Peptic Ulcer Disease (PUD), Gastritis & Acid Reflux", icon: "🥣", desc: "Soothe gastric mucosal lining, non-acidic seasoning & gentle fiber buffers" },
                     { title: "Pregnancy, Gestational Health & Preeclampsia Shield", icon: "🤰", desc: "Folate, iron, fetal glucose stability & maternal vitality" },
                     { title: "Prostate Health & PSA Balance (Men 40+)", icon: "🩺", desc: "Lycopene, zinc, BPH reduction & urinary flow" },
                     { title: "Arthritis, Gout & Joint Inflammation", icon: "🦴", desc: "Anti-inflammatory spices, purine balance & cartilage protection" },
@@ -575,7 +576,11 @@ export default function Onboarding() {
                   {[
                     { label: "Metformin / Insulin / Diabetes medications", icon: "💉" },
                     { label: "Blood Pressure medication (Amlodipine, Lisinopril, etc.)", icon: "🫀" },
-                    { label: "Cholesterol statins / Multiple prescriptions", icon: "💊" },
+                    { label: "Prenatal Vitamins, Folic Acid & Iron Supplements", icon: "🤰" },
+                    { label: "Prostate & BPH Meds (Tamsulosin, Finasteride, Saw Palmetto)", icon: "🩺" },
+                    { label: "Arthritis & Joint Meds (NSAIDs, Allopurinol, Glucosamine)", icon: "🦴" },
+                    { label: "Ulcer & Acid Reducers (Omeprazole, Antacids, Sucralfate)", icon: "🥣" },
+                    { label: "Cholesterol statins / Lipid-lowering prescriptions", icon: "💊" },
                     { label: "None / Managing strictly through diet & lifestyle", icon: "🌿" },
                   ].map((med) => {
                     const isSelected = medications.includes(med.label);

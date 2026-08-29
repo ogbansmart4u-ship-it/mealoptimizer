@@ -285,7 +285,7 @@ function familyFor(name: string): Family | null {
     return { key: "weight", run: weightRule };
   if (n.includes("gout"))
     return { key: "gout", run: goutRule };
-  if (n.includes("ulcer") || n.includes("gerd") || n.includes("reflux") || n.includes("ibs"))
+  if (n.includes("ulcer") || n.includes("gerd") || n.includes("reflux") || n.includes("ibs") || n.includes("pud") || n.includes("gastritis"))
     return { key: "gi", run: giRule };
   if (n.includes("anemia") || n.includes("anaemia") || n.includes("sickle"))
     return { key: "nourish", run: nourishRule };
