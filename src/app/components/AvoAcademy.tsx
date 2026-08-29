@@ -1,5 +1,4 @@
 import { useState, useMemo, useEffect, useRef } from "react";
-import { useUser } from "../contexts/UserContext";
 import {
   BookOpen,
   Sparkles,
@@ -29,11 +28,12 @@ import { Button } from "./ui/button";
 import Mascot from "./Mascot";
 import { triggerConfetti, triggerHaptic } from "../utils/celebration";
 import { toast } from "sonner";
+import { useUser } from "../contexts/UserContext";
 
 export interface AcademyLesson {
   id: string;
   title: string;
-  category: "Glucose Science" | "Heart & BP" | "Gut & Fiber" | "Cooking Hacks" | "Pregnancy Health" | "Prostate Health" | "Arthritis & Joints";
+  category: "Pregnancy Health" | "Prostate Health" | "Arthritis & Joints" | "Glucose Science" | "Heart & BP" | "Gut & Fiber" | "Cooking Hacks";
   readTime: string;
   icon: any;
   headline: string;
@@ -47,6 +47,231 @@ export interface AcademyLesson {
   };
 }
 
+export interface TherapeuticMeal {
+  id: string;
+  mealType: "Breakfast" | "Lunch" | "Dinner";
+  dishName: string;
+  emoji: string;
+  calories: number;
+  carbs: number;
+  protein: number;
+  keyNutrientBadge: string;
+  whyItWorks: string;
+}
+
+export const CATEGORY_MEAL_PROTOCOLS: Record<string, TherapeuticMeal[]> = {
+  "Pregnancy Health": [
+    {
+      id: "preg-1",
+      mealType: "Breakfast",
+      dishName: "Sprouted Beans (Akara) & Millet Pap with Boiled Egg",
+      emoji: "🫘",
+      calories: 340,
+      carbs: 38,
+      protein: 18,
+      keyNutrientBadge: "Folate & Choline Boost 🤰",
+      whyItWorks: "Sprouted beans supply bioavailable folate (B9) for fetal neural development; boiled egg adds choline without causing rapid glucose surges."
+    },
+    {
+      id: "preg-2",
+      mealType: "Lunch",
+      dishName: "Plantain-Oat Fufu with Rich Ugwu Greens & Tilapia Fish",
+      emoji: "🍲",
+      calories: 420,
+      carbs: 44,
+      protein: 32,
+      keyNutrientBadge: "Gestational Spike Buffer 🛡️",
+      whyItWorks: "Ugwu leaves provide non-heme iron and magnesium; Plantain-Oat swallow releases slow steady glucose to prevent gestational diabetes spikes."
+    },
+    {
+      id: "preg-3",
+      mealType: "Dinner",
+      dishName: "Steamed Fresh Fish Stew with Extra Sliced Carrots & Green Beans",
+      emoji: "🐟",
+      calories: 310,
+      carbs: 22,
+      protein: 28,
+      keyNutrientBadge: "Preeclampsia Sodium Cap 🧂",
+      whyItWorks: "Seasoned with ginger, garlic, and fresh locust beans (Iru) keeping sodium under 1,400mg to protect maternal blood pressure."
+    }
+  ],
+  "Prostate Health": [
+    {
+      id: "prost-1",
+      mealType: "Breakfast",
+      dishName: "Fonio Supergrain Porridge with Crushed Pumpkin Seeds (Egusi)",
+      emoji: "🌾",
+      calories: 320,
+      carbs: 36,
+      protein: 16,
+      keyNutrientBadge: "Zinc & Phytosterol Shield 🩺",
+      whyItWorks: "Pumpkin seeds are dense in zinc and beta-sitosterol, which support healthy 5-alpha reductase inhibition and prostate cellular health in men 40+."
+    },
+    {
+      id: "prost-2",
+      mealType: "Lunch",
+      dishName: "Simmered Tomato & Olive Oil Stew with Titus (Mackerel) & Cauli-Yam",
+      emoji: "🍲",
+      calories: 460,
+      carbs: 28,
+      protein: 38,
+      keyNutrientBadge: "400% Bioavailable Lycopene 🍅",
+      whyItWorks: "Simmering tomatoes in healthy oils unlocks fat-soluble Lycopene that concentrates directly in prostate tissue to combat oxidative stress."
+    },
+    {
+      id: "prost-3",
+      mealType: "Dinner",
+      dishName: "Steamed Cabbage & Mushroom Soup with Lean Grilled Chicken",
+      emoji: "🥬",
+      calories: 290,
+      carbs: 18,
+      protein: 34,
+      keyNutrientBadge: "Sulforaphane Cellular Detox 🌿",
+      whyItWorks: "Cruciferous cabbage contains glucosinolates and indole-3-carbinol, aiding prostate tissue detoxification."
+    }
+  ],
+  "Arthritis & Joints": [
+    {
+      id: "arth-1",
+      mealType: "Breakfast",
+      dishName: "Golden Ginger-Turmeric Spiced Tea with Scrambled Eggs & Avocado",
+      emoji: "🥑",
+      calories: 310,
+      carbs: 8,
+      protein: 18,
+      keyNutrientBadge: "Natural COX-2 Inhibition 🦴",
+      whyItWorks: "Gingerols and curcumin naturally inhibit pro-inflammatory prostaglandins and IL-6 cytokines, relieving morning joint stiffness."
+    },
+    {
+      id: "arth-2",
+      mealType: "Lunch",
+      dishName: "Wild Titus (Mackerel) Pepper Soup with Boiled Unripe Plantain",
+      emoji: "🍲",
+      calories: 390,
+      carbs: 32,
+      protein: 30,
+      keyNutrientBadge: "Omega-3 Cartilage Lubricant ⚡",
+      whyItWorks: "Mackerel provides high-dose EPA/DHA fatty acids to lubricate synovial joint fluid; unripe plantain is low-purine to prevent gout flares."
+    },
+    {
+      id: "arth-3",
+      mealType: "Dinner",
+      dishName: "Locust Bean (Iru) Okra Soup with Steamed Cod & Leafy Waterleaf",
+      emoji: "🥣",
+      calories: 280,
+      carbs: 14,
+      protein: 26,
+      keyNutrientBadge: "Uric Acid Renal Flush 💧",
+      whyItWorks: "Okra mucilage and fermented Iru support gut microbial barriers while keeping purines minimal for pain-free joint mobility."
+    }
+  ],
+  "Glucose Science": [
+    {
+      id: "glu-1",
+      mealType: "Breakfast",
+      dishName: "Steamed Moi Moi (Bean Pudding) with Avocado & 1 Boiled Egg",
+      emoji: "🫘",
+      calories: 330,
+      carbs: 26,
+      protein: 20,
+      keyNutrientBadge: "Zero Rapid Spikes 🩸",
+      whyItWorks: "High plant fiber and protein slow gastric emptying, eliminating the sharp 2-hour morning glucose surge."
+    },
+    {
+      id: "glu-2",
+      mealType: "Lunch",
+      dishName: "Plantain-Oat Swallow with Fresh Okra Soup & Grilled Goat Meat",
+      emoji: "🍲",
+      calories: 430,
+      carbs: 42,
+      protein: 34,
+      keyNutrientBadge: "Beta-Glucan Gel Matrix 🥣",
+      whyItWorks: "Soluble beta-glucans trap dietary glucose, extending starch digestion into a sustained 75-minute metabolic plateau."
+    },
+    {
+      id: "glu-3",
+      mealType: "Dinner",
+      dishName: "Efo Riro Greens with Peppered Titus Fish & 1/2 Cooled Brown Rice",
+      emoji: "🥬",
+      calories: 360,
+      carbs: 28,
+      protein: 30,
+      keyNutrientBadge: "Resistant Starch Retrogradation 🍠",
+      whyItWorks: "Cooled rice forms Type-3 resistant starch that feeds healthy colon bacteria instead of spiking blood sugar."
+    }
+  ],
+  "Heart & BP": [
+    {
+      id: "ht-1",
+      mealType: "Breakfast",
+      dishName: "Steel-Cut Oats with Cinnamon, Chia Seeds & Unsweetened Zobo",
+      emoji: "🌺",
+      calories: 290,
+      carbs: 36,
+      protein: 12,
+      keyNutrientBadge: "Arterial Relaxation (Zobo) ❤️",
+      whyItWorks: "Hibiscus anthocyanins act as natural ACE inhibitors, gently dilating blood vessels with zero added sodium."
+    },
+    {
+      id: "ht-2",
+      mealType: "Lunch",
+      dishName: "Fresh Mackerel Soup with Ugwu Greens & Boiled Sweet Potato",
+      emoji: "🍲",
+      calories: 410,
+      carbs: 38,
+      protein: 32,
+      keyNutrientBadge: "2:1 Potassium-to-Sodium Ratio ⚖️",
+      whyItWorks: "High natural potassium from Ugwu greens prompts kidneys to excrete excess dietary sodium."
+    },
+    {
+      id: "ht-3",
+      mealType: "Dinner",
+      dishName: "Grilled Chicken Suya with Sliced Fresh Onions, Tomatoes & Cabbage",
+      emoji: "🍢",
+      calories: 320,
+      carbs: 14,
+      protein: 36,
+      keyNutrientBadge: "Nitric Oxide Vasodilation 🧅",
+      whyItWorks: "Raw allium compounds (onions/garlic) boost nitric oxide for smooth arterial endothelial function."
+    }
+  ],
+  "Gut & Fiber": [
+    {
+      id: "gut-1",
+      mealType: "Breakfast",
+      dishName: "Fermented Ogi / Pap with Ground Fluted Pumpkin Seeds (Ugwu)",
+      emoji: "🥣",
+      calories: 280,
+      carbs: 34,
+      protein: 12,
+      keyNutrientBadge: "Probiotic Microbial Fuel 🦠",
+      whyItWorks: "Traditional lactic acid fermentation unlocks gut-friendly probiotics that reinforce intestinal tight junctions."
+    },
+    {
+      id: "gut-2",
+      mealType: "Lunch",
+      dishName: "Edikang Ikong (Ugu & Waterleaf) with Snails & Oat Fufu",
+      emoji: "🍲",
+      calories: 410,
+      carbs: 36,
+      protein: 34,
+      keyNutrientBadge: "Short-Chain Fatty Acid Generator 🌿",
+      whyItWorks: "Ultra-high prebiotic fiber produces butyrate in the colon to reduce systemic gut inflammation."
+    },
+    {
+      id: "gut-3",
+      mealType: "Dinner",
+      dishName: "Garden Egg Stew with Boiled Plantain & Grilled Tilapia",
+      emoji: "🍆",
+      calories: 320,
+      carbs: 28,
+      protein: 26,
+      keyNutrientBadge: "Digestive Motility & Polyphenols 🥗",
+      whyItWorks: "Garden egg soluble fiber accelerates sluggish digestion and eliminates toxic bile reabsorption."
+    }
+  ]
+};
+
 export const ACADEMY_LESSONS: AcademyLesson[] = [
   {
     id: "pregnancy-gestational-shield",
@@ -56,7 +281,7 @@ export const ACADEMY_LESSONS: AcademyLesson[] = [
     icon: HeartPulse,
     headline: "Protecting maternal insulin sensitivity & preventing preeclampsia with traditional greens",
     storySlides: [
-      "During pregnancy, placenta hormones (human placental lactogen) naturally increase insulin resistance to ensure adequate glucose reaches the growing baby. In mothers genetically predisposed to diabetes, this can trigger Gestational Diabetes Mellitus (GDM).",
+      "During pregnancy, placenta hormones naturally increase insulin resistance to ensure adequate glucose reaches the growing baby. In mothers genetically predisposed to diabetes, this can trigger Gestational Diabetes Mellitus (GDM).",
       "Traditional African greens like Fluted Pumpkin (Ugwu), Waterleaf, and Malabar Spinach are nature's maternal superfoods: they provide massive bioavailable Folate (Vitamin B9) for neural tube development, non-heme iron, and magnesium.",
       "To prevent dangerous post-prandial spikes, pregnant mothers should pair moderate swallows (like Plantain-Oat Fufu) with fiber and protein first.",
       "Keeping stew salt under 1,500mg by seasoning with fresh locust beans (Iru) and ginger significantly reduces the risk of pregnancy-induced hypertension and preeclampsia! 🤰✨",
@@ -119,7 +344,6 @@ export const ACADEMY_LESSONS: AcademyLesson[] = [
       explanation: "Exactly! Gingerols and allicin act as natural, stomach-friendly anti-inflammatory agents for joint mobility.",
     },
   },
-
   {
     id: "resistant-starch",
     title: "The Resistant Starch Hack",
@@ -189,140 +413,6 @@ export const ACADEMY_LESSONS: AcademyLesson[] = [
       ],
       correctIndex: 1,
       explanation: "Correct! The viscous gel physically delays enzymatic breakdown, smoothing out the post-meal glucose curve.",
-    },
-  },
-  {
-    id: "soleus-muscle-sink",
-    title: "The 20-Minute Post-Meal Muscle Sink",
-    category: "Glucose Science",
-    readTime: "60 sec",
-    icon: Zap,
-    headline: "How light soleus walking activates non-insulin GLUT4 glucose disposal",
-    storySlides: [
-      "Your soleus calf muscle has the highest oxidative slow-twitch fiber density in your body and can burn circulating blood glucose for fuel without requiring insulin.",
-      "When you take a gentle 15-minute walk starting 20 minutes after eating a heavy meal (like Jollof or Swallow), muscle contractions trigger GLUT4 transporter vesicles to fuse with the cell membrane.",
-      "GLUT4 transports glucose directly from your bloodstream into the working muscle cells, dropping your peak post-meal glucose spike by up to 35%.",
-      "No intense sweating required! A brisk stroll around your compound or living room immediately after lunch protects your beta-cells from insulin exhaustion. 🚶‍♂️",
-    ],
-    takeaway: "Walk for 15 minutes roughly 20 minutes after meals to activate GLUT4 and clear glucose without stressing your pancreas.",
-    quiz: {
-      question: "When is the optimal window to take a light walk to blunt a post-meal glucose spike?",
-      options: [
-        "20 minutes after finishing your meal",
-        "3 hours before eating",
-        "Right before going to sleep only",
-      ],
-      correctIndex: 0,
-      explanation: "Spot on! The 20-minute post-meal window catches glucose as it begins entering circulation, flattening the peak.",
-    },
-  },
-  {
-    id: "fermented-iru-glp1",
-    title: "Fermented Iru (Locust Beans) & GLP-1",
-    category: "Glucose Science",
-    readTime: "60 sec",
-    icon: ShieldCheck,
-    headline: "The ancestral seasoning that stimulates natural incretin hormone release",
-    storySlides: [
-      "Fermented locust beans (Iru / Dawadawa / Ogiri) are a cornerstone of traditional West African soups, produced through alkaline fermentation by Bacillus subtilis.",
-      "Recent 2026 peptide research shows that bio-peptides released during Iru fermentation stimulate enteroendocrine L-cells in the gut to release GLP-1 (Glucagon-Like Peptide-1).",
-      "Natural GLP-1 slows stomach emptying, signals satiety to the brain, and enhances glucose-dependent insulin secretion from the pancreas.",
-      "Cooking with authentic Iru not only replaces high-sodium seasoning cubes but also provides ancestral, food-based GLP-1 metabolic support! 🍲",
-    ],
-    takeaway: "Fermented locust beans (Iru) contain natural bioactive peptides that stimulate gut GLP-1, boosting satiety and steady glucose control.",
-    quiz: {
-      question: "What beneficial metabolic hormone is stimulated by fermented locust bean peptides?",
-      options: ["Natural GLP-1", "Adrenaline", "Cortisol"],
-      correctIndex: 0,
-      explanation: "Exactly! Iru peptides stimulate gut L-cells to release GLP-1, enhancing natural satiety and glucose buffering.",
-    },
-  },
-  {
-    id: "akamu-protein-buffer",
-    title: "The Akamu (Pap) Glucose Buffer",
-    category: "Glucose Science",
-    readTime: "60 sec",
-    icon: Flame,
-    headline: "Why eating Pap alone causes rapid blood sugar spikes—and how to shield it",
-    storySlides: [
-      "Akamu (Ogi / Pap) made from refined corn or millet paste has a high glycemic index (GI > 75). When consumed with added sugar or evaporated milk alone, it spikes blood sugar within 20 minutes.",
-      "The rapid glucose rise is because refined cornstarch liquid has almost zero gastric delay and enters the bloodstream immediately.",
-      "The Nigerian Breakfast Shield: Never drink Akamu alone! Always pair it with Akara (steamed bean cakes), boiled eggs, or peanut butter.",
-      "The dense protein and lipid matrix in beans and eggs delays stomach emptying by up to 90 minutes, converting a spike into a steady plateau! 🥞",
-    ],
-    takeaway: "Always anchor high-GI Akamu with protein like Akara or boiled eggs to slow glucose absorption and prevent energy crashes.",
-    quiz: {
-      question: "Why should Akamu (Pap) always be paired with Akara or boiled eggs?",
-      options: [
-        "To make the plate look colorful",
-        "Protein & lipids delay gastric emptying and prevent a glucose surge",
-        "To add extra sugar",
-      ],
-      correctIndex: 1,
-      explanation: "Correct! Protein and healthy fats buffer the carb absorption, preventing blood sugar from spiking uncontrollably.",
-    },
-  },
-  {
-    id: "moringa-antioxidants",
-    title: "Moringa Oleifera & Fasting Sugar",
-    category: "Glucose Science",
-    readTime: "60 sec",
-    icon: ShieldCheck,
-    headline: "The molecular power of Quercetin & Chlorogenic Acid in Moringa leaves",
-    storySlides: [
-      "Moringa Oleifera (known as Zogale in Northern Nigeria) is celebrated as a 'miracle tree' because of its extraordinary density of polyphenol antioxidants.",
-      "Two primary compounds in Moringa—Chlorogenic Acid and Quercetin—specifically inhibit the enzyme Glucose-6-Phosphatase in the liver.",
-      "By inhibiting this enzyme, Moringa prevents your liver from releasing excess stored glucose into your blood during overnight fasting periods.",
-      "Adding dried Moringa leaf powder to soups or drinking fresh Moringa tea in the morning supports lower waking fasting glucose levels! 🌿",
-    ],
-    takeaway: "Moringa leaves contain chlorogenic acid which helps regulate liver glucose release, keeping morning fasting numbers steady.",
-    quiz: {
-      question: "Which organ's glucose release does Moringa help regulate during fasting?",
-      options: ["The Liver", "The Kidneys", "The Lungs"],
-      correctIndex: 0,
-      explanation: "Correct! Moringa regulates liver glucose production, preventing high fasting blood sugar in the morning.",
-    },
-  },
-  {
-    id: "vinegar-acid-buffer",
-    title: "The Acid Shield (Citrus & Vinegar)",
-    category: "Glucose Science",
-    readTime: "60 sec",
-    icon: Brain,
-    headline: "How lemon, lime, or apple cider vinegar deactivates alpha-amylase",
-    storySlides: [
-      "Salivary and pancreatic alpha-amylase are the primary enzymes that break complex starches into simple glucose sugars in your mouth and upper intestine.",
-      "Alpha-amylase enzymes require a neutral pH to function efficiently. Adding organic acids (such as fresh lime juice, unsweetened Zobo, or 1 tbsp apple cider vinegar) lowers the digestive pH.",
-      "This temporary pH drop deactivates up to 30% of alpha-amylase activity, slowing the rate at which starches like rice or yam are broken down into sugar.",
-      "Enjoying a glass of warm lemon water or unsweetened hibiscus tea 10 minutes before starch meals acts as a natural enzymatic brake! 🍋",
-    ],
-    takeaway: "Organic acids from citrus or vinegar temporarily inhibit amylase enzymes, reducing the speed of carbohydrate digestion.",
-    quiz: {
-      question: "What digestive enzyme is temporarily slowed down by organic acids from citrus or vinegar?",
-      options: ["Alpha-amylase", "Pepsin", "Lactase"],
-      correctIndex: 0,
-      explanation: "Spot on! Alpha-amylase is inhibited by lower pH, giving your body more time to process starch safely.",
-    },
-  },
-  {
-    id: "jollof-sequencing",
-    title: "The Jollof Rice Sequencing Secret",
-    category: "Cooking Hacks",
-    readTime: "60 sec",
-    icon: Brain,
-    headline: "How eating food in the right order prevents the 2 PM post-lunch energy slump",
-    storySlides: [
-      "Have you ever eaten party Jollof rice and felt completely exhausted and sleepy 45 minutes later? That is known as 'postprandial reactive hypoglycemia' (the sugar crash).",
-      "When refined carbs hit an empty stomach first, they rush into the bloodstream within 15 minutes, triggering a massive insulin flood that crashes your energy.",
-      "The Food Sequencing Solution: Always eat your PROTEIN and FIBER FIRST (e.g. pepper soup, grilled chicken, or fresh salad) 5–10 minutes before the rice.",
-      "Fiber and protein coat your intestinal walls and slow down gastric emptying, transforming a sharp spike into a gentle, sustained energy hill! 🚀",
-    ],
-    takeaway: "Never eat Jollof rice on an empty stomach. Eat your meat, fish, and greens first to buffer the sugar surge.",
-    quiz: {
-      question: "Which component of your meal should you eat FIRST to prevent a glucose spike?",
-      options: ["The sweet dessert", "The Jollof rice / swallow", "Fiber vegetables & protein"],
-      correctIndex: 2,
-      explanation: "Exactly! Fiber and protein slow gastric emptying, preventing sharp insulin surges and the 2 PM afternoon crash.",
     },
   },
   {
@@ -421,32 +511,44 @@ const SWALLOW_SIMULATOR_DATA = [
     spikeRisk: "Moderate-High Spike ⚠️",
     color: "from-amber-500 to-orange-600",
     bgColor: "bg-amber-50 border-amber-200 text-amber-800",
-    barWidth: "78%",
-    insight: "Processed cassava with moderate gelatinization. Spikes faster when prepared with boiling water and eaten without vegetable soups."
+    barWidth: "75%",
+    insight: "Fermented cassava starch. Moderate glycemic velocity, buffered by soaking time and hot water gelatinization."
   },
   {
-    id: "plantain-flour",
-    name: "Unripe Plantain Flour",
-    glycemicIndex: 52,
-    peakSpike: "132 mg/dL",
-    velocityTime: "55 mins",
-    spikeRisk: "Gentle Plateau ✅",
-    color: "from-teal-500 to-emerald-600",
-    bgColor: "bg-teal-50 border-teal-200 text-teal-800",
-    barWidth: "50%",
-    insight: "Rich in Type-2 Resistant Starch. Ferments in the colon, releasing butyrate and flattening post-meal glucose."
+    id: "semovita",
+    name: "Semovita (Refined Wheat)",
+    glycemicIndex: 72,
+    peakSpike: "148 mg/dL",
+    velocityTime: "32 mins",
+    spikeRisk: "Moderate Spike ⚠️",
+    color: "from-amber-500 to-yellow-600",
+    bgColor: "bg-amber-50 border-amber-200 text-amber-800",
+    barWidth: "68%",
+    insight: "Milled durum wheat endosperm. Moderate digestion rate, but triggers sustained 2-hour insulin elevation."
   },
   {
-    id: "oat-swallow",
-    name: "Oat Flour Swallow + Okra",
+    id: "plantain-oat-fufu",
+    name: "Plantain-Oat Fufu (Smart Swap)",
     glycemicIndex: 42,
-    peakSpike: "118 mg/dL",
+    peakSpike: "114 mg/dL",
     velocityTime: "75 mins",
     spikeRisk: "Low Spike Shield 🛡️",
     color: "from-emerald-500 to-teal-600",
     bgColor: "bg-emerald-50 border-emerald-200 text-emerald-800",
     barWidth: "35%",
-    insight: "Beta-glucan soluble fibers create a protective gel matrix, slowing gastric emptying and reducing peak spike by ~38%."
+    insight: "Beta-glucan soluble fiber matrix. Extends glucose release into a gentle metabolic plateau, reducing peak spike by 45%!"
+  },
+  {
+    id: "almond-psyllium-fufu",
+    name: "Almond-Psyllium Fufu (Keto Shield)",
+    glycemicIndex: 24,
+    peakSpike: "98 mg/dL",
+    velocityTime: "90 mins",
+    spikeRisk: "Flat Glycemic Line 🟢",
+    color: "from-teal-500 to-cyan-600",
+    bgColor: "bg-teal-50 border-teal-200 text-teal-800",
+    barWidth: "18%",
+    insight: "Zero rapid starch. High in monounsaturated fats and prebiotic psyllium husk—ideal for strict A1c reversal."
   }
 ];
 
@@ -454,7 +556,7 @@ export default function AvoAcademy() {
   const { profile } = useUser();
   const scrollBarRef = useRef<HTMLDivElement>(null);
   const [isPaused, setIsPaused] = useState(false);
-  const lessonsSectionRef = useRef<HTMLDivElement>(null);
+
   const [selectedCategory, setSelectedCategory] = useState<string>(() => {
     const cond = (profile?.medicalCondition || "").toLowerCase();
     if (cond.includes("pregnan") || cond.includes("gestat")) return "Pregnancy Health";
@@ -462,16 +564,19 @@ export default function AvoAcademy() {
     if (cond.includes("arthrit") || cond.includes("joint") || cond.includes("gout")) return "Arthritis & Joints";
     return "Glucose Science";
   });
+
   const [activeLesson, setActiveLesson] = useState<AcademyLesson | null>(null);
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
   const [quizSubmitted, setQuizSubmitted] = useState(false);
-  const [selectedSwallowIdx, setSelectedSwallowIdx] = useState(0);
 
+  // Swallow Simulator state
+  const [selectedSwallow, setSelectedSwallow] = useState(SWALLOW_SIMULATOR_DATA[3]);
+
+  // Saved progress
   const [completedIds, setCompletedIds] = useState<string[]>(() => {
     try {
-      const saved = localStorage.getItem("completed_academy_lessons");
-      return saved ? JSON.parse(saved) : [];
+      return JSON.parse(localStorage.getItem("completed_academy_lessons") || "[]");
     } catch {
       return [];
     }
@@ -479,62 +584,56 @@ export default function AvoAcademy() {
 
   const [userXp, setUserXp] = useState<number>(() => {
     try {
-      const saved = localStorage.getItem("metabolic_xp");
-      return saved ? parseInt(saved, 10) : 0;
+      return parseInt(localStorage.getItem("metabolic_xp") || "150", 10);
     } catch {
-      return 0;
+      return 150;
     }
   });
 
-  // Real-time Circadian Glucose Clock Detection
-  const currentHour = new Date().getHours();
+  // Circadian window
   const circadianWindow = useMemo(() => {
-    if (currentHour >= 5 && currentHour < 10) {
+    const hour = new Date().getHours();
+    if (hour >= 6 && hour < 11) {
       return {
-        label: "Dawn Phenomenon Window (5 AM - 10 AM)",
-        status: "Cortisol is waking the liver. Drink lemon water or Moringa before carbs to block liver gluconeogenesis.",
-        badge: "🌅 Morning Phase",
-        color: "text-amber-700 bg-amber-50 border-amber-200"
+        label: "Morning Fasting Window (07:00 - 11:00)",
+        status: "Insulin sensitivity is peak. Ideal window for complex fiber & protein breakfast.",
+        color: "bg-emerald-50 text-emerald-800 border-emerald-200",
+        badge: "Optimal Sensitivity ⚡",
       };
-    } else if (currentHour >= 10 && currentHour < 16) {
+    } else if (hour >= 11 && hour < 16) {
       return {
-        label: "Peak Insulin Sensitivity Window (10 AM - 4 PM)",
-        status: "Your cells are primed to process complex swallows and grains efficiently. Optimal window for heavier meals.",
-        badge: "☀️ Midday Prime",
-        color: "text-teal-800 bg-teal-50 border-teal-200"
+        label: "Midday Metabolic Engine (12:00 - 16:00)",
+        status: "Active digestive window. Pair starchy swallows with vegetables first.",
+        color: "bg-amber-50 text-amber-800 border-amber-200",
+        badge: "Active Metabolism 🔥",
       };
-    } else if (currentHour >= 16 && currentHour < 21) {
+    } else if (hour >= 16 && hour < 21) {
       return {
-        label: "Post-Dusk Glucose Deceleration (4 PM - 9 PM)",
-        status: "Melatonin levels begin rising, reducing insulin secretion. Pair evening dinners with Okra, greens, and lean fish.",
-        badge: "🌆 Evening Decel",
-        color: "text-indigo-800 bg-indigo-50 border-indigo-200"
+        label: "Evening Glucose Clearance (17:00 - 21:00)",
+        status: "Insulin sensitivity begins tapering. Favor light dinners & lean fish.",
+        color: "bg-orange-50 text-orange-800 border-orange-200",
+        badge: "Tapering Phase 🌙",
       };
     } else {
       return {
-        label: "Nocturnal Fasting Repair (9 PM - 5 AM)",
-        status: "Cellular autophagy and glycogen replenishment. Maintain a clear 12-hour overnight fasting window for insulin receptor reset.",
-        badge: "🌙 Fasting Mode",
-        color: "text-purple-800 bg-purple-50 border-purple-200"
+        label: "Night Autophagy & Fasting (21:00 - 06:00)",
+        status: "Cellular repair and liver glycogen depletion active.",
+        color: "bg-indigo-50 text-indigo-800 border-indigo-200",
+        badge: "Autophagy Rest 🌌",
       };
     }
-  }, [currentHour]);
+  }, []);
 
-  // Daily Dynamic Lesson Calculator (Rotates automatically every 24 hours)
   const todayLessonIndex = useMemo(() => {
-    const now = new Date();
-    const start = new Date(now.getFullYear(), 0, 0);
-    const diff = now.getTime() - start.getTime();
+    const start = new Date(new Date().getFullYear(), 0, 0);
+    const diff = new Date().getTime() - start.getTime();
     const oneDay = 1000 * 60 * 60 * 24;
     const dayOfYear = Math.floor(diff / oneDay);
     return dayOfYear % ACADEMY_LESSONS.length;
   }, []);
 
   const todayLesson = ACADEMY_LESSONS[todayLessonIndex];
-  const isTodayLessonDone = completedIds.includes(todayLesson.id);
 
-  // Filter lessons
-  
   // Auto-scrolling Specialty Marquee loop (Smooth & Interactive)
   useEffect(() => {
     const el = scrollBarRef.current;
@@ -558,6 +657,10 @@ export default function AvoAcademy() {
 
     return () => clearInterval(interval);
   }, [isPaused]);
+
+  const currentMealProtocols = useMemo(() => {
+    return CATEGORY_MEAL_PROTOCOLS[selectedCategory] || CATEGORY_MEAL_PROTOCOLS["Glucose Science"] || [];
+  }, [selectedCategory]);
 
   const filteredLessons = useMemo(() => {
     if (selectedCategory === "All") return ACADEMY_LESSONS;
@@ -656,16 +759,15 @@ export default function AvoAcademy() {
         </div>
       </div>
 
-      
-      {/* 🌟 10X TOP SELF-SCROLLING SPECIALTY MARQUEE BAR */}
-      <div className="space-y-1.5">
+      {/* 🌟 10X TOP SELF-SCROLLING SPECIALTY MARQUEE BAR (Unified Brand Color Consistency) */}
+      <div className="space-y-2">
         <div className="flex items-center justify-between px-1">
-          <span className="text-[11px] font-black uppercase tracking-wider text-teal-800 dark:text-teal-300 flex items-center gap-1.5">
+          <span className="text-[11px] font-black uppercase tracking-wider text-[#126778] dark:text-teal-300 flex items-center gap-1.5">
             <Sparkles size={13} className="text-amber-500 animate-bounce" />
             <span>Specialized Clinical Programs:</span>
           </span>
-          <span className="text-[10px] text-slate-400 font-bold">
-            Tap to open masterclass ➔
+          <span className="text-[10px] text-slate-500 font-bold">
+            Tap heading to open lessons &amp; meals ➔
           </span>
         </div>
 
@@ -678,28 +780,29 @@ export default function AvoAcademy() {
           className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none py-1 px-0.5 select-none"
         >
           {[
-            { id: "Pregnancy Health", label: "🤰 Eating for Pregnancy", bg: "from-pink-500 to-rose-600" },
-            { id: "Prostate Health", label: "🩺 Eating for Prostate Health", bg: "from-blue-600 to-indigo-700" },
-            { id: "Arthritis & Joints", label: "🦴 Eating for Arthritis & Joints", bg: "from-amber-500 to-orange-600" },
-            { id: "Glucose Science", label: "🩸 Glucose Science & Insulin", bg: "from-teal-600 to-emerald-600" },
-            { id: "Heart & BP", label: "❤️ Blood Pressure & Heart", bg: "from-red-500 to-rose-600" },
-            { id: "Gut & Fiber", label: "🥗 Gut Microbiome & Fiber", bg: "from-emerald-600 to-teal-700" },
-            { id: "Cooking Hacks", label: "👨‍🍳 Cultural Cooking Hacks", bg: "from-purple-600 to-indigo-600" },
-            { id: "All", label: "🌟 All Masterclasses", bg: "from-slate-700 to-slate-900" },
+            { id: "Pregnancy Health", label: "🤰 Eating for Pregnancy" },
+            { id: "Prostate Health", label: "🩺 Eating for Prostate Health" },
+            { id: "Arthritis & Joints", label: "🦴 Eating for Arthritis & Joints" },
+            { id: "Glucose Science", label: "🩸 Glucose Science & Insulin" },
+            { id: "Heart & BP", label: "❤️ Blood Pressure & Heart" },
+            { id: "Gut & Fiber", label: "🥗 Gut Microbiome & Fiber" },
+            { id: "Cooking Hacks", label: "👨‍🍳 Cultural Cooking Hacks" },
+            { id: "All", label: "🌟 All Masterclasses" },
           ].map((cat) => {
             const isSelected = selectedCategory === cat.id;
             return (
               <button
                 key={cat.id}
+                type="button"
                 onClick={() => {
                   triggerHaptic("medium");
                   setSelectedCategory(cat.id);
-                  lessonsSectionRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+                  setIsPaused(true);
                 }}
-                className={`px-4 py-2 rounded-2xl font-black text-xs whitespace-nowrap transition-all cursor-pointer shadow-xs active:scale-95 flex items-center gap-1.5 ${
+                className={`px-4 py-2.5 rounded-2xl font-black text-xs whitespace-nowrap transition-all cursor-pointer shadow-xs active:scale-95 flex items-center gap-1.5 ${
                   isSelected
-                    ? `bg-gradient-to-r ${cat.bg} text-white ring-2 ring-teal-400 ring-offset-2 scale-105 shadow-md`
-                    : "bg-white dark:bg-zinc-800 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-zinc-700 hover:border-teal-400 hover:bg-slate-50"
+                    ? "bg-gradient-to-r from-[#126778] via-[#1f7a8c] to-[#0d9488] text-white ring-2 ring-teal-400 ring-offset-2 scale-105 shadow-md"
+                    : "bg-white dark:bg-zinc-800 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-zinc-700 hover:border-teal-400 hover:bg-teal-50/50"
                 }`}
               >
                 <span>{cat.label}</span>
@@ -708,6 +811,158 @@ export default function AvoAcademy() {
             );
           })}
         </div>
+      </div>
+
+      {/* 📖 ACTIVE CATEGORY CLINICAL LESSONS & THERAPEUTIC MEALS SECTION */}
+      <div className="space-y-4 pt-1">
+        
+        {/* Active Category Header Pill */}
+        <div className="flex items-center justify-between bg-teal-50/80 dark:bg-zinc-800/80 border border-teal-200/80 dark:border-zinc-700 rounded-2xl px-4 py-2.5">
+          <div className="flex items-center gap-2">
+            <span className="text-xs sm:text-sm font-black text-[#126778] dark:text-teal-300">
+              {selectedCategory === "Pregnancy Health" ? "🤰 Pregnancy & Gestational Nutrition" : selectedCategory === "Prostate Health" ? "🩺 Prostate Health & PSA Support" : selectedCategory === "Arthritis & Joints" ? "🦴 Arthritis, Gout & Joint Mobility" : selectedCategory === "Glucose Science" ? "🩸 Glucose Science & Insulin Reset" : selectedCategory === "Heart & BP" ? "❤️ Blood Pressure & Arterial Health" : selectedCategory === "Gut & Fiber" ? "🥗 Gut Microbiome & Soluble Fiber" : selectedCategory === "Cooking Hacks" ? "👨‍🍳 Ancestral Culinary Hacks" : "🌟 All Clinical Masterclasses"}
+            </span>
+          </div>
+          <span className="text-[10px] font-black uppercase bg-[#126778] text-white px-2.5 py-0.5 rounded-full">
+            {filteredLessons.length} Lesson{filteredLessons.length === 1 ? "" : "s"}
+          </span>
+        </div>
+
+        {/* 1. Dynamic Interactive Lesson Cards Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          {filteredLessons.map((lesson) => {
+            const Icon = lesson.icon;
+            const isDone = completedIds.includes(lesson.id);
+            const isCurrentToday = lesson.id === todayLesson.id;
+
+            return (
+              <div
+                key={lesson.id}
+                onClick={() => openLesson(lesson)}
+                className={`p-4 rounded-3xl border transition-all cursor-pointer flex flex-col justify-between group hover:shadow-md ${
+                  isDone
+                    ? "bg-teal-50/50 border-teal-200"
+                    : isCurrentToday
+                    ? "bg-white border-amber-300 ring-2 ring-amber-300/40"
+                    : "bg-white dark:bg-zinc-800 border-slate-200/80 dark:border-zinc-700 hover:border-teal-400"
+                }`}
+              >
+                <div>
+                  <div className="flex items-center justify-between gap-2 mb-2">
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-[10px] uppercase font-black tracking-wider text-[#126778] bg-teal-50 dark:bg-teal-950 px-2 py-0.5 rounded-lg">
+                        {lesson.category}
+                      </span>
+                      {isCurrentToday && (
+                        <span className="text-[9.5px] uppercase font-black bg-amber-100 text-amber-800 px-1.5 py-0.5 rounded-md">
+                          Today's Pick
+                        </span>
+                      )}
+                    </div>
+
+                    <span className="text-[10px] text-slate-400 font-bold flex items-center gap-1">
+                      <Clock size={11} />
+                      <span>{lesson.readTime}</span>
+                    </span>
+                  </div>
+
+                  <div className="flex items-start gap-3 my-1">
+                    <div
+                      className={`p-2.5 rounded-2xl shrink-0 ${
+                        isDone
+                          ? "bg-emerald-100 text-emerald-700"
+                          : "bg-teal-50 text-[#126778]"
+                      }`}
+                    >
+                      <Icon className="h-5 w-5" />
+                    </div>
+                    <div>
+                      <h4 className="text-sm font-extrabold text-slate-900 dark:text-white group-hover:text-[#126778] transition-colors leading-tight">
+                        {lesson.title}
+                      </h4>
+                      <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1 leading-snug line-clamp-2 font-medium">
+                        {lesson.headline}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="mt-3 pt-2.5 border-t border-slate-100 dark:border-zinc-700 flex items-center justify-between">
+                  {isDone ? (
+                    <span className="text-xs font-bold text-emerald-600 flex items-center gap-1">
+                      <CheckCircle2 size={14} />
+                      <span>Mastered (+25 XP)</span>
+                    </span>
+                  ) : (
+                    <span className="text-xs font-bold text-[#126778] dark:text-teal-300 flex items-center gap-1 group-hover:translate-x-0.5 transition-transform">
+                      <span>Read 60s Lesson &amp; Take Quiz</span>
+                      <ChevronRight size={14} />
+                    </span>
+                  )}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* 2. CURATED AFRICAN THERAPEUTIC MEAL PROTOCOLS FOR THIS TOPIC */}
+        {currentMealProtocols.length > 0 && (
+          <div className="bg-gradient-to-br from-teal-50/70 via-emerald-50/40 to-white dark:from-zinc-800 dark:to-zinc-900 rounded-3xl p-4 sm:p-5 border border-teal-200/80 dark:border-zinc-700 space-y-3 shadow-xs">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <span className="text-lg">🍲</span>
+                <div>
+                  <h3 className="text-xs sm:text-sm font-black text-slate-900 dark:text-white uppercase tracking-wider">
+                    Recommended Therapeutic Meal Protocol
+                  </h3>
+                  <p className="text-[10.5px] text-slate-500 dark:text-slate-400">
+                    African cultural plates scientifically balanced for {selectedCategory}
+                  </p>
+                </div>
+              </div>
+              <span className="text-[10px] font-black px-2 py-0.5 rounded-full bg-teal-100 text-teal-800 dark:bg-teal-950 dark:text-teal-200">
+                3 Daily Plates
+              </span>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+              {currentMealProtocols.map((meal) => (
+                <div
+                  key={meal.id}
+                  className="bg-white dark:bg-zinc-800/90 rounded-2xl p-3.5 border border-slate-200/80 dark:border-zinc-700 shadow-2xs flex flex-col justify-between"
+                >
+                  <div>
+                    <div className="flex items-center justify-between mb-1.5">
+                      <span className="text-[10px] uppercase font-black tracking-wider bg-[#126778]/10 text-[#126778] dark:text-teal-300 px-2 py-0.5 rounded-md">
+                        {meal.mealType}
+                      </span>
+                      <span className="text-xl">{meal.emoji}</span>
+                    </div>
+
+                    <h4 className="text-xs font-black text-slate-900 dark:text-white leading-snug">
+                      {meal.dishName}
+                    </h4>
+
+                    <span className="inline-block text-[9.5px] font-bold text-teal-700 dark:text-teal-300 bg-teal-50 dark:bg-teal-950/60 px-2 py-0.5 rounded-md mt-1.5">
+                      {meal.keyNutrientBadge}
+                    </span>
+
+                    <p className="text-[10.5px] text-slate-500 dark:text-slate-400 mt-1.5 leading-snug">
+                      {meal.whyItWorks}
+                    </p>
+                  </div>
+
+                  <div className="mt-2.5 pt-2 border-t border-slate-100 dark:border-zinc-700 flex items-center justify-between text-[10px] font-bold text-slate-600 dark:text-slate-300">
+                    <span>~{meal.calories} kcal</span>
+                    <span>Carbs: {meal.carbs}g</span>
+                    <span>Protein: {meal.protein}g</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
       </div>
 
       {/* 2. DYNAMIC REAL-TIME CIRCADIAN GLUCOSE BIO-CLOCK */}
@@ -727,180 +982,103 @@ export default function AvoAcademy() {
       </div>
 
       {/* 3. INTERACTIVE AFRICAN SWALLOW GLYCEMIC SIMULATOR (Live in Glucose Science) */}
-      <div className="bg-white rounded-3xl p-5 shadow-xs border border-teal-100/90 space-y-3.5">
+      <div className="bg-white dark:bg-zinc-800 rounded-3xl p-5 shadow-xs border border-teal-100/90 dark:border-zinc-700 space-y-3.5">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <div className="p-2 rounded-xl bg-teal-50 text-[#126778]">
+            <div className="p-2 rounded-xl bg-teal-50 dark:bg-teal-950 text-[#126778] dark:text-teal-300">
               <Sliders size={16} />
             </div>
             <div>
-              <h3 className="text-xs font-black text-slate-900 uppercase tracking-wider">
+              <h3 className="text-xs font-black text-slate-900 dark:text-white uppercase tracking-wider">
                 Live Swallow Glycemic Simulator 🥣
               </h3>
-              <p className="text-[10px] text-slate-500">
+              <p className="text-[10px] text-slate-500 dark:text-slate-400">
                 Compare post-meal glucose spikes across traditional and modern swallows
               </p>
             </div>
           </div>
-          <span className="text-[9px] font-black uppercase text-teal-800 bg-teal-50 px-2 py-0.5 rounded-md">
-            2026 Data
+          <span className="text-[10px] font-bold text-slate-400">
+            5 Swallows Tested
           </span>
         </div>
 
-        {/* Swallow Selector Pills */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5">
-          {SWALLOW_SIMULATOR_DATA.map((swallow, idx) => (
-            <button
-              key={swallow.id}
-              onClick={() => {
-                triggerHaptic("light");
-                setSelectedSwallowIdx(idx);
-              }}
-              className={`p-2 rounded-xl text-left border transition-all cursor-pointer ${
-                selectedSwallowIdx === idx
-                  ? "bg-[#126778] text-white border-[#126778] shadow-xs"
-                  : "bg-slate-50 text-slate-700 border-slate-200/80 hover:bg-slate-100"
-              }`}
-            >
-              <span className="text-[11px] font-bold block truncate">{swallow.name}</span>
-              <span className={`text-[9px] font-black block mt-0.5 ${selectedSwallowIdx === idx ? "text-teal-200" : "text-slate-500"}`}>
-                GI: {swallow.glycemicIndex}
-              </span>
-            </button>
-          ))}
+        {/* Swallow Picker Chips */}
+        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none text-xs">
+          {SWALLOW_SIMULATOR_DATA.map((swallow) => {
+            const isSelected = selectedSwallow.id === swallow.id;
+            return (
+              <button
+                key={swallow.id}
+                onClick={() => {
+                  triggerHaptic("light");
+                  setSelectedSwallow(swallow);
+                }}
+                className={`px-3 py-1.5 rounded-xl font-bold whitespace-nowrap transition-all cursor-pointer ${
+                  isSelected
+                    ? "bg-[#126778] text-white shadow-xs"
+                    : "bg-slate-50 dark:bg-zinc-700 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-zinc-600 hover:bg-slate-100"
+                }`}
+              >
+                {swallow.name}
+              </button>
+            );
+          })}
         </div>
 
-        {/* Selected Swallow Live Visualization Card */}
-        {(() => {
-          const s = SWALLOW_SIMULATOR_DATA[selectedSwallowIdx];
-          return (
-            <div className={`p-3.5 rounded-2xl border ${s.bgColor} space-y-2`}>
-              <div className="flex items-center justify-between text-xs font-black">
-                <span>Peak Glucose: {s.peakSpike}</span>
-                <span>Time to Peak: {s.velocityTime}</span>
-              </div>
-
-              {/* Dynamic Progress Bar */}
-              <div className="w-full bg-slate-200/80 rounded-full h-2.5 overflow-hidden">
-                <div
-                  className={`h-full bg-gradient-to-r ${s.color} transition-all duration-500 rounded-full`}
-                  style={{ width: s.barWidth }}
-                />
-              </div>
-
-              <div className="flex items-center justify-between text-[10px] font-bold">
-                <span>{s.spikeRisk}</span>
-                <span className="text-slate-600">Glycemic Load Rating</span>
-              </div>
-
-              <p className="text-[11px] text-slate-700 leading-snug pt-1 border-t border-slate-200/60 font-medium">
-                💡 <strong>Clinical Takeaway:</strong> {s.insight}
-              </p>
+        {/* Swallow Spike Analysis Card */}
+        <div className={`p-4 rounded-2xl border ${selectedSwallow.bgColor} space-y-3`}>
+          <div className="flex items-center justify-between">
+            <div>
+              <span className="text-[10px] uppercase font-black tracking-wider opacity-80 block">
+                Peak Post-Meal Glucose Spike
+              </span>
+              <span className="text-lg font-black">{selectedSwallow.peakSpike}</span>
             </div>
-          );
-        })()}
-      </div>
+            <span className="text-xs font-black px-2.5 py-1 rounded-full bg-white/80 dark:bg-zinc-800 shadow-2xs">
+              {selectedSwallow.spikeRisk}
+            </span>
+          </div>
 
-      {/* Lessons Anchor Reference */}
-      <div ref={lessonsSectionRef} />
-
-      {/* 5. Dynamic Lesson Cards Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-        {filteredLessons.map((lesson) => {
-          const Icon = lesson.icon;
-          const isDone = completedIds.includes(lesson.id);
-          const isCurrentToday = lesson.id === todayLesson.id;
-
-          return (
-            <div
-              key={lesson.id}
-              onClick={() => openLesson(lesson)}
-              className={`p-4 rounded-3xl border transition-all cursor-pointer flex flex-col justify-between group hover:shadow-md ${
-                isDone
-                  ? "bg-teal-50/50 border-teal-200"
-                  : isCurrentToday
-                  ? "bg-white border-amber-300 ring-2 ring-amber-300/40"
-                  : "bg-white border-slate-200/80 hover:border-teal-300"
-              }`}
-            >
-              <div>
-                <div className="flex items-center justify-between gap-2 mb-2">
-                  <div className="flex items-center gap-1.5">
-                    <span className="text-[10px] uppercase font-black tracking-wider text-[#126778] bg-teal-50 px-2 py-0.5 rounded-lg">
-                      {lesson.category}
-                    </span>
-                    {isCurrentToday && (
-                      <span className="text-[9.5px] uppercase font-black bg-amber-100 text-amber-800 px-1.5 py-0.5 rounded-md">
-                        Today's Pick
-                      </span>
-                    )}
-                  </div>
-
-                  <span className="text-[10px] text-slate-400 font-bold flex items-center gap-1">
-                    <Clock size={11} />
-                    <span>{lesson.readTime}</span>
-                  </span>
-                </div>
-
-                <div className="flex items-start gap-3 my-1">
-                  <div
-                    className={`p-2.5 rounded-2xl shrink-0 ${
-                      isDone
-                        ? "bg-emerald-100 text-emerald-700"
-                        : "bg-teal-50 text-[#126778]"
-                    }`}
-                  >
-                    <Icon className="h-5 w-5" />
-                  </div>
-                  <div>
-                    <h4 className="text-sm font-extrabold text-slate-900 group-hover:text-[#126778] transition-colors leading-tight">
-                      {lesson.title}
-                    </h4>
-                    <p className="text-[11px] text-slate-500 mt-1 leading-snug line-clamp-2 font-medium">
-                      {lesson.headline}
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="mt-3 pt-2.5 border-t border-slate-100 flex items-center justify-between">
-                {isDone ? (
-                  <span className="text-xs font-bold text-emerald-600 flex items-center gap-1">
-                    <CheckCircle2 size={14} />
-                    <span>Mastered (+25 XP)</span>
-                  </span>
-                ) : (
-                  <span className="text-xs font-bold text-[#126778] flex items-center gap-1 group-hover:translate-x-0.5 transition-transform">
-                    <span>Read 60s Lesson</span>
-                    <ChevronRight size={14} />
-                  </span>
-                )}
-              </div>
+          {/* Velocity Progress Bar */}
+          <div>
+            <div className="flex items-center justify-between text-[10px] font-bold opacity-80 mb-1">
+              <span>Glucose Velocity (GI: {selectedSwallow.glycemicIndex})</span>
+              <span>Spike Time: ~{selectedSwallow.velocityTime}</span>
             </div>
-          );
-        })}
+            <div className="w-full bg-black/10 dark:bg-white/10 rounded-full h-2 overflow-hidden">
+              <div
+                className={`h-full bg-gradient-to-r ${selectedSwallow.color} transition-all duration-500 rounded-full`}
+                style={{ width: selectedSwallow.barWidth }}
+              />
+            </div>
+          </div>
+
+          <p className="text-[11px] leading-snug font-medium pt-1">
+            💡 <strong>Clinical Insight:</strong> {selectedSwallow.insight}
+          </p>
+        </div>
       </div>
 
       {/* 6. INTERACTIVE STORY & QUIZ READER MODAL */}
       {activeLesson && (
         <Dialog open={!!activeLesson} onOpenChange={() => setActiveLesson(null)}>
-          <DialogContent className="max-w-md p-6 rounded-3xl max-h-[92vh] overflow-y-auto border-teal-500/30">
+          <DialogContent className="max-w-md p-6 rounded-3xl max-h-[92vh] overflow-y-auto border-teal-500/30 bg-white dark:bg-zinc-900 text-slate-900 dark:text-white">
             <DialogHeader className="sr-only">
               <DialogTitle>{activeLesson.title}</DialogTitle>
               <DialogDescription>{activeLesson.headline}</DialogDescription>
             </DialogHeader>
 
             {/* Modal Header */}
-            <div className="flex items-center justify-between border-b border-slate-100 pb-3 mb-4">
+            <div className="flex items-center justify-between border-b border-slate-100 dark:border-zinc-800 pb-3 mb-4">
               <div className="flex items-center gap-2.5">
-                <div className="p-2 rounded-xl bg-teal-50 text-[#126778]">
+                <div className="p-2 rounded-xl bg-teal-50 dark:bg-teal-950 text-[#126778] dark:text-teal-300">
                   <activeLesson.icon className="h-5 w-5" />
                 </div>
                 <div>
-                  <span className="text-[10px] uppercase font-black text-teal-700">
+                  <span className="text-[10px] uppercase font-black text-teal-700 dark:text-teal-300">
                     {activeLesson.category} • 60s Masterclass
                   </span>
-                  <h3 className="text-base font-extrabold text-slate-900 leading-tight">
+                  <h3 className="text-base font-extrabold text-slate-900 dark:text-white leading-tight">
                     {activeLesson.title}
                   </h3>
                 </div>
@@ -911,14 +1089,14 @@ export default function AvoAcademy() {
             {currentSlideIndex < activeLesson.storySlides.length ? (
               <div className="space-y-4">
                 {/* Story Slide Content Card */}
-                <div className="bg-gradient-to-br from-teal-50/60 to-emerald-50/40 p-5 rounded-2xl border border-teal-100">
+                <div className="bg-gradient-to-br from-teal-50/60 to-emerald-50/40 dark:from-zinc-800 dark:to-zinc-800/60 p-5 rounded-2xl border border-teal-100 dark:border-zinc-700">
                   <div className="flex items-center justify-between mb-3">
-                    <span className="text-[10px] font-black uppercase tracking-wider text-teal-800">
+                    <span className="text-[10px] font-black uppercase tracking-wider text-teal-800 dark:text-teal-300">
                       Slide {currentSlideIndex + 1} of {activeLesson.storySlides.length}
                     </span>
-                    <Mascot gesture="wave" size={32} />
+                    <Mascot gesture="waving" size={32} />
                   </div>
-                  <p className="text-sm text-slate-800 leading-relaxed font-medium">
+                  <p className="text-sm text-slate-800 dark:text-slate-100 leading-relaxed font-medium">
                     {activeLesson.storySlides[currentSlideIndex]}
                   </p>
                 </div>
@@ -933,7 +1111,7 @@ export default function AvoAcademy() {
                           ? "w-6 bg-[#126778]"
                           : i < currentSlideIndex
                           ? "w-2 bg-teal-400"
-                          : "w-2 bg-slate-200"
+                          : "w-2 bg-slate-200 dark:bg-zinc-700"
                       }`}
                     />
                   ))}
@@ -955,12 +1133,12 @@ export default function AvoAcademy() {
             ) : (
               /* QUIZ PHASE */
               <div className="space-y-4">
-                <div className="bg-amber-50 p-4 rounded-2xl border border-amber-200">
-                  <div className="flex items-center gap-2 text-xs font-black text-amber-800 mb-1">
+                <div className="bg-amber-50 dark:bg-amber-950/40 p-4 rounded-2xl border border-amber-200 dark:border-amber-900">
+                  <div className="flex items-center gap-2 text-xs font-black text-amber-800 dark:text-amber-300 mb-1">
                     <Sparkles size={14} />
                     <span>Quick Science Mastery Quiz (+25 XP)</span>
                   </div>
-                  <h4 className="text-sm font-bold text-slate-900">
+                  <h4 className="text-sm font-bold text-slate-900 dark:text-white">
                     {activeLesson.quiz.question}
                   </h4>
                 </div>
@@ -971,15 +1149,15 @@ export default function AvoAcademy() {
                     const isSelected = selectedAnswer === idx;
                     const isCorrect = idx === activeLesson.quiz.correctIndex;
 
-                    let btnClass = "border-slate-200 bg-white";
+                    let btnClass = "border-slate-200 dark:border-zinc-700 bg-white dark:bg-zinc-800";
                     if (quizSubmitted) {
                       if (isCorrect) {
-                        btnClass = "border-emerald-500 bg-emerald-50 text-emerald-900 font-bold";
+                        btnClass = "border-emerald-500 bg-emerald-50 dark:bg-emerald-950/60 text-emerald-900 dark:text-emerald-200 font-bold";
                       } else if (isSelected && !isCorrect) {
-                        btnClass = "border-rose-500 bg-rose-50 text-rose-900";
+                        btnClass = "border-rose-500 bg-rose-50 dark:bg-rose-950/60 text-rose-900 dark:text-rose-200";
                       }
                     } else if (isSelected) {
-                      btnClass = "border-[#126778] bg-teal-50/80 text-[#126778] font-bold";
+                      btnClass = "border-[#126778] bg-teal-50/80 dark:bg-teal-950/60 text-[#126778] dark:text-teal-300 font-bold";
                     }
 
                     return (
@@ -1005,7 +1183,7 @@ export default function AvoAcademy() {
                 {quizSubmitted && (
                   <div className="space-y-3 animate-in fade-in zoom-in-95 duration-300">
                     {selectedAnswer === activeLesson.quiz.correctIndex ? (
-                      <div className="flex flex-col items-center justify-center p-4 bg-gradient-to-br from-emerald-50 via-teal-50 to-white rounded-3xl border-2 border-emerald-400 shadow-lg text-center">
+                      <div className="flex flex-col items-center justify-center p-4 bg-gradient-to-br from-emerald-50 via-teal-50 to-white dark:from-zinc-800 dark:to-zinc-900 rounded-3xl border-2 border-emerald-400 shadow-lg text-center">
                         <Mascot gesture="clapping" size={130} className="drop-shadow-xl my-1" />
                         <div className="flex items-center gap-1.5 bg-emerald-600 text-white px-4 py-1.5 rounded-full text-xs font-black shadow-md mt-1">
                           <Sparkles size={15} className="text-amber-300 animate-spin" />
@@ -1013,19 +1191,19 @@ export default function AvoAcademy() {
                         </div>
                       </div>
                     ) : (
-                      <div className="flex flex-col items-center justify-center p-3.5 bg-gradient-to-br from-amber-50 to-rose-50 rounded-3xl border border-amber-300 text-center">
+                      <div className="flex flex-col items-center justify-center p-3.5 bg-gradient-to-br from-amber-50 to-rose-50 dark:from-zinc-800 dark:to-zinc-900 rounded-3xl border border-amber-300 text-center">
                         <Mascot gesture="writing" size={100} className="my-1" />
-                        <span className="text-xs font-black text-amber-900">
+                        <span className="text-xs font-black text-amber-900 dark:text-amber-300">
                           Avo's Clinical Review Note 📝
                         </span>
                       </div>
                     )}
 
-                    <div className="p-3.5 bg-slate-50 rounded-2xl border border-slate-200 text-xs space-y-2">
-                      <p className="font-bold text-slate-800 leading-relaxed">
+                    <div className="p-3.5 bg-slate-50 dark:bg-zinc-800/80 rounded-2xl border border-slate-200 dark:border-zinc-700 text-xs space-y-2">
+                      <p className="font-bold text-slate-800 dark:text-slate-100 leading-relaxed">
                         {activeLesson.quiz.explanation}
                       </p>
-                      <div className="p-2.5 bg-teal-50 rounded-xl text-teal-800 font-medium leading-snug">
+                      <div className="p-2.5 bg-teal-50 dark:bg-teal-950/60 rounded-xl text-teal-800 dark:text-teal-300 font-medium leading-snug">
                         💡 <strong>Clinical Takeaway:</strong> {activeLesson.takeaway}
                       </div>
                     </div>
