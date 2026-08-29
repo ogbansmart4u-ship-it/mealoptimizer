@@ -425,7 +425,9 @@ export default function Challenge() {
             </div>
 
             <div className="shrink-0 flex flex-col items-center">
-              <Mascot gesture="cheering" size={68} />
+              <div className="p-1 bg-white/10 backdrop-blur-md rounded-2xl border border-teal-300/30">
+                <Mascot gesture="celebrating" size={72} className="drop-shadow-lg" />
+              </div>
               <span className="text-[10px] font-black text-amber-300 mt-1">
                 +50 XP Today
               </span>

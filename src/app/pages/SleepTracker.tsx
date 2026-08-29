@@ -316,10 +316,12 @@ export default function SleepTracker() {
         {/* 🥑 10X Animated Avo Sleep Scientist Card */}
         <div className="bg-gradient-to-r from-indigo-900/90 via-purple-900/80 to-slate-900 rounded-3xl p-4 sm:p-5 text-white shadow-xl border border-indigo-400/30 relative overflow-hidden flex items-center justify-between gap-4">
           <div className="relative z-10 flex items-center gap-3.5 min-w-0">
-            <Mascot size={68} className="shrink-0 drop-shadow-lg" />
+            <div className="relative shrink-0 p-1 bg-white/10 backdrop-blur-md rounded-2xl border border-indigo-400/30 shadow-md">
+              <Mascot gesture="sleeping" size={76} className="shrink-0 drop-shadow-xl" />
+            </div>
             <div className="min-w-0">
               <div className="flex items-center gap-1.5 mb-0.5">
-                <span className="text-[9.5px] font-black uppercase tracking-wider bg-amber-400 text-slate-950 px-2 py-0.2 rounded-full shadow-2xs">
+                <span className="text-[9.5px] font-black uppercase tracking-wider bg-indigo-400 text-slate-950 px-2 py-0.2 rounded-full shadow-2xs">
                   Avo Sleep &amp; Glucose Lab
                 </span>
                 <span className="text-[10px] text-indigo-300 font-bold hidden sm:inline">Circadian Health</span>
@@ -578,6 +580,17 @@ export default function SleepTracker() {
               Record bedtime and wake time to analyze your metabolic sleep quality
             </DialogDescription>
           </DialogHeader>
+
+          {/* Sleeping Avo Mascot Mini Card */}
+          <div className="flex items-center gap-3 p-3 bg-indigo-950/70 rounded-2xl border border-indigo-500/30">
+            <div className="p-1 bg-white/10 rounded-xl shrink-0">
+              <Mascot gesture="sleeping" size={50} />
+            </div>
+            <div className="min-w-0">
+              <p className="text-xs font-black text-indigo-200">Avo Sleep &amp; Cortisol Shield</p>
+              <p className="text-[11px] text-indigo-300/80 line-clamp-1">Every hour of restorative sleep protects morning insulin sensitivity.</p>
+            </div>
+          </div>
 
           <div className="space-y-4 mt-3">
             <div>

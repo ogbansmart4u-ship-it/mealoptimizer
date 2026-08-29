@@ -25,6 +25,13 @@ export type MascotGesture =
   | "pointing"
   | "drink"
   | "drinking"
+  | "sleep"
+  | "sleeping"
+  | "rest"
+  | "resting"
+  | "celebrate"
+  | "celebrating"
+  | "celebration"
   | "neutral";
 
 export interface GestureConfig {
@@ -32,8 +39,8 @@ export interface GestureConfig {
   css: string;
   /**
    * How the gesture behaves after it fires:
-   *  - "persistent": stays until something changes it (idle, running, scratching, dancing, sad)
-   *  - a number: milliseconds to play, then auto-revert to `idle` (waving, thumbsup, writing, jumping)
+   *  - "persistent": stays until something changes it (idle, running, scratching, dancing, sad, sleep)
+   *  - a number: milliseconds to play, then auto-revert to `idle` (waving, thumbsup, writing, jumping, celebrate)
    */
   hold: "persistent" | number;
 }
@@ -55,6 +62,13 @@ export const GESTURES: Record<MascotGesture, GestureConfig> = {
   pointing:        { css: "avoPop 0.6s ease-out infinite",           hold: 1200 },
   drink:           { css: "avoPop 0.8s ease-out infinite",           hold: 2200 },
   drinking:        { css: "avoPop 0.8s ease-out infinite",           hold: 2200 },
+  sleep:           { css: "avoIdle 4.0s ease-in-out infinite",       hold: "persistent" },
+  sleeping:        { css: "avoIdle 4.0s ease-in-out infinite",       hold: "persistent" },
+  rest:            { css: "avoIdle 4.0s ease-in-out infinite",       hold: "persistent" },
+  resting:         { css: "avoIdle 4.0s ease-in-out infinite",       hold: "persistent" },
+  celebrate:       { css: "avoJump 0.75s cubic-bezier(0.17,0.89,0.32,1.28) infinite", hold: 2500 },
+  celebrating:     { css: "avoJump 0.75s cubic-bezier(0.17,0.89,0.32,1.28) infinite", hold: 2500 },
+  celebration:     { css: "avoJump 0.75s cubic-bezier(0.17,0.89,0.32,1.28) infinite", hold: 2500 },
 };
 
 // Keyframes for every gesture, plus a reduced-motion opt-out. Injected once.

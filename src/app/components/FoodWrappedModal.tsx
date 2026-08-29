@@ -600,6 +600,12 @@ export default function FoodWrappedModal({
                     <Trophy size={13} /> Your Official Nutrition Archetype
                   </div>
 
+                  <div className="flex justify-center my-1">
+                    <div className="p-1 bg-white/10 backdrop-blur-md rounded-2xl border border-amber-400/30">
+                      <Mascot gesture="celebrating" size={72} className="drop-shadow-xl" />
+                    </div>
+                  </div>
+
                   <h3 className="text-xl font-black text-white">
                     "{archetype.title}"
                   </h3>

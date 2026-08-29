@@ -82,7 +82,7 @@ export default function FixMyPlateModal({
   // Determine Avo Mascot Gesture
   const mascotGesture =
     optimized.glycemicLoad === "Low"
-      ? "dancing"
+      ? "celebrating"
       : optimized.glycemicLoad === "Medium"
       ? "waving"
       : "scratching";

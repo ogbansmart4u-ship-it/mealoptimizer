@@ -107,26 +107,32 @@ export default function Achievements() {
             </p>
           </div>
 
-          {/* Level Progress Bar Card */}
-          <div className="bg-white/10 backdrop-blur-md rounded-3xl p-4 border border-white/15 shadow-sm space-y-2.5">
-            <div className="flex items-center justify-between text-xs font-bold text-teal-100">
-              <div className="flex items-center gap-1.5">
-                <Sparkles size={14} className="text-amber-300" />
-                <span className="text-white font-extrabold">{getRankTitle(currentLevel)}</span>
+          {/* Level Progress Bar Card with Celebrating Avo Mascot */}
+          <div className="bg-white/10 backdrop-blur-md rounded-3xl p-4 border border-white/15 shadow-sm flex items-center gap-4">
+            <div className="p-1 bg-white/10 backdrop-blur-md rounded-2xl border border-amber-300/30 shrink-0">
+              <Mascot gesture="celebrating" size={68} className="drop-shadow-lg" />
+            </div>
+
+            <div className="flex-1 min-w-0 space-y-2">
+              <div className="flex items-center justify-between text-xs font-bold text-teal-100">
+                <div className="flex items-center gap-1.5">
+                  <Sparkles size={14} className="text-amber-300" />
+                  <span className="text-white font-extrabold">{getRankTitle(currentLevel)}</span>
+                </div>
+                <span className="text-amber-300 font-black">{totalXP} XP Total</span>
               </div>
-              <span className="text-amber-300 font-black">{totalXP} XP Total</span>
-            </div>
 
-            <div className="w-full bg-black/20 h-2.5 rounded-full overflow-hidden">
-              <div
-                className="h-full bg-gradient-to-r from-amber-400 via-yellow-300 to-emerald-400 transition-all duration-700 rounded-full"
-                style={{ width: `${levelProgress}%` }}
-              />
-            </div>
+              <div className="w-full bg-black/20 h-2.5 rounded-full overflow-hidden">
+                <div
+                  className="h-full bg-gradient-to-r from-amber-400 via-yellow-300 to-emerald-400 transition-all duration-700 rounded-full"
+                  style={{ width: `${levelProgress}%` }}
+                />
+              </div>
 
-            <div className="flex items-center justify-between text-[10px] text-teal-200 font-bold">
-              <span>Level {currentLevel}</span>
-              <span>{levelProgress}% to Level {currentLevel + 1}</span>
+              <div className="flex items-center justify-between text-[10px] text-teal-200 font-bold">
+                <span>Level {currentLevel}</span>
+                <span>{levelProgress}% to Level {currentLevel + 1}</span>
+              </div>
             </div>
           </div>
         </div>

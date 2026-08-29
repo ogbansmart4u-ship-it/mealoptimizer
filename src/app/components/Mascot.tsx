@@ -37,6 +37,13 @@ const GESTURE_ASSETS: Record<string, { webm: string; webp: string }> = {
   water: { webm: "/assets/mascot/avo-drink.webm", webp: "/assets/mascot/avo-drink.webp" },
   hydrate: { webm: "/assets/mascot/avo-drink.webm", webp: "/assets/mascot/avo-drink.webp" },
   hydration: { webm: "/assets/mascot/avo-drink.webm", webp: "/assets/mascot/avo-drink.webp" },
+  sleep: { webm: "/assets/mascot/avo-sleep.webm", webp: "/assets/mascot/avo-sleep.apng" },
+  sleeping: { webm: "/assets/mascot/avo-sleep.webm", webp: "/assets/mascot/avo-sleep.apng" },
+  rest: { webm: "/assets/mascot/avo-sleep.webm", webp: "/assets/mascot/avo-sleep.apng" },
+  resting: { webm: "/assets/mascot/avo-sleep.webm", webp: "/assets/mascot/avo-sleep.apng" },
+  celebrate: { webm: "/assets/mascot/avo-celebrate.webm", webp: "/assets/mascot/avo-celebrate.webm" },
+  celebrating: { webm: "/assets/mascot/avo-celebrate.webm", webp: "/assets/mascot/avo-celebrate.webm" },
+  celebration: { webm: "/assets/mascot/avo-celebrate.webm", webp: "/assets/mascot/avo-celebrate.webm" },
   idle: { webm: "/assets/mascot/avo-idle.webm", webp: "/assets/mascot/avo-idle.webp" },
 };
 
