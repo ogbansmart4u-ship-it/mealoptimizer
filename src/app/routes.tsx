@@ -55,6 +55,7 @@ const Health = lazy(() => import("./pages/Health"));
 const Challenge = lazy(() => import("./pages/Challenge"));
 const WhatsAppLanding = lazy(() => import("./pages/WhatsAppLanding"));
 const FoodCalculators = lazy(() => import("./pages/FoodCalculators"));
+const ClinicianPortal = lazy(() => import("./pages/ClinicianPortal"));
 
 // Lightweight fallback shown while a page chunk loads.
 function PageLoader() {
@@ -224,6 +225,8 @@ export const router = createBrowserRouter([
   { path: "/whatsapp-ai", Component: WhatsAppLanding },
   { path: "/calculators", Component: FoodCalculators },
   { path: "/food-calculators", Component: FoodCalculators },
+  { path: "/clinician-portal", Component: ClinicianPortal },
+  { path: "/provider", Component: ClinicianPortal },
 
   // ============================================================
   // Onboarding / signup-flow steps — NO bottom nav (single flow)

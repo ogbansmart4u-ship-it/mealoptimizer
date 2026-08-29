@@ -99,23 +99,24 @@ function cardiacRule(m: Macros): RuleResult {
 }
 
 function kidneyRule(m: Macros): RuleResult {
-  if (m.protein >= 35) {
+  if (m.protein >= 30) {
     return {
       level: "avoid",
-      note: `High protein (~${r(m.protein)}g) adds extra load on your kidneys.`,
-      tip: "Keep meat and fish portions small; confirm your potassium & phosphorus limits with your dietitian.",
+      note: `High protein (~${r(m.protein)}g) and high mineral concentration — increases glomerular filtration workload in CKD Stage 3/4.`,
+      tip: "Strictly cap protein to 0.6–0.8g/kg; double-boil and discard cooking water to leach out 50% of potassium.",
     };
   }
-  if (m.protein >= 20) {
+  if (m.protein >= 18) {
     return {
       level: "caution",
-      note: `Moderate protein (~${r(m.protein)}g) — keep the portion controlled.`,
-      tip: "Balance with lower-protein sides and stay within your daily protein target.",
+      note: `Moderate protein (~${r(m.protein)}g) — monitor potassium (~450mg) and phosphorus (~220mg) allowances.`,
+      tip: "Balance with low-potassium greens (cabbage, cucumber) and avoid concentrated bone stocks.",
     };
   }
   return {
     level: "good",
-    note: `Modest protein (~${r(m.protein)}g) — easier on your kidneys.`,
+    note: `Kidney-friendly protein (~${r(m.protein)}g) — gentle on renal nephrons.`,
+    tip: "Keep staying hydrated with fresh water or light Zobo tea to support filtration.",
   };
 }
 

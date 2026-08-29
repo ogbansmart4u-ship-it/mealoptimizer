@@ -532,6 +532,40 @@ export default function Health() {
           </div>
         </div>
 
+        {/* 🩺 B2B DIRECT CLINICIAN & DIETITIAN PORTAL BANNER */}
+        <div
+          onClick={() => navigate("/clinician-portal")}
+          className="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 rounded-3xl p-4 sm:p-5 text-white shadow-lg border border-indigo-500/30 relative overflow-hidden cursor-pointer hover:shadow-xl hover:scale-[1.01] active:scale-[0.99] transition-all group"
+        >
+          <div className="flex items-center justify-between relative z-10">
+            <div className="flex items-center gap-3.5 min-w-0">
+              <div className="w-12 h-12 rounded-2xl bg-indigo-500/20 border border-indigo-400/30 flex items-center justify-center text-2xl shrink-0 group-hover:scale-110 transition-transform">
+                🩺
+              </div>
+              <div className="min-w-0">
+                <div className="flex items-center gap-1.5 flex-wrap">
+                  <span className="text-[10px] font-black uppercase tracking-wider bg-indigo-500 text-white px-2 py-0.5 rounded-full shadow-2xs">
+                    B2B Provider SaaS
+                  </span>
+                  <span className="text-[11px] font-bold text-indigo-300">
+                    HMO &amp; Clinic Live Sync
+                  </span>
+                </div>
+                <h3 className="text-sm sm:text-base font-black text-white mt-1 leading-tight">
+                  Direct Clinician &amp; Dietitian Portal 🏥
+                </h3>
+                <p className="text-[11px] text-indigo-200/90 font-medium truncate mt-0.5">
+                  Monitor 50+ assigned metabolic &amp; renal patients in real time
+                </p>
+              </div>
+            </div>
+
+            <div className="p-2 bg-white/10 group-hover:bg-white/20 rounded-2xl text-white transition-all shrink-0 ml-2">
+              <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
+            </div>
+          </div>
+        </div>
+
         {/* ============================================================ */}
         {/* 1. HEALTH TRACKERS (8-Grid Quick Portal)                     */}
         {/* ============================================================ */}
