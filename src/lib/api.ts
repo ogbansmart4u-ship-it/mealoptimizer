@@ -113,6 +113,7 @@ export async function getUserProfile() {
         medicalCondition: backendProfile?.medicalCondition || backendProfile?.medical_condition || user.user_metadata?.medicalCondition || user.user_metadata?.medical_condition,
         gender: backendProfile?.gender || user.user_metadata?.gender,
         location: backendProfile?.location || user.user_metadata?.location,
+        profilePicture: backendProfile?.profilePicture || user.user_metadata?.profilePicture || '',
       };
     }
   } catch (err) {

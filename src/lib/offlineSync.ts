@@ -3,13 +3,32 @@
  */
 
 import { useState, useEffect, useCallback } from "react";
-import { createMealLog, createHydrationLog, createBiometric } from "./api";
+import { 
+  createMealLog, 
+  createHydrationLog, 
+  createBiometric,
+  createWeightLog,
+  createSleepLog,
+  createSymptomLog,
+  createWorkoutLog,
+  createGoal,
+  createCollectionItem
+} from "./api";
 import { toast } from "sonner";
 import { celebrate } from "../app/components/celebrate";
 
 export interface OfflineAction {
   id: string;
-  type: "meal_log" | "hydration_log" | "biometric";
+  type: 
+    | "meal_log" 
+    | "hydration_log" 
+    | "biometric" 
+    | "weight_log" 
+    | "sleep_log" 
+    | "symptom_log" 
+    | "workout_log" 
+    | "goal"
+    | "collection_item";
   payload: any;
   queuedAt: string;
 }
@@ -65,6 +84,18 @@ export async function flushOfflineQueue(): Promise<{ successCount: number; error
         await createHydrationLog(item.payload);
       } else if (item.type === "biometric") {
         await createBiometric(item.payload);
+      } else if (item.type === "weight_log") {
+        await createWeightLog(item.payload);
+      } else if (item.type === "sleep_log") {
+        await createSleepLog(item.payload);
+      } else if (item.type === "symptom_log") {
+        await createSymptomLog(item.payload);
+      } else if (item.type === "workout_log") {
+        await createWorkoutLog(item.payload);
+      } else if (item.type === "goal") {
+        await createGoal(item.payload);
+      } else if (item.type === "collection_item" && item.payload?.collection && item.payload?.item) {
+        await createCollectionItem(item.payload.collection, item.payload.item);
       }
       successCount++;
     } catch (e) {
