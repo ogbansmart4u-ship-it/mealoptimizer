@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { MapPin, Sparkles, TrendingUp, ChevronRight, X, Camera, Upload, ScanBarcode, CheckCircle2, AlertTriangle, Ban, Lightbulb, Share2, ArrowLeft, RefreshCw, BookmarkPlus } from "lucide-react";
+import { MapPin, Sparkles, Mic, MicOff, Volume2, TrendingUp, ChevronRight, X, Camera, Upload, ScanBarcode, CheckCircle2, AlertTriangle, Ban, Lightbulb, Share2, ArrowLeft, RefreshCw, BookmarkPlus } from "lucide-react";
 import { useNavigate } from "react-router";
 import { useLocation } from "../contexts/LocationContext";
 import { useUser } from "../contexts/UserContext";
@@ -497,6 +497,9 @@ export default function LocalFoodScanner({ isOpen, onClose }: LocalFoodScannerPr
   const [isSavedToDatabase, setIsSavedToDatabase] = useState(false);
   const [portionMultiplier, setPortionMultiplier] = useState(1);
   const [conditions, setConditions] = useState<{ name: string; severity?: string }[]>([]);
+  const [voiceNote, setVoiceNote] = useState<string>("");
+  const [isRecordingVoice, setIsRecordingVoice] = useState(false);
+  const speechRecognitionRef = useRef<any>(null);
 
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -508,6 +511,61 @@ export default function LocalFoodScanner({ isOpen, onClose }: LocalFoodScannerPr
     try {
       triggerHaptic(pattern);
     } catch {}
+  };
+
+  // Voice note speech-to-text toggle for meal similarity disambiguation
+  const toggleVoiceClarification = () => {
+    safeHaptic("medium");
+    const SpeechRecognition =
+      (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+
+    if (!SpeechRecognition) {
+      toast.info("Speech recognition not available on this browser. You can type dish notes directly below!");
+      return;
+    }
+
+    if (isRecordingVoice) {
+      if (speechRecognitionRef.current) {
+        try { speechRecognitionRef.current.stop(); } catch {}
+      }
+      setIsRecordingVoice(false);
+      return;
+    }
+
+    try {
+      const recognition = new SpeechRecognition();
+      recognition.continuous = false;
+      recognition.interimResults = true;
+      recognition.lang = "en-US";
+
+      recognition.onstart = () => {
+        setIsRecordingVoice(true);
+        safeHaptic("success");
+      };
+
+      recognition.onresult = (event: any) => {
+        let transcript = "";
+        for (let i = 0; i < event.results.length; i++) {
+          transcript += event.results[i][0].transcript + " ";
+        }
+        setVoiceNote(transcript.trim());
+      };
+
+      recognition.onerror = (event: any) => {
+        console.warn("Speech recognition notice:", event.error);
+        setIsRecordingVoice(false);
+      };
+
+      recognition.onend = () => {
+        setIsRecordingVoice(false);
+      };
+
+      speechRecognitionRef.current = recognition;
+      recognition.start();
+    } catch (err) {
+      console.warn("Could not start speech recognition:", err);
+      setIsRecordingVoice(false);
+    }
   };
 
   // Stop live camera
@@ -798,7 +856,9 @@ export default function LocalFoodScanner({ isOpen, onClose }: LocalFoodScannerPr
 
       const requestBody = {
         imageBase64: base64,
+        voiceClarification: voiceNote || undefined,
         userContext: {
+          voiceClarification: voiceNote || undefined,
           medicalCondition: profile?.medicalCondition || 'None',
           age: profile?.age || 'Not specified',
           bmi: profile?.bmi || 'Not specified',
@@ -964,11 +1024,84 @@ export default function LocalFoodScanner({ isOpen, onClose }: LocalFoodScannerPr
               </div>
             </div>
 
+            {/* 🎙️ HYBRID GEMINI-VISION + AUDIO INPUT (Meal Similarity Disambiguation) */}
+            <div className="w-full bg-gradient-to-br from-teal-50/90 via-emerald-50/60 to-white dark:from-zinc-800 dark:to-zinc-900 p-3.5 rounded-2xl border border-teal-200 dark:border-zinc-700 space-y-2.5">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-1.5">
+                  <div className="p-1 rounded-lg bg-teal-600 text-white">
+                    <Mic size={13} />
+                  </div>
+                  <span className="text-xs font-black text-slate-900 dark:text-white">
+                    Hybrid Audio Clarification (Optional)
+                  </span>
+                </div>
+                <span className="text-[9.5px] font-bold px-2 py-0.5 rounded-full bg-teal-100 text-teal-800 dark:bg-teal-900 dark:text-teal-200">
+                  Vision + Voice AI
+                </span>
+              </div>
+
+              <p className="text-[11px] text-slate-600 dark:text-slate-300 leading-snug">
+                Disambiguate lookalike dishes (e.g. <em>Pounded Yam vs Semo</em>, <em>Egusi vs Banga</em>, <em>Fried Rice vs Jollof</em>):
+              </p>
+
+              {/* Voice Mic Record & Input Row */}
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={toggleVoiceClarification}
+                  className={`p-2.5 rounded-xl flex items-center gap-1.5 text-xs font-black transition-all cursor-pointer ${
+                    isRecordingVoice
+                      ? "bg-red-600 text-white animate-pulse shadow-md"
+                      : "bg-teal-600 hover:bg-teal-700 text-white shadow-xs active:scale-95"
+                  }`}
+                  title="Speak dish details (Speech-to-Text)"
+                >
+                  {isRecordingVoice ? <MicOff size={14} className="animate-spin" /> : <Mic size={14} />}
+                  <span>{isRecordingVoice ? "Listening..." : "Speak"}</span>
+                </button>
+
+                <input
+                  type="text"
+                  value={voiceNote}
+                  onChange={(e) => setVoiceNote(e.target.value)}
+                  placeholder="e.g. 'Pounded Yam with Goat Meat Egusi, light palm oil'..."
+                  className="flex-1 bg-white dark:bg-zinc-800 border border-slate-200 dark:border-zinc-700 rounded-xl px-3 py-2 text-xs font-medium text-slate-900 dark:text-white outline-none focus:border-teal-500"
+                />
+              </div>
+
+              {/* 1-Tap Quick Tags for Common African Swallow & Soup Similarities */}
+              <div className="flex items-center gap-1.5 flex-wrap pt-0.5">
+                <span className="text-[10px] text-slate-400 font-bold">Quick tags:</span>
+                {[
+                  "Pounded Yam",
+                  "Semovita",
+                  "White Garri (Eba)",
+                  "Amala",
+                  "Egusi Soup",
+                  "Banga Soup",
+                  "Light Palm Oil",
+                  "Fish instead of Beef",
+                ].map((tag) => (
+                  <button
+                    key={tag}
+                    type="button"
+                    onClick={() => {
+                      safeHaptic("light");
+                      setVoiceNote((prev) => (prev ? `${prev}, ${tag}` : tag));
+                    }}
+                    className="text-[9.5px] font-bold px-2 py-0.5 bg-white dark:bg-zinc-800 border border-slate-200 dark:border-zinc-700 hover:border-teal-400 rounded-lg text-slate-700 dark:text-slate-300 active:scale-95 cursor-pointer"
+                  >
+                    + {tag}
+                  </button>
+                ))}
+              </div>
+            </div>
+
             {/* Avo Scribe Active Note Badge */}
             <div className="w-full p-2.5 bg-teal-50/70 dark:bg-teal-950/40 border border-teal-200/80 dark:border-teal-800/60 rounded-2xl text-[11px] text-teal-900 dark:text-teal-200 flex items-center gap-2">
               <span className="text-sm">🥑</span>
               <span className="leading-tight font-medium">
-                <strong>Avo AI:</strong> "I'll detect regional carbs, saturated palm oil ratios, and compute your personalized Glycemic Spike Shield!"
+                <strong>Avo AI:</strong> "I'll combine your photo with audio notes to detect regional carbs, saturated palm oil ratios, and compute your personalized Glycemic Spike Shield!"
               </span>
             </div>
 

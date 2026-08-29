@@ -87,15 +87,14 @@ export default function NextBestActionCard({
     actionData = {
       phase: "Lunchtime Glucose Shield",
       phaseBadge: "☀️ 12:00 - 15:00",
-      title: "Snap Your Lunch with AI Camera",
-      description: "Get instant carb, calorie & glycemic spike risk analysis in 2 seconds before eating.",
-      buttonText: "Snap Plate 📸",
-      icon: "📸",
-      gradient: "from-teal-500 via-teal-600 to-cyan-700",
+      title: "Lunch Plate Sequencing & Fiber Shield",
+      description: "Eat vegetables & protein first to reduce your post-lunch glucose spike by up to 38%.",
+      buttonText: "Plate Sequence 📉",
+      icon: "🥗",
+      gradient: "from-emerald-600 via-teal-700 to-[#1f7a8c]",
       onClick: () => {
         triggerHaptic("medium");
-        if (onOpenScanner) onOpenScanner();
-        else navigate("/scan-barcode");
+        navigate("/calculators");
       },
     };
   } else if (hour >= 16 && hour < 21) {
