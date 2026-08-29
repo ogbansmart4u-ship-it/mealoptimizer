@@ -1,0 +1,176 @@
+import React from "react";
+import { 
+  Sparkles, 
+  ArrowRight, 
+  CheckCircle2, 
+  Camera, 
+  Droplet, 
+  Clock, 
+  Flame, 
+  Utensils, 
+  Activity, 
+  ChevronRight,
+  Calculator,
+  Moon,
+  Zap
+} from "lucide-react";
+import { useNavigate } from "react-router";
+import { triggerHaptic } from "../utils/celebration";
+
+interface NextBestActionCardProps {
+  mealsCount: number;
+  waterGlasses: number;
+  onOpenScanner?: () => void;
+  onOpenWater?: () => void;
+  onOpenQuickLog?: () => void;
+}
+
+export default function NextBestActionCard({
+  mealsCount,
+  waterGlasses,
+  onOpenScanner,
+  onOpenWater,
+  onOpenQuickLog,
+}: NextBestActionCardProps) {
+  const navigate = useNavigate();
+  const hour = new Date().getHours();
+
+  // Dynamic Decision Engine based on Time & Completion
+  let actionData = {
+    phase: "Morning Kickstart",
+    phaseBadge: "🌅 07:00 - 11:00",
+    title: "Log Your Morning Breakfast & Glucose",
+    description: "Start with fiber and protein (e.g. Akamu + Moi Moi) to lock in stable all-day energy.",
+    buttonText: "Log Breakfast 🥣",
+    icon: "🥣",
+    gradient: "from-teal-600 via-[#1f7a8c] to-[#0d9488]",
+    onClick: () => {
+      triggerHaptic("medium");
+      if (onOpenQuickLog) onOpenQuickLog();
+      else navigate("/logs", { state: { openAdd: true } });
+    },
+  };
+
+  if (hour >= 5 && hour < 11) {
+    if (waterGlasses < 2) {
+      actionData = {
+        phase: "Morning Hydration",
+        phaseBadge: "💧 Morning Flush",
+        title: "Drink Your First 2 Glasses of Water",
+        description: "Rehydrate your cellular matrix and flush morning kidneys before breakfast.",
+        buttonText: "+250ml Water 💧",
+        icon: "💧",
+        gradient: "from-blue-600 via-cyan-600 to-teal-600",
+        onClick: () => {
+          triggerHaptic("success");
+          if (onOpenWater) onOpenWater();
+          else navigate("/hydration");
+        },
+      };
+    } else if (mealsCount === 0) {
+      actionData = {
+        phase: "Breakfast Protocol",
+        phaseBadge: "🌅 Low-GI Morning",
+        title: "Log Breakfast or Check Glucose",
+        description: "Log your morning plate to track fasting insulin sensitivity and carbs.",
+        buttonText: "Log Breakfast 🍳",
+        icon: "🍳",
+        gradient: "from-teal-600 via-[#1f7a8c] to-emerald-600",
+        onClick: () => {
+          triggerHaptic("medium");
+          if (onOpenScanner) onOpenScanner();
+          else navigate("/logs", { state: { openAdd: true } });
+        },
+      };
+    }
+  } else if (hour >= 11 && hour < 16) {
+    actionData = {
+      phase: "Lunchtime Glucose Shield",
+      phaseBadge: "☀️ 12:00 - 15:00",
+      title: "Snap Your Lunch with AI Camera",
+      description: "Get instant carb, calorie & glycemic spike risk analysis in 2 seconds before eating.",
+      buttonText: "Snap Plate 📸",
+      icon: "📸",
+      gradient: "from-teal-500 via-teal-600 to-cyan-700",
+      onClick: () => {
+        triggerHaptic("medium");
+        if (onOpenScanner) onOpenScanner();
+        else navigate("/scan-barcode");
+      },
+    };
+  } else if (hour >= 16 && hour < 21) {
+    actionData = {
+      phase: "Dinner & Sodium Balance",
+      phaseBadge: "🌙 17:00 - 20:00",
+      title: "Log Dinner & Check Swallow Swap",
+      description: "Swap heavy swallows for Plantain-Oat Fufu and balance soup sodium with Zobo water.",
+      buttonText: "Swallow Swap 🥣",
+      icon: "🍲",
+      gradient: "from-amber-600 via-orange-600 to-[#1f7a8c]",
+      onClick: () => {
+        triggerHaptic("medium");
+        navigate("/calculators");
+      },
+    };
+  } else {
+    actionData = {
+      phase: "Night Autophagy & Rest",
+      phaseBadge: "⏱️ Overnight Fast",
+      title: "Start 16:8 Overnight Fasting Window",
+      description: "Let your digestive system rest and trigger deep metabolic fat burning while you sleep.",
+      buttonText: "Start Fasting Timer ⏱️",
+      icon: "⏱️",
+      gradient: "from-indigo-900 via-slate-900 to-teal-950",
+      onClick: () => {
+        triggerHaptic("medium");
+        navigate("/fasting");
+      },
+    };
+  }
+
+  return (
+    <div
+      onClick={actionData.onClick}
+      className={`bg-gradient-to-r ${actionData.gradient} text-white rounded-3xl p-4 sm:p-5 shadow-lg hover:shadow-xl transition-all cursor-pointer relative overflow-hidden group border border-white/20 active:scale-99`}
+    >
+      {/* Ambient background light */}
+      <div className="absolute -right-8 -bottom-8 w-36 h-36 bg-white/10 rounded-full blur-xl pointer-events-none" />
+      <div className="absolute left-0 right-0 top-0 h-1 bg-gradient-to-r from-transparent via-white/80 to-transparent opacity-75 animate-laser-sweep pointer-events-none" />
+
+      <div className="relative z-10 flex items-center justify-between gap-3">
+        <div className="flex items-center gap-3.5 min-w-0">
+          <div className="w-12 h-12 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center text-2xl shrink-0 shadow-inner group-hover:scale-108 transition-transform border border-white/20">
+            {actionData.icon}
+          </div>
+
+          <div className="min-w-0">
+            <div className="flex items-center gap-1.5 flex-wrap">
+              <span className="text-[9.5px] font-black uppercase tracking-wider bg-white/20 backdrop-blur-md px-2 py-0.5 rounded-full border border-white/20 text-white">
+                {actionData.phaseBadge}
+              </span>
+              <span className="text-[10px] font-bold text-teal-100 flex items-center gap-1">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
+                Next Best Action
+              </span>
+            </div>
+
+            <h3 className="text-sm sm:text-base font-black text-white mt-1 leading-tight truncate">
+              {actionData.title}
+            </h3>
+            <p className="text-[11px] text-teal-100/90 font-medium line-clamp-1 mt-0.5">
+              {actionData.description}
+            </p>
+          </div>
+        </div>
+
+        <button
+          type="button"
+          className="bg-white hover:bg-teal-50 text-[#1f7a8c] font-black text-xs px-3.5 py-2.5 rounded-2xl shadow-md shrink-0 flex items-center gap-1 transition-all active:scale-95 group-hover:shadow-lg"
+        >
+          <span>{actionData.buttonText}</span>
+          <ChevronRight size={14} className="group-hover:translate-x-0.5 transition-transform shrink-0" />
+        </button>
+      </div>
+    </div>
+  );
+}

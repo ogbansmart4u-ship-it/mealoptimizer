@@ -30,6 +30,7 @@ import CGMSensorVisualizer from "../components/CGMSensorVisualizer";
 import QuickLogShelf, { QuickFoodItem } from "../components/QuickLogShelf";
 import WaterTrackerFrame from "../components/WaterTrackerFrame";
 import WaterReminderModal from "../components/WaterReminderModal";
+import NextBestActionCard from "../components/NextBestActionCard";
 import { useSmartNudges } from "../hooks/useSmartNudges";
 import ModeToggle from "../components/ModeToggle";
 import LocationSelector from "../components/LocationSelector";
@@ -717,6 +718,18 @@ export default function Home() {
             transition={{ duration: 0.25 }}
             className="space-y-4"
           >
+            {/* 🎯 Intelligent Time-Based Next Best Action Card */}
+            <NextBestActionCard
+              mealsCount={todayLogs.length}
+              waterGlasses={waterGlasses}
+              onOpenScanner={() => setShowLocalFoodScanner(true)}
+              onOpenWater={() => setShowWaterReminderModal(true)}
+              onOpenQuickLog={() => {
+                const el = document.getElementById("tour-quick-shelf");
+                if (el) el.scrollIntoView({ behavior: "smooth" });
+              }}
+            />
+
             {/* 👩🏾‍💼 Sarah The Nutrition Assistant Card */}
             <div
               onClick={() => {

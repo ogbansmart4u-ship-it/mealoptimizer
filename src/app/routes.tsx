@@ -229,27 +229,13 @@ export const router = createBrowserRouter([
   // Onboarding / signup-flow steps — NO bottom nav (single flow)
   // ============================================================
   { path: "/onboarding", Component: Onboarding },
-  {
-    path: "/age",
-    element: (
-      <ProtectedRoute>
-        <Age />
-      </ProtectedRoute>
-    ),
-  },
-  {
-    path: "/medical-condition",
-    element: (
-      <ProtectedRoute>
-        <MedicalCondition />
-      </ProtectedRoute>
-    ),
-  },
+  { path: "/age", element: <Navigate to="/onboarding" replace /> },
+  { path: "/medical-condition", element: <Navigate to="/onboarding" replace /> },
   {
     path: "/medications",
     element: (
       <ProtectedRoute>
-        <Medications />
+        <MedicationTracker />
       </ProtectedRoute>
     ),
   },
@@ -414,7 +400,7 @@ export const router = createBrowserRouter([
         path: "/weight",
         element: (
           <ProtectedRoute>
-            <Weight />
+            <BiometricDashboard />
           </ProtectedRoute>
         ),
       },
