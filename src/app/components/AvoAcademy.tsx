@@ -1,4 +1,5 @@
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, useRef } from "react";
+import { useUser } from "../contexts/UserContext";
 import {
   BookOpen,
   Sparkles,
@@ -450,7 +451,17 @@ const SWALLOW_SIMULATOR_DATA = [
 ];
 
 export default function AvoAcademy() {
-  const [selectedCategory, setSelectedCategory] = useState<string>("Glucose Science");
+  const { profile } = useUser();
+  const scrollBarRef = useRef<HTMLDivElement>(null);
+  const [isPaused, setIsPaused] = useState(false);
+  const lessonsSectionRef = useRef<HTMLDivElement>(null);
+  const [selectedCategory, setSelectedCategory] = useState<string>(() => {
+    const cond = (profile?.medicalCondition || "").toLowerCase();
+    if (cond.includes("pregnan") || cond.includes("gestat")) return "Pregnancy Health";
+    if (cond.includes("prostat") || cond.includes("bph")) return "Prostate Health";
+    if (cond.includes("arthrit") || cond.includes("joint") || cond.includes("gout")) return "Arthritis & Joints";
+    return "Glucose Science";
+  });
   const [activeLesson, setActiveLesson] = useState<AcademyLesson | null>(null);
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
@@ -523,6 +534,31 @@ export default function AvoAcademy() {
   const isTodayLessonDone = completedIds.includes(todayLesson.id);
 
   // Filter lessons
+  
+  // Auto-scrolling Specialty Marquee loop (Smooth & Interactive)
+  useEffect(() => {
+    const el = scrollBarRef.current;
+    if (!el) return;
+
+    let scrollAmount = el.scrollLeft;
+    let scrollDirection = 1;
+
+    const interval = setInterval(() => {
+      if (isPaused) return;
+      if (!el) return;
+
+      scrollAmount += scrollDirection * 0.8;
+      if (scrollAmount >= el.scrollWidth - el.clientWidth - 5) {
+        scrollDirection = -1;
+      } else if (scrollAmount <= 5) {
+        scrollDirection = 1;
+      }
+      el.scrollLeft = scrollAmount;
+    }, 30);
+
+    return () => clearInterval(interval);
+  }, [isPaused]);
+
   const filteredLessons = useMemo(() => {
     if (selectedCategory === "All") return ACADEMY_LESSONS;
     return ACADEMY_LESSONS.filter((l) => l.category === selectedCategory);
@@ -620,6 +656,60 @@ export default function AvoAcademy() {
         </div>
       </div>
 
+      
+      {/* 🌟 10X TOP SELF-SCROLLING SPECIALTY MARQUEE BAR */}
+      <div className="space-y-1.5">
+        <div className="flex items-center justify-between px-1">
+          <span className="text-[11px] font-black uppercase tracking-wider text-teal-800 dark:text-teal-300 flex items-center gap-1.5">
+            <Sparkles size={13} className="text-amber-500 animate-bounce" />
+            <span>Specialized Clinical Programs:</span>
+          </span>
+          <span className="text-[10px] text-slate-400 font-bold">
+            Tap to open masterclass ➔
+          </span>
+        </div>
+
+        <div
+          ref={scrollBarRef}
+          onMouseEnter={() => setIsPaused(true)}
+          onMouseLeave={() => setIsPaused(false)}
+          onTouchStart={() => setIsPaused(true)}
+          onTouchEnd={() => setIsPaused(false)}
+          className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none py-1 px-0.5 select-none"
+        >
+          {[
+            { id: "Pregnancy Health", label: "🤰 Eating for Pregnancy", bg: "from-pink-500 to-rose-600" },
+            { id: "Prostate Health", label: "🩺 Eating for Prostate Health", bg: "from-blue-600 to-indigo-700" },
+            { id: "Arthritis & Joints", label: "🦴 Eating for Arthritis & Joints", bg: "from-amber-500 to-orange-600" },
+            { id: "Glucose Science", label: "🩸 Glucose Science & Insulin", bg: "from-teal-600 to-emerald-600" },
+            { id: "Heart & BP", label: "❤️ Blood Pressure & Heart", bg: "from-red-500 to-rose-600" },
+            { id: "Gut & Fiber", label: "🥗 Gut Microbiome & Fiber", bg: "from-emerald-600 to-teal-700" },
+            { id: "Cooking Hacks", label: "👨‍🍳 Cultural Cooking Hacks", bg: "from-purple-600 to-indigo-600" },
+            { id: "All", label: "🌟 All Masterclasses", bg: "from-slate-700 to-slate-900" },
+          ].map((cat) => {
+            const isSelected = selectedCategory === cat.id;
+            return (
+              <button
+                key={cat.id}
+                onClick={() => {
+                  triggerHaptic("medium");
+                  setSelectedCategory(cat.id);
+                  lessonsSectionRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+                }}
+                className={`px-4 py-2 rounded-2xl font-black text-xs whitespace-nowrap transition-all cursor-pointer shadow-xs active:scale-95 flex items-center gap-1.5 ${
+                  isSelected
+                    ? `bg-gradient-to-r ${cat.bg} text-white ring-2 ring-teal-400 ring-offset-2 scale-105 shadow-md`
+                    : "bg-white dark:bg-zinc-800 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-zinc-700 hover:border-teal-400 hover:bg-slate-50"
+                }`}
+              >
+                <span>{cat.label}</span>
+                {isSelected && <CheckCircle2 size={13} className="text-white" />}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
       {/* 2. DYNAMIC REAL-TIME CIRCADIAN GLUCOSE BIO-CLOCK */}
       <div className={`p-4 rounded-3xl border shadow-xs transition-all ${circadianWindow.color}`}>
         <div className="flex items-center justify-between mb-1.5">
@@ -711,25 +801,8 @@ export default function AvoAcademy() {
         })()}
       </div>
 
-      {/* 4. Category Filter Tabs */}
-      <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none text-xs">
-        {["Pregnancy Health", "Prostate Health", "Arthritis & Joints", "Glucose Science", "Heart & BP", "Gut & Fiber", "Cooking Hacks", "All"].map((cat) => (
-          <button
-            key={cat}
-            onClick={() => {
-              triggerHaptic("light");
-              setSelectedCategory(cat);
-            }}
-            className={`px-3.5 py-1.5 rounded-full font-black whitespace-nowrap transition-all cursor-pointer ${
-              selectedCategory === cat
-                ? "bg-[#126778] text-white shadow-xs"
-                : "bg-white text-slate-600 border border-slate-200 hover:bg-slate-50"
-            }`}
-          >
-            {cat === "Pregnancy Health" ? "🤰 Eating for Pregnancy" : cat === "Prostate Health" ? "🩺 Eating for Prostate Health" : cat === "Arthritis & Joints" ? "🦴 Eating for Arthritis" : cat === "Glucose Science" ? "🩸 Glucose Science" : cat}
-          </button>
-        ))}
-      </div>
+      {/* Lessons Anchor Reference */}
+      <div ref={lessonsSectionRef} />
 
       {/* 5. Dynamic Lesson Cards Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -928,14 +1001,33 @@ export default function AvoAcademy() {
                   })}
                 </div>
 
-                {/* Explanation on submit */}
+                {/* 🥑 AVO-AZA CLAPPING CELEBRATION & EXPLANATION */}
                 {quizSubmitted && (
-                  <div className="p-3.5 bg-slate-50 rounded-2xl border border-slate-200 text-xs space-y-2">
-                    <p className="font-bold text-slate-800">
-                      {activeLesson.quiz.explanation}
-                    </p>
-                    <div className="p-2.5 bg-teal-50 rounded-xl text-teal-800 font-medium">
-                      💡 <strong>Clinical Takeaway:</strong> {activeLesson.takeaway}
+                  <div className="space-y-3 animate-in fade-in zoom-in-95 duration-300">
+                    {selectedAnswer === activeLesson.quiz.correctIndex ? (
+                      <div className="flex flex-col items-center justify-center p-4 bg-gradient-to-br from-emerald-50 via-teal-50 to-white rounded-3xl border-2 border-emerald-400 shadow-lg text-center">
+                        <Mascot gesture="clapping" size={130} className="drop-shadow-xl my-1" />
+                        <div className="flex items-center gap-1.5 bg-emerald-600 text-white px-4 py-1.5 rounded-full text-xs font-black shadow-md mt-1">
+                          <Sparkles size={15} className="text-amber-300 animate-spin" />
+                          <span>AVO-AZA Claps: 100% Correct! (+25 XP) 👏🎉</span>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="flex flex-col items-center justify-center p-3.5 bg-gradient-to-br from-amber-50 to-rose-50 rounded-3xl border border-amber-300 text-center">
+                        <Mascot gesture="writing" size={100} className="my-1" />
+                        <span className="text-xs font-black text-amber-900">
+                          Avo's Clinical Review Note 📝
+                        </span>
+                      </div>
+                    )}
+
+                    <div className="p-3.5 bg-slate-50 rounded-2xl border border-slate-200 text-xs space-y-2">
+                      <p className="font-bold text-slate-800 leading-relaxed">
+                        {activeLesson.quiz.explanation}
+                      </p>
+                      <div className="p-2.5 bg-teal-50 rounded-xl text-teal-800 font-medium leading-snug">
+                        💡 <strong>Clinical Takeaway:</strong> {activeLesson.takeaway}
+                      </div>
                     </div>
                   </div>
                 )}
