@@ -22,6 +22,8 @@ import {
   Sliders,
   TrendingDown,
   Info,
+  UtensilsCrossed,
+  Layers,
 } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "./ui/dialog";
 import { Button } from "./ui/button";
@@ -557,6 +559,7 @@ export default function AvoAcademy() {
   const scrollBarRef = useRef<HTMLDivElement>(null);
   const [isPaused, setIsPaused] = useState(false);
 
+  // Selected Specialty Category
   const [selectedCategory, setSelectedCategory] = useState<string>(() => {
     const cond = (profile?.medicalCondition || "").toLowerCase();
     if (cond.includes("pregnan") || cond.includes("gestat")) return "Pregnancy Health";
@@ -565,6 +568,13 @@ export default function AvoAcademy() {
     return "Glucose Science";
   });
 
+  // 10X 3-in-1 Compact View Segment: "lessons" | "meals" | "simulator"
+  const [activeViewTab, setActiveViewTab] = useState<"lessons" | "meals" | "simulator">("lessons");
+
+  // Meal Sub-Tab inside "meals": "Breakfast" | "Lunch" | "Dinner"
+  const [activeMealSubTab, setActiveMealSubTab] = useState<"Breakfast" | "Lunch" | "Dinner">("Lunch");
+
+  // Lesson & Quiz Modal State
   const [activeLesson, setActiveLesson] = useState<AcademyLesson | null>(null);
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
@@ -662,6 +672,10 @@ export default function AvoAcademy() {
     return CATEGORY_MEAL_PROTOCOLS[selectedCategory] || CATEGORY_MEAL_PROTOCOLS["Glucose Science"] || [];
   }, [selectedCategory]);
 
+  const activeSubMeal = useMemo(() => {
+    return currentMealProtocols.find((m) => m.mealType === activeMealSubTab) || currentMealProtocols[0];
+  }, [currentMealProtocols, activeMealSubTab]);
+
   const filteredLessons = useMemo(() => {
     if (selectedCategory === "All") return ACADEMY_LESSONS;
     return ACADEMY_LESSONS.filter((l) => l.category === selectedCategory);
@@ -715,59 +729,40 @@ export default function AvoAcademy() {
   };
 
   return (
-    <div className="space-y-4">
-      {/* 1. Header Banner with Live XP */}
-      <div className="bg-gradient-to-br from-[#126778] via-[#1f7a8c] to-[#38b2ac] rounded-3xl p-5 text-white shadow-md relative overflow-hidden">
-        <div className="relative z-10 flex items-start justify-between">
-          <div>
-            <div className="flex items-center gap-1.5 text-xs font-bold text-teal-200 uppercase tracking-wider mb-1">
-              <Sparkles size={14} className="text-amber-300 animate-pulse" />
-              <span>Metabolic Culinary Academy • 2026 Edition</span>
-            </div>
-            <h2 className="text-lg sm:text-xl font-black text-white leading-tight">
-              Glucose Science &amp; Food Chemistry 🧬
-            </h2>
-            <p className="text-xs text-teal-50/90 mt-1 max-w-sm leading-relaxed">
-              Evidence-based nutritional science translated into practical, delicious African food hacks.
-            </p>
+    <div className="space-y-3.5 pb-6">
+      {/* 1. ULTRA-COMPACT BENTO HEADER (Single Line High Density) */}
+      <div className="bg-gradient-to-r from-[#126778] via-[#1f7a8c] to-[#0d9488] rounded-2xl px-4 py-3 text-white shadow-sm flex items-center justify-between">
+        <div>
+          <div className="flex items-center gap-1.5 text-[10px] font-black text-teal-200 uppercase tracking-wider">
+            <Sparkles size={12} className="text-amber-300 animate-pulse" />
+            <span>Avo Metabolic Academy</span>
           </div>
-
-          <div className="bg-white/15 backdrop-blur-md px-3 py-2 rounded-2xl border border-white/20 text-center shrink-0">
-            <div className="flex items-center gap-1 text-amber-300 font-black text-sm justify-center">
-              <Trophy size={14} />
-              <span>{userXp} XP</span>
-            </div>
-            <span className="text-[9px] text-teal-100 uppercase font-extrabold tracking-wider block mt-0.5">
-              Knowledge Score
-            </span>
-          </div>
+          <h2 className="text-sm sm:text-base font-black text-white leading-tight mt-0.5">
+            Culinary Medicine &amp; Bio-Hacks 🧬
+          </h2>
         </div>
 
-        {/* Progress Bar */}
-        <div className="mt-4 pt-3 border-t border-white/15 flex items-center justify-between text-xs text-teal-100">
-          <span className="text-[11px] font-semibold">
-            Curriculum: {completedIds.length} / {ACADEMY_LESSONS.length} Completed
-          </span>
-          <div className="w-28 bg-white/20 rounded-full h-2 overflow-hidden">
-            <div
-              className="bg-emerald-300 h-full rounded-full transition-all duration-500"
-              style={{
-                width: `${Math.round((completedIds.length / ACADEMY_LESSONS.length) * 100)}%`,
-              }}
-            />
+        <div className="flex items-center gap-1.5 shrink-0">
+          <div className="bg-white/15 backdrop-blur-md px-2.5 py-1 rounded-xl border border-white/20 text-center">
+            <span className="text-xs font-black text-amber-300">🏆 {userXp} XP</span>
+          </div>
+          <div className="bg-white/15 backdrop-blur-md px-2.5 py-1 rounded-xl border border-white/20 text-center">
+            <span className="text-[10px] font-bold text-teal-100">
+              📚 {completedIds.length}/{ACADEMY_LESSONS.length}
+            </span>
           </div>
         </div>
       </div>
 
-      {/* 🌟 10X TOP SELF-SCROLLING SPECIALTY MARQUEE BAR (Unified Brand Color Consistency) */}
-      <div className="space-y-2">
+      {/* 🌟 2. TOP SELF-SCROLLING SPECIALTY MARQUEE BAR (Strict Unified Brand Teal) */}
+      <div className="space-y-1.5">
         <div className="flex items-center justify-between px-1">
-          <span className="text-[11px] font-black uppercase tracking-wider text-[#126778] dark:text-teal-300 flex items-center gap-1.5">
-            <Sparkles size={13} className="text-amber-500 animate-bounce" />
-            <span>Specialized Clinical Programs:</span>
+          <span className="text-[10.5px] font-black uppercase tracking-wider text-[#126778] dark:text-teal-300 flex items-center gap-1.5">
+            <Sparkles size={12} className="text-amber-500 animate-bounce" />
+            <span>Select Clinical Specialty:</span>
           </span>
-          <span className="text-[10px] text-slate-500 font-bold">
-            Tap heading to open lessons &amp; meals ➔
+          <span className="text-[9.5px] text-slate-400 font-bold">
+            Tap to switch ➔
           </span>
         </div>
 
@@ -799,267 +794,321 @@ export default function AvoAcademy() {
                   setSelectedCategory(cat.id);
                   setIsPaused(true);
                 }}
-                className={`px-4 py-2.5 rounded-2xl font-black text-xs whitespace-nowrap transition-all cursor-pointer shadow-xs active:scale-95 flex items-center gap-1.5 ${
+                className={`px-3.5 py-2 rounded-2xl font-black text-xs whitespace-nowrap transition-all cursor-pointer shadow-xs active:scale-95 flex items-center gap-1.5 ${
                   isSelected
-                    ? "bg-gradient-to-r from-[#126778] via-[#1f7a8c] to-[#0d9488] text-white ring-2 ring-teal-400 ring-offset-2 scale-105 shadow-md"
-                    : "bg-white dark:bg-zinc-800 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-zinc-700 hover:border-teal-400 hover:bg-teal-50/50"
+                    ? "bg-gradient-to-r from-[#126778] via-[#1f7a8c] to-[#0d9488] text-white ring-2 ring-teal-400 ring-offset-1 scale-105 shadow-md"
+                    : "bg-white dark:bg-zinc-800 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-zinc-700 hover:border-teal-400 hover:bg-teal-50/40"
                 }`}
               >
                 <span>{cat.label}</span>
-                {isSelected && <CheckCircle2 size={13} className="text-white" />}
+                {isSelected && <CheckCircle2 size={12} className="text-white" />}
               </button>
             );
           })}
         </div>
       </div>
 
-      {/* 📖 ACTIVE CATEGORY CLINICAL LESSONS & THERAPEUTIC MEALS SECTION */}
-      <div className="space-y-4 pt-1">
-        
-        {/* Active Category Header Pill */}
-        <div className="flex items-center justify-between bg-teal-50/80 dark:bg-zinc-800/80 border border-teal-200/80 dark:border-zinc-700 rounded-2xl px-4 py-2.5">
-          <div className="flex items-center gap-2">
-            <span className="text-xs sm:text-sm font-black text-[#126778] dark:text-teal-300">
-              {selectedCategory === "Pregnancy Health" ? "🤰 Pregnancy & Gestational Nutrition" : selectedCategory === "Prostate Health" ? "🩺 Prostate Health & PSA Support" : selectedCategory === "Arthritis & Joints" ? "🦴 Arthritis, Gout & Joint Mobility" : selectedCategory === "Glucose Science" ? "🩸 Glucose Science & Insulin Reset" : selectedCategory === "Heart & BP" ? "❤️ Blood Pressure & Arterial Health" : selectedCategory === "Gut & Fiber" ? "🥗 Gut Microbiome & Soluble Fiber" : selectedCategory === "Cooking Hacks" ? "👨‍🍳 Ancestral Culinary Hacks" : "🌟 All Clinical Masterclasses"}
-            </span>
-          </div>
-          <span className="text-[10px] font-black uppercase bg-[#126778] text-white px-2.5 py-0.5 rounded-full">
-            {filteredLessons.length} Lesson{filteredLessons.length === 1 ? "" : "s"}
-          </span>
-        </div>
+      {/* 🚀 3. THE 10X 3-IN-1 COMPACT SEGMENTED SWITCHER */}
+      <div className="bg-slate-100 dark:bg-zinc-800/80 p-1 rounded-2xl flex items-center gap-1 border border-slate-200 dark:border-zinc-700">
+        <button
+          type="button"
+          onClick={() => {
+            triggerHaptic("light");
+            setActiveViewTab("lessons");
+          }}
+          className={`flex-1 py-2 rounded-xl text-xs font-black transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+            activeViewTab === "lessons"
+              ? "bg-white dark:bg-zinc-900 text-[#126778] dark:text-teal-300 shadow-sm"
+              : "text-slate-600 dark:text-slate-400 hover:text-slate-900"
+          }`}
+        >
+          <BookOpen size={13} />
+          <span>60s Lessons ({filteredLessons.length})</span>
+        </button>
 
-        {/* 1. Dynamic Interactive Lesson Cards Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          {filteredLessons.map((lesson) => {
-            const Icon = lesson.icon;
-            const isDone = completedIds.includes(lesson.id);
-            const isCurrentToday = lesson.id === todayLesson.id;
+        <button
+          type="button"
+          onClick={() => {
+            triggerHaptic("light");
+            setActiveViewTab("meals");
+          }}
+          className={`flex-1 py-2 rounded-xl text-xs font-black transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+            activeViewTab === "meals"
+              ? "bg-white dark:bg-zinc-900 text-[#126778] dark:text-teal-300 shadow-sm"
+              : "text-slate-600 dark:text-slate-400 hover:text-slate-900"
+          }`}
+        >
+          <UtensilsCrossed size={13} />
+          <span>Daily Plates (3)</span>
+        </button>
 
-            return (
-              <div
-                key={lesson.id}
-                onClick={() => openLesson(lesson)}
-                className={`p-4 rounded-3xl border transition-all cursor-pointer flex flex-col justify-between group hover:shadow-md ${
-                  isDone
-                    ? "bg-teal-50/50 border-teal-200"
-                    : isCurrentToday
-                    ? "bg-white border-amber-300 ring-2 ring-amber-300/40"
-                    : "bg-white dark:bg-zinc-800 border-slate-200/80 dark:border-zinc-700 hover:border-teal-400"
-                }`}
-              >
-                <div>
-                  <div className="flex items-center justify-between gap-2 mb-2">
-                    <div className="flex items-center gap-1.5">
-                      <span className="text-[10px] uppercase font-black tracking-wider text-[#126778] bg-teal-50 dark:bg-teal-950 px-2 py-0.5 rounded-lg">
+        <button
+          type="button"
+          onClick={() => {
+            triggerHaptic("light");
+            setActiveViewTab("simulator");
+          }}
+          className={`flex-1 py-2 rounded-xl text-xs font-black transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+            activeViewTab === "simulator"
+              ? "bg-white dark:bg-zinc-900 text-[#126778] dark:text-teal-300 shadow-sm"
+              : "text-slate-600 dark:text-slate-400 hover:text-slate-900"
+          }`}
+        >
+          <Sliders size={13} />
+          <span>GI Simulator</span>
+        </button>
+      </div>
+
+      {/* ============================================================ */}
+      {/* VIEW 1: 60s INTERACTIVE LESSONS                              */}
+      {/* ============================================================ */}
+      {activeViewTab === "lessons" && (
+        <div className="space-y-2.5 animate-in fade-in zoom-in-98 duration-200">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+            {filteredLessons.map((lesson) => {
+              const Icon = lesson.icon;
+              const isDone = completedIds.includes(lesson.id);
+              const isCurrentToday = lesson.id === todayLesson.id;
+
+              return (
+                <div
+                  key={lesson.id}
+                  onClick={() => openLesson(lesson)}
+                  className={`p-3.5 rounded-2xl border transition-all cursor-pointer flex flex-col justify-between group hover:shadow-md ${
+                    isDone
+                      ? "bg-teal-50/40 border-teal-200 dark:bg-teal-950/30 dark:border-teal-900"
+                      : isCurrentToday
+                      ? "bg-white dark:bg-zinc-800 border-amber-300 ring-2 ring-amber-300/40"
+                      : "bg-white dark:bg-zinc-800 border-slate-200/80 dark:border-zinc-700 hover:border-teal-400"
+                  }`}
+                >
+                  <div>
+                    <div className="flex items-center justify-between gap-2 mb-1.5">
+                      <span className="text-[9.5px] uppercase font-black tracking-wider text-[#126778] dark:text-teal-300 bg-teal-50 dark:bg-teal-950 px-2 py-0.5 rounded-md">
                         {lesson.category}
                       </span>
-                      {isCurrentToday && (
-                        <span className="text-[9.5px] uppercase font-black bg-amber-100 text-amber-800 px-1.5 py-0.5 rounded-md">
-                          Today's Pick
-                        </span>
-                      )}
+                      <span className="text-[9.5px] text-slate-400 font-bold flex items-center gap-1">
+                        <Clock size={10} />
+                        <span>{lesson.readTime}</span>
+                      </span>
                     </div>
 
-                    <span className="text-[10px] text-slate-400 font-bold flex items-center gap-1">
-                      <Clock size={11} />
-                      <span>{lesson.readTime}</span>
-                    </span>
+                    <div className="flex items-start gap-2.5 my-1">
+                      <div
+                        className={`p-2 rounded-xl shrink-0 ${
+                          isDone
+                            ? "bg-emerald-100 text-emerald-700"
+                            : "bg-teal-50 text-[#126778]"
+                        }`}
+                      >
+                        <Icon className="h-4 w-4" />
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <h4 className="text-xs font-black text-slate-900 dark:text-white group-hover:text-[#126778] transition-colors leading-snug">
+                          {lesson.title}
+                        </h4>
+                        <p className="text-[10.5px] text-slate-500 dark:text-slate-400 mt-0.5 leading-snug line-clamp-2">
+                          {lesson.headline}
+                        </p>
+                      </div>
+                    </div>
                   </div>
 
-                  <div className="flex items-start gap-3 my-1">
-                    <div
-                      className={`p-2.5 rounded-2xl shrink-0 ${
-                        isDone
-                          ? "bg-emerald-100 text-emerald-700"
-                          : "bg-teal-50 text-[#126778]"
-                      }`}
-                    >
-                      <Icon className="h-5 w-5" />
-                    </div>
-                    <div>
-                      <h4 className="text-sm font-extrabold text-slate-900 dark:text-white group-hover:text-[#126778] transition-colors leading-tight">
-                        {lesson.title}
-                      </h4>
-                      <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1 leading-snug line-clamp-2 font-medium">
-                        {lesson.headline}
-                      </p>
-                    </div>
+                  <div className="mt-2.5 pt-2 border-t border-slate-100 dark:border-zinc-700/60 flex items-center justify-between">
+                    {isDone ? (
+                      <span className="text-[11px] font-bold text-emerald-600 flex items-center gap-1">
+                        <CheckCircle2 size={13} />
+                        <span>Mastered (+25 XP)</span>
+                      </span>
+                    ) : (
+                      <span className="text-[11px] font-black text-[#126778] dark:text-teal-300 flex items-center gap-1 group-hover:translate-x-0.5 transition-transform">
+                        <span>Read Lesson &amp; Quiz</span>
+                        <ChevronRight size={13} />
+                      </span>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      {/* ============================================================ */}
+      {/* VIEW 2: THERAPEUTIC DAILY PLATES (Compact 1-Tap Toggle)      */}
+      {/* ============================================================ */}
+      {activeViewTab === "meals" && (
+        <div className="space-y-3 animate-in fade-in zoom-in-98 duration-200">
+          {/* Sub-Segmented Toggle: Breakfast / Lunch / Dinner */}
+          <div className="flex items-center gap-1.5 p-1 bg-teal-50/70 dark:bg-zinc-800 rounded-2xl border border-teal-200/80 dark:border-zinc-700">
+            {(["Breakfast", "Lunch", "Dinner"] as const).map((mealType) => (
+              <button
+                key={mealType}
+                type="button"
+                onClick={() => {
+                  triggerHaptic("light");
+                  setActiveMealSubTab(mealType);
+                }}
+                className={`flex-1 py-1.5 rounded-xl text-xs font-black transition-all cursor-pointer ${
+                  activeMealSubTab === mealType
+                    ? "bg-[#126778] text-white shadow-sm"
+                    : "text-slate-600 dark:text-slate-400 hover:text-slate-900"
+                }`}
+              >
+                {mealType === "Breakfast" ? "🌅 Breakfast" : mealType === "Lunch" ? "☀️ Lunch" : "🌙 Dinner"}
+              </button>
+            ))}
+          </div>
+
+          {/* Active Meal Spotlight Card */}
+          {activeSubMeal && (
+            <div className="bg-white dark:bg-zinc-800 rounded-3xl p-4 sm:p-5 border border-slate-200/80 dark:border-zinc-700 shadow-sm space-y-3">
+              <div className="flex items-start justify-between gap-3">
+                <div className="flex items-center gap-3">
+                  <span className="text-3xl p-2.5 bg-teal-50 dark:bg-zinc-900 rounded-2xl border border-teal-100 dark:border-zinc-700">
+                    {activeSubMeal.emoji}
+                  </span>
+                  <div>
+                    <span className="text-[9.5px] uppercase font-black tracking-wider text-[#126778] dark:text-teal-300 block">
+                      {selectedCategory} • Recommended {activeSubMeal.mealType}
+                    </span>
+                    <h3 className="text-sm sm:text-base font-black text-slate-900 dark:text-white leading-snug mt-0.5">
+                      {activeSubMeal.dishName}
+                    </h3>
                   </div>
                 </div>
 
-                <div className="mt-3 pt-2.5 border-t border-slate-100 dark:border-zinc-700 flex items-center justify-between">
-                  {isDone ? (
-                    <span className="text-xs font-bold text-emerald-600 flex items-center gap-1">
-                      <CheckCircle2 size={14} />
-                      <span>Mastered (+25 XP)</span>
-                    </span>
-                  ) : (
-                    <span className="text-xs font-bold text-[#126778] dark:text-teal-300 flex items-center gap-1 group-hover:translate-x-0.5 transition-transform">
-                      <span>Read 60s Lesson &amp; Take Quiz</span>
-                      <ChevronRight size={14} />
-                    </span>
-                  )}
+                <span className="text-[10px] font-black px-2.5 py-1 rounded-full bg-teal-100 text-teal-800 dark:bg-teal-950 dark:text-teal-200 shrink-0">
+                  {activeSubMeal.keyNutrientBadge}
+                </span>
+              </div>
+
+              <div className="p-3 bg-teal-50/60 dark:bg-zinc-900/60 rounded-2xl border border-teal-100/80 dark:border-zinc-700/80 text-xs text-slate-700 dark:text-slate-300 leading-relaxed font-medium">
+                💡 <strong>Why It Works:</strong> {activeSubMeal.whyItWorks}
+              </div>
+
+              {/* Macro Strip */}
+              <div className="grid grid-cols-3 gap-2 text-center pt-1">
+                <div className="p-2 bg-slate-50 dark:bg-zinc-900 rounded-xl border border-slate-200 dark:border-zinc-700">
+                  <span className="text-[9px] font-bold text-slate-400 block">Calories</span>
+                  <span className="text-xs font-black text-slate-900 dark:text-white">~{activeSubMeal.calories} kcal</span>
+                </div>
+                <div className="p-2 bg-slate-50 dark:bg-zinc-900 rounded-xl border border-slate-200 dark:border-zinc-700">
+                  <span className="text-[9px] font-bold text-slate-400 block">Carbohydrates</span>
+                  <span className="text-xs font-black text-amber-600 dark:text-amber-400">{activeSubMeal.carbs}g</span>
+                </div>
+                <div className="p-2 bg-slate-50 dark:bg-zinc-900 rounded-xl border border-slate-200 dark:border-zinc-700">
+                  <span className="text-[9px] font-bold text-slate-400 block">Clean Protein</span>
+                  <span className="text-xs font-black text-emerald-600 dark:text-emerald-400">{activeSubMeal.protein}g</span>
                 </div>
               </div>
-            );
-          })}
+            </div>
+          )}
         </div>
+      )}
 
-        {/* 2. CURATED AFRICAN THERAPEUTIC MEAL PROTOCOLS FOR THIS TOPIC */}
-        {currentMealProtocols.length > 0 && (
-          <div className="bg-gradient-to-br from-teal-50/70 via-emerald-50/40 to-white dark:from-zinc-800 dark:to-zinc-900 rounded-3xl p-4 sm:p-5 border border-teal-200/80 dark:border-zinc-700 space-y-3 shadow-xs">
+      {/* ============================================================ */}
+      {/* VIEW 3: LIVE SWALLOW GLYCEMIC SIMULATOR & CIRCADIAN CLOCK    */}
+      {/* ============================================================ */}
+      {activeViewTab === "simulator" && (
+        <div className="space-y-3 animate-in fade-in zoom-in-98 duration-200">
+          {/* Circadian Clock */}
+          <div className={`p-3.5 rounded-2xl border shadow-xs transition-all ${circadianWindow.color}`}>
+            <div className="flex items-center justify-between mb-1">
+              <div className="flex items-center gap-1.5 font-black text-xs">
+                <Clock size={13} />
+                <span>{circadianWindow.label}</span>
+              </div>
+              <span className="text-[9.5px] font-black uppercase px-2 py-0.5 rounded-full bg-white/80 border shadow-2xs">
+                {circadianWindow.badge}
+              </span>
+            </div>
+            <p className="text-[10.5px] leading-relaxed font-medium">
+              {circadianWindow.status}
+            </p>
+          </div>
+
+          {/* Swallow Simulator Card */}
+          <div className="bg-white dark:bg-zinc-800 rounded-3xl p-4 sm:p-5 border border-slate-200/80 dark:border-zinc-700 space-y-3 shadow-sm">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <span className="text-lg">🍲</span>
+                <div className="p-2 rounded-xl bg-teal-50 dark:bg-teal-950 text-[#126778] dark:text-teal-300">
+                  <Sliders size={15} />
+                </div>
                 <div>
-                  <h3 className="text-xs sm:text-sm font-black text-slate-900 dark:text-white uppercase tracking-wider">
-                    Recommended Therapeutic Meal Protocol
+                  <h3 className="text-xs font-black text-slate-900 dark:text-white uppercase tracking-wider">
+                    African Swallow Glycemic Simulator 🥣
                   </h3>
-                  <p className="text-[10.5px] text-slate-500 dark:text-slate-400">
-                    African cultural plates scientifically balanced for {selectedCategory}
+                  <p className="text-[10px] text-slate-500 dark:text-slate-400">
+                    Compare post-meal glucose spikes across 5 staple swallows
                   </p>
                 </div>
               </div>
-              <span className="text-[10px] font-black px-2 py-0.5 rounded-full bg-teal-100 text-teal-800 dark:bg-teal-950 dark:text-teal-200">
-                3 Daily Plates
-              </span>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
-              {currentMealProtocols.map((meal) => (
-                <div
-                  key={meal.id}
-                  className="bg-white dark:bg-zinc-800/90 rounded-2xl p-3.5 border border-slate-200/80 dark:border-zinc-700 shadow-2xs flex flex-col justify-between"
-                >
-                  <div>
-                    <div className="flex items-center justify-between mb-1.5">
-                      <span className="text-[10px] uppercase font-black tracking-wider bg-[#126778]/10 text-[#126778] dark:text-teal-300 px-2 py-0.5 rounded-md">
-                        {meal.mealType}
-                      </span>
-                      <span className="text-xl">{meal.emoji}</span>
-                    </div>
+            {/* Swallow Picker Chips */}
+            <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none text-xs">
+              {SWALLOW_SIMULATOR_DATA.map((swallow) => {
+                const isSelected = selectedSwallow.id === swallow.id;
+                return (
+                  <button
+                    key={swallow.id}
+                    type="button"
+                    onClick={() => {
+                      triggerHaptic("light");
+                      setSelectedSwallow(swallow);
+                    }}
+                    className={`px-3 py-1.5 rounded-xl font-bold whitespace-nowrap transition-all cursor-pointer ${
+                      isSelected
+                        ? "bg-[#126778] text-white shadow-xs"
+                        : "bg-slate-50 dark:bg-zinc-700 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-zinc-600 hover:bg-slate-100"
+                    }`}
+                  >
+                    {swallow.name}
+                  </button>
+                );
+              })}
+            </div>
 
-                    <h4 className="text-xs font-black text-slate-900 dark:text-white leading-snug">
-                      {meal.dishName}
-                    </h4>
-
-                    <span className="inline-block text-[9.5px] font-bold text-teal-700 dark:text-teal-300 bg-teal-50 dark:bg-teal-950/60 px-2 py-0.5 rounded-md mt-1.5">
-                      {meal.keyNutrientBadge}
-                    </span>
-
-                    <p className="text-[10.5px] text-slate-500 dark:text-slate-400 mt-1.5 leading-snug">
-                      {meal.whyItWorks}
-                    </p>
-                  </div>
-
-                  <div className="mt-2.5 pt-2 border-t border-slate-100 dark:border-zinc-700 flex items-center justify-between text-[10px] font-bold text-slate-600 dark:text-slate-300">
-                    <span>~{meal.calories} kcal</span>
-                    <span>Carbs: {meal.carbs}g</span>
-                    <span>Protein: {meal.protein}g</span>
-                  </div>
+            {/* Swallow Spike Analysis Card */}
+            <div className={`p-3.5 rounded-2xl border ${selectedSwallow.bgColor} space-y-2.5`}>
+              <div className="flex items-center justify-between">
+                <div>
+                  <span className="text-[9.5px] uppercase font-black tracking-wider opacity-80 block">
+                    Peak Post-Meal Glucose Spike
+                  </span>
+                  <span className="text-base font-black">{selectedSwallow.peakSpike}</span>
                 </div>
-              ))}
-            </div>
-          </div>
-        )}
+                <span className="text-[11px] font-black px-2.5 py-0.5 rounded-full bg-white/80 dark:bg-zinc-800 shadow-2xs">
+                  {selectedSwallow.spikeRisk}
+                </span>
+              </div>
 
-      </div>
+              {/* Velocity Progress Bar */}
+              <div>
+                <div className="flex items-center justify-between text-[9.5px] font-bold opacity-80 mb-1">
+                  <span>Glucose Velocity (GI: {selectedSwallow.glycemicIndex})</span>
+                  <span>Spike Time: ~{selectedSwallow.velocityTime}</span>
+                </div>
+                <div className="w-full bg-black/10 dark:bg-white/10 rounded-full h-2 overflow-hidden">
+                  <div
+                    className={`h-full bg-gradient-to-r ${selectedSwallow.color} transition-all duration-500 rounded-full`}
+                    style={{ width: selectedSwallow.barWidth }}
+                  />
+                </div>
+              </div>
 
-      {/* 2. DYNAMIC REAL-TIME CIRCADIAN GLUCOSE BIO-CLOCK */}
-      <div className={`p-4 rounded-3xl border shadow-xs transition-all ${circadianWindow.color}`}>
-        <div className="flex items-center justify-between mb-1.5">
-          <div className="flex items-center gap-2 font-black text-xs">
-            <Clock size={14} />
-            <span>{circadianWindow.label}</span>
-          </div>
-          <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded-full bg-white/80 border shadow-2xs">
-            {circadianWindow.badge}
-          </span>
-        </div>
-        <p className="text-[11px] leading-relaxed font-medium">
-          {circadianWindow.status}
-        </p>
-      </div>
-
-      {/* 3. INTERACTIVE AFRICAN SWALLOW GLYCEMIC SIMULATOR (Live in Glucose Science) */}
-      <div className="bg-white dark:bg-zinc-800 rounded-3xl p-5 shadow-xs border border-teal-100/90 dark:border-zinc-700 space-y-3.5">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="p-2 rounded-xl bg-teal-50 dark:bg-teal-950 text-[#126778] dark:text-teal-300">
-              <Sliders size={16} />
-            </div>
-            <div>
-              <h3 className="text-xs font-black text-slate-900 dark:text-white uppercase tracking-wider">
-                Live Swallow Glycemic Simulator 🥣
-              </h3>
-              <p className="text-[10px] text-slate-500 dark:text-slate-400">
-                Compare post-meal glucose spikes across traditional and modern swallows
+              <p className="text-[10.5px] leading-snug font-medium pt-0.5">
+                💡 <strong>Clinical Insight:</strong> {selectedSwallow.insight}
               </p>
             </div>
           </div>
-          <span className="text-[10px] font-bold text-slate-400">
-            5 Swallows Tested
-          </span>
         </div>
+      )}
 
-        {/* Swallow Picker Chips */}
-        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none text-xs">
-          {SWALLOW_SIMULATOR_DATA.map((swallow) => {
-            const isSelected = selectedSwallow.id === swallow.id;
-            return (
-              <button
-                key={swallow.id}
-                onClick={() => {
-                  triggerHaptic("light");
-                  setSelectedSwallow(swallow);
-                }}
-                className={`px-3 py-1.5 rounded-xl font-bold whitespace-nowrap transition-all cursor-pointer ${
-                  isSelected
-                    ? "bg-[#126778] text-white shadow-xs"
-                    : "bg-slate-50 dark:bg-zinc-700 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-zinc-600 hover:bg-slate-100"
-                }`}
-              >
-                {swallow.name}
-              </button>
-            );
-          })}
-        </div>
-
-        {/* Swallow Spike Analysis Card */}
-        <div className={`p-4 rounded-2xl border ${selectedSwallow.bgColor} space-y-3`}>
-          <div className="flex items-center justify-between">
-            <div>
-              <span className="text-[10px] uppercase font-black tracking-wider opacity-80 block">
-                Peak Post-Meal Glucose Spike
-              </span>
-              <span className="text-lg font-black">{selectedSwallow.peakSpike}</span>
-            </div>
-            <span className="text-xs font-black px-2.5 py-1 rounded-full bg-white/80 dark:bg-zinc-800 shadow-2xs">
-              {selectedSwallow.spikeRisk}
-            </span>
-          </div>
-
-          {/* Velocity Progress Bar */}
-          <div>
-            <div className="flex items-center justify-between text-[10px] font-bold opacity-80 mb-1">
-              <span>Glucose Velocity (GI: {selectedSwallow.glycemicIndex})</span>
-              <span>Spike Time: ~{selectedSwallow.velocityTime}</span>
-            </div>
-            <div className="w-full bg-black/10 dark:bg-white/10 rounded-full h-2 overflow-hidden">
-              <div
-                className={`h-full bg-gradient-to-r ${selectedSwallow.color} transition-all duration-500 rounded-full`}
-                style={{ width: selectedSwallow.barWidth }}
-              />
-            </div>
-          </div>
-
-          <p className="text-[11px] leading-snug font-medium pt-1">
-            💡 <strong>Clinical Insight:</strong> {selectedSwallow.insight}
-          </p>
-        </div>
-      </div>
-
-      {/* 6. INTERACTIVE STORY & QUIZ READER MODAL */}
+      {/* ============================================================ */}
+      {/* 6. INTERACTIVE STORY & QUIZ READER MODAL                     */}
+      {/* ============================================================ */}
       {activeLesson && (
         <Dialog open={!!activeLesson} onOpenChange={() => setActiveLesson(null)}>
           <DialogContent className="max-w-md p-6 rounded-3xl max-h-[92vh] overflow-y-auto border-teal-500/30 bg-white dark:bg-zinc-900 text-slate-900 dark:text-white">
