@@ -297,10 +297,13 @@ export default function Onboarding() {
                   </p>
                 </div>
 
-                <div className="space-y-2.5 mb-6">
+                <div className="space-y-2 mb-6">
                   {[
                     { title: "Reverse / Manage Type 2 Diabetes & Pre-Diabetes", icon: "🩺", desc: "Lower A1c & prevent dangerous glucose spikes" },
                     { title: "Lower High Blood Pressure & Sodium Load", icon: "🫀", desc: "Artery health, kidney protection & stew salt balance" },
+                    { title: "Pregnancy, Gestational Health & Preeclampsia Shield", icon: "🤰", desc: "Folate, iron, fetal glucose stability & maternal vitality" },
+                    { title: "Prostate Health & PSA Balance (Men 40+)", icon: "🩺", desc: "Lycopene, zinc, BPH reduction & urinary flow" },
+                    { title: "Arthritis, Gout & Joint Inflammation", icon: "🦴", desc: "Anti-inflammatory spices, purine balance & cartilage protection" },
                     { title: "Burn Stubborn Visceral Belly Fat", icon: "⚖️", desc: "Target abdominal insulin resistance and waistline" },
                     { title: "PCOS, Cholesterol & General Vitality", icon: "🧬", desc: "Hormonal balance, lipid control & sustainable energy" },
                   ].map((item) => (

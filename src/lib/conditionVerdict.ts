@@ -212,6 +212,37 @@ function neutralRule(): RuleResult {
 }
 
 // General (no conditions) balance check.
+
+function prostateRule(m: Macros): RuleResult {
+  if (m.fats >= 25 || m.calories >= 700) {
+    return {
+      level: "caution",
+      note: "Heavy saturated fats can increase oxidative stress in prostate tissue.",
+      tip: "Prioritize cooked tomato stews (rich in bioavailable lycopene) and zinc-dense pumpkin seeds (egusi).",
+    };
+  }
+  return {
+    level: "good",
+    note: "Nutrient-balanced meal supporting prostate cellular integrity and urinary flow.",
+    tip: "Add cruciferous greens (cabbage, ugwu) and drink plenty of fresh water.",
+  };
+}
+
+function arthritisRule(m: Macros): RuleResult {
+  if (m.protein >= 35 || m.fats >= 25) {
+    return {
+      level: "caution",
+      note: "High purines or heavy refined oils can trigger joint inflammation and gout flares.",
+      tip: "Season with fresh ginger, garlic, and turmeric, and favor anti-inflammatory oily fish (mackerel/titus).",
+    };
+  }
+  return {
+    level: "good",
+    note: "Light, anti-inflammatory meal gentle on joint cartilage and uric acid balance.",
+    tip: "Stay hydrated and incorporate fresh leafy greens to support joint mobility.",
+  };
+}
+
 function generalRule(m: Macros): RuleResult {
   const highGlycemic = m.glycemicLoad === "High";
   const heavy = m.calories >= 650 || m.fats >= 25;
@@ -266,6 +297,10 @@ function familyFor(name: string): Family | null {
     return { key: "allergen", run: () => ingredientFlagRule("allergens") };
   if (n.includes("pregnan") || n.includes("postpartum") || n.includes("cesarean") || n.includes("cesarian") || n.includes("caesarean"))
     return { key: "pregnancy", run: pregnancyRule };
+  if (n.includes("prostat") || n.includes("bph") || n.includes("psa"))
+    return { key: "prostate", run: prostateRule };
+  if (n.includes("arthrit") || n.includes("joint") || n.includes("osteo"))
+    return { key: "arthritis", run: arthritisRule };
   if (n.includes("thyroid"))
     return { key: "thyroid", run: neutralRule };
   return null;

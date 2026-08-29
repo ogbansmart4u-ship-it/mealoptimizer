@@ -32,7 +32,7 @@ import { toast } from "sonner";
 export interface AcademyLesson {
   id: string;
   title: string;
-  category: "Glucose Science" | "Heart & BP" | "Gut & Fiber" | "Cooking Hacks";
+  category: "Glucose Science" | "Heart & BP" | "Gut & Fiber" | "Cooking Hacks" | "Pregnancy Health" | "Prostate Health" | "Arthritis & Joints";
   readTime: string;
   icon: any;
   headline: string;
@@ -47,6 +47,78 @@ export interface AcademyLesson {
 }
 
 export const ACADEMY_LESSONS: AcademyLesson[] = [
+  {
+    id: "pregnancy-gestational-shield",
+    title: "Eating for Pregnancy & Gestational Shield",
+    category: "Pregnancy Health",
+    readTime: "60 sec",
+    icon: HeartPulse,
+    headline: "Protecting maternal insulin sensitivity & preventing preeclampsia with traditional greens",
+    storySlides: [
+      "During pregnancy, placenta hormones (human placental lactogen) naturally increase insulin resistance to ensure adequate glucose reaches the growing baby. In mothers genetically predisposed to diabetes, this can trigger Gestational Diabetes Mellitus (GDM).",
+      "Traditional African greens like Fluted Pumpkin (Ugwu), Waterleaf, and Malabar Spinach are nature's maternal superfoods: they provide massive bioavailable Folate (Vitamin B9) for neural tube development, non-heme iron, and magnesium.",
+      "To prevent dangerous post-prandial spikes, pregnant mothers should pair moderate swallows (like Plantain-Oat Fufu) with fiber and protein first.",
+      "Keeping stew salt under 1,500mg by seasoning with fresh locust beans (Iru) and ginger significantly reduces the risk of pregnancy-induced hypertension and preeclampsia! 🤰✨",
+    ],
+    takeaway: "Load your plate with Ugwu, boiled eggs, and Plantain-Oat swallow to supply crucial folate while keeping gestational blood sugar perfectly balanced.",
+    quiz: {
+      question: "Which traditional leafy green provides vital folate and iron for maternal & fetal health?",
+      options: ["Fluted Pumpkin (Ugwu)", "White Bread", "Cassava Starch"],
+      correctIndex: 0,
+      explanation: "Correct! Ugwu is exceptionally rich in folate, iron, and antioxidant polyphenols essential for healthy pregnancy.",
+    },
+  },
+  {
+    id: "prostate-lycopene-zinc",
+    title: "Eating for Prostate Health & PSA Balance",
+    category: "Prostate Health",
+    readTime: "60 sec",
+    icon: ShieldCheck,
+    headline: "How cooked tomato stews and pumpkin seeds (Egusi) protect prostate cell integrity in men 40+",
+    storySlides: [
+      "Benign Prostatic Hyperplasia (BPH) and elevated PSA affect over 60% of Black men over age 50, driven by chronic inflammation and dihydrotestosterone (DHT) binding.",
+      "Cooked Tomato Stew is one of the most potent prostate medicines on earth. Cooking tomatoes in healthy oils (like extra virgin olive or light unrefined palm oil) increases the bioavailability of Lycopene by over 400% compared to raw tomatoes!",
+      "Lycopene is a powerful carotenoid that concentrates directly in prostate tissue, neutralizing free radicals and suppressing prostate cell proliferation.",
+      "Pairing your stew with zinc-dense Pumpkin Seeds (Egusi) and cruciferous cabbage provides the building blocks for healthy testosterone balance and urinary flow. 🩺",
+    ],
+    takeaway: "Cooked tomato stew with healthy oils provides bioavailable lycopene that concentrates directly in prostate tissue to reduce inflammation.",
+    quiz: {
+      question: "Why does cooking tomato stew with healthy oil boost its prostate benefits?",
+      options: [
+        "It increases lycopene bioavailability by over 400%",
+        "It burns away all vitamins",
+        "It converts starch into protein",
+      ],
+      correctIndex: 0,
+      explanation: "Spot on! Lycopene is fat-soluble; simmering tomatoes with healthy oils unlocks maximum prostate-protective absorption.",
+    },
+  },
+  {
+    id: "arthritis-anti-inflammatory",
+    title: "Eating for Arthritis & Joint Mobility",
+    category: "Arthritis & Joints",
+    readTime: "60 sec",
+    icon: Activity,
+    headline: "Targeting joint cartilage breakdown and gout flares with African anti-inflammatory botanicals",
+    storySlides: [
+      "Osteoarthritis and Gout flares are driven by systemic pro-inflammatory cytokines (IL-6, TNF-alpha) and uric acid crystallization in joint synovial fluid.",
+      "Traditional African spices—specifically Ginger (Atale), Garlic (Ayu), Turmeric, and fermented Locust Beans (Iru)—contain gingerols and allicin that naturally inhibit the inflammatory COX-2 and NF-kB pathways.",
+      "For Gout sufferers, reducing high-purine organ meats (shaki, liver, cow foot) and staying well-hydrated with fresh water flushes uric acid out through the kidneys.",
+      "Adding Omega-3 rich Titus (Mackerel) fish twice a week lubricates joint cartilage and cuts morning stiffness by up to 40%! 🦴⚡",
+    ],
+    takeaway: "Season your stews with generous fresh ginger, garlic, and turmeric while choosing oily fish like Titus mackerel to naturally calm joint pain.",
+    quiz: {
+      question: "What natural compound in fresh Ginger and Garlic helps soothe joint arthritis pain?",
+      options: [
+        "Bioactive Gingerols & Allicin that inhibit inflammatory COX-2 pathways",
+        "Refined white sugar",
+        "Sodium chloride",
+      ],
+      correctIndex: 0,
+      explanation: "Exactly! Gingerols and allicin act as natural, stomach-friendly anti-inflammatory agents for joint mobility.",
+    },
+  },
+
   {
     id: "resistant-starch",
     title: "The Resistant Starch Hack",
@@ -641,7 +713,7 @@ export default function AvoAcademy() {
 
       {/* 4. Category Filter Tabs */}
       <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none text-xs">
-        {["Glucose Science", "Heart & BP", "Gut & Fiber", "Cooking Hacks", "All"].map((cat) => (
+        {["Pregnancy Health", "Prostate Health", "Arthritis & Joints", "Glucose Science", "Heart & BP", "Gut & Fiber", "Cooking Hacks", "All"].map((cat) => (
           <button
             key={cat}
             onClick={() => {
@@ -654,7 +726,7 @@ export default function AvoAcademy() {
                 : "bg-white text-slate-600 border border-slate-200 hover:bg-slate-50"
             }`}
           >
-            {cat === "Glucose Science" ? "🩸 Glucose Science (8)" : cat}
+            {cat === "Pregnancy Health" ? "🤰 Eating for Pregnancy" : cat === "Prostate Health" ? "🩺 Eating for Prostate Health" : cat === "Arthritis & Joints" ? "🦴 Eating for Arthritis" : cat === "Glucose Science" ? "🩸 Glucose Science" : cat}
           </button>
         ))}
       </div>
