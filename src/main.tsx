@@ -48,7 +48,7 @@ if (typeof navigator !== "undefined" && typeof navigator.vibrate === "function")
 if (typeof window !== "undefined" && "serviceWorker" in navigator) {
   let isRefreshing = false;
   navigator.serviceWorker.addEventListener("controllerchange", () => {
-    if (!isRefreshing) {
+    if (!isRefreshing && typeof navigator !== "undefined" && navigator.onLine) {
       isRefreshing = true;
       window.location.reload();
     }

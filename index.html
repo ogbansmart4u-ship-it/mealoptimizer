@@ -96,6 +96,9 @@
           return;
         }
         function recover() {
+          if (typeof navigator !== "undefined" && !navigator.onLine) {
+            return; // NEVER unregister service worker or delete caches when offline!
+          }
           var last = 0;
           try { last = Number(sessionStorage.getItem(RELOAD_KEY) || 0); } catch (e) {}
           if (Date.now() - last < 20000) return; // already tried within the last 20s
