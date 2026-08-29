@@ -1200,35 +1200,37 @@ export default function Home() {
             className="space-y-4"
           >
             {/* 🥑 FOOD WRAPPED 10X STORY HIGHLIGHT BANNER (Unified Brand Teal + 3D Mascot) */}
-            <div className="bg-gradient-to-r from-[#126778] via-[#1f7a8c] to-[#0d9488] rounded-3xl p-4 sm:p-5 text-white shadow-lg border border-teal-400/30 flex items-center justify-between gap-3 relative overflow-hidden">
-              <div className="flex items-center gap-3.5 min-w-0">
+            <div className="bg-gradient-to-r from-[#126778] via-[#1f7a8c] to-[#0d9488] rounded-3xl p-4 sm:p-5 text-white shadow-lg border border-teal-400/30 flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 relative overflow-hidden">
+              <div className="flex items-center gap-3 min-w-0 flex-1">
                 <div className="relative shrink-0 p-1 bg-white/15 backdrop-blur-md rounded-2xl border border-white/20 shadow-md">
-                  <Mascot gesture="clapping" size={48} className="filter drop-shadow-md" />
+                  <Mascot gesture="clapping" size={44} className="filter drop-shadow-md" />
                 </div>
-                <div className="min-w-0">
+                <div className="min-w-0 flex-1">
                   <div className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-400 text-slate-950 text-[9.5px] font-black uppercase tracking-wider shadow-2xs">
-                    <Sparkles size={10} /> {new Date().toLocaleString("default", { month: "long" })} Food Wrapped
+                    <Sparkles size={10} className="shrink-0" /> {new Date().toLocaleString("default", { month: "long" })} Food Wrapped
                   </div>
                   <h3 className="text-sm sm:text-base font-black leading-tight mt-1 truncate">
                     Your Cultural Food Archetype 🏆
                   </h3>
-                  <p className="text-[11px] text-teal-50/90 leading-snug truncate">
+                  <p className="text-[11px] text-teal-50/90 leading-snug line-clamp-1">
                     See your monthly glucose stability score &amp; share to WhatsApp!
                   </p>
                 </div>
               </div>
 
-              <button
-                type="button"
-                onClick={() => {
-                  triggerHaptic("medium");
-                  setShowFoodWrapped(true);
-                }}
-                className="px-4 py-2.5 bg-white hover:bg-teal-50 text-[#126778] font-black text-xs rounded-2xl shadow-md hover:scale-105 active:scale-95 transition-all cursor-pointer shrink-0 flex items-center gap-1"
-              >
-                <span>View Story</span>
-                <ChevronRight size={13} />
-              </button>
+              <div className="w-full sm:w-auto shrink-0">
+                <button
+                  type="button"
+                  onClick={() => {
+                    triggerHaptic("medium");
+                    setShowFoodWrapped(true);
+                  }}
+                  className="w-full sm:w-auto px-4 py-2.5 bg-white hover:bg-teal-50 text-[#126778] font-black text-xs rounded-2xl shadow-md hover:scale-105 active:scale-95 transition-all cursor-pointer flex items-center justify-center gap-1.5 text-center"
+                >
+                  <span>View Story</span>
+                  <ChevronRight size={13} className="shrink-0" />
+                </button>
+              </div>
             </div>
 
             {/* Embedded Avo Academy Component */}

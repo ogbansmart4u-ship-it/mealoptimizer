@@ -4,6 +4,7 @@ import {
   TrendingUp,
   Award,
   Plus,
+  Minus,
   Check,
   Edit2,
   Trash2,
@@ -25,6 +26,8 @@ import {
   Shield,
   Footprints,
   Info,
+  Share2,
+  MessageSquare,
 } from "lucide-react";
 import BottomNav from "../components/BottomNav";
 import { useAppMode } from "../contexts/AppModeContext";
@@ -73,7 +76,7 @@ const CLINICAL_GOAL_PRESETS = [
     icon: "🚶‍♂️",
     color: "#06b6d4",
     bgColor: "#ecfeff",
-    clinicalPurpose: "Blunts postprandial glucose excursions by activating GLUT4 muscle clearance.",
+    clinicalPurpose: "Blunts postprandial glucose excursions by activating non-insulin GLUT4 muscle clearance.",
     deadlineOffsetDays: 30,
   },
   {
@@ -89,17 +92,41 @@ const CLINICAL_GOAL_PRESETS = [
     deadlineOffsetDays: 21,
   },
   {
-    title: "Blood Pressure Shield (Systolic < 120)",
+    title: "DASH Sodium Shield (< 1,500 mg/day)",
     category: "health" as GoalCategory,
-    targetValue: 120,
-    currentValue: 132,
-    initialValue: 135,
-    unit: "mmHg",
+    targetValue: 1500,
+    currentValue: 2100,
+    initialValue: 2400,
+    unit: "mg/day",
     icon: "🫀",
     color: "#e11d48",
     bgColor: "#fff1f2",
-    clinicalPurpose: "Reduces arterial shear stress through low-sodium and potassium-rich greens.",
+    clinicalPurpose: "Reduces arterial shear stress and nocturnal BP surges via hibiscus and fresh aromatics.",
     deadlineOffsetDays: 45,
+  },
+  {
+    title: "KDIGO Renal Double-Boil Leaching",
+    category: "health" as GoalCategory,
+    targetValue: 6,
+    currentValue: 2,
+    unit: "days/wk",
+    icon: "🛡️",
+    color: "#8b5cf6",
+    bgColor: "#f5f3ff",
+    clinicalPurpose: "Two-stage boiling protocol for starchy root yams to lower potassium load for kidney preservation.",
+    deadlineOffsetDays: 30,
+  },
+  {
+    title: "Gastric Ulcer Mucosal Barrier",
+    category: "nutrition" as GoalCategory,
+    targetValue: 3,
+    currentValue: 1,
+    unit: "meals/day",
+    icon: "🥣",
+    color: "#10b981",
+    bgColor: "#ecfdf5",
+    clinicalPurpose: "Okra and oat mucilage barrier protocol to coat sensitive stomach lining against acid surges.",
+    deadlineOffsetDays: 14,
   },
   {
     title: "Target Weight & Metabolic Fat Loss",
@@ -115,7 +142,7 @@ const CLINICAL_GOAL_PRESETS = [
     deadlineOffsetDays: 60,
   },
   {
-    title: "Daily Hydration (8 Glasses / 2.5L)",
+    title: "Daily Cellular Hydration (8 Glasses / 2.5L)",
     category: "lifestyle" as GoalCategory,
     targetValue: 8,
     currentValue: 4,
@@ -125,6 +152,18 @@ const CLINICAL_GOAL_PRESETS = [
     bgColor: "#f0f9ff",
     clinicalPurpose: "Supports glomerular kidney filtration and natural sodium flushing.",
     deadlineOffsetDays: 14,
+  },
+  {
+    title: "Menopause Isoflavone & Bone Shield",
+    category: "nutrition" as GoalCategory,
+    targetValue: 40,
+    currentValue: 15,
+    unit: "mg/day",
+    icon: "🌸",
+    color: "#ec4899",
+    bgColor: "#fdf2f8",
+    clinicalPurpose: "40mg bioavailable soy awara isoflavones + sesame calcium for bone mineral density.",
+    deadlineOffsetDays: 30,
   },
 ];
 
@@ -160,7 +199,6 @@ export default function Goals() {
   });
 
   useEffect(() => {
-    // 1. Check local storage for instant responsive display
     try {
       const cached = localStorage.getItem("user_goals_data");
       if (cached) {
@@ -174,7 +212,6 @@ export default function Goals() {
       /* ignore */
     }
 
-    // 2. Fetch from API or initialize defaults
     getGoals()
       .then((data) => {
         if (Array.isArray(data) && data.length > 0) {
@@ -183,7 +220,7 @@ export default function Goals() {
         } else {
           setGoals((current) => {
             if (current.length > 0) return current;
-            const defaults: Goal[] = CLINICAL_GOAL_PRESETS.slice(0, 3).map((p, idx) => ({
+            const defaults: Goal[] = CLINICAL_GOAL_PRESETS.slice(0, 4).map((p, idx) => ({
               id: `goal-init-${idx}`,
               title: p.title,
               category: p.category,
@@ -206,7 +243,7 @@ export default function Goals() {
       .catch(() => {
         setGoals((current) => {
           if (current.length > 0) return current;
-          const defaults: Goal[] = CLINICAL_GOAL_PRESETS.slice(0, 3).map((p, idx) => ({
+          const defaults: Goal[] = CLINICAL_GOAL_PRESETS.slice(0, 4).map((p, idx) => ({
             id: `goal-init-${idx}`,
             title: p.title,
             category: p.category,
@@ -230,14 +267,12 @@ export default function Goals() {
 
   const calculateProgressPercent = (goal: Goal): number => {
     const { currentValue, targetValue, initialValue } = goal;
-    // Reverse goal: Weight or Blood Pressure reduction
     if (initialValue && initialValue > targetValue) {
       const totalToLose = initialValue - targetValue;
       if (totalToLose <= 0) return 100;
       const lostSoFar = initialValue - currentValue;
       return Math.max(0, Math.min(100, Math.round((lostSoFar / totalToLose) * 100)));
     }
-    // Normal goal: e.g. Protein, Water, Walks
     if (targetValue <= 0) return 100;
     return Math.min(100, Math.round((currentValue / targetValue) * 100));
   };
@@ -253,6 +288,7 @@ export default function Goals() {
       clinicalPurpose: preset.clinicalPurpose,
     });
     triggerHaptic("light");
+    toast.success(`Loaded "${preset.title}" blueprint!`);
   };
 
   const handleCreateCustomGoal = async () => {
@@ -261,43 +297,53 @@ export default function Goals() {
       return;
     }
 
-    const catConfigs: Record<GoalCategory, { icon: string; color: string; bgColor: string }> = {
-      weight: { icon: "⚖️", color: "#1f7a8c", bgColor: "#e6f7f8" },
-      nutrition: { icon: "🍎", color: "#10b981", bgColor: "#ecfdf5" },
-      health: { icon: "❤️", color: "#e11d48", bgColor: "#fff1f2" },
-      lifestyle: { icon: "💪", color: "#f59e0b", bgColor: "#fffbeb" },
-    };
+    triggerHaptic("medium");
+    const numTarget = parseFloat(newGoalForm.targetValue) || 1;
+    const numCurrent = parseFloat(newGoalForm.currentValue) || 0;
 
-    const config = catConfigs[newGoalForm.category] || catConfigs.nutrition;
-    const target = parseFloat(newGoalForm.targetValue);
-    const current = parseFloat(newGoalForm.currentValue) || 0;
+    let icon = "🎯";
+    let color = "#1f7a8c";
+    let bgColor = "#e6f7f8";
 
-    const goalPayload: Goal = {
+    if (newGoalForm.category === "weight") {
+      icon = "⚖️";
+      color = "#1f7a8c";
+      bgColor = "#e6f7f8";
+    } else if (newGoalForm.category === "nutrition") {
+      icon = "🍎";
+      color = "#3b82f6";
+      bgColor = "#eff6ff";
+    } else if (newGoalForm.category === "lifestyle") {
+      icon = "🚶‍♂️";
+      color = "#06b6d4";
+      bgColor = "#ecfeff";
+    } else if (newGoalForm.category === "health") {
+      icon = "🫀";
+      color = "#e11d48";
+      bgColor = "#fff1f2";
+    }
+
+    const newGoal: Goal = {
       id: `goal-${Date.now()}`,
-      title: newGoalForm.title,
+      title: newGoalForm.title.trim(),
       category: newGoalForm.category,
-      targetValue: target,
-      currentValue: current,
-      initialValue: current,
-      unit: newGoalForm.unit,
+      targetValue: numTarget,
+      currentValue: numCurrent,
+      initialValue: numCurrent,
+      unit: newGoalForm.unit || "units",
       deadline: newGoalForm.deadline,
       status: "active",
-      icon: config.icon,
-      color: config.color,
-      bgColor: config.bgColor,
-      clinicalPurpose: newGoalForm.clinicalPurpose || "Personal metabolic optimization target.",
+      icon,
+      color,
+      bgColor,
+      clinicalPurpose: newGoalForm.clinicalPurpose.trim() || undefined,
     };
 
-    // 1. Optimistic Local Persistence (Guaranteed Instant Save)
-    const updatedGoals = [goalPayload, ...goals];
-    setGoals(updatedGoals);
-    localStorage.setItem("user_goals_data", JSON.stringify(updatedGoals));
-    
-    triggerConfetti("burst");
-    triggerHaptic("success");
-    toast.success("Goal Created Successfully! 🎯");
+    const nextGoals = [newGoal, ...goals];
+    setGoals(nextGoals);
+    localStorage.setItem("user_goals_data", JSON.stringify(nextGoals));
     setShowAddGoal(false);
-    
+
     setNewGoalForm({
       title: "",
       category: "nutrition",
@@ -308,79 +354,141 @@ export default function Goals() {
       clinicalPurpose: "",
     });
 
-    // 2. Background Server Sync
-    createGoal(goalPayload).catch(() => {
-      console.log("Goal preserved in local vault");
+    triggerConfetti("burst");
+    toast.success("New Metabolic Goal established! 🎯");
+
+    try {
+      await createGoal(newGoal);
+    } catch {
+      /* offline fallback */
+    }
+  };
+
+  const handleQuickStep = async (goal: Goal, delta: number) => {
+    triggerHaptic("medium");
+    const nextVal = Math.max(0, goal.currentValue + delta);
+    const progressPct = calculateProgressPercent({ ...goal, currentValue: nextVal });
+    const isCompleted = progressPct >= 100;
+    const newStatus: GoalStatus = isCompleted ? "completed" : "active";
+
+    const updatedGoals = goals.map((g) => {
+      if (g.id === goal.id) {
+        return {
+          ...g,
+          currentValue: nextVal,
+          status: newStatus,
+        };
+      }
+      return g;
     });
+
+    setGoals(updatedGoals);
+    localStorage.setItem("user_goals_data", JSON.stringify(updatedGoals));
+
+    if (isCompleted && goal.status !== "completed") {
+      triggerConfetti("burst");
+      triggerHaptic("success");
+      setCelebrationMessage(`🎉 Goal Accomplished: ${goal.title}! +100 Metabolic XP!`);
+      setShowCelebration(true);
+      unlockAchievement("first_goal");
+    } else {
+      toast.success(`Updated ${goal.title}: ${nextVal} ${goal.unit} (${progressPct}%)`);
+    }
+
+    try {
+      await updateGoal(goal.id, {
+        currentValue: nextVal,
+        status: newStatus,
+      });
+    } catch {
+      /* offline fallback */
+    }
   };
 
   const handleUpdateProgressSubmit = async () => {
-    if (!selectedGoal || !progressDelta) return;
-    const added = parseFloat(progressDelta);
-    const newCurrent = Number((selectedGoal.currentValue + added).toFixed(1));
-    const isCompleted =
-      selectedGoal.initialValue && selectedGoal.initialValue > selectedGoal.targetValue
-        ? newCurrent <= selectedGoal.targetValue
-        : newCurrent >= selectedGoal.targetValue;
+    if (!selectedGoal) return;
+    triggerHaptic("medium");
 
-    const updated: Goal = {
-      ...selectedGoal,
-      currentValue: newCurrent,
-      status: isCompleted ? "completed" : "active",
-    };
+    const added = parseFloat(progressDelta) || 0;
+    const nextVal = Math.max(0, selectedGoal.currentValue + added);
+    const progressPct = calculateProgressPercent({ ...selectedGoal, currentValue: nextVal });
+    const isCompleted = progressPct >= 100;
+    const newStatus: GoalStatus = isCompleted ? "completed" : "active";
 
-    const updatedGoals = goals.map((g) => (g.id === selectedGoal.id ? updated : g));
+    const updatedGoals = goals.map((g) => {
+      if (g.id === selectedGoal.id) {
+        return {
+          ...g,
+          currentValue: nextVal,
+          status: newStatus,
+        };
+      }
+      return g;
+    });
+
     setGoals(updatedGoals);
     localStorage.setItem("user_goals_data", JSON.stringify(updatedGoals));
-
-    triggerHaptic(isCompleted ? "success" : "medium");
-
-    if (isCompleted) {
-      setCelebrationMessage(`🎉 Goal Achieved: ${selectedGoal.title}! You earned +100 XP!`);
-      setShowCelebration(true);
-      triggerConfetti("cannon");
-    } else {
-      toast.success(`Progress updated! ${newCurrent} ${selectedGoal.unit}`);
-    }
     setShowUpdateProgress(false);
     setSelectedGoal(null);
-    setProgressDelta("");
 
-    // Background server sync
-    updateGoal(selectedGoal.id, updated).catch(() => {});
+    if (isCompleted && selectedGoal.status !== "completed") {
+      triggerConfetti("burst");
+      triggerHaptic("success");
+      setCelebrationMessage(`🎉 Goal Accomplished: ${selectedGoal.title}! +100 Metabolic XP!`);
+      setShowCelebration(true);
+      unlockAchievement("first_goal");
+    } else {
+      toast.success(`Progress saved: ${nextVal} ${selectedGoal.unit} (${progressPct}%)`);
+    }
+
+    try {
+      await updateGoal(selectedGoal.id, {
+        currentValue: nextVal,
+        status: newStatus,
+      });
+    } catch {
+      /* offline fallback */
+    }
   };
 
-  const handleDeleteGoal = async (id: string, e?: React.MouseEvent) => {
-    e?.stopPropagation();
-    if (!confirm("Are you sure you want to delete this goal?")) return;
-    
-    const updatedGoals = goals.filter((g) => g.id !== id);
-    setGoals(updatedGoals);
-    localStorage.setItem("user_goals_data", JSON.stringify(updatedGoals));
-    triggerHaptic("light");
-    toast.success("Goal deleted");
+  const handleDeleteGoal = async (id: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    triggerHaptic("warning");
+    const nextGoals = goals.filter((g) => g.id !== id);
+    setGoals(nextGoals);
+    localStorage.setItem("user_goals_data", JSON.stringify(nextGoals));
+    toast.success("Goal removed");
 
-    // Background server sync
-    deleteGoal(id).catch(() => {});
+    try {
+      await deleteGoal(id);
+    } catch {
+      /* offline fallback */
+    }
+  };
+
+  const handleShareGoalToWhatsApp = (goal: Goal, e: React.MouseEvent) => {
+    e.stopPropagation();
+    triggerHaptic("light");
+    const pct = calculateProgressPercent(goal);
+    const statusEmoji = pct >= 100 ? "🏆 COMPLETED" : `${pct}% IN PROGRESS`;
+    const text = `🎯 *MealOptimiza Metabolic Goal Milestone*\n\nGoal: *${goal.title}*\nStatus: *${statusEmoji}*\nProgress: *${goal.currentValue} / ${goal.targetValue} ${goal.unit}*\nClinical Rationale: ${goal.clinicalPurpose || 'Optimizing metabolic vitality & insulin sensitivity'}\n\nTracked via MealOptimiza App.`;
+    window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, "_blank");
   };
 
   const filteredGoals = useMemo(() => {
-    return goals.filter((g) => {
-      const matchTab = activeTab === "active" ? g.status === "active" : g.status === "completed";
-      const matchCat = selectedCategory === "all" || g.category === selectedCategory;
-      return matchTab && matchCat;
-    });
+    return goals
+      .filter((g) => (activeTab === "active" ? g.status === "active" : g.status === "completed"))
+      .filter((g) => (selectedCategory === "all" ? true : g.category === selectedCategory));
   }, [goals, activeTab, selectedCategory]);
 
   const activeCount = goals.filter((g) => g.status === "active").length;
   const completedCount = goals.filter((g) => g.status === "completed").length;
+  const totalXp = completedCount * 100 + activeCount * 25;
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#B8E5E5] via-[#E8F5F5] to-[#F8FBFB] pb-28 relative">
-      {/* High-Visibility Ambient Background Animation */}
       <AmbientBackground />
 
-      {/* Header */}
       <div className="relative z-10 bg-gradient-to-b from-[#A5DBDB] to-[#B8E5E5] px-4 sm:px-6 pt-9 pb-5 border-b border-teal-500/15">
         <div className="max-w-2xl mx-auto flex items-center justify-between">
           <div>
@@ -403,31 +511,71 @@ export default function Goals() {
           </div>
         </div>
 
-        {/* Hero Avo Motivation & Goal Stats */}
-        <div className="max-w-2xl mx-auto mt-4 bg-white/90 backdrop-blur-md rounded-3xl p-4 sm:p-5 shadow-sm border border-teal-100 flex items-center gap-3.5">
-          <Mascot gesture="flex" size={54} className="shrink-0" />
-          <div className="flex-1 min-w-0">
-            <div className="flex items-center justify-between text-[11px] font-bold text-teal-900">
-              <span>Goal Success Rate</span>
+        <div className="max-w-2xl mx-auto mt-4 bg-white/95 backdrop-blur-md rounded-3xl p-4 sm:p-5 shadow-sm border border-teal-100/90 space-y-3">
+          <div className="flex items-center justify-between gap-3">
+            <div className="flex items-center gap-3 min-w-0">
+              <div className="relative shrink-0">
+                <span className="absolute -inset-1 rounded-2xl bg-teal-400/30 animate-pulse-radar pointer-events-none" />
+                <div className="relative p-1.5 bg-teal-50 rounded-2xl border border-teal-100">
+                  <Mascot gesture="flex" size={48} className="drop-shadow-sm" />
+                </div>
+              </div>
+              <div className="min-w-0">
+                <div className="flex items-center gap-1.5 flex-wrap">
+                  <span className="text-[9.5px] font-black uppercase tracking-wider bg-teal-100 text-teal-900 px-2 py-0.5 rounded-full shadow-2xs">
+                    Metabolic Trajectory
+                  </span>
+                  <span className="text-[10px] text-amber-700 font-bold bg-amber-50 px-2 py-0.5 rounded-full border border-amber-200/60">
+                    🔥 {activeCount > 0 ? "Momentum Active" : "Targets Ready"}
+                  </span>
+                </div>
+                <h3 className="text-sm sm:text-base font-black text-gray-900 leading-tight mt-0.5 truncate">
+                  {completedCount > 0
+                    ? `${completedCount} Clinical Goal${completedCount > 1 ? "s" : ""} Crushed! 🏆`
+                    : "Build Your Daily Clinical Habits 🌱"}
+                </h3>
+              </div>
+            </div>
+
+            <div className="hidden sm:flex flex-col items-end shrink-0">
+              <span className="text-xs font-black text-amber-600">🧠 {totalXp} XP</span>
+              <span className="text-[10px] text-gray-500 font-semibold">{goals.length} Total Goals</span>
+            </div>
+          </div>
+
+          <div>
+            <div className="flex items-center justify-between text-[11px] font-bold text-teal-900 mb-1">
+              <span>Overall Goal Success Rate</span>
               <span>{completedCount} Completed / {goals.length} Total</span>
             </div>
-            <div className="w-full bg-slate-100 h-2 rounded-full mt-1.5 overflow-hidden">
+            <div className="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden p-0.5">
               <div
-                className="bg-gradient-to-r from-[#1f7a8c] to-[#4ecdc4] h-full rounded-full transition-all duration-700"
+                className="bg-gradient-to-r from-[#1f7a8c] via-[#0d9488] to-[#4ecdc4] h-full rounded-full transition-all duration-700"
                 style={{
                   width: `${goals.length > 0 ? Math.round((completedCount / goals.length) * 100) : 0}%`,
                 }}
               />
             </div>
-            <p className="text-[11px] text-gray-600 mt-1.5 font-medium leading-snug">
-              Micro-habits compound! Hitting your walking and fiber targets directly protects your insulin sensitivity.
-            </p>
+          </div>
+
+          <div className="grid grid-cols-3 gap-2 text-center pt-1 border-t border-slate-100">
+            <div className="bg-slate-50 rounded-xl py-1.5 px-1 border border-slate-200/60">
+              <span className="text-[9px] text-gray-500 font-bold block">Active</span>
+              <span className="text-xs font-black text-[#1f7a8c]">{activeCount} Targets</span>
+            </div>
+            <div className="bg-slate-50 rounded-xl py-1.5 px-1 border border-slate-200/60">
+              <span className="text-[9px] text-gray-500 font-bold block">Crushed</span>
+              <span className="text-xs font-black text-emerald-600">{completedCount} 🏆</span>
+            </div>
+            <div className="bg-slate-50 rounded-xl py-1.5 px-1 border border-slate-200/60">
+              <span className="text-[9px] text-gray-500 font-bold block">Total XP</span>
+              <span className="text-xs font-black text-amber-600">{totalXp} XP</span>
+            </div>
           </div>
         </div>
       </div>
 
       <div className="px-4 sm:px-6 max-w-2xl mx-auto mt-4 space-y-4">
-        {/* Active vs Completed Tabs */}
         <div className="flex bg-white/90 p-1 rounded-2xl border border-teal-100 shadow-2xs gap-1">
           <button
             onClick={() => setActiveTab("active")}
@@ -451,13 +599,12 @@ export default function Goals() {
           </button>
         </div>
 
-        {/* Category Filter Pills */}
         <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none">
           {[
             { id: "all", label: "⚡ All" },
             { id: "nutrition", label: "🍎 Nutrition & Fiber" },
             { id: "lifestyle", label: "🚶 Movement & Sleep" },
-            { id: "health", label: "🫀 Blood Pressure & Sugar" },
+            { id: "health", label: "🫀 Clinical & Biomarkers" },
             { id: "weight", label: "⚖️ Weight & Body" },
           ].map((cat) => (
             <button
@@ -474,9 +621,6 @@ export default function Goals() {
           ))}
         </div>
 
-        {/* ============================================================ */}
-        {/* GOALS LIST                                                   */}
-        {/* ============================================================ */}
         {isLoading ? (
           <SkeletonGoalList />
         ) : filteredGoals.length === 0 ? (
@@ -492,7 +636,7 @@ export default function Goals() {
             {activeTab === "active" && (
               <Button
                 onClick={() => setShowAddGoal(true)}
-                className="mt-4 bg-[#1f7a8c] hover:bg-teal-800 text-white font-bold rounded-2xl text-xs px-5"
+                className="mt-4 bg-[#1f7a8c] hover:bg-teal-800 text-white font-bold rounded-2xl text-xs px-5 cursor-pointer"
               >
                 + Choose a Clinical Goal Blueprint
               </Button>
@@ -506,25 +650,31 @@ export default function Goals() {
                 0,
                 Math.ceil((new Date(goal.deadline).getTime() - Date.now()) / (1000 * 60 * 60 * 24))
               );
+              const isDone = progressPct >= 100;
 
               return (
                 <div
                   key={goal.id}
-                  className="bg-white rounded-3xl p-4 sm:p-5 shadow-xs hover:shadow-md border border-teal-100/90 transition-all"
+                  className="bg-white rounded-3xl p-4 sm:p-5 shadow-xs hover:shadow-md border border-teal-100/90 transition-all space-y-3"
                 >
                   <div className="flex items-start justify-between gap-3">
                     <div className="flex items-start gap-3 min-w-0 flex-1">
-                      <span className="text-2xl shrink-0 p-2 bg-slate-50 rounded-2xl border border-slate-200/80">
+                      <span className="text-2xl shrink-0 p-2.5 bg-slate-50 rounded-2xl border border-slate-200/80">
                         {goal.icon}
                       </span>
                       <div className="min-w-0 flex-1">
-                        <div className="flex items-center gap-2 mb-0.5">
+                        <div className="flex items-center gap-2 mb-0.5 flex-wrap">
                           <span className="text-[10px] uppercase font-black px-2 py-0.5 rounded-md bg-slate-100 text-gray-700">
                             {goal.category}
                           </span>
                           <span className="text-[10px] text-gray-400 font-semibold flex items-center gap-1">
                             <Clock size={10} /> {daysLeft > 0 ? `${daysLeft}d left` : "Due today"}
                           </span>
+                          {isDone && (
+                            <span className="text-[9.5px] font-black uppercase px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800">
+                              Completed 🏆
+                            </span>
+                          )}
                         </div>
 
                         <h3 className="text-sm sm:text-base font-extrabold text-gray-900 leading-snug">
@@ -539,68 +689,104 @@ export default function Goals() {
                       </div>
                     </div>
 
-                    <button
-                      onClick={(e) => handleDeleteGoal(goal.id, e)}
-                      className="p-1.5 text-gray-300 hover:text-rose-500 rounded-lg cursor-pointer transition-colors"
-                      title="Delete goal"
-                    >
-                      <Trash2 size={15} />
-                    </button>
+                    <div className="flex items-center gap-1 shrink-0">
+                      <button
+                        onClick={(e) => handleShareGoalToWhatsApp(goal, e)}
+                        className="p-1.5 text-teal-600 hover:text-teal-800 hover:bg-teal-50 rounded-xl cursor-pointer transition-colors"
+                        title="Share progress to WhatsApp"
+                      >
+                        <Share2 size={15} />
+                      </button>
+                      <button
+                        onClick={(e) => handleDeleteGoal(goal.id, e)}
+                        className="p-1.5 text-gray-300 hover:text-rose-500 hover:bg-rose-50 rounded-xl cursor-pointer transition-colors"
+                        title="Delete goal"
+                      >
+                        <Trash2 size={15} />
+                      </button>
+                    </div>
                   </div>
 
-                  {/* Progress Bar & Numerical Metrics */}
-                  <div className="mt-3 pt-3 border-t border-slate-100">
-                    <div className="flex justify-between items-center text-xs mb-1">
+                  <div className="pt-2 border-t border-slate-100">
+                    <div className="flex justify-between items-center text-xs mb-1.5">
                       <span className="font-extrabold text-gray-900">
                         {goal.currentValue} / {goal.targetValue} {goal.unit}
                       </span>
                       <span
                         className={`font-black ${
-                          progressPct >= 100 ? "text-emerald-600" : "text-[#1f7a8c]"
+                          isDone ? "text-emerald-600" : "text-[#1f7a8c]"
                         }`}
                       >
                         {progressPct}%
                       </span>
                     </div>
 
-                    <div className="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden">
+                    <div className="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden relative">
                       <div
                         className="h-full rounded-full transition-all duration-500"
                         style={{
                           width: `${progressPct}%`,
-                          backgroundColor: progressPct >= 100 ? "#10b981" : goal.color || "#1f7a8c",
+                          backgroundColor: isDone ? "#10b981" : goal.color || "#1f7a8c",
                         }}
                       />
                     </div>
                   </div>
 
-                  {/* Milestone Progress Quick-Actions */}
-                  {goal.status === "active" && (
-                    <div className="flex items-center justify-between mt-3 pt-2">
-                      <div className="flex items-center gap-1 text-[11px] text-gray-500 font-semibold">
-                        <span>Milestone:</span>
-                        <span className="font-bold text-gray-800">
-                          {progressPct >= 75
-                            ? "🔥 Final Stretch!"
-                            : progressPct >= 50
-                            ? "⚡ Halfway There!"
-                            : "🌱 Building Momentum"}
-                        </span>
-                      </div>
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 pt-2 border-t border-slate-100">
+                    <div className="flex items-center gap-1 text-[11px] text-gray-500 font-semibold">
+                      <span>Milestone:</span>
+                      <span className="font-bold text-gray-800">
+                        {progressPct >= 100
+                          ? "🏆 Goal Completed (+100 XP)"
+                          : progressPct >= 75
+                          ? "🔥 Final Stretch!"
+                          : progressPct >= 50
+                          ? "⚡ Halfway There!"
+                          : "🌱 Building Momentum"}
+                      </span>
+                    </div>
+
+                    <div className="flex items-center gap-1.5 flex-wrap">
+                      {goal.status === "active" && (
+                        <>
+                          <button
+                            type="button"
+                            onClick={() => handleQuickStep(goal, 1)}
+                            className="px-2.5 py-1 bg-teal-50 hover:bg-teal-100 text-[#1f7a8c] font-black text-xs rounded-xl border border-teal-200/80 cursor-pointer active:scale-95 transition-all flex items-center gap-1"
+                            title="Add 1"
+                          >
+                            <Plus size={11} />
+                            <span>1 {goal.unit.split("/")[0]}</span>
+                          </button>
+
+                          {goal.targetValue >= 10 && (
+                            <button
+                              type="button"
+                              onClick={() => handleQuickStep(goal, 5)}
+                              className="px-2.5 py-1 bg-teal-50 hover:bg-teal-100 text-[#1f7a8c] font-black text-xs rounded-xl border border-teal-200/80 cursor-pointer active:scale-95 transition-all flex items-center gap-1"
+                              title="Add 5"
+                            >
+                              <Plus size={11} />
+                              <span>5 {goal.unit.split("/")[0]}</span>
+                            </button>
+                          )}
+                        </>
+                      )}
 
                       <button
+                        type="button"
                         onClick={() => {
                           setSelectedGoal(goal);
                           setProgressDelta("1");
                           setShowUpdateProgress(true);
                         }}
-                        className="px-3 py-1.5 bg-gradient-to-r from-[#1f7a8c] to-[#4ecdc4] hover:opacity-95 text-white font-bold rounded-xl text-xs flex items-center gap-1 cursor-pointer shadow-2xs active:scale-95 transition-all"
+                        className="px-3 py-1 bg-gradient-to-r from-[#1f7a8c] to-[#4ecdc4] hover:opacity-95 text-white font-bold rounded-xl text-xs flex items-center gap-1 cursor-pointer shadow-2xs active:scale-95 transition-all"
                       >
-                        <Plus size={13} />
-                        <span>Update Progress</span>
+                        <Edit2 size={11} />
+                        <span>Custom</span>
                       </button>
                     </div>
-                  )}
+                  </div>
                 </div>
               );
             })}
@@ -610,9 +796,6 @@ export default function Goals() {
 
       <BottomNav />
 
-      {/* ============================================================ */}
-      {/* MODAL 1: ADD / PRESET CLINICAL GOAL                          */}
-      {/* ============================================================ */}
       <Dialog open={showAddGoal} onOpenChange={(open) => !open && setShowAddGoal(false)}>
         <DialogContent className="max-w-md max-h-[88vh] p-5 sm:p-6 flex flex-col rounded-3xl">
           <DialogHeader className="pb-1 text-left">
@@ -626,10 +809,9 @@ export default function Goals() {
           </DialogHeader>
 
           <div className="flex-1 overflow-y-auto overscroll-contain space-y-3.5 py-2 pr-1 text-xs">
-            {/* Quick 1-Tap Presets Shelf */}
             <div>
               <span className="text-[10px] font-black text-gray-500 uppercase tracking-wider block mb-1.5">
-                1-Tap Clinical Blueprints
+                1-Tap Clinical Blueprints (African & Metabolic Targets)
               </span>
               <div className="grid grid-cols-1 gap-1.5">
                 {CLINICAL_GOAL_PRESETS.map((preset, idx) => (
@@ -637,28 +819,29 @@ export default function Goals() {
                     key={idx}
                     type="button"
                     onClick={() => handleApplyPreset(preset)}
-                    className="p-2.5 bg-slate-50 hover:bg-teal-50 border border-slate-200/80 rounded-2xl text-left transition-all cursor-pointer flex items-center justify-between gap-2"
+                    className="p-2.5 bg-slate-50 hover:bg-teal-50 border border-slate-200/80 rounded-2xl text-left transition-all cursor-pointer flex items-center justify-between gap-2 group"
                   >
-                    <div className="flex items-center gap-2 min-w-0">
-                      <span className="text-lg">{preset.icon}</span>
+                    <div className="flex items-center gap-2.5 min-w-0">
+                      <span className="text-xl p-1.5 bg-white rounded-xl border border-slate-200/60 shrink-0">
+                        {preset.icon}
+                      </span>
                       <div className="min-w-0">
-                        <span className="text-xs font-black text-gray-900 block truncate">
+                        <span className="text-xs font-black text-gray-900 block truncate group-hover:text-[#1f7a8c] transition-colors">
                           {preset.title}
                         </span>
                         <span className="text-[10px] text-gray-500 truncate block">
-                          Target: {preset.targetValue} {preset.unit}
+                          Target: {preset.targetValue} {preset.unit} • {preset.clinicalPurpose.slice(0, 48)}...
                         </span>
                       </div>
                     </div>
-                    <span className="text-[10px] font-bold text-[#1f7a8c] shrink-0 bg-white px-2 py-0.5 rounded-lg border border-teal-100">
-                      Use Preset
+                    <span className="text-[10px] font-bold text-[#1f7a8c] shrink-0 bg-white px-2 py-0.5 rounded-lg border border-teal-100 shadow-2xs">
+                      Use Blueprint
                     </span>
                   </button>
                 ))}
               </div>
             </div>
 
-            {/* Custom Goal Inputs */}
             <div className="space-y-3 pt-2 border-t border-slate-100">
               <div>
                 <label className="text-xs font-bold text-gray-700 block mb-1">Goal Title *</label>
@@ -733,13 +916,13 @@ export default function Goals() {
             <Button
               variant="outline"
               onClick={() => setShowAddGoal(false)}
-              className="flex-1 rounded-xl text-xs font-bold py-2"
+              className="flex-1 rounded-xl text-xs font-bold py-2 cursor-pointer"
             >
               Cancel
             </Button>
             <Button
               onClick={handleCreateCustomGoal}
-              className="flex-1 bg-gradient-to-r from-[#1f7a8c] to-[#4ecdc4] hover:opacity-95 text-white rounded-xl text-xs font-bold py-2"
+              className="flex-1 bg-gradient-to-r from-[#1f7a8c] to-[#4ecdc4] hover:opacity-95 text-white rounded-xl text-xs font-bold py-2 cursor-pointer"
             >
               Save Goal 🎯
             </Button>
@@ -747,9 +930,6 @@ export default function Goals() {
         </DialogContent>
       </Dialog>
 
-      {/* ============================================================ */}
-      {/* MODAL 2: QUICK PROGRESS UPDATE                               */}
-      {/* ============================================================ */}
       <Dialog open={showUpdateProgress} onOpenChange={(open) => !open && setShowUpdateProgress(false)}>
         <DialogContent className="max-w-xs p-5 rounded-3xl text-center">
           {selectedGoal && (
@@ -767,12 +947,12 @@ export default function Goals() {
               </DialogHeader>
 
               <div className="py-3 space-y-3">
-                <div className="flex items-center justify-center gap-2">
+                <div className="flex items-center justify-center gap-2 flex-wrap">
                   {["+1", "+2", "+5", "-1"].map((amt) => (
                     <button
                       key={amt}
                       onClick={() => setProgressDelta(amt.replace("+", ""))}
-                      className="px-3 py-1.5 bg-slate-100 hover:bg-teal-50 text-gray-800 font-bold rounded-xl text-xs border border-slate-200 cursor-pointer"
+                      className="px-3 py-1.5 bg-slate-100 hover:bg-teal-50 text-gray-800 font-bold rounded-xl text-xs border border-slate-200 cursor-pointer active:scale-95"
                     >
                       {amt}
                     </button>
@@ -797,13 +977,13 @@ export default function Goals() {
                 <Button
                   variant="outline"
                   onClick={() => setShowUpdateProgress(false)}
-                  className="flex-1 rounded-xl text-xs font-bold py-2"
+                  className="flex-1 rounded-xl text-xs font-bold py-2 cursor-pointer"
                 >
                   Cancel
                 </Button>
                 <Button
                   onClick={handleUpdateProgressSubmit}
-                  className="flex-1 bg-[#1f7a8c] hover:bg-teal-800 text-white rounded-xl text-xs font-bold py-2"
+                  className="flex-1 bg-[#1f7a8c] hover:bg-teal-800 text-white rounded-xl text-xs font-bold py-2 cursor-pointer"
                 >
                   Confirm
                 </Button>
@@ -813,7 +993,6 @@ export default function Goals() {
         </DialogContent>
       </Dialog>
 
-      {/* Celebration Modal */}
       {showCelebration && (
         <CelebrationAnimation
           message={celebrationMessage}

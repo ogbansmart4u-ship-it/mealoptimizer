@@ -853,18 +853,18 @@ export default function AvoAcademy() {
   return (
     <div className="space-y-3.5 pb-6">
       {/* 1. ULTRA-COMPACT BENTO HEADER (Single Line High Density) */}
-      <div className="bg-gradient-to-r from-[#126778] via-[#1f7a8c] to-[#0d9488] rounded-2xl px-4 py-3 text-white shadow-sm flex items-center justify-between">
-        <div>
+      <div className="bg-gradient-to-r from-[#126778] via-[#1f7a8c] to-[#0d9488] rounded-2xl px-3.5 py-3 text-white shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
+        <div className="min-w-0">
           <div className="flex items-center gap-1.5 text-[10px] font-black text-teal-200 uppercase tracking-wider">
-            <Sparkles size={12} className="text-amber-300 animate-pulse" />
+            <Sparkles size={12} className="text-amber-300 animate-pulse shrink-0" />
             <span>Avo Metabolic Academy</span>
           </div>
-          <h2 className="text-sm sm:text-base font-black text-white leading-tight mt-0.5">
+          <h2 className="text-sm sm:text-base font-black text-white leading-tight mt-0.5 truncate">
             Culinary Medicine &amp; Bio-Hacks 🧬
           </h2>
         </div>
 
-        <div className="flex items-center gap-1.5 shrink-0">
+        <div className="flex items-center gap-1.5 shrink-0 self-start sm:self-auto">
           <div className="bg-white/15 backdrop-blur-md px-2.5 py-1 rounded-xl border border-white/20 text-center">
             <span className="text-xs font-black text-amber-300">🏆 {userXp} XP</span>
           </div>
@@ -939,14 +939,14 @@ export default function AvoAcademy() {
             triggerHaptic("light");
             setActiveViewTab("lessons");
           }}
-          className={`flex-1 py-2 rounded-xl text-xs font-black transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+          className={`flex-1 py-2 px-1 sm:px-2 rounded-xl text-[11px] sm:text-xs font-black transition-all flex items-center justify-center gap-1 sm:gap-1.5 cursor-pointer truncate ${
             activeViewTab === "lessons"
               ? "bg-white dark:bg-zinc-900 text-[#126778] dark:text-teal-300 shadow-sm"
               : "text-slate-600 dark:text-slate-400 hover:text-slate-900"
           }`}
         >
-          <BookOpen size={13} />
-          <span>60s Lessons ({filteredLessons.length})</span>
+          <BookOpen size={13} className="shrink-0" />
+          <span className="truncate">60s Lessons</span>
         </button>
 
         <button
@@ -955,14 +955,14 @@ export default function AvoAcademy() {
             triggerHaptic("light");
             setActiveViewTab("meals");
           }}
-          className={`flex-1 py-2 rounded-xl text-xs font-black transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+          className={`flex-1 py-2 px-1 sm:px-2 rounded-xl text-[11px] sm:text-xs font-black transition-all flex items-center justify-center gap-1 sm:gap-1.5 cursor-pointer truncate ${
             activeViewTab === "meals"
               ? "bg-white dark:bg-zinc-900 text-[#126778] dark:text-teal-300 shadow-sm"
               : "text-slate-600 dark:text-slate-400 hover:text-slate-900"
           }`}
         >
-          <UtensilsCrossed size={13} />
-          <span>Daily Plates (3)</span>
+          <UtensilsCrossed size={13} className="shrink-0" />
+          <span className="truncate">Daily Plates</span>
         </button>
 
         <button
@@ -971,14 +971,14 @@ export default function AvoAcademy() {
             triggerHaptic("light");
             setActiveViewTab("simulator");
           }}
-          className={`flex-1 py-2 rounded-xl text-xs font-black transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+          className={`flex-1 py-2 px-1 sm:px-2 rounded-xl text-[11px] sm:text-xs font-black transition-all flex items-center justify-center gap-1 sm:gap-1.5 cursor-pointer truncate ${
             activeViewTab === "simulator"
               ? "bg-white dark:bg-zinc-900 text-[#126778] dark:text-teal-300 shadow-sm"
               : "text-slate-600 dark:text-slate-400 hover:text-slate-900"
           }`}
         >
-          <Sliders size={13} />
-          <span>GI Simulator</span>
+          <Sliders size={13} className="shrink-0" />
+          <span className="truncate">GI Simulator</span>
         </button>
       </div>
 
@@ -1007,10 +1007,10 @@ export default function AvoAcademy() {
                 >
                   <div>
                     <div className="flex items-center justify-between gap-2 mb-1.5">
-                      <span className="text-[9.5px] uppercase font-black tracking-wider text-[#126778] dark:text-teal-300 bg-teal-50 dark:bg-teal-950 px-2 py-0.5 rounded-md">
+                      <span className="text-[9.5px] uppercase font-black tracking-wider text-[#126778] dark:text-teal-300 bg-teal-50 dark:bg-teal-950 px-2 py-0.5 rounded-md truncate">
                         {lesson.category}
                       </span>
-                      <span className="text-[9.5px] text-slate-400 font-bold flex items-center gap-1">
+                      <span className="text-[9.5px] text-slate-400 font-bold flex items-center gap-1 shrink-0">
                         <Clock size={10} />
                         <span>{lesson.readTime}</span>
                       </span>
@@ -1027,7 +1027,7 @@ export default function AvoAcademy() {
                         <Icon className="h-4 w-4" />
                       </div>
                       <div className="min-w-0 flex-1">
-                        <h4 className="text-xs font-black text-slate-900 dark:text-white group-hover:text-[#126778] transition-colors leading-snug">
+                        <h4 className="text-xs font-black text-slate-900 dark:text-white group-hover:text-[#126778] transition-colors leading-snug line-clamp-1">
                           {lesson.title}
                         </h4>
                         <p className="text-[10.5px] text-slate-500 dark:text-slate-400 mt-0.5 leading-snug line-clamp-2">
@@ -1086,22 +1086,22 @@ export default function AvoAcademy() {
           {/* Active Meal Spotlight Card */}
           {activeSubMeal && (
             <div className="bg-white dark:bg-zinc-800 rounded-3xl p-4 sm:p-5 border border-slate-200/80 dark:border-zinc-700 shadow-sm space-y-3">
-              <div className="flex items-start justify-between gap-3">
-                <div className="flex items-center gap-3">
-                  <span className="text-3xl p-2.5 bg-teal-50 dark:bg-zinc-900 rounded-2xl border border-teal-100 dark:border-zinc-700">
+              <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-2.5">
+                <div className="flex items-center gap-3 min-w-0 flex-1">
+                  <span className="text-3xl p-2.5 bg-teal-50 dark:bg-zinc-900 rounded-2xl border border-teal-100 dark:border-zinc-700 shrink-0">
                     {activeSubMeal.emoji}
                   </span>
-                  <div>
-                    <span className="text-[9.5px] uppercase font-black tracking-wider text-[#126778] dark:text-teal-300 block">
+                  <div className="min-w-0 flex-1">
+                    <span className="text-[9.5px] uppercase font-black tracking-wider text-[#126778] dark:text-teal-300 block truncate">
                       {selectedCategory} • Recommended {activeSubMeal.mealType}
                     </span>
-                    <h3 className="text-sm sm:text-base font-black text-slate-900 dark:text-white leading-snug mt-0.5">
+                    <h3 className="text-sm sm:text-base font-black text-slate-900 dark:text-white leading-snug mt-0.5 truncate">
                       {activeSubMeal.dishName}
                     </h3>
                   </div>
                 </div>
 
-                <span className="text-[10px] font-black px-2.5 py-1 rounded-full bg-teal-100 text-teal-800 dark:bg-teal-950 dark:text-teal-200 shrink-0">
+                <span className="text-[10px] font-black px-2.5 py-1 rounded-full bg-teal-100 text-teal-800 dark:bg-teal-950 dark:text-teal-200 shrink-0 self-start sm:self-auto">
                   {activeSubMeal.keyNutrientBadge}
                 </span>
               </div>
