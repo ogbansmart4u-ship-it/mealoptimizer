@@ -20,6 +20,7 @@ import {
 import { useNavigate } from "react-router";
 import AppLogo from "../components/AppLogo";
 import Mascot from "../components/Mascot";
+import { useLanguage } from "../contexts/LanguageContext";
 import { toast } from "sonner";
 import { triggerHaptic, triggerConfetti } from "../utils/celebration";
 
@@ -27,6 +28,7 @@ type CalculatorTab = "swallow" | "sodium" | "sequence";
 
 export default function FoodCalculators() {
   const navigate = useNavigate();
+  const { t } = useLanguage();
   const [activeTab, setActiveTab] = useState<CalculatorTab>("swallow");
 
   // ==========================================
@@ -140,7 +142,7 @@ export default function FoodCalculators() {
             <div className="flex items-center gap-1.5">
               <Calculator size={16} className="text-[#1f7a8c]" />
               <h1 className="text-base sm:text-lg font-black text-slate-900 leading-none">
-                Metabolic Food Calculators
+                {t('calc.title')}
               </h1>
             </div>
             <p className="text-[10.5px] text-slate-500 font-medium mt-0.5">
@@ -174,14 +176,14 @@ export default function FoodCalculators() {
               triggerHaptic("light");
               setActiveTab("swallow");
             }}
-            className={`flex-1 py-2.5 px-2 rounded-xl text-xs font-black transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+            className={`flex-1 py-2.5 px-1.5 sm:px-2 rounded-xl text-[11px] sm:text-xs font-black transition-all flex items-center justify-center gap-1 sm:gap-1.5 cursor-pointer ${
               activeTab === "swallow"
                 ? "bg-white text-[#1f7a8c] shadow-sm"
                 : "text-slate-600 hover:text-slate-900"
             }`}
           >
             <span>🥣</span>
-            <span className="truncate">Swallow Swap</span>
+            <span className="truncate">{t('calc.tab.swallow')}</span>
           </button>
 
           <button
@@ -189,14 +191,14 @@ export default function FoodCalculators() {
               triggerHaptic("light");
               setActiveTab("sodium");
             }}
-            className={`flex-1 py-2.5 px-2 rounded-xl text-xs font-black transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+            className={`flex-1 py-2.5 px-1.5 sm:px-2 rounded-xl text-[11px] sm:text-xs font-black transition-all flex items-center justify-center gap-1 sm:gap-1.5 cursor-pointer ${
               activeTab === "sodium"
                 ? "bg-white text-[#1f7a8c] shadow-sm"
                 : "text-slate-600 hover:text-slate-900"
             }`}
           >
             <span>🧂</span>
-            <span className="truncate">Soup Sodium</span>
+            <span className="truncate">{t('calc.tab.sodium')}</span>
           </button>
 
           <button
@@ -204,14 +206,14 @@ export default function FoodCalculators() {
               triggerHaptic("light");
               setActiveTab("sequence");
             }}
-            className={`flex-1 py-2.5 px-2 rounded-xl text-xs font-black transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+            className={`flex-1 py-2.5 px-1.5 sm:px-2 rounded-xl text-[11px] sm:text-xs font-black transition-all flex items-center justify-center gap-1 sm:gap-1.5 cursor-pointer ${
               activeTab === "sequence"
                 ? "bg-white text-[#1f7a8c] shadow-sm"
                 : "text-slate-600 hover:text-slate-900"
             }`}
           >
             <span>📉</span>
-            <span className="truncate">Plate Sequence</span>
+            <span className="truncate">{t('calc.tab.sequence')}</span>
           </button>
         </div>
 

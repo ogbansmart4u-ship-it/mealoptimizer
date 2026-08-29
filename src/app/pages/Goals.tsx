@@ -388,7 +388,7 @@ export default function Goals() {
               Personalized Trajectory
             </span>
             <h1 className="text-xl sm:text-2xl font-black text-gray-900 leading-tight">
-              Metabolic Goals &amp; Targets 🎯
+              {t('goals.title')} 🎯
             </h1>
           </div>
           <div className="flex items-center gap-2">
@@ -397,7 +397,7 @@ export default function Goals() {
               className="p-2 bg-[#1f7a8c] text-white hover:bg-teal-800 rounded-2xl shadow-xs transition-transform active:scale-95 cursor-pointer flex items-center gap-1 text-xs font-bold"
             >
               <Plus size={16} />
-              <span className="hidden sm:inline">New Goal</span>
+              <span className="hidden sm:inline">{t('common.add')}</span>
             </button>
             <ProfilePictureUpload />
           </div>

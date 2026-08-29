@@ -56,6 +56,11 @@ export type DietaryTag =
   | "high-protein"
   | "heart-healthy"
   | "pcos-safe"
+  | "renal-safe"
+  | "ulcer-safe"
+  | "hormone-balance"
+  | "pregnancy-safe"
+  | "prostate-health"
   | "weight-loss"
   | "favorites";
 
@@ -101,6 +106,482 @@ export interface FullRecipe {
 }
 
 const MASTER_RECIPES: FullRecipe[] = [
+  {
+    "id": "101",
+    "name": "KDIGO Leached Yam Porridge (Renal-Safe)",
+    "emoji": "🍲",
+    "category": "lunch",
+    "tags": [
+      "renal-safe",
+      "low-sodium",
+      "heart-healthy"
+    ],
+    "prepTime": 20,
+    "cookTime": 30,
+    "baseServings": 2,
+    "difficulty": "easy",
+    "baseCalories": 260,
+    "baseProtein": 14,
+    "baseCarbs": 42,
+    "baseFats": 5,
+    "glycemicIndex": "Medium",
+    "rating": 4.9,
+    "reviews": 88,
+    "healthBenefits": "Two-stage boiling with discarded water cuts yam potassium by ~60%, allowing kidney patients to safely enjoy traditional yam.",
+    "clinicalNote": "KDIGO / KDOQI compliant. Total potassium capped at <350mg per portion. Sodium capped <250mg.",
+    "localMarkets": [
+      "Mile 12 Market",
+      "Oyingbo Market",
+      "Afro-Caribbean Grocers"
+    ],
+    "ingredients": [
+      {
+        "amount": 200,
+        "unit": "g",
+        "name": "White yam cubed small (1cm), soaked in warm water",
+        "diasporaSwap": "Taro / cassava (also double-leached)"
+      },
+      {
+        "amount": 50,
+        "unit": "g",
+        "name": "Fresh Ugwu or spinach leaves (steamed separately)",
+        "diasporaSwap": "Kale or collard greens (steamed & drained)"
+      },
+      {
+        "amount": 80,
+        "unit": "g",
+        "name": "Boiled de-boned mackerel or fresh tilapia",
+        "diasporaSwap": "Steamed cod or haddock"
+      },
+      {
+        "amount": 1,
+        "unit": "tsp",
+        "name": "Cold-pressed palm oil (clarified)",
+        "diasporaSwap": "Olive oil with a drop of paprika"
+      }
+    ],
+    "steps": [
+      {
+        "stepNumber": 1,
+        "instruction": "Dice yam into small 1cm cubes. Boil in 4 cups water for 10 mins. Discard all cooking water completely to leach out potassium.",
+        "flameLevel": "High",
+        "timerMinutes": 10,
+        "avoTip": "Discarding the first water is the golden secret to removing >50% soluble potassium!"
+      },
+      {
+        "stepNumber": 2,
+        "instruction": "Add 3 cups fresh boiling water to the leached yams and simmer for another 10 mins until soft.",
+        "flameLevel": "Medium",
+        "timerMinutes": 10
+      },
+      {
+        "stepNumber": 3,
+        "instruction": "Mash half the yams into a light porridge base. Fold in boiled fish, 1 tsp palm oil, and ground crayfish.",
+        "flameLevel": "Low",
+        "timerMinutes": 5
+      },
+      {
+        "stepNumber": 4,
+        "instruction": "Stir in pre-steamed Ugwu leaves during the final 2 minutes. Serve warm.",
+        "flameLevel": "Simmer",
+        "timerMinutes": 2
+      }
+    ]
+  },
+  {
+    "id": "102",
+    "name": "Soothing Green Banana & Oat Porridge (Ulcer & Acid-Safe)",
+    "emoji": "🥣",
+    "category": "breakfast",
+    "tags": [
+      "ulcer-safe",
+      "diabetic-friendly",
+      "heart-healthy"
+    ],
+    "prepTime": 10,
+    "cookTime": 15,
+    "baseServings": 2,
+    "difficulty": "easy",
+    "baseCalories": 270,
+    "baseProtein": 9,
+    "baseCarbs": 46,
+    "baseFats": 6,
+    "glycemicIndex": "Low",
+    "rating": 4.9,
+    "reviews": 112,
+    "healthBenefits": "Rich in leucocyanidin bioflavonoids and mucosal-coating oat beta-glucan; non-irritating to peptic and gastritis lesions.",
+    "clinicalNote": "Neutral pH (>6.2). Zero chili, zero citrus, zero nightshade peppers. Stimulates natural mucosal barrier defense.",
+    "localMarkets": [
+      "Bodija Market Ibadan",
+      "Tejuosho Market Yaba",
+      "Whole Foods / Sainsbury's"
+    ],
+    "ingredients": [
+      {
+        "amount": 1,
+        "unit": "medium",
+        "name": "Raw green plantain / unripe banana peeled & finely grated",
+        "diasporaSwap": "Green cooking bananas (Machete)"
+      },
+      {
+        "amount": 0.5,
+        "unit": "cup",
+        "name": "Rolled oats",
+        "diasporaSwap": "Steel-cut oats"
+      },
+      {
+        "amount": 1,
+        "unit": "cup",
+        "name": "Unsweetened light coconut milk or almond milk",
+        "diasporaSwap": "Oat milk"
+      },
+      {
+        "amount": 1,
+        "unit": "tsp",
+        "name": "Raw chia seeds with a pinch of ginger",
+        "diasporaSwap": "Ground flaxseed"
+      }
+    ],
+    "steps": [
+      {
+        "stepNumber": 1,
+        "instruction": "Bring 1.5 cups of water and coconut milk to a gentle simmer in a non-stick pot.",
+        "flameLevel": "Medium",
+        "timerMinutes": 4
+      },
+      {
+        "stepNumber": 2,
+        "instruction": "Whisk in grated green plantain and rolled oats continuously to prevent lumping.",
+        "flameLevel": "Low",
+        "timerMinutes": 6,
+        "avoTip": "Whisk gently — the creamy starch coats stomach walls smoothly."
+      },
+      {
+        "stepNumber": 3,
+        "instruction": "Cook on gentle simmer for 5 minutes until creamy. Stir in chia seeds and ginger.",
+        "flameLevel": "Simmer",
+        "timerMinutes": 5
+      }
+    ]
+  },
+  {
+    "id": "103",
+    "name": "Sprouted Soya Awara & Sesame Ugwu Greens (Hormone-Balance)",
+    "emoji": "🥗",
+    "category": "dinner",
+    "tags": [
+      "hormone-balance",
+      "high-protein",
+      "pcos-safe",
+      "weight-loss"
+    ],
+    "prepTime": 15,
+    "cookTime": 20,
+    "baseServings": 2,
+    "difficulty": "medium",
+    "baseCalories": 310,
+    "baseProtein": 28,
+    "baseCarbs": 16,
+    "baseFats": 16,
+    "glycemicIndex": "Low",
+    "rating": 4.8,
+    "reviews": 95,
+    "healthBenefits": "Natural genistein & daidzein isoflavones gently modulate estrogen receptors to buffer hot flashes and protect bone density.",
+    "clinicalNote": "Provides 45mg natural soy isoflavones + 320mg bioavailable plant calcium. Reduces vasomotor hot-flash frequency.",
+    "localMarkets": [
+      "Kano Kurmi Market",
+      "Jos Main Market",
+      "Asian & Afro Supermarkets"
+    ],
+    "ingredients": [
+      {
+        "amount": 200,
+        "unit": "g",
+        "name": "Firm organic soya curd (Awara / Tofu) cubed",
+        "diasporaSwap": "Organic extra firm tofu"
+      },
+      {
+        "amount": 2,
+        "unit": "tbsp",
+        "name": "Toasted sesame seeds (Beni-seed) ground",
+        "diasporaSwap": "Tahini paste"
+      },
+      {
+        "amount": 150,
+        "unit": "g",
+        "name": "Chopped fresh Ugwu (pumpkin leaves)",
+        "diasporaSwap": "Fresh Tuscan kale / spinach"
+      },
+      {
+        "amount": 1,
+        "unit": "tbsp",
+        "name": "Cold-pressed olive oil, 1/2 onion, 1 tsp Iru",
+        "diasporaSwap": "Avocado oil"
+      }
+    ],
+    "steps": [
+      {
+        "stepNumber": 1,
+        "instruction": "Pan-sear awara cubes in 1/2 tbsp oil on medium-high heat until golden and crispy (5 mins). Set aside.",
+        "flameLevel": "Medium",
+        "timerMinutes": 5
+      },
+      {
+        "stepNumber": 2,
+        "instruction": "Sauté sliced onions, garlic, and aromatic Iru in remaining oil for 2 minutes.",
+        "flameLevel": "Low",
+        "timerMinutes": 2
+      },
+      {
+        "stepNumber": 3,
+        "instruction": "Add shredded Ugwu leaves and ground sesame powder; toss vigorously for 3 minutes until tender-crisp.",
+        "flameLevel": "Medium",
+        "timerMinutes": 3
+      },
+      {
+        "stepNumber": 4,
+        "instruction": "Fold in the crispy awara cubes, season with a pinch of sea salt, and serve hot.",
+        "flameLevel": "Low",
+        "timerMinutes": 2
+      }
+    ]
+  },
+  {
+    "id": "104",
+    "name": "Lycopene-Enriched Red Pepper & Titus Stew (Prostate & Heart)",
+    "emoji": "🐟",
+    "category": "lunch",
+    "tags": [
+      "prostate-health",
+      "heart-healthy",
+      "low-sodium",
+      "high-protein"
+    ],
+    "prepTime": 15,
+    "cookTime": 30,
+    "baseServings": 3,
+    "difficulty": "easy",
+    "baseCalories": 340,
+    "baseProtein": 32,
+    "baseCarbs": 12,
+    "baseFats": 18,
+    "glycemicIndex": "Low",
+    "rating": 5.0,
+    "reviews": 134,
+    "healthBenefits": "Slow-simmered tomatoes and red tatase peppers release 4x bioavailable trans-lycopene; Titus (Mackerel) delivers potent Omega-3 EPA/DHA.",
+    "clinicalNote": "Cardio-protective and prostate-protective. High potassium-to-sodium ratio (3.8:1) supports healthy vascular tone.",
+    "localMarkets": [
+      "Lekki Sunday Market",
+      "Ketu Market",
+      "Morrisons / Walmart Fresh Fish Aisle"
+    ],
+    "ingredients": [
+      {
+        "amount": 2,
+        "unit": "steaks",
+        "name": "Fresh Titus (Mackerel) fish steaks, seasoned with turmeric",
+        "diasporaSwap": "Fresh Atlantic mackerel or wild salmon"
+      },
+      {
+        "amount": 4,
+        "unit": "large",
+        "name": "Red bell peppers (Tatase) + 3 ripe plum tomatoes (blended & boiled down)",
+        "diasporaSwap": "Red Romano peppers + San Marzano tomatoes"
+      },
+      {
+        "amount": 1.5,
+        "unit": "tbsp",
+        "name": "Extra virgin olive oil with garlic & thyme",
+        "diasporaSwap": "Avocado oil"
+      }
+    ],
+    "steps": [
+      {
+        "stepNumber": 1,
+        "instruction": "Steam or bake seasoned mackerel steaks for 10 minutes until firm.",
+        "flameLevel": "Medium",
+        "timerMinutes": 10
+      },
+      {
+        "stepNumber": 2,
+        "instruction": "Pour boiled pepper-tomato paste into heated olive oil with garlic, thyme, and bay leaf.",
+        "flameLevel": "Medium",
+        "timerMinutes": 5
+      },
+      {
+        "stepNumber": 3,
+        "instruction": "Slow-simmer on low heat for 15 minutes until the oil rises to the top, fully activating the trans-lycopene antioxidants.",
+        "flameLevel": "Low",
+        "timerMinutes": 15,
+        "avoTip": "Simmering with healthy fats turns lycopene into its most absorbable form!"
+      },
+      {
+        "stepNumber": 4,
+        "instruction": "Gently submerge mackerel steaks into the sauce and simmer for 5 minutes. Serve warm.",
+        "flameLevel": "Simmer",
+        "timerMinutes": 5
+      }
+    ]
+  },
+  {
+    "id": "105",
+    "name": "Maternal Healing Dry Catfish & Uziza Soup (Postpartum & Recovery)",
+    "emoji": "🍲",
+    "category": "dinner",
+    "tags": [
+      "pregnancy-safe",
+      "high-protein",
+      "heart-healthy",
+      "ulcer-safe"
+    ],
+    "prepTime": 15,
+    "cookTime": 25,
+    "baseServings": 2,
+    "difficulty": "easy",
+    "baseCalories": 280,
+    "baseProtein": 36,
+    "baseCarbs": 6,
+    "baseFats": 12,
+    "glycemicIndex": "Low",
+    "rating": 4.9,
+    "reviews": 76,
+    "healthBenefits": "Uziza (piper guineense) and scent leaf contain therapeutic phytosterols and flavonoids that ease postoperative pain and promote healing.",
+    "clinicalNote": "Rich in bioavailable heme iron (4.2mg), glycine, and collagen precursors for surgical wound healing post-Cesarean.",
+    "localMarkets": [
+      "Onitsha Main Market",
+      "Watt Market Calabar",
+      "Peckham Rye African Stores"
+    ],
+    "ingredients": [
+      {
+        "amount": 1,
+        "unit": "medium",
+        "name": "Smoked dry catfish (de-boned & washed in warm water)",
+        "diasporaSwap": "Smoked haddock or dried cod"
+      },
+      {
+        "amount": 1,
+        "unit": "tbsp",
+        "name": "Ground Uziza seeds + 1/2 Uda pod (cracked)",
+        "diasporaSwap": "Black peppercorns + grains of paradise"
+      },
+      {
+        "amount": 1,
+        "unit": "handful",
+        "name": "Fresh shredded Scent leaf (Nchanwu / Efirin)",
+        "diasporaSwap": "Fresh sweet basil or Thai basil"
+      },
+      {
+        "amount": 3,
+        "unit": "cups",
+        "name": "Rich bone broth with ginger and garlic",
+        "diasporaSwap": "Organic chicken bone broth"
+      }
+    ],
+    "steps": [
+      {
+        "stepNumber": 1,
+        "instruction": "Place washed catfish into pot with bone broth, crushed ginger, garlic, and crayfish. Bring to a boil for 10 minutes.",
+        "flameLevel": "High",
+        "timerMinutes": 10
+      },
+      {
+        "stepNumber": 2,
+        "instruction": "Add ground uziza and cracked uda pod; simmer for 8 minutes to extract essential anti-inflammatory terpenes.",
+        "flameLevel": "Medium",
+        "timerMinutes": 8
+      },
+      {
+        "stepNumber": 3,
+        "instruction": "Discard the hard uda pod. Stir in fresh scent leaves and let simmer for 2 minutes.",
+        "flameLevel": "Low",
+        "timerMinutes": 2
+      }
+    ]
+  },
+  {
+    "id": "106",
+    "name": "Cauliflower-Psyllium Fufu & Rich Efo Riro (Zero-Spike Swallow)",
+    "emoji": "🥣",
+    "category": "dinner",
+    "tags": [
+      "diabetic-friendly",
+      "weight-loss",
+      "pcos-safe",
+      "heart-healthy"
+    ],
+    "prepTime": 15,
+    "cookTime": 25,
+    "baseServings": 2,
+    "difficulty": "medium",
+    "baseCalories": 260,
+    "baseProtein": 22,
+    "baseCarbs": 14,
+    "baseFats": 14,
+    "glycemicIndex": "Low",
+    "rating": 5.0,
+    "reviews": 168,
+    "healthBenefits": "Mimics the texture and elasticity of traditional fufu with only 14g total carbs and 10g prebiotic soluble fiber.",
+    "clinicalNote": "Glycemic Load is ~2 (virtually flat CGM response). Ideal for strict ketogenic, diabetic, or metabolic reversal regimens.",
+    "localMarkets": [
+      "Shoprite Nigeria",
+      "Mile 12",
+      "Aldi / Trader Joe's / Carrefour"
+    ],
+    "ingredients": [
+      {
+        "amount": 1,
+        "unit": "medium",
+        "name": "Head of cauliflower, steamed & pureed smooth",
+        "diasporaSwap": "Frozen riced cauliflower (steamed & pureed)"
+      },
+      {
+        "amount": 1.5,
+        "unit": "tbsp",
+        "name": "Psyllium husk powder + 1 tbsp coconut flour (natural binder)",
+        "diasporaSwap": "Xanthan gum (1/2 tsp) + psyllium"
+      },
+      {
+        "amount": 150,
+        "unit": "g",
+        "name": "Chopped Efo Shoko (or spinach) with 100g cooked lean beef/fish",
+        "diasporaSwap": "Fresh baby spinach + grilled chicken breast"
+      },
+      {
+        "amount": 1,
+        "unit": "tsp",
+        "name": "Palm oil with diced onion and 1 tsp Iru",
+        "diasporaSwap": "Olive oil with fermented locust beans"
+      }
+    ],
+    "steps": [
+      {
+        "stepNumber": 1,
+        "instruction": "In a non-stick pot over medium-low heat, stir pureed cauliflower with psyllium husk and coconut flour for 4 minutes until a stretchy dough forms. Wrap in wrap film.",
+        "flameLevel": "Low",
+        "timerMinutes": 4,
+        "avoTip": "Keep stirring briskly — psyllium activates into an elastic dough within minutes!"
+      },
+      {
+        "stepNumber": 2,
+        "instruction": "Sauté onions and locust beans in 1 tsp palm oil for 2 minutes.",
+        "flameLevel": "Medium",
+        "timerMinutes": 2
+      },
+      {
+        "stepNumber": 3,
+        "instruction": "Add cooked shredded beef/fish and chopped greens; toss quickly on high heat for 3 minutes without overcooking.",
+        "flameLevel": "High",
+        "timerMinutes": 3
+      },
+      {
+        "stepNumber": 4,
+        "instruction": "Unwrap the warm cauliflower swallow and serve alongside the fragrant Efo Riro.",
+        "flameLevel": "Low",
+        "timerMinutes": 1
+      }
+    ]
+  },
   {
     "id": "1",
     "name": "Diabetic-Friendly Oat Swallow & Fresh Okra Soup",
@@ -1693,7 +2174,7 @@ export default function Recipe() {
               Metabolic Culinary Lab
             </span>
             <h1 className="text-xl sm:text-2xl font-black text-gray-900 leading-tight">
-              Clinical Recipes &amp; Swaps 🍲
+              {t('recipe.title')} 🍲
             </h1>
           </div>
           <ProfilePictureUpload />
@@ -1713,7 +2194,7 @@ export default function Recipe() {
                 : "text-slate-700 dark:text-zinc-300 hover:bg-white/40"
             }`}
           >
-            <span>🍲 Recipes ({recipes.length})</span>
+            <span>🍲 {t('recipe.title')} ({recipes.length})</span>
           </button>
 
           <button
@@ -1729,7 +2210,7 @@ export default function Recipe() {
             }`}
           >
             <Sparkles size={12} className="text-amber-300 animate-pulse shrink-0" />
-            <span>Swap Engine 🔄</span>
+            <span>{t('recipe.swapEngine')} 🔄</span>
           </button>
 
           <button
@@ -1744,7 +2225,7 @@ export default function Recipe() {
                 : "text-slate-700 dark:text-zinc-300 hover:bg-white/40"
             }`}
           >
-            <span>🥗 Fruits &amp; Greens 🍏</span>
+            <span>🥗 {t('recipe.fruitsGreens')} 🍏</span>
           </button>
         </div>
 
@@ -1757,7 +2238,7 @@ export default function Recipe() {
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search healthy Jollof, Egusi, swallows, low-sodium soups..."
+                placeholder={t('recipe.searchPlaceholder')}
                 className="w-full pl-10 pr-4 py-2.5 bg-white/95 backdrop-blur-md border border-teal-100/90 rounded-2xl text-xs text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[#1f7a8c] shadow-xs transition-all"
               />
             </div>
@@ -1790,13 +2271,18 @@ export default function Recipe() {
           {/* Main Clinical Tags */}
           <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none -mx-4 px-4 sm:mx-0 sm:px-0">
             {[
-              { id: "all", label: "All Meals", icon: "✨" },
-              { id: "diabetic-friendly", label: "Low Glycemic", icon: "🩸" },
-              { id: "low-sodium", label: "Hypertension Safe", icon: "❤️" },
-              { id: "high-protein", label: "High Protein Swallows", icon: "💪" },
-              { id: "pcos-safe", label: "PCOS & Hormone", icon: "🥑" },
-              { id: "weight-loss", label: "Metabolic Calorie", icon: "🔥" },
-              { id: "favorites", label: "Saved Favorites", icon: "❤️" },
+              { id: "all", label: t('recipe.tag.all'), icon: "✨" },
+              { id: "diabetic-friendly", label: t('recipe.tag.diabetic'), icon: "🩸" },
+              { id: "renal-safe", label: t('recipe.tag.renal'), icon: "🛡️" },
+              { id: "ulcer-safe", label: t('recipe.tag.ulcer'), icon: "🌱" },
+              { id: "hormone-balance", label: t('recipe.tag.hormone'), icon: "🌸" },
+              { id: "prostate-health", label: t('recipe.tag.prostate'), icon: "🫀" },
+              { id: "pregnancy-safe", label: t('recipe.tag.pregnancy'), icon: "🤱" },
+              { id: "low-sodium", label: t('recipe.tag.hypertension'), icon: "❤️" },
+              { id: "high-protein", label: t('recipe.tag.highProtein'), icon: "💪" },
+              { id: "pcos-safe", label: t('recipe.tag.pcos'), icon: "🥑" },
+              { id: "weight-loss", label: t('recipe.tag.weightLoss'), icon: "🔥" },
+              { id: "favorites", label: t('recipe.tag.favorites'), icon: "❤️" },
             ].map((pill) => {
               const count = recipes.filter((r) =>
                 pill.id === "all"

@@ -1002,6 +1002,88 @@ const translations: Translations = {
   'vault.minPlaceholder': { en: 'Min (e.g., 4.0)', es: 'Mín (p. ej., 4.0)', fr: 'Min (ex. 4.0)', yo: 'Ìkéré (f.à., 4.0)', ig: 'Kacha nta (d.o., 4.0)', ha: 'Mafi ƙanƙanta (misali, 4.0)', pcm: 'Min (e.g., 4.0)' },
   'vault.maxPlaceholder': { en: 'Max (e.g., 5.6)', es: 'Máx (p. ej., 5.6)', fr: 'Max (ex. 5.6)', yo: 'Ìtóbi (f.à., 5.6)', ig: 'Kacha ukwu (d.o., 5.6)', ha: 'Mafi girma (misali, 5.6)', pcm: 'Max (e.g., 5.6)' },
   'vault.toast.fillAll': { en: 'Please fill all fields', es: 'Por favor completa todos los campos', fr: 'Veuillez remplir tous les champs', yo: 'Jọ̀wọ́ kún gbogbo àwọn àyè', ig: 'Biko dejupụta mpaghara niile', ha: 'Da fatan cika duk filayen', pcm: 'Abeg fill all the fields' },
+
+  // ==========================================
+  // BATCH 2: LOGS & MEAL LOGGING
+  // ==========================================
+  'logs.title': { en: 'Food Logs', es: 'Registro de Comidas', fr: 'Journal Alimentaire', yo: 'Àkọsílẹ̀ Oúnjẹ', ig: 'Ndekọ Nri', ha: 'Bayanin Abinci', pcm: 'Food Logs' },
+  'logs.searchPlaceholder': { en: 'Search logged meals...', es: 'Buscar comidas registradas...', fr: 'Rechercher des repas enregistrés...', yo: 'Wá oúnjẹ tí a kọ sílẹ̀...', ig: 'Chọọ nri edekọrọ...', ha: 'Nemi abincin da aka rubuta...', pcm: 'Search logged meals...' },
+  'logs.allMeals': { en: 'All Meals', es: 'Todas las comidas', fr: 'Tous les repas', yo: 'Gbogbo Oúnjẹ', ig: 'Nri Niile', ha: 'Duk Abinci', pcm: 'All Meals' },
+  'logs.breakfast': { en: 'Breakfast', es: 'Desayuno', fr: 'Petit déjeuner', yo: 'Oúnjẹ Àárọ̀', ig: 'Nri Ụtụtụ', ha: 'Karin Kumallo', pcm: 'Breakfast' },
+  'logs.lunch': { en: 'Lunch', es: 'Almuerzo', fr: 'Déjeuner', yo: 'Oúnjẹ Ọ̀sán', ig: 'Nri Ehihie', ha: 'Abincin Rana', pcm: 'Lunch' },
+  'logs.dinner': { en: 'Dinner', es: 'Cena', fr: 'Dîner', yo: 'Oúnjẹ Alẹ́', ig: 'Nri Abalị', ha: 'Abincin Dare', pcm: 'Dinner' },
+  'logs.snack': { en: 'Snacks', es: 'Bocadillos', fr: 'Collations', yo: 'Oúnjẹ Ìfẹsẹ̀múlẹ̀', ig: 'Nri Nta', ha: 'Ganin Dama', pcm: 'Snacks' },
+  'logs.quickLog': { en: 'Quick Log', es: 'Registro rápido', fr: 'Enregistrement rapide', yo: 'Àkọsílẹ̀ Kíákíá', ig: 'Ndekọ Ngwa Ngwa', ha: 'Shigar Cikin Sauri', pcm: 'Quick Log' },
+  'logs.addMeal': { en: 'Add Meal', es: 'Añadir comida', fr: 'Ajouter un repas', yo: 'Fi Oúnjẹ Kún', ig: 'Tinye Nri', ha: 'Ƙara Abinci', pcm: 'Add Meal' },
+  'logs.calories': { en: 'Calories', es: 'Calorías', fr: 'Calories', yo: 'Kalori', ig: 'Kalori', ha: 'Kalori', pcm: 'Calories' },
+  'logs.protein': { en: 'Protein', es: 'Proteína', fr: 'Protéines', yo: 'Púrótéènì', ig: 'Protein', ha: 'Sunadarin Gina Jiki', pcm: 'Protein' },
+  'logs.carbs': { en: 'Carbs', es: 'Carbohidratos', fr: 'Glucides', yo: 'Kábóháídréètì', ig: 'Carbs', ha: 'Kababohydrate', pcm: 'Carbs' },
+  'logs.fats': { en: 'Fats', es: 'Grasas', fr: 'Lipides', yo: 'Ọ̀rá', ig: 'Abụba', ha: 'Kitse', pcm: 'Fats' },
+  'logs.sodium': { en: 'Sodium', es: 'Sodio', fr: 'Sodium', yo: 'Iyọ̀ Sódíọ̀mù', ig: 'Nnu Sodium', ha: 'Gishirin Sodium', pcm: 'Sodium' },
+  'logs.noMeals': { en: 'No meals logged yet for this date', es: 'Aún no hay comidas registradas para esta fecha', fr: "Aucun repas enregistré pour cette date", yo: 'Kò tíì sí oúnjẹ kankan fún ọjọ́ yìí', ig: 'Enwebeghị nri edekọrọ maka ụbọchị a', ha: 'Ba a rubuta abinci ba tukuna don wannan ranar', pcm: 'No food logged for dis date yet' },
+  'logs.shareWhatsApp': { en: 'Share to WhatsApp', es: 'Compartir en WhatsApp', fr: 'Partager sur WhatsApp', yo: 'Pín sí WhatsApp', ig: 'Kekọrịta na WhatsApp', ha: 'Raba a WhatsApp', pcm: 'Share to WhatsApp' },
+
+  // ==========================================
+  // BATCH 2: GOALS & TARGETS
+  // ==========================================
+  'goals.calorieTarget': { en: 'Daily Calorie Target', es: 'Meta de calorías diarias', fr: 'Objectif calorique quotidien', yo: 'Àfojúsùn Kalori Oojọ́', ig: 'Ebumnuche Kalori Kwa Ụbọchị', ha: 'Manufar Kalori ta Kullum', pcm: 'Daily Calorie Target' },
+  'goals.macroSplit': { en: 'Macronutrient Split', es: 'División de macronutrientes', fr: 'Répartition des macronutriments', yo: 'Pínpín Àwọn Èròjà Oúnjẹ', ig: 'Nkewa Macronutrient', ha: 'Rarraba Abubuwan Gina Jiki', pcm: 'Macronutrient Split' },
+  'goals.glycemicGoal': { en: 'Glycemic Stability Goal', es: 'Meta de estabilidad glucémica', fr: 'Objectif de stabilité glycémique', yo: 'Àfojúsùn Ìdúróṣinṣin Ṣúgà', ig: 'Ebumnuche Nkwụsi Ike Shuga', ha: 'Manufar Daidaita Sukari', pcm: 'Sugar Stability Goal' },
+  'goals.waterGoal': { en: 'Daily Water Target', es: 'Meta diaria de agua', fr: "Objectif d'eau quotidien", yo: 'Àfojúsùn Omi Oojọ́', ig: 'Ebumnuche Mmiri Kwa Ụbọchị', ha: 'Manufar Ruwa ta Kullum', pcm: 'Daily Water Target' },
+  'goals.saveSuccess': { en: 'Goals saved successfully', es: 'Metas guardadas con éxito', fr: 'Objectifs enregistrés avec succès', yo: 'A ti fi àwọn àfojúsùn pamọ́ láyọ̀', ig: 'Echekwara ebumnuche nke ọma', ha: 'An adana manufofin cikin nasara', pcm: 'Goals don save well' },
+
+  // ==========================================
+  // BATCH 2: RECIPES & CLINICAL TAGS
+  // ==========================================
+  'recipe.title': { en: 'Clinical Recipes', es: 'Recetas Clínicas', fr: 'Recettes Cliniques', yo: 'Àwọn Àdàpọ̀ Oúnjẹ Ìṣègùn', ig: 'Uzọ Nri Ọgwụgwọ', ha: 'Girke-girken Asibiti', pcm: 'Clinical Recipes' },
+  'recipe.searchPlaceholder': { en: 'Search healthy Jollof, Egusi, swallows...', es: 'Buscar Jollof, Egusi, swallows saludables...', fr: 'Rechercher Jollof, Egusi, pâtes saines...', yo: 'Wá Jollof, Egusi, oúnjẹ lílọ̀ tó ní ìlera...', ig: 'Chọọ Jollof, Egusi, nri ilo dị mma...', ha: 'Nemi Jollof, Egusi, tuwo mai lafiya...', pcm: 'Search healthy Jollof, Egusi, swallows...' },
+  'recipe.swapEngine': { en: 'Swap Engine', es: 'Motor de sustitución', fr: "Moteur d'échange", yo: 'Ẹ̀rọ Ìpàṣípààrọ̀', ig: 'Ngwa Mgbanwe', ha: 'Injin Sauya Abinci', pcm: 'Swap Engine' },
+  'recipe.fruitsGreens': { en: 'Fruits & Greens', es: 'Frutas y verduras', fr: 'Fruits et légumes', yo: 'Èso àti Ewébẹ̀', ig: 'Mkpụrụ osisi & Akwụkwọ ndụ', ha: '' + '’' + 'Ya' + '’' + 'yan Itace da Ganye', pcm: 'Fruits & Greens' },
+  'recipe.prep': { en: 'Prep', es: 'Prep', fr: 'Prép', yo: 'Ìmúra', ig: 'Nkwadebe', ha: 'Shiri', pcm: 'Prep' },
+  'recipe.cook': { en: 'Cook', es: 'Cocinar', fr: 'Cuisson', yo: 'Sísè', ig: 'Isi nri', ha: 'Dahuwa', pcm: 'Cook' },
+  'recipe.servings': { en: 'Servings', es: 'Porciones', fr: 'Portions', yo: 'Àwọn Ìpín', ig: 'Nkesa', ha: 'Rabo', pcm: 'Servings' },
+  'recipe.ingredients': { en: 'Ingredients', es: 'Ingredientes', fr: 'Ingrédients', yo: 'Àwọn Èròjà', ig: 'Ihe eji esi nri', ha: 'Kayan Hada Abinci', pcm: 'Ingredients' },
+  'recipe.instructions': { en: 'Step-by-Step Instructions', es: 'Instrucciones paso a paso', fr: 'Instructions étape par étape', yo: 'Ìtọ́sọ́nà Ìgbésẹ̀-kọ̀ọ̀kan', ig: 'Ntuziaka Nzọụkwụ na Nzọụkwụ', ha: 'Umarnin Mataki-mataki', pcm: 'Step-by-Step Instructions' },
+  'recipe.clinicalInsight': { en: 'Clinical Insight', es: 'Información clínica', fr: 'Aperçu clinique', yo: 'Àmọ̀ràn Ìṣègùn', ig: 'Nghọta Ọgwụgwọ', ha: 'Binciken Asibiti', pcm: 'Doctor Advice' },
+  'recipe.diasporaSwap': { en: 'Diaspora Alternative', es: 'Alternativa de la diáspora', fr: 'Alternative de la diaspora', yo: 'Àwọn Yíyàn Lọ́wọ́ Ilẹ̀ Òkèèrè', ig: 'Nhọrọ Mba Ọzọ', ha: 'Madadin Ƙasashen Waje', pcm: 'Diaspora Alternative' },
+  'recipe.tag.all': { en: 'All Meals', es: 'Todas las comidas', fr: 'Tous les repas', yo: 'Gbogbo Oúnjẹ', ig: 'Nri Niile', ha: 'Duk Abinci', pcm: 'All Meals' },
+  'recipe.tag.diabetic': { en: 'Low Glycemic', es: 'Bajo en glucemia', fr: 'Faible indice glycémique', yo: 'Ṣúgà Kéré', ig: 'Shuga Dị Ala', ha: 'Ƙarancin Sukari', pcm: 'Low Glycemic' },
+  'recipe.tag.renal': { en: 'KDIGO Renal Safe', es: 'Seguro renal KDIGO', fr: 'Sécurisé rénal KDIGO', yo: 'Àìléwu Kíndìnrín KDIGO', ig: 'Nchekwa Akụrụ KDIGO', ha: 'Amintaccen Ƙoda KDIGO', pcm: 'Kidney Safe' },
+  'recipe.tag.ulcer': { en: 'Ulcer & Acid Safe', es: 'Seguro para úlceras y acidez', fr: 'Sécurisé pour ulcères et reflux', yo: 'Àìléwu Ọgbẹ́ Ikùn', ig: 'Nchekwa Ọnya Afọ', ha: 'Amintaccen Gyambon Ciki', pcm: 'Ulcer Safe' },
+  'recipe.tag.hormone': { en: 'Menopause & Hormone', es: 'Menopausia y hormonas', fr: 'Ménopause et hormones', yo: 'Ìdáwọ́ Nǹkan Oṣù & Ọ̀rọ̀ Ara', ig: 'Nkwụsị Ịhụ Hụ & Homonụ', ha: 'Hormone da Al' + '’' + 'ada', pcm: 'Hormone Balance' },
+  'recipe.tag.prostate': { en: 'Prostate Health', es: 'Salud de próstata', fr: 'Santé de la prostate', yo: 'Ìlera Prostate', ig: 'Ahụike Prostate', ha: 'Lafiyar Prostate', pcm: 'Prostate Health' },
+  'recipe.tag.pregnancy': { en: 'Maternal & Recovery', es: 'Materno y recuperación', fr: 'Maternité et récupération', yo: 'Ìlera Ìyá & Ìwòsàn', ig: 'Ahụike Nne & Ngbake', ha: 'Lafiyar Uwa da Warkewa', pcm: 'Maternal & Recovery' },
+  'recipe.tag.hypertension': { en: 'Hypertension Safe', es: 'Seguro para hipertensión', fr: 'Sécurisé pour hypertension', yo: 'Àìléwu Ẹ̀jẹ̀ Ríru', ig: 'Nchekwa Ọbara Mgbali Elu', ha: 'Amintaccen Hawan Jini', pcm: 'BP Safe' },
+
+  // ==========================================
+  // BATCH 2: 3-IN-1 METABOLIC CALCULATORS
+  // ==========================================
+  'calc.title': { en: '3-in-1 Metabolic Calculators', es: 'Calculadoras metabólicas 3 en 1', fr: 'Calculateurs métaboliques 3 en 1', yo: 'Ẹ̀rọ Ìṣirò Ìṣègùn 3-in-1', ig: 'Ihe Ngụkọ Ọgwụgwọ 3-in-1', ha: 'Kayan Lissafin Lafiya 3-in-1', pcm: '3-in-1 Food Calculators' },
+  'calc.tab.swallow': { en: 'Swallow Carb-Swap', es: 'Cambio de carbohidratos de swallow', fr: 'Échange de glucides pour swallow', yo: 'Ìpàṣípààrọ̀ Oúnjẹ Lílọ̀', ig: 'Mgbanwe Nri Ilo', ha: 'Sauya Tuwo Mai Sauƙi', pcm: 'Swallow Carb-Swap' },
+  'calc.tab.sodium': { en: 'Soup Sodium & Oil Dilution', es: 'Dilución de sodio y aceite en sopas', fr: 'Dilution de sodium et huile dans les soupes', yo: 'Ìdínkù Iyọ̀ & Ọ̀rá Ọbẹ̀', ig: 'Mbelata Nnu & Mmanụ Ofe', ha: 'Rage Gishiri da Mai a Miya', pcm: 'Soup Sodium & Oil Cut' },
+  'calc.tab.sequence': { en: 'Plate Sequencing', es: 'Secuenciación del plato', fr: "Séquençage de l'assiette", yo: 'Ètò Ṣíṣètò Oúnjẹ', ig: 'Usoro Iri Nri', ha: 'Tsarin Cin Abinci', pcm: 'Plate Sequencing' },
+  'calc.portionSize': { en: 'Portion Size (Grams)', es: 'Tamaño de la porción (gramos)', fr: 'Taille de la portion (grammes)', yo: 'Ìwọ̀n Ìpín (Gírámù)', ig: 'Nha Nkesa (Grams)', ha: 'Girman Rabo (Giram)', pcm: 'Portion Size (Grams)' },
+  'calc.spikeRisk': { en: 'Post-Prandial Spike Risk', es: 'Riesgo de pico posprandial', fr: 'Risque de pic postprandial', yo: 'Ewu Ìbúgàgà Ṣúgà Lẹ́yìn Oúnjẹ', ig: 'Ihe Ize Ndụ Shuga Mgbe Nri Gasịrị', ha: 'Hadarin Tashin Sukari Bayan Abinci', pcm: 'Sugar Spike Risk' },
+  'calc.carbsCut': { en: 'Carbs Cut', es: 'Carbohidratos reducidos', fr: 'Glucides réduits', yo: 'Kábó Kéré Síi', ig: 'Carbs Belatara', ha: 'An Rage Carbs', pcm: 'Carbs Wey Cut' },
+  'calc.glycemicReduction': { en: 'Glycemic Load Reduction', es: 'Reducción de carga glucémica', fr: 'Réduction de la charge glycémique', yo: 'Ìdínkù Ẹrù Ṣúgà', ig: 'Mbelata Ibu Shuga', ha: 'Rage Nauyin Sukari', pcm: 'Sugar Load Cut' },
+
+  // ==========================================
+  // BATCH 2: CLINICIAN PORTAL
+  // ==========================================
+  'clinician.title': { en: 'Clinician Portal', es: 'Portal Clínico', fr: 'Portail Clinicien', yo: 'Ojú-èbúté Oníṣègùn', ig: 'Ọnụ Ụzọ Ndị Dọkịta', ha: 'Kofofin Likitoci', pcm: 'Doctor Portal' },
+  'clinician.subtitle': { en: 'Remote Metabolic Monitoring', es: 'Monitoreo metabólico remoto', fr: 'Surveillance métabolique à distance', yo: 'Ìmójútó Ìlera Látọ̀nà Jínjìn', ig: 'Nlekota Ahụike Site n\'Ebe Dị Anya', ha: 'Kula da Lafiya daga Nesa', pcm: 'Remote Patient Monitoring' },
+  'clinician.searchPatients': { en: 'Search patient by name or ID...', es: 'Buscar paciente por nombre o ID...', fr: 'Rechercher un patient par nom ou identifiant...', yo: 'Wá aláìsàn nípa orúkọ tàbí nọ́mbà...', ig: 'Chọọ onye ọrịa site na aha ma ọ bụ ID...', ha: 'Nemi mai haƙuri da suna ko ID...', pcm: 'Search patient by name or ID...' },
+  'clinician.meanGlucose': { en: '14-Day Mean Glucose', es: 'Glucosa media de 14 días', fr: 'Glycémie moyenne sur 14 jours', yo: 'Ìpín Ṣúgà Ọjọ́ 14', ig: 'Nkezi Shuga Ụbọchị 14', ha: 'Matsakaicin Sukari na Kwanaki 14', pcm: '14-Day Mean Glucose' },
+  'clinician.spikesCount': { en: 'Post-Prandial Spikes', es: 'Picos posprandiales', fr: 'Pics postprandiaux', yo: 'Ìbúgàgà Ṣúgà Lẹ́yìn Oúnjẹ', ig: 'Ọkwa Shuga Dị Elu Mgbe Nri Gasịrị', ha: 'Tashin Sukari Bayan Abinci', pcm: 'Sugar Spikes' },
+  'clinician.sendCareProtocol': { en: 'Send Care Protocol via WhatsApp', es: 'Enviar protocolo de atención por WhatsApp', fr: 'Envoyer le protocole de soins via WhatsApp', yo: 'Fi Ìtọ́sọ́nà Ìtọ́jú Ránṣẹ́ ní WhatsApp', ig: 'Ziga Usoro Nlekọta site na WhatsApp', ha: 'Aika Umarnin Kula ta WhatsApp', pcm: 'Send Care Protocol via WhatsApp' },
+
+  // ==========================================
+  // BATCH 2: MEAL PLANNING
+  // ==========================================
+  'mealplan.generate': { en: 'Generate Meal Plan', es: 'Generar plan de comidas', fr: 'Générer un plan de repas', yo: 'Ṣẹ̀dá Ètò Oúnjẹ', ig: 'Mepụta Atụmatụ Nri', ha: 'Ƙirƙiri Shirin Abinci', pcm: 'Generate Meal Plan' },
+  'mealplan.generateAnother': { en: 'Generate Another Option', es: 'Generar otra opción', fr: 'Générer une autre option', yo: 'Ṣẹ̀dá Àṣàyàn Míì', ig: 'Mepụta Nhọrọ Ọzọ', ha: 'Ƙirƙiri Wani Zaɓin', pcm: 'Generate Another Option' },
+  'mealplan.budget': { en: 'Budget (₦)', es: 'Presupuesto (₦)', fr: 'Budget (₦)', yo: 'Ètò Ìnáwó (₦)', ig: 'Ego Ezubere (₦)', ha: 'Kasafin Kudi (₦)', pcm: 'Budget (₦)' },
+  'mealplan.affordable': { en: 'Affordable Market Sourcing', es: 'Abastecimiento de mercado asequible', fr: 'Approvisionnement abordable sur les marchés', yo: 'Rírà Oúnjẹ Lọ́pọ̀kú ní Ọjà', ig: 'Ịzụta Nri Dị Ọnụ Ala n\'Ahịa', ha: 'Siyan Kayan Abinci mai Sauƙi a Kasuwa', pcm: 'Affordable Market Sourcing' },
 };
 
 interface LanguageContextType {

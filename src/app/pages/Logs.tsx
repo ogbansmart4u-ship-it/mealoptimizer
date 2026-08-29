@@ -273,10 +273,10 @@ Generated via MealOptimiza Certified Clinical Platform.`;
         <div className="max-w-2xl mx-auto flex items-center justify-between">
           <div>
             <span className="text-[10px] uppercase tracking-wider font-extrabold text-[#1f7a8c] dark:text-teal-400 block">
-              Metabolic Food Diary
+              {t('logs.title')}
             </span>
             <h1 className="text-xl sm:text-2xl font-black text-gray-900 dark:text-white leading-tight">
-              Daily Nutrition Logs 🍽️
+              {t('logs.title')} 🍽️
             </h1>
           </div>
           <div className="flex items-center gap-2">
@@ -299,7 +299,7 @@ Generated via MealOptimiza Certified Clinical Platform.`;
               className="p-2 bg-[#1f7a8c] text-white hover:bg-teal-800 rounded-2xl shadow-xs transition-transform active:scale-95 cursor-pointer flex items-center gap-1 text-xs font-bold"
             >
               <Plus size={16} />
-              <span className="hidden sm:inline">Add Meal</span>
+              <span className="hidden sm:inline">{t('logs.addMeal')}</span>
             </button>
             <ProfilePictureUpload />
           </div>
@@ -413,17 +413,17 @@ Generated via MealOptimiza Certified Clinical Platform.`;
 
           <div className="grid grid-cols-3 gap-2 text-center">
             <div className="bg-blue-50/70 dark:bg-blue-950/30 p-2.5 rounded-2xl border border-blue-100 dark:border-blue-900/40">
-              <span className="text-[10px] text-blue-700 dark:text-blue-300 font-bold block">Protein</span>
+              <span className="text-[10px] text-blue-700 dark:text-blue-300 font-bold block">{t('logs.protein')}</span>
               <span className="text-base font-black text-blue-900 dark:text-blue-100">{totalProtein}g</span>
               <span className="text-[9px] text-blue-600 dark:text-blue-400 block">Muscle &amp; Satiety</span>
             </div>
             <div className="bg-emerald-50/70 dark:bg-emerald-950/30 p-2.5 rounded-2xl border border-emerald-100 dark:border-emerald-900/40">
-              <span className="text-[10px] text-emerald-700 dark:text-emerald-300 font-bold block">Carbs</span>
+              <span className="text-[10px] text-emerald-700 dark:text-emerald-300 font-bold block">{t('logs.carbs')}</span>
               <span className="text-base font-black text-emerald-900 dark:text-emerald-100">{totalCarbs}g</span>
               <span className="text-[9px] text-emerald-600 dark:text-emerald-400 block">Energy Fuel</span>
             </div>
             <div className="bg-purple-50/70 dark:bg-purple-950/30 p-2.5 rounded-2xl border border-purple-100 dark:border-purple-900/40">
-              <span className="text-[10px] text-purple-700 dark:text-purple-300 font-bold block">Fats</span>
+              <span className="text-[10px] text-purple-700 dark:text-purple-300 font-bold block">{t('logs.fats')}</span>
               <span className="text-base font-black text-purple-900 dark:text-purple-100">{totalFats}g</span>
               <span className="text-[9px] text-purple-600 dark:text-purple-400 block">Essential Lipids</span>
             </div>
@@ -434,7 +434,7 @@ Generated via MealOptimiza Certified Clinical Platform.`;
             <div className="bg-slate-50 dark:bg-slate-800/60 p-2.5 rounded-2xl border border-slate-200/80 dark:border-slate-700">
               <div className="flex items-center justify-between text-xs mb-1">
                 <span className="text-[10px] font-extrabold text-slate-700 dark:text-slate-300 uppercase flex items-center gap-1">
-                  <span>🧂 Sodium Load</span>
+                  <span>🧂 {t('logs.sodium')}</span>
                 </span>
                 <span className={`text-[10px] font-black ${totalSodium > 2300 ? "text-rose-600" : "text-slate-800 dark:text-slate-200"}`}>
                   {totalSodium} / 2,300 mg
@@ -481,20 +481,26 @@ Generated via MealOptimiza Certified Clinical Platform.`;
 
         {/* Meal Type Filter Chips */}
         <div className="flex bg-white/90 dark:bg-slate-900/90 p-1 rounded-2xl border border-teal-100 dark:border-slate-800 shadow-2xs gap-1">
-          {(["all", "breakfast", "lunch", "dinner", "snack"] as const).map((cat) => (
+          {[
+            { id: "all", label: t('logs.allMeals') },
+            { id: "breakfast", label: t('logs.breakfast') },
+            { id: "lunch", label: t('logs.lunch') },
+            { id: "dinner", label: t('logs.dinner') },
+            { id: "snack", label: t('logs.snack') },
+          ].map((cat) => (
             <button
-              key={cat}
+              key={cat.id}
               onClick={() => {
                 triggerHaptic("light");
-                setFilterMealType(cat);
+                setFilterMealType(cat.id as any);
               }}
-              className={`flex-1 py-1.5 rounded-xl text-xs font-bold capitalize transition-all cursor-pointer ${
-                filterMealType === cat
+              className={`flex-1 py-1.5 rounded-xl text-[11px] sm:text-xs font-bold capitalize transition-all cursor-pointer truncate ${
+                filterMealType === cat.id
                   ? "bg-[#1f7a8c] text-white shadow-2xs"
                   : "text-gray-500 hover:text-gray-900 dark:text-slate-400 dark:hover:text-white"
               }`}
             >
-              {cat === "all" ? "All" : cat}
+              {cat.label}
             </button>
           ))}
         </div>

@@ -28,6 +28,7 @@ import {
 import { useNavigate } from "react-router";
 import PageHeader from "../components/PageHeader";
 import BottomNav from "../components/BottomNav";
+import { useLanguage } from "../contexts/LanguageContext";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "../components/ui/dialog";
 import { toast } from "sonner";
 import { triggerConfetti, triggerHaptic } from "../utils/celebration";
@@ -99,34 +100,34 @@ const MOCK_CLINICIAN_PATIENTS: ClinicianPatient[] = [
     condition: "Type 2 Diabetes",
     ckdStage: "None",
     riskLevel: "low",
-    meanGlucoseMgDl: 112,
+    meanGlucoseMgDl: 110,
     spikesCount14d: 2,
-    sodiumCompliancePercent: 94,
+    sodiumCompliancePercent: 88,
     potassiumRisk: "Safe",
-    hmoProvider: "Bupa Global",
-    lastLogTime: "4 hours ago",
-    lastMealName: "Waakye with Boiled Egg & Avocado",
-    lastMealThumbnail: "🍛",
-    phone: "+447911123456",
-    notes: "Excellent compliance. A1c dropped from 7.6% to 6.2% in 60 days following plate sequencing protocol.",
+    hmoProvider: "Reliance HMO",
+    lastLogTime: "5 hours ago",
+    lastMealName: "Grilled Titus Fish & Steamed Cabbage",
+    lastMealThumbnail: "🐟",
+    phone: "+2348055551234",
+    notes: "Excellent compliance with Plate Sequencing (eating cabbage salad 5 mins before protein). Fasting blood sugar 98 mg/dL.",
   },
   {
-    id: "MO-6612",
-    name: "Dr. Fatima Bello",
-    age: 51,
+    id: "MO-6109",
+    name: "Ngozi Eze",
+    age: 61,
     gender: "Female",
     condition: "CKD Stage 3",
     ckdStage: "Stage 3b",
     riskLevel: "high",
     meanGlucoseMgDl: 145,
     spikesCount14d: 9,
-    sodiumCompliancePercent: 88,
+    sodiumCompliancePercent: 70,
     potassiumRisk: "High",
-    hmoProvider: "Reliance HMO",
-    lastLogTime: "5 hours ago",
-    lastMealName: "Moi Moi with Steamed Fish",
+    hmoProvider: "Avon HMO",
+    lastLogTime: "Yesterday",
+    lastMealName: "Moi Moi & Fried Plantain",
     lastMealThumbnail: "🫘",
-    phone: "+2348055554321",
+    phone: "+2348011223344",
     notes: "eGFR at 36 mL/min. High potassium alert triggered on bean pudding and dried fish. Advised double-boil leaching protocol.",
   },
   {
@@ -152,6 +153,7 @@ const MOCK_CLINICIAN_PATIENTS: ClinicianPatient[] = [
 
 export default function ClinicianPortal() {
   const navigate = useNavigate();
+  const { t } = useLanguage();
   const [patients, setPatients] = useState<ClinicianPatient[]>(MOCK_CLINICIAN_PATIENTS);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCondition, setSelectedCondition] = useState<string>("All");
