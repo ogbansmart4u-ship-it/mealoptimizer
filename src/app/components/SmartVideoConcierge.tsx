@@ -26,6 +26,8 @@ import {
   Dna,
   Zap,
   Target,
+  ShoppingCart,
+  BookOpen,
 } from "lucide-react";
 import { useNavigate } from "react-router";
 import { useUser } from "../contexts/UserContext";
@@ -46,17 +48,21 @@ interface SmartVideoConciergeProps {
 // Preset Clinical & African Nutrition Knowledge Base for instant conversational answers
 const CLINICAL_KNOWLEDGE_BASE: Record<string, string> = {
   profile_importance:
-    "Calibrating your Health Profile is the single most important step in MealOptimiza! When you enter your age, biological sex, current weight, height, and medical conditions (like Diabetes, Hypertension, or PCOS), our clinical AI fine-tunes your daily calorie targets, calculates your basal metabolic rate, and activates customized Food-Drug Safety Shields. Without your profile, recommendations remain generic—with it, every meal plan is 100% tailored to your unique body chemistry!",
+    "Calibrating your Health Profile is the single most important step in MealOptimiza. When you share your age, sex, weight, height, and conditions like diabetes or high blood pressure, our clinical AI fine-tunes your daily calorie targets and activates customized food safety shields. Without your profile, advice remains generic. With it, every meal plan is tailored to your unique body chemistry.",
   app_superpowers:
-    "MealOptimiza does 4 transformative things for your health: 1) AI Cultural Food Scanning: Snap any African dish to analyze calories, carbs, and glycemic spike ratings in seconds. 2) Glycemic Spike Shields: Enjoy traditional swallows and soups safely without blood sugar spikes or blood pressure surges. 3) Intermittent Fasting & Autophagy Clock: Track fat burning and cellular repair. 4) Certified Doctor Visit PDF Reports: Generate 14-day dossiers with eA1c curves to share with your physician!",
+    "MealOptimiza transforms your daily health through five core features. First, Cultural Food Scanning: snap any African dish to analyze calories and glycemic ratings. Second, Glycemic Spike Shields: enjoy traditional swallows safely without sugar spikes. Third, Smart Market Grocery Lists: walk through the store with department sorting and diaspora swaps. Fourth, 10X Goals: track micro-habits with one-tap steppers. And fifth, Certified Doctor PDF Reports: share comprehensive metabolic dossiers with your physician.",
+  grocery:
+    "The new Smart Market Grocery List organizes your ingredients in two powerful ways. By Supermarket Aisle: so you can walk through produce, proteins, and ancient grains in logical order. Or By Meal Plan: to see exact ingredients for each recipe. It also calculates your estimated basket cost in your local currency and suggests healthy diaspora swaps.",
   swallow:
-    "To enjoy swallow with diabetes or insulin resistance: 1) Choose high-fiber, resistant-starch swallows like Unripe Plantain flour, Oat swallow, or Amala over pounded yam. 2) Pair with slimy viscous soups like Ewedu or Okra—their soluble mucilage forms a gel matrix in your gut that slows glucose absorption by up to 38%. 3) Always eat 3-4 spoonfuls of soup or vegetable first before your first swallow bite!",
+    "To enjoy traditional swallow with diabetes or insulin resistance: First, choose high-fiber swallows like unripe plantain flour, oat swallow, or amala over pounded yam. Second, pair with viscous soups like Ewedu or Okra. Their natural soluble mucilage creates a gel matrix in your intestine that slows carbohydrate absorption by up to thirty-eight percent. Third, always eat three to four spoonfuls of soup first before your first swallow bite.",
   bp:
-    "For blood pressure & cardiovascular protection: 1) Boost potassium-rich vegetables like Ugu (fluted pumpkin), Garden Egg, and bitter leaf to help your kidneys excrete excess sodium. 2) Replace high-sodium seasoning cubes with locust beans (Iru), garlic, ginger, and crayfish for natural savory umami. 3) Stay well-hydrated with at least 2.5 liters of water daily.",
+    "For cardiovascular and blood pressure protection: First, boost potassium-rich vegetables like fluted pumpkin Ugu, garden egg, and bitter leaf to help your kidneys excrete excess sodium. Second, replace high-sodium seasoning cubes with locust beans Iru, garlic, ginger, and crayfish for natural umami depth. Third, stay well hydrated with at least two and a half liters of water daily.",
   zobo:
-    "Flavonoids in unsweetened Zobo (hibiscus calyx) have mild ACE-inhibiting properties that naturally support blood pressure. However, if you take prescription blood pressure medication (like Lisinopril, Amlodipine, or Losartan), drink Zobo in moderation and separate it by at least 2 hours to avoid hypotensive dizziness. Always sweeten with ginger, clove, or pineapple skin rather than refined sugar.",
+    "Unsweetened hibiscus Zobo tea contains natural flavonoids with mild ACE-inhibiting properties that support healthy blood pressure. However, if you take prescription blood pressure medications like Lisinopril, Amlodipine, or Losartan, enjoy Zobo in moderation and separate it by two hours to avoid feeling dizzy. Always brew with ginger, cloves, and pineapple skin instead of refined sugar.",
   fasting:
-    "To break an intermittent fast without causing an acute glycemic surge: Step 1: Drink warm lemon water or a small cup of light pepper soup (15 mins). Step 2: Eat a protein/fiber cushion such as boiled eggs, avocado, or garden egg. Step 3: Consume your main meal with complex carbohydrates (beans, boiled plantain). This protects your pancreas and prevents digestive fatigue.",
+    "To break an intermittent fast smoothly without a glucose surge: Step one: start with warm lemon water or a small cup of light pepper soup. Step two: eat a protein and fiber cushion such as boiled eggs, avocado, or garden egg. Step three: enjoy your main meal with complex carbohydrates like beans or boiled plantain. This cushions your pancreas and prevents digestive fatigue.",
+  sequencing:
+    "Food sequencing is a powerful clinical technique. Always eat your meal in this order: first vegetables and soup fiber, second protein and healthy fats, and third carbohydrates and starches. This slows gastric emptying and flattens your post-meal blood sugar curve by up to forty percent.",
 };
 
 export default function SmartVideoConcierge({
@@ -71,6 +77,7 @@ export default function SmartVideoConcierge({
 
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
+  const [speechRate, setSpeechRate] = useState<number>(0.94); // 0.85 = Relaxed, 0.94 = Normal, 1.05 = Fast
   const [selectedLanguage, setSelectedLanguage] = useState<"en" | "pcm" | "yo" | "ig" | "ha" | "fr">("en");
   const [userQuery, setUserQuery] = useState("");
   const [aiResponse, setAiResponse] = useState<string | null>(null);
@@ -82,12 +89,12 @@ export default function SmartVideoConcierge({
   );
 
   const subtitles: Record<string, string> = {
-    en: `Welcome to MealOptimiza! I am Sarah, your Nutrition Assistant. Here is what I can do for you: Snap photos of your African meals for instant AI calorie & glycemic spike analysis, protect your blood sugar & blood pressure without giving up cultural delicacies, and track your fasting! Most importantly, please take a moment to calibrate your Health Profile below—when you share your age, weight, and health conditions, our AI tailors every recommendation with 100% clinical precision to your body!`,
-    pcm: `Welcome to MealOptimiza! I be Sarah, your Nutrition Assistant. See wetin this app fit do for you: Snap your food to check calories and sugar spikes, enjoy your favorite swallow without fear of high BP or diabetes, and download report for your doctor. Make sure say you fill your Health Profile below—na so we fit give you correct advice tailored to your body!`,
+    en: `Welcome to MealOptimiza! I am Sarah, your Clinical Nutrition Assistant. I am here to help you enjoy authentic African meals while protecting your blood sugar and cardiovascular health. You can snap food photos for instant AI macro analysis, navigate the market with our Smart Grocery List, and track your habits with one-tap goals. Please take a moment to calibrate your Health Profile below so I can tailor every meal plan to your body chemistry!`,
+    pcm: `Welcome to MealOptimiza! I be Sarah, your Nutrition Assistant. See wetin this app fit do for you: Snap your food to check calories and sugar spikes, enjoy your favorite swallow without fear of high blood pressure or diabetes, and shop with our smart market list. Make sure say you fill your Health Profile below so we fit give you correct advice tailored to your body!`,
     yo: `Ẹ kú àbọ̀ sí MealOptimiza! Èmi ni Sarah, Olùrànlọ́wọ́ Oúnjẹ yín. Ẹ ya fọ́tò oúnjẹ yín fún àtúnyẹ̀wò kíákíá, tọ́jú ìwọ̀n ṣúgà àti ẹ̀jẹ̀ ríru yín. Jọ̀wọ́ kọ àwọn ẹ̀kúnrẹ́rẹ́ ìlera yín sínú Health Profile kí a lè fún yín ní ìmọ̀ràn tó bá ara yín mu dáradára!`,
     ig: `Nnọọ na MealOptimiza! Abụ m Sarah, Onye na-enyere gị aka na Nri. Se foto nri gị maka nyocha shuga na kalori ngwa ngwa, ma chebe ahụike gị. Biko mejupụta Health Profile gị ka anyị wee hazie ndụmọdụ dabara ahụ gị kpọmkwem!`,
     ha: `Barka da zuwa MealOptimiza! Ni ce Sarah, Mataimakiyar ku kan Abinci. Ɗauki hoton abincinku don sanin sukarin jini da kalori, ku kiyaye lafiyarku. Da fatan za ku cika Bayanan Lafiyarku a ƙasa don samun keɓantaccen shiri na musamman!`,
-    fr: `Bienvenue sur MealOptimiza ! Je suis Sarah, votre Assistante en Nutrition. Prenez des photos de vos plats pour une analyse glycémique instantanée et protégez votre santé métabolique. Complétez votre profil de santé ci-dessous pour des recommandations 100% personnalisées !`,
+    fr: `Bienvenue sur MealOptimiza ! Je suis Sarah, votre Assistante en Nutrition. Prenez des photos de vos plats pour une analyse instantanée et découvrez notre liste de courses intelligente. Complétez votre profil de santé ci-dessous pour des recommandations personnalisées !`,
   };
 
   // Fluid Speech function with automatic start/stop and strict lip-sync trigger
@@ -95,13 +102,15 @@ export default function SmartVideoConcierge({
     if (isMuted) return;
     speakWithSarah(text, {
       voiceId: "YIgPmt6aTfZFf6mjP9RC",
+      rate: speechRate,
+      pitch: 1.02,
       onStart: () => setIsSpeaking(true),
       onEnd: () => setIsSpeaking(false),
       onError: () => setIsSpeaking(false),
     });
   };
 
-  // Auto-speak on modal open
+  // Auto-speak on modal open or language change
   useEffect(() => {
     if (isOpen) {
       setAiResponse(null);
@@ -113,7 +122,7 @@ export default function SmartVideoConcierge({
     return () => {
       stopSarahSpeech();
     };
-  }, [isOpen, selectedLanguage]);
+  }, [isOpen, selectedLanguage, speechRate]);
 
   const toggleMute = () => {
     triggerHaptic("light");
@@ -127,6 +136,23 @@ export default function SmartVideoConcierge({
     }
   };
 
+  const handleReplaySpeech = () => {
+    triggerHaptic("light");
+    if (isMuted) setIsMuted(false);
+    speakText(aiResponse || subtitles[selectedLanguage]);
+  };
+
+  const handleCycleSpeed = () => {
+    triggerHaptic("light");
+    let nextRate = 0.94;
+    if (speechRate === 0.94) nextRate = 1.05;
+    else if (speechRate === 1.05) nextRate = 0.85;
+    else nextRate = 0.94;
+
+    setSpeechRate(nextRate);
+    toast.info(`Voice pace: ${nextRate === 0.85 ? "Relaxed (0.85x)" : nextRate === 1.05 ? "Brisk (1.05x)" : "Natural (0.94x)"}`);
+  };
+
   const handleAskQuestion = (query: string) => {
     if (!query.trim()) return;
     triggerHaptic("medium");
@@ -138,6 +164,8 @@ export default function SmartVideoConcierge({
 
     if (q.includes("profile") || q.includes("demographic") || q.includes("importance") || q.includes("why fill") || q.includes("setup")) {
       answer = CLINICAL_KNOWLEDGE_BASE.profile_importance;
+    } else if (q.includes("market") || q.includes("grocery") || q.includes("shopping") || q.includes("aisle") || q.includes("store")) {
+      answer = CLINICAL_KNOWLEDGE_BASE.grocery;
     } else if (q.includes("app") || q.includes("feature") || q.includes("can do") || q.includes("what can") || q.includes("superpower")) {
       answer = CLINICAL_KNOWLEDGE_BASE.app_superpowers;
     } else if (q.includes("swallow") || q.includes("pounded yam") || q.includes("garri") || q.includes("eba") || q.includes("diabetes") || q.includes("sugar")) {
@@ -148,8 +176,10 @@ export default function SmartVideoConcierge({
       answer = CLINICAL_KNOWLEDGE_BASE.zobo;
     } else if (q.includes("fast") || q.includes("fasting") || q.includes("autophagy") || q.includes("break")) {
       answer = CLINICAL_KNOWLEDGE_BASE.fasting;
+    } else if (q.includes("sequence") || q.includes("order") || q.includes("first") || q.includes("plate")) {
+      answer = CLINICAL_KNOWLEDGE_BASE.sequencing;
     } else {
-      answer = `Great question regarding ${query}! For optimal personalized accuracy, ensure your Health Profile is calibrated. When paired with high-fiber African vegetable soups (Ewedu/Okra/Ugu) and unrefined starches, your body maintains steady blood sugar and balanced vitality!`;
+      answer = `That is a wonderful question regarding ${query}! For maximum personalized accuracy, make sure your Health Profile is calibrated. When paired with high-fiber African vegetable soups like Ewedu, Okra, or Ugu, your meals maintain balanced blood sugar and optimal vitality.`;
     }
 
     setTimeout(() => {
@@ -279,32 +309,70 @@ export default function SmartVideoConcierge({
                 </p>
               </div>
 
-              {/* Language Switcher Bar */}
-              <div className="flex items-center gap-1 mt-3 flex-wrap justify-center">
-                {[
-                  { id: "en", label: "EN" },
-                  { id: "pcm", label: "Pidgin" },
-                  { id: "yo", label: "Yoruba" },
-                  { id: "ig", label: "Igbo" },
-                  { id: "ha", label: "Hausa" },
-                  { id: "fr", label: "French" },
-                ].map((lang) => (
+              {/* Language Switcher & Voice Controls Bar */}
+              <div className="flex flex-col items-center gap-2 mt-3 w-full">
+                {/* Language Switcher Bar */}
+                <div className="flex items-center gap-1 flex-wrap justify-center">
+                  {[
+                    { id: "en", label: "EN" },
+                    { id: "pcm", label: "Pidgin" },
+                    { id: "yo", label: "Yoruba" },
+                    { id: "ig", label: "Igbo" },
+                    { id: "ha", label: "Hausa" },
+                    { id: "fr", label: "French" },
+                  ].map((lang) => (
+                    <button
+                      key={lang.id}
+                      onClick={() => {
+                        setSelectedLanguage(lang.id as any);
+                        setAiResponse(null);
+                        triggerHaptic("light");
+                      }}
+                      className={`text-[10px] font-bold px-2 py-0.8 rounded-lg cursor-pointer transition-all ${
+                        selectedLanguage === lang.id
+                          ? "bg-amber-400 text-slate-950 font-black shadow-xs"
+                          : "bg-white/15 hover:bg-white/25 text-white"
+                      }`}
+                    >
+                      {lang.label}
+                    </button>
+                  ))}
+                </div>
+
+                {/* Micro Voice Tuning Pill (Replay, Pace & Mute) */}
+                <div className="flex items-center gap-2 bg-white/10 backdrop-blur-md px-3 py-1 rounded-full border border-white/15 text-[10.5px]">
                   <button
-                    key={lang.id}
-                    onClick={() => {
-                      setSelectedLanguage(lang.id as any);
-                      setAiResponse(null);
-                      triggerHaptic("light");
-                    }}
-                    className={`text-[10px] font-bold px-2 py-0.8 rounded-lg cursor-pointer transition-all ${
-                      selectedLanguage === lang.id
-                        ? "bg-amber-400 text-slate-950 font-black shadow-xs"
-                        : "bg-white/15 hover:bg-white/25 text-white"
-                    }`}
+                    type="button"
+                    onClick={handleReplaySpeech}
+                    className="text-teal-200 hover:text-white font-bold flex items-center gap-1 cursor-pointer transition-colors active:scale-95"
+                    title="Replay Sarah's voice"
                   >
-                    {lang.label}
+                    <RotateCcw size={11} />
+                    <span>Replay</span>
                   </button>
-                ))}
+
+                  <span className="text-white/30">•</span>
+
+                  <button
+                    type="button"
+                    onClick={handleCycleSpeed}
+                    className="text-amber-300 hover:text-amber-200 font-black flex items-center gap-1 cursor-pointer transition-colors active:scale-95"
+                    title="Change voice reading pace"
+                  >
+                    <span>Pace: {speechRate === 0.85 ? "0.85x Relaxed" : speechRate === 1.05 ? "1.05x Brisk" : "0.94x Natural"}</span>
+                  </button>
+
+                  <span className="text-white/30">•</span>
+
+                  <button
+                    type="button"
+                    onClick={toggleMute}
+                    className="text-teal-200 hover:text-white font-bold flex items-center gap-1 cursor-pointer transition-colors active:scale-95"
+                  >
+                    {isMuted ? <VolumeX size={11} className="text-rose-300" /> : <Volume2 size={11} className="text-emerald-300" />}
+                    <span>{isMuted ? "Unmute" : "Mute"}</span>
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -353,11 +421,13 @@ export default function SmartVideoConcierge({
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
               {[
                 { q: "Why must I fill my Health Profile?", key: "profile", icon: Target },
-                { q: "What can MealOptimiza do for me?", key: "features", icon: Zap },
+                { q: "How does Smart Market Grocery List work?", key: "grocery", icon: ShoppingCart },
                 { q: "How to eat Swallow with Diabetes?", key: "swallow", icon: Activity },
                 { q: "Best Soups for High Blood Pressure?", key: "bp", icon: HeartPulse },
+                { q: "What is Food Sequencing order?", key: "sequencing", icon: BookOpen },
                 { q: "Can I drink Zobo with BP medicine?", key: "zobo", icon: Sparkles },
                 { q: "Breaking Fasting without Sugar Spikes?", key: "fasting", icon: Flame },
+                { q: "What can MealOptimiza do for me?", key: "features", icon: Zap },
               ].map((item, idx) => {
                 const Icon = item.icon;
                 return (
