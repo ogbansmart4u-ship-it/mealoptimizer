@@ -784,124 +784,161 @@ export default function Home() {
             </div>
 
             {/* ============================================================ */}
-            {/* 1. TOP HERO: AI FOOD CAMERA & COMPACT FUEL GAUGE POWER DECK  */}
+            {/* 1. TOP HERO: FULL-WIDTH AI FOOD CAMERA COMMAND CENTER         */}
             {/* ============================================================ */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              {/* 📸 Card A: Instant AI Camera & Food Scanner (Top Priority) */}
-              <button
-                type="button"
+            <div className="space-y-3">
+              {/* 📸 FULL-WIDTH AI CAMERA HERO BANNER */}
+              <div
                 onClick={() => {
                   triggerHaptic("medium");
                   setShowLocalFoodScanner(true);
                 }}
-                className="relative overflow-hidden bg-gradient-to-br from-teal-500 via-teal-600 to-cyan-600 rounded-3xl p-4 sm:p-5 text-white text-left shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.01] active:scale-[0.99] cursor-pointer flex flex-col justify-between min-h-[160px] border-2 border-teal-300/40 group"
+                className="relative overflow-hidden bg-gradient-to-br from-[#126778] via-[#0f5462] to-[#0a353e] rounded-3xl p-5 sm:p-6 text-white shadow-xl border-2 border-teal-400/40 hover:border-teal-300 transition-all duration-300 hover:scale-[1.01] active:scale-[0.99] cursor-pointer flex flex-col justify-between group"
               >
                 {/* Glowing Laser Scan Sweep Line */}
-                <div className="absolute left-0 right-0 h-1 bg-gradient-to-r from-transparent via-white to-transparent shadow-[0_0_15px_#fff] pointer-events-none animate-laser-sweep opacity-90" />
-                <div className="absolute -top-10 -right-10 w-32 h-32 rounded-full bg-white/10 blur-xl pointer-events-none" />
+                <div className="absolute left-0 right-0 top-0 h-1 bg-gradient-to-r from-transparent via-emerald-300 to-transparent shadow-[0_0_20px_#4ade80] pointer-events-none animate-laser-sweep opacity-90" />
+                <div className="absolute -top-12 -right-12 w-48 h-48 rounded-full bg-teal-400/15 blur-2xl pointer-events-none" />
+                <div className="absolute -bottom-12 -left-12 w-48 h-48 rounded-full bg-emerald-500/10 blur-2xl pointer-events-none" />
 
-                {/* Top Row: Camera Lens with Radar Ring */}
-                <div className="flex items-center justify-between relative z-10">
-                  <div className="relative">
-                    <span className="absolute -inset-1 rounded-2xl bg-white/30 animate-pulse-radar pointer-events-none" />
-                    <div className="relative bg-white/25 backdrop-blur-xs rounded-2xl p-2.5 w-fit group-hover:rotate-6 transition-transform shadow-xs">
-                      <Camera className="h-6 w-6 text-white" />
+                {/* Top Badge & Live Status Row */}
+                <div className="flex items-center justify-between relative z-10 mb-3">
+                  <div className="flex items-center gap-2">
+                    <div className="relative">
+                      <span className="absolute -inset-1 rounded-2xl bg-teal-400/40 animate-pulse-radar pointer-events-none" />
+                      <div className="relative bg-white/20 backdrop-blur-md rounded-2xl p-2.5 shadow-md border border-white/20 group-hover:rotate-6 transition-transform">
+                        <Camera className="h-6 w-6 text-white" />
+                      </div>
+                    </div>
+                    <div>
+                      <div className="flex items-center gap-1.5">
+                        <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping inline-block" />
+                        <span className="text-[10px] font-black uppercase tracking-wider text-teal-200">
+                          AI SCANNER READY
+                        </span>
+                      </div>
+                      <h4 className="text-base sm:text-lg font-black text-white leading-tight">
+                        {t('home.snapKnow')} 📸
+                      </h4>
                     </div>
                   </div>
-                  <span className="text-[9.5px] font-black tracking-wider uppercase px-2 py-0.5 rounded-full bg-white/20 backdrop-blur-xs text-teal-50 border border-white/20 shadow-2xs">
-                    AI VISION CORE ⚡
+
+                  <span className="text-[9.5px] font-black tracking-wider uppercase px-2.5 py-1 rounded-full bg-emerald-400/20 text-emerald-300 border border-emerald-400/30 shadow-2xs">
+                    WEST AFRICAN &amp; DIASPORA AI ⚡
                   </span>
                 </div>
 
-                {/* Bottom Text & 1-Tap Trigger */}
-                <div className="relative z-10 mt-3">
-                  <span className="text-base font-black block leading-tight tracking-tight text-white">
-                    {t('home.snapKnow')} 📸
-                  </span>
-                  <span className="text-[11px] text-teal-50/90 font-semibold block mt-0.5">
-                    Snap any African or diaspora meal
-                  </span>
-                  <div className="mt-2.5 inline-flex items-center gap-1.5 px-3 py-1 bg-white text-teal-900 rounded-xl text-xs font-black shadow-sm group-hover:bg-teal-50 transition-colors">
-                    <span>Open Camera</span>
-                    <ChevronRight size={13} className="group-hover:translate-x-0.5 transition-transform" />
-                  </div>
-                </div>
-              </button>
+                {/* Middle Description */}
+                <p className="text-xs sm:text-sm text-teal-100/95 font-medium relative z-10 leading-relaxed max-w-xl mb-4">
+                  Point your camera at any meal to instantly detect cultural bioactives, glycemic spike curves, and food-drug interaction shields.
+                </p>
 
-              {/* ⚡ Card B: Compact Daily Fuel Gauge & Macro Pill Deck */}
-              <div className="bg-gradient-to-br from-white via-[#F4FBFA] to-[#E2F4F3] rounded-3xl shadow-lg border border-teal-100/90 p-4 sm:p-5 flex flex-col justify-between min-h-[160px]">
-                {/* Header */}
+                {/* Bottom 1-Tap Trigger Buttons */}
+                <div className="relative z-10 flex flex-wrap items-center gap-2 pt-1 border-t border-white/10">
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      triggerHaptic("medium");
+                      setShowLocalFoodScanner(true);
+                    }}
+                    className="flex-1 sm:flex-none px-4 py-2.5 bg-gradient-to-r from-emerald-400 to-teal-400 hover:from-emerald-300 hover:to-teal-300 text-slate-950 font-black text-xs rounded-2xl shadow-md flex items-center justify-center gap-2 transition-all active:scale-95 cursor-pointer"
+                  >
+                    <Camera size={14} className="stroke-[2.5]" />
+                    <span>Take Photo (Live Viewfinder)</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      triggerHaptic("light");
+                      setShowLocalFoodScanner(true);
+                    }}
+                    className="px-3.5 py-2.5 bg-white/15 hover:bg-white/25 text-white font-bold text-xs rounded-2xl border border-white/20 flex items-center justify-center gap-1.5 transition-all cursor-pointer active:scale-95"
+                  >
+                    <Upload size={14} />
+                    <span>Upload Gallery 🖼️</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      triggerHaptic("light");
+                      navigate("/scan-barcode");
+                    }}
+                    className="px-3.5 py-2.5 bg-white/15 hover:bg-white/25 text-white font-bold text-xs rounded-2xl border border-white/20 flex items-center justify-center gap-1.5 transition-all cursor-pointer active:scale-95"
+                  >
+                    <ScanBarcode size={14} />
+                    <span>Barcode 🏷️</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* ⚡ SLEEK APPLE HEALTH-STYLE METABOLIC FUEL & MACRO STRIP */}
+              <div className="bg-white dark:bg-zinc-900 rounded-3xl shadow-md border border-teal-100/90 dark:border-zinc-800 p-4 sm:p-5 space-y-3">
+                {/* Top Row: Energy & Target */}
                 <div className="flex items-center justify-between">
-                  <span className="text-[11px] font-black uppercase tracking-wider text-[#1f7a8c]">
-                    {t('home.todaysCalories')}
-                  </span>
-                  <span className="text-[11px] font-black px-2 py-0.5 rounded-full bg-teal-100/90 text-teal-900 shadow-2xs">
-                    {caloriesConsumed} / {caloriesTarget} kcal
-                  </span>
-                </div>
-
-                {/* Compact Clickable Arc Gauge */}
-                <button
-                  type="button"
-                  onClick={() => setShowGaugeDetails(true)}
-                  className="w-full flex items-center justify-center my-1 hover:scale-[1.02] active:scale-[0.99] transition-transform cursor-pointer focus:outline-none"
-                  title="Tap for detailed calorie & macro breakdown"
-                >
-                  <div className="relative flex flex-col items-center justify-center">
-                    <svg className="w-36 h-22 sm:h-24" viewBox="0 0 200 120">
-                      <path
-                        d="M 30 100 A 70 70 0 0 1 170 100"
-                        fill="none"
-                        stroke="#e5e7eb"
-                        strokeWidth="16"
-                        strokeLinecap="round"
-                      />
-                      <path
-                        d="M 30 100 A 70 70 0 0 1 170 100"
-                        fill="none"
-                        stroke="url(#compactGaugeGradient)"
-                        strokeWidth="16"
-                        strokeLinecap="round"
-                        strokeDasharray={`${animatedProgress * 2.2} 1000`}
-                        style={{
-                          transition: "stroke-dasharray 1.2s cubic-bezier(0.4, 0, 0.2, 1)",
-                        }}
-                      />
-                      <defs>
-                        <linearGradient id="compactGaugeGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                          <stop offset="0%" stopColor="#1f7a8c" />
-                          <stop offset="100%" stopColor="#4ecdc4" />
-                        </linearGradient>
-                      </defs>
-                    </svg>
-
-                    <div className="absolute top-4 sm:top-5 flex flex-col items-center justify-center">
-                      <div className="text-[#1f7a8c] text-xl font-black leading-none">
-                        {animatedPercentage}%
-                      </div>
-                      <div className="text-[9px] text-gray-500 uppercase font-bold mt-0.5 leading-none">
-                        {t('home.ofDailyGoal')}
-                      </div>
-                      <span className="text-[8.5px] text-teal-700 font-bold mt-1 bg-teal-50 px-2 py-0.5 rounded-full border border-teal-100/60 shadow-2xs">
-                        Details 📊
+                  <div className="flex items-center gap-2">
+                    <div className="p-1.5 bg-teal-50 dark:bg-teal-950/60 rounded-xl text-[#1f7a8c] dark:text-teal-400">
+                      <Flame size={15} />
+                    </div>
+                    <div>
+                      <span className="text-xs font-black text-gray-900 dark:text-white block leading-tight">
+                        Today's Metabolic Fuel
+                      </span>
+                      <span className="text-[10px] text-gray-500 dark:text-gray-400 font-medium">
+                        {animatedPercentage}% of daily calorie ceiling
                       </span>
                     </div>
                   </div>
-                </button>
 
-                {/* Micro Macro Pill Row */}
-                <div className="grid grid-cols-3 gap-1.5 text-center">
-                  <div className="bg-white rounded-xl py-1 px-1 shadow-2xs border border-teal-50">
-                    <span className="text-[9px] text-gray-500 font-bold block">Protein</span>
-                    <span className="text-[11px] font-black text-blue-700">{proteinConsumed}g</span>
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs sm:text-sm font-black text-teal-800 dark:text-teal-300 font-mono">
+                      {caloriesConsumed} <span className="text-[11px] font-medium text-gray-500">/ {caloriesTarget} kcal</span>
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => setShowGaugeDetails(true)}
+                      className="px-2.5 py-1 bg-teal-50 hover:bg-teal-100 text-[#1f7a8c] dark:bg-teal-950 dark:text-teal-300 rounded-xl text-[10.5px] font-bold border border-teal-200/60 transition-all cursor-pointer active:scale-95"
+                    >
+                      Details 📊
+                    </button>
                   </div>
-                  <div className="bg-white rounded-xl py-1 px-1 shadow-2xs border border-teal-50">
-                    <span className="text-[9px] text-gray-500 font-bold block">Carbs</span>
-                    <span className="text-[11px] font-black text-emerald-700">{carbsConsumed}g</span>
+                </div>
+
+                {/* Sleek Gradient Progress Bar */}
+                <div className="w-full bg-gray-100 dark:bg-zinc-800 h-2.5 rounded-full overflow-hidden p-0.5">
+                  <div
+                    className="h-full bg-gradient-to-r from-teal-500 via-emerald-400 to-amber-400 rounded-full transition-all duration-1000 ease-out shadow-xs"
+                    style={{ width: `${Math.min(100, (caloriesConsumed / caloriesTarget) * 100)}%` }}
+                  />
+                </div>
+
+                {/* 3 Proportional Macro Badges */}
+                <div className="grid grid-cols-3 gap-2 text-center text-xs pt-0.5">
+                  {/* Protein */}
+                  <div className="bg-slate-50 dark:bg-zinc-800/60 p-2.5 rounded-2xl border border-slate-200/60 dark:border-zinc-700/60 flex flex-col justify-between">
+                    <span className="text-[10px] font-bold text-blue-700 dark:text-blue-400 block">🍗 Protein</span>
+                    <strong className="text-xs font-black text-slate-900 dark:text-white mt-0.5">
+                      {proteinConsumed}g <span className="text-[9.5px] font-medium text-slate-400">/ {proteinTarget}g</span>
+                    </strong>
                   </div>
-                  <div className="bg-white rounded-xl py-1 px-1 shadow-2xs border border-teal-50">
-                    <span className="text-[9px] text-gray-500 font-bold block">Fats</span>
-                    <span className="text-[11px] font-black text-purple-700">{fatsConsumed}g</span>
+
+                  {/* Carbs */}
+                  <div className="bg-slate-50 dark:bg-zinc-800/60 p-2.5 rounded-2xl border border-slate-200/60 dark:border-zinc-700/60 flex flex-col justify-between">
+                    <span className="text-[10px] font-bold text-emerald-700 dark:text-emerald-400 block">🌾 Carbs</span>
+                    <strong className="text-xs font-black text-slate-900 dark:text-white mt-0.5">
+                      {carbsConsumed}g <span className="text-[9.5px] font-medium text-slate-400">/ {carbsTarget}g</span>
+                    </strong>
+                  </div>
+
+                  {/* Fats */}
+                  <div className="bg-slate-50 dark:bg-zinc-800/60 p-2.5 rounded-2xl border border-slate-200/60 dark:border-zinc-700/60 flex flex-col justify-between">
+                    <span className="text-[10px] font-bold text-purple-700 dark:text-purple-400 block">🥑 Fats</span>
+                    <strong className="text-xs font-black text-slate-900 dark:text-white mt-0.5">
+                      {fatsConsumed}g <span className="text-[9.5px] font-medium text-slate-400">/ {fatsTarget}g</span>
+                    </strong>
                   </div>
                 </div>
               </div>
