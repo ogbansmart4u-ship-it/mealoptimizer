@@ -1586,6 +1586,19 @@ export default function LocalFoodScanner({ isOpen, onClose }: LocalFoodScannerPr
                 )}
               </button>
 
+              {/* 🪄 Fix My Plate 1-Tap Bio-Transformer Button */}
+              <button
+                type="button"
+                onClick={() => {
+                  safeHaptic("medium");
+                  setShowFixModal(true);
+                }}
+                className="w-full py-3.5 px-4 bg-gradient-to-r from-teal-600 via-emerald-600 to-[#126778] hover:opacity-95 text-white rounded-2xl font-black text-sm shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-[0.98] border border-teal-300/40"
+              >
+                <Sparkles size={16} className="text-amber-300 animate-pulse" />
+                <span>Fix My Plate with Avo 🪄 (Visual Re-Balance &amp; Spike Drop)</span>
+              </button>
+
               {/* Viral WhatsApp & IG Story Sharing Button */}
               <button
                 onClick={() => setShowViralShareModal(true)}
