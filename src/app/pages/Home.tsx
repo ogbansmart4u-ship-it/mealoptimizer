@@ -1089,25 +1089,25 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Smart Grocery, Bio-Plan, Family Health Circle & Fix My Plate Quick Actions */}
+            {/* Smart Grocery, Bio-Plan & Diaspora Family Health Circle Suite */}
             <div>
               <div className="flex items-center justify-between mb-2.5 px-0.5">
                 <h3 className="text-xs font-black text-gray-900 uppercase tracking-wider flex items-center gap-1.5">
-                  <span>10X Metabolic & Care Command Suite</span>
+                  <span>Metabolic &amp; Care Command Suite</span>
                 </h3>
               </div>
 
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+              <div className="grid grid-cols-3 gap-2.5 sm:gap-3">
                 {/* 1. Smart Grocery List with Rolling Cart Pulse */}
                 <button
                   onClick={() => navigate("/grocery-list")}
-                  className="bg-white rounded-3xl p-3.5 text-left shadow-md hover:shadow-xl border-2 border-teal-100 hover:border-teal-400 transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] cursor-pointer flex flex-col justify-between h-36 group"
+                  className="bg-white rounded-3xl p-3 sm:p-4 text-left shadow-md hover:shadow-xl border-2 border-teal-100 hover:border-teal-400 transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] cursor-pointer flex flex-col justify-between h-36 group"
                 >
                   <div className="flex items-center justify-between">
-                    <div className="bg-emerald-50 border border-emerald-200/60 rounded-2xl p-2 w-fit text-lg group-hover:translate-x-1 transition-transform">
+                    <div className="bg-emerald-50 border border-emerald-200/60 rounded-2xl p-2 sm:p-2.5 w-fit text-lg group-hover:translate-x-1 transition-transform">
                       🛒
                     </div>
-                    <span className="text-[8.5px] font-black uppercase px-1.5 py-0.5 rounded-md bg-emerald-50 text-emerald-700 border border-emerald-200/50">
+                    <span className="text-[8px] sm:text-[9px] font-black uppercase px-1.5 py-0.5 rounded-md bg-emerald-50 text-emerald-700 border border-emerald-200/50">
                       MARKET
                     </span>
                   </div>
@@ -1115,8 +1115,8 @@ export default function Home() {
                     <span className="text-xs font-black text-gray-900 block leading-tight group-hover:text-teal-700 transition-colors">
                       {t('grocery.title')}
                     </span>
-                    <span className="text-[10px] text-gray-500 font-medium block mt-0.5">
-                      Prices & diaspora swaps
+                    <span className="text-[10px] text-gray-500 font-medium block mt-0.5 line-clamp-1">
+                      Prices &amp; swaps
                     </span>
                   </div>
                 </button>
@@ -1124,21 +1124,21 @@ export default function Home() {
                 {/* 2. My 7-Day Meal Plan */}
                 <button
                   onClick={() => navigate("/hyper-personalized-plan")}
-                  className="relative overflow-hidden bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-600 animate-gradient-shift rounded-3xl p-3.5 text-white text-left shadow-md hover:shadow-xl transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] cursor-pointer flex flex-col justify-between h-36 border border-purple-400/30 group"
+                  className="relative overflow-hidden bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-600 animate-gradient-shift rounded-3xl p-3 sm:p-4 text-white text-left shadow-md hover:shadow-xl transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] cursor-pointer flex flex-col justify-between h-36 border border-purple-400/30 group"
                 >
                   <div className="flex items-center justify-between relative z-10">
-                    <div className="bg-white/20 backdrop-blur-xs rounded-2xl p-2 w-fit group-hover:scale-110 transition-transform">
+                    <div className="bg-white/20 backdrop-blur-xs rounded-2xl p-2 sm:p-2.5 w-fit group-hover:scale-110 transition-transform">
                       <ChefHat className="h-4 w-4 text-white" />
                     </div>
-                    <span className="text-[8.5px] font-black uppercase px-1.5 py-0.5 rounded-md bg-white/20 backdrop-blur-xs text-purple-100">
-                      7-DAY PLAN
+                    <span className="text-[8px] sm:text-[9px] font-black uppercase px-1.5 py-0.5 rounded-md bg-white/20 backdrop-blur-xs text-purple-100">
+                      7-DAY
                     </span>
                   </div>
                   <div className="relative z-10">
                     <span className="text-xs font-black block leading-tight">
                       My 7-Day Plan
                     </span>
-                    <span className="text-[10px] text-purple-100/90 font-medium block mt-0.5">
+                    <span className="text-[10px] text-purple-100/90 font-medium block mt-0.5 line-clamp-1">
                       Tailored recipes
                     </span>
                   </div>
@@ -1150,49 +1150,23 @@ export default function Home() {
                     triggerHaptic("medium");
                     setShowFamilyCircleModal(true);
                   }}
-                  className="relative overflow-hidden bg-gradient-to-br from-slate-900 via-[#126778] to-teal-950 rounded-3xl p-3.5 text-white text-left shadow-md hover:shadow-xl border-2 border-teal-400/40 hover:border-teal-300 transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] cursor-pointer flex flex-col justify-between h-36 group"
+                  className="relative overflow-hidden bg-gradient-to-br from-slate-900 via-[#126778] to-teal-950 rounded-3xl p-3 sm:p-4 text-white text-left shadow-md hover:shadow-xl border-2 border-teal-400/40 hover:border-teal-300 transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] cursor-pointer flex flex-col justify-between h-36 group"
                 >
                   <div className="flex items-center justify-between relative z-10">
-                    <div className="bg-white/15 border border-white/20 rounded-2xl p-2 w-fit text-lg group-hover:scale-110 transition-transform">
+                    <div className="bg-white/15 border border-white/20 rounded-2xl p-2 sm:p-2.5 w-fit text-lg group-hover:scale-110 transition-transform">
                       👨‍👩‍👧‍👦
                     </div>
-                    <span className="text-[8.5px] font-black uppercase px-1.5 py-0.5 rounded-md bg-amber-400 text-slate-950 shadow-2xs">
-                      FAMILY CARE
+                    <span className="text-[8px] sm:text-[9px] font-black uppercase px-1.5 py-0.5 rounded-md bg-amber-400 text-slate-950 shadow-2xs">
+                      FAMILY
                     </span>
                   </div>
                   <div className="relative z-10">
                     <span className="text-xs font-black block leading-tight text-white flex items-center gap-1">
                       <span>Family Circle</span>
-                      <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping inline-block" />
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping inline-block" />
                     </span>
                     <span className="text-[10px] text-teal-200 font-medium block mt-0.5 truncate">
-                      Lagos, London & CA Loop
-                    </span>
-                  </div>
-                </button>
-
-                {/* 4. Fix My Plate 1-Tap Visual Bio-Transformer */}
-                <button
-                  onClick={() => {
-                    triggerHaptic("medium");
-                    setShowFixPlateModal(true);
-                  }}
-                  className="relative overflow-hidden bg-gradient-to-br from-amber-500 via-orange-500 to-rose-500 rounded-3xl p-3.5 text-white text-left shadow-md hover:shadow-xl border-2 border-amber-300/40 hover:border-amber-200 transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] cursor-pointer flex flex-col justify-between h-36 group"
-                >
-                  <div className="flex items-center justify-between relative z-10">
-                    <div className="bg-white/20 backdrop-blur-xs rounded-2xl p-2 w-fit text-lg group-hover:rotate-12 transition-transform">
-                      🪄
-                    </div>
-                    <span className="text-[8.5px] font-black uppercase px-1.5 py-0.5 rounded-md bg-white/20 backdrop-blur-xs text-amber-100">
-                      FIX PLATE
-                    </span>
-                  </div>
-                  <div className="relative z-10">
-                    <span className="text-xs font-black block leading-tight">
-                      Fix My Plate
-                    </span>
-                    <span className="text-[10px] text-amber-100/90 font-medium block mt-0.5">
-                      Visual plate transformer
+                      Diaspora care loop
                     </span>
                   </div>
                 </button>

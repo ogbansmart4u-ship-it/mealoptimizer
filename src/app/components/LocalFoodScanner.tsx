@@ -1221,7 +1221,35 @@ export default function LocalFoodScanner({ isOpen, onClose }: LocalFoodScannerPr
                   </button>
                 </div>
 
-                {/* Option 3: Barcode Scanner Switcher Button */}
+                {/* Option 3: Fix My Plate 1-Tap Visual Bio-Transformer */}
+                <button
+                  type="button"
+                  onClick={() => {
+                    safeHaptic("medium");
+                    setShowFixModal(true);
+                  }}
+                  className="w-full bg-gradient-to-r from-amber-500 via-orange-500 to-rose-500 hover:from-amber-600 hover:to-rose-600 text-white rounded-2xl p-3.5 flex items-center justify-between transition-all cursor-pointer group shadow-md hover:shadow-lg active:scale-[0.98] border border-amber-300/40"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 bg-white/20 rounded-xl group-hover:rotate-12 transition-transform">
+                      <Sparkles className="h-5 w-5 text-amber-200 animate-pulse" />
+                    </div>
+                    <div className="text-left">
+                      <div className="text-xs font-black text-white flex items-center gap-1.5">
+                        <span>Fix My Plate with Avo 🪄</span>
+                        <span className="text-[8.5px] font-black uppercase bg-white text-orange-600 px-1.5 py-0.2 rounded-full shadow-2xs">
+                          BIO-TRANSFORMER
+                        </span>
+                      </div>
+                      <div className="text-[10.5px] text-amber-100/90 font-medium">
+                        Interactive visual plate re-balancing &amp; 38% glycemic spike drop
+                      </div>
+                    </div>
+                  </div>
+                  <ChevronRight size={16} className="text-white/80 group-hover:translate-x-1 transition-transform" />
+                </button>
+
+                {/* Option 4: Barcode Scanner Switcher Button */}
                 <button
                   onClick={() => {
                     stopLiveCamera();
@@ -1627,20 +1655,21 @@ export default function LocalFoodScanner({ isOpen, onClose }: LocalFoodScannerPr
           </div>
         )}
 
-        {foodData && (
-          <FixMyPlateModal
-            isOpen={showFixModal}
-            onClose={() => setShowFixModal(false)}
-            meal={{
-              foodName: foodData.dishName,
-              calories: foodData.macroBreakdown.calories,
-              protein: foodData.macroBreakdown.protein,
-              carbs: foodData.macroBreakdown.carbs,
-              fats: foodData.macroBreakdown.fats,
-              fiber: foodData.macroBreakdown.fiber,
-              glycemicLoad: foodData.macroBreakdown.glycemicLoad,
-            }}
-            onApplyOptimized={(optimized) => {
+        {/* 🪄 Fix My Plate with Avo Visual Bio-Transformer Modal */}
+        <FixMyPlateModal
+          isOpen={showFixModal}
+          onClose={() => setShowFixModal(false)}
+          meal={{
+            foodName: foodData?.dishName || "Pounded Yam & Egusi Soup",
+            calories: foodData?.macroBreakdown.calories || 680,
+            protein: foodData?.macroBreakdown.protein || 26,
+            carbs: foodData?.macroBreakdown.carbs || 88,
+            fats: foodData?.macroBreakdown.fats || 28,
+            fiber: foodData?.macroBreakdown.fiber || 3,
+            glycemicLoad: foodData?.macroBreakdown.glycemicLoad || "High",
+          }}
+          onApplyOptimized={(optimized) => {
+            if (foodData) {
               setFoodData({
                 ...foodData,
                 dishName: optimized.foodName,
@@ -1654,10 +1683,10 @@ export default function LocalFoodScanner({ isOpen, onClose }: LocalFoodScannerPr
                   glycemicLoad: (optimized.glycemicLoad as 'Low' | 'Medium' | 'High') || 'Low',
                 },
               });
-              toast.success("Plate optimized with balanced macros!");
-            }}
-          />
-        )}
+            }
+            toast.success("Plate optimized with balanced macros!");
+          }}
+        />
 
         {foodData && (
           <ViralMealCardModal
