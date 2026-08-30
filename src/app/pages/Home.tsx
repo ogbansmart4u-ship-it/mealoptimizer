@@ -42,6 +42,8 @@ import GlobalSearch from "../components/GlobalSearch";
 import TutorialTooltip from "../components/TutorialTooltip";
 import SmartVideoConcierge from "../components/SmartVideoConcierge";
 import MedicalDisclaimerModal from "../components/MedicalDisclaimerModal";
+import FixMyPlateModal from "../components/FixMyPlateModal";
+import FamilyHealthCircleModal from "../components/FamilyHealthCircleModal";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "../components/ui/dialog";
 import { Alert, AlertTitle, AlertDescription } from "../components/ui/alert";
 import { Button } from "../components/ui/button";
@@ -156,6 +158,23 @@ export default function Home() {
   const [showLocalFoodOptions, setShowLocalFoodOptions] = useState(false);
   const [showGlobalSearch, setShowGlobalSearch] = useState(false);
   const [showConciergeModal, setShowConciergeModal] = useState(false);
+  const [showFamilyCircleModal, setShowFamilyCircleModal] = useState(false);
+  const [showFixPlateModal, setShowFixPlateModal] = useState(false);
+  const [fixPlateMeal, setFixPlateMeal] = useState<{
+    foodName: string;
+    calories: number;
+    protein: number;
+    carbs: number;
+    fats: number;
+    fiber: number;
+  }>({
+    foodName: "Pounded Yam & Egusi Soup",
+    calories: 780,
+    protein: 24,
+    carbs: 96,
+    fats: 32,
+    fiber: 3,
+  });
 
   // Animation states for Daily Fuel Gauge
   const [animatedProgress, setAnimatedProgress] = useState(0);
@@ -1070,25 +1089,25 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Smart Grocery & Bio-Plan Quick Actions */}
+            {/* Smart Grocery, Bio-Plan, Family Health Circle & Fix My Plate Quick Actions */}
             <div>
               <div className="flex items-center justify-between mb-2.5 px-0.5">
                 <h3 className="text-xs font-black text-gray-900 uppercase tracking-wider flex items-center gap-1.5">
-                  <span>Smart Market & Personalized Bio-Plans</span>
+                  <span>10X Metabolic & Care Command Suite</span>
                 </h3>
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                 {/* 1. Smart Grocery List with Rolling Cart Pulse */}
                 <button
                   onClick={() => navigate("/grocery-list")}
-                  className="bg-white rounded-3xl p-4 text-left shadow-md hover:shadow-xl border-2 border-teal-100 hover:border-teal-400 transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] cursor-pointer flex flex-col justify-between h-36 group"
+                  className="bg-white rounded-3xl p-3.5 text-left shadow-md hover:shadow-xl border-2 border-teal-100 hover:border-teal-400 transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] cursor-pointer flex flex-col justify-between h-36 group"
                 >
                   <div className="flex items-center justify-between">
-                    <div className="bg-emerald-50 border border-emerald-200/60 rounded-2xl p-2.5 w-fit text-xl group-hover:translate-x-1 transition-transform">
+                    <div className="bg-emerald-50 border border-emerald-200/60 rounded-2xl p-2 w-fit text-lg group-hover:translate-x-1 transition-transform">
                       🛒
                     </div>
-                    <span className="text-[9px] font-black uppercase px-1.5 py-0.5 rounded-md bg-emerald-50 text-emerald-700 border border-emerald-200/50">
+                    <span className="text-[8.5px] font-black uppercase px-1.5 py-0.5 rounded-md bg-emerald-50 text-emerald-700 border border-emerald-200/50">
                       MARKET
                     </span>
                   </div>
@@ -1097,30 +1116,83 @@ export default function Home() {
                       {t('grocery.title')}
                     </span>
                     <span className="text-[10px] text-gray-500 font-medium block mt-0.5">
-                      Market price sync & swaps
+                      Prices & diaspora swaps
                     </span>
                   </div>
                 </button>
 
-                {/* 2. My 7-Day Meal Plan with Shifting Animated Gradient Background */}
+                {/* 2. My 7-Day Meal Plan */}
                 <button
                   onClick={() => navigate("/hyper-personalized-plan")}
-                  className="relative overflow-hidden bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-600 animate-gradient-shift rounded-3xl p-4 text-white text-left shadow-md hover:shadow-xl transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] cursor-pointer flex flex-col justify-between h-36 border border-purple-400/30 group"
+                  className="relative overflow-hidden bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-600 animate-gradient-shift rounded-3xl p-3.5 text-white text-left shadow-md hover:shadow-xl transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] cursor-pointer flex flex-col justify-between h-36 border border-purple-400/30 group"
                 >
                   <div className="flex items-center justify-between relative z-10">
-                    <div className="bg-white/20 backdrop-blur-xs rounded-2xl p-2.5 w-fit group-hover:scale-110 transition-transform">
-                      <ChefHat className="h-5 w-5 text-white" />
+                    <div className="bg-white/20 backdrop-blur-xs rounded-2xl p-2 w-fit group-hover:scale-110 transition-transform">
+                      <ChefHat className="h-4 w-4 text-white" />
                     </div>
-                    <span className="text-[9px] font-black uppercase px-1.5 py-0.5 rounded-md bg-white/20 backdrop-blur-xs text-purple-100">
+                    <span className="text-[8.5px] font-black uppercase px-1.5 py-0.5 rounded-md bg-white/20 backdrop-blur-xs text-purple-100">
                       7-DAY PLAN
                     </span>
                   </div>
                   <div className="relative z-10">
                     <span className="text-xs font-black block leading-tight">
-                      My 7-Day Meal Plan
+                      My 7-Day Plan
                     </span>
                     <span className="text-[10px] text-purple-100/90 font-medium block mt-0.5">
-                      Tailored weekly recipes
+                      Tailored recipes
+                    </span>
+                  </div>
+                </button>
+
+                {/* 3. Diaspora Family Health Circle (Remote Parent Care Loop) */}
+                <button
+                  onClick={() => {
+                    triggerHaptic("medium");
+                    setShowFamilyCircleModal(true);
+                  }}
+                  className="relative overflow-hidden bg-gradient-to-br from-slate-900 via-[#126778] to-teal-950 rounded-3xl p-3.5 text-white text-left shadow-md hover:shadow-xl border-2 border-teal-400/40 hover:border-teal-300 transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] cursor-pointer flex flex-col justify-between h-36 group"
+                >
+                  <div className="flex items-center justify-between relative z-10">
+                    <div className="bg-white/15 border border-white/20 rounded-2xl p-2 w-fit text-lg group-hover:scale-110 transition-transform">
+                      👨‍👩‍👧‍👦
+                    </div>
+                    <span className="text-[8.5px] font-black uppercase px-1.5 py-0.5 rounded-md bg-amber-400 text-slate-950 shadow-2xs">
+                      FAMILY CARE
+                    </span>
+                  </div>
+                  <div className="relative z-10">
+                    <span className="text-xs font-black block leading-tight text-white flex items-center gap-1">
+                      <span>Family Circle</span>
+                      <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping inline-block" />
+                    </span>
+                    <span className="text-[10px] text-teal-200 font-medium block mt-0.5 truncate">
+                      Lagos, London & CA Loop
+                    </span>
+                  </div>
+                </button>
+
+                {/* 4. Fix My Plate 1-Tap Visual Bio-Transformer */}
+                <button
+                  onClick={() => {
+                    triggerHaptic("medium");
+                    setShowFixPlateModal(true);
+                  }}
+                  className="relative overflow-hidden bg-gradient-to-br from-amber-500 via-orange-500 to-rose-500 rounded-3xl p-3.5 text-white text-left shadow-md hover:shadow-xl border-2 border-amber-300/40 hover:border-amber-200 transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] cursor-pointer flex flex-col justify-between h-36 group"
+                >
+                  <div className="flex items-center justify-between relative z-10">
+                    <div className="bg-white/20 backdrop-blur-xs rounded-2xl p-2 w-fit text-lg group-hover:rotate-12 transition-transform">
+                      🪄
+                    </div>
+                    <span className="text-[8.5px] font-black uppercase px-1.5 py-0.5 rounded-md bg-white/20 backdrop-blur-xs text-amber-100">
+                      FIX PLATE
+                    </span>
+                  </div>
+                  <div className="relative z-10">
+                    <span className="text-xs font-black block leading-tight">
+                      Fix My Plate
+                    </span>
+                    <span className="text-[10px] text-amber-100/90 font-medium block mt-0.5">
+                      Visual plate transformer
                     </span>
                   </div>
                 </button>
@@ -1703,6 +1775,29 @@ export default function Home() {
         currentGlasses={waterGlasses}
         targetGlasses={8}
         onAddGlass={handleWaterAddCustom}
+      />
+
+      {/* 👨‍👩‍👧‍👦 Diaspora Family Health Circle (Remote Parent Care Loop) */}
+      <FamilyHealthCircleModal
+        isOpen={showFamilyCircleModal}
+        onClose={() => setShowFamilyCircleModal(false)}
+      />
+
+      {/* 🪄 Fix My Plate 1-Tap Visual Bio-Transformer */}
+      <FixMyPlateModal
+        isOpen={showFixPlateModal}
+        onClose={() => setShowFixPlateModal(false)}
+        meal={fixPlateMeal}
+        onApplyOptimized={(opt) => {
+          setFixPlateMeal({
+            foodName: opt.foodName,
+            calories: opt.calories,
+            protein: opt.protein,
+            carbs: opt.carbs,
+            fats: opt.fats,
+            fiber: opt.fiber || 3,
+          });
+        }}
       />
 
       {/* Clinical Governance & Medical Regulatory Disclaimer Modal */}

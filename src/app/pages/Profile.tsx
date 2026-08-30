@@ -65,6 +65,7 @@ import { toast } from "sonner";
 import WhatsAppConnectDialog from "../components/WhatsAppConnectDialog";
 import GoogleTranslateWidget from "../components/GoogleTranslateWidget";
 import MedicalDisclaimerFooter from "../components/MedicalDisclaimerFooter";
+import FamilyHealthCircleModal from "../components/FamilyHealthCircleModal";
 
 export default function Profile() {
   const navigate = useNavigate();
@@ -73,6 +74,7 @@ export default function Profile() {
   const { profile, updateProfile, refreshProfile } = useUser();
   const { selectedLocation, setSelectedLocation } = useLocation();
   const [showLanguageDialog, setShowLanguageDialog] = useState(false);
+  const [showFamilyCircleDialog, setShowFamilyCircleDialog] = useState(false);
   const currentLang = supportedLanguages.find((l) => l.code === language) || supportedLanguages[0];
 
   // Instant resilient fallback data — guarantees 0 blank frames or error screens
@@ -627,8 +629,8 @@ export default function Profile() {
           </button>
         </div>
 
-        {/* 4. Quick AI Tools Hub (WhatsApp Logger + Doctor Report) */}
-        <div className="grid grid-cols-2 gap-3">
+        {/* 4. Quick AI Tools Hub (WhatsApp Logger + Doctor Report + Family Care) */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
           {/* WhatsApp AI Hub */}
           <div
             onClick={() => setShowWhatsAppDialog(true)}
@@ -661,6 +663,23 @@ export default function Profile() {
             </div>
             <h4 className="font-black text-xs text-slate-900">Doctor Report</h4>
             <p className="text-[10px] text-slate-600 mt-0.5">Export 30-day vitals summary for physician</p>
+          </div>
+
+          {/* Diaspora Family Health Circle */}
+          <div
+            onClick={() => setShowFamilyCircleDialog(true)}
+            className="p-4 bg-gradient-to-br from-slate-900 via-[#126778] to-teal-950 text-white rounded-3xl border border-teal-400/40 cursor-pointer transition-all active:scale-95 shadow-xs"
+          >
+            <div className="flex items-center justify-between mb-2">
+              <div className="p-2 bg-white/15 rounded-xl shadow-xs text-base">
+                👨‍👩‍👧‍👦
+              </div>
+              <span className="text-[9px] font-black px-1.5 py-0.5 rounded-full bg-amber-400 text-slate-950 uppercase shadow-2xs">
+                DIASPORA
+              </span>
+            </div>
+            <h4 className="font-black text-xs text-white">Family Health Circle</h4>
+            <p className="text-[10px] text-teal-200 mt-0.5">Monitor loved ones in Lagos, London &amp; CA</p>
           </div>
         </div>
 
@@ -1010,6 +1029,9 @@ export default function Profile() {
 
         {/* 8. WhatsApp Connect Dialog Modal */}
         <WhatsAppConnectDialog isOpen={showWhatsAppDialog} onClose={() => setShowWhatsAppDialog(false)} />
+
+        {/* 9. Diaspora Family Health Circle Modal */}
+        <FamilyHealthCircleModal isOpen={showFamilyCircleDialog} onClose={() => setShowFamilyCircleDialog(false)} />
 
         {/* Encrypted Clinical Badge */}
         <div className="text-center pt-2 text-[11px] text-slate-400 space-y-1">
