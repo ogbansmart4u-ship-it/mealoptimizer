@@ -737,19 +737,7 @@ export default function Home() {
             transition={{ duration: 0.25 }}
             className="space-y-4"
           >
-            {/* 🎯 Intelligent Time-Based Next Best Action Card */}
-            <NextBestActionCard
-              mealsCount={todayLogs.length}
-              waterGlasses={waterGlasses}
-              onOpenScanner={() => setShowLocalFoodScanner(true)}
-              onOpenWater={() => setShowWaterReminderModal(true)}
-              onOpenQuickLog={() => {
-                const el = document.getElementById("tour-quick-shelf");
-                if (el) el.scrollIntoView({ behavior: "smooth" });
-              }}
-            />
-
-            {/* 👩🏾‍💼 Sarah The Nutrition Assistant Card */}
+            {/* 1. 👩🏾‍💼 Sarah The Nutrition Assistant Card */}
             <div
               onClick={() => {
                 triggerHaptic("medium");
@@ -783,9 +771,7 @@ export default function Home() {
               </div>
             </div>
 
-            {/* ============================================================ */}
-            {/* 1. TOP HERO: FULL-WIDTH AI FOOD CAMERA COMMAND CENTER         */}
-            {/* ============================================================ */}
+            {/* 2. 📸 TOP HERO: FULL-WIDTH AI FOOD CAMERA COMMAND CENTER & MACRO STRIP */}
             <div className="space-y-3">
               {/* 📸 FULL-WIDTH AI CAMERA HERO BANNER */}
               <div
@@ -795,8 +781,6 @@ export default function Home() {
                 }}
                 className="relative overflow-hidden bg-gradient-to-br from-[#126778] via-[#0f5462] to-[#0a353e] rounded-3xl p-5 sm:p-6 text-white shadow-xl border-2 border-teal-400/40 hover:border-teal-300 transition-all duration-300 hover:scale-[1.01] active:scale-[0.99] cursor-pointer flex flex-col justify-between group"
               >
-                {/* Glowing Laser Scan Sweep Line */}
-                <div className="absolute left-0 right-0 top-0 h-1 bg-gradient-to-r from-transparent via-emerald-300 to-transparent shadow-[0_0_20px_#4ade80] pointer-events-none animate-laser-sweep opacity-90" />
                 <div className="absolute -top-12 -right-12 w-48 h-48 rounded-full bg-teal-400/15 blur-2xl pointer-events-none" />
                 <div className="absolute -bottom-12 -left-12 w-48 h-48 rounded-full bg-emerald-500/10 blur-2xl pointer-events-none" />
 
@@ -943,6 +927,18 @@ export default function Home() {
                 </div>
               </div>
             </div>
+
+            {/* 3. 🎯 Intelligent Time-Based Next Best Action Card */}
+            <NextBestActionCard
+              mealsCount={todayLogs.length}
+              waterGlasses={waterGlasses}
+              onOpenScanner={() => setShowLocalFoodScanner(true)}
+              onOpenWater={() => setShowWaterReminderModal(true)}
+              onOpenQuickLog={() => {
+                const el = document.getElementById("tour-quick-shelf");
+                if (el) el.scrollIntoView({ behavior: "smooth" });
+              }}
+            />
 
             {/* 🔥 LIVE AVO CHALLENGE & GAMIFIED HEALTH HUB (UNIFIED 3-BUTTON FRAME) */}
             <div className="relative overflow-hidden bg-gradient-to-br from-amber-500 via-orange-600 to-red-600 rounded-3xl p-4 sm:p-5 text-white shadow-xl border-2 border-amber-300/40">
