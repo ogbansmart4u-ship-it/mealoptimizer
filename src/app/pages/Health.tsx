@@ -535,35 +535,35 @@ export default function Health() {
           </div>
         </div>
 
-        {/* 🩺 B2B DIRECT CLINICIAN & DIETITIAN PORTAL BANNER */}
+        {/* 📄 14-DAY DOCTOR CLINICAL PDF REPORT BANNER (FOR PAID CONSUMERS) */}
         <div
-          onClick={() => navigate("/clinician-portal")}
-          className="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 rounded-3xl p-4 sm:p-5 text-white shadow-lg border border-indigo-500/30 relative overflow-hidden cursor-pointer hover:shadow-xl hover:scale-[1.01] active:scale-[0.99] transition-all group"
+          onClick={() => navigate("/health-report")}
+          className="glass-card-teal rounded-3xl p-4 sm:p-5 text-white shadow-lg border border-white/30 relative overflow-hidden cursor-pointer hover:shadow-xl hover:scale-[1.01] active:scale-[0.99] transition-all group"
         >
           <div className="flex items-center justify-between relative z-10">
             <div className="flex items-center gap-3.5 min-w-0">
-              <div className="w-12 h-12 rounded-2xl bg-indigo-500/20 border border-indigo-400/30 flex items-center justify-center text-2xl shrink-0 group-hover:scale-110 transition-transform">
-                🩺
+              <div className="w-12 h-12 rounded-2xl bg-white/20 border border-white/30 flex items-center justify-center text-2xl shrink-0 group-hover:scale-110 transition-transform shadow-inner">
+                📄
               </div>
               <div className="min-w-0">
                 <div className="flex items-center gap-1.5 flex-wrap">
-                  <span className="text-[10px] font-black uppercase tracking-wider bg-indigo-500 text-white px-2 py-0.5 rounded-full shadow-2xs">
-                    B2B Provider SaaS
+                  <span className="text-[10px] font-black uppercase tracking-wider bg-amber-400 text-slate-950 px-2 py-0.5 rounded-full shadow-2xs">
+                    Doctor PDF Report
                   </span>
-                  <span className="text-[11px] font-bold text-indigo-300">
-                    HMO &amp; Clinic Live Sync
+                  <span className="text-[11px] font-bold text-teal-100">
+                    14-Day Clinical Chart
                   </span>
                 </div>
                 <h3 className="text-sm sm:text-base font-black text-white mt-1 leading-tight">
-                  Doctor &amp; Dietitian Portal 🏥
+                  Download Doctor Clinical Report 🩺
                 </h3>
-                <p className="text-[11px] text-indigo-200/90 font-medium truncate mt-0.5">
-                  Connect with your personal dietitian or doctor for meal reviews
+                <p className="text-[11px] text-teal-100/90 font-medium truncate mt-0.5">
+                  Generate a certified PDF summary of your meals &amp; blood sugar to share with your doctor
                 </p>
               </div>
             </div>
 
-            <div className="p-2 bg-white/10 group-hover:bg-white/20 rounded-2xl text-white transition-all shrink-0 ml-2">
+            <div className="p-2 bg-white/15 group-hover:bg-white/25 rounded-2xl text-white transition-all shrink-0 ml-2 border border-white/20">
               <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
             </div>
           </div>

@@ -154,6 +154,43 @@ const MOCK_CLINICIAN_PATIENTS: ClinicianPatient[] = [
 export default function ClinicianPortal() {
   const navigate = useNavigate();
   const { t } = useLanguage();
+
+  // B2B Provider License State (Only paid/verified clinicians can view patient dashboard)
+  const [isLicensed, setIsLicensed] = useState<boolean>(() => {
+    return localStorage.getItem("mealoptimiza_clinician_licensed") === "true";
+  });
+  const [licenseInput, setLicenseInput] = useState("");
+  const [licenseError, setLicenseError] = useState("");
+  const [verifyingLicense, setVerifyingLicense] = useState(false);
+
+  const handleVerifyLicense = (e: React.FormEvent) => {
+    e.preventDefault();
+    setVerifyingLicense(true);
+    setLicenseError("");
+
+    setTimeout(() => {
+      const cleanKey = licenseInput.trim().toUpperCase();
+      // Valid clinician keys: CLINIC-PRO-2026, DOCTOR-MD, DIETITIAN-HMO, or any 8+ character licensed key
+      if (cleanKey === "CLINIC-PRO-2026" || cleanKey === "DOCTOR-MD" || cleanKey === "DIETITIAN-HMO" || cleanKey.startsWith("MO-B2B-")) {
+        localStorage.setItem("mealoptimiza_clinician_licensed", "true");
+        setIsLicensed(true);
+        triggerHaptic("success");
+        triggerConfetti("burst");
+        toast.success("Clinician License Verified! Welcome to Provider OS 🩺");
+      } else {
+        triggerHaptic("warning");
+        setLicenseError("Invalid Clinician License Key. Please enter a valid B2B Provider Key or subscribe below.");
+      }
+      setVerifyingLicense(false);
+    }, 600);
+  };
+
+  const handleLogoutClinician = () => {
+    localStorage.removeItem("mealoptimiza_clinician_licensed");
+    setIsLicensed(false);
+    toast.info("Logged out of Clinician Provider Workspace");
+  };
+
   const [patients, setPatients] = useState<ClinicianPatient[]>(MOCK_CLINICIAN_PATIENTS);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCondition, setSelectedCondition] = useState<string>("All");
