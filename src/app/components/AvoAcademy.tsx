@@ -24,6 +24,15 @@ import {
   Info,
   UtensilsCrossed,
   Layers,
+  Volume2,
+  VolumeX,
+  Play,
+  Pause,
+  GraduationCap,
+  Medal,
+  Check,
+  Copy,
+  Send,
 } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "./ui/dialog";
 import { Button } from "./ui/button";
@@ -31,14 +40,20 @@ import Mascot from "./Mascot";
 import { triggerConfetti, triggerHaptic } from "../utils/celebration";
 import { toast } from "sonner";
 import { useUser } from "../contexts/UserContext";
+import { speakText, stopSpeaking, sanitizeTextForSpeech } from "../services/voiceService";
+
+export type AcademyTier = 1 | 2 | 3 | 4;
 
 export interface AcademyLesson {
   id: string;
+  tier: AcademyTier;
+  tierName: string;
   title: string;
-  category: "Pregnancy Health" | "Prostate Health" | "Arthritis & Joints" | "Glucose Science" | "Heart & BP" | "Gut & Fiber" | "Cooking Hacks";
+  category: "Pregnancy Health" | "Prostate Health" | "Arthritis & Joints" | "Glucose Science" | "Heart & BP" | "Gut & Fiber" | "Cooking Hacks" | "Hormones & Longevity" | "Kidney Care" | "Liver & Detox";
   readTime: string;
-  icon: any;
+  icon: string;
   headline: string;
+  audioScript: string;
   storySlides: string[];
   takeaway: string;
   quiz: {
@@ -298,533 +313,1002 @@ export const CATEGORY_MEAL_PROTOCOLS: Record<string, TherapeuticMeal[]> = {
     {
       id: "ht-3",
       mealType: "Dinner",
-      dishName: "Grilled Chicken Suya with Sliced Fresh Onions, Tomatoes & Cabbage",
-      emoji: "🍢",
-      calories: 320,
-      carbs: 14,
-      protein: 36,
-      keyNutrientBadge: "Nitric Oxide Vasodilation 🧅",
-      whyItWorks: "Raw allium compounds (onions/garlic) boost nitric oxide for smooth arterial endothelial function."
-    }
-  ],
-  "Gut & Fiber": [
-    {
-      id: "gut-1",
-      mealType: "Breakfast",
-      dishName: "Fermented Ogi / Pap with Ground Fluted Pumpkin Seeds (Ugwu)",
+      dishName: "Steamed Okra & Bitterleaf Soup with Lean Shredded Turkey",
       emoji: "🥣",
       calories: 280,
-      carbs: 34,
-      protein: 12,
-      keyNutrientBadge: "Probiotic Microbial Fuel 🦠",
-      whyItWorks: "Traditional lactic acid fermentation unlocks gut-friendly probiotics that reinforce intestinal tight junctions."
-    },
-    {
-      id: "gut-2",
-      mealType: "Lunch",
-      dishName: "Edikang Ikong (Ugu & Waterleaf) with Snails & Oat Fufu",
-      emoji: "🍲",
-      calories: 410,
-      carbs: 36,
-      protein: 34,
-      keyNutrientBadge: "Short-Chain Fatty Acid Generator 🌿",
-      whyItWorks: "Ultra-high prebiotic fiber produces butyrate in the colon to reduce systemic gut inflammation."
-    },
-    {
-      id: "gut-3",
-      mealType: "Dinner",
-      dishName: "Garden Egg Stew with Boiled Plantain & Grilled Tilapia",
-      emoji: "🍆",
-      calories: 320,
-      carbs: 28,
-      protein: 26,
-      keyNutrientBadge: "Digestive Motility & Polyphenols 🥗",
-      whyItWorks: "Garden egg soluble fiber accelerates sluggish digestion and eliminates toxic bile reabsorption."
+      carbs: 16,
+      protein: 32,
+      keyNutrientBadge: "Nitric Oxide Vasodilation 🩸",
+      whyItWorks: "Green leafy nitrates and soluble fiber help relax peripheral resistance, keeping nighttime blood pressure within safe limits."
     }
   ]
 };
 
-export const ACADEMY_LESSONS: AcademyLesson[] = [
+// ============================================================================
+// 🏆 36 CLINICAL MASTERCLASS LESSONS (4 PROGRESSIVE TIERS)
+// ============================================================================
+export const LESSONS: AcademyLesson[] = [
+  // --------------------------------------------------------------------------
+  // TIER 1: HERITAGE BIO-FOUNDATIONS (Lessons 1 - 9)
+  // --------------------------------------------------------------------------
   {
-    id: "menopause-hormonal-mastery",
-    title: "Eating for Menopause & Hormonal Vitality",
-    category: "Menopause & Hormones" as any,
-    readTime: "60 sec",
-    icon: Sparkles,
-    headline: "How dietary phytoestrogens, calcium-rich traditional greens, and steady glucose tame hot flashes and preserve bone density",
-    storySlides: [
-      "During perimenopause and menopause, declining ovarian estrogen causes metabolic shifts: increased abdominal visceral fat, rapid bone mineral loss, and hot flashes triggered by hypothalamic temperature instability.",
-      "Traditional African foods contain powerful natural phytoestrogens: Fermented Soya Beans, Locust Beans (Iru), and Flaxseed provide plant isoflavones and lignans that gently bind to estrogen receptors, calming vasomotor hot flashes.",
-      "To safeguard bone density against osteoporosis, pairing calcium-dense greens (Ugwu, Waterleaf) with crushed Sesame Seeds (Beni-seed) provides bioavailable calcium without spiking cardiovascular calcium plaque.",
-      "Stabilizing your blood sugar with low-glycemic swallow swaps prevents the sudden adrenaline surges that trigger daytime sweats and night awakenings! 🌸✨",
-    ],
-    takeaway: "Load your plate with phytoestrogen-rich beans, sesame seeds, and dark leafy greens to naturally balance hormones, support bone density, and eliminate hot flashes.",
-    quiz: {
-      question: "Which plant compounds in traditional beans and seeds act as natural estrogen modulators to relieve hot flashes?",
-      options: [
-        "Isoflavones & Lignans (Phytoestrogens)",
-        "Refined white sugar",
-        "Artificial food colorings",
-      ],
-      correctIndex: 0,
-      explanation: "Correct! Isoflavones gently bind to estrogen beta-receptors, easing hot flashes and supporting cardiovascular health.",
-    },
-  },
-  {
-    id: "peptic-ulcer-gastric-shield",
-    title: "Eating for Peptic Ulcers (PUD) & Gastritis",
-    category: "Peptic Ulcer Health" as any,
-    readTime: "60 sec",
-    icon: Droplets,
-    headline: "How cabbage glutamine, gentle okra mucilage, and non-acidic seasoning heal stomach lining",
-    storySlides: [
-      "Peptic Ulcer Disease (PUD) and Gastritis develop when the stomach's protective mucosal lining is compromised by H. pylori bacteria, NSAID medications, or excess acid exposure.",
-      "Traditional African culinary wisdom offers potent healing botanicals: Steamed Cabbage and Waterleaf contain high concentrations of Glutamine and S-methylmethionine, which stimulate gastric mucus secretion and speed up epithelial cell repair.",
-      "Okra (Ila) and Ewedu soup provide water-soluble mucilage that creates a protective gelatinous layer over the stomach wall, shielding exposed ulcer sores from digestive enzymes.",
-      "To prevent flare-ups: avoid high-heat pepper soups on an empty stomach, replace fried oils with steamed stews, and eat smaller, well-timed meals! 🥣✨",
-    ],
-    takeaway: "Incorporate cabbage, gentle okra, and steamed sweet potato while easing up on hot pepper to soothe and rebuild your stomach lining.",
-    quiz: {
-      question: "Which vegetable nutrient helps soothe and repair the stomach mucosal lining in ulcer patients?",
-      options: [
-        "Glutamine & S-methylmethionine found in steamed cabbage & greens",
-        "Concentrated raw chili pepper",
-        "Undiluted lime juice",
-      ],
-      correctIndex: 0,
-      explanation: "Correct! Glutamine promotes cellular regeneration in the gastric lining, providing natural ulcer relief.",
-    },
-  },
-  {
-    id: "pregnancy-gestational-shield",
-    title: "Eating for Pregnancy & Gestational Shield",
-    category: "Pregnancy Health",
-    readTime: "60 sec",
-    icon: HeartPulse,
-    headline: "Protecting maternal insulin sensitivity & preventing preeclampsia with traditional greens",
-    storySlides: [
-      "During pregnancy, placenta hormones naturally increase insulin resistance to ensure adequate glucose reaches the growing baby. In mothers genetically predisposed to diabetes, this can trigger Gestational Diabetes Mellitus (GDM).",
-      "Traditional African greens like Fluted Pumpkin (Ugwu), Waterleaf, and Malabar Spinach are nature's maternal superfoods: they provide massive bioavailable Folate (Vitamin B9) for neural tube development, non-heme iron, and magnesium.",
-      "To prevent dangerous post-prandial spikes, pregnant mothers should pair moderate swallows (like Plantain-Oat Fufu) with fiber and protein first.",
-      "Keeping stew salt under 1,500mg by seasoning with fresh locust beans (Iru) and ginger significantly reduces the risk of pregnancy-induced hypertension and preeclampsia! 🤰✨",
-    ],
-    takeaway: "Load your plate with Ugwu, boiled eggs, and Plantain-Oat swallow to supply crucial folate while keeping gestational blood sugar perfectly balanced.",
-    quiz: {
-      question: "Which traditional leafy green provides vital folate and iron for maternal & fetal health?",
-      options: ["Fluted Pumpkin (Ugwu)", "White Bread", "Cassava Starch"],
-      correctIndex: 0,
-      explanation: "Correct! Ugwu is exceptionally rich in folate, iron, and antioxidant polyphenols essential for healthy pregnancy.",
-    },
-  },
-  {
-    id: "prostate-lycopene-zinc",
-    title: "Eating for Prostate Health & PSA Balance",
-    category: "Prostate Health",
-    readTime: "60 sec",
-    icon: ShieldCheck,
-    headline: "How cooked tomato stews and pumpkin seeds (Egusi) protect prostate cell integrity in men 40+",
-    storySlides: [
-      "Benign Prostatic Hyperplasia (BPH) and elevated PSA affect over 60% of Black men over age 50, driven by chronic inflammation and dihydrotestosterone (DHT) binding.",
-      "Cooked Tomato Stew is one of the most potent prostate medicines on earth. Cooking tomatoes in healthy oils (like extra virgin olive or light unrefined palm oil) increases the bioavailability of Lycopene by over 400% compared to raw tomatoes!",
-      "Lycopene is a powerful carotenoid that concentrates directly in prostate tissue, neutralizing free radicals and suppressing prostate cell proliferation.",
-      "Pairing your stew with zinc-dense Pumpkin Seeds (Egusi) and cruciferous cabbage provides the building blocks for healthy testosterone balance and urinary flow. 🩺",
-    ],
-    takeaway: "Cooked tomato stew with healthy oils provides bioavailable lycopene that concentrates directly in prostate tissue to reduce inflammation.",
-    quiz: {
-      question: "Why does cooking tomato stew with healthy oil boost its prostate benefits?",
-      options: [
-        "It increases lycopene bioavailability by over 400%",
-        "It burns away all vitamins",
-        "It converts starch into protein",
-      ],
-      correctIndex: 0,
-      explanation: "Spot on! Lycopene is fat-soluble; simmering tomatoes with healthy oils unlocks maximum prostate-protective absorption.",
-    },
-  },
-  {
-    id: "arthritis-anti-inflammatory",
-    title: "Eating for Arthritis & Joint Mobility",
-    category: "Arthritis & Joints",
-    readTime: "60 sec",
-    icon: Activity,
-    headline: "Targeting joint cartilage breakdown and gout flares with African anti-inflammatory botanicals",
-    storySlides: [
-      "Osteoarthritis and Gout flares are driven by systemic pro-inflammatory cytokines (IL-6, TNF-alpha) and uric acid crystallization in joint synovial fluid.",
-      "Traditional African spices—specifically Ginger (Atale), Garlic (Ayu), Turmeric, and fermented Locust Beans (Iru)—contain gingerols and allicin that naturally inhibit the inflammatory COX-2 and NF-kB pathways.",
-      "For Gout sufferers, reducing high-purine organ meats (shaki, liver, cow foot) and staying well-hydrated with fresh water flushes uric acid out through the kidneys.",
-      "Adding Omega-3 rich Titus (Mackerel) fish twice a week lubricates joint cartilage and cuts morning stiffness by up to 40%! 🦴⚡",
-    ],
-    takeaway: "Season your stews with generous fresh ginger, garlic, and turmeric while choosing oily fish like Titus mackerel to naturally calm joint pain.",
-    quiz: {
-      question: "What natural compound in fresh Ginger and Garlic helps soothe joint arthritis pain?",
-      options: [
-        "Bioactive Gingerols & Allicin that inhibit inflammatory COX-2 pathways",
-        "Refined white sugar",
-        "Sodium chloride",
-      ],
-      correctIndex: 0,
-      explanation: "Exactly! Gingerols and allicin act as natural, stomach-friendly anti-inflammatory agents for joint mobility.",
-    },
-  },
-  {
-    id: "resistant-starch",
-    title: "The Resistant Starch Hack",
+    id: "lesson-1",
+    tier: 1,
+    tierName: "Heritage Bio-Foundations",
+    title: "The Clinical Food Sequencing Protocol",
     category: "Glucose Science",
-    readTime: "60 sec",
-    icon: Flame,
-    headline: "How cooling your Yam or Rice lowers the glycemic spike by 35%",
+    readTime: "90s Audio",
+    icon: "🥗",
+    headline: "The order in which you eat your African swallow cuts glucose spikes by 48%.",
+    audioScript: "Welcome to Lesson One of your Metabolic Masterclass. When eating traditional meals like pounded yam or rice, eating your vegetables and proteins first creates a protective fiber mesh in your small intestine. This slows down carbohydrate absorption and flattens your glucose curve by up to 48 milligrams per deciliter.",
     storySlides: [
-      "When starches like White Rice, Boiled Yam, or Potatoes are freshly cooked, their amylose molecules are easily broken down by digestive enzymes into glucose, causing a rapid blood sugar spike.",
-      "However, when cooked starch is cooled in the fridge (even just for 12–24 hours), a biochemical process called RETROGRADATION occurs. The starch crystallizes into 'Resistant Starch Type 3'.",
-      "Resistant starch cannot be digested in your small intestine! Instead, it travels to your colon to feed healthy microbiome bacteria, producing short-chain fatty acids (SCFAs) that improve insulin sensitivity.",
-      "The best part? You can REHEAT the cooled yam or rice before eating—the resistant starch structure stays locked in! 🍠✨",
+      "Traditional African dining often starts with a giant swallow ball dipped in soup. Eating carbohydrates first triggers an immediate rush of glucose into your bloodstream.",
+      "By simply reversing the order—eating your leafy vegetables (Efo Riro, Ugwu, Waterleaf) and proteins (fish, lean meat) first—you coat your stomach lining with soluble fiber and stimulate GLP-1 satiety hormones.",
+      "When the starch finally enters your stomach 10 minutes later, gastric emptying is delayed, resulting in a gentle, sustained energy plateau rather than a sharp crash."
     ],
-    takeaway: "Cook your yam or rice in batches, cool overnight, and reheat. Same authentic taste, but with a 35% lower blood sugar spike!",
+    takeaway: "Always eat: 1st Leafy Greens 🥬 ➡️ 2nd Protein & Fats 🐟 ➡️ 3rd Complex Carbs last 🌾.",
     quiz: {
-      question: "Does reheating cooled yam destroy the beneficial resistant starch?",
-      options: [
-        "Yes, heat turns it back into rapid sugar",
-        "No, the resistant starch structure remains stable",
-        "Only if you add palm oil",
-      ],
+      question: "Which food should you consume FIRST during a traditional meal to flatten glucose spikes?",
+      options: ["The Swallow (Pounded Yam / Garri)", "Leafy Greens (Efo Riro / Ugwu)", "Sweetened Palm Wine or Soda", "Dessert or Fried Plantain"],
       correctIndex: 1,
-      explanation: "Correct! Reheating does not reverse retrograded resistant starch. You get all the gut and glucose benefits with a warm meal!",
-    },
+      explanation: "Leafy vegetables provide viscous soluble fiber that lines the small intestine, slowing down starch digestion."
+    }
   },
   {
-    id: "bitterleaf-insulin",
-    title: "The Bitterleaf Insulin Miracle",
-    category: "Glucose Science",
-    readTime: "60 sec",
-    icon: Leaf,
-    headline: "Why Onugbu / Bitterleaf soup sensitizes cellular insulin receptors",
-    storySlides: [
-      "Bitterleaf (Vernonia amygdalina) has been used in West African herbal medicine for centuries. Modern molecular pharmacology now explains exactly why it works.",
-      "Bitterleaf is dense in Vernodalin, Luteolin, and active sesquiterpene lactones. These bioactive phytochemicals activate AMPK (AMP-activated protein kinase) in your liver and muscles.",
-      "AMPK is your body's master metabolic switch—often called 'exercise in a bottle'. When AMPK is activated, your muscle cells pull glucose directly out of your bloodstream without needing extra insulin.",
-      "Drinking squeezed bitterleaf water or enjoying fresh Onugbu soup with lean fish provides a natural, food-based glycemic shield! 🌿",
-    ],
-    takeaway: "Bitterleaf compounds activate AMPK, acting like a natural insulin sensitizer to pull sugar safely into your muscle cells.",
-    quiz: {
-      question: "What master metabolic enzyme does Bitterleaf activate to lower blood glucose?",
-      options: ["AMPK (AMP-activated protein kinase)", "Amylase", "Lipase"],
-      correctIndex: 0,
-      explanation: "Spot on! AMPK activation helps your muscle cells absorb glucose directly, taking strain off your pancreas.",
-    },
-  },
-  {
-    id: "swallow-velocity-index",
-    title: "Swallow Glucose Velocity (GVI)",
-    category: "Glucose Science",
-    readTime: "60 sec",
-    icon: Activity,
-    headline: "Why Pounded Yam spikes in 20 mins while Oat Swallow plateaus over 75 mins",
-    storySlides: [
-      "Not all carbohydrates are digested at the same velocity. The 'Glucose Velocity Index' measures how fast glucose enters the bloodstream per gram of swallowed food.",
-      "Pounded Yam and Garri have a high GVI (>80)—their pure starch chains hydrolyze rapidly in the stomach, creating a sharp 40–60 mg/dL glucose excursion within 25 minutes.",
-      "In contrast, Oat Swallow or Plantain Flour combined with Okra contains viscous soluble beta-glucan fibers that create an intestinal gel barrier.",
-      "This gel barrier stretches glucose absorption over 75–90 minutes, turning a dangerous spike into a gentle, sustained metabolic plateau! 🥣",
-    ],
-    takeaway: "Choose high-viscosity swallows (Oat, Plantain, or Okra-blended) to slow glucose velocity and eliminate post-meal fatigue.",
-    quiz: {
-      question: "How does soluble fiber in Oat and Okra swallows prevent a rapid blood sugar spike?",
-      options: [
-        "By neutralizing stomach acid completely",
-        "By forming an intestinal gel barrier that slows starch hydrolysis",
-        "By turning carbohydrates into pure protein",
-      ],
-      correctIndex: 1,
-      explanation: "Correct! The viscous gel physically delays enzymatic breakdown, smoothing out the post-meal glucose curve.",
-    },
-  },
-  {
-    id: "zobo-blood-pressure",
-    title: "Zobo (Hibiscus) & Blood Pressure",
-    category: "Heart & BP",
-    readTime: "60 sec",
-    icon: HeartPulse,
-    headline: "Clinical evidence behind unsweetened Hibiscus Sabdariffa tea",
-    storySlides: [
-      "Zobo (Hibiscus sabdariffa) is more than a delicious party drink—it is a clinically validated cardiovascular powerhouse.",
-      "Hibiscus calyces are rich in Anthocyanins and Polyphenols that act as natural ACE (Angiotensin-Converting Enzyme) inhibitors, gently dilating blood vessels.",
-      "In a landmark randomized clinical trial published in the Journal of Nutrition, drinking 2 cups of unsweetened hibiscus tea daily lowered systolic blood pressure by an average of 7.2 mmHg within 6 weeks.",
-      "The critical rule: Brew your Zobo with ginger, cloves (kanafuru), and citrus—avoid refined sugar to preserve its therapeutic heart benefits! 🌺",
-    ],
-    takeaway: "Unsweetened Zobo with ginger and cloves is a natural, evidence-backed beverage that supports arterial relaxation and healthy blood pressure.",
-    quiz: {
-      question: "How should Zobo be brewed to maximize its blood pressure benefits?",
-      options: [
-        "With 4 scoops of white sugar",
-        "Unsweetened with natural ginger and cloves",
-        "Boiled for 4 hours until syrupy",
-      ],
-      correctIndex: 1,
-      explanation: "Correct! Keeping Zobo sugar-free ensures its anthocyanins protect your blood vessels without raising insulin or triglycerides.",
-    },
-  },
-  {
-    id: "okra-mucilage-trap",
-    title: "Okra (Ila) & The Glucose Trap",
+    id: "lesson-2",
+    tier: 1,
+    tierName: "Heritage Bio-Foundations",
+    title: "Mucilage Shields: The Science of Ewedu & Okra",
     category: "Gut & Fiber",
-    readTime: "60 sec",
-    icon: Leaf,
-    headline: "How water-soluble mucilage fiber forms a gel matrix that traps dietary sugars",
+    readTime: "90s Audio",
+    icon: "🥣",
+    headline: "Traditional drawing soups form a physical biochemical barrier that traps sugar.",
+    audioScript: "Did you know that the viscous draw in Ewedu and Okra is actually a high-grade bioactive mucilage? This soluble polysaccharide forms a gel in your gut that physically traps starch molecules and prevents sudden insulin surges.",
     storySlides: [
-      "The characteristic 'draw' or viscous texture in Okra (Ila / Okro) soup is caused by a unique polysaccharide mucilage composed of rhamnose, galactose, and galacturonic acid.",
-      "Inside your digestive tract, this mucilage absorbs water and forms a thick, gelatinous protective mesh over the microvilli of your small intestine.",
-      "This gel matrix physically slows the rate at which carbohydrates and cholesterol are absorbed into your bloodstream.",
-      "Clinical studies demonstrate that adding fresh sliced okra to a high-carb meal reduces peak post-meal glucose by up to 28%! 🍲",
+      "The slimy, viscous texture of draw soups (Ewedu, Ogbono, and Okra) is caused by soluble mucilaginous polysaccharides.",
+      "In the gastrointestinal tract, this mucilage binds with water to create an impenetrable gel barrier along the microvilli of your intestines.",
+      "This slows carbohydrate enzyme breakdown (alpha-amylase) and feeds beneficial Akkermansia muciniphila bacteria in your colon."
     ],
-    takeaway: "Okra's natural mucilage forms a gel in your gut that physically traps and slows sugar absorption, acting as an edible spike shield.",
+    takeaway: "Pair high-glycemic swallows with draw soups to naturally lower effective glycemic load.",
     quiz: {
-      question: "How does Okra mucilage lower post-meal blood sugar?",
-      options: [
-        "By forming a gel matrix in the gut that slows carb absorption",
-        "By burning calories in the stomach",
-        "By destroying digestive acid",
-      ],
-      correctIndex: 0,
-      explanation: "Exactly! The soluble gel creates a physical barrier that slows glucose entry into your blood.",
-    },
+      question: "How does the mucilage in Okra and Ewedu protect your blood sugar?",
+      options: ["It converts all carbs into protein", "It forms a viscous gel that traps starch and slows sugar absorption", "It speeds up stomach emptying", "It destroys digestive enzymes permanently"],
+      correctIndex: 1,
+      explanation: "Mucilage polysaccharides form a viscous intestinal gel that slows enzymatic starch digestion."
+    }
   },
   {
-    id: "sodium-potassium-balance",
-    title: "Seasoning Cubes & Potassium Buffering",
-    category: "Heart & BP",
-    readTime: "60 sec",
-    icon: HeartPulse,
-    headline: "How to counter high-sodium stock cubes with potassium-rich African sides",
+    id: "lesson-3",
+    tier: 1,
+    tierName: "Heritage Bio-Foundations",
+    title: "Resistant Starch: The Cook-and-Cool Hack",
+    category: "Cooking Hacks",
+    readTime: "90s Audio",
+    icon: "🍠",
+    headline: "Cooling boiled rice or yams in the fridge for 12 hours turns 30% of carbs into prebiotic fiber.",
+    audioScript: "Here is a powerful clinical kitchen hack. When you cook rice, yams, or potatoes and cool them overnight in the refrigerator, their starch molecules recrystallize into Type-3 Resistant Starch. Even after reheating, they deliver 30% fewer calories to your bloodstream.",
     storySlides: [
-      "Most commercial seasoning cubes contain 50% to 60% sodium chloride and MSG. Ingesting high sodium pulls water into your bloodstream, increasing blood pressure against artery walls.",
-      "However, blood pressure is regulated by the SODIUM-TO-POTASSIUM RATIO. Potassium tells your kidneys to flush excess sodium out through urine.",
-      "If you eat a savory soup seasoned with stock cubes, balance it by incorporating potassium-rich foods: boiled plantains, spinach, avocado, or pumpkin leaves (Ugwu).",
-      "Aim for 2 parts Potassium for every 1 part Sodium to keep blood pressure in the optimal green zone! ⚖️",
+      "Freshly boiled starches are easily digested into simple glucose. But when starches cool down below 4°C, amylose chains undergo retrogradation.",
+      "Retrograded starch becomes resistant to digestive enzymes in the small intestine, traveling straight to the colon untouched.",
+      "In the colon, friendly bacteria ferment it into Short-Chain Fatty Acids (Butyrate), which repair gut walls and improve whole-body insulin sensitivity."
     ],
-    takeaway: "Whenever you cook with savory seasoning cubes, pair with potassium-rich greens and plantains to help your kidneys excrete excess sodium.",
+    takeaway: "Batch-cook your brown rice, sweet potatoes, and fonio, cool overnight, and reheat before serving.",
     quiz: {
-      question: "What critical mineral helps your kidneys flush out excess sodium from seasoning cubes?",
-      options: ["Potassium", "Iron", "Zinc"],
-      correctIndex: 0,
-      explanation: "Spot on! Potassium balances sodium levels and relaxes arterial walls for healthy blood pressure.",
-    },
+      question: "What happens when you cool cooked African starches in the refrigerator overnight?",
+      options: ["They turn into simple table sugar", "They crystallize into Type-3 Resistant Starch that feeds gut bacteria", "They lose all mineral content", "They become toxic to the liver"],
+      correctIndex: 1,
+      explanation: "Retrogradation converts digestible starches into prebiotic resistant starch that bypasses upper digestive absorption."
+    }
   },
-];
+  {
+    id: "lesson-4",
+    tier: 1,
+    tierName: "Heritage Bio-Foundations",
+    title: "Glycemic Index vs. Glycemic Load in Swallows",
+    category: "Glucose Science",
+    readTime: "90s Audio",
+    icon: "⚖️",
+    headline: "Why portion geometry matters far more than simply cutting out your favorite swallow.",
+    audioScript: "Many people are told to stop eating swallow entirely. That is clinically unnecessary. Glycemic Index measures speed, but Glycemic Load measures total impact. Cutting your swallow portion by 35% and doubling your vegetable soup completely neutralizes the glycemic spike.",
+    storySlides: [
+      "A massive ball of Pounded Yam has a high Glycemic Load (GL > 35). But reducing the swallow size to fist-size drops the GL to under 15.",
+      "When combined with lean protein (Titus fish, goat meat) and high-potassium greens, your insulin response remains smooth and balanced.",
+      "You never need to give up your cultural heritage; you only need to re-engineer portion geometry."
+    ],
+    takeaway: "Follow the 25-50-25 rule: 25% Swallow, 50% Fiber/Greens, 25% Lean African Protein.",
+    quiz: {
+      question: "What is the 25-50-25 cultural plate ratio for safe metabolic swallow dining?",
+      options: ["50% Meat, 50% Swallow", "25% Swallow, 50% Vegetables/Greens, 25% Lean Protein", "75% Starch, 25% Soup", "100% Raw Vegetables"],
+      correctIndex: 1,
+      explanation: "The 25-50-25 rule keeps carbohydrate load moderate while maximizing soluble fiber and muscle-preserving protein."
+    }
+  },
+  {
+    id: "lesson-5",
+    tier: 1,
+    tierName: "Heritage Bio-Foundations",
+    title: "Why Semolina & White Garri Cause Rapid Spikes",
+    category: "Glucose Science",
+    readTime: "90s Audio",
+    icon: "⚠️",
+    headline: "Refined swallow flours lack cellular matrix and absorb as fast as pure glucose.",
+    audioScript: "Ultra-processed swallow flours like industrial white semolina and finely sifted white garri have had their fibrous outer bran stripped away. In your stomach, they turn into glucose in under 20 minutes. Swapping to Plantain-Oat fufu or yellow cassava fermented with fiber protects your pancreas.",
+    storySlides: [
+      "Commercial semolina is milled from refined durum wheat endosperm with zero bran or germ fiber.",
+      "Without fiber to slow down gastric breakdown, digestive enzymes rapidly convert the refined starch into pure glucose.",
+      "Healthier alternatives: Whole oat flour blended with green unripe plantain, or fiber-rich fermented cassava with added flax/chia seeds."
+    ],
+    takeaway: "Upgrade refined white swallows with fiber-dense Plantain-Oat, Fonio, or Sprouted Millet flours.",
+    quiz: {
+      question: "Why does refined commercial semolina spike blood glucose faster than traditional pounded yam?",
+      options: ["It contains high levels of caffeine", "It is stripped of grain fiber and bran, allowing rapid enzymatic hydrolysis", "It has no carbohydrates", "It is fermented for too long"],
+      correctIndex: 1,
+      explanation: "Refined milling removes dietary fiber, enabling instant starch-to-sugar digestion in the upper gastrointestinal tract."
+    }
+  },
+  {
+    id: "lesson-6",
+    tier: 1,
+    tierName: "Heritage Bio-Foundations",
+    title: "The Micronutrient Power of Bitter Leaf & Waterleaf",
+    category: "Gut & Fiber",
+    readTime: "90s Audio",
+    icon: "🌿",
+    headline: "African indigenous wild leaves contain 4x more antioxidants than Western kale or spinach.",
+    audioScript: "Indigenous African leafy greens like Vernonia amygdalina (Bitter Leaf) and Talinum triangulare (Waterleaf) are powerhouses of andrographolide, quercetin, and luteolin. They stimulate liver bile production and lower systemic C-reactive protein markers.",
+    storySlides: [
+      "Bitter phytochemicals in Bitter Leaf trigger bitter taste receptors (TAS2Rs) in your gut, which stimulate insulin secretion and gastric GLP-1 release.",
+      "Waterleaf contains high concentrations of mucilage, pectin, and bioavailable calcium that soothe inflamed intestinal linings.",
+      "Combining both in traditional soups creates a potent synergy of antioxidant protection and cellular detoxification."
+    ],
+    takeaway: "Incorporate authentic indigenous greens at least 4 times per week in your soups and stews.",
+    quiz: {
+      question: "What unique compound in Bitter Leaf stimulates gut taste receptors to enhance insulin sensitivity?",
+      options: ["Refined Fructose", "Bitter phytochemical sesquiterpene lactones", "Sodium Chloride", "Trans-fatty acids"],
+      correctIndex: 1,
+      explanation: "Sesquiterpene lactones stimulate TAS2R bitter receptors to promote natural GLP-1 and insulin signaling."
+    }
+  },
+  {
+    id: "lesson-7",
+    tier: 1,
+    tierName: "Heritage Bio-Foundations",
+    title: "Hydration Timing: Why Ice Water Slows Swallow Digestion",
+    category: "Gut & Fiber",
+    readTime: "90s Audio",
+    icon: "💧",
+    headline: "Drinking large volumes of ice water during swallow meals dilutes stomach acid.",
+    audioScript: "Drinking large glasses of ice water while eating heavy swallows can chill the digestive tract and dilute hydrochloric acid enzymes. To optimize digestion, drink water 20 minutes before meals and sip warm water or herbal teas during dinner.",
+    storySlides: [
+      "Adequate stomach acid (pH 1.5 - 2.5) is required to break down dense proteins like goat meat and cow leg.",
+      "Chugging 500ml of ice-cold water during a heavy meal cools gastric enzymes and dilutes digestive juices, leading to bloating and sluggish transit.",
+      "Best clinical practice: Drink 2 glasses of room-temperature water 30 minutes before your meal, and sip warm Zobo or ginger tea post-meal."
+    ],
+    takeaway: "Hydrate ahead of mealtime; sip warm herbal liquids during and after heavy swallow dinners.",
+    quiz: {
+      question: "When is the optimal time to drink water for healthy metabolic digestion?",
+      options: ["Chug 1 liter of ice water while swallowing food", "Drink 20-30 minutes before meals, and sip warm fluids during eating", "Never drink water on days you eat swallow", "Only drink sugary sodas"],
+      correctIndex: 1,
+      explanation: "Hydrating 20-30 minutes before meals pre-activates gastric mucosa without diluting active digestive enzymes."
+    }
+  },
+  {
+    id: "lesson-8",
+    tier: 1,
+    tierName: "Heritage Bio-Foundations",
+    title: "The 25-50-25 Visual Plate Architecture",
+    category: "Cooking Hacks",
+    readTime: "90s Audio",
+    icon: "🍽️",
+    headline: "Re-engineering traditional West African plates for zero sugar crashes and all-day energy.",
+    audioScript: "A standard African party plate is often 70% Jollof rice or Swallow and 15% meat. By rearranging the plate into 25% Starch, 50% Leafy Stew, and 25% Protein, you instantly cut the glycemic spike by 40% while preserving every drop of cultural flavor.",
+    storySlides: [
+      "Visual portion distortion is the number one cause of post-meal fatigue and afternoon brain fog.",
+      "When 50% of your plate is occupied by rich, un-chopped leafy greens (Ugwu, Efo Tete, Afang), you consume massive micronutrients and fiber with low calorie density.",
+      "This balanced ratio keeps your hunger hormone ghrelin suppressed for over 4 to 5 hours."
+    ],
+    takeaway: "Fill half your plate with vegetable soup, one quarter with swallow/rice, and one quarter with grilled fish or lean meat.",
+    quiz: {
+      question: "What percentage of your dinner plate should be composed of vegetable soups or salads?",
+      options: ["10%", "50%", "85%", "0%"],
+      correctIndex: 1,
+      explanation: "Devoting 50% of the plate to leafy vegetables guarantees high fiber and micronutrient density."
+    }
+  },
+  {
+    id: "lesson-9",
+    tier: 1,
+    tierName: "Heritage Bio-Foundations",
+    title: "GLP-1 Satiety Activation with African Proteins",
+    category: "Hormones & Longevity",
+    readTime: "90s Audio",
+    icon: "🐟",
+    headline: "How Titus mackerel, boiled eggs, and Awara tofu naturally trigger fullness hormones.",
+    audioScript: "GLP-1 is the satiety hormone that tells your brain you are completely full. African lean proteins like wild mackerel, boiled eggs, and soy Awara stimulate L-cells in your gut to release natural GLP-1 without expensive pharmaceutical injections.",
+    storySlides: [
+      "Dietary amino acids (leucine, glutamine) and omega-3 fatty acids bind to receptors on intestinal enteroendocrine L-cells.",
+      "This triggers a surge of Peptide YY (PYY) and Glucagon-Like Peptide-1 (GLP-1), which signal satiety centers in the hypothalamus.",
+      "Eating your protein alongside soluble fiber ensures your brain registers fullness 15 minutes faster."
+    ],
+    takeaway: "Include at least 25-30g of authentic protein (fish, poultry, beans, awara) in every main meal.",
+    quiz: {
+      question: "Which hormone is naturally stimulated by dietary protein and fiber to signal brain fullness?",
+      options: ["Cortisol", "Glucagon-Like Peptide-1 (GLP-1)", "Adrenaline", "Estrogen"],
+      correctIndex: 1,
+      explanation: "GLP-1 is secreted by intestinal L-cells in response to dietary proteins and soluble fibers."
+    }
+  },
 
-// SWALLOW GLYCEMIC SIMULATOR DATA
-const SWALLOW_SIMULATOR_DATA = [
+  // --------------------------------------------------------------------------
+  // TIER 2: ORGAN-SPECIFIC METABOLIC SHIELDS (Lessons 10 - 18)
+  // --------------------------------------------------------------------------
   {
-    id: "pounded-yam",
-    name: "Pounded Yam (Iyan)",
-    glycemicIndex: 85,
-    peakSpike: "172 mg/dL",
-    velocityTime: "22 mins",
-    spikeRisk: "High Spike Risk ⚠️",
-    color: "from-rose-500 to-red-600",
-    bgColor: "bg-rose-50 border-rose-200 text-rose-800",
-    barWidth: "90%",
-    insight: "Rapid starch hydrolysis. Causes a sharp 55 mg/dL glucose surge within 25 minutes unless paired with heavy fiber."
+    id: "lesson-10",
+    tier: 2,
+    tierName: "Organ-Specific Metabolic Shields",
+    title: "Zobo (Hibiscus) & BP: Natural ACE-Inhibition",
+    category: "Heart & BP",
+    readTime: "90s Audio",
+    icon: "🌺",
+    headline: "Clinical research shows 2 cups of unsweetened Zobo reduces systolic BP by 7.4 mmHg.",
+    audioScript: "Zobo, brewed from Hibiscus sabdariffa petals, is rich in anthocyanins and delphinidins that act as natural Angiotensin-Converting Enzyme (ACE) inhibitors. However, patients on antihypertensive medications like Lisinopril must space consumption by 3 hours to prevent excessive blood pressure drops.",
+    storySlides: [
+      "Clinical trials confirm that organic Hibiscus tea exhibits potent vascular endothelium relaxation and mild diuretic action.",
+      "The active bioactives inhibit ACE enzymes, naturally opening up constricted blood vessels and lowering systolic pressure.",
+      "Safety rule: Always brew Zobo with ginger, cloves, and cinnamon instead of refined sugar, and maintain a 3-hour window from prescription ACE inhibitors."
+    ],
+    takeaway: "Drink unsweetened ginger-spiced Zobo for cardiovascular protection, separated from prescription BP meds.",
+    quiz: {
+      question: "Why should patients taking Lisinopril space their Zobo intake by at least 3 hours?",
+      options: ["Zobo turns Lisinopril into sugar", "Both have additive ACE-inhibiting effects that could cause hypotension", "Zobo eliminates kidney function", "It causes tooth decay"],
+      correctIndex: 1,
+      explanation: "Additive vasodilation from both hibiscus bioactives and prescription ACE inhibitors can cause blood pressure to drop too low."
+    }
   },
   {
-    id: "white-garri",
-    name: "White Garri (Eba)",
-    glycemicIndex: 78,
-    peakSpike: "158 mg/dL",
-    velocityTime: "28 mins",
-    spikeRisk: "Moderate-High Spike ⚠️",
-    color: "from-amber-500 to-orange-600",
-    bgColor: "bg-amber-50 border-amber-200 text-amber-800",
-    barWidth: "75%",
-    insight: "Fermented cassava starch. Moderate glycemic velocity, buffered by soaking time and hot water gelatinization."
+    id: "lesson-11",
+    tier: 2,
+    tierName: "Organ-Specific Metabolic Shields",
+    title: "KDIGO Renal Protocol: Double-Boiling African Tubers",
+    category: "Kidney Care",
+    readTime: "90s Audio",
+    icon: "🩺",
+    headline: "How kidney disease patients can safely enjoy yams and plantains by leaching excess potassium.",
+    audioScript: "Patients with Chronic Kidney Disease or impaired renal clearance must limit high-potassium foods to prevent cardiac arrhythmias. By peeling, cubing, soaking, and double-boiling yams or plantains, up to 60% of potassium is safely leached out.",
+    storySlides: [
+      "African tubers like yam, cocoyam, and plantain are naturally dense in potassium. For healthy kidneys, this is great—for compromised kidneys, it can be dangerous.",
+      "KDIGO leaching protocol: 1) Peel and cut into small 1-inch cubes. 2) Soak in warm water for 2 hours. 3) Boil in fresh water, discard the water completely, and boil again.",
+      "This allows renal patients to enjoy traditional comfort meals safely without risking hyperkalemia."
+    ],
+    takeaway: "Double-boil and discard cooking water for yams and plantains if following a clinical renal protocol.",
+    quiz: {
+      question: "What is the primary clinical reason for double-boiling tubers in renal diets?",
+      options: ["To remove all carbohydrates", "To leach out excess potassium and prevent hyperkalemia", "To make the food sweeter", "To preserve vitamin C"],
+      correctIndex: 1,
+      explanation: "Double-boiling and discarding the water extracts water-soluble potassium to protect compromised kidneys."
+    }
   },
   {
-    id: "semovita",
-    name: "Semovita (Refined Wheat)",
-    glycemicIndex: 72,
-    peakSpike: "148 mg/dL",
-    velocityTime: "32 mins",
-    spikeRisk: "Moderate Spike ⚠️",
-    color: "from-amber-500 to-yellow-600",
-    bgColor: "bg-amber-50 border-amber-200 text-amber-800",
-    barWidth: "68%",
-    insight: "Milled durum wheat endosperm. Moderate digestion rate, but triggers sustained 2-hour insulin elevation."
+    id: "lesson-12",
+    tier: 2,
+    tierName: "Organ-Specific Metabolic Shields",
+    title: "Fatty Liver Reversal: Bitter Leaf & Choline",
+    category: "Liver & Detox",
+    readTime: "90s Audio",
+    icon: "🛡️",
+    headline: "Clear hepatic lipid buildup with bitter leaf polyphenols and wild egg yolk choline.",
+    audioScript: "Non-Alcoholic Fatty Liver Disease is driven by excess refined fructose, palm oil oxidation, and insulin resistance. The vernoniosides in Bitter Leaf alongside choline from boiled eggs stimulate Very Low-Density Lipoprotein export, clearing trapped fat from liver hepatocytes.",
+    storySlides: [
+      "The liver is your master metabolic engine. When overloaded with high-glycemic carbohydrates and alcohol, fat accumulates inside liver cells.",
+      "Vernonia amygdalina (Bitter Leaf) upregulates hepatic AMPK enzymes, stimulating fatty acid oxidation and reducing liver inflammation.",
+      "Dietary choline acts as a chemical transporter, packaging triglycerides into VLDL to export fat out of the liver safely."
+    ],
+    takeaway: "Pair bitter leaf greens with whole eggs and cruciferous vegetables to support natural liver fat clearance.",
+    quiz: {
+      question: "Which essential nutrient is required by the liver to package and export trapped fat out of hepatocytes?",
+      options: ["Refined Sugar", "Choline", "Saturated animal grease", "Synthetic food coloring"],
+      correctIndex: 1,
+      explanation: "Choline is essential for phosphatidylcholine synthesis, which the liver uses to package and export fat."
+    }
   },
   {
-    id: "plantain-oat-fufu",
-    name: "Plantain-Oat Fufu (Smart Swap)",
-    glycemicIndex: 42,
-    peakSpike: "114 mg/dL",
-    velocityTime: "75 mins",
-    spikeRisk: "Low Spike Shield 🛡️",
-    color: "from-emerald-500 to-teal-600",
-    bgColor: "bg-emerald-50 border-emerald-200 text-emerald-800",
-    barWidth: "35%",
-    insight: "Beta-glucan soluble fiber matrix. Extends glucose release into a gentle metabolic plateau, reducing peak spike by 45%!"
+    id: "lesson-13",
+    tier: 2,
+    tierName: "Organ-Specific Metabolic Shields",
+    title: "Peptic Ulcer Healing: Cabbage & Non-Acidic Ogi",
+    category: "Gut & Fiber",
+    readTime: "90s Audio",
+    icon: "🥣",
+    headline: "Natural L-Glutamine and fermented probiotics repair the gastric epithelial lining.",
+    audioScript: "Peptic ulcer disease requires protecting the stomach wall against corrosive gastric acid. Freshly simmered cabbage provides L-Glutamine and S-Methylmethionine (Vitamin U), which accelerate epithelial cell repair, while fermented millet pap coats and alkalizes the stomach.",
+    storySlides: [
+      "Gastric ulcers are painful sores in the lining of the stomach often exacerbated by H. pylori and NSAID painkillers.",
+      "Simmered cabbage and bone broth are exceptionally dense in L-Glutamine, the primary fuel for enterocyte mucosal repair.",
+      "Avoid raw hot scotch bonnet pepper during active flare-ups; season instead with ginger, turmeric, and soothing okra draw."
+    ],
+    takeaway: "Consume simmered cabbage soups and gentle fermented millet ogi to rapidly soothe and regenerate stomach tissue.",
+    quiz: {
+      question: "What amino acid in cooked cabbage and bone broth provides primary fuel for gut mucosal healing?",
+      options: ["L-Glutamine", "Trans-fat", "Aspartame", "Sucrose"],
+      correctIndex: 0,
+      explanation: "L-Glutamine is the primary cellular fuel used by mucosal enterocytes to rebuild and heal the gut lining."
+    }
   },
   {
-    id: "almond-psyllium-fufu",
-    name: "Almond-Psyllium Fufu (Keto Shield)",
-    glycemicIndex: 24,
-    peakSpike: "98 mg/dL",
-    velocityTime: "90 mins",
-    spikeRisk: "Flat Glycemic Line 🟢",
-    color: "from-teal-500 to-cyan-600",
-    bgColor: "bg-teal-50 border-teal-200 text-teal-800",
-    barWidth: "18%",
-    insight: "Zero rapid starch. High in monounsaturated fats and prebiotic psyllium husk—ideal for strict A1c reversal."
+    id: "lesson-14",
+    tier: 2,
+    tierName: "Organ-Specific Metabolic Shields",
+    title: "PCOS & Inositol in African Beans & Legumes",
+    category: "Hormones & Longevity",
+    readTime: "90s Audio",
+    icon: "🌸",
+    headline: "Myo-Inositol in black-eyed peas and brown beans restores ovarian insulin sensitivity.",
+    audioScript: "Polycystic Ovary Syndrome (PCOS) is fundamentally a metabolic disorder of cellular insulin resistance. Traditional African legumes like honey beans (Ewa Oloyin) and brown beans are dense in natural Myo-Inositol, which restores ovarian signaling and regulates ovulatory cycles.",
+    storySlides: [
+      "High insulin levels trigger the ovaries to produce excess testosterone, causing irregular periods, hormonal acne, and facial hair.",
+      "Myo-Inositol acts as an intracellular second messenger for insulin. African beans, fonio, and citrus fruits are packed with natural inositol isomers.",
+      "Eating steamed Moi Moi or sprouted beans stabilizes LH/FSH ratios and dramatically improves ovulatory regularity."
+    ],
+    takeaway: "Eat high-inositol African beans (Moi Moi, Gbegiri) 3-4 times weekly to combat PCOS insulin resistance.",
+    quiz: {
+      question: "How does natural inositol in African legumes help women managing PCOS?",
+      options: ["It raises cortisol levels", "It acts as an insulin second messenger to improve ovarian hormone sensitivity", "It stops ovulation", "It increases body fat storage"],
+      correctIndex: 1,
+      explanation: "Myo-Inositol improves cellular insulin signaling, reducing excess ovarian androgen production."
+    }
+  },
+  {
+    id: "lesson-15",
+    tier: 2,
+    tierName: "Organ-Specific Metabolic Shields",
+    title: "Prostate Health: 400% Lycopene Boost in Tomato Stew",
+    category: "Prostate Health",
+    readTime: "90s Audio",
+    icon: "🍅",
+    headline: "Simmering fresh tomatoes in olive or palm oil unlocks fat-soluble prostate antioxidants.",
+    audioScript: "Lycopene is the carotenoid proven to concentrate in prostate tissue and protect against cellular hyperplasia. Simmering tomatoes in healthy oils converts raw trans-lycopene into highly bioavailable cis-lycopene, increasing absorption by up to 400 percent.",
+    storySlides: [
+      "Raw tomatoes have tough cellular walls that trap lycopene. Heat and gentle cooking break down these cell membranes.",
+      "Because lycopene is fat-soluble, cooking it with healthy unbleached red palm oil or extra virgin olive oil allows your gut to absorb it effortlessly.",
+      "Pairing stew with zinc-rich pumpkin seeds (Egusi) provides double-action prostate cellular defense for men over 40."
+    ],
+    takeaway: "Simmer fresh tomato and pepper bases in healthy oil to maximize prostate-protective lycopene.",
+    quiz: {
+      question: "Why is cooked tomato stew superior to raw tomatoes for prostate lycopene absorption?",
+      options: ["Cooking destroys all antioxidants", "Heat and healthy fats convert lycopene into its bioavailable cis-isomer", "Raw tomatoes contain too much sodium", "Cooking adds synthetic vitamins"],
+      correctIndex: 1,
+      explanation: "Heat and dietary lipids break down plant cell walls and convert lycopene into easily absorbable cis-isomers."
+    }
+  },
+  {
+    id: "lesson-16",
+    tier: 2,
+    tierName: "Organ-Specific Metabolic Shields",
+    title: "Joint Mobility: Gingerol, Turmeric & Uziza Anti-Inflammatories",
+    category: "Arthritis & Joints",
+    readTime: "90s Audio",
+    icon: "🦴",
+    headline: "West African pepper soup spices inhibit inflammatory COX-2 and IL-6 cytokines.",
+    audioScript: "Traditional African Pepper Soup is more than comfort food—it is a clinical anti-inflammatory therapy. Spices like Uziza, Uda, fresh ginger, and turmeric inhibit the COX-2 enzyme pathway in a manner similar to low-dose ibuprofen, without irritating the stomach.",
+    storySlides: [
+      "Chronic joint pain and osteoarthritis are driven by circulating inflammatory cytokines (TNF-alpha and Interleukin-6).",
+      "Gingerols and piperine from Uziza seeds naturally downregulate the NF-kB inflammatory cascade.",
+      "When simmered with wild Titus mackerel or fresh catfish, the rich EPA/DHA omega-3 fatty acids lubricate synovial joint cartilage."
+    ],
+    takeaway: "Enjoy authentic wild fish pepper soup with uziza and ginger twice a week for pain-free joint mobility.",
+    quiz: {
+      question: "Which traditional spice combination acts as a natural COX-2 enzyme inhibitor for joint health?",
+      options: ["White table sugar and flour", "Ginger, Turmeric, and Uziza pepper soup spices", "Monosodium glutamate (MSG)", "Hydrogenated margarine"],
+      correctIndex: 1,
+      explanation: "Gingerols, curcumin, and piperine in traditional pepper soup spices naturally inhibit pro-inflammatory prostaglandin synthesis."
+    }
+  },
+  {
+    id: "lesson-17",
+    tier: 2,
+    tierName: "Organ-Specific Metabolic Shields",
+    title: "Preeclampsia Prevention: Low-Sodium Herb Seasoning",
+    category: "Pregnancy Health",
+    readTime: "90s Audio",
+    icon: "🤰",
+    headline: "Replacing ultra-high sodium seasoning cubes with fermented Iru and herbs protects maternal arteries.",
+    audioScript: "During pregnancy, gestational hypertension and preeclampsia risk rise sharply with excess sodium intake. A single commercial seasoning cube can contain over 1,200 milligrams of sodium. Swapping to fermented Iru, crayfish, garlic, and thyme keeps maternal blood pressure safe.",
+    storySlides: [
+      "Commercial bouillon cubes are over 50% sodium chloride and MSG. Using 3 or 4 cubes in a family pot creates a massive vascular sodium load.",
+      "Excess sodium triggers fluid retention, increasing arterial shear stress against sensitive placental vessels.",
+      "Fermented locust bean (Iru) and ground crayfish deliver intense umami flavor and bioavailable zinc with under 10% of the sodium load."
+    ],
+    takeaway: "Build soup flavor with fermented Iru, ground crayfish, garlic, and onions to protect maternal cardiovascular health.",
+    quiz: {
+      question: "What is the safest culinary swap for commercial high-sodium bouillon cubes in pregnancy?",
+      options: ["Extra table salt", "Fermented locust beans (Iru), ground crayfish, and aromatic herbs", "Refined soy sauce", "Artificial MSG powder"],
+      correctIndex: 1,
+      explanation: "Fermented Iru and crayfish provide deep umami taste and trace minerals with minimal sodium."
+    }
+  },
+  {
+    id: "lesson-18",
+    tier: 2,
+    tierName: "Organ-Specific Metabolic Shields",
+    title: "Menopause & Bone Density: Sesame & Ugwu Phytoestrogens",
+    category: "Hormones & Longevity",
+    readTime: "90s Audio",
+    icon: "🦴",
+    headline: "Protect bone mineral density after 45 with natural plant calcium and phytoestrogens.",
+    audioScript: "As estrogen declines during perimenopause and menopause, bone resorption accelerates. African sesame seeds (Beni-seed) and Ugwu leaves provide bioavailable plant calcium, magnesium, and gentle lignan phytoestrogens that support bone density and reduce night sweats.",
+    storySlides: [
+      "Postmenopausal bone loss can reach up to 2% per year if dietary calcium and vitamin K2 are insufficient.",
+      "Sesame seeds (Beni-seed) contain over 900mg of calcium per 100g—more than cow's milk—alongside natural phytoestrogens that gently bind estrogen receptors.",
+      "Ugwu greens supply vitamin K1, which activates osteocalcin to bind calcium directly into the skeletal matrix."
+    ],
+    takeaway: "Add toasted sesame seeds (Beni-seed) to your porridge and eat fresh Ugwu soup 3 times a week.",
+    quiz: {
+      question: "Which traditional West African seed provides over 900mg of calcium per 100g to support bone health?",
+      options: ["White rice grain", "Sesame Seed (Beni-seed)", "Raw cassava peeling", "Commercial wheat flour"],
+      correctIndex: 1,
+      explanation: "Sesame (Beni-seed) is one of the world's densest plant sources of bone-building calcium and magnesium."
+    }
+  },
+
+  // --------------------------------------------------------------------------
+  // TIER 3: CULTURAL BIOCHEMISTRY & COOKING MASTERCLASS (Lessons 19 - 27)
+  // --------------------------------------------------------------------------
+  {
+    id: "lesson-19",
+    tier: 3,
+    tierName: "Cultural Biochemistry & Cooking",
+    title: "Palm Oil Science: Smoke Points & Tocopherols",
+    category: "Cooking Hacks",
+    readTime: "90s Audio",
+    icon: "🌴",
+    headline: "Unbleached red palm oil is the richest natural source of CoQ10 and Tocotrienols.",
+    audioScript: "Virgin unbleached red palm oil is an African superfood packed with beta-carotene and tocotrienols (Vitamin E). However, bleaching palm oil until it turns clear and smoking destroys these delicate antioxidants. Always cook palm oil on gentle medium heat without smoking.",
+    storySlides: [
+      "The deep red color of virgin palm oil comes from carotenes—15 times more than carrots and 44 times more than leafy greens.",
+      "When palm oil is heated past its smoke point (bleached), the beneficial tocotrienols oxidize into harmful lipid peroxides.",
+      "Proper technique: Add palm oil directly to simmering tomato or vegetable stock without pre-bleaching in a dry hot pot."
+    ],
+    takeaway: "Never bleach your red palm oil to smoke. Keep it vibrant orange-red to preserve potent Vitamin E tocotrienols.",
+    quiz: {
+      question: "Why should you avoid bleaching red palm oil until it turns clear and smoky?",
+      options: ["It makes the oil too sweet", "Bleaching oxidizes and destroys protective carotenoids and Vitamin E tocotrienols", "It increases vitamin C content", "It makes the soup freeze faster"],
+      correctIndex: 1,
+      explanation: "High-heat bleaching oxidizes healthy fatty acids and destroys heat-sensitive carotenoids."
+    }
+  },
+  {
+    id: "lesson-20",
+    tier: 3,
+    tierName: "Cultural Biochemistry & Cooking",
+    title: "Fermented Superfoods: Iru, Ogiri & Dawadawa Probiotics",
+    category: "Gut & Fiber",
+    readTime: "90s Audio",
+    icon: "🧫",
+    headline: "Traditional fermented condiments cultivate Bacillus subtilis probiotics in your gut.",
+    audioScript: "Traditional African fermented seasonings—Iru from locust beans, Ogiri from melon/sesame seeds, and Dawadawa—are living fermentations. They contain Bacillus subtilis and prebiotic peptides that strengthen your gut microbiome, lower blood pressure, and boost immune resilience.",
+    storySlides: [
+      "Ancient African ancestral cooking always relied on biological alkaline fermentation to unlock bound amino acids.",
+      "Fermentation breaks down anti-nutrients (phytates and tannins) in raw seeds, releasing free zinc, iron, and magnesium for immediate absorption.",
+      "Bacillus subtilis probiotics survive harsh stomach acid to colonize the colon, producing natural antimicrobial bacteriocins."
+    ],
+    takeaway: "Use traditional fermented Iru, Ogiri, or Dawadawa as your primary soup flavoring foundation.",
+    quiz: {
+      question: "What beneficial probiotic microorganism is naturally cultivated during traditional locust bean (Iru) fermentation?",
+      options: ["Bacillus subtilis", "E. coli", "Salmonella", "Candida albicans"],
+      correctIndex: 0,
+      explanation: "Bacillus subtilis fermentation breaks down complex proteins and supports a healthy gut microbial barrier."
+    }
+  },
+  {
+    id: "lesson-21",
+    tier: 3,
+    tierName: "Cultural Biochemistry & Cooking",
+    title: "The Vascular Power of African Spices: Uda, Uziza & Ehuru",
+    category: "Heart & BP",
+    readTime: "90s Audio",
+    icon: "🌶️",
+    headline: "Ancient aromatic spices stimulate endothelial Nitric Oxide for smooth blood circulation.",
+    audioScript: "Spices like Uda (Negro pepper), Uziza (Piper guineense), and Ehuru (African nutmeg) contain rich essential oils (xylopic acid and alpha-pinene). They stimulate endothelial cells to release Nitric Oxide, promoting blood vessel dilation and reducing arterial stiffness.",
+    storySlides: [
+      "Traditional postpartum and wellness pepper soups were formulated for vascular regeneration and uterine muscle tone.",
+      "Xylopic acid in Uda displays potent antimicrobial, anti-inflammatory, and cardiovascular protective bioactivity.",
+      "Adding freshly ground Ehuru and Uziza to daily stews reduces reliance on table salt while invigorating peripheral blood circulation."
+    ],
+    takeaway: "Season daily soups with ground Uda, Uziza, and Ehuru to naturally support nitric oxide vasodilation.",
+    quiz: {
+      question: "How do traditional African pepper soup spices like Uda and Uziza support cardiovascular health?",
+      options: ["They raise arterial resistance", "They stimulate endothelial Nitric Oxide production to dilate blood vessels", "They reduce heart rate to zero", "They eliminate oxygen from blood"],
+      correctIndex: 1,
+      explanation: "Essential oils in indigenous pepper soup spices promote endothelial vasodilation via nitric oxide release."
+    }
+  },
+  {
+    id: "lesson-22",
+    tier: 3,
+    tierName: "Cultural Biochemistry & Cooking",
+    title: "Fonio & Ancient Grains: The Low-GI African Miracle",
+    category: "Glucose Science",
+    readTime: "90s Audio",
+    icon: "🌾",
+    headline: "Digitaria exilis (Fonio) has a lower glycemic index and 2x more sulfur amino acids than quinoa.",
+    audioScript: "Fonio is Africa’s oldest cultivated cereal. Naturally gluten-free, low-glycemic, and rich in methionine and cystine, it cooks in just 3 minutes. It is the ultimate super-grain replacement for high-glycemic white rice and refined couscous.",
+    storySlides: [
+      "Fonio grain has a low glycemic index (GI 49) due to its unique resistant starch matrix and high fiber structure.",
+      "It contains high concentrations of essential sulfur-containing amino acids (methionine and cysteine), which are deficient in wheat and corn.",
+      "You can steam Fonio like Jollof rice, make it into a breakfast porridge, or use it as a light, fluffy swallow."
+    ],
+    takeaway: "Swap white rice or couscous for nutrient-dense, low-glycemic African Fonio.",
+    quiz: {
+      question: "Why is Fonio an ideal staple grain for diabetics and metabolic health enthusiasts?",
+      options: ["It has zero nutrients", "It has a low glycemic index (GI ~49) and is rich in sulfur amino acids", "It converts immediately into glucose", "It requires 5 hours of cooking"],
+      correctIndex: 1,
+      explanation: "Fonio's low glycemic index and high prebiotic fiber content prevent postprandial glucose spikes."
+    }
+  },
+  {
+    id: "lesson-23",
+    tier: 3,
+    tierName: "Cultural Biochemistry & Cooking",
+    title: "Frying vs. Air-Frying: Advanced Glycation End-Products (AGEs)",
+    category: "Cooking Hacks",
+    readTime: "90s Audio",
+    icon: "🍌",
+    headline: "Deep-frying ripe plantain (Dodo) generates AGE toxins that stiffen blood vessels.",
+    audioScript: "When sweet ripe plantain is deep-fried in reused cooking oil at high temperatures, free fructose reacts with proteins to form Advanced Glycation End-products (AGEs). Air-frying or oven-roasting sweet plantain (Boli) reduces AGE formation by over 70 percent.",
+    storySlides: [
+      "Advanced Glycation End-products cross-link with vascular collagen, making arteries rigid and driving kidney microvascular damage.",
+      "Reusing vegetable oil multiple times at roadside stands creates toxic lipid peroxides and trans-fats.",
+      "Smarter alternatives: Oven-baked Boli with pepper sauce, or lightly air-fried plantain cubes brushed with virgin olive oil."
+    ],
+    takeaway: "Choose oven-roasted Boli or air-fried plantain over deep-fried dodo in reused commercial oil.",
+    quiz: {
+      question: "What harmful compounds are generated when sweet plantain is deep-fried in reused commercial oil?",
+      options: ["Advanced Glycation End-products (AGEs) and lipid peroxides", "Vitamin D3", "Omega-3 fatty acids", "Probiotics"],
+      correctIndex: 0,
+      explanation: "High-heat deep frying of sugars and proteins produces toxic AGEs that accelerate vascular aging."
+    }
+  },
+  {
+    id: "lesson-24",
+    tier: 3,
+    tierName: "Cultural Biochemistry & Cooking",
+    title: "Bone Broth & Collagen: Cow Leg & Fish Pepper Soup",
+    category: "Arthritis & Joints",
+    readTime: "90s Audio",
+    icon: "🥣",
+    headline: "Slow-simmered cow leg and bone cartilage provide natural Type-II collagen and glycine.",
+    audioScript: "Traditional slow-cooked pepper soups made with cow foot (Nkwobi base), goat bone, and fish heads extract rich Type-I and Type-II collagen into the broth. Consuming glycine from bone broth repairs the gut mucosal barrier and improves joint elasticity.",
+    storySlides: [
+      "Slow simmering over 3 to 4 hours dissolves connective collagen into easily absorbed bioavailable gelatin peptides.",
+      "Glycine is an inhibitory neurotransmitter that promotes deeper non-REM sleep, lowers nighttime body temperature, and protects gut integrity.",
+      "Skim excess floating saturated fat from the surface while keeping the gelatin-rich, mineral-dense broth."
+    ],
+    takeaway: "Slow-simmer traditional bone broths for rich natural collagen, glycine, and joint lubrication.",
+    quiz: {
+      question: "What key amino acid in slow-simmered bone broth supports gut repair and restful sleep?",
+      options: ["Glycine", "Caffeine", "MSG", "Sucrose"],
+      correctIndex: 0,
+      explanation: "Glycine supports connective tissue collagen synthesis, gut epithelial repair, and sleep quality."
+    }
+  },
+  {
+    id: "lesson-25",
+    tier: 3,
+    tierName: "Cultural Biochemistry & Cooking",
+    title: "Plantain Maturity Stages: Green vs. Yellow Biochemistry",
+    category: "Glucose Science",
+    readTime: "90s Audio",
+    icon: "🍌",
+    headline: "Green plantain is 80% resistant starch; ripe yellow plantain is 80% simple free sugars.",
+    audioScript: "The metabolic impact of plantain changes completely as it ripens. Unripe green plantain is packed with prebiotic resistant starch that stabilizes blood sugar. Over-ripe yellow plantain converts almost all its starch into fast-absorbing sucrose, fructose, and glucose.",
+    storySlides: [
+      "Unripe green plantain has a Glycemic Index of ~40. It feeds beneficial Bifidobacteria in your colon and produces zero sugar spike.",
+      "As enzymes break down starch during ripening, the GI climbs above 70 in soft, spotted yellow plantain.",
+      "Clinical strategy: If you have diabetes or insulin resistance, prioritize green plantain flour, boiled green plantain, or semi-ripe plantain."
+    ],
+    takeaway: "Choose unripe green or semi-ripe plantain for diabetes management and gut microbiome health.",
+    quiz: {
+      question: "What happens to the carbohydrate structure of plantain as it ripens from green to yellow?",
+      options: ["It turns into pure protein", "Prebiotic resistant starch converts into fast-absorbing simple sugars", "The fiber triples", "It loses all calories"],
+      correctIndex: 1,
+      explanation: "Enzymatic ripening converts complex resistant starch chains into simple fructose and glucose."
+    }
+  },
+  {
+    id: "lesson-26",
+    tier: 3,
+    tierName: "Cultural Biochemistry & Cooking",
+    title: "Wild Herbs & Micronutrients: Afang, Utazi & Oha Leaves",
+    category: "Gut & Fiber",
+    readTime: "90s Audio",
+    icon: "🍃",
+    headline: "Indigenous African wild leaves contain up to 8x more zinc, iron, and polyphenols.",
+    audioScript: "Afang (Gnetum africanum), Utazi (Gongronema latifolium), and Oha (Pterocarpus soyauxii) are wild-harvested forest leaves with incredible therapeutic properties. Utazi contains natural hypoglycemic saponins, while Afang is dense in insoluble dietary fiber.",
+    storySlides: [
+      "Cultivated hybrid vegetables often lose micronutrient density. Wild African greens maintain rich mineral concentrations.",
+      "Gongronema latifolium (Utazi) is traditionally chewed after meals to stimulate digestive bile and reduce postprandial hyperglycemia.",
+      "Oha leaves provide natural mucilaginous fiber and potent flavonoid antioxidants (quercetin and kaempferol)."
+    ],
+    takeaway: "Diversify your soups with authentic wild leaves like Afang, Utazi, and Oha for micronutrient defense.",
+    quiz: {
+      question: "Which bitter wild leaf is traditionally used across West Africa for its blood sugar lowering saponins?",
+      options: ["Utazi (Gongronema latifolium)", "Iceberg Lettuce", "White Cabbage", "Cucumber skin"],
+      correctIndex: 0,
+      explanation: "Utazi leaves are packed with bioactive saponins and flavonoids that improve insulin sensitivity."
+    }
+  },
+  {
+    id: "lesson-27",
+    tier: 3,
+    tierName: "Cultural Biochemistry & Cooking",
+    title: "Safe Salt Swaps: Potassium Salt & Herbal Seasoning Blends",
+    category: "Heart & BP",
+    readTime: "90s Audio",
+    icon: "🧂",
+    headline: "Reducing dietary sodium by 1,000mg daily drops stroke risk by 23%.",
+    audioScript: "Excess sodium intake is the single largest dietary driver of stroke and hypertension across the African diaspora. By blending potassium-rich salt substitutes with dried garlic, ginger, crayfish, and rosemary, you maintain full savory flavor without raising your blood pressure.",
+    storySlides: [
+      "The body requires a balanced 2:1 Potassium-to-Sodium ratio. Modern processed diets have inverted this to 1:4 Sodium-to-Potassium.",
+      "Low-sodium mineral salts replace 50% of sodium chloride with potassium chloride, delivering direct arterial relaxation.",
+      "Herbal seasonings (thyme, rosemary, dried bay leaf, crushed Ehuru) trick taste buds by enhancing aroma and umami perception."
+    ],
+    takeaway: "Use potassium-enhanced mineral salts and rich herbal seasonings to protect your cardiovascular system.",
+    quiz: {
+      question: "What is the healthy ideal dietary ratio of Potassium to Sodium for blood pressure regulation?",
+      options: ["10:1 Sodium to Potassium", "2:1 Potassium to Sodium", "1:100 Potassium to Sodium", "Zero Potassium"],
+      correctIndex: 1,
+      explanation: "Consuming twice as much potassium as sodium prompts kidneys to excrete excess fluid and relax arterial walls."
+    }
+  },
+
+  // --------------------------------------------------------------------------
+  // TIER 4: LONGEVITY, FASTING & CIRCADIAN BIO-HACKING (Lessons 28 - 36)
+  // --------------------------------------------------------------------------
+  {
+    id: "lesson-28",
+    tier: 4,
+    tierName: "Longevity, Fasting & Circadian Bio-Hacking",
+    title: "Taming the Dawn Phenomenon: The High-Protein Bedtime Snack",
+    category: "Glucose Science",
+    readTime: "90s Audio",
+    icon: "🌅",
+    headline: "Why your morning fasting blood sugar is high even when you didn't eat dinner.",
+    audioScript: "The Dawn Phenomenon occurs when your liver releases stored glucose (glycogenolysis) between 4 AM and 8 AM triggered by morning cortisol surges. Eating a small high-protein snack before bed—like 1 boiled egg or 3 spoons of Greek yogurt—signals the liver to suppress overnight glucose output.",
+    storySlides: [
+      "Many diabetics wake up to fasting glucose numbers of 140+ mg/dL despite eating zero carbs the night before.",
+      "During early morning hours, cortisol, growth hormone, and glucagon surge to prepare you for waking, prompting the liver to dump glucose.",
+      "Consuming 10g of clean protein with healthy fats 45 minutes before sleep keeps basal insulin steady and prevents liver hepatic glucose dumps."
+    ],
+    takeaway: "Try a bedtime snack of 1 boiled egg or a spoonful of almond butter to blunt morning fasting glucose spikes.",
+    quiz: {
+      question: "What organ is responsible for dumping stored glucose during early morning hours in the Dawn Phenomenon?",
+      options: ["The Liver (via hepatic glycogenolysis)", "The Lungs", "The Spleen", "The Gallbladder"],
+      correctIndex: 0,
+      explanation: "The liver releases stored glycogen in response to morning cortisol and growth hormone surges."
+    }
+  },
+  {
+    id: "lesson-29",
+    tier: 4,
+    tierName: "Longevity, Fasting & Circadian Bio-Hacking",
+    title: "16/8 Intermittent Fasting with African Dishes",
+    category: "Hormones & Longevity",
+    readTime: "90s Audio",
+    icon: "⏳",
+    headline: "Aligning your 8-hour eating window triggers autophagy and cellular mitochondrial renewal.",
+    audioScript: "Intermittent Fasting (16 hours fasting, 8 hours eating) gives your digestive system a break, lowering baseline insulin and activating cellular autophagy. An ideal African fasting window is 11 AM to 7 PM, breaking your fast with protein-rich Akara or boiled eggs rather than heavy starch.",
+    storySlides: [
+      "During the 16-hour fasting window, liver glycogen depletes and your body switches to burning visceral body fat for fuel (ketogenesis).",
+      "Autophagy cleans out damaged cellular proteins, misfolded enzymes, and senescent zombie cells.",
+      "Break your fast gently: Start with water, bone broth, or egg and avocado. Save your complex swallow or rice for your second meal."
+    ],
+    takeaway: "Fast for 16 hours, eat within an 8-hour window, and break your fast with clean protein and fiber.",
+    quiz: {
+      question: "What cellular rejuvenation process is triggered during a 16-hour intermittent fast?",
+      options: ["Autophagy (cellular cleanup and recycling)", "Immediate muscle wasting", "Permanent dehydration", "Glycogen overload"],
+      correctIndex: 0,
+      explanation: "Autophagy clears out dysfunctional cellular debris and enhances mitochondrial metabolic efficiency."
+    }
+  },
+  {
+    id: "lesson-30",
+    tier: 4,
+    tierName: "Longevity, Fasting & Circadian Bio-Hacking",
+    title: "The 10-Minute Post-Swallow Walk: GLUT-4 Muscle Uptake",
+    category: "Glucose Science",
+    readTime: "90s Audio",
+    icon: "🚶‍♂️",
+    headline: "Walking for just 10 minutes right after your swallow meal pulls glucose into muscles without insulin.",
+    audioScript: "When you walk immediately after eating a meal, your contracting leg muscles activate GLUT-4 glucose transporters directly. This pulls glucose out of your bloodstream independent of insulin, cutting postprandial glucose spikes by up to 35 percent.",
+    storySlides: [
+      "Sitting on the couch or sleeping immediately after a heavy swallow meal traps glucose in your bloodstream.",
+      "Muscle contraction acts like an insulin bypass: mechanical tension translocates GLUT-4 channels to cell membranes.",
+      "A simple 10-minute leisurely stroll around your compound or living room is clinically as effective as oral diabetes medication."
+    ],
+    takeaway: "Commit to a 10-minute post-meal walk after your largest meal of the day.",
+    quiz: {
+      question: "How does a 10-minute walk immediately after eating lower blood sugar without extra insulin?",
+      options: ["It burns all calories instantly", "Muscle contractions mechanically activate GLUT-4 glucose transporters", "It freezes the stomach", "It eliminates stomach acid"],
+      correctIndex: 1,
+      explanation: "Contracting skeletal muscles translocate GLUT-4 transporters to cell surfaces, absorbing glucose without insulin."
+    }
+  },
+  {
+    id: "lesson-31",
+    tier: 4,
+    tierName: "Longevity, Fasting & Circadian Bio-Hacking",
+    title: "Cortisol & Night Swallows: Why Late Heavy Eba Disrupts Deep Sleep",
+    category: "Hormones & Longevity",
+    readTime: "90s Audio",
+    icon: "🌙",
+    headline: "Eating massive carbohydrate meals past 8:30 PM halts nighttime growth hormone and Melatonin.",
+    audioScript: "Digestive thermogenesis from heavy starches late at night elevates core body temperature and spikes insulin. This suppresses natural nocturnal Melatonin and Human Growth Hormone (HGH) release, causing micro-awakenings, poor sleep quality, and high morning blood pressure.",
+    storySlides: [
+      "Deep Stage-3 slow-wave sleep requires core body temperature to drop by approximately 1°C.",
+      "Digesting a massive ball of Eba or Pounded Yam at 9:30 PM forces the gastrointestinal tract to generate heat and elevates heart rate by 10-15 beats per minute.",
+      "Solution: Eat dinner at least 3 hours before sleep. If eating late, choose light fish pepper soup, steamed vegetables, or grilled chicken."
+    ],
+    takeaway: "Finish heavy starch swallows by 7:00 PM; keep late-night dining light and protein-focused.",
+    quiz: {
+      question: "Why does eating a heavy swallow dinner immediately before bed harm sleep quality?",
+      options: ["It turns you into an early bird", "It elevates core body temperature and spikes nighttime insulin, suppressing deep sleep", "It permanently cures insomnia", "It lowers blood pressure to zero"],
+      correctIndex: 1,
+      explanation: "Late digestion elevates core body temperature and heart rate, preventing restorative slow-wave sleep."
+    }
+  },
+  {
+    id: "lesson-32",
+    tier: 4,
+    tierName: "Longevity, Fasting & Circadian Bio-Hacking",
+    title: "GLP-1 & Peptide Cascades with African Fish & Awara",
+    category: "Hormones & Longevity",
+    readTime: "90s Audio",
+    icon: "🐟",
+    headline: "How bioavailable marine peptides and soy Awara trigger natural gastric slowing.",
+    audioScript: "Pharmaceutical GLP-1 agonists mimic natural gut hormones. You can stimulate your body's own GLP-1, Cholecystokinin (CCK), and PYY by pairing intact dietary proteins like grilled Titus fish, catfish, and Awara with soluble mucilage fibers.",
+    storySlides: [
+      "Marine peptides from wild African fish trigger intense enteroendocrine signaling along the ileum.",
+      "When combined with viscous vegetable fiber, gastric transit slows down naturally, keeping you full for 5+ hours with zero food noise.",
+      "This natural peptide surge preserves lean muscle mass while accelerating visceral belly fat reduction."
+    ],
+    takeaway: "Build every meal around a solid anchor of African fish, lean poultry, or soy Awara.",
+    quiz: {
+      question: "What combination of nutrients produces the strongest natural satiety peptide (GLP-1/PYY) response?",
+      options: ["Pure table sugar and alcohol", "Intact dietary protein combined with soluble mucilage fiber", "Refined white flour alone", "Zero-protein high-fat snacks"],
+      correctIndex: 1,
+      explanation: "Amino acids combined with viscous soluble fiber maximize enteroendocrine L-cell hormone secretion."
+    }
+  },
+  {
+    id: "lesson-33",
+    tier: 4,
+    tierName: "Longevity, Fasting & Circadian Bio-Hacking",
+    title: "Gut Microbiome Diversity: The 30+ African Plant Variety Rule",
+    category: "Gut & Fiber",
+    readTime: "90s Audio",
+    icon: "🌱",
+    headline: "People who eat 30 different plant varieties per week have 5x more longevity-associated gut flora.",
+    audioScript: "The American Gut Project proved that the single greatest predictor of a healthy microbiome is plant diversity. Across West Africa, our culinary heritage provides dozens of wild leaves, spices, beans, seeds, and tubers. Eating 30 unique plants weekly fuels diverse bacterial species that produce longevity metabolites.",
+    storySlides: [
+      "Every plant contains unique polyphenols, insoluble fibers, and resistant starches that feed specific bacterial strains.",
+      "African heritage ingredients make hitting 30 easy: Ugwu, Bitter leaf, Okra, Ogbono, Egusi, Iru, Ginger, Garlic, Uda, Uziza, Ehuru, Fonio, Brown beans, Sweet potato, and Zobo count toward your weekly total.",
+      "A diverse microbiome strengthens the intestinal epithelial wall and dramatically lowers systemic chronic inflammation."
+    ],
+    takeaway: "Count your plant diversity weekly; aim for 30 distinct African vegetables, spices, grains, and seeds.",
+    quiz: {
+      question: "What weekly dietary goal is most strongly linked to rich gut bacterial diversity and longevity?",
+      options: ["Eating only 1 single food item every day", "Consuming 30 or more diverse plant foods (greens, herbs, spices, seeds) weekly", "Drinking 10 liters of soda", "Avoiding all vegetables"],
+      correctIndex: 1,
+      explanation: "Consuming 30+ diverse plant varieties feeds diverse microbial colonies in the colon."
+    }
+  },
+  {
+    id: "lesson-34",
+    tier: 4,
+    tierName: "Longevity, Fasting & Circadian Bio-Hacking",
+    title: "Blood Pressure Circadian Rhythms: Morning vs. Evening Potassium",
+    category: "Heart & BP",
+    readTime: "90s Audio",
+    icon: "❤️",
+    headline: "Optimizing the timing of your potassium-rich meals to prevent nocturnal non-dipping hypertension.",
+    audioScript: "Healthy blood pressure should naturally dip by 10 to 20% during sleep. In individuals with 'non-dipping' hypertension, nighttime blood pressure remains high. Consuming potassium-rich vegetables (Ugwu and Waterleaf) at dinner prompts nighttime renal sodium excretion, restoring healthy nocturnal dipping.",
+    storySlides: [
+      "Non-dipping hypertension is a major risk factor for early morning hemorrhagic strokes and heart failure.",
+      "Kidneys follow a strict circadian clock: evening potassium prompts distal tubules to dump sodium while you sleep.",
+      "Enjoying a rich vegetable-dense dinner lowers vascular tension and protects cerebral vessels overnight."
+    ],
+    takeaway: "Front-load rich leafy green vegetables in your evening dinner to support healthy nocturnal BP dipping.",
+    quiz: {
+      question: "What is 'nocturnal dipping' in healthy blood pressure circadian biology?",
+      options: ["A 10-20% natural reduction in blood pressure during nighttime sleep", "Blood pressure spiking to 200 mmHg at midnight", "Complete stopping of blood circulation", "A drop in body weight"],
+      correctIndex: 0,
+      explanation: "Healthy cardiovascular circadian biology features a 10-20% drop in blood pressure during sleep."
+    }
+  },
+  {
+    id: "lesson-35",
+    tier: 4,
+    tierName: "Longevity, Fasting & Circadian Bio-Hacking",
+    title: "Longevity Bio-Markers: Fasting Insulin, Triglycerides & eA1c",
+    category: "Glucose Science",
+    readTime: "90s Audio",
+    icon: "📊",
+    headline: "The Triglyceride-to-HDL ratio is a more accurate predictor of cardiovascular health than total cholesterol.",
+    audioScript: "Standard fasting blood sugar tests often miss early insulin resistance by up to 10 years. By tracking your Fasting Insulin, Triglyceride-to-HDL ratio (target under 2.0), and estimated A1c, you catch metabolic dysfunction at the cellular level decades before symptoms arise.",
+    storySlides: [
+      "Fasting glucose can remain 'normal' for years because the pancreas works overtime pumping out massive insulin to keep it down.",
+      "Measuring Fasting Insulin alongside Fasting Glucose gives you your HOMA-IR score (Homeostatic Model Assessment of Insulin Resistance).",
+      "A Triglyceride to HDL ratio under 1.5 indicates clean insulin sensitivity and healthy small-dense LDL particle size."
+    ],
+    takeaway: "Request Fasting Insulin and a full lipid panel annually to monitor true metabolic longevity.",
+    quiz: {
+      question: "What Triglyceride-to-HDL ratio target indicates optimal insulin sensitivity and vascular health?",
+      options: ["Over 10.0", "Under 2.0 (ideally under 1.5)", "Exactly 50.0", "Negative 5.0"],
+      correctIndex: 1,
+      explanation: "A Triglyceride-to-HDL ratio under 2.0 reflects healthy insulin sensitivity and low small-dense atherogenic LDL."
+    }
+  },
+  {
+    id: "lesson-36",
+    tier: 4,
+    tierName: "Longevity, Fasting & Circadian Bio-Hacking",
+    title: "Becoming a Certified Metabolic Champion: The Lifelong Blueprint",
+    category: "Hormones & Longevity",
+    readTime: "90s Audio",
+    icon: "👑",
+    headline: "The complete synthesis: Combining African culinary heritage with cutting-edge metabolic medicine.",
+    audioScript: "Congratulations on reaching the final masterclass lesson! You now hold the clinical knowledge to master your blood sugar, protect your cardiovascular system, and optimize your longevity—all while celebrating the rich culinary heritage of Africa. You are officially a Certified African Metabolic Champion.",
+    storySlides: [
+      "You have mastered the 4 Core Pillars: 1) Food Sequencing, 2) Portion Geometry, 3) Organ Shields, and 4) Circadian Lifestyle Timing.",
+      "Cultural food is not the enemy of health; unbuffered refined processing was the problem. You now possess the scientific blueprint to thrive.",
+      "Share your knowledge with your family circle, inspire your community, and live a vibrant, energized life."
+    ],
+    takeaway: "You are a Certified African Metabolic Champion! Share your certification credential with pride.",
+    quiz: {
+      question: "What is the ultimate core philosophy of MealOptimiza?",
+      options: ["Abandon all African food forever", "Harmonize authentic African culinary heritage with clinical metabolic science for lifelong vitality", "Eat only raw kale and lettuce", "Never eat dinner"],
+      correctIndex: 1,
+      explanation: "MealOptimiza empowers you to master blood sugar and longevity while celebrating authentic cultural heritage."
+    }
   }
 ];
 
 export default function AvoAcademy() {
-  const { profile } = useUser();
-  const scrollBarRef = useRef<HTMLDivElement>(null);
-  const [isPaused, setIsPaused] = useState(false);
-
-  // Selected Specialty Category
-  const [selectedCategory, setSelectedCategory] = useState<string>(() => {
-    const cond = (profile?.medicalCondition || "").toLowerCase();
-    if (cond.includes("pregnan") || cond.includes("gestat")) return "Pregnancy Health";
-    if (cond.includes("prostat") || cond.includes("bph")) return "Prostate Health";
-    if (cond.includes("arthrit") || cond.includes("joint") || cond.includes("gout")) return "Arthritis & Joints";
-    if (cond.includes("ulcer") || cond.includes("pud") || cond.includes("gastrit") || cond.includes("reflux") || cond.includes("gerd")) return "Peptic Ulcer Health";
-    if (cond.includes("menopaus") || cond.includes("perimenopaus") || cond.includes("hot flash") || cond.includes("hormon")) return "Menopause & Hormones";
-    return "Glucose Science";
-  });
-
-  // 10X 3-in-1 Compact View Segment: "lessons" | "meals" | "simulator"
-  const [activeViewTab, setActiveViewTab] = useState<"lessons" | "meals" | "simulator">("lessons");
-
-  // Meal Sub-Tab inside "meals": "Breakfast" | "Lunch" | "Dinner"
-  const [activeMealSubTab, setActiveMealSubTab] = useState<"Breakfast" | "Lunch" | "Dinner">("Lunch");
-
-  // Lesson & Quiz Modal State
+  const { user } = useUser();
+  const [selectedTier, setSelectedTier] = useState<AcademyTier>(1);
   const [activeLesson, setActiveLesson] = useState<AcademyLesson | null>(null);
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
   const [quizSubmitted, setQuizSubmitted] = useState(false);
+  const [playingAudioLessonId, setPlayingAudioLessonId] = useState<string | null>(null);
+  const [isAudioPlaying, setIsAudioPlaying] = useState(false);
+  const [showCertificateModal, setShowCertificateModal] = useState(false);
+  const [certificateTier, setCertificateTier] = useState<AcademyTier>(1);
 
-  // Swallow Simulator state
-  const [selectedSwallow, setSelectedSwallow] = useState(SWALLOW_SIMULATOR_DATA[3]);
-
-  // Saved progress
-  const [completedIds, setCompletedIds] = useState<string[]>(() => {
+  // Persistence for completed lessons & XP
+  const [completedLessonIds, setCompletedLessonIds] = useState<string[]>(() => {
     try {
-      return JSON.parse(localStorage.getItem("completed_academy_lessons") || "[]");
+      const saved = localStorage.getItem("avo_completed_academy_lessons");
+      return saved ? JSON.parse(saved) : ["lesson-1", "lesson-2"];
     } catch {
-      return [];
+      return ["lesson-1", "lesson-2"];
     }
   });
 
-  const [userXp, setUserXp] = useState<number>(() => {
+  const [totalAcademyXp, setTotalAcademyXp] = useState<number>(() => {
     try {
-      return parseInt(localStorage.getItem("metabolic_xp") || "150", 10);
+      const saved = localStorage.getItem("avo_academy_total_xp");
+      return saved ? parseInt(saved, 10) : 150;
     } catch {
       return 150;
     }
   });
 
-  // Circadian window
-  const circadianWindow = useMemo(() => {
-    const hour = new Date().getHours();
-    if (hour >= 6 && hour < 11) {
-      return {
-        label: "Morning Fasting Window (07:00 - 11:00)",
-        status: "Insulin sensitivity is peak. Ideal window for complex fiber & protein breakfast.",
-        color: "bg-emerald-50 text-emerald-800 border-emerald-200",
-        badge: "Optimal Sensitivity ⚡",
-      };
-    } else if (hour >= 11 && hour < 16) {
-      return {
-        label: "Midday Metabolic Engine (12:00 - 16:00)",
-        status: "Active digestive window. Pair starchy swallows with vegetables first.",
-        color: "bg-amber-50 text-amber-800 border-amber-200",
-        badge: "Active Metabolism 🔥",
-      };
-    } else if (hour >= 16 && hour < 21) {
-      return {
-        label: "Evening Glucose Clearance (17:00 - 21:00)",
-        status: "Insulin sensitivity begins tapering. Favor light dinners & lean fish.",
-        color: "bg-orange-50 text-orange-800 border-orange-200",
-        badge: "Tapering Phase 🌙",
-      };
-    } else {
-      return {
-        label: "Night Autophagy & Fasting (21:00 - 06:00)",
-        status: "Cellular repair and liver glycogen depletion active.",
-        color: "bg-indigo-50 text-indigo-800 border-indigo-200",
-        badge: "Autophagy Rest 🌌",
-      };
-    }
-  }, []);
-
-  const todayLessonIndex = useMemo(() => {
-    const start = new Date(new Date().getFullYear(), 0, 0);
-    const diff = new Date().getTime() - start.getTime();
-    const oneDay = 1000 * 60 * 60 * 24;
-    const dayOfYear = Math.floor(diff / oneDay);
-    return dayOfYear % ACADEMY_LESSONS.length;
-  }, []);
-
-  const todayLesson = ACADEMY_LESSONS[todayLessonIndex];
-
-  // Auto-scrolling Specialty Marquee loop (Smooth & Interactive)
   useEffect(() => {
-    const el = scrollBarRef.current;
-    if (!el) return;
+    try {
+      localStorage.setItem("avo_completed_academy_lessons", JSON.stringify(completedLessonIds));
+      localStorage.setItem("avo_academy_total_xp", totalAcademyXp.toString());
+    } catch {}
+  }, [completedLessonIds, totalAcademyXp]);
 
-    let scrollAmount = el.scrollLeft;
-    let scrollDirection = 1;
+  // Clean up audio on unmount
+  useEffect(() => {
+    return () => {
+      stopSpeaking();
+    };
+  }, []);
 
-    const interval = setInterval(() => {
-      if (isPaused) return;
-      if (!el) return;
+  // Compute today's featured lesson of the day (Duolingo-style Daily Drop)
+  const todayLesson = useMemo(() => {
+    const dayOfYear = Math.floor((Date.now() - new Date(new Date().getFullYear(), 0, 0).getTime()) / (1000 * 60 * 60 * 24));
+    const index = Math.abs(dayOfYear) % LESSONS.length;
+    return LESSONS[index] || LESSONS[0];
+  }, []);
 
-      scrollAmount += scrollDirection * 0.8;
-      if (scrollAmount >= el.scrollWidth - el.clientWidth - 5) {
-        scrollDirection = -1;
-      } else if (scrollAmount <= 5) {
-        scrollDirection = 1;
+  // Filter lessons by Tier
+  const tierLessons = useMemo(() => {
+    return LESSONS.filter((l) => l.tier === selectedTier);
+  }, [selectedTier]);
+
+  // Tier Completion stats
+  const tierStats = useMemo(() => {
+    const counts: Record<AcademyTier, { total: number; completed: number }> = {
+      1: { total: 9, completed: 0 },
+      2: { total: 9, completed: 0 },
+      3: { total: 9, completed: 0 },
+      4: { total: 9, completed: 0 },
+    };
+
+    LESSONS.forEach((l) => {
+      if (completedLessonIds.includes(l.id)) {
+        counts[l.tier].completed += 1;
       }
-      el.scrollLeft = scrollAmount;
-    }, 30);
+    });
 
-    return () => clearInterval(interval);
-  }, [isPaused]);
+    return counts;
+  }, [completedLessonIds]);
 
-  const currentMealProtocols = useMemo(() => {
-    return CATEGORY_MEAL_PROTOCOLS[selectedCategory] || CATEGORY_MEAL_PROTOCOLS["Glucose Science"] || [];
-  }, [selectedCategory]);
-
-  const activeSubMeal = useMemo(() => {
-    return currentMealProtocols.find((m) => m.mealType === activeMealSubTab) || currentMealProtocols[0];
-  }, [currentMealProtocols, activeMealSubTab]);
-
-  const filteredLessons = useMemo(() => {
-    if (selectedCategory === "All") return ACADEMY_LESSONS;
-    return ACADEMY_LESSONS.filter((l) => l.category === selectedCategory);
-  }, [selectedCategory]);
-
-  const openLesson = (lesson: AcademyLesson) => {
-    triggerHaptic("light");
+  // Start a lesson
+  const handleStartLesson = (lesson: AcademyLesson) => {
+    triggerHaptic("medium");
     setActiveLesson(lesson);
     setCurrentSlideIndex(0);
     setSelectedAnswer(null);
     setQuizSubmitted(false);
   };
 
-  const handleNextSlide = () => {
-    if (!activeLesson) return;
+  // Audio Play/Pause with Sarah AI
+  const handleToggleAudio = (e: React.MouseEvent, lesson: AcademyLesson) => {
+    e.stopPropagation();
     triggerHaptic("light");
-    if (currentSlideIndex < activeLesson.storySlides.length) {
-      setCurrentSlideIndex(currentSlideIndex + 1);
+
+    if (playingAudioLessonId === lesson.id && isAudioPlaying) {
+      stopSpeaking();
+      setIsAudioPlaying(false);
+      setPlayingAudioLessonId(null);
+    } else {
+      stopSpeaking();
+      setPlayingAudioLessonId(lesson.id);
+      setIsAudioPlaying(true);
+
+      const scriptToRead = `${lesson.title}. ${lesson.audioScript} Key Clinical Takeaway: ${lesson.takeaway}`;
+
+      speakText(scriptToRead, {
+        onStart: () => setIsAudioPlaying(true),
+        onEnd: () => {
+          setIsAudioPlaying(false);
+          setPlayingAudioLessonId(null);
+          toast.success("Lesson audio completed! 🎧 (+10 XP)");
+          setTotalAcademyXp((prev) => prev + 10);
+        },
+        onError: () => {
+          setIsAudioPlaying(false);
+          setPlayingAudioLessonId(null);
+        },
+      });
     }
   };
 
-  const handleSelectOption = (index: number) => {
-    if (quizSubmitted) return;
+  // Next slide
+  const handleNextSlide = () => {
     triggerHaptic("light");
-    setSelectedAnswer(index);
+    if (!activeLesson) return;
+    if (currentSlideIndex < activeLesson.storySlides.length - 1) {
+      setCurrentSlideIndex((prev) => prev + 1);
+    } else {
+      // Move to quiz phase
+      setCurrentSlideIndex(activeLesson.storySlides.length);
+    }
   };
 
+  // Select Quiz Option
+  const handleSelectOption = (idx: number) => {
+    if (quizSubmitted) return;
+    triggerHaptic("light");
+    setSelectedAnswer(idx);
+  };
+
+  // Submit Quiz
   const handleSubmitQuiz = () => {
     if (selectedAnswer === null || !activeLesson) return;
     setQuizSubmitted(true);
@@ -832,448 +1316,328 @@ export default function AvoAcademy() {
     const isCorrect = selectedAnswer === activeLesson.quiz.correctIndex;
     if (isCorrect) {
       triggerHaptic("success");
-      triggerConfetti("burst");
-      toast.success("Mastery Complete! +25 Metabolic XP 🧠✨");
+      triggerConfetti();
+      const xpBonus = activeLesson.id === todayLesson.id ? 50 : 25;
+      setTotalAcademyXp((prev) => prev + xpBonus);
 
-      if (!completedIds.includes(activeLesson.id)) {
-        const nextCompleted = [...completedIds, activeLesson.id];
-        setCompletedIds(nextCompleted);
-        localStorage.setItem("completed_academy_lessons", JSON.stringify(nextCompleted));
+      if (!completedLessonIds.includes(activeLesson.id)) {
+        const nextCompleted = [...completedLessonIds, activeLesson.id];
+        setCompletedLessonIds(nextCompleted);
 
-        const nextXp = userXp + 25;
-        setUserXp(nextXp);
-        localStorage.setItem("metabolic_xp", nextXp.toString());
+        // Check if Tier is newly completed
+        const currentTierLessons = LESSONS.filter((l) => l.tier === activeLesson.tier);
+        const allTierDone = currentTierLessons.every((l) => nextCompleted.includes(l.id));
+        if (allTierDone) {
+          setTimeout(() => {
+            setCertificateTier(activeLesson.tier);
+            setShowCertificateModal(true);
+          }, 800);
+        }
       }
+
+      toast.success(`100% Correct! +${xpBonus} XP added to your Streak! 🎉`);
     } else {
       triggerHaptic("warning");
-      toast.error("Not quite! Read the clinical explanation below.");
+      toast.info("Good effort! Read Avo's Clinical Review Note below 📝");
+    }
+  };
+
+  const getTierBadgeTitle = (tier: AcademyTier) => {
+    switch (tier) {
+      case 1:
+        return "🥉 Heritage Nutrition Foundations";
+      case 2:
+        return "🥈 Clinical Organ Shield Specialist";
+      case 3:
+        return "🥇 African Culinary Bio-Chemist";
+      case 4:
+        return "👑 Master African Metabolic Champion";
     }
   };
 
   return (
-    <div className="space-y-3.5 pb-6">
-      {/* 1. ULTRA-COMPACT BENTO HEADER (Single Line High Density) */}
-      <div className="bg-gradient-to-r from-[#126778] via-[#1f7a8c] to-[#0d9488] rounded-2xl px-3.5 py-3 text-white shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
-        <div className="min-w-0">
-          <div className="flex items-center gap-1.5 text-[10px] font-black text-teal-200 uppercase tracking-wider">
-            <Sparkles size={12} className="text-amber-300 animate-pulse shrink-0" />
-            <span>Avo Metabolic Academy</span>
-          </div>
-          <h2 className="text-sm sm:text-base font-black text-white leading-tight mt-0.5 truncate">
-            Culinary Medicine &amp; Bio-Hacks 🧬
-          </h2>
-        </div>
+    <div className="space-y-4">
+      {/* =================================================================== */}
+      {/* 1. DUOLINGO-STYLE "TODAY'S 90-SECOND METABOLIC DROP" HERO BANNER     */}
+      {/* =================================================================== */}
+      <div className="relative overflow-hidden bg-gradient-to-br from-indigo-900 via-purple-900 to-slate-950 rounded-3xl p-4 sm:p-5 text-white shadow-xl border-2 border-purple-400/40">
+        <div className="absolute -top-10 -right-10 w-40 h-40 rounded-full bg-purple-500/20 blur-2xl pointer-events-none" />
 
-        <div className="flex items-center gap-1.5 shrink-0 self-start sm:self-auto">
-          <div className="bg-white/15 backdrop-blur-md px-2.5 py-1 rounded-xl border border-white/20 text-center">
-            <span className="text-xs font-black text-amber-300">🏆 {userXp} XP</span>
+        <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div className="flex items-center gap-3">
+            <div className="relative">
+              <span className="absolute -inset-1 rounded-2xl bg-amber-400/40 animate-pulse-radar pointer-events-none" />
+              <div className="relative bg-white/20 backdrop-blur-md rounded-2xl p-2.5 shadow-md border border-white/20">
+                <Flame className="h-6 w-6 text-amber-300 animate-pulse" />
+              </div>
+            </div>
+
+            <div>
+              <div className="flex items-center gap-2 flex-wrap">
+                <span className="text-[9.5px] font-black uppercase tracking-wider bg-amber-400 text-slate-950 px-2 py-0.5 rounded-full shadow-2xs">
+                  🔥 7-DAY STUDY STREAK
+                </span>
+                <span className="text-[10px] font-bold text-purple-200">
+                  Total XP: <strong className="text-amber-300 font-black">{totalAcademyXp} XP</strong>
+                </span>
+              </div>
+              <h3 className="text-sm sm:text-base font-black text-white leading-tight mt-1">
+                Today's 90s Drop: {todayLesson.title}
+              </h3>
+              <p className="text-[11px] text-purple-200/90 font-medium line-clamp-1 mt-0.5">
+                {todayLesson.headline}
+              </p>
+            </div>
           </div>
-          <div className="bg-white/15 backdrop-blur-md px-2.5 py-1 rounded-xl border border-white/20 text-center">
-            <span className="text-[10px] font-bold text-teal-100">
-              📚 {completedIds.length}/{ACADEMY_LESSONS.length}
-            </span>
+
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={(e) => handleToggleAudio(e, todayLesson)}
+              className={`px-3 py-2 rounded-2xl text-xs font-black flex items-center gap-1.5 transition-all cursor-pointer ${
+                playingAudioLessonId === todayLesson.id && isAudioPlaying
+                  ? "bg-amber-400 text-slate-950 shadow-md animate-pulse"
+                  : "bg-white/20 hover:bg-white/30 text-white border border-white/20"
+              }`}
+            >
+              {playingAudioLessonId === todayLesson.id && isAudioPlaying ? (
+                <>
+                  <Pause size={14} />
+                  <span>Pause Audio</span>
+                </>
+              ) : (
+                <>
+                  <Volume2 size={14} className="text-amber-300" />
+                  <span>Listen (90s) 🎧</span>
+                </>
+              )}
+            </button>
+
+            <button
+              type="button"
+              onClick={() => handleStartLesson(todayLesson)}
+              className="px-4 py-2 bg-gradient-to-r from-emerald-400 to-teal-400 hover:from-emerald-300 hover:to-teal-300 text-slate-950 text-xs font-black rounded-2xl shadow-md flex items-center gap-1.5 cursor-pointer active:scale-95"
+            >
+              <span>Start Quiz (+50 XP)</span>
+              <ChevronRight size={14} />
+            </button>
           </div>
         </div>
       </div>
 
-      {/* 🌟 2. TOP SELF-SCROLLING SPECIALTY MARQUEE BAR (Strict Unified Brand Teal) */}
-      <div className="space-y-1.5">
+      {/* =================================================================== */}
+      {/* 2. 4-TIER PROGRESSION TRACK SWITCHER (TIER 1 TO TIER 4)              */}
+      {/* =================================================================== */}
+      <div className="bg-white dark:bg-zinc-900 rounded-3xl p-3.5 shadow-md border border-teal-100/90 dark:border-zinc-800 space-y-3">
         <div className="flex items-center justify-between px-1">
-          <span className="text-[10.5px] font-black uppercase tracking-wider text-[#126778] dark:text-teal-300 flex items-center gap-1.5">
-            <Sparkles size={12} className="text-amber-500 animate-bounce" />
-            <span>Select Clinical Specialty:</span>
-          </span>
-          <span className="text-[9.5px] text-slate-400 font-bold">
-            Tap to switch ➔
+          <div className="flex items-center gap-2">
+            <GraduationCap className="h-5 w-5 text-[#1f7a8c]" />
+            <span className="text-xs font-black text-gray-900 dark:text-white uppercase tracking-wider">
+              Metabolic Masterclass Curriculum
+            </span>
+          </div>
+          <span className="text-[10px] font-bold text-gray-500">
+            {completedLessonIds.length} of {LESSONS.length} Lessons Completed (
+            {Math.round((completedLessonIds.length / LESONS.length) * 100)}%)
           </span>
         </div>
 
-        <div
-          ref={scrollBarRef}
-          onMouseEnter={() => setIsPaused(true)}
-          onMouseLeave={() => setIsPaused(false)}
-          onTouchStart={() => setIsPaused(true)}
-          onTouchEnd={() => setIsPaused(false)}
-          className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none py-1 px-0.5 select-none"
-        >
+        {/* 4-Tier Segmented Tabs */}
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
           {[
-            { id: "Peptic Ulcer Health", label: "🥣 Eating for Ulcers & Gastritis (PUD)" },
-            { id: "Pregnancy Health", label: "🤰 Eating for Pregnancy" },
-            { id: "Prostate Health", label: "🩺 Eating for Prostate Health" },
-            { id: "Arthritis & Joints", label: "🦴 Eating for Arthritis & Joints" },
-            { id: "Glucose Science", label: "🩸 Glucose Science & Insulin" },
-            { id: "Heart & BP", label: "❤️ Blood Pressure & Heart" },
-            { id: "Gut & Fiber", label: "🥗 Gut Microbiome & Fiber" },
-            { id: "Cooking Hacks", label: "👨‍🍳 Cultural Cooking Hacks" },
-            { id: "All", label: "🌟 All Masterclasses" },
-          ].map((cat) => {
-            const isSelected = selectedCategory === cat.id;
+            { tier: 1 as AcademyTier, label: "Tier 1: Foundations", icon: "🌱", color: "from-emerald-600 to-teal-600" },
+            { tier: 2 as AcademyTier, label: "Tier 2: Organ Shields", icon: "🛡️", color: "from-blue-600 to-cyan-600" },
+            { tier: 3 as AcademyTier, label: "Tier 3: Culinary Bio", icon: "🍲", color: "from-amber-600 to-orange-600" },
+            { tier: 4 as AcademyTier, label: "Tier 4: Longevity & Fast", icon: "👑", color: "from-purple-600 to-pink-600" },
+          ].map((t) => {
+            const isSelected = selectedTier === t.tier;
+            const stat = tierStats[t.tier];
+            const isCompleted = stat.completed === stat.total;
+
             return (
               <button
-                key={cat.id}
+                key={t.tier}
                 type="button"
                 onClick={() => {
-                  triggerHaptic("medium");
-                  setSelectedCategory(cat.id);
-                  setIsPaused(true);
+                  triggerHaptic("light");
+                  setSelectedTier(t.tier);
                 }}
-                className={`px-3.5 py-2 rounded-2xl font-black text-xs whitespace-nowrap transition-all cursor-pointer shadow-xs active:scale-95 flex items-center gap-1.5 ${
+                className={`p-2.5 rounded-2xl border text-left transition-all cursor-pointer flex flex-col justify-between h-20 ${
                   isSelected
-                    ? "bg-gradient-to-r from-[#126778] via-[#1f7a8c] to-[#0d9488] text-white ring-2 ring-teal-400 ring-offset-1 scale-105 shadow-md"
-                    : "bg-white dark:bg-zinc-800 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-zinc-700 hover:border-teal-400 hover:bg-teal-50/40"
+                    ? "bg-slate-900 text-white border-slate-900 shadow-md scale-[1.02]"
+                    : "bg-slate-50 dark:bg-zinc-800/60 hover:bg-teal-50 border-slate-200/80 dark:border-zinc-700 text-slate-800 dark:text-slate-200"
                 }`}
               >
-                <span>{cat.label}</span>
-                {isSelected && <CheckCircle2 size={12} className="text-white" />}
+                <div className="flex items-center justify-between">
+                  <span className="text-base">{t.icon}</span>
+                  {isCompleted ? (
+                    <span className="text-[9px] font-black px-1.5 py-0.5 rounded-full bg-emerald-500 text-white flex items-center gap-0.5">
+                      <Check size={10} /> Certified
+                    </span>
+                  ) : (
+                    <span
+                      className={`text-[9.5px] font-mono font-bold ${
+                        isSelected ? "text-teal-300" : "text-slate-500"
+                      }`}
+                    >
+                      {stat.completed}/{stat.total}
+                    </span>
+                  )}
+                </div>
+                <div>
+                  <div className="text-[11px] font-black leading-tight truncate">{t.label}</div>
+                  <div className="w-full bg-black/20 h-1 rounded-full overflow-hidden mt-1.5">
+                    <div
+                      className="bg-emerald-400 h-full rounded-full transition-all duration-500"
+                      style={{ width: `${(stat.completed / stat.total) * 100}%` }}
+                    />
+                  </div>
+                </div>
               </button>
             );
           })}
         </div>
       </div>
 
-      {/* 🚀 3. THE 10X 3-IN-1 COMPACT SEGMENTED SWITCHER */}
-      <div className="bg-slate-100 dark:bg-zinc-800/80 p-1 rounded-2xl flex items-center gap-1 border border-slate-200 dark:border-zinc-700">
-        <button
-          type="button"
-          onClick={() => {
-            triggerHaptic("light");
-            setActiveViewTab("lessons");
-          }}
-          className={`flex-1 py-2 px-1 sm:px-2 rounded-xl text-[11px] sm:text-xs font-black transition-all flex items-center justify-center gap-1 sm:gap-1.5 cursor-pointer truncate ${
-            activeViewTab === "lessons"
-              ? "bg-white dark:bg-zinc-900 text-[#126778] dark:text-teal-300 shadow-sm"
-              : "text-slate-600 dark:text-slate-400 hover:text-slate-900"
-          }`}
-        >
-          <BookOpen size={13} className="shrink-0" />
-          <span className="truncate">60s Lessons</span>
-        </button>
+      {/* =================================================================== */}
+      {/* 3. TIER LESSONS GRID (9 LESSONS PER TIER)                            */}
+      {/* =================================================================== */}
+      <div className="space-y-2.5">
+        <div className="flex items-center justify-between px-1">
+          <span className="text-xs font-black uppercase tracking-wider text-slate-700 dark:text-slate-300">
+            {selectedTier === 1 && "Tier 1: Cultural Food Foundations & Sequencing (9 Lessons)"}
+            {selectedTier === 2 && "Tier 2: Organ-Specific Metabolic Shields (9 Lessons)"}
+            {selectedTier === 3 && "Tier 3: Cultural Biochemistry & Culinary Masterclass (9 Lessons)"}
+            {selectedTier === 4 && "Tier 4: Longevity, Fasting & Circadian Bio-Hacking (9 Lessons)"}
+          </span>
 
-        <button
-          type="button"
-          onClick={() => {
-            triggerHaptic("light");
-            setActiveViewTab("meals");
-          }}
-          className={`flex-1 py-2 px-1 sm:px-2 rounded-xl text-[11px] sm:text-xs font-black transition-all flex items-center justify-center gap-1 sm:gap-1.5 cursor-pointer truncate ${
-            activeViewTab === "meals"
-              ? "bg-white dark:bg-zinc-900 text-[#126778] dark:text-teal-300 shadow-sm"
-              : "text-slate-600 dark:text-slate-400 hover:text-slate-900"
-          }`}
-        >
-          <UtensilsCrossed size={13} className="shrink-0" />
-          <span className="truncate">Daily Plates</span>
-        </button>
-
-        <button
-          type="button"
-          onClick={() => {
-            triggerHaptic("light");
-            setActiveViewTab("simulator");
-          }}
-          className={`flex-1 py-2 px-1 sm:px-2 rounded-xl text-[11px] sm:text-xs font-black transition-all flex items-center justify-center gap-1 sm:gap-1.5 cursor-pointer truncate ${
-            activeViewTab === "simulator"
-              ? "bg-white dark:bg-zinc-900 text-[#126778] dark:text-teal-300 shadow-sm"
-              : "text-slate-600 dark:text-slate-400 hover:text-slate-900"
-          }`}
-        >
-          <Sliders size={13} className="shrink-0" />
-          <span className="truncate">GI Simulator</span>
-        </button>
-      </div>
-
-      {/* ============================================================ */}
-      {/* VIEW 1: 60s INTERACTIVE LESSONS                              */}
-      {/* ============================================================ */}
-      {activeViewTab === "lessons" && (
-        <div className="space-y-2.5 animate-in fade-in zoom-in-98 duration-200">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-            {filteredLessons.map((lesson) => {
-              const Icon = lesson.icon;
-              const isDone = completedIds.includes(lesson.id);
-              const isCurrentToday = lesson.id === todayLesson.id;
-
-              return (
-                <div
-                  key={lesson.id}
-                  onClick={() => openLesson(lesson)}
-                  className={`p-3.5 rounded-2xl border transition-all cursor-pointer flex flex-col justify-between group hover:shadow-md ${
-                    isDone
-                      ? "bg-teal-50/40 border-teal-200 dark:bg-teal-950/30 dark:border-teal-900"
-                      : isCurrentToday
-                      ? "bg-white dark:bg-zinc-800 border-amber-300 ring-2 ring-amber-300/40"
-                      : "bg-white dark:bg-zinc-800 border-slate-200/80 dark:border-zinc-700 hover:border-teal-400"
-                  }`}
-                >
-                  <div>
-                    <div className="flex items-center justify-between gap-2 mb-1.5">
-                      <span className="text-[9.5px] uppercase font-black tracking-wider text-[#126778] dark:text-teal-300 bg-teal-50 dark:bg-teal-950 px-2 py-0.5 rounded-md truncate">
-                        {lesson.category}
-                      </span>
-                      <span className="text-[9.5px] text-slate-400 font-bold flex items-center gap-1 shrink-0">
-                        <Clock size={10} />
-                        <span>{lesson.readTime}</span>
-                      </span>
-                    </div>
-
-                    <div className="flex items-start gap-2.5 my-1">
-                      <div
-                        className={`p-2 rounded-xl shrink-0 ${
-                          isDone
-                            ? "bg-emerald-100 text-emerald-700"
-                            : "bg-teal-50 text-[#126778]"
-                        }`}
-                      >
-                        <Icon className="h-4 w-4" />
-                      </div>
-                      <div className="min-w-0 flex-1">
-                        <h4 className="text-xs font-black text-slate-900 dark:text-white group-hover:text-[#126778] transition-colors leading-snug line-clamp-1">
-                          {lesson.title}
-                        </h4>
-                        <p className="text-[10.5px] text-slate-500 dark:text-slate-400 mt-0.5 leading-snug line-clamp-2">
-                          {lesson.headline}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="mt-2.5 pt-2 border-t border-slate-100 dark:border-zinc-700/60 flex items-center justify-between">
-                    {isDone ? (
-                      <span className="text-[11px] font-bold text-emerald-600 flex items-center gap-1">
-                        <CheckCircle2 size={13} />
-                        <span>Mastered (+25 XP)</span>
-                      </span>
-                    ) : (
-                      <span className="text-[11px] font-black text-[#126778] dark:text-teal-300 flex items-center gap-1 group-hover:translate-x-0.5 transition-transform">
-                        <span>Read Lesson &amp; Quiz</span>
-                        <ChevronRight size={13} />
-                      </span>
-                    )}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      )}
-
-      {/* ============================================================ */}
-      {/* VIEW 2: THERAPEUTIC DAILY PLATES (Compact 1-Tap Toggle)      */}
-      {/* ============================================================ */}
-      {activeViewTab === "meals" && (
-        <div className="space-y-3 animate-in fade-in zoom-in-98 duration-200">
-          {/* Sub-Segmented Toggle: Breakfast / Lunch / Dinner */}
-          <div className="flex items-center gap-1.5 p-1 bg-teal-50/70 dark:bg-zinc-800 rounded-2xl border border-teal-200/80 dark:border-zinc-700">
-            {(["Breakfast", "Lunch", "Dinner"] as const).map((mealType) => (
-              <button
-                key={mealType}
-                type="button"
-                onClick={() => {
-                  triggerHaptic("light");
-                  setActiveMealSubTab(mealType);
-                }}
-                className={`flex-1 py-1.5 rounded-xl text-xs font-black transition-all cursor-pointer ${
-                  activeMealSubTab === mealType
-                    ? "bg-[#126778] text-white shadow-sm"
-                    : "text-slate-600 dark:text-slate-400 hover:text-slate-900"
-                }`}
-              >
-                {mealType === "Breakfast" ? "🌅 Breakfast" : mealType === "Lunch" ? "☀️ Lunch" : "🌙 Dinner"}
-              </button>
-            ))}
-          </div>
-
-          {/* Active Meal Spotlight Card */}
-          {activeSubMeal && (
-            <div className="bg-white dark:bg-zinc-800 rounded-3xl p-4 sm:p-5 border border-slate-200/80 dark:border-zinc-700 shadow-sm space-y-3">
-              <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-2.5">
-                <div className="flex items-center gap-3 min-w-0 flex-1">
-                  <span className="text-3xl p-2.5 bg-teal-50 dark:bg-zinc-900 rounded-2xl border border-teal-100 dark:border-zinc-700 shrink-0">
-                    {activeSubMeal.emoji}
-                  </span>
-                  <div className="min-w-0 flex-1">
-                    <span className="text-[9.5px] uppercase font-black tracking-wider text-[#126778] dark:text-teal-300 block truncate">
-                      {selectedCategory} • Recommended {activeSubMeal.mealType}
-                    </span>
-                    <h3 className="text-sm sm:text-base font-black text-slate-900 dark:text-white leading-snug mt-0.5 truncate">
-                      {activeSubMeal.dishName}
-                    </h3>
-                  </div>
-                </div>
-
-                <span className="text-[10px] font-black px-2.5 py-1 rounded-full bg-teal-100 text-teal-800 dark:bg-teal-950 dark:text-teal-200 shrink-0 self-start sm:self-auto">
-                  {activeSubMeal.keyNutrientBadge}
-                </span>
-              </div>
-
-              <div className="p-3 bg-teal-50/60 dark:bg-zinc-900/60 rounded-2xl border border-teal-100/80 dark:border-zinc-700/80 text-xs text-slate-700 dark:text-slate-300 leading-relaxed font-medium">
-                💡 <strong>Why It Works:</strong> {activeSubMeal.whyItWorks}
-              </div>
-
-              {/* Macro Strip */}
-              <div className="grid grid-cols-3 gap-2 text-center pt-1">
-                <div className="p-2 bg-slate-50 dark:bg-zinc-900 rounded-xl border border-slate-200 dark:border-zinc-700">
-                  <span className="text-[9px] font-bold text-slate-400 block">Calories</span>
-                  <span className="text-xs font-black text-slate-900 dark:text-white">~{activeSubMeal.calories} kcal</span>
-                </div>
-                <div className="p-2 bg-slate-50 dark:bg-zinc-900 rounded-xl border border-slate-200 dark:border-zinc-700">
-                  <span className="text-[9px] font-bold text-slate-400 block">Carbohydrates</span>
-                  <span className="text-xs font-black text-amber-600 dark:text-amber-400">{activeSubMeal.carbs}g</span>
-                </div>
-                <div className="p-2 bg-slate-50 dark:bg-zinc-900 rounded-xl border border-slate-200 dark:border-zinc-700">
-                  <span className="text-[9px] font-bold text-slate-400 block">Clean Protein</span>
-                  <span className="text-xs font-black text-emerald-600 dark:text-emerald-400">{activeSubMeal.protein}g</span>
-                </div>
-              </div>
-            </div>
+          {tierStats[selectedTier].completed === tierStats[selectedTier].total && (
+            <button
+              type="button"
+              onClick={() => {
+                setCertificateTier(selectedTier);
+                setShowCertificateModal(true);
+              }}
+              className="text-[11px] font-black text-emerald-600 hover:text-emerald-700 flex items-center gap-1 cursor-pointer"
+            >
+              <Award size={13} />
+              <span>View Credential 📜</span>
+            </button>
           )}
         </div>
-      )}
 
-      {/* ============================================================ */}
-      {/* VIEW 3: LIVE SWALLOW GLYCEMIC SIMULATOR & CIRCADIAN CLOCK    */}
-      {/* ============================================================ */}
-      {activeViewTab === "simulator" && (
-        <div className="space-y-3 animate-in fade-in zoom-in-98 duration-200">
-          {/* Circadian Clock */}
-          <div className={`p-3.5 rounded-2xl border shadow-xs transition-all ${circadianWindow.color}`}>
-            <div className="flex items-center justify-between mb-1">
-              <div className="flex items-center gap-1.5 font-black text-xs">
-                <Clock size={13} />
-                <span>{circadianWindow.label}</span>
-              </div>
-              <span className="text-[9.5px] font-black uppercase px-2 py-0.5 rounded-full bg-white/80 border shadow-2xs">
-                {circadianWindow.badge}
-              </span>
-            </div>
-            <p className="text-[10.5px] leading-relaxed font-medium">
-              {circadianWindow.status}
-            </p>
-          </div>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+          {tierLessons.map((lesson, idx) => {
+            const isCompleted = completedLessonIds.includes(lesson.id);
+            const isAudioActive = playingAudioLessonId === lesson.id && isAudioPlaying;
 
-          {/* Swallow Simulator Card */}
-          <div className="bg-white dark:bg-zinc-800 rounded-3xl p-4 sm:p-5 border border-slate-200/80 dark:border-zinc-700 space-y-3 shadow-sm">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <div className="p-2 rounded-xl bg-teal-50 dark:bg-teal-950 text-[#126778] dark:text-teal-300">
-                  <Sliders size={15} />
-                </div>
+            return (
+              <div
+                key={lesson.id}
+                onClick={() => handleStartLesson(lesson)}
+                className={`p-4 rounded-3xl border transition-all cursor-pointer flex flex-col justify-between min-h-[140px] group hover:shadow-md hover:scale-[1.01] active:scale-[0.99] ${
+                  isCompleted
+                    ? "bg-white dark:bg-zinc-900 border-teal-200/80 dark:border-zinc-800"
+                    : "bg-white dark:bg-zinc-900 border-slate-200 dark:border-zinc-800"
+                }`}
+              >
                 <div>
-                  <h3 className="text-xs font-black text-slate-900 dark:text-white uppercase tracking-wider">
-                    African Swallow Glycemic Simulator 🥣
-                  </h3>
-                  <p className="text-[10px] text-slate-500 dark:text-slate-400">
-                    Compare post-meal glucose spikes across 5 staple swallows
-                  </p>
-                </div>
-              </div>
-            </div>
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-2xl">{lesson.icon}</span>
+                    <div className="flex items-center gap-1">
+                      {isCompleted ? (
+                        <span className="text-[9.5px] font-black px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 flex items-center gap-1">
+                          <CheckCircle2 size={11} /> Done
+                        </span>
+                      ) : (
+                        <span className="text-[9.5px] font-bold px-2 py-0.5 rounded-full bg-amber-50 text-amber-800 dark:bg-zinc-800 dark:text-zinc-300">
+                          +25 XP
+                        </span>
+                      )}
 
-            {/* Swallow Picker Chips */}
-            <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none text-xs">
-              {SWALLOW_SIMULATOR_DATA.map((swallow) => {
-                const isSelected = selectedSwallow.id === swallow.id;
-                return (
-                  <button
-                    key={swallow.id}
-                    type="button"
-                    onClick={() => {
-                      triggerHaptic("light");
-                      setSelectedSwallow(swallow);
-                    }}
-                    className={`px-3 py-1.5 rounded-xl font-bold whitespace-nowrap transition-all cursor-pointer ${
-                      isSelected
-                        ? "bg-[#126778] text-white shadow-xs"
-                        : "bg-slate-50 dark:bg-zinc-700 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-zinc-600 hover:bg-slate-100"
-                    }`}
-                  >
-                    {swallow.name}
-                  </button>
-                );
-              })}
-            </div>
+                      {/* Sarah Audio Trigger Button */}
+                      <button
+                        type="button"
+                        onClick={(e) => handleToggleAudio(e, lesson)}
+                        title="Listen to 90s Sarah Audio"
+                        className={`p-1.5 rounded-xl transition-all cursor-pointer ${
+                          isAudioActive
+                            ? "bg-amber-400 text-slate-950 animate-bounce"
+                            : "bg-teal-50 hover:bg-teal-100 text-[#1f7a8c] dark:bg-zinc-800 dark:text-teal-300"
+                        }`}
+                      >
+                        {isAudioActive ? <VolumeX size={13} /> : <Volume2 size={13} />}
+                      </button>
+                    </div>
+                  </div>
 
-            {/* Swallow Spike Analysis Card */}
-            <div className={`p-3.5 rounded-2xl border ${selectedSwallow.bgColor} space-y-2.5`}>
-              <div className="flex items-center justify-between">
-                <div>
-                  <span className="text-[9.5px] uppercase font-black tracking-wider opacity-80 block">
-                    Peak Post-Meal Glucose Spike
+                  <span className="text-[10px] font-bold text-[#1f7a8c] dark:text-teal-400 block leading-tight">
+                    Lesson {idx + 1} · {lesson.category}
                   </span>
-                  <span className="text-base font-black">{selectedSwallow.peakSpike}</span>
+                  <h4 className="text-xs font-black text-slate-900 dark:text-white leading-snug mt-1 group-hover:text-teal-700 transition-colors">
+                    {lesson.title}
+                  </h4>
                 </div>
-                <span className="text-[11px] font-black px-2.5 py-0.5 rounded-full bg-white/80 dark:bg-zinc-800 shadow-2xs">
-                  {selectedSwallow.spikeRisk}
-                </span>
-              </div>
 
-              {/* Velocity Progress Bar */}
-              <div>
-                <div className="flex items-center justify-between text-[9.5px] font-bold opacity-80 mb-1">
-                  <span>Glucose Velocity (GI: {selectedSwallow.glycemicIndex})</span>
-                  <span>Spike Time: ~{selectedSwallow.velocityTime}</span>
-                </div>
-                <div className="w-full bg-black/10 dark:bg-white/10 rounded-full h-2 overflow-hidden">
-                  <div
-                    className={`h-full bg-gradient-to-r ${selectedSwallow.color} transition-all duration-500 rounded-full`}
-                    style={{ width: selectedSwallow.barWidth }}
-                  />
-                </div>
+                <p className="text-[10.5px] text-slate-500 dark:text-slate-400 line-clamp-2 mt-2 font-medium">
+                  {lesson.headline}
+                </p>
               </div>
-
-              <p className="text-[10.5px] leading-snug font-medium pt-0.5">
-                💡 <strong>Clinical Insight:</strong> {selectedSwallow.insight}
-              </p>
-            </div>
-          </div>
+            );
+          })}
         </div>
-      )}
+      </div>
 
-      {/* ============================================================ */}
-      {/* 6. INTERACTIVE STORY & QUIZ READER MODAL                     */}
-      {/* ============================================================ */}
+      {/* =================================================================== */}
+      {/* 4. LESSON VIEWER & QUIZ MODAL                                       */}
+      {/* =================================================================== */}
       {activeLesson && (
-        <Dialog open={!!activeLesson} onOpenChange={() => setActiveLesson(null)}>
-          <DialogContent className="max-w-md p-6 rounded-3xl max-h-[92vh] overflow-y-auto border-teal-500/30 bg-white dark:bg-zinc-900 text-slate-900 dark:text-white">
-            <DialogHeader className="sr-only">
-              <DialogTitle>{activeLesson.title}</DialogTitle>
-              <DialogDescription>{activeLesson.headline}</DialogDescription>
-            </DialogHeader>
+        <Dialog open={!!activeLesson} onOpenChange={(open) => !open && setActiveLesson(null)}>
+          <DialogContent className="max-w-md max-h-[90vh] overflow-y-auto rounded-3xl p-5 sm:p-6">
+            <DialogHeader className="text-left pb-2">
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] font-black uppercase px-2.5 py-0.5 rounded-full bg-teal-100 text-teal-900 dark:bg-teal-950 dark:text-teal-300">
+                  {activeLesson.tierName} · Lesson
+                </span>
 
-            {/* Modal Header */}
-            <div className="flex items-center justify-between border-b border-slate-100 dark:border-zinc-800 pb-3 mb-4">
-              <div className="flex items-center gap-2.5">
-                <div className="p-2 rounded-xl bg-teal-50 dark:bg-teal-950 text-[#126778] dark:text-teal-300">
-                  <activeLesson.icon className="h-5 w-5" />
-                </div>
-                <div>
-                  <span className="text-[10px] uppercase font-black text-teal-700 dark:text-teal-300">
-                    {activeLesson.category} • 60s Masterclass
-                  </span>
-                  <h3 className="text-base font-extrabold text-slate-900 dark:text-white leading-tight">
-                    {activeLesson.title}
-                  </h3>
-                </div>
+                <button
+                  type="button"
+                  onClick={(e) => handleToggleAudio(e, activeLesson)}
+                  className={`px-3 py-1.5 rounded-xl text-xs font-black flex items-center gap-1.5 transition-all cursor-pointer ${
+                    playingAudioLessonId === activeLesson.id && isAudioPlaying
+                      ? "bg-amber-400 text-slate-950 shadow-xs animate-pulse"
+                      : "bg-teal-50 hover:bg-teal-100 text-[#1f7a8c] border border-teal-200/60"
+                  }`}
+                >
+                  <Volume2 size={13} />
+                  <span>{isAudioPlaying && playingAudioLessonId === activeLesson.id ? "Pause Voice" : "Listen (Sarah AI)"}</span>
+                </button>
               </div>
-            </div>
+
+              <DialogTitle className="text-base font-black text-gray-900 dark:text-white mt-2">
+                {activeLesson.title}
+              </DialogTitle>
+              <DialogDescription className="text-xs text-gray-600 dark:text-gray-300">
+                {activeLesson.headline}
+              </DialogDescription>
+            </DialogHeader>
 
             {/* SLIDES PHASE */}
             {currentSlideIndex < activeLesson.storySlides.length ? (
               <div className="space-y-4">
-                {/* Story Slide Content Card */}
-                <div className="bg-gradient-to-br from-teal-50/60 to-emerald-50/40 dark:from-zinc-800 dark:to-zinc-800/60 p-5 rounded-2xl border border-teal-100 dark:border-zinc-700">
-                  <div className="flex items-center justify-between mb-3">
+                <div className="bg-gradient-to-br from-teal-50/70 to-emerald-50/50 dark:from-zinc-800 dark:to-zinc-800/80 p-4 sm:p-5 rounded-2xl border border-teal-100 dark:border-zinc-700">
+                  <div className="flex items-center justify-between mb-2.5">
                     <span className="text-[10px] font-black uppercase tracking-wider text-teal-800 dark:text-teal-300">
                       Slide {currentSlideIndex + 1} of {activeLesson.storySlides.length}
                     </span>
-                    <Mascot gesture="waving" size={32} />
+                    <Mascot gesture="waving" size={30} />
                   </div>
-                  <p className="text-sm text-slate-800 dark:text-slate-100 leading-relaxed font-medium">
+                  <p className="text-xs sm:text-sm text-slate-800 dark:text-slate-100 leading-relaxed font-medium">
                     {activeLesson.storySlides[currentSlideIndex]}
                   </p>
                 </div>
 
-                {/* Progress Dots */}
+                {/* Dots indicator */}
                 <div className="flex items-center justify-center gap-1.5 py-1">
                   {activeLesson.storySlides.map((_, i) => (
                     <div
@@ -1289,28 +1653,26 @@ export default function AvoAcademy() {
                   ))}
                 </div>
 
-                {/* Next Button */}
                 <Button
                   onClick={handleNextSlide}
-                  className="w-full bg-gradient-to-r from-[#126778] to-[#2a9d8f] text-white h-12 rounded-2xl font-black text-sm shadow-md flex items-center justify-center gap-2 cursor-pointer active:scale-98"
+                  className="w-full bg-gradient-to-r from-[#126778] to-[#2a9d8f] text-white h-11 rounded-2xl font-black text-xs shadow-md flex items-center justify-center gap-2 cursor-pointer active:scale-98"
                 >
                   <span>
                     {currentSlideIndex === activeLesson.storySlides.length - 1
-                      ? "Take 1-Question Mastery Quiz 🎯"
-                      : "Next Slide"}
+                      ? "Take Science Mastery Quiz (+25 XP) 🎯"
+                      : "Next Slide →"}
                   </span>
-                  <ChevronRight size={16} />
                 </Button>
               </div>
             ) : (
               /* QUIZ PHASE */
               <div className="space-y-4">
                 <div className="bg-amber-50 dark:bg-amber-950/40 p-4 rounded-2xl border border-amber-200 dark:border-amber-900">
-                  <div className="flex items-center gap-2 text-xs font-black text-amber-800 dark:text-amber-300 mb-1">
-                    <Sparkles size={14} />
-                    <span>Quick Science Mastery Quiz (+25 XP)</span>
+                  <div className="flex items-center gap-1.5 text-xs font-black text-amber-800 dark:text-amber-300 mb-1">
+                    <Sparkles size={13} />
+                    <span>Quick Science Mastery Quiz</span>
                   </div>
-                  <h4 className="text-sm font-bold text-slate-900 dark:text-white">
+                  <h4 className="text-xs sm:text-sm font-bold text-slate-900 dark:text-white">
                     {activeLesson.quiz.question}
                   </h4>
                 </div>
@@ -1335,68 +1697,63 @@ export default function AvoAcademy() {
                     return (
                       <button
                         key={idx}
+                        type="button"
                         onClick={() => handleSelectOption(idx)}
                         disabled={quizSubmitted}
-                        className={`w-full p-3.5 rounded-2xl border text-left text-xs transition-all flex items-center justify-between cursor-pointer ${btnClass}`}
+                        className={`w-full p-3 rounded-2xl border text-left text-xs transition-all flex items-center justify-between cursor-pointer ${btnClass}`}
                       >
                         <span>{option}</span>
-                        {quizSubmitted && isCorrect && (
-                          <CheckCircle2 size={16} className="text-emerald-600 shrink-0" />
-                        )}
-                        {quizSubmitted && isSelected && !isCorrect && (
-                          <XCircle size={16} className="text-rose-600 shrink-0" />
-                        )}
+                        {quizSubmitted && isCorrect && <CheckCircle2 size={15} className="text-emerald-600 shrink-0" />}
+                        {quizSubmitted && isSelected && !isCorrect && <XCircle size={15} className="text-rose-600 shrink-0" />}
                       </button>
                     );
                   })}
                 </div>
 
-                {/* 🥑 AVO-AZA CLAPPING CELEBRATION & EXPLANATION */}
+                {/* Feedback & Mascot */}
                 {quizSubmitted && (
                   <div className="space-y-3 animate-in fade-in zoom-in-95 duration-300">
                     {selectedAnswer === activeLesson.quiz.correctIndex ? (
-                      <div className="flex flex-col items-center justify-center p-4 bg-gradient-to-br from-emerald-50 via-teal-50 to-white dark:from-zinc-800 dark:to-zinc-900 rounded-3xl border-2 border-emerald-400 shadow-lg text-center">
-                        <Mascot gesture="clapping" size={130} className="drop-shadow-xl my-1" />
-                        <div className="flex items-center gap-1.5 bg-emerald-600 text-white px-4 py-1.5 rounded-full text-xs font-black shadow-md mt-1">
-                          <Sparkles size={15} className="text-amber-300 animate-spin" />
-                          <span>AVO-AZA Claps: 100% Correct! (+25 XP) 👏🎉</span>
+                      <div className="flex flex-col items-center justify-center p-3.5 bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-zinc-800 dark:to-zinc-900 rounded-3xl border-2 border-emerald-400 text-center">
+                        <Mascot gesture="clapping" size={100} className="drop-shadow-md my-1" />
+                        <div className="bg-emerald-600 text-white px-3 py-1 rounded-full text-xs font-black mt-1">
+                          Avo Claps: 100% Correct! 👏🎉
                         </div>
                       </div>
                     ) : (
-                      <div className="flex flex-col items-center justify-center p-3.5 bg-gradient-to-br from-amber-50 to-rose-50 dark:from-zinc-800 dark:to-zinc-900 rounded-3xl border border-amber-300 text-center">
-                        <Mascot gesture="writing" size={100} className="my-1" />
+                      <div className="p-3 bg-amber-50 dark:bg-zinc-800 rounded-2xl border border-amber-300 text-center">
                         <span className="text-xs font-black text-amber-900 dark:text-amber-300">
                           Avo's Clinical Review Note 📝
                         </span>
                       </div>
                     )}
 
-                    <div className="p-3.5 bg-slate-50 dark:bg-zinc-800/80 rounded-2xl border border-slate-200 dark:border-zinc-700 text-xs space-y-2">
+                    <div className="p-3 bg-slate-50 dark:bg-zinc-800/80 rounded-2xl border border-slate-200 dark:border-zinc-700 text-xs space-y-2">
                       <p className="font-bold text-slate-800 dark:text-slate-100 leading-relaxed">
                         {activeLesson.quiz.explanation}
                       </p>
-                      <div className="p-2.5 bg-teal-50 dark:bg-teal-950/60 rounded-xl text-teal-800 dark:text-teal-300 font-medium leading-snug">
+                      <div className="p-2 bg-teal-50 dark:bg-teal-950/60 rounded-xl text-teal-800 dark:text-teal-300 font-medium text-[11px]">
                         💡 <strong>Clinical Takeaway:</strong> {activeLesson.takeaway}
                       </div>
                     </div>
                   </div>
                 )}
 
-                {/* Action Button */}
+                {/* Actions */}
                 {!quizSubmitted ? (
                   <Button
                     onClick={handleSubmitQuiz}
                     disabled={selectedAnswer === null}
-                    className="w-full bg-gradient-to-r from-[#126778] to-[#2a9d8f] text-white h-12 rounded-2xl font-black text-sm shadow-md cursor-pointer disabled:opacity-60"
+                    className="w-full bg-gradient-to-r from-[#126778] to-[#2a9d8f] text-white h-11 rounded-2xl font-black text-xs shadow-md cursor-pointer disabled:opacity-60"
                   >
                     Submit Answer
                   </Button>
                 ) : (
                   <Button
                     onClick={() => setActiveLesson(null)}
-                    className="w-full bg-slate-900 hover:bg-black text-white h-12 rounded-2xl font-black text-sm cursor-pointer"
+                    className="w-full bg-slate-900 hover:bg-black text-white h-11 rounded-2xl font-black text-xs cursor-pointer"
                   >
-                    Close &amp; Collect XP
+                    Collect XP &amp; Return
                   </Button>
                 )}
               </div>
@@ -1404,6 +1761,69 @@ export default function AvoAcademy() {
           </DialogContent>
         </Dialog>
       )}
+
+      {/* =================================================================== */}
+      {/* 5. TIER CERTIFICATION MILESTONE SHARE MODAL                         */}
+      {/* =================================================================== */}
+      <Dialog open={showCertificateModal} onOpenChange={setShowCertificateModal}>
+        <DialogContent className="max-w-md p-6 text-center rounded-3xl">
+          <div className="flex flex-col items-center">
+            <div className="p-3 bg-amber-100 dark:bg-amber-950 rounded-3xl text-3xl mb-3 shadow-md">
+              👑
+            </div>
+            <DialogTitle className="text-lg font-black text-slate-900 dark:text-white">
+              Tier {certificateTier} Certification Unlocked!
+            </DialogTitle>
+            <DialogDescription className="text-xs text-slate-600 dark:text-slate-300 mt-1">
+              You have completed all 9 clinical lessons in {getTierBadgeTitle(certificateTier)}.
+            </DialogDescription>
+
+            {/* Certificate Card Preview */}
+            <div className="w-full my-4 p-5 bg-gradient-to-br from-teal-900 via-slate-900 to-slate-950 text-white rounded-3xl border-2 border-amber-400 shadow-xl space-y-3 text-center relative overflow-hidden">
+              <div className="text-[10px] font-mono tracking-widest text-amber-300 uppercase">
+                OFFICIAL CERTIFICATE OF METABOLIC MASTERY
+              </div>
+              <h3 className="text-base font-black text-white">
+                {user?.name || "Metabolic Health Champion"}
+              </h3>
+              <p className="text-xs text-teal-200 font-bold">
+                {getTierBadgeTitle(certificateTier)}
+              </p>
+              <div className="pt-2 border-t border-white/10 flex items-center justify-between text-[9px] text-slate-400">
+                <span>MealOptimiza Clinical Academy</span>
+                <span>Verified Credential</span>
+              </div>
+            </div>
+
+            {/* Share Triggers */}
+            <div className="w-full space-y-2">
+              <button
+                type="button"
+                onClick={() => {
+                  const shareText = `🎓 I just completed ${getTierBadgeTitle(certificateTier)} on MealOptimiza! Mastering cultural metabolic nutrition, glucose curves, and longevity. Check it out at mealoptimiza.com`;
+                  window.open(`https://wa.me/?text=${encodeURIComponent(shareText)}`, "_blank");
+                }}
+                className="w-full py-3 bg-[#25D366] hover:bg-[#20bd5a] text-white font-black text-xs rounded-2xl flex items-center justify-center gap-2 shadow-md cursor-pointer"
+              >
+                <Share2 size={14} />
+                <span>Share Credential to WhatsApp</span>
+              </button>
+
+              <Button
+                variant="outline"
+                onClick={() => {
+                  navigator.clipboard.writeText("https://mealoptimiza.com/academy");
+                  toast.success("Credential link copied to clipboard!");
+                }}
+                className="w-full h-10 rounded-2xl text-xs font-bold"
+              >
+                <Copy size={13} className="mr-1.5" />
+                <span>Copy Shareable Link</span>
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

@@ -134,7 +134,6 @@ export default function NextBestActionCard({
     >
       {/* Ambient background light */}
       <div className="absolute -right-8 -bottom-8 w-36 h-36 bg-white/10 rounded-full blur-xl pointer-events-none" />
-      <div className="absolute left-0 right-0 top-0 h-1 bg-gradient-to-r from-transparent via-white/80 to-transparent opacity-75 animate-laser-sweep pointer-events-none" />
 
       <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div className="flex items-center gap-3 min-w-0 w-full">

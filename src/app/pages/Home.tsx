@@ -946,8 +946,7 @@ export default function Home() {
 
             {/* 🔥 LIVE AVO CHALLENGE & GAMIFIED HEALTH HUB (UNIFIED 3-BUTTON FRAME) */}
             <div className="relative overflow-hidden bg-gradient-to-br from-amber-500 via-orange-600 to-red-600 rounded-3xl p-4 sm:p-5 text-white shadow-xl border-2 border-amber-300/40">
-              {/* Dynamic Ambient Laser Sweep & Particle Light */}
-              <div className="absolute left-0 right-0 top-0 h-1 bg-gradient-to-r from-transparent via-white to-transparent shadow-[0_0_15px_#fff] pointer-events-none animate-laser-sweep opacity-85" />
+              {/* Dynamic Ambient Particle Light */}
               <div className="absolute -top-10 -right-10 w-44 h-44 rounded-full bg-yellow-300/20 blur-2xl pointer-events-none" />
               <div className="absolute -bottom-10 -left-10 w-44 h-44 rounded-full bg-red-700/30 blur-2xl pointer-events-none" />
 
