@@ -807,7 +807,7 @@ export default function Home() {
                       <div className="flex items-center gap-1.5">
                         <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping inline-block" />
                         <span className="text-[10px] font-black uppercase tracking-wider text-teal-200">
-                          AI SCANNER READY
+                          FOOD SCANNER READY ✨
                         </span>
                       </div>
                       <h4 className="text-base sm:text-lg font-black text-white leading-tight">
@@ -817,13 +817,13 @@ export default function Home() {
                   </div>
 
                   <span className="text-[9.5px] font-black tracking-wider uppercase px-2.5 py-1 rounded-full bg-emerald-400/20 text-emerald-300 border border-emerald-400/30 shadow-2xs">
-                    WEST AFRICAN &amp; DIASPORA AI ⚡
+                    SMART FOOD SCANNER 📸
                   </span>
                 </div>
 
                 {/* Middle Description */}
                 <p className="text-xs sm:text-sm text-teal-100/95 font-medium relative z-10 leading-relaxed max-w-xl mb-4">
-                  Point your camera at any meal to instantly detect cultural bioactives, glycemic spike curves, and food-drug interaction shields.
+                  Snap a quick photo of your plate to see friendly calorie counts, gentle blood sugar tips, and delicious healthy swaps.
                 </p>
 
                 {/* Bottom 1-Tap Trigger Buttons */}
@@ -881,10 +881,10 @@ export default function Home() {
                     </div>
                     <div>
                       <span className="text-xs font-black text-gray-900 dark:text-white block leading-tight">
-                        Today's Metabolic Fuel
+                        Today's Food & Energy ⚡
                       </span>
                       <span className="text-[10px] text-gray-500 dark:text-gray-400 font-medium">
-                        {animatedPercentage}% of daily calorie ceiling
+                        {animatedPercentage}% of your daily goal
                       </span>
                     </div>
                   </div>
@@ -1349,9 +1349,9 @@ export default function Home() {
                   </div>
                   <div className="min-w-0">
                     <h3 className="text-xs sm:text-sm font-extrabold text-gray-900 dark:text-zinc-100 leading-tight truncate">
-                      Active Condition Intelligence
+                      Your Personal Health Shields 🛡️
                     </h3>
-                    <p className="text-[10px] sm:text-[11px] text-gray-500 truncate">Real-time dietary guards for your health</p>
+                    <p className="text-[10px] sm:text-[11px] text-gray-500 truncate">Helpful daily food tips tailored to your body</p>
                   </div>
                 </div>
                 <button
@@ -1379,15 +1379,15 @@ export default function Home() {
               <div className="space-y-2 p-3 sm:p-3.5 rounded-2xl bg-gray-50/80 dark:bg-zinc-800/60 border border-gray-100 dark:border-zinc-800 text-[11px] sm:text-xs">
                 <div className="flex items-start gap-2 text-gray-700 dark:text-zinc-300">
                   <span className="text-emerald-500 font-bold shrink-0">✓</span>
-                  <span className="break-words"><strong>Glycemic Spike Shield:</strong> Real-time meal analysis flags high-GI cassava/white rice spikes.</span>
+                  <span className="break-words"><strong>Blood Sugar Shield:</strong> Suggests gentle swaps for swallow and rice to keep you energized.</span>
                 </div>
                 <div className="flex items-start gap-2 text-gray-700 dark:text-zinc-300">
                   <span className="text-teal-500 font-bold shrink-0">✓</span>
-                  <span className="break-words"><strong>Sodium &amp; Palm Oil Check:</strong> Monitors stock cubes and saturated palm oil ratios for blood pressure.</span>
+                  <span className="break-words"><strong>Heart &amp; Blood Pressure:</strong> Helps balance salt and seasoning in stews to protect your arteries.</span>
                 </div>
                 <div className="flex items-start gap-2 text-gray-700 dark:text-zinc-300">
                   <span className="text-blue-500 font-bold shrink-0">✓</span>
-                  <span className="break-words"><strong>Tissue Recovery:</strong> Ensures daily protein target (100g) for maternal / surgical recovery.</span>
+                  <span className="break-words"><strong>Strength &amp; Recovery:</strong> Ensures enough daily protein from fish, eggs, and beans.</span>
                 </div>
               </div>
             </div>

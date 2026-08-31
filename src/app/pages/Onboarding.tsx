@@ -365,15 +365,15 @@ export default function Onboarding() {
 
                 <div className="space-y-2 mb-6 max-h-[50vh] overflow-y-auto pr-1">
                   {[
-                    { title: "Reverse / Manage Type 2 Diabetes & Pre-Diabetes", icon: "🩺", desc: "Lower A1c & prevent dangerous glucose spikes" },
-                    { title: "Lower High Blood Pressure & Sodium Load", icon: "🫀", desc: "Artery health, kidney protection & stew salt balance" },
-                    { title: "Peptic Ulcer Disease (PUD), Gastritis & Acid Reflux", icon: "🥣", desc: "Soothe gastric mucosal lining, non-acidic seasoning & gentle fiber buffers" },
-                    { title: "Pregnancy, Gestational Health & Preeclampsia Shield", icon: "🤰", desc: "Folate, iron, fetal glucose stability & maternal vitality" },
-                    { title: "Prostate Health & PSA Balance (Men 40+)", icon: "🩺", desc: "Lycopene, zinc, BPH reduction & urinary flow" },
-                    { title: "Arthritis, Gout & Joint Inflammation", icon: "🦴", desc: "Anti-inflammatory spices, purine balance & cartilage protection" },
-                    { title: "Burn Stubborn Visceral Belly Fat", icon: "⚖️", desc: "Target abdominal insulin resistance and waistline" },
-                    { title: "Perimenopause, Menopause & Hormonal Health", icon: "🌸", desc: "Phytoestrogens, bone density, hot flash relief & estrogen balance" },
-                    { title: "PCOS, Cholesterol & General Vitality", icon: "🧬", desc: "Hormonal balance, lipid control & sustainable energy" },
+                    { title: "Control Blood Sugar & Prevent Spikes", icon: "🩺", desc: "Keep sugar steady after swallow or rice without feeling tired" },
+                    { title: "Lower Blood Pressure & Protect Heart", icon: "🫀", desc: "Cut excess salt in stews and protect your heart & kidneys" },
+                    { title: "Stomach Ulcer, Heartburn & Acid Relief", icon: "🥣", desc: "Calm stomach burning and enjoy delicious food without pain" },
+                    { title: "Healthy Pregnancy & Baby Growth", icon: "🤰", desc: "Eat right for baby, prevent swollen feet & high sugar" },
+                    { title: "Men's Health & Easy Urination (40+)", icon: "🩺", desc: "Support prostate health, easy night sleep & active vitality" },
+                    { title: "Joint Pain, Arthritis & Stiffness", icon: "🦴", desc: "Ease knee/joint pain and move freely without swelling" },
+                    { title: "Menopause & Hot Flash Relief", icon: "🌸", desc: "Cool down hot flashes, balance mood & keep bones strong" },
+                    { title: "Burn Belly Fat & Lose Weight", icon: "⚖️", desc: "Trim waistline while still eating satisfying cultural meals" },
+                    { title: "Boost Daily Energy & General Wellness", icon: "🧬", desc: "Feel lighter, sleep better & stay energized all day long" },
                   ].map((item) => {
                     const isSelected = healthGoals.includes(item.title);
                     return (
@@ -425,7 +425,7 @@ export default function Onboarding() {
                 <div className="text-center mb-4">
                   <span className="text-3xl">🍲</span>
                   <h2 className="text-lg sm:text-xl font-black text-gray-900 mt-2">
-                    What are your cultural food foundations?
+                    What kinds of food do you usually eat at home?
                   </h2>
                   <p className="text-xs text-teal-700 font-bold mt-1 bg-teal-50 py-1 px-3 rounded-full inline-block border border-teal-200/80">
                     ✨ Select all that apply ({culturalDiets.length} selected)
@@ -496,7 +496,7 @@ export default function Onboarding() {
                 <div className="text-center mb-4">
                   <span className="text-3xl">⚡</span>
                   <h2 className="text-lg sm:text-xl font-black text-gray-900 mt-2">
-                    What are your biggest daily food obstacles?
+                    What is your biggest challenge with eating healthy?
                   </h2>
                   <p className="text-xs text-teal-700 font-bold mt-1 bg-teal-50 py-1 px-3 rounded-full inline-block border border-teal-200/80">
                     ✨ Select all that apply ({mainHurdles.length} selected)
@@ -505,10 +505,10 @@ export default function Onboarding() {
 
                 <div className="space-y-2.5 mb-6">
                   {[
-                    { label: "Heavy late-night swallows (Pounded Yam, Eba, Fufu)", icon: "🍚" },
-                    { label: "Blood sugar spikes after family parties & Jollof", icon: "📈" },
-                    { label: "Cravings for sugary malt, soda, juice & fried plantain", icon: "🥤" },
-                    { label: "Not knowing how to cook cultural dishes in a low-GI way", icon: "👩🏾‍🍳" },
+                    { label: "Heavy swallows & late-night eating (Pounded Yam, Eba, Fufu)", icon: "🍚" },
+                    { label: "Feeling tired or sleepy after rice & carb meals", icon: "📈" },
+                    { label: "Sweet drinks, malt & fried snacks (Puff puff, Dodo)", icon: "🥤" },
+                    { label: "Not sure how to make cultural dishes healthier without losing taste", icon: "👩🏾‍🍳" },
                   ].map((hurdle) => {
                     const isSelected = mainHurdles.includes(hurdle.label);
                     return (
@@ -566,7 +566,7 @@ export default function Onboarding() {
                 <div className="text-center mb-4">
                   <span className="text-3xl">💊</span>
                   <h2 className="text-lg sm:text-xl font-black text-gray-900 mt-2">
-                    Are you currently taking any prescribed medication?
+                    Do you take any regular medication or vitamins?
                   </h2>
                   <p className="text-xs text-teal-700 font-bold mt-1 bg-teal-50 py-1 px-3 rounded-full inline-block border border-teal-200/80">
                     ✨ Select all that apply ({medications.length} selected)
@@ -575,15 +575,15 @@ export default function Onboarding() {
 
                 <div className="space-y-2.5 mb-6">
                   {[
-                    { label: "Metformin / Insulin / Diabetes medications", icon: "💉" },
-                    { label: "Blood Pressure medication (Amlodipine, Lisinopril, etc.)", icon: "🫀" },
-                    { label: "Prenatal Vitamins, Folic Acid & Iron Supplements", icon: "🤰" },
-                    { label: "Prostate & BPH Meds (Tamsulosin, Finasteride, Saw Palmetto)", icon: "🩺" },
-                    { label: "Arthritis & Joint Meds (NSAIDs, Allopurinol, Glucosamine)", icon: "🦴" },
-                    { label: "Ulcer & Acid Reducers (Omeprazole, Antacids, Sucralfate)", icon: "🥣" },
-                    { label: "HRT / Menopause Supplements (Estrogen, Progesterone, Isoflavones)", icon: "🌸" },
-                    { label: "Cholesterol statins / Lipid-lowering prescriptions", icon: "💊" },
-                    { label: "None / Managing strictly through diet & lifestyle", icon: "🌿" },
+                    { label: "Blood Sugar / Diabetes Medicine (Metformin, Insulin, or tablets)", icon: "💉" },
+                    { label: "Blood Pressure Medicine (Amlodipine, Lisinopril, or water pills)", icon: "🫀" },
+                    { label: "Pregnancy Vitamins & Tonics (Folic Acid, Iron, Prenatal)", icon: "🤰" },
+                    { label: "Prostate / Urine Flow Medicine (Tamsulosin, Saw Palmetto, herbal)", icon: "🩺" },
+                    { label: "Painkillers & Joint Medicine (Ibuprofen, Diclofenac, Arthritis tablets)", icon: "🦴" },
+                    { label: "Ulcer & Heartburn Medicine (Omeprazole, Mist Mag, Antacids)", icon: "🥣" },
+                    { label: "Menopause / Hormone Supplements (Hormones or herbal relief)", icon: "🌸" },
+                    { label: "Cholesterol / Blood Fat Medicine (Statins or lipid tablets)", icon: "💊" },
+                    { label: "None / I only manage through healthy food", icon: "🌿" },
                   ].map((med) => {
                     const isSelected = medications.includes(med.label);
                     return (

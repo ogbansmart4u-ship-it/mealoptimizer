@@ -555,10 +555,10 @@ export default function Health() {
                   </span>
                 </div>
                 <h3 className="text-sm sm:text-base font-black text-white mt-1 leading-tight">
-                  Direct Clinician &amp; Dietitian Portal 🏥
+                  Doctor &amp; Dietitian Portal 🏥
                 </h3>
                 <p className="text-[11px] text-indigo-200/90 font-medium truncate mt-0.5">
-                  Monitor 50+ assigned metabolic &amp; renal patients in real time
+                  Connect with your personal dietitian or doctor for meal reviews
                 </p>
               </div>
             </div>
@@ -585,10 +585,10 @@ export default function Health() {
                 </span>
               </div>
               <h3 className="text-sm sm:text-base font-black text-white mt-1 leading-tight">
-                Continuous Glucose &amp; Wearables Sync ⌚
+                Connect Health Devices &amp; Sensors ⌚
               </h3>
               <p className="text-[11px] text-teal-100/90 font-medium truncate mt-0.5">
-                Stream real-time interstitial glucose and sleep telemetry directly into Avo
+                Connect your Apple Watch, Dexcom, or Libre sensor for live health updates
               </p>
             </div>
           </div>

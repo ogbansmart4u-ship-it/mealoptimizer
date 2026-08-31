@@ -308,17 +308,17 @@ interface Family {
 
 function familyFor(name: string): Family | null {
   const n = name.toLowerCase();
-  if (n.includes("diabet") || n.includes("prediab") || n.includes("pcos") || n.includes("fatty liver"))
+  if (n.includes("diabet") || n.includes("prediab") || n.includes("sugar") || n.includes("spike") || n.includes("pcos") || n.includes("glucose"))
     return { key: "glycemic", run: glycemicRule };
-  if (n.includes("hypertension") || n.includes("blood pressure") || n.includes("heart") || n.includes("cholesterol"))
+  if (n.includes("hypertension") || n.includes("blood pressure") || n.includes("heart") || n.includes("cholesterol") || n.includes("arter"))
     return { key: "cardiac", run: cardiacRule };
   if (n.includes("kidney") || n.includes("renal"))
     return { key: "kidney", run: kidneyRule };
-  if (n.includes("obesity") || n.includes("weight"))
+  if (n.includes("obesity") || n.includes("weight") || n.includes("belly fat") || n.includes("waistline"))
     return { key: "weight", run: weightRule };
   if (n.includes("gout"))
     return { key: "gout", run: goutRule };
-  if (n.includes("ulcer") || n.includes("gerd") || n.includes("reflux") || n.includes("ibs") || n.includes("pud") || n.includes("gastritis"))
+  if (n.includes("ulcer") || n.includes("gerd") || n.includes("reflux") || n.includes("ibs") || n.includes("pud") || n.includes("gastritis") || n.includes("stomach") || n.includes("heartburn") || n.includes("acid"))
     return { key: "gi", run: giRule };
   if (n.includes("anemia") || n.includes("anaemia") || n.includes("sickle"))
     return { key: "nourish", run: nourishRule };
@@ -328,13 +328,13 @@ function familyFor(name: string): Family | null {
     return { key: "dairy", run: () => ingredientFlagRule("dairy (milk, cheese, cream)") };
   if (n.includes("allerg"))
     return { key: "allergen", run: () => ingredientFlagRule("allergens") };
-  if (n.includes("pregnan") || n.includes("postpartum") || n.includes("cesarean") || n.includes("cesarian") || n.includes("caesarean"))
+  if (n.includes("pregnan") || n.includes("baby") || n.includes("postpartum") || n.includes("cesarean"))
     return { key: "pregnancy", run: pregnancyRule };
-  if (n.includes("prostat") || n.includes("bph") || n.includes("psa"))
+  if (n.includes("prostat") || n.includes("bph") || n.includes("psa") || n.includes("urination") || n.includes("men's health"))
     return { key: "prostate", run: prostateRule };
-  if (n.includes("arthrit") || n.includes("joint") || n.includes("osteo"))
+  if (n.includes("arthrit") || n.includes("joint") || n.includes("stiffness") || n.includes("osteo"))
     return { key: "arthritis", run: arthritisRule };
-  if (n.includes("menopaus") || n.includes("perimenopaus") || n.includes("estrogen") || n.includes("hot flash") || n.includes("hormon"))
+  if (n.includes("menopaus") || n.includes("perimenopaus") || n.includes("hot flash") || n.includes("estrogen") || n.includes("hormon"))
     return { key: "menopause", run: menopauseRule };
   if (n.includes("diaspora") || n.includes("vitamin d") || n.includes("b12") || n.includes("micronutrient") || n.includes("deficiency"))
     return { key: "micronutrient", run: micronutrientDiasporaRule };
