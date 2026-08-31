@@ -84,8 +84,8 @@ export default function WaterTrackerFrame({
       {/* Header Row */}
       <div className="flex items-center justify-between relative z-10 mb-3">
         <div className="flex items-center gap-2">
-          <div className="p-2 rounded-2xl bg-white/15 backdrop-blur-md border border-white/20 text-cyan-200">
-            <Droplets className="h-5 w-5 animate-pulse" />
+          <div className="p-1 rounded-2xl bg-white/20 backdrop-blur-md border border-white/30 text-cyan-200 shadow-inner flex items-center justify-center">
+            <Mascot gesture="drink" size={32} />
           </div>
           <div>
             <div className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-cyan-400/25 border border-cyan-300/40 text-cyan-100 text-[9.5px] font-black uppercase tracking-wider">

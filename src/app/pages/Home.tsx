@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import {
-  Camera, Sparkles, TrendingUp, Utensils, MapPin, Globe, AlertCircle, AlertTriangle, ChevronDown, ChevronUp, X,
+  Camera, Sparkles, RotateCcw, TrendingUp, Utensils, MapPin, Globe, AlertCircle, AlertTriangle, ChevronDown, ChevronUp, X,
   Activity, Clock, Flame, Calendar, Bell, BellRing, ChevronRight, Heart,
   Droplet, Droplets, Minus, Plus, Upload, Zap, Target, BarChart3, ScanBarcode, Shield, ShieldCheck, Moon, Search, FlaskConical, ChefHat, BookOpen, Stethoscope, Mic, ShoppingCart, Compass, FileText, CheckCircle2, Trophy, Pill, FileSpreadsheet
 } from "lucide-react";
@@ -854,15 +854,33 @@ export default function Home() {
                     <span className="text-[9.5px] font-bold text-purple-700 dark:text-purple-400">🥑 Fats</span>
                     <strong className="text-xs font-black text-slate-900 dark:text-white mt-0.5">{fatsConsumed}g</strong>
                   </div>
-                  <button
-                    type="button"
-                    onClick={handleWaterIncrease}
-                    className="neu-inset p-2 rounded-2xl flex flex-col justify-between cursor-pointer hover:bg-cyan-50/50 transition-colors"
-                    title="Tap to add +1 cup of water"
-                  >
-                    <span className="text-[9.5px] font-bold text-cyan-700 dark:text-cyan-400">💧 Water</span>
-                    <strong className="text-xs font-black text-cyan-900 dark:text-cyan-200 mt-0.5">{waterGlasses}/8 cups</strong>
-                  </button>
+                  <div className="neu-inset p-1.5 rounded-2xl flex flex-col justify-between items-center text-center">
+                    <div className="flex items-center gap-1">
+                      <Mascot gesture="drink" size={16} />
+                      <span className="text-[9.5px] font-bold text-cyan-700 dark:text-cyan-400">Water</span>
+                    </div>
+                    <strong className="text-xs font-black text-cyan-900 dark:text-cyan-200">{waterGlasses}/8 cups</strong>
+                    <div className="flex items-center gap-1 mt-0.5">
+                      <button
+                        type="button"
+                        onClick={handleWaterIncrease}
+                        className="px-1.5 py-0.5 bg-cyan-100 dark:bg-cyan-950 text-cyan-800 dark:text-cyan-300 rounded-lg text-[9.5px] font-black hover:scale-105 active:scale-95 transition-all cursor-pointer"
+                        title="Add +1 cup"
+                      >
+                        +1
+                      </button>
+                      {waterGlasses > 0 && (
+                        <button
+                          type="button"
+                          onClick={handleWaterDecrease}
+                          className="px-1 py-0.5 bg-slate-100 dark:bg-zinc-800 text-slate-500 hover:text-rose-600 rounded-lg text-[9.5px] font-black hover:scale-105 active:scale-95 transition-all cursor-pointer"
+                          title="Undo (-1 cup)"
+                        >
+                          ↩️
+                        </button>
+                      )}
+                    </div>
+                  </div>
                 </div>
               </div>
             )}
@@ -903,22 +921,35 @@ export default function Home() {
                   <span className="text-[9.5px] text-slate-500 font-bold">Common Meals</span>
                 </button>
 
-                {/* Button 3: +1 Cup Water with Active Drinking Mascot */}
-                <button
-                  type="button"
-                  onClick={handleWaterIncrease}
-                  className="neu-raised rounded-3xl p-3.5 sm:p-4 text-cyan-900 dark:text-cyan-200 shadow-md flex flex-col items-center justify-center gap-1.5 hover:scale-[1.03] active:scale-[0.97] transition-all cursor-pointer group border border-white/80 dark:border-white/5 relative overflow-hidden"
-                >
-                  <div className="w-10 h-10 rounded-2xl bg-cyan-50 dark:bg-cyan-950 text-cyan-600 flex items-center justify-center shadow-2xs group-hover:scale-110 transition-transform overflow-hidden relative">
-                    {isDrinkingWater ? (
-                      <Mascot gesture="drink" size={36} className="animate-bounce" />
-                    ) : (
-                      <span className="text-xl">💧</span>
-                    )}
+                {/* Button 3: +1 Cup Water with Drinking Mascot & Undo */}
+                <div className="neu-raised rounded-3xl p-3 sm:p-3.5 text-cyan-900 dark:text-cyan-200 shadow-md flex flex-col items-center justify-between gap-1 border border-white/80 dark:border-white/5 relative overflow-hidden group">
+                  <div
+                    onClick={handleWaterIncrease}
+                    className="w-full flex flex-col items-center justify-center gap-1 cursor-pointer active:scale-95 transition-transform"
+                    title="Tap to drink +1 cup of water"
+                  >
+                    <div className="w-11 h-11 rounded-2xl bg-cyan-50 dark:bg-cyan-950 text-cyan-600 flex items-center justify-center shadow-inner group-hover:scale-105 transition-transform overflow-hidden relative">
+                      <Mascot gesture="drink" size={40} className={isDrinkingWater ? "animate-bounce" : ""} />
+                    </div>
+                    <span className="text-xs font-black leading-tight text-center">+1 Cup Water</span>
+                    <span className="text-[9.5px] text-cyan-600 font-bold">{waterGlasses} of 8 drank</span>
                   </div>
-                  <span className="text-xs font-black leading-tight text-center">+1 Cup Water</span>
-                  <span className="text-[9.5px] text-cyan-600 font-bold">{waterGlasses} of 8 drank</span>
-                </button>
+
+                  {waterGlasses > 0 && (
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleWaterDecrease();
+                      }}
+                      className="mt-0.5 px-2 py-0.5 rounded-full bg-cyan-100/80 hover:bg-rose-100 text-cyan-800 hover:text-rose-700 text-[9px] font-black transition-all cursor-pointer flex items-center gap-1 border border-cyan-200/60 active:scale-95"
+                      title="Undo last glass (-1 cup)"
+                    >
+                      <RotateCcw size={9} />
+                      <span>Undo (-1)</span>
+                    </button>
+                  )}
+                </div>
               </div>
             )}
 
