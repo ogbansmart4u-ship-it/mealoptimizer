@@ -313,6 +313,7 @@ export default function Home() {
   const [waterMl, setWaterMl] = useState(0);
   const [homeWaterIds, setHomeWaterIds] = useState<string[]>([]);
   const [waterBusy, setWaterBusy] = useState(false);
+  const [isDrinkingWater, setIsDrinkingWater] = useState(false);
   const waterGlasses = Math.round(waterMl / GLASS_ML);
 
   const loadWater = () => {
@@ -353,8 +354,12 @@ export default function Home() {
   });
 
   const handleWaterIncrease = async () => {
-    if (waterBusy || waterGlasses >= 12) return;
+    if (waterBusy) return;
     setWaterBusy(true);
+    setIsDrinkingWater(true);
+    setTimeout(() => setIsDrinkingWater(false), 2400);
+
+    triggerHaptic("success");
     setWaterMl((ml) => ml + GLASS_ML);
     try {
       const item = await createHydrationLog({
@@ -365,7 +370,7 @@ export default function Home() {
       if (item?.id) setHomeWaterIds((ids) => [...ids, String(item.id)]);
       const nextGlasses = waterGlasses + 1;
       if (nextGlasses >= waterGoal) {
-        celebrate("Hydration Goal Achieved! 💧🎉", "10 of 10 glasses completed today!", {
+        celebrate("Hydration Goal Achieved! 💧🎉", `${nextGlasses} of ${waterGoal} glasses completed today!`, {
           confettiStyle: "cannons",
           hapticPattern: "milestone",
         });
@@ -809,7 +814,7 @@ export default function Home() {
                 </div>
                 <button
                   type="button"
-                  onClick={handleWaterAddCustom}
+                  onClick={handleWaterIncrease}
                   className="neu-inset p-2 rounded-2xl flex flex-col justify-between cursor-pointer hover:bg-cyan-50/50 transition-colors"
                   title="Tap to add +1 cup of water"
                 >
@@ -854,14 +859,18 @@ export default function Home() {
                 <span className="text-[9.5px] text-slate-500 font-bold">Common Meals</span>
               </button>
 
-              {/* Button 3: +1 Cup Water */}
+              {/* Button 3: +1 Cup Water with Active Drinking Mascot */}
               <button
                 type="button"
-                onClick={handleWaterAddCustom}
-                className="neu-raised rounded-3xl p-3.5 sm:p-4 text-cyan-900 dark:text-cyan-200 shadow-md flex flex-col items-center justify-center gap-1.5 hover:scale-[1.03] active:scale-[0.97] transition-all cursor-pointer group border border-white/80 dark:border-white/5"
+                onClick={handleWaterIncrease}
+                className="neu-raised rounded-3xl p-3.5 sm:p-4 text-cyan-900 dark:text-cyan-200 shadow-md flex flex-col items-center justify-center gap-1.5 hover:scale-[1.03] active:scale-[0.97] transition-all cursor-pointer group border border-white/80 dark:border-white/5 relative overflow-hidden"
               >
-                <div className="w-10 h-10 rounded-2xl bg-cyan-50 dark:bg-cyan-950 text-cyan-600 flex items-center justify-center text-xl shadow-2xs group-hover:scale-110 transition-transform">
-                  💧
+                <div className="w-10 h-10 rounded-2xl bg-cyan-50 dark:bg-cyan-950 text-cyan-600 flex items-center justify-center shadow-2xs group-hover:scale-110 transition-transform overflow-hidden relative">
+                  {isDrinkingWater ? (
+                    <Mascot gesture="drink" size={36} className="animate-bounce" />
+                  ) : (
+                    <span className="text-xl">💧</span>
+                  )}
                 </div>
                 <span className="text-xs font-black leading-tight text-center">+1 Cup Water</span>
                 <span className="text-[9.5px] text-cyan-600 font-bold">{waterGlasses} of 8 drank</span>

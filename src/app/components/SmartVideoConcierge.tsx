@@ -48,21 +48,21 @@ interface SmartVideoConciergeProps {
 // Preset Clinical & African Nutrition Knowledge Base for instant conversational answers
 const CLINICAL_KNOWLEDGE_BASE: Record<string, string> = {
   profile_importance:
-    "Calibrating your Health Profile is the single most important step in MealOptimiza. When you share your age, sex, weight, height, and conditions like diabetes or high blood pressure, our clinical AI fine-tunes your daily calorie targets and activates customized food safety shields. Without your profile, advice remains generic. With it, every meal plan is tailored to your unique body chemistry.",
+    "Filling in your Health Profile is super easy and helps MealOptimiza learn what you need! When you tell us your goals, age, or any health conditions, we customize your daily food tips so you can enjoy your favorite cultural dishes safely.",
   app_superpowers:
-    "MealOptimiza transforms your daily health through five core features. First, Cultural Food Scanning: snap any African dish to analyze calories and glycemic ratings. Second, Glycemic Spike Shields: enjoy traditional swallows safely without sugar spikes. Third, Smart Market Grocery Lists: walk through the store with department sorting and diaspora swaps. Fourth, 10X Goals: track micro-habits with one-tap steppers. And fifth, Certified Doctor PDF Reports: share comprehensive metabolic dossiers with your physician.",
+    "Here is how MealOptimiza helps you every day: First, you can snap a photo of any meal to check calories and easy tips. Second, you can find gentle swallow swaps that keep your blood sugar steady. Third, you get a clean market shopping list. And fourth, you can share a simple health summary with your doctor anytime!",
   grocery:
-    "The new Smart Market Grocery List organizes your ingredients in two powerful ways. By Supermarket Aisle: so you can walk through produce, proteins, and ancient grains in logical order. Or By Meal Plan: to see exact ingredients for each recipe. It also calculates your estimated basket cost in your local currency and suggests healthy diaspora swaps.",
+    "Our Smart Grocery List makes shopping easy! It sorts your ingredients by supermarket aisle so you can quickly pick up your fresh greens, fish, and swallows without forgetting anything.",
   swallow:
-    "To enjoy traditional swallow with diabetes or insulin resistance: First, choose high-fiber swallows like unripe plantain flour, oat swallow, or amala over pounded yam. Second, pair with viscous soups like Ewedu or Okra. Their natural soluble mucilage creates a gel matrix in your intestine that slows carbohydrate absorption by up to thirty-eight percent. Third, always eat three to four spoonfuls of soup first before your first swallow bite.",
+    "You do not have to give up swallow! Try delicious swaps like plantain flour, oat swallow, or amala. When you pair swallow with drawing soups like Okra or Ewedu, it helps your body digest sugar much more gently so you feel energized and full.",
   bp:
-    "For cardiovascular and blood pressure protection: First, boost potassium-rich vegetables like fluted pumpkin Ugu, garden egg, and bitter leaf to help your kidneys excrete excess sodium. Second, replace high-sodium seasoning cubes with locust beans Iru, garlic, ginger, and crayfish for natural umami depth. Third, stay well hydrated with at least two and a half liters of water daily.",
+    "To keep your heart strong and blood pressure healthy: use tasty natural seasonings like locust beans (iru), garlic, ginger, and crayfish instead of lots of seasoning cubes, and drink plenty of water every day!",
   zobo:
-    "Unsweetened hibiscus Zobo tea contains natural flavonoids with mild ACE-inhibiting properties that support healthy blood pressure. However, if you take prescription blood pressure medications like Lisinopril, Amlodipine, or Losartan, enjoy Zobo in moderation and separate it by two hours to avoid feeling dizzy. Always brew with ginger, cloves, and pineapple skin instead of refined sugar.",
+    "Zobo tea is delicious and naturally helps relax your blood vessels! Brew it with ginger and cloves without adding white sugar. If you take blood pressure pills, drink it with meals to stay steady.",
   fasting:
-    "To break an intermittent fast smoothly without a glucose surge: Step one: start with warm lemon water or a small cup of light pepper soup. Step two: eat a protein and fiber cushion such as boiled eggs, avocado, or garden egg. Step three: enjoy your main meal with complex carbohydrates like beans or boiled plantain. This cushions your pancreas and prevents digestive fatigue.",
+    "When breaking a fast, start gentle! Drink a glass of water or light soup first, followed by boiled eggs or avocado before eating your main swallow or rice. This prevents stomach tiredness and keeps you feeling great.",
   sequencing:
-    "Food sequencing is a powerful clinical technique. Always eat your meal in this order: first vegetables and soup fiber, second protein and healthy fats, and third carbohydrates and starches. This slows gastric emptying and flattens your post-meal blood sugar curve by up to forty percent.",
+    "Here is a simple kitchen trick: Eat a few spoons of your vegetable soup or fish first before your swallow or rice. It keeps your blood sugar super steady and stops the afternoon food coma!",
 };
 
 export default function SmartVideoConcierge({
@@ -89,8 +89,8 @@ export default function SmartVideoConcierge({
   );
 
   const subtitles: Record<string, string> = {
-    en: `Welcome to MealOptimiza! I am Sarah, your Clinical Nutrition Assistant. I am here to help you enjoy authentic African meals while protecting your blood sugar and cardiovascular health. You can snap food photos for instant AI macro analysis, navigate the market with our Smart Grocery List, and track your habits with one-tap goals. Please take a moment to calibrate your Health Profile below so I can tailor every meal plan to your body chemistry!`,
-    pcm: `Welcome to MealOptimiza! I be Sarah, your Nutrition Assistant. See wetin this app fit do for you: Snap your food to check calories and sugar spikes, enjoy your favorite swallow without fear of high blood pressure or diabetes, and shop with our smart market list. Make sure say you fill your Health Profile below so we fit give you correct advice tailored to your body!`,
+    en: `Welcome to MealOptimiza! I am Sarah, your friendly food companion. I'm here to help you enjoy delicious cultural meals while staying energized, healthy, and happy. You can snap photos of your plate, check easy meal swaps, and ask me anything about your favorite dishes!`,
+    pcm: `Welcome to MealOptimiza! I be Sarah, your food companion. Snap your food to check calories, enjoy your favorite swallow without fear, and ask me any question about your food!`,
     yo: `Ẹ kú àbọ̀ sí MealOptimiza! Èmi ni Sarah, Olùrànlọ́wọ́ Oúnjẹ yín. Ẹ ya fọ́tò oúnjẹ yín fún àtúnyẹ̀wò kíákíá, tọ́jú ìwọ̀n ṣúgà àti ẹ̀jẹ̀ ríru yín. Jọ̀wọ́ kọ àwọn ẹ̀kúnrẹ́rẹ́ ìlera yín sínú Health Profile kí a lè fún yín ní ìmọ̀ràn tó bá ara yín mu dáradára!`,
     ig: `Nnọọ na MealOptimiza! Abụ m Sarah, Onye na-enyere gị aka na Nri. Se foto nri gị maka nyocha shuga na kalori ngwa ngwa, ma chebe ahụike gị. Biko mejupụta Health Profile gị ka anyị wee hazie ndụmọdụ dabara ahụ gị kpọmkwem!`,
     ha: `Barka da zuwa MealOptimiza! Ni ce Sarah, Mataimakiyar ku kan Abinci. Ɗauki hoton abincinku don sanin sukarin jini da kalori, ku kiyaye lafiyarku. Da fatan za ku cika Bayanan Lafiyarku a ƙasa don samun keɓantaccen shiri na musamman!`,
