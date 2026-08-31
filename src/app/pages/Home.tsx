@@ -782,7 +782,7 @@ export default function Home() {
                   triggerHaptic("medium");
                   setShowLocalFoodScanner(true);
                 }}
-                className="relative overflow-hidden bg-gradient-to-br from-[#126778] via-[#0f5462] to-[#0a353e] rounded-3xl p-5 sm:p-6 text-white shadow-xl border-2 border-teal-400/40 hover:border-teal-300 transition-all duration-300 hover:scale-[1.01] active:scale-[0.99] cursor-pointer flex flex-col justify-between group"
+                className="relative overflow-hidden glass-card-teal rounded-3xl p-5 sm:p-6 text-white shadow-xl border border-white/30 hover:border-teal-300 transition-all duration-300 hover:scale-[1.01] active:scale-[0.99] cursor-pointer flex flex-col justify-between group"
               >
                 <div className="absolute -top-12 -right-12 w-48 h-48 rounded-full bg-teal-400/15 blur-2xl pointer-events-none" />
                 <div className="absolute -bottom-12 -left-12 w-48 h-48 rounded-full bg-emerald-500/10 blur-2xl pointer-events-none" />
@@ -863,7 +863,7 @@ export default function Home() {
               </div>
 
               {/* ⚡ SLEEK APPLE HEALTH-STYLE METABOLIC FUEL & MACRO STRIP */}
-              <div className="bg-white dark:bg-zinc-900 rounded-3xl shadow-md border border-teal-100/90 dark:border-zinc-800 p-4 sm:p-5 space-y-3">
+              <div className="neu-raised rounded-3xl p-4 sm:p-5 space-y-3 border border-white/60 dark:border-white/5">
                 {/* Top Row: Energy & Target */}
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
@@ -905,7 +905,7 @@ export default function Home() {
                 {/* 3 Proportional Macro Badges */}
                 <div className="grid grid-cols-3 gap-2 text-center text-xs pt-0.5">
                   {/* Protein */}
-                  <div className="bg-slate-50 dark:bg-zinc-800/60 p-2.5 rounded-2xl border border-slate-200/60 dark:border-zinc-700/60 flex flex-col justify-between">
+                  <div className="neu-inset p-2.5 rounded-2xl flex flex-col justify-between">
                     <span className="text-[10px] font-bold text-blue-700 dark:text-blue-400 block">🍗 Protein</span>
                     <strong className="text-xs font-black text-slate-900 dark:text-white mt-0.5">
                       {proteinConsumed}g <span className="text-[9.5px] font-medium text-slate-400">/ {proteinTarget}g</span>
@@ -913,7 +913,7 @@ export default function Home() {
                   </div>
 
                   {/* Carbs */}
-                  <div className="bg-slate-50 dark:bg-zinc-800/60 p-2.5 rounded-2xl border border-slate-200/60 dark:border-zinc-700/60 flex flex-col justify-between">
+                  <div className="neu-inset p-2.5 rounded-2xl flex flex-col justify-between">
                     <span className="text-[10px] font-bold text-emerald-700 dark:text-emerald-400 block">🌾 Carbs</span>
                     <strong className="text-xs font-black text-slate-900 dark:text-white mt-0.5">
                       {carbsConsumed}g <span className="text-[9.5px] font-medium text-slate-400">/ {carbsTarget}g</span>
@@ -921,7 +921,7 @@ export default function Home() {
                   </div>
 
                   {/* Fats */}
-                  <div className="bg-slate-50 dark:bg-zinc-800/60 p-2.5 rounded-2xl border border-slate-200/60 dark:border-zinc-700/60 flex flex-col justify-between">
+                  <div className="neu-inset p-2.5 rounded-2xl flex flex-col justify-between">
                     <span className="text-[10px] font-bold text-purple-700 dark:text-purple-400 block">🥑 Fats</span>
                     <strong className="text-xs font-black text-slate-900 dark:text-white mt-0.5">
                       {fatsConsumed}g <span className="text-[9.5px] font-medium text-slate-400">/ {fatsTarget}g</span>
@@ -944,7 +944,7 @@ export default function Home() {
             />
 
             {/* 🔥 LIVE AVO CHALLENGE & GAMIFIED HEALTH HUB (UNIFIED 3-BUTTON FRAME) */}
-            <div className="relative overflow-hidden bg-gradient-to-br from-amber-500 via-orange-600 to-red-600 rounded-3xl p-4 sm:p-5 text-white shadow-xl border-2 border-amber-300/40">
+            <div className="relative overflow-hidden glass-card-amber rounded-3xl p-4 sm:p-5 text-white shadow-xl border border-white/30">
               {/* Dynamic Ambient Particle Light */}
               <div className="absolute -top-10 -right-10 w-44 h-44 rounded-full bg-yellow-300/20 blur-2xl pointer-events-none" />
               <div className="absolute -bottom-10 -left-10 w-44 h-44 rounded-full bg-red-700/30 blur-2xl pointer-events-none" />
@@ -1076,7 +1076,7 @@ export default function Home() {
             <CircadianArc lastMealTime={todayLogs[todayLogs.length - 1]?.time || "20:00"} />
 
             {/* Time-Based Recommendation Card */}
-            <div className="bg-white rounded-3xl p-4 shadow-md border border-teal-100 flex items-start gap-3">
+            <div className="glass-card rounded-3xl p-4 flex items-start gap-3">
               <div className="p-3 bg-teal-50 text-2xl rounded-2xl flex-shrink-0">
                 {getTimeBasedRecommendation().icon}
               </div>

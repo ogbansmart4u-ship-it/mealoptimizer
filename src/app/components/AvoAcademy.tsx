@@ -1360,7 +1360,7 @@ export default function AvoAcademy() {
       {/* =================================================================== */}
       {/* 1. DUOLINGO-STYLE "TODAY'S 90-SECOND METABOLIC DROP" HERO BANNER     */}
       {/* =================================================================== */}
-      <div className="relative overflow-hidden bg-gradient-to-br from-indigo-900 via-purple-900 to-slate-950 rounded-3xl p-4 sm:p-5 text-white shadow-xl border-2 border-purple-400/40">
+      <div className="relative overflow-hidden glass-card-teal rounded-3xl p-4 sm:p-5 text-white shadow-xl border border-white/30">
         <div className="absolute -top-10 -right-10 w-40 h-40 rounded-full bg-purple-500/20 blur-2xl pointer-events-none" />
 
         <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-3">

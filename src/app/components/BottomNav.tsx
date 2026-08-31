@@ -75,8 +75,8 @@ function BottomNavBar() {
 
   return (
     <nav
-      className="fixed bottom-0 left-0 right-0 bg-[#1f7a8c] text-white pt-4 shadow-lg z-50"
-      style={{ paddingBottom: "calc(1rem + env(safe-area-inset-bottom))" }}
+      className="fixed bottom-2 sm:bottom-3 left-3 right-3 sm:left-auto sm:right-auto sm:w-full sm:max-w-md sm:translate-x-[-50%] sm:left-[50%] bg-[#126778]/90 dark:bg-zinc-900/90 backdrop-blur-2xl text-white pt-2.5 pb-2.5 px-2 rounded-3xl shadow-[0_12px_40px_rgba(0,0,0,0.22)] border border-white/25 dark:border-white/10 z-50 transition-all"
+      style={{ paddingBottom: "max(0.65rem, env(safe-area-inset-bottom))" }}
     >
       <div className="max-w-md mx-auto flex justify-around items-center px-4">
         {navItems.map(({ path, icon: Icon, label }) => {

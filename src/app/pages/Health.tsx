@@ -503,7 +503,7 @@ export default function Health() {
           onClick={() => {
             navigate("/calculators");
           }}
-          className="bg-gradient-to-r from-[#1f7a8c] via-[#0d9488] to-[#115e59] text-white rounded-3xl p-4 sm:p-5 shadow-lg hover:shadow-xl transition-all cursor-pointer relative overflow-hidden group border border-teal-400/30"
+          className="glass-card-teal text-white rounded-3xl p-4 sm:p-5 shadow-lg hover:shadow-xl transition-all cursor-pointer relative overflow-hidden group border border-white/30"
         >
           <div className="absolute -right-6 -bottom-6 w-32 h-32 bg-white/10 rounded-full blur-xl pointer-events-none" />
           <div className="flex items-center justify-between relative z-10">
@@ -639,7 +639,7 @@ export default function Health() {
               <button
                 key={route}
                 onClick={() => navigate(route)}
-                className="bg-white/95 rounded-2xl p-3.5 shadow-2xs border border-teal-100/70 flex flex-col items-center justify-center gap-2 hover:shadow-md hover:scale-[1.03] active:scale-[0.97] transition-all cursor-pointer group"
+                className="neu-raised-sm rounded-2xl p-3.5 flex flex-col items-center justify-center gap-2 hover:shadow-md hover:scale-[1.03] active:scale-[0.97] transition-all cursor-pointer group border border-white/60 dark:border-white/5"
               >
                 <div className={`bg-gradient-to-br ${gradient} rounded-xl p-2.5 text-white shadow-2xs group-hover:rotate-3 transition-transform`}>
                   <Icon className="h-5 w-5" />
