@@ -1425,6 +1425,214 @@ export default function AvoAcademy() {
         </div>
       </div>
 
+            {/* =================================================================== */}
+      {/* 🌟 INTERACTIVE CULTURAL "MYTH VS FACT" 3D FLIP CARDS               */}
+      {/* =================================================================== */}
+      <div className="space-y-2.5">
+        <div className="flex items-center justify-between px-1">
+          <div className="flex items-center gap-2">
+            <Sparkles className="h-4 w-4 text-amber-500" />
+            <h3 className="text-xs sm:text-sm font-black text-gray-900 dark:text-white uppercase tracking-wider">
+              Tap to Flip: African Kitchen Myths vs. Facts 🔄
+            </h3>
+          </div>
+          <span className="text-[10px] font-bold text-teal-700 dark:text-teal-400">
+            4 Interactive Cards
+          </span>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          {CULTURAL_MYTHS.map((item, idx) => {
+            const isFlipped = flippedMythIndex === idx;
+            return (
+              <div
+                key={item.id}
+                onClick={() => {
+                  triggerHaptic("light");
+                  setFlippedMythIndex(isFlipped ? null : idx);
+                }}
+                className="cursor-pointer group relative h-36 rounded-3xl [perspective:1000px]"
+              >
+                <div
+                  className={`relative w-full h-full rounded-3xl transition-transform duration-500 [transform-style:preserve-3d] shadow-md hover:shadow-lg ${
+                    isFlipped ? "[transform:rotateY(180deg)]" : ""
+                  }`}
+                >
+                  {/* FRONT: THE MYTH */}
+                  <div className="absolute inset-0 w-full h-full rounded-3xl bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 p-4 flex flex-col justify-between [backface-visibility:hidden]">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xl p-1.5 bg-slate-50 dark:bg-zinc-800 rounded-xl">{item.icon}</span>
+                      <span className="text-[9.5px] font-black uppercase px-2 py-0.5 rounded-full bg-rose-100 text-rose-800 dark:bg-rose-950 dark:text-rose-300">
+                        {item.tag}
+                      </span>
+                    </div>
+                    <p className="text-xs font-bold text-slate-800 dark:text-slate-200 line-clamp-2">
+                      {item.myth}
+                    </p>
+                    <div className="flex items-center justify-between text-[10px] font-black text-[#126778] dark:text-teal-400">
+                      <span>Tap to reveal the truth 💡</span>
+                      <span>🔄 Flip</span>
+                    </div>
+                  </div>
+
+                  {/* BACK: THE FACT */}
+                  <div className={`absolute inset-0 w-full h-full rounded-3xl bg-gradient-to-br ${item.bgGradient} text-white p-4 flex flex-col justify-between [transform:rotateY(180deg)] [backface-visibility:hidden] shadow-xl`}>
+                    <div className="flex items-center justify-between">
+                      <span className="text-[10px] font-black uppercase bg-white/20 px-2 py-0.5 rounded-full">
+                        ✨ Kitchen Secret
+                      </span>
+                      <span className="text-[10px] font-bold text-white/80">Tap to flip back</span>
+                    </div>
+                    <p className="text-xs font-semibold text-white/95 leading-relaxed">
+                      {item.fact}
+                    </p>
+                    <div className="text-[9.5px] font-black text-amber-200 flex items-center gap-1">
+                      <span>✓ Science Backed</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* =================================================================== */}
+      {/* 🥣 LIVE "FIX MY PLATE" SUGAR SPIKE INTERACTIVE SIMULATOR             */}
+      {/* =================================================================== */}
+      <div className="bg-gradient-to-br from-slate-900 via-teal-950 to-slate-900 rounded-3xl p-4 sm:p-5 text-white shadow-xl border border-teal-500/30 space-y-4">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2.5">
+            <div className="p-2 bg-teal-400/20 rounded-2xl text-teal-300 text-lg">
+              🥣
+            </div>
+            <div>
+              <h3 className="text-xs sm:text-sm font-black text-white leading-tight">
+                Live "Fix My Plate" Simulator 🎮
+              </h3>
+              <span className="text-[10.5px] text-teal-200/90 font-medium">
+                Tap food buffers below to see how they protect your blood sugar in real-time
+              </span>
+            </div>
+          </div>
+
+          <div className="text-right">
+            <span className={`text-sm sm:text-base font-black font-mono px-2.5 py-1 rounded-xl ${
+              simulatedGlucose <= 125
+                ? "bg-emerald-500 text-slate-950"
+                : simulatedGlucose <= 150
+                ? "bg-amber-400 text-slate-950"
+                : "bg-rose-500 text-white"
+            }`}>
+              {simulatedGlucose} mg/dL
+            </span>
+            <span className="text-[9.5px] font-bold text-teal-200 block mt-0.5">
+              {simulatedGlucose <= 125 ? "🟢 Steady Energy" : simulatedGlucose <= 150 ? "🟡 Mild Spike" : "🔴 Sugar Crash"}
+            </span>
+          </div>
+        </div>
+
+        {/* Step 1: Pick a Carb */}
+        <div className="space-y-1.5">
+          <span className="text-[10px] font-black uppercase tracking-wider text-teal-300">
+            Step 1: Choose Your Main Dish
+          </span>
+          <div className="grid grid-cols-3 gap-2">
+            {[
+              { id: "yam" as const, label: "Pounded Yam 🍠", icon: "🍠" },
+              { id: "rice" as const, label: "Party Jollof 🍚", icon: "🍚" },
+              { id: "bread" as const, label: "White Bread 🍞", icon: "🍞" }
+            ].map((c) => (
+              <button
+                key={c.id}
+                type="button"
+                onClick={() => {
+                  triggerHaptic("light");
+                  setSimulatorCarb(c.id);
+                }}
+                className={`py-2 px-2 rounded-2xl text-xs font-bold transition-all cursor-pointer truncate ${
+                  simulatorCarb === c.id
+                    ? "bg-teal-400 text-slate-950 font-black shadow-md scale-102"
+                    : "bg-white/10 text-white hover:bg-white/20 border border-white/15"
+                }`}
+              >
+                {c.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Step 2: Toggle Buffers */}
+        <div className="space-y-1.5">
+          <span className="text-[10px] font-black uppercase tracking-wider text-teal-300">
+            Step 2: Add Natural Food Buffers (Tap to add/remove)
+          </span>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+            <button
+              type="button"
+              onClick={() => {
+                triggerHaptic("medium");
+                setHasOkraBuffer(!hasOkraBuffer);
+              }}
+              className={`p-2.5 rounded-2xl text-xs font-bold transition-all cursor-pointer flex items-center justify-between border ${
+                hasOkraBuffer
+                  ? "bg-emerald-500 text-slate-950 border-emerald-300 shadow-md scale-102"
+                  : "bg-white/10 text-white hover:bg-white/15 border-white/15"
+              }`}
+            >
+              <span>🥣 + Okra/Ewedu Soup</span>
+              <span className="text-[10px] font-black">{hasOkraBuffer ? "✓ -35mg" : "+ Add"}</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => {
+                triggerHaptic("medium");
+                setHasProteinBuffer(!hasProteinBuffer);
+              }}
+              className={`p-2.5 rounded-2xl text-xs font-bold transition-all cursor-pointer flex items-center justify-between border ${
+                hasProteinBuffer
+                  ? "bg-emerald-500 text-slate-950 border-emerald-300 shadow-md scale-102"
+                  : "bg-white/10 text-white hover:bg-white/15 border-white/15"
+              }`}
+            >
+              <span>🐟 + Grilled Fish/Egg</span>
+              <span className="text-[10px] font-black">{hasProteinBuffer ? "✓ -25mg" : "+ Add"}</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => {
+                triggerHaptic("medium");
+                setHasVegFirstBuffer(!hasVegFirstBuffer);
+              }}
+              className={`p-2.5 rounded-2xl text-xs font-bold transition-all cursor-pointer flex items-center justify-between border ${
+                hasVegFirstBuffer
+                  ? "bg-emerald-500 text-slate-950 border-emerald-300 shadow-md scale-102"
+                  : "bg-white/10 text-white hover:bg-white/15 border-white/15"
+              }`}
+            >
+              <span>🥗 Eat Veggies First</span>
+              <span className="text-[10px] font-black">{hasVegFirstBuffer ? "✓ -20mg" : "+ Add"}</span>
+            </button>
+          </div>
+        </div>
+
+        {/* Live Avo Verdict */}
+        <div className="p-3 bg-white/10 backdrop-blur-md rounded-2xl border border-white/15 flex items-center gap-3">
+          <span className="text-2xl">
+            {simulatedGlucose <= 125 ? "🥑" : simulatedGlucose <= 150 ? "🤔" : "⚠️"}
+          </span>
+          <p className="text-xs text-teal-100/95 font-medium leading-relaxed">
+            {simulatedGlucose <= 125
+              ? "🎉 Excellent plate balance! The natural soluble fiber & protein buffer keeps your glucose steady so you feel energized all afternoon."
+              : simulatedGlucose <= 150
+              ? "👍 Getting better! Add one more protein or fiber buffer to flatten the sugar curve completely."
+              : "⚠️ High spike alert! Without fiber or protein, this carb will digest rapidly and cause sleepiness. Tap Okra or Fish above to fix it!"}
+          </p>
+        </div>
+      </div>
+
       {/* =================================================================== */}
       {/* 2. 4-TIER PROGRESSION TRACK SWITCHER (TIER 1 TO TIER 4)              */}
       {/* =================================================================== */}
