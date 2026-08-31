@@ -789,6 +789,8 @@ export default function Home() {
                 }}
                 className="relative overflow-hidden glass-card-teal rounded-3xl p-5 sm:p-6 text-white shadow-xl border border-white/30 hover:border-teal-300 transition-all duration-300 hover:scale-[1.01] active:scale-[0.99] cursor-pointer flex flex-col justify-between group"
               >
+                {/* ⚡ Glowing Laser Scan Sweep Line */}
+                <div className="absolute left-0 right-0 top-0 h-1 bg-gradient-to-r from-transparent via-emerald-300 to-transparent shadow-[0_0_20px_#4ade80] pointer-events-none animate-laser-sweep opacity-90 z-20" />
                 <div className="absolute -top-12 -right-12 w-48 h-48 rounded-full bg-teal-400/15 blur-2xl pointer-events-none" />
                 <div className="absolute -bottom-12 -left-12 w-48 h-48 rounded-full bg-emerald-500/10 blur-2xl pointer-events-none" />
 
@@ -833,8 +835,10 @@ export default function Home() {
                       triggerHaptic("medium");
                       setShowLocalFoodScanner(true);
                     }}
-                    className="flex-1 sm:flex-none px-4 py-2.5 bg-gradient-to-r from-emerald-400 to-teal-400 hover:from-emerald-300 hover:to-teal-300 text-slate-950 font-black text-xs rounded-2xl shadow-md flex items-center justify-center gap-2 transition-all active:scale-95 cursor-pointer"
+                    className="relative overflow-hidden flex-1 sm:flex-none px-4 py-2.5 bg-gradient-to-r from-emerald-400 to-teal-400 hover:from-emerald-300 hover:to-teal-300 text-slate-950 font-black text-xs rounded-2xl shadow-md flex items-center justify-center gap-2 transition-all active:scale-95 cursor-pointer group/btn"
                   >
+                    {/* Micro Laser Sweep Line on Camera Button */}
+                    <div className="absolute left-0 right-0 top-0 h-0.5 bg-gradient-to-r from-transparent via-white to-transparent shadow-[0_0_10px_#ffffff] pointer-events-none animate-laser-sweep opacity-90" />
                     <Camera size={14} className="stroke-[2.5]" />
                     <span>Take Photo (Live Viewfinder)</span>
                   </button>
