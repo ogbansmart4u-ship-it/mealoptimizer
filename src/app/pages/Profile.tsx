@@ -105,6 +105,73 @@ export default function Profile() {
 
   // Notification toggles
   const [postMealWalks, setPostMealWalks] = useState(true);
+  // 🎛️ Dashboard Widget Customization State
+  const [dashboardPrefs, setDashboardPrefs] = useState<{
+    showEnergy: boolean;
+    showActions: boolean;
+    showTip: boolean;
+    showMeals: boolean;
+    showChallenge: boolean;
+    showWeekly: boolean;
+    showCGM: boolean;
+    showMicro: boolean;
+    showFamily: boolean;
+  }>(() => {
+    try {
+      const saved = localStorage.getItem("mealoptimiza_dashboard_prefs");
+      return saved
+        ? JSON.parse(saved)
+        : {
+            showEnergy: true,
+            showActions: true,
+            showTip: true,
+            showMeals: true,
+            showChallenge: true,
+            showWeekly: true,
+            showCGM: false,
+            showMicro: false,
+            showFamily: false,
+          };
+    } catch {
+      return {
+        showEnergy: true,
+        showActions: true,
+        showTip: true,
+        showMeals: true,
+        showChallenge: true,
+        showWeekly: true,
+        showCGM: false,
+        showMicro: false,
+        showFamily: false,
+      };
+    }
+  });
+
+  const [showProUpgradeModal, setShowProUpgradeModal] = useState(false);
+  const [lockedFeatureName, setLockedFeatureName] = useState("");
+
+  const handleToggleWidget = (key: keyof typeof dashboardPrefs, isProOnly: boolean = false) => {
+    if (isProOnly && !subStatus.isPro) {
+      triggerHaptic("warning");
+      setLockedFeatureName(
+        key === "showCGM"
+          ? "Continuous Glucose Monitor (CGM) Live Telemetry"
+          : key === "showMicro"
+          ? "Diaspora Vitamin D3 & B12 Precision Shield"
+          : "Family Health Circle Multi-City Tracking"
+      );
+      setShowProUpgradeModal(true);
+      return;
+    }
+
+    triggerHaptic("light");
+    const nextPrefs = { ...dashboardPrefs, [key]: !dashboardPrefs[key] };
+    setDashboardPrefs(nextPrefs);
+    try {
+      localStorage.setItem("mealoptimiza_dashboard_prefs", JSON.stringify(nextPrefs));
+      toast.success("Dashboard layout updated!");
+    } catch {}
+  };
   const [spikeShieldAlerts, setSpikeShieldAlerts] = useState(true);
   const [weeklyDigest, setWeeklyDigest] = useState(true);
 
@@ -410,6 +477,156 @@ export default function Profile() {
             </div>
           </div>
           <ChevronRight className="h-5 w-5 text-teal-300/70 flex-shrink-0 relative z-10" />
+        </div>
+
+                {/* 🎛️ 10X HOME DASHBOARD CUSTOMIZER (BASED ON SUBSCRIPTION LEVEL) */}
+        <div className="bg-white rounded-3xl p-5 shadow-sm border border-slate-100/90 space-y-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2.5">
+              <div className="p-2.5 bg-gradient-to-tr from-[#126778] to-teal-500 text-white rounded-2xl shadow-sm">
+                <Sliders className="h-5 w-5" />
+              </div>
+              <div>
+                <h3 className="font-black text-sm text-slate-900">Customize Home Dashboard</h3>
+                <p className="text-[11px] text-slate-500">Toggle daily widgets to match your routine</p>
+              </div>
+            </div>
+
+            <span className="text-[10px] font-black uppercase px-2.5 py-1 rounded-full bg-teal-50 text-[#126778] border border-teal-200">
+              {subStatus.isPro ? "PRO CUSTOMIZER 👑" : "FREE PLAN"}
+            </span>
+          </div>
+
+          <div className="divide-y divide-slate-100 text-xs">
+            {/* Free Widgets */}
+            <div className="flex items-center justify-between py-3">
+              <div className="flex items-center gap-2.5">
+                <span className="text-base">⚡</span>
+                <div>
+                  <p className="font-bold text-slate-800">Daily Food &amp; Energy Gauge</p>
+                  <p className="text-[10px] text-slate-400">Calories, protein, carbs &amp; fat targets</p>
+                </div>
+              </div>
+              <Switch
+                checked={dashboardPrefs.showEnergy}
+                onCheckedChange={() => handleToggleWidget("showEnergy")}
+              />
+            </div>
+
+            <div className="flex items-center justify-between py-3">
+              <div className="flex items-center gap-2.5">
+                <span className="text-base">📸</span>
+                <div>
+                  <p className="font-bold text-slate-800">3-Button Quick Actions</p>
+                  <p className="text-[10px] text-slate-400">1-tap plate scan, quick log &amp; +1 cup water</p>
+                </div>
+              </div>
+              <Switch
+                checked={dashboardPrefs.showActions}
+                onCheckedChange={() => handleToggleWidget("showActions")}
+              />
+            </div>
+
+            <div className="flex items-center justify-between py-3">
+              <div className="flex items-center gap-2.5">
+                <span className="text-base">💡</span>
+                <div>
+                  <p className="font-bold text-slate-800">Today's Timely Gentle Tip</p>
+                  <p className="text-[10px] text-slate-400">Smart contextual advice that shifts through the day</p>
+                </div>
+              </div>
+              <Switch
+                checked={dashboardPrefs.showTip}
+                onCheckedChange={() => handleToggleWidget("showTip")}
+              />
+            </div>
+
+            <div className="flex items-center justify-between py-3">
+              <div className="flex items-center gap-2.5">
+                <span className="text-base">🍲</span>
+                <div>
+                  <p className="font-bold text-slate-800">Today's Meal Timeline</p>
+                  <p className="text-[10px] text-slate-400">Visual breakfast, lunch, and dinner logs</p>
+                </div>
+              </div>
+              <Switch
+                checked={dashboardPrefs.showMeals}
+                onCheckedChange={() => handleToggleWidget("showMeals")}
+              />
+            </div>
+
+            <div className="flex items-center justify-between py-3">
+              <div className="flex items-center gap-2.5">
+                <span className="text-base">🔥</span>
+                <div>
+                  <p className="font-bold text-slate-800">21-Day Challenge &amp; Food Wrapped</p>
+                  <p className="text-[10px] text-slate-400">Community streaks and monthly recaps</p>
+                </div>
+              </div>
+              <Switch
+                checked={dashboardPrefs.showChallenge}
+                onCheckedChange={() => handleToggleWidget("showChallenge")}
+              />
+            </div>
+
+            {/* PRO VIP LOCKED WIDGETS (VISIBLE BUT TEASED & LOCKED) */}
+            <div className="flex items-center justify-between py-3 bg-gradient-to-r from-teal-50/50 to-transparent -mx-2 px-2 rounded-2xl">
+              <div className="flex items-center gap-2.5">
+                <span className="text-base">🩸</span>
+                <div>
+                  <div className="flex items-center gap-1.5">
+                    <p className="font-black text-slate-900">Live Continuous Glucose (CGM) Curve</p>
+                    <span className="text-[9px] font-black uppercase px-1.5 py-0.5 rounded-full bg-amber-400 text-slate-950">
+                      PRO 🔒
+                    </span>
+                  </div>
+                  <p className="text-[10px] text-slate-500">Live Dexcom &amp; Libre sensor stream on home</p>
+                </div>
+              </div>
+              <Switch
+                checked={dashboardPrefs.showCGM}
+                onCheckedChange={() => handleToggleWidget("showCGM", true)}
+              />
+            </div>
+
+            <div className="flex items-center justify-between py-3 bg-gradient-to-r from-teal-50/50 to-transparent -mx-2 px-2 rounded-2xl">
+              <div className="flex items-center gap-2.5">
+                <span className="text-base">🧬</span>
+                <div>
+                  <div className="flex items-center gap-1.5">
+                    <p className="font-black text-slate-900">Diaspora Vitamin D3 &amp; B12 Shield</p>
+                    <span className="text-[9px] font-black uppercase px-1.5 py-0.5 rounded-full bg-amber-400 text-slate-950">
+                      PRO 🔒
+                    </span>
+                  </div>
+                  <p className="text-[10px] text-slate-500">UK/US/Canada sunlight deficiency alerts</p>
+                </div>
+              </div>
+              <Switch
+                checked={dashboardPrefs.showMicro}
+                onCheckedChange={() => handleToggleWidget("showMicro", true)}
+              />
+            </div>
+
+            <div className="flex items-center justify-between py-3 bg-gradient-to-r from-teal-50/50 to-transparent -mx-2 px-2 rounded-2xl">
+              <div className="flex items-center gap-2.5">
+                <span className="text-base">👨‍👩‍👧‍👦</span>
+                <div>
+                  <div className="flex items-center gap-1.5">
+                    <p className="font-black text-slate-900">Family Health Circle Widget</p>
+                    <span className="text-[9px] font-black uppercase px-1.5 py-0.5 rounded-full bg-amber-400 text-slate-950">
+                      PRO 🔒
+                    </span>
+                  </div>
+                  <p className="text-[10px] text-slate-500">Track parents' meal safety from London or Lagos</p>
+                </div>
+              </div>
+              <Switch
+                checked={dashboardPrefs.showFamily}
+                onCheckedChange={() => handleToggleWidget("showFamily", true)}
+              />
+            </div>
+          </div>
         </div>
 
         {/* 3. Clinical Metabolic Passport (4 Vitals + Live BMI Gauge) */}
@@ -1042,7 +1259,70 @@ export default function Profile() {
         </div>
 
         {/* Medical Governance & Disclaimer Footer */}
-        <MedicalDisclaimerFooter />
+              {/* 👑 PRO FEATURE UPGRADE MODAL */}
+      <Dialog open={showProUpgradeModal} onOpenChange={setShowProUpgradeModal}>
+        <DialogContent className="sm:max-w-md rounded-3xl p-6 bg-gradient-to-b from-slate-950 via-slate-900 to-[#0a232a] text-white border border-teal-500/30">
+          <div className="text-center space-y-3 pt-2">
+            <div className="w-16 h-16 rounded-3xl bg-gradient-to-tr from-amber-400 to-amber-600 p-0.5 mx-auto shadow-xl flex items-center justify-center">
+              <div className="w-full h-full bg-slate-950 rounded-[22px] flex items-center justify-center text-3xl">
+                👑
+              </div>
+            </div>
+
+            <div className="space-y-1">
+              <span className="text-[10px] font-black uppercase tracking-widest bg-amber-400 text-slate-950 px-2.5 py-0.5 rounded-full shadow-2xs">
+                PRO VIP EXCLUSIVE
+              </span>
+              <h3 className="text-lg font-black text-white mt-1">
+                Unlock {lockedFeatureName || "Pro Feature"}
+              </h3>
+              <p className="text-xs text-slate-300 max-w-xs mx-auto leading-relaxed">
+                Upgrade to MealOptimiza PRO to activate continuous glucose sync, diaspora micronutrient shields, and unlimited AI voice coaching.
+              </p>
+            </div>
+
+            <div className="p-3 bg-white/10 rounded-2xl border border-white/15 text-left text-xs space-y-2">
+              <div className="flex items-center gap-2 text-teal-200">
+                <CheckCircle2 size={14} className="text-emerald-400 shrink-0" />
+                <span>Live Continuous Glucose (Dexcom / Libre) Streaming</span>
+              </div>
+              <div className="flex items-center gap-2 text-teal-200">
+                <CheckCircle2 size={14} className="text-emerald-400 shrink-0" />
+                <span>Diaspora Vitamin D3 &amp; Metformin B12 Depletion Alerts</span>
+              </div>
+              <div className="flex items-center gap-2 text-teal-200">
+                <CheckCircle2 size={14} className="text-emerald-400 shrink-0" />
+                <span>14-Day Certified Doctor PDF Clinical Dossier</span>
+              </div>
+              <div className="flex items-center gap-2 text-teal-200">
+                <CheckCircle2 size={14} className="text-emerald-400 shrink-0" />
+                <span>Family Health Circle Multi-City Sync</span>
+              </div>
+            </div>
+
+            <button
+              type="button"
+              onClick={() => {
+                setShowProUpgradeModal(false);
+                navigate("/upgrade");
+              }}
+              className="w-full py-3.5 bg-gradient-to-r from-amber-400 via-amber-300 to-yellow-400 text-slate-950 font-black text-xs rounded-2xl shadow-xl hover:scale-102 active:scale-98 transition-all cursor-pointer flex items-center justify-center gap-2"
+            >
+              <span>Unlock MealOptimiza PRO ($9.99/mo)</span>
+              <ChevronRight size={15} />
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setShowProUpgradeModal(false)}
+              className="text-xs text-slate-400 hover:text-white font-semibold cursor-pointer pt-1 block mx-auto"
+            >
+              Maybe later
+            </button>
+          </div>
+        </DialogContent>
+      </Dialog>
+      <MedicalDisclaimerFooter />
       </div>
 
       <BottomNav activeTab="profile" />

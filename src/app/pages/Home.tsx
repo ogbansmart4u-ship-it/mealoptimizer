@@ -314,6 +314,47 @@ export default function Home() {
   const [homeWaterIds, setHomeWaterIds] = useState<string[]>([]);
   const [waterBusy, setWaterBusy] = useState(false);
   const [isDrinkingWater, setIsDrinkingWater] = useState(false);
+  // 🎛️ Dynamic Dashboard Preferences (Configurable in Profile)
+  const [dashboardPrefs, setDashboardPrefs] = useState(() => {
+    try {
+      const saved = localStorage.getItem("mealoptimiza_dashboard_prefs");
+      return saved
+        ? JSON.parse(saved)
+        : {
+            showEnergy: true,
+            showActions: true,
+            showTip: true,
+            showMeals: true,
+            showChallenge: true,
+            showWeekly: true,
+            showCGM: false,
+            showMicro: false,
+            showFamily: false,
+          };
+    } catch {
+      return {
+        showEnergy: true,
+        showActions: true,
+        showTip: true,
+        showMeals: true,
+        showChallenge: true,
+        showWeekly: true,
+        showCGM: false,
+        showMicro: false,
+        showFamily: false,
+      };
+    }
+  });
+
+  const isUserPro = Boolean(profile?.isPro || profile?.plan === "pro" || profile?.plan === "premium");
+  const [showProLockModal, setShowProLockModal] = useState(false);
+  const [lockedProFeature, setLockedProFeature] = useState("");
+
+  const handleOpenProLock = (featureName: string) => {
+    triggerHaptic("warning");
+    setLockedProFeature(featureName);
+    setShowProLockModal(true);
+  };
   const waterGlasses = Math.round(waterMl / GLASS_ML);
 
   const loadWater = () => {
@@ -760,7 +801,8 @@ export default function Home() {
             transition={{ duration: 0.25 }}
             className="space-y-4"
           >
-            {/* 🌟 ZONE 1: THE HERO DAILY ENERGY & SATIETY GAUGE */}
+            {dashboardPrefs.showEnergy && (
+            /* 🌟 ZONE 1: THE HERO DAILY ENERGY & SATIETY GAUGE */
             <div className="neu-raised rounded-3xl p-4 sm:p-5 space-y-3.5 border border-white/60 dark:border-white/5 relative overflow-hidden">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2.5">
@@ -824,7 +866,10 @@ export default function Home() {
               </div>
             </div>
 
-            {/* 🌟 ZONE 2: 3 BIG TACTILE 1-TAP ACTION BUTTONS */}
+            )}
+
+            {dashboardPrefs.showActions && (
+            /* 🌟 ZONE 2: 3 BIG TACTILE 1-TAP ACTION BUTTONS */
             <div className="grid grid-cols-3 gap-2.5">
               {/* Button 1: Scan Food */}
               <button
@@ -877,7 +922,10 @@ export default function Home() {
               </button>
             </div>
 
-            {/* 🌟 ZONE 3: TODAY'S TIMELY GENTLE TIP (Only 1 smart dynamic card) */}
+            )}
+
+            {dashboardPrefs.showTip && (
+            /* 🌟 ZONE 3: TODAY'S TIMELY GENTLE TIP (Only 1 smart dynamic card) */
             <NextBestActionCard
               mealsCount={todayLogs.length}
               waterGlasses={waterGlasses}
@@ -889,7 +937,10 @@ export default function Home() {
               }}
             />
 
-            {/* 🌟 ZONE 4: TODAY'S MEAL TIMELINE (Breakfast • Lunch • Dinner • Snacks) */}
+            )}
+
+            {dashboardPrefs.showMeals && (
+            /* 🌟 ZONE 4: TODAY'S MEAL TIMELINE (Breakfast • Lunch • Dinner • Snacks) */
             <div className="glass-card rounded-3xl p-4 sm:p-5 shadow-lg space-y-3">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
@@ -958,7 +1009,10 @@ export default function Home() {
               />
             </div>
 
-            {/* 🌟 ZONE 5: COMMUNITY CHALLENGE & STORIES CAROUSEL CARD */}
+            )}
+
+            {dashboardPrefs.showChallenge && (
+            /* 🌟 ZONE 5: COMMUNITY CHALLENGE & STORIES CAROUSEL CARD */
             <div className="glass-card-amber rounded-3xl p-4 sm:p-5 text-white shadow-xl flex items-center justify-between gap-3 relative overflow-hidden">
               <div className="flex items-center gap-3 min-w-0">
                 <div className="p-2.5 bg-white/20 backdrop-blur-md rounded-2xl text-2xl shrink-0 shadow-inner">
@@ -996,7 +1050,10 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Weekly Consistency & Market Sync */}
+            )}
+
+            {dashboardPrefs.showWeekly && (
+            /* Weekly Consistency & Market Sync */
             <div className="glass-card rounded-3xl p-4 shadow-lg">
               <div className="flex items-center justify-between mb-3">
                 <div className="flex items-center gap-2">
@@ -1042,6 +1099,7 @@ export default function Home() {
                 })}
               </div>
             </div>
+            )}
           </motion.div>
         )}
 
