@@ -1173,6 +1173,97 @@ export const LESSONS: AcademyLesson[] = [
   }
 ];
 
+// --------------------------------------------------------------------------
+// 🥳 REAL-WORLD PARTY & CULTURAL EVENT SURVIVAL GUIDES
+// --------------------------------------------------------------------------
+export interface PartyGuide {
+  id: string;
+  title: string;
+  region: string;
+  emoji: string;
+  isFree: boolean;
+  tagline: string;
+  hackSteps: string[];
+  safeOrderList: string[];
+  drinksTrap: string;
+}
+
+export const PARTY_SURVIVAL_GUIDES: PartyGuide[] = [
+  {
+    id: "guide-owambe",
+    title: "The Owambe Wedding Buffet Protocol 🇳🇬",
+    region: "West Africa / Nigeria",
+    emoji: "🎉",
+    isFree: true,
+    tagline: "How to enjoy party Jollof, small chops, and stewed chicken with zero sugar spike",
+    hackSteps: [
+      "1. The 3-Spoon Fiber Primer: Always start with 2-3 spoonfuls of vegetable soup (Efo Riro or Afang) before touching your rice.",
+      "2. The 50% Protein Anchor: Fill half your party plate with grilled chicken or fish and moi moi before taking Jollof.",
+      "3. Puff-Puff Buffer: If you must enjoy 1-2 small puff-puffs, eat them as dessert AFTER your protein, never on an empty stomach."
+    ],
+    safeOrderList: [
+      "✓ Party Jollof (1 cup portion) + Double Grilled Titus/Chicken + Efo Riro + Moi Moi",
+      "✓ Boiled Pepper Soup with Goat Meat (Safe all-night low-carb option)"
+    ],
+    drinksTrap: "Avoid sugary malts and sodas; ask for chilled Zobo brewed with ginger, or sparkling water with lime."
+  },
+  {
+    id: "guide-fufu-sunday",
+    title: "The Sunday Family Fufu & Banku Protocol 🇬🇭",
+    region: "Ghana & West Africa",
+    emoji: "🍲",
+    isFree: false,
+    tagline: "Mastering large family Sunday dinners with Light Soup & Groundnut Soup",
+    hackSteps: [
+      "1. The Viscous Broth Cushion: Drink half a bowl of Pepper or Light soup before swallowing Banku/Fufu.",
+      "2. Palm-Sized Portion: Keep Fufu/Banku to the size of your closed fist (approx. 150g).",
+      "3. Peanut Soup Smart Balance: Groundnut soup is calorie-rich—balance with extra steamed garden eggs."
+    ],
+    safeOrderList: [
+      "✓ Banku (1 small ball) + Grilled Tilapia + Fresh Shito + Extra Steamed Greens",
+      "✓ Light Soup with Snapper Fish & Okra"
+    ],
+    drinksTrap: "Replace canned Sobolo with homemade unsweetened ginger-infused hibiscus tea."
+  },
+  {
+    id: "guide-diaspora-winter",
+    title: "The UK & North America Diaspora Winter Swaps 🇬🇧🇨🇦🇺🇸",
+    region: "Diaspora Living",
+    emoji: "❄️",
+    isFree: false,
+    tagline: "Staying warm, energized, and vitamin-rich during cold temperate months",
+    hackSteps: [
+      "1. Vitamin D3 Morning Ritual: Since sunlight is low, take 2,000 IU Vitamin D3 alongside avocado or eggs.",
+      "2. Local Winter Greens: When fresh Ugwu is costly, blend organic Frozen Collard Greens or Kale with Bitter Leaf.",
+      "3. The Slow-Cooker Pepper Soup: Keep a pot of bone broth pepper soup hot to boost circulation."
+    ],
+    safeOrderList: [
+      "✓ Plantain-Oat Swallow + Collard-Ugwu Soup + Atlantic Salmon",
+      "✓ Spiced Ginger-Garlic Tilapia Pepper Soup Bowl"
+    ],
+    drinksTrap: "Beware of hot sugary coffee drinks; drink warm turmeric-ginger spiced water instead."
+  },
+  {
+    id: "guide-december-feasting",
+    title: "The December Holiday Feasting & Alcohol Shield 🎄",
+    region: "Global Holiday",
+    emoji: "🍗",
+    isFree: false,
+    tagline: "Preventing visceral belly fat and liver overload during Christmas & New Year",
+    hackSteps: [
+      "1. 1-for-1 Hydration Rule: For every glass of wine or drink, down 1 full glass of water with lemon.",
+      "2. 16:8 Digestive Rest: Give your liver 16 hours of fasting between late-night dinners and your first meal next day.",
+      "3. Morning Liver Flush: Start mornings with warm bitter leaf tea or lemon water."
+    ],
+    safeOrderList: [
+      "✓ Grilled Asun (trimmed of excess fat) + Mixed Salad + 1/2 Roasted Sweet Potato",
+      "✓ Steamed Mackerel with Okra & Waterleaf"
+    ],
+    drinksTrap: "Limit creamy liqueurs and sweet palm wine cocktails; choose dry red wine or zobo."
+  }
+];
+
+
 export const CULTURAL_MYTHS = [
   {
     id: "myth-1",
@@ -1211,6 +1302,24 @@ export const CULTURAL_MYTHS = [
 export default function AvoAcademy() {
   const { user } = useUser();
   const [selectedTier, setSelectedTier] = useState<AcademyTier>(1);
+  // 🥳 Party Guides & Diploma State
+  const [selectedPartyGuide, setSelectedPartyGuide] = useState<PartyGuide | null>(null);
+  const [showPartyGuideModal, setShowPartyGuideModal] = useState(false);
+  const [showProUpgradeModal, setShowProUpgradeModal] = useState(false);
+  const [lockedItemTitle, setLockedItemTitle] = useState("");
+
+  const handleOpenPartyGuide = (guide: PartyGuide) => {
+    if (!guide.isFree && !isUserPro) {
+      triggerHaptic("warning");
+      setLockedItemTitle(guide.title);
+      setShowProUpgradeModal(true);
+      return;
+    }
+    triggerHaptic("medium");
+    setSelectedPartyGuide(guide);
+    setShowPartyGuideModal(true);
+  };
+
   // 🔄 Interactive Myth vs Fact State
   const [flippedMythIndex, setFlippedMythIndex] = useState<number | null>(null);
 
@@ -1685,6 +1794,79 @@ export default function AvoAcademy() {
         </div>
       </div>
 
+            {/* =================================================================== */}
+      {/* 🥳 REAL-WORLD CULTURAL PARTY & EVENT SURVIVAL GUIDES                */}
+      {/* =================================================================== */}
+      <div className="bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 rounded-3xl p-4 sm:p-5 text-white shadow-xl border border-indigo-500/30 space-y-3.5">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2.5">
+            <div className="p-2 bg-indigo-500/20 text-indigo-300 rounded-2xl text-xl shadow-inner">
+              🎉
+            </div>
+            <div>
+              <div className="flex items-center gap-1.5">
+                <span className="text-[9.5px] font-black uppercase px-2 py-0.5 rounded-full bg-indigo-500 text-white shadow-2xs">
+                  Party Cheat-Sheets
+                </span>
+                <span className="text-[10px] text-indigo-300 font-bold">Wedding &amp; Buffet Protocols</span>
+              </div>
+              <h3 className="text-sm sm:text-base font-black text-white leading-tight mt-0.5">
+                Cultural Party &amp; Event Survival Guides 🍲
+              </h3>
+            </div>
+          </div>
+
+          <span className="text-[10.5px] font-black text-amber-300 bg-amber-400/20 border border-amber-300/30 px-2.5 py-1 rounded-xl">
+            4 Guides
+          </span>
+        </div>
+
+        <p className="text-xs text-indigo-200/90 font-medium leading-relaxed">
+          Going to a wedding, family Sunday dinner, or festive party? Learn how to eat delicious cultural food without energy crashes or blood sugar spikes!
+        </p>
+
+        {/* 4 Interactive Guide Cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+          {PARTY_SURVIVAL_GUIDES.map((guide) => (
+            <div
+              key={guide.id}
+              onClick={() => handleOpenPartyGuide(guide)}
+              className="p-3.5 rounded-2xl bg-white/10 hover:bg-white/15 border border-white/15 cursor-pointer transition-all active:scale-98 flex items-center justify-between gap-3 group"
+            >
+              <div className="flex items-center gap-3 min-w-0">
+                <span className="text-2xl p-2 bg-white/10 rounded-xl shrink-0 group-hover:scale-110 transition-transform">
+                  {guide.emoji}
+                </span>
+                <div className="min-w-0">
+                  <div className="flex items-center gap-1.5 flex-wrap">
+                    <span className="text-[9px] font-bold text-indigo-300 uppercase">
+                      {guide.region}
+                    </span>
+                    {guide.isFree ? (
+                      <span className="text-[8.5px] font-black px-1.5 py-0.2 rounded-full bg-emerald-400 text-slate-950">
+                        FREE PREVIEW
+                      </span>
+                    ) : (
+                      <span className="text-[8.5px] font-black px-1.5 py-0.2 rounded-full bg-amber-400 text-slate-950">
+                        PRO 🔒
+                      </span>
+                    )}
+                  </div>
+                  <h4 className="text-xs font-black text-white leading-tight mt-0.5 truncate">
+                    {guide.title}
+                  </h4>
+                  <p className="text-[10px] text-indigo-200/80 truncate mt-0.5">
+                    {guide.tagline}
+                  </p>
+                </div>
+              </div>
+
+              <ChevronRight size={14} className="text-indigo-300 group-hover:translate-x-1 transition-transform shrink-0" />
+            </div>
+          ))}
+        </div>
+      </div>
+
       {/* =================================================================== */}
       {/* 2. 4-TIER PROGRESSION TRACK SWITCHER (TIER 1 TO TIER 4)              */}
       {/* =================================================================== */}
@@ -2081,6 +2263,129 @@ export default function AvoAcademy() {
                 <span>Copy Shareable Link</span>
               </Button>
             </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+            {/* 🎉 PARTY SURVIVAL GUIDE DETAIL MODAL */}
+      <Dialog open={showPartyGuideModal} onOpenChange={setShowPartyGuideModal}>
+        <DialogContent className="sm:max-w-lg rounded-3xl p-5 sm:p-6 bg-gradient-to-b from-slate-950 via-slate-900 to-indigo-950 text-white border border-indigo-500/30 max-h-[90vh] overflow-y-auto">
+          {selectedPartyGuide && (
+            <div className="space-y-4">
+              <div className="flex items-center gap-3">
+                <span className="text-3xl p-2 bg-indigo-500/20 rounded-2xl border border-indigo-400/30">
+                  {selectedPartyGuide.emoji}
+                </span>
+                <div>
+                  <span className="text-[10px] font-black uppercase tracking-wider text-indigo-300">
+                    {selectedPartyGuide.region}
+                  </span>
+                  <h3 className="text-base sm:text-lg font-black text-white leading-tight">
+                    {selectedPartyGuide.title}
+                  </h3>
+                </div>
+              </div>
+
+              {/* 3 Steps */}
+              <div className="p-3.5 bg-white/10 rounded-2xl border border-white/15 space-y-2">
+                <span className="text-[10px] font-black uppercase tracking-wider text-amber-300 block">
+                  3 Golden Kitchen Steps
+                </span>
+                {selectedPartyGuide.hackSteps.map((step, idx) => (
+                  <p key={idx} className="text-xs text-indigo-100 font-medium leading-relaxed">
+                    {step}
+                  </p>
+                ))}
+              </div>
+
+              {/* Safe Order List */}
+              <div className="p-3.5 bg-emerald-950/40 rounded-2xl border border-emerald-500/30 space-y-1.5">
+                <span className="text-[10px] font-black uppercase tracking-wider text-emerald-300 block">
+                  Best Plates to Request
+                </span>
+                {selectedPartyGuide.safeOrderList.map((item, idx) => (
+                  <p key={idx} className="text-xs text-emerald-100 font-medium">
+                    {item}
+                  </p>
+                ))}
+              </div>
+
+              {/* Drinks Trap */}
+              <div className="p-3 bg-rose-950/40 rounded-2xl border border-rose-500/30">
+                <span className="text-[10px] font-black uppercase tracking-wider text-rose-300 block">
+                  ⚠️ The Drinks Trap
+                </span>
+                <p className="text-xs text-rose-100/90 font-medium mt-0.5 leading-relaxed">
+                  {selectedPartyGuide.drinksTrap}
+                </p>
+              </div>
+
+              <Button
+                onClick={() => setShowPartyGuideModal(false)}
+                className="w-full py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-black text-xs rounded-2xl cursor-pointer"
+              >
+                Got It! Ready for the Party 🎉
+              </Button>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
+
+      {/* 👑 PRO REVERSE-TRIAL UPGRADE MODAL */}
+      <Dialog open={showProUpgradeModal} onOpenChange={setShowProUpgradeModal}>
+        <DialogContent className="sm:max-w-md rounded-3xl p-6 bg-gradient-to-b from-slate-950 via-slate-900 to-[#0a232a] text-white border border-teal-500/30">
+          <div className="text-center space-y-3 pt-2">
+            <div className="w-16 h-16 rounded-3xl bg-gradient-to-tr from-amber-400 to-amber-600 p-0.5 mx-auto shadow-xl flex items-center justify-center">
+              <div className="w-full h-full bg-slate-950 rounded-[22px] flex items-center justify-center text-3xl">
+                👑
+              </div>
+            </div>
+
+            <div className="space-y-1">
+              <span className="text-[10px] font-black uppercase tracking-widest bg-amber-400 text-slate-950 px-2.5 py-0.5 rounded-full shadow-2xs">
+                PRO VIP EXCLUSIVE
+              </span>
+              <h3 className="text-lg font-black text-white mt-1">
+                Unlock {lockedItemTitle || "Full Masterclass Hub"}
+              </h3>
+              <p className="text-xs text-slate-300 max-w-xs mx-auto leading-relaxed">
+                Upgrade to MealOptimiza PRO to unlock all 4 Masterclass Tiers, 10 Party Survival Guides, and Certified Nutrition Diplomas!
+              </p>
+            </div>
+
+            <div className="p-3 bg-white/10 rounded-2xl border border-white/15 text-left text-xs space-y-2">
+              <div className="flex items-center gap-2 text-teal-200">
+                <CheckCircle2 size={14} className="text-emerald-400 shrink-0" />
+                <span>All 4 Curriculum Tiers &amp; Clinical Organ Shields</span>
+              </div>
+              <div className="flex items-center gap-2 text-teal-200">
+                <CheckCircle2 size={14} className="text-emerald-400 shrink-0" />
+                <span>10 Cultural Party &amp; Wedding Survival Guides</span>
+              </div>
+              <div className="flex items-center gap-2 text-teal-200">
+                <CheckCircle2 size={14} className="text-emerald-400 shrink-0" />
+                <span>Official Certified African Heritage Nutrition Diploma</span>
+              </div>
+            </div>
+
+            <button
+              type="button"
+              onClick={() => {
+                setShowProUpgradeModal(false);
+                toast.success("Redirecting to PRO Checkout...");
+              }}
+              className="w-full py-3.5 bg-gradient-to-r from-amber-400 via-amber-300 to-yellow-400 text-slate-950 font-black text-xs rounded-2xl shadow-xl hover:scale-102 active:scale-98 transition-all cursor-pointer flex items-center justify-center gap-2"
+            >
+              <span>Claim 7 Days PRO Free ($9.99/mo)</span>
+              <ChevronRight size={15} />
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setShowProUpgradeModal(false)}
+              className="text-xs text-slate-400 hover:text-white font-semibold cursor-pointer pt-1 block mx-auto"
+            >
+              Maybe later
+            </button>
           </div>
         </DialogContent>
       </Dialog>
