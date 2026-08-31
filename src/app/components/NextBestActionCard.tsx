@@ -130,7 +130,7 @@ export default function NextBestActionCard({
   return (
     <div
       onClick={actionData.onClick}
-      className={`bg-gradient-to-r ${actionData.gradient} text-white rounded-3xl p-4 sm:p-5 shadow-lg hover:shadow-xl transition-all cursor-pointer relative overflow-hidden group border border-white/20 active:scale-99`}
+      className={`glass-card-teal text-white rounded-3xl p-4 sm:p-5 shadow-xl hover:shadow-2xl transition-all cursor-pointer relative overflow-hidden group border border-white/35 active:scale-[0.99]`}
     >
       {/* Ambient background light */}
       <div className="absolute -right-8 -bottom-8 w-36 h-36 bg-white/10 rounded-full blur-xl pointer-events-none" />

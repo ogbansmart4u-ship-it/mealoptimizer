@@ -297,12 +297,12 @@ export default function QuickLogShelf({
   };
 
   return (
-    <div className="w-full min-w-0 bg-white/95 dark:bg-zinc-900/95 backdrop-blur-md rounded-3xl p-3.5 sm:p-5 shadow-md border border-teal-100/90 dark:border-zinc-800 my-3 overflow-hidden">
+    <div className="w-full min-w-0 glass-card rounded-3xl p-3.5 sm:p-5 shadow-xl my-3 overflow-hidden">
       
       {/* ============================================================ */}
       {/* 1. TOP 2-BUTTON UNIFIED ROW (Merged Mode Controller)         */}
       {/* ============================================================ */}
-      <div className="bg-slate-100 dark:bg-zinc-800/80 p-1 rounded-2xl flex gap-1 mb-3.5 shadow-inner">
+      <div className="neu-inset p-1 rounded-2xl flex gap-1 mb-3.5">
         {/* Button 1: 1-Tap Quick Log */}
         <button
           type="button"
@@ -312,7 +312,7 @@ export default function QuickLogShelf({
           }}
           className={`flex-1 py-2 px-2 sm:px-3 rounded-xl text-[11px] sm:text-xs font-black transition-all flex items-center justify-center gap-1 sm:gap-1.5 cursor-pointer truncate ${
             hubMode === "quick_log"
-              ? "bg-white dark:bg-zinc-900 text-[#1f7a8c] dark:text-teal-300 shadow-sm"
+              ? "bg-white dark:bg-zinc-800 text-[#126778] dark:text-teal-300 shadow-md border border-white/80 dark:border-white/10"
               : "text-slate-500 hover:text-slate-800 dark:text-zinc-400"
           }`}
         >
@@ -329,7 +329,7 @@ export default function QuickLogShelf({
           }}
           className={`flex-1 py-2 px-2 sm:px-3 rounded-xl text-[11px] sm:text-xs font-black transition-all flex items-center justify-center gap-1 sm:gap-1.5 cursor-pointer truncate ${
             hubMode === "calculator"
-              ? "bg-white dark:bg-zinc-900 text-[#1f7a8c] dark:text-teal-300 shadow-sm"
+              ? "bg-white dark:bg-zinc-800 text-[#126778] dark:text-teal-300 shadow-md border border-white/80 dark:border-white/10"
               : "text-slate-500 hover:text-slate-800 dark:text-zinc-400"
           }`}
         >

@@ -623,9 +623,14 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#B8E5E5] via-[#E8F5F5] to-[#F8FBFB] pb-28">
+    <div className="min-h-screen bg-gradient-to-b from-[#b8e5e5] via-[#e2f1f1] to-[#f4f9f9] dark:from-[#0a1518] dark:via-[#0f1d21] dark:to-[#080d0e] pb-32 relative overflow-hidden">
+      {/* 🔮 Multi-Layer Ambient Light Orbs for Rich Glassmorphism Refraction */}
+      <div className="absolute top-0 -left-20 w-96 h-96 rounded-full bg-teal-400/25 dark:bg-teal-500/15 blur-3xl pointer-events-none animate-ambient-drift-1" />
+      <div className="absolute top-48 -right-20 w-96 h-96 rounded-full bg-cyan-300/20 dark:bg-cyan-500/10 blur-3xl pointer-events-none animate-ambient-drift-2" />
+      <div className="absolute top-[800px] left-1/4 w-80 h-80 rounded-full bg-emerald-400/15 dark:bg-emerald-500/10 blur-3xl pointer-events-none animate-pulse-glow-soft" />
+      <div className="absolute top-[1400px] -right-10 w-96 h-96 rounded-full bg-amber-300/15 dark:bg-amber-500/10 blur-3xl pointer-events-none" />
       {/* Header */}
-      <div className="bg-gradient-to-b from-[#A5DBDB] to-[#B8E5E5] px-4 sm:px-6 pt-9 pb-4 border-b border-teal-500/15">
+      <div className="bg-white/40 dark:bg-zinc-900/40 backdrop-blur-2xl px-4 sm:px-6 pt-9 pb-4 border-b border-white/60 dark:border-white/10 shadow-[0_4px_30px_rgba(0,0,0,0.03)] relative z-20">
         {/* Top Brand & Profile Avatar Bar (Option 2: Minimalist & Spacious) */}
         <div className="flex items-center justify-between gap-3 mb-4">
           {/* Top Left: Clean Brand Anchor */}
@@ -690,12 +695,12 @@ export default function Home() {
       {/* Main Content Area with Tabbed Architecture */}
       <div className="px-3.5 sm:px-6 mt-2 max-w-2xl mx-auto w-full min-w-0">
         {/* Segmented Tab Navigation Control */}
-        <div className="sticky top-3 z-30 bg-white/95 dark:bg-zinc-900/95 backdrop-blur-md p-1 rounded-2xl shadow-md border border-teal-100/90 dark:border-zinc-800 flex gap-1 mb-4 sm:mb-5 transition-all">
+        <div className="sticky top-3 z-30 bg-white/70 dark:bg-zinc-900/70 backdrop-blur-2xl p-1.5 rounded-3xl shadow-[0_8px_32px_rgba(31,122,140,0.12)] border border-white/80 dark:border-white/10 flex gap-1.5 mb-4 sm:mb-5 transition-all">
           <button
             onClick={() => setActiveHomeTab("today")}
             className={`flex-1 py-2 sm:py-2.5 px-1.5 sm:px-3 rounded-xl font-bold text-xs sm:text-sm flex items-center justify-center gap-1 sm:gap-1.5 transition-all cursor-pointer truncate ${
               activeHomeTab === "today"
-                ? "bg-gradient-to-r from-[#1f7a8c] to-[#2a9d8f] text-white shadow-md"
+                ? "bg-gradient-to-r from-[#126778] via-[#1f7a8c] to-[#0d9488] text-white shadow-[inset_0_1px_1px_rgba(255,255,255,0.4),0_4px_12px_rgba(18,103,120,0.25)] ring-1 ring-white/30 rounded-2xl"
                 : "text-gray-600 dark:text-gray-400 hover:text-gray-900 hover:bg-gray-100/60"
             }`}
           >
@@ -707,7 +712,7 @@ export default function Home() {
             onClick={() => setActiveHomeTab("academy")}
             className={`flex-1 py-2 sm:py-2.5 px-1.5 sm:px-3 rounded-xl font-bold text-xs sm:text-sm flex items-center justify-center gap-1 sm:gap-1.5 transition-all cursor-pointer truncate ${
               activeHomeTab === "academy"
-                ? "bg-gradient-to-r from-[#1f7a8c] to-[#2a9d8f] text-white shadow-md"
+                ? "bg-gradient-to-r from-[#126778] via-[#1f7a8c] to-[#0d9488] text-white shadow-[inset_0_1px_1px_rgba(255,255,255,0.4),0_4px_12px_rgba(18,103,120,0.25)] ring-1 ring-white/30 rounded-2xl"
                 : "text-gray-600 dark:text-gray-400 hover:text-gray-900 hover:bg-gray-100/60"
             }`}
           >
@@ -719,7 +724,7 @@ export default function Home() {
             onClick={() => setActiveHomeTab("clinical")}
             className={`flex-1 py-2 sm:py-2.5 px-1.5 sm:px-3 rounded-xl font-bold text-xs sm:text-sm flex items-center justify-center gap-1 sm:gap-1.5 transition-all cursor-pointer truncate ${
               activeHomeTab === "clinical"
-                ? "bg-gradient-to-r from-[#1f7a8c] to-[#2a9d8f] text-white shadow-md"
+                ? "bg-gradient-to-r from-[#126778] via-[#1f7a8c] to-[#0d9488] text-white shadow-[inset_0_1px_1px_rgba(255,255,255,0.4),0_4px_12px_rgba(18,103,120,0.25)] ring-1 ring-white/30 rounded-2xl"
                 : "text-gray-600 dark:text-gray-400 hover:text-gray-900 hover:bg-gray-100/60"
             }`}
           >
@@ -746,7 +751,7 @@ export default function Home() {
                 triggerHaptic("medium");
                 setShowConciergeModal(true);
               }}
-              className="bg-gradient-to-r from-[#1f7a8c] via-[#0d9488] to-[#115e59] rounded-3xl p-4 sm:p-5 text-white shadow-lg border border-teal-200/40 relative overflow-hidden flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 cursor-pointer hover:shadow-xl hover:scale-[1.01] active:scale-[0.99] transition-all group"
+              className="glass-card-teal rounded-3xl p-4 sm:p-5 text-white shadow-xl border border-white/30 relative overflow-hidden flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 cursor-pointer hover:shadow-2xl hover:scale-[1.01] active:scale-[0.99] transition-all group"
             >
               <div className="relative z-10 flex items-center gap-3 min-w-0 flex-1">
                 <div className="w-11 h-11 sm:w-14 sm:h-14 rounded-2xl bg-white/20 border-2 border-amber-300 flex items-center justify-center text-2xl sm:text-3xl shrink-0 shadow-xs group-hover:scale-105 transition-transform">
@@ -768,7 +773,7 @@ export default function Home() {
                 </div>
               </div>
 
-              <div className="relative z-10 w-full sm:w-auto bg-white group-hover:bg-teal-50 text-[#1f7a8c] font-black text-xs px-3.5 py-2.5 rounded-2xl shadow-sm shrink-0 flex items-center justify-center gap-1.5 transition-colors">
+              <div className="relative z-10 w-full sm:w-auto bg-white/90 hover:bg-white text-[#126778] font-black text-xs px-4 py-2.5 rounded-2xl shadow-md shrink-0 flex items-center justify-center gap-1.5 transition-all hover:scale-105 active:scale-95 cursor-pointer border border-white/60">
                 <span>▶️ Talk to Sarah</span>
                 <ChevronRight size={14} className="group-hover:translate-x-0.5 transition-transform shrink-0" />
               </div>
@@ -1256,7 +1261,7 @@ export default function Home() {
             </div>
 
             {/* Location & Regional Market Tip */}
-            <div className="bg-gradient-to-r from-teal-50 to-cyan-50 rounded-3xl p-4 border border-teal-100/80">
+            <div className="glass-card rounded-3xl p-4 border border-white/80 dark:border-white/10">
               <div className="flex items-center justify-between mb-2">
                 <span className="text-[10px] uppercase font-bold text-teal-800 tracking-wider">
                   Regional Market Sync
@@ -1332,7 +1337,7 @@ export default function Home() {
             className="w-full min-w-0 space-y-4 sm:space-y-5 overflow-hidden"
           >
             {/* 1. Active Conditions Safeguards Card */}
-            <div className="w-full min-w-0 bg-white dark:bg-zinc-900 rounded-3xl p-4 sm:p-5 shadow-lg border border-teal-100 dark:border-zinc-800 overflow-hidden">
+            <div className="w-full min-w-0 glass-card rounded-3xl p-4 sm:p-5 shadow-lg overflow-hidden">
               <div className="flex items-center justify-between gap-2 mb-3 min-w-0">
                 <div className="flex items-center gap-2 min-w-0 flex-1">
                   <div className="p-2 rounded-2xl bg-teal-50 dark:bg-teal-950/50 text-[#1f7a8c] dark:text-teal-400 shrink-0">
