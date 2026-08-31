@@ -801,201 +801,199 @@ export default function Home() {
             transition={{ duration: 0.25 }}
             className="space-y-4"
           >
+            {/* 🌟 ZONE 1: THE HERO DAILY ENERGY & SATIETY GAUGE */}
             {dashboardPrefs.showEnergy && (
-            /* 🌟 ZONE 1: THE HERO DAILY ENERGY & SATIETY GAUGE */
-            <div className="neu-raised rounded-3xl p-4 sm:p-5 space-y-3.5 border border-white/60 dark:border-white/5 relative overflow-hidden">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2.5">
-                  <div className="p-2 bg-teal-50 dark:bg-teal-950/60 rounded-2xl text-[#126778] dark:text-teal-300">
-                    <Flame size={18} className="animate-pulse" />
+              <div className="neu-raised rounded-3xl p-4 sm:p-5 space-y-3.5 border border-white/60 dark:border-white/5 relative overflow-hidden">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2.5">
+                    <div className="p-2 bg-teal-50 dark:bg-teal-950/60 rounded-2xl text-[#126778] dark:text-teal-300">
+                      <Flame size={18} className="animate-pulse" />
+                    </div>
+                    <div>
+                      <h3 className="text-xs sm:text-sm font-black text-gray-900 dark:text-white leading-tight">
+                        Today's Food &amp; Energy ⚡
+                      </h3>
+                      <span className="text-[10.5px] text-gray-500 font-medium">
+                        {animatedPercentage}% of your daily goal
+                      </span>
+                    </div>
                   </div>
-                  <div>
-                    <h3 className="text-xs sm:text-sm font-black text-gray-900 dark:text-white leading-tight">
-                      Today's Food &amp; Energy ⚡
-                    </h3>
-                    <span className="text-[10.5px] text-gray-500 font-medium">
-                      {animatedPercentage}% of your daily goal
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs sm:text-sm font-black text-teal-800 dark:text-teal-300 font-mono">
+                      {caloriesConsumed} <span className="text-xs font-normal text-gray-400">/ {caloriesTarget} kcal</span>
                     </span>
+                    <button
+                      type="button"
+                      onClick={() => setShowGaugeDetails(true)}
+                      className="px-2.5 py-1 bg-teal-50 hover:bg-teal-100 text-[#126778] dark:bg-teal-950 dark:text-teal-300 rounded-xl text-[10.5px] font-bold border border-teal-200/60 transition-all cursor-pointer active:scale-95"
+                    >
+                      Details 📊
+                    </button>
                   </div>
                 </div>
-                <div className="flex items-center gap-2">
-                  <span className="text-xs sm:text-sm font-black text-teal-800 dark:text-teal-300 font-mono">
-                    {caloriesConsumed} <span className="text-xs font-normal text-gray-400">/ {caloriesTarget} kcal</span>
-                  </span>
+
+                {/* Progress Bar */}
+                <div className="w-full bg-slate-100 dark:bg-zinc-800 h-2.5 rounded-full overflow-hidden p-0.5 shadow-inner">
+                  <div
+                    className="h-full bg-gradient-to-r from-teal-500 via-emerald-400 to-amber-400 rounded-full transition-all duration-1000 ease-out shadow-xs"
+                    style={{ width: `${Math.min(100, (caloriesConsumed / caloriesTarget) * 100)}%` }}
+                  />
+                </div>
+
+                {/* 4 Macro & Water Gauges */}
+                <div className="grid grid-cols-4 gap-2 text-center text-xs">
+                  <div className="neu-inset p-2 rounded-2xl flex flex-col justify-between">
+                    <span className="text-[9.5px] font-bold text-blue-700 dark:text-blue-400">🍗 Protein</span>
+                    <strong className="text-xs font-black text-slate-900 dark:text-white mt-0.5">{proteinConsumed}g</strong>
+                  </div>
+                  <div className="neu-inset p-2 rounded-2xl flex flex-col justify-between">
+                    <span className="text-[9.5px] font-bold text-emerald-700 dark:text-emerald-400">🌾 Carbs</span>
+                    <strong className="text-xs font-black text-slate-900 dark:text-white mt-0.5">{carbsConsumed}g</strong>
+                  </div>
+                  <div className="neu-inset p-2 rounded-2xl flex flex-col justify-between">
+                    <span className="text-[9.5px] font-bold text-purple-700 dark:text-purple-400">🥑 Fats</span>
+                    <strong className="text-xs font-black text-slate-900 dark:text-white mt-0.5">{fatsConsumed}g</strong>
+                  </div>
                   <button
                     type="button"
-                    onClick={() => setShowGaugeDetails(true)}
-                    className="px-2.5 py-1 bg-teal-50 hover:bg-teal-100 text-[#126778] dark:bg-teal-950 dark:text-teal-300 rounded-xl text-[10.5px] font-bold border border-teal-200/60 transition-all cursor-pointer active:scale-95"
+                    onClick={handleWaterIncrease}
+                    className="neu-inset p-2 rounded-2xl flex flex-col justify-between cursor-pointer hover:bg-cyan-50/50 transition-colors"
+                    title="Tap to add +1 cup of water"
                   >
-                    Details 📊
+                    <span className="text-[9.5px] font-bold text-cyan-700 dark:text-cyan-400">💧 Water</span>
+                    <strong className="text-xs font-black text-cyan-900 dark:text-cyan-200 mt-0.5">{waterGlasses}/8 cups</strong>
                   </button>
                 </div>
               </div>
+            )}
 
-              {/* Progress Bar */}
-              <div className="w-full bg-slate-100 dark:bg-zinc-800 h-2.5 rounded-full overflow-hidden p-0.5 shadow-inner">
-                <div
-                  className="h-full bg-gradient-to-r from-teal-500 via-emerald-400 to-amber-400 rounded-full transition-all duration-1000 ease-out shadow-xs"
-                  style={{ width: `${Math.min(100, (caloriesConsumed / caloriesTarget) * 100)}%` }}
-                />
-              </div>
+            {/* 🌟 ZONE 2: 3 BIG TACTILE 1-TAP ACTION BUTTONS */}
+            {dashboardPrefs.showActions && (
+              <div className="grid grid-cols-3 gap-2.5">
+                {/* Button 1: Scan Food */}
+                <button
+                  type="button"
+                  onClick={() => {
+                    triggerHaptic("medium");
+                    setShowLocalFoodScanner(true);
+                  }}
+                  className="glass-card-teal rounded-3xl p-3.5 sm:p-4 text-white shadow-lg flex flex-col items-center justify-center gap-1.5 hover:scale-[1.03] active:scale-[0.97] transition-all cursor-pointer group"
+                >
+                  <div className="w-10 h-10 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center text-xl shadow-inner group-hover:scale-110 transition-transform">
+                    📸
+                  </div>
+                  <span className="text-xs font-black leading-tight text-center">Scan Plate</span>
+                  <span className="text-[9.5px] text-teal-100 font-bold">Camera AI</span>
+                </button>
 
-              {/* 4 Macro & Water Gauges */}
-              <div className="grid grid-cols-4 gap-2 text-center text-xs">
-                <div className="neu-inset p-2 rounded-2xl flex flex-col justify-between">
-                  <span className="text-[9.5px] font-bold text-blue-700 dark:text-blue-400">🍗 Protein</span>
-                  <strong className="text-xs font-black text-slate-900 dark:text-white mt-0.5">{proteinConsumed}g</strong>
-                </div>
-                <div className="neu-inset p-2 rounded-2xl flex flex-col justify-between">
-                  <span className="text-[9.5px] font-bold text-emerald-700 dark:text-emerald-400">🌾 Carbs</span>
-                  <strong className="text-xs font-black text-slate-900 dark:text-white mt-0.5">{carbsConsumed}g</strong>
-                </div>
-                <div className="neu-inset p-2 rounded-2xl flex flex-col justify-between">
-                  <span className="text-[9.5px] font-bold text-purple-700 dark:text-purple-400">🥑 Fats</span>
-                  <strong className="text-xs font-black text-slate-900 dark:text-white mt-0.5">{fatsConsumed}g</strong>
-                </div>
+                {/* Button 2: Quick Log Meals */}
+                <button
+                  type="button"
+                  onClick={() => {
+                    triggerHaptic("light");
+                    const el = document.getElementById("today-quick-shelf");
+                    if (el) el.scrollIntoView({ behavior: "smooth" });
+                  }}
+                  className="neu-raised rounded-3xl p-3.5 sm:p-4 text-slate-900 dark:text-white shadow-md flex flex-col items-center justify-center gap-1.5 hover:scale-[1.03] active:scale-[0.97] transition-all cursor-pointer group border border-white/80 dark:border-white/5"
+                >
+                  <div className="w-10 h-10 rounded-2xl bg-amber-50 dark:bg-amber-950 text-amber-600 flex items-center justify-center text-xl shadow-2xs group-hover:scale-110 transition-transform">
+                    ⚡
+                  </div>
+                  <span className="text-xs font-black leading-tight text-center">Quick Log</span>
+                  <span className="text-[9.5px] text-slate-500 font-bold">Common Meals</span>
+                </button>
+
+                {/* Button 3: +1 Cup Water with Active Drinking Mascot */}
                 <button
                   type="button"
                   onClick={handleWaterIncrease}
-                  className="neu-inset p-2 rounded-2xl flex flex-col justify-between cursor-pointer hover:bg-cyan-50/50 transition-colors"
-                  title="Tap to add +1 cup of water"
+                  className="neu-raised rounded-3xl p-3.5 sm:p-4 text-cyan-900 dark:text-cyan-200 shadow-md flex flex-col items-center justify-center gap-1.5 hover:scale-[1.03] active:scale-[0.97] transition-all cursor-pointer group border border-white/80 dark:border-white/5 relative overflow-hidden"
                 >
-                  <span className="text-[9.5px] font-bold text-cyan-700 dark:text-cyan-400">💧 Water</span>
-                  <strong className="text-xs font-black text-cyan-900 dark:text-cyan-200 mt-0.5">{waterGlasses}/8 cups</strong>
+                  <div className="w-10 h-10 rounded-2xl bg-cyan-50 dark:bg-cyan-950 text-cyan-600 flex items-center justify-center shadow-2xs group-hover:scale-110 transition-transform overflow-hidden relative">
+                    {isDrinkingWater ? (
+                      <Mascot gesture="drink" size={36} className="animate-bounce" />
+                    ) : (
+                      <span className="text-xl">💧</span>
+                    )}
+                  </div>
+                  <span className="text-xs font-black leading-tight text-center">+1 Cup Water</span>
+                  <span className="text-[9.5px] text-cyan-600 font-bold">{waterGlasses} of 8 drank</span>
                 </button>
               </div>
-            </div>
-
             )}
 
-            {dashboardPrefs.showActions && (
-            /* 🌟 ZONE 2: 3 BIG TACTILE 1-TAP ACTION BUTTONS */
-            <div className="grid grid-cols-3 gap-2.5">
-              {/* Button 1: Scan Food */}
-              <button
-                type="button"
-                onClick={() => {
-                  triggerHaptic("medium");
-                  setShowLocalFoodScanner(true);
-                }}
-                className="glass-card-teal rounded-3xl p-3.5 sm:p-4 text-white shadow-lg flex flex-col items-center justify-center gap-1.5 hover:scale-[1.03] active:scale-[0.97] transition-all cursor-pointer group"
-              >
-                <div className="w-10 h-10 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center text-xl shadow-inner group-hover:scale-110 transition-transform">
-                  📸
-                </div>
-                <span className="text-xs font-black leading-tight text-center">Scan Plate</span>
-                <span className="text-[9.5px] text-teal-100 font-bold">Camera AI</span>
-              </button>
-
-              {/* Button 2: Quick Log Meals */}
-              <button
-                type="button"
-                onClick={() => {
-                  triggerHaptic("light");
+            {/* 🌟 ZONE 3: TODAY'S TIMELY GENTLE TIP (Only 1 smart dynamic card) */}
+            {dashboardPrefs.showTip && (
+              <NextBestActionCard
+                mealsCount={todayLogs.length}
+                waterGlasses={waterGlasses}
+                onOpenScanner={() => setShowLocalFoodScanner(true)}
+                onOpenWater={() => setShowWaterReminderModal(true)}
+                onOpenQuickLog={() => {
                   const el = document.getElementById("today-quick-shelf");
                   if (el) el.scrollIntoView({ behavior: "smooth" });
                 }}
-                className="neu-raised rounded-3xl p-3.5 sm:p-4 text-slate-900 dark:text-white shadow-md flex flex-col items-center justify-center gap-1.5 hover:scale-[1.03] active:scale-[0.97] transition-all cursor-pointer group border border-white/80 dark:border-white/5"
-              >
-                <div className="w-10 h-10 rounded-2xl bg-amber-50 dark:bg-amber-950 text-amber-600 flex items-center justify-center text-xl shadow-2xs group-hover:scale-110 transition-transform">
-                  ⚡
-                </div>
-                <span className="text-xs font-black leading-tight text-center">Quick Log</span>
-                <span className="text-[9.5px] text-slate-500 font-bold">Common Meals</span>
-              </button>
-
-              {/* Button 3: +1 Cup Water with Active Drinking Mascot */}
-              <button
-                type="button"
-                onClick={handleWaterIncrease}
-                className="neu-raised rounded-3xl p-3.5 sm:p-4 text-cyan-900 dark:text-cyan-200 shadow-md flex flex-col items-center justify-center gap-1.5 hover:scale-[1.03] active:scale-[0.97] transition-all cursor-pointer group border border-white/80 dark:border-white/5 relative overflow-hidden"
-              >
-                <div className="w-10 h-10 rounded-2xl bg-cyan-50 dark:bg-cyan-950 text-cyan-600 flex items-center justify-center shadow-2xs group-hover:scale-110 transition-transform overflow-hidden relative">
-                  {isDrinkingWater ? (
-                    <Mascot gesture="drink" size={36} className="animate-bounce" />
-                  ) : (
-                    <span className="text-xl">💧</span>
-                  )}
-                </div>
-                <span className="text-xs font-black leading-tight text-center">+1 Cup Water</span>
-                <span className="text-[9.5px] text-cyan-600 font-bold">{waterGlasses} of 8 drank</span>
-              </button>
-            </div>
-
+              />
             )}
 
-            {dashboardPrefs.showTip && (
-            /* 🌟 ZONE 3: TODAY'S TIMELY GENTLE TIP (Only 1 smart dynamic card) */
-            <NextBestActionCard
-              mealsCount={todayLogs.length}
-              waterGlasses={waterGlasses}
-              onOpenScanner={() => setShowLocalFoodScanner(true)}
-              onOpenWater={() => setShowWaterReminderModal(true)}
-              onOpenQuickLog={() => {
-                const el = document.getElementById("today-quick-shelf");
-                if (el) el.scrollIntoView({ behavior: "smooth" });
-              }}
-            />
-
-            )}
-
+            {/* 🌟 ZONE 4: TODAY'S MEAL TIMELINE (Breakfast • Lunch • Dinner • Snacks) */}
             {dashboardPrefs.showMeals && (
-            /* 🌟 ZONE 4: TODAY'S MEAL TIMELINE (Breakfast • Lunch • Dinner • Snacks) */
-            <div className="glass-card rounded-3xl p-4 sm:p-5 shadow-lg space-y-3">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <Utensils size={16} className="text-[#126778] dark:text-teal-300" />
-                  <h3 className="text-xs sm:text-sm font-black text-slate-900 dark:text-white uppercase tracking-wider">
-                    Today's Meals ({todayLogs.length})
-                  </h3>
-                </div>
-                <button
-                  onClick={() => navigate("/logs", { state: { openAdd: true } })}
-                  className="text-xs font-black text-[#126778] dark:text-teal-300 hover:underline cursor-pointer flex items-center gap-0.5"
-                >
-                  <span>+ Custom Entry</span>
-                </button>
-              </div>
-
-              {todayLogs.length === 0 ? (
-                <div className="text-center py-6 px-4 bg-slate-50/70 dark:bg-zinc-800/40 rounded-2xl border border-dashed border-slate-200 dark:border-zinc-700">
-                  <span className="text-3xl block mb-1">🍲</span>
-                  <p className="text-xs font-bold text-slate-700 dark:text-slate-300">No meals logged yet today</p>
-                  <p className="text-[11px] text-slate-400 mt-0.5">Snap your food or tap Quick Log to get started!</p>
+              <div className="glass-card rounded-3xl p-4 sm:p-5 shadow-lg space-y-3">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Utensils size={16} className="text-[#126778] dark:text-teal-300" />
+                    <h3 className="text-xs sm:text-sm font-black text-slate-900 dark:text-white uppercase tracking-wider">
+                      Today's Meals ({todayLogs.length})
+                    </h3>
+                  </div>
                   <button
-                    onClick={() => setShowLocalFoodScanner(true)}
-                    className="mt-3 px-4 py-2 bg-[#126778] text-white text-xs font-black rounded-xl shadow-md cursor-pointer hover:scale-105 active:scale-95 transition-all"
+                    onClick={() => navigate("/logs", { state: { openAdd: true } })}
+                    className="text-xs font-black text-[#126778] dark:text-teal-300 hover:underline cursor-pointer flex items-center gap-0.5"
                   >
-                    📸 Scan Your Plate
+                    <span>+ Custom Entry</span>
                   </button>
                 </div>
-              ) : (
-                <div className="space-y-2">
-                  {todayLogs.map((log: any, idx: number) => (
-                    <div
-                      key={log.id || idx}
-                      className="p-3 rounded-2xl bg-white/80 dark:bg-zinc-800/80 border border-slate-200/80 dark:border-zinc-700 flex items-center justify-between gap-3 shadow-2xs hover:shadow-xs transition-all"
-                    >
-                      <div className="flex items-center gap-3 min-w-0">
-                        <span className="text-2xl shrink-0 p-1 bg-slate-50 dark:bg-zinc-700 rounded-xl">{log.emoji || "🍲"}</span>
-                        <div className="min-w-0">
-                          <span className="text-xs font-black text-slate-900 dark:text-white block leading-tight truncate">
-                            {log.name || log.dishName || "Meal"}
-                          </span>
-                          <span className="text-[10.5px] text-slate-500 font-medium block mt-0.5">
-                            {log.mealType ? log.mealType.toUpperCase() : "MEAL"} • {log.calories || 0} kcal • {log.time || "Today"}
-                          </span>
-                        </div>
-                      </div>
 
-                      <span className="text-[10px] font-black px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 shrink-0">
-                        Steady Sugar 🟢
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
+                {todayLogs.length === 0 ? (
+                  <div className="text-center py-6 px-4 bg-slate-50/70 dark:bg-zinc-800/40 rounded-2xl border border-dashed border-slate-200 dark:border-zinc-700">
+                    <span className="text-3xl block mb-1">🍲</span>
+                    <p className="text-xs font-bold text-slate-700 dark:text-slate-300">No meals logged yet today</p>
+                    <p className="text-[11px] text-slate-400 mt-0.5">Snap your food or tap Quick Log to get started!</p>
+                    <button
+                      onClick={() => setShowLocalFoodScanner(true)}
+                      className="mt-3 px-4 py-2 bg-[#126778] text-white text-xs font-black rounded-xl shadow-md cursor-pointer hover:scale-105 active:scale-95 transition-all"
+                    >
+                      📸 Scan Your Plate
+                    </button>
+                  </div>
+                ) : (
+                  <div className="space-y-2">
+                    {todayLogs.map((log: any, idx: number) => (
+                      <div
+                        key={log.id || idx}
+                        className="p-3 rounded-2xl bg-white/80 dark:bg-zinc-800/80 border border-slate-200/80 dark:border-zinc-700 flex items-center justify-between gap-3 shadow-2xs hover:shadow-xs transition-all"
+                      >
+                        <div className="flex items-center gap-3 min-w-0">
+                          <span className="text-2xl shrink-0 p-1 bg-slate-50 dark:bg-zinc-700 rounded-xl">{log.emoji || "🍲"}</span>
+                          <div className="min-w-0">
+                            <span className="text-xs font-black text-slate-900 dark:text-white block leading-tight truncate">
+                              {log.name || log.dishName || "Meal"}
+                            </span>
+                            <span className="text-[10.5px] text-slate-500 font-medium block mt-0.5">
+                              {log.mealType ? log.mealType.toUpperCase() : "MEAL"} • {log.calories || 0} kcal • {log.time || "Today"}
+                            </span>
+                          </div>
+                        </div>
+
+                        <span className="text-[10px] font-black px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 shrink-0">
+                          Steady Sugar 🟢
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
 
             {/* 1-Tap Quick-Log Shelf */}
             <div id="today-quick-shelf" className="my-1">
@@ -1009,96 +1007,93 @@ export default function Home() {
               />
             </div>
 
-            )}
-
+            {/* 🌟 ZONE 5: COMMUNITY CHALLENGE & STORIES CAROUSEL CARD */}
             {dashboardPrefs.showChallenge && (
-            /* 🌟 ZONE 5: COMMUNITY CHALLENGE & STORIES CAROUSEL CARD */
-            <div className="glass-card-amber rounded-3xl p-4 sm:p-5 text-white shadow-xl flex items-center justify-between gap-3 relative overflow-hidden">
-              <div className="flex items-center gap-3 min-w-0">
-                <div className="p-2.5 bg-white/20 backdrop-blur-md rounded-2xl text-2xl shrink-0 shadow-inner">
-                  🔥
+              <div className="glass-card-amber rounded-3xl p-4 sm:p-5 text-white shadow-xl flex items-center justify-between gap-3 relative overflow-hidden">
+                <div className="flex items-center gap-3 min-w-0">
+                  <div className="p-2.5 bg-white/20 backdrop-blur-md rounded-2xl text-2xl shrink-0 shadow-inner">
+                    🔥
+                  </div>
+                  <div className="min-w-0">
+                    <span className="text-[9.5px] font-black uppercase tracking-wider bg-yellow-300 text-slate-950 px-2 py-0.5 rounded-full shadow-2xs">
+                      Community Challenge
+                    </span>
+                    <h3 className="text-sm font-black text-white mt-1 leading-tight truncate">
+                      Avo 21-Day Blood Sugar Reset
+                    </h3>
+                    <p className="text-[11px] text-yellow-100 font-medium truncate">
+                      1,420 Active members • Tap to join
+                    </p>
+                  </div>
                 </div>
-                <div className="min-w-0">
-                  <span className="text-[9.5px] font-black uppercase tracking-wider bg-yellow-300 text-slate-950 px-2 py-0.5 rounded-full shadow-2xs">
-                    Community Challenge
-                  </span>
-                  <h3 className="text-sm font-black text-white mt-1 leading-tight truncate">
-                    Avo 21-Day Blood Sugar Reset
-                  </h3>
-                  <p className="text-[11px] text-yellow-100 font-medium truncate">
-                    1,420 Active members • Tap to join
-                  </p>
+
+                <div className="flex items-center gap-2 shrink-0">
+                  <button
+                    type="button"
+                    onClick={() => navigate("/challenge")}
+                    className="px-3 py-2 bg-white text-slate-950 font-black text-xs rounded-xl shadow-md hover:scale-105 active:scale-95 transition-all cursor-pointer"
+                  >
+                    Join 🔥
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setShowFoodWrapped(true)}
+                    className="p-2 bg-white/20 hover:bg-white/30 text-white rounded-xl border border-white/25 transition-all cursor-pointer"
+                    title="Food Wrapped Story"
+                  >
+                    🥑
+                  </button>
                 </div>
               </div>
-
-              <div className="flex items-center gap-2 shrink-0">
-                <button
-                  type="button"
-                  onClick={() => navigate("/challenge")}
-                  className="px-3 py-2 bg-white text-slate-950 font-black text-xs rounded-xl shadow-md hover:scale-105 active:scale-95 transition-all cursor-pointer"
-                >
-                  Join 🔥
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setShowFoodWrapped(true)}
-                  className="p-2 bg-white/20 hover:bg-white/30 text-white rounded-xl border border-white/25 transition-all cursor-pointer"
-                  title="Food Wrapped Story"
-                >
-                  🥑
-                </button>
-              </div>
-            </div>
-
             )}
 
+            {/* Weekly Consistency & Market Sync */}
             {dashboardPrefs.showWeekly && (
-            /* Weekly Consistency & Market Sync */
-            <div className="glass-card rounded-3xl p-4 shadow-lg">
-              <div className="flex items-center justify-between mb-3">
-                <div className="flex items-center gap-2">
-                  <Calendar className="h-4 w-4 text-[#126778] dark:text-teal-300" />
-                  <span className="text-xs font-black text-gray-900 dark:text-white uppercase tracking-wider">
-                    {t('home.weeklyConsistency')}
-                  </span>
+              <div className="glass-card rounded-3xl p-4 shadow-lg">
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center gap-2">
+                    <Calendar className="h-4 w-4 text-[#126778] dark:text-teal-300" />
+                    <span className="text-xs font-black text-gray-900 dark:text-white uppercase tracking-wider">
+                      {t('home.weeklyConsistency')}
+                    </span>
+                  </div>
+                  <button
+                    onClick={() => navigate("/logs")}
+                    className="text-xs font-bold text-[#126778] dark:text-teal-300 hover:underline flex items-center gap-0.5 cursor-pointer"
+                  >
+                    <span>{t('home.viewAll')}</span>
+                    <ChevronRight className="h-3.5 w-3.5" />
+                  </button>
                 </div>
-                <button
-                  onClick={() => navigate("/logs")}
-                  className="text-xs font-bold text-[#126778] dark:text-teal-300 hover:underline flex items-center gap-0.5 cursor-pointer"
-                >
-                  <span>{t('home.viewAll')}</span>
-                  <ChevronRight className="h-3.5 w-3.5" />
-                </button>
-              </div>
 
-              <div className="grid grid-cols-7 gap-1">
-                {weekDays.map((day) => {
-                  const logged = day.count > 0;
-                  return (
-                    <button
-                      key={day.key}
-                      onClick={() => navigate("/logs", { state: { date: day.key } })}
-                      title={logged ? `${day.count} meals · ${day.calories} kcal` : 'No meals logged'}
-                      className={`flex flex-col items-center py-2.5 px-1 rounded-2xl transition-all cursor-pointer ${
-                        day.isToday
-                          ? "bg-[#126778] text-white shadow-sm scale-105"
-                          : logged
-                          ? "bg-teal-50 border border-teal-200 text-teal-900 dark:bg-teal-950/40 dark:text-teal-200"
-                          : "bg-gray-50 text-gray-600 dark:bg-zinc-800 dark:text-gray-400 hover:bg-gray-100"
-                      }`}
-                    >
-                      <span className={`text-[10px] font-bold mb-1 ${day.isToday ? "text-white" : "text-gray-500"}`}>
-                        {day.label}
-                      </span>
-                      <span className="text-base mb-0.5 leading-none">{logged ? "🍲" : "·"}</span>
-                      <span className={`text-[9px] font-semibold ${day.isToday ? "text-white/90" : "text-gray-400"}`}>
-                        {logged ? `${day.count}m` : day.dateNum}
-                      </span>
-                    </button>
-                  );
-                })}
+                <div className="grid grid-cols-7 gap-1">
+                  {weekDays.map((day) => {
+                    const logged = day.count > 0;
+                    return (
+                      <button
+                        key={day.key}
+                        onClick={() => navigate("/logs", { state: { date: day.key } })}
+                        title={logged ? `${day.count} meals · ${day.calories} kcal` : 'No meals logged'}
+                        className={`flex flex-col items-center py-2.5 px-1 rounded-2xl transition-all cursor-pointer ${
+                          day.isToday
+                            ? "bg-[#126778] text-white shadow-sm scale-105"
+                            : logged
+                            ? "bg-teal-50 border border-teal-200 text-teal-900 dark:bg-teal-950/40 dark:text-teal-200"
+                            : "bg-gray-50 text-gray-600 dark:bg-zinc-800 dark:text-gray-400 hover:bg-gray-100"
+                        }`}
+                      >
+                        <span className={`text-[10px] font-bold mb-1 ${day.isToday ? "text-white" : "text-gray-500"}`}>
+                          {day.label}
+                        </span>
+                        <span className="text-base mb-0.5 leading-none">{logged ? "🍲" : "·"}</span>
+                        <span className={`text-[9px] font-semibold ${day.isToday ? "text-white/90" : "text-gray-400"}`}>
+                          {logged ? `${day.count}m` : day.dateNum}
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
-            </div>
             )}
           </motion.div>
         )}
