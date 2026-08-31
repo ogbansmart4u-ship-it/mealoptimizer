@@ -938,30 +938,49 @@ export default function LocalFoodScanner({ isOpen, onClose }: LocalFoodScannerPr
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/50 z-50 flex items-end justify-center">
-      <div ref={scrollContainerRef} className="bg-white rounded-t-3xl w-full max-w-2xl h-[90vh] overflow-y-auto">
-        {/* Header */}
-        <div className="sticky top-0 bg-gradient-to-r from-[#1f7a8c] to-[#4ecdc4] px-6 py-4 flex items-center justify-between z-20 shadow-md">
-          <div className="flex items-center gap-3">
-            <div className="bg-white/20 rounded-full p-2">
-              <Sparkles className="h-6 w-6 text-white" />
+    <div className="fixed inset-0 bg-slate-950/75 backdrop-blur-xl z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 animate-fade-in">
+      <div
+        ref={scrollContainerRef}
+        className="relative bg-white/95 dark:bg-zinc-900/95 backdrop-blur-2xl rounded-t-[36px] sm:rounded-3xl w-full max-w-2xl max-h-[92vh] overflow-y-auto shadow-[0_25px_60px_-15px_rgba(0,0,0,0.5)] border border-white/50 dark:border-white/10 animate-slide-up"
+      >
+        {/* Ambient Floating Glow Orbs inside Modal */}
+        <div className="absolute -top-20 -right-20 w-64 h-64 rounded-full bg-teal-400/20 blur-3xl pointer-events-none" />
+        <div className="absolute -bottom-20 -left-20 w-64 h-64 rounded-full bg-emerald-500/15 blur-3xl pointer-events-none" />
+
+        {/* 🌟 Glassmorphic Sticky Header with Laser Sweep */}
+        <div className="sticky top-0 bg-gradient-to-r from-[#126778]/95 via-[#0d9488]/95 to-[#14b8a6]/90 backdrop-blur-xl px-5 sm:px-6 py-4 flex items-center justify-between z-20 shadow-lg border-b border-white/20 relative overflow-hidden">
+          {/* Animated Laser Sweep across Header Top */}
+          <div className="absolute left-0 right-0 top-0 h-0.5 bg-gradient-to-r from-transparent via-emerald-300 to-transparent shadow-[0_0_15px_#4ade80] pointer-events-none animate-laser-sweep opacity-90 z-30" />
+
+          <div className="flex items-center gap-3 relative z-10">
+            <div className="relative">
+              <span className="absolute -inset-1 rounded-2xl bg-teal-300/40 animate-pulse-radar pointer-events-none" />
+              <div className="relative bg-white/20 backdrop-blur-md rounded-2xl p-2.5 shadow-md border border-white/30 text-white">
+                <Sparkles className="h-5 w-5 animate-pulse" />
+              </div>
             </div>
             <div>
-              <h2 className="text-xl font-semibold text-white">Snap &amp; Know</h2>
-              <div className="flex items-center gap-2 text-white/90 text-sm">
-                <MapPin className="h-4 w-4" />
+              <h2 className="text-lg sm:text-xl font-black text-white leading-tight flex items-center gap-2">
+                <span>Snap &amp; Know</span>
+                <span className="text-[9px] font-black uppercase tracking-wider bg-emerald-400/30 text-emerald-200 px-2 py-0.5 rounded-full border border-emerald-300/30">
+                  AI VISION
+                </span>
+              </h2>
+              <div className="flex items-center gap-1.5 text-teal-100/90 text-xs font-semibold mt-0.5">
+                <MapPin className="h-3.5 w-3.5 text-amber-300" />
                 <span>{selectedLocation.displayName}</span>
               </div>
             </div>
           </div>
+
           <button
             onClick={() => {
               stopLiveCamera();
               onClose();
             }}
-            className="p-2 hover:bg-white/20 rounded-full transition-colors cursor-pointer"
+            className="p-2.5 bg-white/15 hover:bg-white/25 active:scale-90 rounded-2xl text-white backdrop-blur-md border border-white/20 transition-all cursor-pointer shadow-xs"
           >
-            <X className="h-6 w-6 text-white" />
+            <X className="h-5 w-5" />
           </button>
         </div>
 
@@ -1125,11 +1144,11 @@ export default function LocalFoodScanner({ isOpen, onClose }: LocalFoodScannerPr
             </button>
           </div>
         ) : !foodData ? (
-          /* Step 1 — Unified 10X Scanner Launchpad */
+          /* Step 1 — Unified 10X Glassmorphic & Animated Scanner Launchpad */
           <div className="p-5 sm:p-6 space-y-4">
             {/* LIVE IN-FRAME CAMERA VIEWPORT */}
             {isLiveCameraActive ? (
-              <div className="space-y-3">
+              <div className="space-y-3 animate-fade-in">
                 <div className="relative aspect-square w-full rounded-3xl overflow-hidden bg-slate-950 border-2 border-teal-500 shadow-2xl flex items-center justify-center">
                   <video ref={setVideoRef} autoPlay playsInline muted className="w-full h-full object-cover" />
                   
@@ -1159,16 +1178,17 @@ export default function LocalFoodScanner({ isOpen, onClose }: LocalFoodScannerPr
                 <div className="flex items-center gap-3">
                   <button
                     onClick={stopLiveCamera}
-                    className="flex-1 bg-gray-100 dark:bg-zinc-800 hover:bg-gray-200 text-gray-800 dark:text-zinc-200 py-3.5 rounded-2xl font-bold text-xs cursor-pointer transition-colors"
+                    className="flex-1 bg-white/80 dark:bg-zinc-800/80 backdrop-blur-md hover:bg-gray-200 dark:hover:bg-zinc-700 text-gray-800 dark:text-zinc-200 py-3.5 rounded-2xl font-bold text-xs cursor-pointer transition-all border border-slate-200 dark:border-zinc-700"
                   >
                     Cancel
                   </button>
 
                   <button
                     onClick={takeLiveSnapshot}
-                    className="flex-[2] bg-gradient-to-r from-[#1f7a8c] via-[#2a9d8f] to-[#4ecdc4] text-white py-3.5 px-4 rounded-2xl font-black text-sm shadow-lg hover:shadow-xl active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer"
+                    className="flex-[2] relative overflow-hidden bg-gradient-to-r from-[#126778] via-[#0d9488] to-[#14b8a6] text-white py-3.5 px-4 rounded-2xl font-black text-sm shadow-xl hover:shadow-2xl active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer group"
                   >
-                    <Camera size={18} />
+                    <div className="absolute left-0 right-0 top-0 h-0.5 bg-gradient-to-r from-transparent via-white to-transparent shadow-[0_0_10px_#ffffff] pointer-events-none animate-laser-sweep opacity-90" />
+                    <Camera size={18} className="group-hover:scale-110 transition-transform" />
                     <span>Capture Plate 📸</span>
                   </button>
                 </div>
@@ -1176,77 +1196,96 @@ export default function LocalFoodScanner({ isOpen, onClose }: LocalFoodScannerPr
             ) : (
               <>
                 <div className="text-center space-y-1">
-                  <h3 className="text-base font-black text-slate-900 dark:text-white">
-                    Snap or Upload Any Cultural Dish 🍲
+                  <h3 className="text-base sm:text-lg font-black text-slate-900 dark:text-white flex items-center justify-center gap-1.5">
+                    <span>Snap or Upload Any Cultural Dish</span>
+                    <span className="text-xl animate-float-bob">🍲</span>
                   </h3>
-                  <p className="text-xs text-gray-600 dark:text-gray-400 max-w-sm mx-auto leading-relaxed">
+                  <p className="text-xs text-gray-600 dark:text-gray-400 max-w-sm mx-auto leading-relaxed font-medium">
                     Instant biochemical macro analysis, glycemic load ranking, and authentic West African ingredient swaps!
                   </p>
                 </div>
 
-                {/* Direct Action Launch Grid (No Nested Popups!) */}
+                {/* Direct Action Launch Grid (Ultra-Premium Glassmorphic Cards) */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  {/* Option 1: Live Viewport Camera */}
+                  {/* Option 1: Live Viewport Camera with Laser Sweep & Radar Pulse */}
                   <button
                     onClick={startLiveCamera}
-                    className="bg-gradient-to-br from-[#1f7a8c] to-[#0d9488] hover:from-[#1a6877] hover:to-[#0b7c72] text-white rounded-3xl p-5 text-left shadow-lg hover:shadow-xl transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer flex items-center justify-between group"
+                    className="relative overflow-hidden bg-gradient-to-br from-[#126778]/95 via-[#0f766e]/90 to-[#0d9488]/85 backdrop-blur-xl border border-white/30 text-white rounded-3xl p-5 text-left shadow-xl hover:shadow-2xl hover:scale-[1.03] active:scale-[0.97] transition-all duration-300 cursor-pointer flex items-center justify-between group"
                   >
-                    <div className="flex items-center gap-3.5">
-                      <div className="p-3 bg-white/20 rounded-2xl group-hover:scale-110 transition-transform">
-                        <Camera className="h-6 w-6 text-white" />
+                    {/* Glowing Laser Sweep Line */}
+                    <div className="absolute left-0 right-0 top-0 h-1 bg-gradient-to-r from-transparent via-emerald-300 to-transparent shadow-[0_0_15px_#4ade80] pointer-events-none animate-laser-sweep opacity-90 z-10" />
+
+                    <div className="flex items-center gap-3.5 relative z-10">
+                      <div className="relative">
+                        <span className="absolute -inset-1 rounded-2xl bg-teal-300/40 animate-pulse-radar pointer-events-none" />
+                        <div className="relative p-3 bg-white/20 backdrop-blur-md rounded-2xl border border-white/30 shadow-md group-hover:scale-110 group-hover:rotate-6 transition-transform">
+                          <Camera className="h-6 w-6 text-white" />
+                        </div>
                       </div>
                       <div>
-                        <div className="font-black text-sm text-white leading-tight">Take Photo 📸</div>
-                        <div className="text-[11px] text-teal-100 mt-0.5">Live camera viewfinder</div>
+                        <div className="font-black text-sm text-white leading-tight flex items-center gap-1.5">
+                          <span>Take Photo 📸</span>
+                          <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping inline-block" />
+                        </div>
+                        <div className="text-[11px] text-teal-100/90 mt-0.5 font-medium">Live camera viewfinder</div>
                       </div>
                     </div>
-                    <ChevronRight size={18} className="text-white/70 group-hover:translate-x-1 transition-transform" />
+                    <ChevronRight size={18} className="text-white/80 group-hover:translate-x-1.5 transition-transform shrink-0 relative z-10" />
                   </button>
 
-                  {/* Option 2: Gallery Upload */}
+                  {/* Option 2: Gallery Upload with Frosted Shimmer */}
                   <button
                     onClick={() => document.getElementById("local-food-gallery-upload")?.click()}
-                    className="bg-gradient-to-br from-[#2a9d8f] to-[#4ecdc4] hover:from-[#248277] hover:to-[#42b3ab] text-white rounded-3xl p-5 text-left shadow-lg hover:shadow-xl transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer flex items-center justify-between group"
+                    className="relative overflow-hidden bg-gradient-to-br from-[#0d9488]/95 via-[#14b8a6]/90 to-[#2dd4bf]/85 backdrop-blur-xl border border-white/30 text-white rounded-3xl p-5 text-left shadow-xl hover:shadow-2xl hover:scale-[1.03] active:scale-[0.97] transition-all duration-300 cursor-pointer flex items-center justify-between group"
                   >
-                    <div className="flex items-center gap-3.5">
-                      <div className="p-3 bg-white/20 rounded-2xl group-hover:scale-110 transition-transform">
-                        <Upload className="h-6 w-6 text-white" />
+                    {/* Glowing Laser Sweep Line */}
+                    <div className="absolute left-0 right-0 top-0 h-1 bg-gradient-to-r from-transparent via-teal-200 to-transparent shadow-[0_0_15px_#2dd4bf] pointer-events-none animate-laser-sweep opacity-90 z-10" />
+
+                    <div className="flex items-center gap-3.5 relative z-10">
+                      <div className="relative">
+                        <span className="absolute -inset-1 rounded-2xl bg-cyan-300/40 animate-pulse-radar pointer-events-none" />
+                        <div className="relative p-3 bg-white/20 backdrop-blur-md rounded-2xl border border-white/30 shadow-md group-hover:scale-110 group-hover:-rotate-6 transition-transform">
+                          <Upload className="h-6 w-6 text-white" />
+                        </div>
                       </div>
                       <div>
                         <div className="font-black text-sm text-white leading-tight">Photo Gallery 🖼️</div>
-                        <div className="text-[11px] text-teal-100 mt-0.5">Upload existing plate</div>
+                        <div className="text-[11px] text-teal-100/90 mt-0.5 font-medium">Upload existing plate</div>
                       </div>
                     </div>
-                    <ChevronRight size={18} className="text-white/70 group-hover:translate-x-1 transition-transform" />
+                    <ChevronRight size={18} className="text-white/80 group-hover:translate-x-1.5 transition-transform shrink-0 relative z-10" />
                   </button>
                 </div>
 
-                {/* Option 3: Fix My Plate 1-Tap Visual Bio-Transformer */}
+                {/* Option 3: Fix My Plate 1-Tap Visual Bio-Transformer (Amber-Rose Glowing Aura) */}
                 <button
                   type="button"
                   onClick={() => {
                     safeHaptic("medium");
                     setShowFixModal(true);
                   }}
-                  className="w-full bg-gradient-to-r from-amber-500 via-orange-500 to-rose-500 hover:from-amber-600 hover:to-rose-600 text-white rounded-2xl p-3.5 flex items-center justify-between transition-all cursor-pointer group shadow-md hover:shadow-lg active:scale-[0.98] border border-amber-300/40"
+                  className="relative overflow-hidden w-full bg-gradient-to-r from-amber-500/95 via-orange-500/95 to-rose-500/90 backdrop-blur-xl text-white rounded-2xl p-4 flex items-center justify-between transition-all duration-300 cursor-pointer group shadow-xl hover:shadow-2xl hover:scale-[1.02] active:scale-[0.98] border border-amber-200/50"
                 >
-                  <div className="flex items-center gap-3">
-                    <div className="p-2 bg-white/20 rounded-xl group-hover:rotate-12 transition-transform">
+                  {/* Glowing Laser Sweep Shimmer */}
+                  <div className="absolute left-0 right-0 top-0 h-1 bg-gradient-to-r from-transparent via-yellow-200 to-transparent shadow-[0_0_15px_#fbbf24] pointer-events-none animate-laser-sweep opacity-90 z-10" />
+
+                  <div className="flex items-center gap-3.5 relative z-10">
+                    <div className="p-2.5 bg-white/25 backdrop-blur-md rounded-xl border border-white/30 shadow-sm group-hover:rotate-12 group-hover:scale-110 transition-transform">
                       <Sparkles className="h-5 w-5 text-amber-200 animate-pulse" />
                     </div>
                     <div className="text-left">
                       <div className="text-xs font-black text-white flex items-center gap-1.5">
                         <span>Fix My Plate with Avo 🪄</span>
-                        <span className="text-[8.5px] font-black uppercase bg-white text-orange-600 px-1.5 py-0.2 rounded-full shadow-2xs">
+                        <span className="text-[8.5px] font-black uppercase bg-white text-orange-600 px-2 py-0.5 rounded-full shadow-md">
                           BIO-TRANSFORMER
                         </span>
                       </div>
-                      <div className="text-[10.5px] text-amber-100/90 font-medium">
+                      <div className="text-[10.5px] text-amber-100/95 font-medium mt-0.5">
                         Interactive visual plate re-balancing &amp; 38% glycemic spike drop
                       </div>
                     </div>
                   </div>
-                  <ChevronRight size={16} className="text-white/80 group-hover:translate-x-1 transition-transform" />
+                  <ChevronRight size={18} className="text-white/80 group-hover:translate-x-1.5 transition-transform shrink-0 relative z-10" />
                 </button>
 
                 {/* Option 4: Barcode Scanner Switcher Button */}
@@ -1256,23 +1295,23 @@ export default function LocalFoodScanner({ isOpen, onClose }: LocalFoodScannerPr
                     onClose();
                     navigate("/scan-barcode");
                   }}
-                  className="w-full bg-slate-50 dark:bg-zinc-800/60 hover:bg-teal-50 dark:hover:bg-zinc-800 border-2 border-dashed border-teal-300 dark:border-zinc-700 hover:border-teal-500 rounded-2xl p-3.5 flex items-center justify-between transition-all cursor-pointer group shadow-2xs"
+                  className="w-full bg-white/70 dark:bg-zinc-800/70 backdrop-blur-xl hover:bg-teal-50/80 dark:hover:bg-zinc-800/90 border-2 border-dashed border-teal-300/80 dark:border-teal-700/60 hover:border-teal-500 rounded-2xl p-3.5 flex items-center justify-between transition-all duration-300 cursor-pointer group shadow-xs hover:shadow-md hover:scale-[1.01] active:scale-[0.98]"
                 >
                   <div className="flex items-center gap-3">
-                    <div className="p-2 bg-teal-100 dark:bg-teal-950 text-teal-800 dark:text-teal-300 rounded-xl group-hover:scale-105 transition-transform">
+                    <div className="p-2.5 bg-teal-100/80 dark:bg-teal-950/80 text-teal-800 dark:text-teal-300 rounded-xl border border-teal-200/60 group-hover:scale-110 group-hover:rotate-6 transition-transform">
                       <ScanBarcode className="h-5 w-5" />
                     </div>
                     <div className="text-left">
                       <div className="text-xs font-black text-slate-900 dark:text-white">Scan Packaged Food Barcode 🏷️</div>
-                      <div className="text-[10.5px] text-slate-500">Noodles, canned fish, milk, cereals &amp; beverages</div>
+                      <div className="text-[10.5px] text-slate-500 dark:text-slate-400 font-medium">Noodles, canned fish, milk, cereals &amp; beverages</div>
                     </div>
                   </div>
-                  <ChevronRight size={16} className="text-slate-400 group-hover:text-teal-600" />
+                  <ChevronRight size={16} className="text-slate-400 group-hover:text-teal-600 group-hover:translate-x-1 transition-all" />
                 </button>
 
                 {/* Popular Cultural Test Plates Shelf */}
                 <div className="pt-2 space-y-2.5">
-                  <span className="text-[11px] uppercase font-black tracking-wider text-slate-500 dark:text-slate-400 block">
+                  <span className="text-[11px] uppercase font-black tracking-wider text-slate-600 dark:text-slate-400 block px-1">
                     ⚡ Or Select a Popular Regional Dish:
                   </span>
                   <div className="grid grid-cols-2 gap-2.5">
@@ -1292,20 +1331,20 @@ export default function LocalFoodScanner({ isOpen, onClose }: LocalFoodScannerPr
                               loadSuggestedDish(dish);
                             }
                           }}
-                          className="p-3 bg-slate-50 dark:bg-zinc-800 hover:bg-teal-50 dark:hover:bg-zinc-700/80 border border-slate-200 dark:border-zinc-700 rounded-2xl text-left transition-all flex flex-col justify-between min-h-[96px] cursor-pointer shadow-2xs group active:scale-95"
+                          className="p-3.5 bg-white/80 dark:bg-zinc-800/80 backdrop-blur-md hover:bg-teal-50/90 dark:hover:bg-zinc-700/90 border border-slate-200/80 dark:border-white/10 hover:border-teal-300 rounded-2xl text-left transition-all duration-300 flex flex-col justify-between min-h-[100px] cursor-pointer shadow-xs hover:shadow-md hover:scale-[1.03] active:scale-95 group"
                         >
                           <div className="flex items-center justify-between w-full">
-                            <span className="text-xl">{item.emoji}</span>
-                            <span className={`text-[9.5px] font-black px-2 py-0.5 rounded-full shrink-0 ${item.gi === "Low" ? "bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300" : "bg-red-100 text-red-800 dark:bg-red-950 dark:text-red-300"}`}>
+                            <span className="text-2xl group-hover:scale-125 transition-transform">{item.emoji}</span>
+                            <span className={`text-[9.5px] font-black px-2 py-0.5 rounded-full shrink-0 shadow-2xs ${item.gi === "Low" ? "bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 border border-emerald-300/40" : "bg-red-100 text-red-800 dark:bg-red-950 dark:text-red-300 border border-red-300/40"}`}>
                               {item.gi} GI
                             </span>
                           </div>
                           <div className="my-1.5 flex-1 flex items-center">
-                            <div className="text-[12px] font-extrabold text-slate-900 dark:text-white leading-tight break-words line-clamp-2">
+                            <div className="text-[12px] font-extrabold text-slate-900 dark:text-white leading-tight break-words line-clamp-2 group-hover:text-teal-700 dark:group-hover:text-teal-300 transition-colors">
                               {item.name}
                             </div>
                           </div>
-                          <div className="text-[10.5px] text-slate-500 dark:text-slate-400 font-semibold">
+                          <div className="text-[10.5px] text-slate-500 dark:text-slate-400 font-bold">
                             ~{item.calories} kcal
                           </div>
                         </button>
