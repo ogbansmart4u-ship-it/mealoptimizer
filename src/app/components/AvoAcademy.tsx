@@ -1173,9 +1173,61 @@ export const LESSONS: AcademyLesson[] = [
   }
 ];
 
+export const CULTURAL_MYTHS = [
+  {
+    id: "myth-1",
+    icon: "🥣",
+    myth: "Myth: You must stop eating African swallow if you have high blood sugar.",
+    fact: "Fact: African soups like Okra and Ewedu form a natural gel shield that slows carbohydrate absorption by up to 38%! Pair with plantain-oat swallow to stay safe.",
+    tag: "Swallow & Sugar",
+    bgGradient: "from-teal-600 to-emerald-700"
+  },
+  {
+    id: "myth-2",
+    icon: "🌴",
+    myth: "Myth: Fresh red palm oil is pure cholesterol and bad for your heart.",
+    fact: "Fact: Unbleached virgin red palm oil is the richest natural source of protective Vitamin E (Tocotrienols) and beta-carotene! Just avoid overheating it till clear.",
+    tag: "Heart & Oils",
+    bgGradient: "from-amber-600 to-orange-700"
+  },
+  {
+    id: "myth-3",
+    icon: "🍚",
+    myth: "Myth: Eating cooled rice or leftover swallow causes digestive heaviness.",
+    fact: "Fact: Cooling cooked carbs overnight turns ordinary starches into gut-healing Resistant Starch that feeds good bacteria and causes ZERO blood sugar spikes!",
+    tag: "Kitchen Science",
+    bgGradient: "from-blue-600 to-indigo-700"
+  },
+  {
+    id: "myth-4",
+    icon: "🧂",
+    myth: "Myth: Stock seasoning cubes are the only way to make African soups tasty.",
+    fact: "Fact: Traditional fermented locust beans (Iru), ground crayfish, and garlic give deep savory umami flavor with 80% less sodium to protect your blood pressure!",
+    tag: "Heart & Seasoning",
+    bgGradient: "from-rose-600 to-purple-700"
+  }
+];
+
 export default function AvoAcademy() {
   const { user } = useUser();
   const [selectedTier, setSelectedTier] = useState<AcademyTier>(1);
+  // 🔄 Interactive Myth vs Fact State
+  const [flippedMythIndex, setFlippedMythIndex] = useState<number | null>(null);
+
+  // 🥣 Interactive "Fix My Plate" Simulator State
+  const [simulatorCarb, setSimulatorCarb] = useState<"yam" | "rice" | "bread">("yam");
+  const [hasOkraBuffer, setHasOkraBuffer] = useState(false);
+  const [hasProteinBuffer, setHasProteinBuffer] = useState(false);
+  const [hasVegFirstBuffer, setHasVegFirstBuffer] = useState(false);
+
+  // Calculate live simulated spike
+  const simulatedGlucose = useMemo(() => {
+    let base = simulatorCarb === "yam" ? 190 : simulatorCarb === "rice" ? 175 : 180;
+    if (hasOkraBuffer) base -= 35;
+    if (hasProteinBuffer) base -= 25;
+    if (hasVegFirstBuffer) base -= 20;
+    return Math.max(105, base);
+  }, [simulatorCarb, hasOkraBuffer, hasProteinBuffer, hasVegFirstBuffer]);
   const [activeLesson, setActiveLesson] = useState<AcademyLesson | null>(null);
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
