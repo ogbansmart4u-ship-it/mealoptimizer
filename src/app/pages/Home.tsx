@@ -19,6 +19,8 @@ import SpotlightTour from "../components/SpotlightTour";
 import HealthProfileWizardModal from "../components/HealthProfileWizardModal";
 import AvoAcademy from "../components/AvoAcademy";
 import FoodWrappedModal from "../components/FoodWrappedModal";
+import MicronutrientShieldCard from "../components/MicronutrientShieldCard";
+import WearableSyncModal from "../components/WearableSyncModal";
 import NotificationSettingsDialog from "../components/NotificationSettingsDialog";
 import MetabolicChecklist from "../components/MetabolicChecklist";
 import VoiceFoodLogger from "../components/VoiceFoodLogger";
@@ -153,6 +155,7 @@ export default function Home() {
   const [showGroceryPlanner, setShowGroceryPlanner] = useState(false);
   const [activeHomeTab, setActiveHomeTab] = useState<"today" | "academy" | "clinical">("today");
   const [showFoodWrapped, setShowFoodWrapped] = useState(false);
+  const [showWearableSyncModal, setShowWearableSyncModal] = useState(false);
   const [showNotificationSettings, setShowNotificationSettings] = useState(false);
   const [showAnalyseFoodOptions, setShowAnalyseFoodOptions] = useState(false);
   const [showLocalFoodOptions, setShowLocalFoodOptions] = useState(false);
@@ -1380,6 +1383,37 @@ export default function Home() {
               </div>
             </div>
 
+            {/* 🩸 HARDWARE WEARABLE & CGM TELEMETRY STATION */}
+            <div className="bg-gradient-to-r from-[#0a232a] via-[#126778] to-[#0d9488] rounded-3xl p-4 sm:p-5 text-white shadow-lg border border-teal-400/30 flex items-center justify-between gap-3 relative overflow-hidden">
+              <div className="flex items-center gap-3.5 min-w-0">
+                <div className="w-11 h-11 rounded-2xl bg-white/15 backdrop-blur-md border border-white/20 flex items-center justify-center text-xl shrink-0">
+                  🩸
+                </div>
+                <div className="min-w-0">
+                  <div className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-400 text-slate-950 text-[9.5px] font-black uppercase tracking-wider shadow-2xs">
+                    Live Sensor Telemetry
+                  </div>
+                  <h3 className="text-sm font-black leading-tight mt-1 truncate">
+                    Dexcom / Libre / Apple Watch Sync
+                  </h3>
+                  <p className="text-[10.5px] text-teal-100/90 truncate">
+                    Streaming continuous interstitial glucose &amp; sleep metrics
+                  </p>
+                </div>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => setShowWearableSyncModal(true)}
+                className="px-3.5 py-2 bg-white hover:bg-teal-50 text-[#126778] font-black text-xs rounded-2xl shadow-md transition-all cursor-pointer shrink-0 flex items-center gap-1"
+              >
+                <span>Pair ➔</span>
+              </button>
+            </div>
+
+            {/* 🧬 PRECISION MICRONUTRIENT SHIELD (DIASPORA D3 & B12 ENGINE) */}
+            <MicronutrientShieldCard />
+
             {/* 2. Continuous Glucose Monitor (CGM) 24-Hr Sensor Stream */}
             <CGMSensorVisualizer />
 
@@ -1522,6 +1556,8 @@ export default function Home() {
         }}
       />
       <SmartGroceryPlanner isOpen={showGroceryPlanner} onClose={() => setShowGroceryPlanner(false)} />
+      <WearableSyncModal isOpen={showWearableSyncModal} onClose={() => setShowWearableSyncModal(false)} />
+
       <FoodWrappedModal
         isOpen={showFoodWrapped}
         onClose={() => setShowFoodWrapped(false)}

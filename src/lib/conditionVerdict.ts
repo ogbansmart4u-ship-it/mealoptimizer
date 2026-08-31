@@ -259,6 +259,23 @@ function menopauseRule(m: Macros): RuleResult {
   };
 }
 
+
+function micronutrientDiasporaRule(m: Macros): RuleResult {
+  const hasHealthyProtein = m.protein >= 18;
+  if (hasHealthyProtein) {
+    return {
+      level: "good",
+      note: "Nutrient-dense plate supplying essential B12, selenium, and tissue-building amino acids.",
+      tip: "If living in UK/US/Canada temperate climates, take 2,000-4,000 IU Vitamin D3 daily with this meal to offset reduced melanin solar synthesis.",
+    };
+  }
+  return {
+    level: "caution",
+    note: "Low in micronutrient-dense protein. May lack bioavailable Vitamin B12 and active D3 co-factors.",
+    tip: "Add oily fish (Titus mackerel, salmon) or boiled eggs. Take supplemental B12 if taking Metformin.",
+  };
+}
+
 function generalRule(m: Macros): RuleResult {
   const highGlycemic = m.glycemicLoad === "High";
   const heavy = m.calories >= 650 || m.fats >= 25;
@@ -319,6 +336,8 @@ function familyFor(name: string): Family | null {
     return { key: "arthritis", run: arthritisRule };
   if (n.includes("menopaus") || n.includes("perimenopaus") || n.includes("estrogen") || n.includes("hot flash") || n.includes("hormon"))
     return { key: "menopause", run: menopauseRule };
+  if (n.includes("diaspora") || n.includes("vitamin d") || n.includes("b12") || n.includes("micronutrient") || n.includes("deficiency"))
+    return { key: "micronutrient", run: micronutrientDiasporaRule };
   if (n.includes("thyroid"))
     return { key: "thyroid", run: neutralRule };
   return null;

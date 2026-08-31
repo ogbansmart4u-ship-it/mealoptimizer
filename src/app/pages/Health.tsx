@@ -12,6 +12,8 @@ import { useLanguage } from "../contexts/LanguageContext";
 import { useUser } from "../contexts/UserContext";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "../components/ui/dialog";
 import Mascot from "../components/Mascot";
+import MicronutrientShieldCard from "../components/MicronutrientShieldCard";
+import WearableSyncModal from "../components/WearableSyncModal";
 import { toast } from "sonner";
 
 export type EducationalCategory = "all" | "sugar" | "heart" | "herbs" | "metabolism" | "drugs";
@@ -361,6 +363,7 @@ const CLINICAL_CONSULT_PROMPTS = [
 ];
 
 export default function Health() {
+  const [showWearableSyncModal, setShowWearableSyncModal] = useState(false);
   const navigate = useNavigate();
   const { t } = useLanguage();
   const { profile } = useUser();
@@ -565,6 +568,49 @@ export default function Health() {
             </div>
           </div>
         </div>
+
+        {/* 🩸 1-TAP HARDWARE WEARABLE & CGM TELEMETRY STATION */}
+        <div className="bg-gradient-to-r from-[#0a232a] via-[#126778] to-[#0d9488] rounded-3xl p-4 sm:p-5 text-white shadow-lg border border-teal-400/30 flex items-center justify-between gap-3 relative overflow-hidden">
+          <div className="flex items-center gap-3.5 min-w-0">
+            <div className="w-12 h-12 rounded-2xl bg-white/15 backdrop-blur-md border border-white/20 flex items-center justify-center text-2xl shrink-0 shadow-inner">
+              🩸
+            </div>
+            <div className="min-w-0">
+              <div className="flex items-center gap-1.5 flex-wrap">
+                <span className="text-[10px] font-black uppercase tracking-wider bg-emerald-400 text-slate-950 px-2 py-0.5 rounded-full shadow-2xs">
+                  Live Sensor Sync
+                </span>
+                <span className="text-[11px] font-bold text-teal-200">
+                  Dexcom • Libre • HealthKit
+                </span>
+              </div>
+              <h3 className="text-sm sm:text-base font-black text-white mt-1 leading-tight">
+                Continuous Glucose &amp; Wearables Sync ⌚
+              </h3>
+              <p className="text-[11px] text-teal-100/90 font-medium truncate mt-0.5">
+                Stream real-time interstitial glucose and sleep telemetry directly into Avo
+              </p>
+            </div>
+          </div>
+
+          <button
+            type="button"
+            onClick={() => setShowWearableSyncModal(true)}
+            className="px-4 py-2.5 bg-white hover:bg-teal-50 text-[#126778] font-black text-xs rounded-2xl shadow-md hover:scale-105 active:scale-95 transition-all cursor-pointer shrink-0 flex items-center gap-1"
+          >
+            <span>Pair Sensor</span>
+            <ChevronRight size={14} />
+          </button>
+        </div>
+
+        {/* 🧬 PRECISION MICRONUTRIENT SHIELD (DIASPORA D3 & B12 ENGINE) */}
+        <MicronutrientShieldCard />
+
+        {/* Modal for Wearable Sync */}
+        <WearableSyncModal
+          isOpen={showWearableSyncModal}
+          onClose={() => setShowWearableSyncModal(false)}
+        />
 
         {/* ============================================================ */}
         {/* 1. HEALTH TRACKERS (8-Grid Quick Portal)                     */}
