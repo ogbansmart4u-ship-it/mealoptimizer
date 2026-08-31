@@ -1006,7 +1006,7 @@ const translations: Translations = {
   // ==========================================
   // BATCH 2: LOGS & MEAL LOGGING
   // ==========================================
-  'logs.title': { en: 'Food Logs', es: 'Registro de Comidas', fr: 'Journal Alimentaire', yo: 'Àkọsílẹ̀ Oúnjẹ', ig: 'Ndekọ Nri', ha: 'Bayanin Abinci', pcm: 'Food Logs' },
+  'logs.foodLogsTitle': { en: 'Food Logs', es: 'Registro de Comidas', fr: 'Journal Alimentaire', yo: 'Àkọsílẹ̀ Oúnjẹ', ig: 'Ndekọ Nri', ha: 'Bayanin Abinci', pcm: 'Food Logs' },
   'logs.searchPlaceholder': { en: 'Search logged meals...', es: 'Buscar comidas registradas...', fr: 'Rechercher des repas enregistrés...', yo: 'Wá oúnjẹ tí a kọ sílẹ̀...', ig: 'Chọọ nri edekọrọ...', ha: 'Nemi abincin da aka rubuta...', pcm: 'Search logged meals...' },
   'logs.allMeals': { en: 'All Meals', es: 'Todas las comidas', fr: 'Tous les repas', yo: 'Gbogbo Oúnjẹ', ig: 'Nri Niile', ha: 'Duk Abinci', pcm: 'All Meals' },
   'logs.breakfast': { en: 'Breakfast', es: 'Desayuno', fr: 'Petit déjeuner', yo: 'Oúnjẹ Àárọ̀', ig: 'Nri Ụtụtụ', ha: 'Karin Kumallo', pcm: 'Breakfast' },
@@ -1035,12 +1035,12 @@ const translations: Translations = {
   // ==========================================
   // BATCH 2: RECIPES & CLINICAL TAGS
   // ==========================================
-  'recipe.title': { en: 'Clinical Recipes', es: 'Recetas Clínicas', fr: 'Recettes Cliniques', yo: 'Àwọn Àdàpọ̀ Oúnjẹ Ìṣègùn', ig: 'Uzọ Nri Ọgwụgwọ', ha: 'Girke-girken Asibiti', pcm: 'Clinical Recipes' },
-  'recipe.searchPlaceholder': { en: 'Search healthy Jollof, Egusi, swallows...', es: 'Buscar Jollof, Egusi, swallows saludables...', fr: 'Rechercher Jollof, Egusi, pâtes saines...', yo: 'Wá Jollof, Egusi, oúnjẹ lílọ̀ tó ní ìlera...', ig: 'Chọọ Jollof, Egusi, nri ilo dị mma...', ha: 'Nemi Jollof, Egusi, tuwo mai lafiya...', pcm: 'Search healthy Jollof, Egusi, swallows...' },
+  'recipe.clinicalTitle': { en: 'Clinical Recipes', es: 'Recetas Clínicas', fr: 'Recettes Cliniques', yo: 'Àwọn Àdàpọ̀ Oúnjẹ Ìṣègùn', ig: 'Uzọ Nri Ọgwụgwọ', ha: 'Girke-girken Asibiti', pcm: 'Clinical Recipes' },
+  'recipe.clinicalSearchPlaceholder': { en: 'Search healthy Jollof, Egusi, swallows...', es: 'Buscar Jollof, Egusi, swallows saludables...', fr: 'Rechercher Jollof, Egusi, pâtes saines...', yo: 'Wá Jollof, Egusi, oúnjẹ lílọ̀ tó ní ìlera...', ig: 'Chọọ Jollof, Egusi, nri ilo dị mma...', ha: 'Nemi Jollof, Egusi, tuwo mai lafiya...', pcm: 'Search healthy Jollof, Egusi, swallows...' },
   'recipe.swapEngine': { en: 'Swap Engine', es: 'Motor de sustitución', fr: "Moteur d'échange", yo: 'Ẹ̀rọ Ìpàṣípààrọ̀', ig: 'Ngwa Mgbanwe', ha: 'Injin Sauya Abinci', pcm: 'Swap Engine' },
   'recipe.fruitsGreens': { en: 'Fruits & Greens', es: 'Frutas y verduras', fr: 'Fruits et légumes', yo: 'Èso àti Ewébẹ̀', ig: 'Mkpụrụ osisi & Akwụkwọ ndụ', ha: '' + '’' + 'Ya' + '’' + 'yan Itace da Ganye', pcm: 'Fruits & Greens' },
-  'recipe.prep': { en: 'Prep', es: 'Prep', fr: 'Prép', yo: 'Ìmúra', ig: 'Nkwadebe', ha: 'Shiri', pcm: 'Prep' },
-  'recipe.cook': { en: 'Cook', es: 'Cocinar', fr: 'Cuisson', yo: 'Sísè', ig: 'Isi nri', ha: 'Dahuwa', pcm: 'Cook' },
+  'recipe.prepTime': { en: 'Prep', es: 'Prep', fr: 'Prép', yo: 'Ìmúra', ig: 'Nkwadebe', ha: 'Shiri', pcm: 'Prep' },
+  'recipe.cookTime': { en: 'Cook', es: 'Cocinar', fr: 'Cuisson', yo: 'Sísè', ig: 'Isi nri', ha: 'Dahuwa', pcm: 'Cook' },
   'recipe.servings': { en: 'Servings', es: 'Porciones', fr: 'Portions', yo: 'Àwọn Ìpín', ig: 'Nkesa', ha: 'Rabo', pcm: 'Servings' },
   'recipe.ingredients': { en: 'Ingredients', es: 'Ingredientes', fr: 'Ingrédients', yo: 'Àwọn Èròjà', ig: 'Ihe eji esi nri', ha: 'Kayan Hada Abinci', pcm: 'Ingredients' },
   'recipe.instructions': { en: 'Step-by-Step Instructions', es: 'Instrucciones paso a paso', fr: 'Instructions étape par étape', yo: 'Ìtọ́sọ́nà Ìgbésẹ̀-kọ̀ọ̀kan', ig: 'Ntuziaka Nzọụkwụ na Nzọụkwụ', ha: 'Umarnin Mataki-mataki', pcm: 'Step-by-Step Instructions' },
