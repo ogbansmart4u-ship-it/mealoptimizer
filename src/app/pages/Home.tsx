@@ -639,7 +639,17 @@ export default function Home() {
           </div>
 
           {/* Top Right: Prominent Profile Avatar Only */}
-          <div className="flex items-center">
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => {
+                triggerHaptic("medium");
+                setShowConciergeModal(true);
+              }}
+              className="inline-flex items-center gap-1.5 text-xs font-black px-3 py-1.5 bg-gradient-to-r from-[#126778] to-[#0d9488] text-white rounded-2xl shadow-md hover:scale-105 active:scale-95 transition-all cursor-pointer border border-white/30"
+            >
+              <span>👩🏾‍💼 Ask Sarah</span>
+            </button>
             <ProfilePictureUpload />
           </div>
         </div>
@@ -745,307 +755,190 @@ export default function Home() {
             transition={{ duration: 0.25 }}
             className="space-y-4"
           >
-            {/* 1. 👩🏾‍💼 Sarah The Nutrition Assistant Card */}
-            <div
-              onClick={() => {
-                triggerHaptic("medium");
-                setShowConciergeModal(true);
-              }}
-              className="glass-card-teal rounded-3xl p-4 sm:p-5 text-white shadow-xl border border-white/30 relative overflow-hidden flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 cursor-pointer hover:shadow-2xl hover:scale-[1.01] active:scale-[0.99] transition-all group"
-            >
-              <div className="relative z-10 flex items-center gap-3 min-w-0 flex-1">
-                <div className="w-11 h-11 sm:w-14 sm:h-14 rounded-2xl bg-white/20 border-2 border-amber-300 flex items-center justify-center text-2xl sm:text-3xl shrink-0 shadow-xs group-hover:scale-105 transition-transform">
-                  👩🏾‍💼
-                </div>
-                <div className="min-w-0 flex-1">
-                  <div className="flex items-center gap-1.5 flex-wrap">
-                    <span className="text-[9.5px] font-black uppercase tracking-wider bg-amber-400 text-slate-950 px-2 py-0.5 rounded-full shadow-2xs">
-                      Nutrition Assistant
-                    </span>
-                    <span className="text-[10px] text-teal-200 font-bold hidden sm:inline">24/7 Food & Health Guide</span>
+            {/* 🌟 ZONE 1: THE HERO DAILY ENERGY & SATIETY GAUGE */}
+            <div className="neu-raised rounded-3xl p-4 sm:p-5 space-y-3.5 border border-white/60 dark:border-white/5 relative overflow-hidden">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2.5">
+                  <div className="p-2 bg-teal-50 dark:bg-teal-950/60 rounded-2xl text-[#126778] dark:text-teal-300">
+                    <Flame size={18} className="animate-pulse" />
                   </div>
-                  <h3 className="text-sm sm:text-base font-black text-white leading-tight mt-1 truncate">
-                    Welcome to MealOptimiza!
-                  </h3>
-                  <p className="text-[11px] sm:text-xs text-teal-100 line-clamp-1 mt-0.5 font-medium">
-                    "I am Sarah, your Nutrition Assistant. Tap to start."
-                  </p>
+                  <div>
+                    <h3 className="text-xs sm:text-sm font-black text-gray-900 dark:text-white leading-tight">
+                      Today's Food &amp; Energy ⚡
+                    </h3>
+                    <span className="text-[10.5px] text-gray-500 font-medium">
+                      {animatedPercentage}% of your daily goal
+                    </span>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-xs sm:text-sm font-black text-teal-800 dark:text-teal-300 font-mono">
+                    {caloriesConsumed} <span className="text-xs font-normal text-gray-400">/ {caloriesTarget} kcal</span>
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => setShowGaugeDetails(true)}
+                    className="px-2.5 py-1 bg-teal-50 hover:bg-teal-100 text-[#126778] dark:bg-teal-950 dark:text-teal-300 rounded-xl text-[10.5px] font-bold border border-teal-200/60 transition-all cursor-pointer active:scale-95"
+                  >
+                    Details 📊
+                  </button>
                 </div>
               </div>
 
-              <div className="relative z-10 w-full sm:w-auto bg-white/90 hover:bg-white text-[#126778] font-black text-xs px-4 py-2.5 rounded-2xl shadow-md shrink-0 flex items-center justify-center gap-1.5 transition-all hover:scale-105 active:scale-95 cursor-pointer border border-white/60">
-                <span>▶️ Talk to Sarah</span>
-                <ChevronRight size={14} className="group-hover:translate-x-0.5 transition-transform shrink-0" />
+              {/* Progress Bar */}
+              <div className="w-full bg-slate-100 dark:bg-zinc-800 h-2.5 rounded-full overflow-hidden p-0.5 shadow-inner">
+                <div
+                  className="h-full bg-gradient-to-r from-teal-500 via-emerald-400 to-amber-400 rounded-full transition-all duration-1000 ease-out shadow-xs"
+                  style={{ width: `${Math.min(100, (caloriesConsumed / caloriesTarget) * 100)}%` }}
+                />
+              </div>
+
+              {/* 4 Macro & Water Gauges */}
+              <div className="grid grid-cols-4 gap-2 text-center text-xs">
+                <div className="neu-inset p-2 rounded-2xl flex flex-col justify-between">
+                  <span className="text-[9.5px] font-bold text-blue-700 dark:text-blue-400">🍗 Protein</span>
+                  <strong className="text-xs font-black text-slate-900 dark:text-white mt-0.5">{proteinConsumed}g</strong>
+                </div>
+                <div className="neu-inset p-2 rounded-2xl flex flex-col justify-between">
+                  <span className="text-[9.5px] font-bold text-emerald-700 dark:text-emerald-400">🌾 Carbs</span>
+                  <strong className="text-xs font-black text-slate-900 dark:text-white mt-0.5">{carbsConsumed}g</strong>
+                </div>
+                <div className="neu-inset p-2 rounded-2xl flex flex-col justify-between">
+                  <span className="text-[9.5px] font-bold text-purple-700 dark:text-purple-400">🥑 Fats</span>
+                  <strong className="text-xs font-black text-slate-900 dark:text-white mt-0.5">{fatsConsumed}g</strong>
+                </div>
+                <button
+                  type="button"
+                  onClick={handleWaterAddCustom}
+                  className="neu-inset p-2 rounded-2xl flex flex-col justify-between cursor-pointer hover:bg-cyan-50/50 transition-colors"
+                  title="Tap to add +1 cup of water"
+                >
+                  <span className="text-[9.5px] font-bold text-cyan-700 dark:text-cyan-400">💧 Water</span>
+                  <strong className="text-xs font-black text-cyan-900 dark:text-cyan-200 mt-0.5">{waterGlasses}/8 cups</strong>
+                </button>
               </div>
             </div>
 
-            {/* 2. 📸 TOP HERO: FULL-WIDTH AI FOOD CAMERA COMMAND CENTER & MACRO STRIP */}
-            <div className="space-y-3">
-              {/* 📸 FULL-WIDTH AI CAMERA HERO BANNER */}
-              <div
+            {/* 🌟 ZONE 2: 3 BIG TACTILE 1-TAP ACTION BUTTONS */}
+            <div className="grid grid-cols-3 gap-2.5">
+              {/* Button 1: Scan Food */}
+              <button
+                type="button"
                 onClick={() => {
                   triggerHaptic("medium");
                   setShowLocalFoodScanner(true);
                 }}
-                className="relative overflow-hidden glass-card-teal rounded-3xl p-5 sm:p-6 text-white shadow-xl border border-white/30 hover:border-teal-300 transition-all duration-300 hover:scale-[1.01] active:scale-[0.99] cursor-pointer flex flex-col justify-between group"
+                className="glass-card-teal rounded-3xl p-3.5 sm:p-4 text-white shadow-lg flex flex-col items-center justify-center gap-1.5 hover:scale-[1.03] active:scale-[0.97] transition-all cursor-pointer group"
               >
-                {/* ⚡ Glowing Laser Scan Sweep Line */}
-                <div className="absolute left-0 right-0 top-0 h-1 bg-gradient-to-r from-transparent via-emerald-300 to-transparent shadow-[0_0_20px_#4ade80] pointer-events-none animate-laser-sweep opacity-90 z-20" />
-                <div className="absolute -top-12 -right-12 w-48 h-48 rounded-full bg-teal-400/15 blur-2xl pointer-events-none" />
-                <div className="absolute -bottom-12 -left-12 w-48 h-48 rounded-full bg-emerald-500/10 blur-2xl pointer-events-none" />
-
-                {/* Top Badge & Live Status Row */}
-                <div className="flex items-center justify-between relative z-10 mb-3">
-                  <div className="flex items-center gap-2">
-                    <div className="relative">
-                      <span className="absolute -inset-1 rounded-2xl bg-teal-400/40 animate-pulse-radar pointer-events-none" />
-                      <div className="relative bg-white/20 backdrop-blur-md rounded-2xl p-2.5 shadow-md border border-white/20 group-hover:rotate-6 transition-transform">
-                        <Camera className="h-6 w-6 text-white" />
-                      </div>
-                    </div>
-                    <div>
-                      <div className="flex items-center gap-1.5">
-                        <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping inline-block" />
-                        <span className="text-[10px] font-black uppercase tracking-wider text-teal-200">
-                          FOOD SCANNER READY ✨
-                        </span>
-                      </div>
-                      <h4 className="text-base sm:text-lg font-black text-white leading-tight">
-                        {t('home.snapKnow')} 📸
-                      </h4>
-                    </div>
-                  </div>
-
-                  <span className="text-[9.5px] font-black tracking-wider uppercase px-2.5 py-1 rounded-full bg-emerald-400/20 text-emerald-300 border border-emerald-400/30 shadow-2xs">
-                    SMART FOOD SCANNER 📸
-                  </span>
+                <div className="w-10 h-10 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center text-xl shadow-inner group-hover:scale-110 transition-transform">
+                  📸
                 </div>
+                <span className="text-xs font-black leading-tight text-center">Scan Plate</span>
+                <span className="text-[9.5px] text-teal-100 font-bold">Camera AI</span>
+              </button>
 
-                {/* Middle Description */}
-                <p className="text-xs sm:text-sm text-teal-100/95 font-medium relative z-10 leading-relaxed max-w-xl mb-4">
-                  Snap a quick photo of your plate to see friendly calorie counts, gentle blood sugar tips, and delicious healthy swaps.
-                </p>
-
-                {/* Bottom 1-Tap Trigger Buttons */}
-                <div className="relative z-10 flex flex-wrap items-center gap-2 pt-1 border-t border-white/10">
-                  <button
-                    type="button"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      triggerHaptic("medium");
-                      setShowLocalFoodScanner(true);
-                    }}
-                    className="relative overflow-hidden flex-1 sm:flex-none px-4 py-2.5 bg-gradient-to-r from-emerald-400 to-teal-400 hover:from-emerald-300 hover:to-teal-300 text-slate-950 font-black text-xs rounded-2xl shadow-md flex items-center justify-center gap-2 transition-all active:scale-95 cursor-pointer group/btn"
-                  >
-                    {/* Micro Laser Sweep Line on Camera Button */}
-                    <div className="absolute left-0 right-0 top-0 h-0.5 bg-gradient-to-r from-transparent via-white to-transparent shadow-[0_0_10px_#ffffff] pointer-events-none animate-laser-sweep opacity-90" />
-                    <Camera size={14} className="stroke-[2.5]" />
-                    <span>Take Photo (Live Viewfinder)</span>
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      triggerHaptic("light");
-                      setShowLocalFoodScanner(true);
-                    }}
-                    className="px-3.5 py-2.5 bg-white/15 hover:bg-white/25 text-white font-bold text-xs rounded-2xl border border-white/20 flex items-center justify-center gap-1.5 transition-all cursor-pointer active:scale-95"
-                  >
-                    <Upload size={14} />
-                    <span>Upload Gallery 🖼️</span>
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      triggerHaptic("light");
-                      navigate("/scan-barcode");
-                    }}
-                    className="px-3.5 py-2.5 bg-white/15 hover:bg-white/25 text-white font-bold text-xs rounded-2xl border border-white/20 flex items-center justify-center gap-1.5 transition-all cursor-pointer active:scale-95"
-                  >
-                    <ScanBarcode size={14} />
-                    <span>Barcode 🏷️</span>
-                  </button>
+              {/* Button 2: Quick Log Meals */}
+              <button
+                type="button"
+                onClick={() => {
+                  triggerHaptic("light");
+                  const el = document.getElementById("today-quick-shelf");
+                  if (el) el.scrollIntoView({ behavior: "smooth" });
+                }}
+                className="neu-raised rounded-3xl p-3.5 sm:p-4 text-slate-900 dark:text-white shadow-md flex flex-col items-center justify-center gap-1.5 hover:scale-[1.03] active:scale-[0.97] transition-all cursor-pointer group border border-white/80 dark:border-white/5"
+              >
+                <div className="w-10 h-10 rounded-2xl bg-amber-50 dark:bg-amber-950 text-amber-600 flex items-center justify-center text-xl shadow-2xs group-hover:scale-110 transition-transform">
+                  ⚡
                 </div>
-              </div>
+                <span className="text-xs font-black leading-tight text-center">Quick Log</span>
+                <span className="text-[9.5px] text-slate-500 font-bold">Common Meals</span>
+              </button>
 
-              {/* ⚡ SLEEK APPLE HEALTH-STYLE METABOLIC FUEL & MACRO STRIP */}
-              <div className="neu-raised rounded-3xl p-4 sm:p-5 space-y-3 border border-white/60 dark:border-white/5">
-                {/* Top Row: Energy & Target */}
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <div className="p-1.5 bg-teal-50 dark:bg-teal-950/60 rounded-xl text-[#1f7a8c] dark:text-teal-400">
-                      <Flame size={15} />
-                    </div>
-                    <div>
-                      <span className="text-xs font-black text-gray-900 dark:text-white block leading-tight">
-                        Today's Food & Energy ⚡
-                      </span>
-                      <span className="text-[10px] text-gray-500 dark:text-gray-400 font-medium">
-                        {animatedPercentage}% of your daily goal
-                      </span>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center gap-2">
-                    <span className="text-xs sm:text-sm font-black text-teal-800 dark:text-teal-300 font-mono">
-                      {caloriesConsumed} <span className="text-[11px] font-medium text-gray-500">/ {caloriesTarget} kcal</span>
-                    </span>
-                    <button
-                      type="button"
-                      onClick={() => setShowGaugeDetails(true)}
-                      className="px-2.5 py-1 bg-teal-50 hover:bg-teal-100 text-[#1f7a8c] dark:bg-teal-950 dark:text-teal-300 rounded-xl text-[10.5px] font-bold border border-teal-200/60 transition-all cursor-pointer active:scale-95"
-                    >
-                      Details 📊
-                    </button>
-                  </div>
+              {/* Button 3: +1 Cup Water */}
+              <button
+                type="button"
+                onClick={handleWaterAddCustom}
+                className="neu-raised rounded-3xl p-3.5 sm:p-4 text-cyan-900 dark:text-cyan-200 shadow-md flex flex-col items-center justify-center gap-1.5 hover:scale-[1.03] active:scale-[0.97] transition-all cursor-pointer group border border-white/80 dark:border-white/5"
+              >
+                <div className="w-10 h-10 rounded-2xl bg-cyan-50 dark:bg-cyan-950 text-cyan-600 flex items-center justify-center text-xl shadow-2xs group-hover:scale-110 transition-transform">
+                  💧
                 </div>
-
-                {/* Sleek Gradient Progress Bar */}
-                <div className="w-full bg-gray-100 dark:bg-zinc-800 h-2.5 rounded-full overflow-hidden p-0.5">
-                  <div
-                    className="h-full bg-gradient-to-r from-teal-500 via-emerald-400 to-amber-400 rounded-full transition-all duration-1000 ease-out shadow-xs"
-                    style={{ width: `${Math.min(100, (caloriesConsumed / caloriesTarget) * 100)}%` }}
-                  />
-                </div>
-
-                {/* 3 Proportional Macro Badges */}
-                <div className="grid grid-cols-3 gap-2 text-center text-xs pt-0.5">
-                  {/* Protein */}
-                  <div className="neu-inset p-2.5 rounded-2xl flex flex-col justify-between">
-                    <span className="text-[10px] font-bold text-blue-700 dark:text-blue-400 block">🍗 Protein</span>
-                    <strong className="text-xs font-black text-slate-900 dark:text-white mt-0.5">
-                      {proteinConsumed}g <span className="text-[9.5px] font-medium text-slate-400">/ {proteinTarget}g</span>
-                    </strong>
-                  </div>
-
-                  {/* Carbs */}
-                  <div className="neu-inset p-2.5 rounded-2xl flex flex-col justify-between">
-                    <span className="text-[10px] font-bold text-emerald-700 dark:text-emerald-400 block">🌾 Carbs</span>
-                    <strong className="text-xs font-black text-slate-900 dark:text-white mt-0.5">
-                      {carbsConsumed}g <span className="text-[9.5px] font-medium text-slate-400">/ {carbsTarget}g</span>
-                    </strong>
-                  </div>
-
-                  {/* Fats */}
-                  <div className="neu-inset p-2.5 rounded-2xl flex flex-col justify-between">
-                    <span className="text-[10px] font-bold text-purple-700 dark:text-purple-400 block">🥑 Fats</span>
-                    <strong className="text-xs font-black text-slate-900 dark:text-white mt-0.5">
-                      {fatsConsumed}g <span className="text-[9.5px] font-medium text-slate-400">/ {fatsTarget}g</span>
-                    </strong>
-                  </div>
-                </div>
-              </div>
+                <span className="text-xs font-black leading-tight text-center">+1 Cup Water</span>
+                <span className="text-[9.5px] text-cyan-600 font-bold">{waterGlasses} of 8 drank</span>
+              </button>
             </div>
 
-            {/* 3. 🎯 Intelligent Time-Based Next Best Action Card */}
+            {/* 🌟 ZONE 3: TODAY'S TIMELY GENTLE TIP (Only 1 smart dynamic card) */}
             <NextBestActionCard
               mealsCount={todayLogs.length}
               waterGlasses={waterGlasses}
               onOpenScanner={() => setShowLocalFoodScanner(true)}
               onOpenWater={() => setShowWaterReminderModal(true)}
               onOpenQuickLog={() => {
-                const el = document.getElementById("tour-quick-shelf");
+                const el = document.getElementById("today-quick-shelf");
                 if (el) el.scrollIntoView({ behavior: "smooth" });
               }}
             />
 
-            {/* 🔥 LIVE AVO CHALLENGE & GAMIFIED HEALTH HUB (UNIFIED 3-BUTTON FRAME) */}
-            <div className="relative overflow-hidden glass-card-amber rounded-3xl p-4 sm:p-5 text-white shadow-xl border border-white/30">
-              {/* Dynamic Ambient Particle Light */}
-              <div className="absolute -top-10 -right-10 w-44 h-44 rounded-full bg-yellow-300/20 blur-2xl pointer-events-none" />
-              <div className="absolute -bottom-10 -left-10 w-44 h-44 rounded-full bg-red-700/30 blur-2xl pointer-events-none" />
+            {/* 🌟 ZONE 4: TODAY'S MEAL TIMELINE (Breakfast • Lunch • Dinner • Snacks) */}
+            <div className="glass-card rounded-3xl p-4 sm:p-5 shadow-lg space-y-3">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <Utensils size={16} className="text-[#126778] dark:text-teal-300" />
+                  <h3 className="text-xs sm:text-sm font-black text-slate-900 dark:text-white uppercase tracking-wider">
+                    Today's Meals ({todayLogs.length})
+                  </h3>
+                </div>
+                <button
+                  onClick={() => navigate("/logs", { state: { openAdd: true } })}
+                  className="text-xs font-black text-[#126778] dark:text-teal-300 hover:underline cursor-pointer flex items-center gap-0.5"
+                >
+                  <span>+ Custom Entry</span>
+                </button>
+              </div>
 
-              {/* Top Row: Animated Mascot Avo in Challenge Jumping/Cheering Pose + Live Indicator */}
-              <div className="flex items-center justify-between gap-3 relative z-10 mb-3">
-                <div className="flex items-center gap-3 min-w-0 flex-1">
-                  <div className="relative shrink-0">
-                    <span className="absolute -inset-1 rounded-2xl bg-yellow-300/40 animate-pulse-radar pointer-events-none" />
-                    <div className="relative p-1 bg-white/20 backdrop-blur-md rounded-2xl border border-yellow-200/50 shadow-md">
-                      <Mascot gesture="jump" size={48} className="filter drop-shadow-md" />
-                    </div>
-                  </div>
+              {todayLogs.length === 0 ? (
+                <div className="text-center py-6 px-4 bg-slate-50/70 dark:bg-zinc-800/40 rounded-2xl border border-dashed border-slate-200 dark:border-zinc-700">
+                  <span className="text-3xl block mb-1">🍲</span>
+                  <p className="text-xs font-bold text-slate-700 dark:text-slate-300">No meals logged yet today</p>
+                  <p className="text-[11px] text-slate-400 mt-0.5">Snap your food or tap Quick Log to get started!</p>
+                  <button
+                    onClick={() => setShowLocalFoodScanner(true)}
+                    className="mt-3 px-4 py-2 bg-[#126778] text-white text-xs font-black rounded-xl shadow-md cursor-pointer hover:scale-105 active:scale-95 transition-all"
+                  >
+                    📸 Scan Your Plate
+                  </button>
+                </div>
+              ) : (
+                <div className="space-y-2">
+                  {todayLogs.map((log: any, idx: number) => (
+                    <div
+                      key={log.id || idx}
+                      className="p-3 rounded-2xl bg-white/80 dark:bg-zinc-800/80 border border-slate-200/80 dark:border-zinc-700 flex items-center justify-between gap-3 shadow-2xs hover:shadow-xs transition-all"
+                    >
+                      <div className="flex items-center gap-3 min-w-0">
+                        <span className="text-2xl shrink-0 p-1 bg-slate-50 dark:bg-zinc-700 rounded-xl">{log.emoji || "🍲"}</span>
+                        <div className="min-w-0">
+                          <span className="text-xs font-black text-slate-900 dark:text-white block leading-tight truncate">
+                            {log.name || log.dishName || "Meal"}
+                          </span>
+                          <span className="text-[10.5px] text-slate-500 font-medium block mt-0.5">
+                            {log.mealType ? log.mealType.toUpperCase() : "MEAL"} • {log.calories || 0} kcal • {log.time || "Today"}
+                          </span>
+                        </div>
+                      </div>
 
-                  <div className="min-w-0 flex-1">
-                    <div className="flex items-center gap-1.5 flex-wrap">
-                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-yellow-300 text-slate-950 text-[9.5px] font-black uppercase tracking-wider shadow-2xs">
-                        <span className="w-1.5 h-1.5 rounded-full bg-red-600 animate-ping shrink-0" />
-                        LIVE CHALLENGE
+                      <span className="text-[10px] font-black px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 shrink-0">
+                        Steady Sugar 🟢
                       </span>
-                      <span className="text-[10px] text-yellow-100 font-bold bg-white/15 px-2 py-0.5 rounded-full">
-                        🔥 1,420 Active
-                      </span>
                     </div>
-
-                    <h3 className="text-sm sm:text-lg font-black text-white leading-snug mt-1 truncate">
-                      Avo 21-Day Blood Sugar Reset
-                    </h3>
-                    <p className="text-[11px] text-yellow-100 font-medium line-clamp-1">
-                      Day 8 Active: Swallow Revolution • <strong className="text-yellow-200">+140 XP</strong>
-                    </p>
-                  </div>
+                  ))}
                 </div>
-              </div>
-
-              {/* Challenge XP Micro Progress Bar */}
-              <div className="relative z-10 mb-3.5 bg-black/25 backdrop-blur-xs rounded-2xl p-2 border border-white/20">
-                <div className="flex items-center justify-between text-[10px] font-bold text-yellow-100 mb-1">
-                  <span>Day 8 Challenge • Level 2 Pioneer</span>
-                  <span>4,850 / 6,000 XP</span>
-                </div>
-                <div className="w-full h-2 bg-black/30 rounded-full overflow-hidden p-0.5">
-                  <div className="h-full bg-gradient-to-r from-yellow-300 via-amber-300 to-white rounded-full w-[78%] animate-pulse" />
-                </div>
-              </div>
-
-              {/* 3 Unified Action Buttons */}
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 relative z-10">
-                {/* Button 1: Join / Active Challenge */}
-                <button
-                  type="button"
-                  onClick={() => {
-                    triggerHaptic("medium");
-                    navigate("/challenge");
-                  }}
-                  className="py-2.5 px-3 bg-white hover:bg-yellow-50 active:scale-95 text-slate-950 rounded-2xl font-black text-xs shadow-md transition-all flex items-center justify-center gap-1.5 cursor-pointer group/btn"
-                >
-                  <span className="text-base leading-none group-hover/btn:scale-125 transition-transform">🔥</span>
-                  <span className="truncate">Join Challenge</span>
-                  <ChevronRight size={13} className="text-orange-600 group-hover/btn:translate-x-0.5 transition-transform shrink-0" />
-                </button>
-
-                {/* Button 2: Food Wrapped */}
-                <button
-                  type="button"
-                  onClick={() => {
-                    triggerHaptic("medium");
-                    setShowFoodWrapped(true);
-                  }}
-                  className="py-2.5 px-3 bg-black/30 hover:bg-black/45 active:scale-95 text-white border border-white/25 rounded-2xl font-black text-xs shadow-sm transition-all flex items-center justify-center gap-1.5 cursor-pointer group/btn"
-                >
-                  <span className="text-base leading-none group-hover/btn:scale-125 transition-transform">🥑</span>
-                  <span className="truncate">Food Wrapped 📊</span>
-                </button>
-
-                {/* Button 3: Leaderboards */}
-                <button
-                  type="button"
-                  onClick={() => {
-                    triggerHaptic("medium");
-                    navigate("/challenge");
-                  }}
-                  className="py-2.5 px-3 bg-black/30 hover:bg-black/45 active:scale-95 text-white border border-white/25 rounded-2xl font-black text-xs shadow-sm transition-all flex items-center justify-center gap-1.5 cursor-pointer group/btn"
-                >
-                  <span className="text-base leading-none group-hover/btn:scale-125 transition-transform">🏆</span>
-                  <span className="truncate">Leaderboards 🌍</span>
-                </button>
-              </div>
+              )}
             </div>
 
-            {/* 1-Tap Quick-Log Shelf with Voice AI */}
-            <div id="tour-quick-shelf" className="my-1">
+            {/* 1-Tap Quick-Log Shelf */}
+            <div id="today-quick-shelf" className="my-1">
               <QuickLogShelf
                 onLogItem={handleQuickLogItem}
                 onOpenVoice={() => setShowVoiceLogger(true)}
@@ -1056,179 +949,56 @@ export default function Home() {
               />
             </div>
 
-            {/* 10X Prominent Water & Cellular Flush Station Frame */}
-            <div className="my-2">
-              <WaterTrackerFrame
-                currentGlasses={waterGlasses}
-                targetGlasses={8}
-                onAddGlass={handleWaterAddCustom}
-                onRemoveGlass={handleWaterDecrease}
-                onOpenDetails={() => navigate("/hydration")}
-                onOpenReminderModal={() => setShowWaterReminderModal(true)}
-              />
-            </div>
-
-            {/* Daily Metabolic Habit Scorecard */}
-            <MetabolicChecklist
-              waterCount={waterGlasses}
-              mealsLoggedCount={todayLogs.length}
-              vitalsLoggedCount={0}
-              onOpenWater={() => setShowWaterReminderModal(true)}
-              onOpenQuickLog={() => navigate("/plan-meal")}
-            />
-
-            {/* Circadian Timing & Post-Meal Check-In */}
-            {todayLogs.length > 0 && (
-              <PostMealCheckIn lastMeal={todayLogs[todayLogs.length - 1]} />
-            )}
-
-            <CircadianArc lastMealTime={todayLogs[todayLogs.length - 1]?.time || "20:00"} />
-
-            {/* Time-Based Recommendation Card */}
-            <div className="glass-card rounded-3xl p-4 flex items-start gap-3">
-              <div className="p-3 bg-teal-50 text-2xl rounded-2xl flex-shrink-0">
-                {getTimeBasedRecommendation().icon}
-              </div>
-              <div className="flex-1 min-w-0">
-                <span className="text-[10px] uppercase font-bold text-[#1f7a8c] block">
-                  {mode === "simple" ? t('home.mealSuggestion') : t('home.metabolicFocus')}
-                </span>
-                <p className="text-xs font-bold text-gray-900 mt-0.5">
-                  {getTimeBasedRecommendation().greeting}
-                </p>
-                <p className="text-xs text-gray-600 mt-1 leading-relaxed">
-                  {getTimeBasedRecommendation().recommendation}
-                </p>
-              </div>
-            </div>
-
-            {/* Daily Fruit & Vegetable Power Boost Banner */}
-            <div className="bg-gradient-to-br from-emerald-600 via-teal-700 to-slate-900 text-white rounded-3xl p-4 sm:p-5 shadow-lg border border-emerald-400/20 relative overflow-hidden">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 relative z-10">
-                <div className="flex items-start gap-3 flex-1 min-w-0">
-                  <div className="text-3xl p-2 bg-white/10 rounded-2xl shrink-0 backdrop-blur-xs">
-                    🍏🥬
-                  </div>
-                  <div className="min-w-0 flex-1">
-                    <div className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-400/20 text-emerald-300 text-[9.5px] font-black uppercase tracking-wider mb-1">
-                      <Sparkles size={10} />
-                      <span>Metabolic Super-Produce</span>
-                    </div>
-                    <h3 className="text-sm font-black text-white leading-tight">
-                      African Fruits &amp; Healing Greens Guide
-                    </h3>
-                    <p className="text-[11px] text-emerald-100/90 mt-0.5 leading-snug line-clamp-2">
-                      Discover Garden Egg, Ugu, Agbalumo, Soursop &amp; Ube with precise glycemic scores.
-                    </p>
-                  </div>
+            {/* 🌟 ZONE 5: COMMUNITY CHALLENGE & STORIES CAROUSEL CARD */}
+            <div className="glass-card-amber rounded-3xl p-4 sm:p-5 text-white shadow-xl flex items-center justify-between gap-3 relative overflow-hidden">
+              <div className="flex items-center gap-3 min-w-0">
+                <div className="p-2.5 bg-white/20 backdrop-blur-md rounded-2xl text-2xl shrink-0 shadow-inner">
+                  🔥
                 </div>
-                <div className="w-full sm:w-auto shrink-0">
-                  <button
-                    onClick={() => navigate("/recipe")}
-                    className="w-full sm:w-auto px-3.5 py-2.5 bg-emerald-400 hover:bg-emerald-300 text-slate-950 font-black text-xs rounded-xl shadow-md cursor-pointer transition-all active:scale-95 text-center flex items-center justify-center gap-1"
-                  >
-                    <span>Explore 12+ 🥗</span>
-                  </button>
+                <div className="min-w-0">
+                  <span className="text-[9.5px] font-black uppercase tracking-wider bg-yellow-300 text-slate-950 px-2 py-0.5 rounded-full shadow-2xs">
+                    Community Challenge
+                  </span>
+                  <h3 className="text-sm font-black text-white mt-1 leading-tight truncate">
+                    Avo 21-Day Blood Sugar Reset
+                  </h3>
+                  <p className="text-[11px] text-yellow-100 font-medium truncate">
+                    1,420 Active members • Tap to join
+                  </p>
                 </div>
               </div>
-            </div>
 
-            {/* Smart Grocery, Bio-Plan & Diaspora Family Health Circle Suite */}
-            <div>
-              <div className="flex items-center justify-between mb-2.5 px-0.5">
-                <h3 className="text-xs font-black text-gray-900 uppercase tracking-wider flex items-center gap-1.5">
-                  <span>Metabolic &amp; Care Command Suite</span>
-                </h3>
-              </div>
-
-              <div className="grid grid-cols-3 gap-2.5 sm:gap-3">
-                {/* 1. Smart Grocery List with Rolling Cart Pulse */}
+              <div className="flex items-center gap-2 shrink-0">
                 <button
-                  onClick={() => navigate("/grocery-list")}
-                  className="bg-white rounded-3xl p-3 sm:p-4 text-left shadow-md hover:shadow-xl border-2 border-teal-100 hover:border-teal-400 transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] cursor-pointer flex flex-col justify-between h-36 group"
+                  type="button"
+                  onClick={() => navigate("/challenge")}
+                  className="px-3 py-2 bg-white text-slate-950 font-black text-xs rounded-xl shadow-md hover:scale-105 active:scale-95 transition-all cursor-pointer"
                 >
-                  <div className="flex items-center justify-between">
-                    <div className="bg-emerald-50 border border-emerald-200/60 rounded-2xl p-2 sm:p-2.5 w-fit text-lg group-hover:translate-x-1 transition-transform">
-                      🛒
-                    </div>
-                    <span className="text-[8px] sm:text-[9px] font-black uppercase px-1.5 py-0.5 rounded-md bg-emerald-50 text-emerald-700 border border-emerald-200/50">
-                      MARKET
-                    </span>
-                  </div>
-                  <div>
-                    <span className="text-xs font-black text-gray-900 block leading-tight group-hover:text-teal-700 transition-colors">
-                      {t('grocery.title')}
-                    </span>
-                    <span className="text-[10px] text-gray-500 font-medium block mt-0.5 line-clamp-1">
-                      Prices &amp; swaps
-                    </span>
-                  </div>
+                  Join 🔥
                 </button>
-
-                {/* 2. My 7-Day Meal Plan */}
                 <button
-                  onClick={() => navigate("/hyper-personalized-plan")}
-                  className="relative overflow-hidden bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-600 animate-gradient-shift rounded-3xl p-3 sm:p-4 text-white text-left shadow-md hover:shadow-xl transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] cursor-pointer flex flex-col justify-between h-36 border border-purple-400/30 group"
+                  type="button"
+                  onClick={() => setShowFoodWrapped(true)}
+                  className="p-2 bg-white/20 hover:bg-white/30 text-white rounded-xl border border-white/25 transition-all cursor-pointer"
+                  title="Food Wrapped Story"
                 >
-                  <div className="flex items-center justify-between relative z-10">
-                    <div className="bg-white/20 backdrop-blur-xs rounded-2xl p-2 sm:p-2.5 w-fit group-hover:scale-110 transition-transform">
-                      <ChefHat className="h-4 w-4 text-white" />
-                    </div>
-                    <span className="text-[8px] sm:text-[9px] font-black uppercase px-1.5 py-0.5 rounded-md bg-white/20 backdrop-blur-xs text-purple-100">
-                      7-DAY
-                    </span>
-                  </div>
-                  <div className="relative z-10">
-                    <span className="text-xs font-black block leading-tight">
-                      My 7-Day Plan
-                    </span>
-                    <span className="text-[10px] text-purple-100/90 font-medium block mt-0.5 line-clamp-1">
-                      Tailored recipes
-                    </span>
-                  </div>
-                </button>
-
-                {/* 3. Diaspora Family Health Circle (Remote Parent Care Loop) */}
-                <button
-                  onClick={() => {
-                    triggerHaptic("medium");
-                    setShowFamilyCircleModal(true);
-                  }}
-                  className="relative overflow-hidden bg-gradient-to-br from-slate-900 via-[#126778] to-teal-950 rounded-3xl p-3 sm:p-4 text-white text-left shadow-md hover:shadow-xl border-2 border-teal-400/40 hover:border-teal-300 transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] cursor-pointer flex flex-col justify-between h-36 group"
-                >
-                  <div className="flex items-center justify-between relative z-10">
-                    <div className="bg-white/15 border border-white/20 rounded-2xl p-2 sm:p-2.5 w-fit text-lg group-hover:scale-110 transition-transform">
-                      👨‍👩‍👧‍👦
-                    </div>
-                    <span className="text-[8px] sm:text-[9px] font-black uppercase px-1.5 py-0.5 rounded-md bg-amber-400 text-slate-950 shadow-2xs">
-                      FAMILY
-                    </span>
-                  </div>
-                  <div className="relative z-10">
-                    <span className="text-xs font-black block leading-tight text-white flex items-center gap-1">
-                      <span>Family Circle</span>
-                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping inline-block" />
-                    </span>
-                    <span className="text-[10px] text-teal-200 font-medium block mt-0.5 truncate">
-                      Diaspora care loop
-                    </span>
-                  </div>
+                  🥑
                 </button>
               </div>
             </div>
 
-            {/* This Week's Food Calendar */}
-            <div className="bg-white rounded-3xl shadow-md border border-teal-100 p-4 sm:p-5">
+            {/* Weekly Consistency & Market Sync */}
+            <div className="glass-card rounded-3xl p-4 shadow-lg">
               <div className="flex items-center justify-between mb-3">
                 <div className="flex items-center gap-2">
-                  <h3 className="text-xs font-bold text-gray-800 uppercase tracking-wider">{t('home.thisWeeksMeals')}</h3>
-                  <span className="px-2 py-0.5 bg-teal-50 text-[#1f7a8c] text-[10px] font-bold rounded-full">
-                    {weekRangeLabel}
+                  <Calendar className="h-4 w-4 text-[#126778] dark:text-teal-300" />
+                  <span className="text-xs font-black text-gray-900 dark:text-white uppercase tracking-wider">
+                    {t('home.weeklyConsistency')}
                   </span>
                 </div>
                 <button
                   onClick={() => navigate("/logs")}
-                  className="text-xs font-bold text-[#1f7a8c] flex items-center gap-1 hover:underline cursor-pointer"
+                  className="text-xs font-bold text-[#126778] dark:text-teal-300 hover:underline flex items-center gap-0.5 cursor-pointer"
                 >
                   <span>{t('home.viewAll')}</span>
                   <ChevronRight className="h-3.5 w-3.5" />
@@ -1245,10 +1015,10 @@ export default function Home() {
                       title={logged ? `${day.count} meals · ${day.calories} kcal` : 'No meals logged'}
                       className={`flex flex-col items-center py-2.5 px-1 rounded-2xl transition-all cursor-pointer ${
                         day.isToday
-                          ? "bg-[#1f7a8c] text-white shadow-sm scale-105"
+                          ? "bg-[#126778] text-white shadow-sm scale-105"
                           : logged
-                          ? "bg-teal-50 border border-teal-200 text-teal-900"
-                          : "bg-gray-50 text-gray-600 hover:bg-gray-100"
+                          ? "bg-teal-50 border border-teal-200 text-teal-900 dark:bg-teal-950/40 dark:text-teal-200"
+                          : "bg-gray-50 text-gray-600 dark:bg-zinc-800 dark:text-gray-400 hover:bg-gray-100"
                       }`}
                     >
                       <span className={`text-[10px] font-bold mb-1 ${day.isToday ? "text-white" : "text-gray-500"}`}>
@@ -1262,17 +1032,6 @@ export default function Home() {
                   );
                 })}
               </div>
-            </div>
-
-            {/* Location & Regional Market Tip */}
-            <div className="glass-card rounded-3xl p-4 border border-white/80 dark:border-white/10">
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-[10px] uppercase font-bold text-teal-800 tracking-wider">
-                  Regional Market Sync
-                </span>
-                <span className="text-sm">{selectedLocation.flag} {selectedLocation.displayName}</span>
-              </div>
-              <LocationSelector />
             </div>
           </motion.div>
         )}
