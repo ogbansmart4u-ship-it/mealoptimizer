@@ -1438,7 +1438,7 @@ export default function AvoAcademy() {
           </div>
           <span className="text-[10px] font-bold text-gray-500">
             {completedLessonIds.length} of {LESSONS.length} Lessons Completed (
-            {Math.round((completedLessonIds.length / LESONS.length) * 100)}%)
+            {Math.round((completedLessonIds.length / LESSONS.length) * 100)}%)
           </span>
         </div>
 
