@@ -40,7 +40,7 @@ import Mascot from "./Mascot";
 import { triggerConfetti, triggerHaptic } from "../utils/celebration";
 import { toast } from "sonner";
 import { useUser } from "../contexts/UserContext";
-import { speakText, stopSpeaking, sanitizeTextForSpeech } from "../services/voiceService";
+import { speakWithSarah, stopSarahSpeech, sanitizeTextForSpeech } from "../services/voiceService";
 
 export type AcademyTier = 1 | 2 | 3 | 4;
 
@@ -1214,7 +1214,7 @@ export default function AvoAcademy() {
   // Clean up audio on unmount
   useEffect(() => {
     return () => {
-      stopSpeaking();
+      stopSarahSpeech();
     };
   }, []);
 
@@ -1263,17 +1263,17 @@ export default function AvoAcademy() {
     triggerHaptic("light");
 
     if (playingAudioLessonId === lesson.id && isAudioPlaying) {
-      stopSpeaking();
+      stopSarahSpeech();
       setIsAudioPlaying(false);
       setPlayingAudioLessonId(null);
     } else {
-      stopSpeaking();
+      stopSarahSpeech();
       setPlayingAudioLessonId(lesson.id);
       setIsAudioPlaying(true);
 
       const scriptToRead = `${lesson.title}. ${lesson.audioScript} Key Clinical Takeaway: ${lesson.takeaway}`;
 
-      speakText(scriptToRead, {
+      speakWithSarah(scriptToRead, {
         onStart: () => setIsAudioPlaying(true),
         onEnd: () => {
           setIsAudioPlaying(false);

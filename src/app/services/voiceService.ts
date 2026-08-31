@@ -276,6 +276,7 @@ export function stopSarahSpeech() {
 }
 
 export const stopSpeaking = stopSarahSpeech;
+export const speakText = speakWithSarah;
 
 // Pre-warm voices on browser load
 if (typeof window !== "undefined" && "speechSynthesis" in window) {
