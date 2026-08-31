@@ -75,7 +75,7 @@ export default function Login() {
   const handleModeSwitch = (mode: "login" | "signup") => {
     triggerHaptic("light");
     setAuthMode(mode);
-    setMascotGesture(mode === "signup" ? "pointing" : "wave");
+    setMascotGesture("wave");
   };
 
   const handleSubmit = async (e: React.FormEvent) => {

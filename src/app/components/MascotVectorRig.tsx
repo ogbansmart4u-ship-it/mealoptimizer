@@ -40,11 +40,11 @@ export default function MascotVectorRig({
       role="img"
     >
       <img
-        src="/assets/mascot.png"
+        src="/assets/mascot/avo-wave.webp"
         alt={alt}
         className={`w-full h-full object-contain drop-shadow-md ${animClass}`}
         onError={(e) => {
-          // Fallback to official 3D avatar if png not present
+          // Fallback to official 3D avatar if webp not present
           (e.target as HTMLImageElement).src = "/assets/mascot/avo-avatar.jpg";
         }}
       />
