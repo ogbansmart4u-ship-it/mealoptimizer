@@ -1026,6 +1026,69 @@ export default function Home() {
               </div>
             )}
 
+                        {/* 🛒 SMART MEAL PLANNING & GROCERY STORES PORTAL */}
+            <div className="grid grid-cols-2 gap-2.5 my-1">
+              {/* 📅 7-Day Meal Planner */}
+              <div
+                onClick={() => {
+                  triggerHaptic("medium");
+                  navigate("/plan-meal");
+                }}
+                className="glass-card-teal rounded-3xl p-3.5 sm:p-4 text-white shadow-md cursor-pointer hover:scale-[1.02] active:scale-[0.98] transition-all flex flex-col justify-between group"
+              >
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-2xl p-2 bg-white/20 rounded-2xl shrink-0 group-hover:scale-110 transition-transform shadow-inner">
+                    📅
+                  </span>
+                  <span className="text-[9px] font-black uppercase tracking-wider bg-amber-400 text-slate-950 px-2 py-0.5 rounded-full shadow-2xs">
+                    7-Day Plan
+                  </span>
+                </div>
+                <div>
+                  <h4 className="text-xs sm:text-sm font-black text-white leading-tight">
+                    7-Day Meal Planner
+                  </h4>
+                  <p className="text-[10px] text-teal-100/90 font-medium line-clamp-1 mt-0.5">
+                    Personalized cultural plates
+                  </p>
+                </div>
+                <div className="flex items-center text-[10px] font-black text-amber-300 mt-2 gap-0.5">
+                  <span>Plan 7 Days</span>
+                  <ChevronRight size={12} className="group-hover:translate-x-0.5 transition-transform" />
+                </div>
+              </div>
+
+              {/* 🛒 Smart Grocery & Affiliate Stores */}
+              <div
+                onClick={() => {
+                  triggerHaptic("medium");
+                  navigate("/grocery");
+                }}
+                className="neu-raised rounded-3xl p-3.5 sm:p-4 text-slate-900 dark:text-white shadow-md cursor-pointer hover:scale-[1.02] active:scale-[0.98] transition-all flex flex-col justify-between border border-white/80 dark:border-white/5 group"
+              >
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-2xl p-2 bg-emerald-50 dark:bg-emerald-950 text-emerald-600 rounded-2xl shrink-0 group-hover:scale-110 transition-transform shadow-2xs">
+                    🛒
+                  </span>
+                  <span className="text-[9px] font-black uppercase tracking-wider bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 px-2 py-0.5 rounded-full">
+                    Stores
+                  </span>
+                </div>
+                <div>
+                  <h4 className="text-xs sm:text-sm font-black text-slate-900 dark:text-white leading-tight">
+                    Grocery &amp; Stores
+                  </h4>
+                  <p className="text-[10px] text-slate-500 font-medium line-clamp-1 mt-0.5">
+                    Chowdeck, Instacart &amp; Aisles
+                  </p>
+                </div>
+                <div className="flex items-center text-[10px] font-black text-[#126778] dark:text-teal-400 mt-2 gap-0.5">
+                  <span>Open Grocery</span>
+                  <ChevronRight size={12} className="group-hover:translate-x-0.5 transition-transform" />
+                </div>
+              </div>
+            </div>
+
             {/* 1-Tap Quick-Log Shelf */}
             <div id="today-quick-shelf" className="my-1">
               <QuickLogShelf

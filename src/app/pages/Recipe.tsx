@@ -2243,6 +2243,39 @@ export default function Recipe() {
               />
             </div>
 
+                    {/* 📅 7-DAY MEAL PLANNER & 🛒 GROCERY SHORTCUT BAR */}
+        <div className="max-w-2xl mx-auto mt-3 grid grid-cols-2 gap-2">
+          <button
+            type="button"
+            onClick={() => {
+              triggerHaptic("medium");
+              navigate("/plan-meal");
+            }}
+            className="p-2.5 bg-gradient-to-r from-[#126778] to-[#1f7a8c] text-white rounded-2xl text-xs font-black shadow-sm flex items-center justify-between hover:scale-102 active:scale-98 transition-all cursor-pointer border border-white/20"
+          >
+            <div className="flex items-center gap-2 min-w-0">
+              <span className="text-base">📅</span>
+              <span className="truncate">7-Day Meal Plan</span>
+            </div>
+            <ChevronRight size={14} />
+          </button>
+
+          <button
+            type="button"
+            onClick={() => {
+              triggerHaptic("medium");
+              navigate("/grocery");
+            }}
+            className="p-2.5 bg-white dark:bg-zinc-800 text-slate-800 dark:text-white rounded-2xl text-xs font-black shadow-sm flex items-center justify-between hover:scale-102 active:scale-98 transition-all cursor-pointer border border-teal-100 dark:border-zinc-700"
+          >
+            <div className="flex items-center gap-2 min-w-0">
+              <span className="text-base">🛒</span>
+              <span className="truncate">Grocery &amp; Stores</span>
+            </div>
+            <ChevronRight size={14} className="text-[#1f7a8c]" />
+          </button>
+        </div>
+
             {/* Location & Diaspora Context Strip */}
             <div className="max-w-2xl mx-auto mt-2 flex items-center justify-between text-[11px] text-teal-900 bg-white/70 backdrop-blur-xs px-3 py-1.5 rounded-xl border border-teal-100">
               <div className="flex items-center gap-1.5 font-bold">
