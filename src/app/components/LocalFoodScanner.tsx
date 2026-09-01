@@ -938,10 +938,10 @@ export default function LocalFoodScanner({ isOpen, onClose }: LocalFoodScannerPr
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-slate-950/75 backdrop-blur-xl z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 animate-fade-in">
+    <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 flex items-center justify-center p-3 sm:p-4 overflow-hidden">
       <div
         ref={scrollContainerRef}
-        className="relative bg-white/95 dark:bg-zinc-900/95 backdrop-blur-2xl rounded-t-[36px] sm:rounded-3xl w-full max-w-2xl max-h-[92vh] overflow-y-auto shadow-[0_25px_60px_-15px_rgba(0,0,0,0.5)] border border-white/50 dark:border-white/10 animate-slide-up"
+        className="relative bg-white dark:bg-zinc-900 rounded-3xl w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl border border-slate-200/80 dark:border-zinc-800 transition-all"
       >
         {/* Ambient Floating Glow Orbs inside Modal */}
         <div className="absolute -top-20 -right-20 w-64 h-64 rounded-full bg-teal-400/20 blur-3xl pointer-events-none" />

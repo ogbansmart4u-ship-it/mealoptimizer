@@ -888,20 +888,24 @@ export default function Home() {
             {/* 🌟 ZONE 2: 3 BIG TACTILE 1-TAP ACTION BUTTONS */}
             {dashboardPrefs.showActions && (
               <div className="grid grid-cols-3 gap-2.5">
-                {/* Button 1: Scan Food */}
+                {/* Button 1: Scan Food (With Lively Animation & Glowing Ring) */}
                 <button
                   type="button"
                   onClick={() => {
                     triggerHaptic("medium");
                     setShowLocalFoodScanner(true);
                   }}
-                  className="glass-card-teal rounded-3xl p-3.5 sm:p-4 text-white shadow-lg flex flex-col items-center justify-center gap-1.5 hover:scale-[1.03] active:scale-[0.97] transition-all cursor-pointer group"
+                  className="glass-card-teal rounded-3xl p-3.5 sm:p-4 text-white shadow-xl flex flex-col items-center justify-center gap-1.5 hover:scale-[1.04] active:scale-[0.96] transition-all cursor-pointer group relative overflow-hidden ring-2 ring-teal-300/60 shadow-teal-500/20"
                 >
-                  <div className="w-10 h-10 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center text-xl shadow-inner group-hover:scale-110 transition-transform">
-                    📸
+                  <div className="w-10 h-10 rounded-2xl bg-white/25 backdrop-blur-md flex items-center justify-center shadow-inner group-hover:scale-110 transition-transform relative">
+                    <span className="absolute -inset-0.5 rounded-2xl bg-teal-200/40 animate-ping opacity-40" />
+                    <span className="text-xl relative z-10 animate-bounce">📸</span>
                   </div>
                   <span className="text-xs font-black leading-tight text-center">Scan Plate</span>
-                  <span className="text-[9.5px] text-teal-100 font-bold">Camera AI</span>
+                  <span className="text-[9.5px] text-teal-100 font-bold flex items-center gap-1">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                    Camera AI
+                  </span>
                 </button>
 
                 {/* Button 2: Quick Log Meals */}
