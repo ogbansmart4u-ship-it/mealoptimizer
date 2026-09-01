@@ -1,4 +1,20 @@
 /**
+ * STRIPE SUBSCRIPTION PAYMENT LINKS CONFIGURATION
+ * Create these links in your Stripe Dashboard (Products -> Payment Links)
+ * and set them in your Vercel Environment Variables or paste them below!
+ */
+export const STRIPE_PAYMENT_LINKS = {
+  pro: {
+    monthly: (import.meta as any).env?.VITE_STRIPE_PRO_MONTHLY_URL || "https://buy.stripe.com/test_eVaeVf4aR6gq8H63cc",
+    annual: (import.meta as any).env?.VITE_STRIPE_PRO_ANNUAL_URL || "https://buy.stripe.com/test_5kA5kD8n720ae1q6oo",
+  },
+  family: {
+    monthly: (import.meta as any).env?.VITE_STRIPE_FAMILY_MONTHLY_URL || "https://buy.stripe.com/test_6oEbJ39rb6gqe1q9AA",
+    annual: (import.meta as any).env?.VITE_STRIPE_FAMILY_ANNUAL_URL || "https://buy.stripe.com/test_bIYeVf0YF34eaPe5km",
+  },
+};
+
+/**
  * payment.ts - Multi-Currency Payment Architecture & Subscription Verification
  * Supports Paystack (NGN / GHS) and Stripe (USD / GBP) with server verification
  */
@@ -230,16 +246,41 @@ export async function processPayment({
 
   console.log(`[Payment] Initializing checkout for ${plan} (${currency} ${price})`);
 
-  // Paystack Inline Popup (NGN, GHS, USD)
-  if (currency === "NGN" || currency === "GHS" || currency === "USD") {
+  // =========================================================================
+  // 1. STRIPE SUBSCRIPTION CHECKOUT (USD, GBP, EUR, CAD)
+  // =========================================================================
+  if (currency === "USD" || currency === "GBP") {
+    const planLinks = STRIPE_PAYMENT_LINKS[plan as "pro" | "family"];
+    const targetStripeUrl = planLinks ? planLinks[cycle] : null;
+
+    if (targetStripeUrl && !targetStripeUrl.includes("placeholder")) {
+      // Append user metadata & prefill email to Stripe Payment Link
+      const checkoutUrl = new URL(targetStripeUrl);
+      if (userEmail && userEmail !== "user@mealoptimizer.app") {
+        checkoutUrl.searchParams.set("prefilled_email", userEmail);
+      }
+      if (userId) {
+        checkoutUrl.searchParams.set("client_reference_id", userId);
+      }
+
+      console.log(`[Stripe] Redirecting to Stripe Checkout for ${plan} (${cycle}):`, checkoutUrl.toString());
+      window.location.href = checkoutUrl.toString();
+      return;
+    }
+  }
+
+  // =========================================================================
+  // 2. PAYSTACK INLINE POPUP (NGN & WEST AFRICAN CURRENCIES)
+  // =========================================================================
+  if (currency === "NGN") {
     const isScriptLoaded = await loadPaystackScript();
 
     if (isScriptLoaded && (window as any).PaystackPop && paystackKey && !paystackKey.includes("placeholder")) {
       const handler = (window as any).PaystackPop.setup({
         key: paystackKey,
         email: userEmail,
-        amount: Math.round(price * 100), // amount in lowest unit (kobo/cents/pesewas)
-        currency: currency,
+        amount: Math.round(price * 100), // amount in lowest unit (kobo)
+        currency: "NGN",
         metadata: {
           custom_fields: [
             { display_name: "User ID", variable_name: "user_id", value: userId || "anonymous" },
