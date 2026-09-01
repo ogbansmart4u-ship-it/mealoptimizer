@@ -2273,13 +2273,13 @@ export default function Recipe() {
             type="button"
             onClick={() => {
               triggerHaptic("medium");
-              setShowGroceryStoresModal(true);
+              navigate("/grocery");
             }}
             className="p-2.5 bg-white dark:bg-zinc-800 text-slate-800 dark:text-white rounded-2xl text-xs font-black shadow-sm flex items-center justify-between hover:scale-102 active:scale-98 transition-all cursor-pointer border border-teal-100 dark:border-zinc-700"
           >
             <div className="flex items-center gap-2 min-w-0">
               <span className="text-base">🛒</span>
-              <span className="truncate">Grocery Stores ({locationPartners.length})</span>
+              <span className="truncate">Grocery &amp; Stores ({locationPartners.length})</span>
             </div>
             <ChevronRight size={14} className="text-[#1f7a8c]" />
           </button>
