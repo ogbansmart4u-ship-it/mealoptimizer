@@ -155,8 +155,9 @@ export default function Profile() {
     const params = new URLSearchParams(window.location.search);
     if (params.get("upgrade") === "success" || params.get("plan") === "pro" || params.get("plan") === "family" || params.get("session_id")) {
       const plan = params.get("plan") === "family" ? "family" : "pro";
-      setSubscriptionStatus(plan, 12, user?.id);
-      setSubStatus(getSubscriptionStatus(user?.id));
+      const targetUserId = profile?.id || "active-user";
+      setSubscriptionStatus(plan, 12, targetUserId);
+      setSubStatus(getSubscriptionStatus(targetUserId));
       triggerHaptic("success");
       toast.success("🎉 Welcome to MealOptimiza PRO!", {
         description: "Your subscription is now active with unlimited AI vision scans and WhatsApp logging.",
@@ -164,7 +165,7 @@ export default function Profile() {
       // Clean up URL query parameters
       window.history.replaceState({}, document.title, window.location.pathname);
     }
-  }, [user]);
+  }, [profile]);
   const [lockedFeatureName, setLockedFeatureName] = useState("");
 
   const handleToggleWidget = (key: keyof typeof dashboardPrefs, isProOnly: boolean = false) => {
