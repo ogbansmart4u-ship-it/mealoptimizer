@@ -1,3 +1,4 @@
+import { motion, AnimatePresence } from "motion/react";
 import { useState, useMemo, useEffect, useRef } from "react";
 import {
   BookOpen,
@@ -1302,6 +1303,7 @@ export const CULTURAL_MYTHS = [
 export default function AvoAcademy() {
   const { user } = useUser();
   const [selectedTier, setSelectedTier] = useState<AcademyTier>(1);
+  const tierScrollRef = useRef<HTMLDivElement>(null);
   // 🥳 Party Guides & Diploma State
   const [selectedPartyGuide, setSelectedPartyGuide] = useState<PartyGuide | null>(null);
   const [showPartyGuideModal, setShowPartyGuideModal] = useState(false);
@@ -1884,13 +1886,28 @@ export default function AvoAcademy() {
           </span>
         </div>
 
-        {/* 4-Tier Segmented Tabs */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+        {/* Left-to-Right Animated Shimmer Progress Bar */}
+        <div className="w-full bg-slate-100 dark:bg-zinc-800 h-1.5 rounded-full overflow-hidden relative shadow-inner">
+          <motion.div
+            className="h-full bg-gradient-to-r from-teal-500 via-emerald-400 to-amber-400 rounded-full"
+            initial={{ width: "25%" }}
+            animate={{
+              width: selectedTier === 1 ? "25%" : selectedTier === 2 ? "50%" : selectedTier === 3 ? "75%" : "100%",
+            }}
+            transition={{ duration: 0.45, ease: "easeOut" }}
+          />
+        </div>
+
+        {/* 4-Tier Segmented Tabs with Left-to-Right Scroll Animation & Sliding Indicator */}
+        <div
+          ref={tierScrollRef}
+          className="grid grid-cols-2 sm:grid-cols-4 gap-2 relative overflow-x-auto pb-1 no-scrollbar"
+        >
           {[
-            { tier: 1 as AcademyTier, label: "Tier 1: Foundations", icon: "🌱", color: "from-emerald-600 to-teal-600" },
-            { tier: 2 as AcademyTier, label: "Tier 2: Organ Shields", icon: "🛡️", color: "from-blue-600 to-cyan-600" },
-            { tier: 3 as AcademyTier, label: "Tier 3: Culinary Bio", icon: "🍲", color: "from-amber-600 to-orange-600" },
-            { tier: 4 as AcademyTier, label: "Tier 4: Longevity & Fast", icon: "👑", color: "from-purple-600 to-pink-600" },
+            { tier: 1 as AcademyTier, label: "Tier 1: Foundations", icon: "🌱" },
+            { tier: 2 as AcademyTier, label: "Tier 2: Organ Shields", icon: "🛡️" },
+            { tier: 3 as AcademyTier, label: "Tier 3: Culinary Bio", icon: "🍲" },
+            { tier: 4 as AcademyTier, label: "Tier 4: Longevity & Fast", icon: "👑" },
           ].map((t) => {
             const isSelected = selectedTier === t.tier;
             const stat = tierStats[t.tier];
@@ -1904,31 +1921,41 @@ export default function AvoAcademy() {
                   triggerHaptic("light");
                   setSelectedTier(t.tier);
                 }}
-                className={`p-2.5 rounded-2xl border text-left transition-all cursor-pointer flex flex-col justify-between h-20 ${
+                className={`p-2.5 rounded-2xl border text-left transition-all cursor-pointer flex flex-col justify-between h-20 relative overflow-hidden ${
                   isSelected
-                    ? "bg-slate-900 text-white border-slate-900 shadow-md scale-[1.02]"
-                    : "bg-slate-50 dark:bg-zinc-800/60 hover:bg-teal-50 border-slate-200/80 dark:border-zinc-700 text-slate-800 dark:text-slate-200"
+                    ? "bg-slate-900 text-white border-slate-900 shadow-lg scale-[1.02]"
+                    : "bg-slate-50 dark:bg-zinc-800/60 hover:bg-teal-50/50 border-slate-200/80 dark:border-zinc-700 text-slate-800 dark:text-slate-200"
                 }`}
               >
-                <div className="flex items-center justify-between">
+                {/* Active Slide Highlight Indicator */}
+                {isSelected && (
+                  <motion.div
+                    layoutId="activeTierIndicator"
+                    className="absolute inset-0 bg-gradient-to-br from-slate-900 via-teal-950 to-slate-900 border border-teal-400/40 rounded-2xl -z-0"
+                    transition={{ type: "spring", stiffness: 350, damping: 30 }}
+                  />
+                )}
+
+                <div className="flex items-center justify-between relative z-10">
                   <span className="text-base">{t.icon}</span>
                   {isCompleted ? (
-                    <span className="text-[9px] font-black px-1.5 py-0.5 rounded-full bg-emerald-500 text-white flex items-center gap-0.5">
-                      <Check size={10} /> Certified
+                    <span className="text-[9px] font-black px-1.5 py-0.5 rounded-full bg-emerald-500 text-white flex items-center gap-0.5 shadow-2xs">
+                      <Check size={10} /> Done
                     </span>
                   ) : (
                     <span
                       className={`text-[9.5px] font-mono font-bold ${
-                        isSelected ? "text-teal-300" : "text-slate-500"
+                        isSelected ? "text-amber-300" : "text-slate-500"
                       }`}
                     >
                       {stat.completed}/{stat.total}
                     </span>
                   )}
                 </div>
-                <div>
+
+                <div className="relative z-10">
                   <div className="text-[11px] font-black leading-tight truncate">{t.label}</div>
-                  <div className="w-full bg-black/20 h-1 rounded-full overflow-hidden mt-1.5">
+                  <div className="w-full bg-black/30 h-1 rounded-full overflow-hidden mt-1.5">
                     <div
                       className="bg-emerald-400 h-full rounded-full transition-all duration-500"
                       style={{ width: `${(stat.completed / stat.total) * 100}%` }}
@@ -1974,8 +2001,11 @@ export default function AvoAcademy() {
             const isAudioActive = playingAudioLessonId === lesson.id && isAudioPlaying;
 
             return (
-              <div
+              <motion.div
                 key={lesson.id}
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.25, delay: idx * 0.04, ease: "easeOut" }}
                 onClick={() => handleStartLesson(lesson)}
                 className={`p-4 rounded-3xl border transition-all cursor-pointer flex flex-col justify-between min-h-[140px] group hover:shadow-md hover:scale-[1.01] active:scale-[0.99] ${
                   isCompleted
@@ -2024,7 +2054,7 @@ export default function AvoAcademy() {
                 <p className="text-[10.5px] text-slate-500 dark:text-slate-400 line-clamp-2 mt-2 font-medium">
                   {lesson.headline}
                 </p>
-              </div>
+              </motion.div>
             );
           })}
         </div>
@@ -2119,42 +2149,62 @@ export default function AvoAcademy() {
                   </h4>
                 </div>
 
-                {/* Options */}
+                {/* Options with Staggered Slide-In Animation */}
                 <div className="space-y-2">
                   {activeLesson.quiz.options.map((option, idx) => {
                     const isSelected = selectedAnswer === idx;
                     const isCorrect = idx === activeLesson.quiz.correctIndex;
 
-                    let btnClass = "border-slate-200 dark:border-zinc-700 bg-white dark:bg-zinc-800";
+                    let btnClass = "border-slate-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 hover:border-teal-300";
                     if (quizSubmitted) {
                       if (isCorrect) {
-                        btnClass = "border-emerald-500 bg-emerald-50 dark:bg-emerald-950/60 text-emerald-900 dark:text-emerald-200 font-bold";
+                        btnClass = "border-emerald-500 bg-emerald-50 dark:bg-emerald-950/60 text-emerald-900 dark:text-emerald-200 font-bold ring-2 ring-emerald-400/40";
                       } else if (isSelected && !isCorrect) {
-                        btnClass = "border-rose-500 bg-rose-50 dark:bg-rose-950/60 text-rose-900 dark:text-rose-200";
+                        btnClass = "border-rose-500 bg-rose-50 dark:bg-rose-950/60 text-rose-900 dark:text-rose-200 ring-2 ring-rose-400/30";
                       }
                     } else if (isSelected) {
-                      btnClass = "border-[#126778] bg-teal-50/80 dark:bg-teal-950/60 text-[#126778] dark:text-teal-300 font-bold";
+                      btnClass = "border-[#126778] bg-teal-50/90 dark:bg-teal-950/70 text-[#126778] dark:text-teal-300 font-bold ring-2 ring-teal-400/40 shadow-xs";
                     }
 
                     return (
-                      <button
+                      <motion.div
                         key={idx}
-                        type="button"
-                        onClick={() => handleSelectOption(idx)}
-                        disabled={quizSubmitted}
-                        className={`w-full p-3 rounded-2xl border text-left text-xs transition-all flex items-center justify-between cursor-pointer ${btnClass}`}
+                        initial={{ opacity: 0, x: 30 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{
+                          duration: 0.28,
+                          delay: idx * 0.08,
+                          ease: "easeOut",
+                        }}
                       >
-                        <span>{option}</span>
-                        {quizSubmitted && isCorrect && <CheckCircle2 size={15} className="text-emerald-600 shrink-0" />}
-                        {quizSubmitted && isSelected && !isCorrect && <XCircle size={15} className="text-rose-600 shrink-0" />}
-                      </button>
+                        <button
+                          type="button"
+                          onClick={() => handleSelectOption(idx)}
+                          disabled={quizSubmitted}
+                          className={`w-full p-3.5 rounded-2xl border text-left text-xs transition-all flex items-center justify-between cursor-pointer active:scale-98 ${btnClass}`}
+                        >
+                          <div className="flex items-center gap-2.5 min-w-0">
+                            <span className="w-5 h-5 rounded-full bg-slate-100 dark:bg-zinc-700 text-slate-700 dark:text-slate-300 text-[10px] font-black flex items-center justify-center shrink-0">
+                              {String.fromCharCode(65 + idx)}
+                            </span>
+                            <span className="leading-snug">{option}</span>
+                          </div>
+                          {quizSubmitted && isCorrect && <CheckCircle2 size={16} className="text-emerald-600 shrink-0 animate-bounce" />}
+                          {quizSubmitted && isSelected && !isCorrect && <XCircle size={16} className="text-rose-600 shrink-0" />}
+                        </button>
+                      </motion.div>
                     );
                   })}
                 </div>
 
-                {/* Feedback & Mascot */}
+                {/* Feedback & Mascot with Slide-Up Animation */}
                 {quizSubmitted && (
-                  <div className="space-y-3 animate-in fade-in zoom-in-95 duration-300">
+                  <motion.div
+                    initial={{ opacity: 0, y: 16 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.35, ease: "easeOut" }}
+                    className="space-y-3"
+                  >
                     {selectedAnswer === activeLesson.quiz.correctIndex ? (
                       <div className="flex flex-col items-center justify-center p-3.5 bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-zinc-800 dark:to-zinc-900 rounded-3xl border-2 border-emerald-400 text-center">
                         <Mascot gesture="clapping" size={100} className="drop-shadow-md my-1" />
@@ -2178,7 +2228,7 @@ export default function AvoAcademy() {
                         💡 <strong>Clinical Takeaway:</strong> {activeLesson.takeaway}
                       </div>
                     </div>
-                  </div>
+                  </motion.div>
                 )}
 
                 {/* Actions */}
