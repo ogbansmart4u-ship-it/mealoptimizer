@@ -440,6 +440,14 @@ export const router = createBrowserRouter([
         ),
       },
       {
+        path: "/grocery",
+        element: (
+          <ProtectedRoute>
+            <GroceryList />
+          </ProtectedRoute>
+        ),
+      },
+      {
         path: "/grocery-list",
         element: (
           <ProtectedRoute>
