@@ -8,6 +8,7 @@ import MascotEmptyState from "../components/MascotEmptyState";
 import AmbientBackground from "../components/AmbientBackground";
 import { toast } from "sonner";
 import { getMealLogs, getBiometrics } from "../../lib/api";
+import { openAffiliateProduct, AFFILIATE_CATALOG } from "../../lib/affiliates";
 
 // Correlation windows (ms)
 const POST_MIN = 30 * 60000;   // start looking 30 min after the meal
@@ -108,6 +109,39 @@ export default function GlucoseInsights() {
       </div>
 
       <div className="px-6 mt-6 space-y-6">
+                {/* 🩸 CONTINUOUS GLUCOSE SENSOR (CGM) PARTNER UTILITY */}
+        <div className="bg-gradient-to-br from-slate-900 via-[#0e3b43] to-slate-900 text-white rounded-3xl p-5 shadow-xl border border-teal-500/30 space-y-3">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2.5">
+              <span className="text-2xl p-2 bg-white/10 rounded-2xl">🩸</span>
+              <div>
+                <span className="text-[9.5px] font-black uppercase tracking-wider bg-amber-400 text-slate-950 px-2 py-0.5 rounded-full">
+                  Continuous Glucose Telemetry
+                </span>
+                <h3 className="text-sm sm:text-base font-black text-white leading-tight mt-0.5">
+                  Live Dexcom &amp; Levels CGM Sync
+                </h3>
+              </div>
+            </div>
+            <span className="text-[10px] font-black text-amber-300 bg-amber-400/20 px-2 py-0.5 rounded-full border border-amber-300/30">
+              $50 OFF
+            </span>
+          </div>
+
+          <p className="text-xs text-teal-100/90 font-medium leading-relaxed">
+            Want to see your blood sugar curve live after eating Jollof rice, Egusi, or Yam porridge? Connect a continuous sensor for real-time interstitial glucose telemetry.
+          </p>
+
+          <button
+            type="button"
+            onClick={() => openAffiliateProduct("levels-cgm")}
+            className="w-full py-3 bg-gradient-to-r from-amber-400 via-amber-300 to-yellow-400 text-slate-950 font-black text-xs rounded-2xl shadow-lg hover:scale-102 active:scale-98 transition-all cursor-pointer flex items-center justify-center gap-2"
+          >
+            <span>Get Levels Continuous Glucose Sensor ($50 Off Partner Offer)</span>
+            <TrendingUp size={14} />
+          </button>
+        </div>
+
         {/* How it works */}
         <div className="bg-white/60 rounded-xl p-4 flex items-start gap-2">
           <Info className="h-4 w-4 text-[#1f7a8c] flex-shrink-0 mt-0.5" />

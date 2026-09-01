@@ -7,6 +7,7 @@ import { createMealLog } from "../../lib/api";
 import { toast } from "sonner";
 import { triggerConfetti, triggerHaptic } from "../utils/celebration";
 import { speakWithSarah, stopSarahSpeech } from "../services/voiceService";
+import { openAffiliateProduct } from "../../lib/affiliates";
 import PageHeader from "../components/PageHeader";
 import Mascot from "../components/Mascot";
 import {
@@ -854,6 +855,48 @@ export default function PlanMeal() {
               </div>
             </div>
           ))}
+        </div>
+
+                {/* 🍳 HEALTHY AFRICAN CHEF GEAR & PANTRY UTILITIES */}
+        <div className="bg-white dark:bg-zinc-800/90 rounded-3xl p-4 sm:p-5 shadow-sm border border-slate-200/80 dark:border-zinc-700 space-y-3">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <span className="text-xl p-1.5 bg-amber-50 dark:bg-amber-950 text-amber-600 rounded-xl">🍳</span>
+              <div>
+                <h4 className="text-xs sm:text-sm font-black text-slate-900 dark:text-white leading-tight">
+                  Recommended Healthy Kitchen Tools
+                </h4>
+                <p className="text-[10.5px] text-slate-500 font-medium">Oil-free Akara, crispy plantain &amp; silky swallows</p>
+              </div>
+            </div>
+            <span className="text-[9.5px] font-black uppercase px-2 py-0.5 rounded-full bg-slate-100 dark:bg-zinc-700 text-slate-700 dark:text-zinc-300">
+              Chef Gear
+            </span>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+            <div
+              onClick={() => openAffiliateProduct("ninja-air-fryer")}
+              className="p-3 bg-slate-50 dark:bg-zinc-900/60 hover:bg-teal-50/50 border border-slate-200/70 dark:border-zinc-700 rounded-2xl cursor-pointer transition-all flex items-center justify-between group"
+            >
+              <div className="min-w-0">
+                <span className="font-bold text-slate-800 dark:text-slate-200 block truncate">Ninja DualZone Air Fryer</span>
+                <span className="text-[10px] text-slate-400">85% less oxidized frying oil</span>
+              </div>
+              <ChevronRight size={14} className="text-slate-400 group-hover:translate-x-0.5 transition-transform shrink-0" />
+            </div>
+
+            <div
+              onClick={() => openAffiliateProduct("vitamix-blender")}
+              className="p-3 bg-slate-50 dark:bg-zinc-900/60 hover:bg-teal-50/50 border border-slate-200/70 dark:border-zinc-700 rounded-2xl cursor-pointer transition-all flex items-center justify-between group"
+            >
+              <div className="min-w-0">
+                <span className="font-bold text-slate-800 dark:text-slate-200 block truncate">Vitamix High-Power Blender</span>
+                <span className="text-[10px] text-slate-400">Smooth swallows &amp; tough leaves</span>
+              </div>
+              <ChevronRight size={14} className="text-slate-400 group-hover:translate-x-0.5 transition-transform shrink-0" />
+            </div>
+          </div>
         </div>
 
         {/* 🌟 2 BIG ACTION BUTTONS: EXPORT TO GROCERY & LOG TO DIARY */}

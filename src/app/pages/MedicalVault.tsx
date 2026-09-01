@@ -1,3 +1,4 @@
+import { openAffiliateProduct, AFFILIATE_CATALOG } from "../../lib/affiliates";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router";
 import {

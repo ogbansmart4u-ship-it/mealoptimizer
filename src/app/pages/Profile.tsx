@@ -1,3 +1,4 @@
+import { openAffiliateProduct } from "../../lib/affiliates";
 import React, { useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router";
 import {
@@ -498,6 +499,24 @@ export default function Profile() {
           </div>
 
           <div className="divide-y divide-slate-100 text-xs">
+                        {/* 🧬 THORNE CERTIFIED DIASPORA MICRONUTRIENT SHIELD */}
+            <div className="mt-3 p-3.5 bg-gradient-to-r from-teal-50 to-emerald-50 dark:from-zinc-800 dark:to-zinc-800/80 rounded-2xl border border-teal-200 dark:border-zinc-700 flex items-center justify-between gap-3">
+              <div className="flex items-center gap-2.5 min-w-0">
+                <span className="text-xl p-1 bg-white dark:bg-zinc-700 rounded-xl shadow-2xs">☀️</span>
+                <div className="min-w-0">
+                  <span className="text-[9px] font-black uppercase text-teal-800 dark:text-teal-300">Diaspora Micronutrient Shield</span>
+                  <p className="text-xs font-black text-slate-900 dark:text-white truncate">Thorne Clinical D3+K2 &amp; Methyl-B12</p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => openAffiliateProduct("thorne-vitamin-d3")}
+                className="px-3 py-1.5 bg-[#126778] text-white text-[11px] font-black rounded-xl shadow-sm hover:scale-105 active:scale-95 transition-all shrink-0 cursor-pointer"
+              >
+                View Kit 🧬
+              </button>
+            </div>
+
             {/* Free Widgets */}
             <div className="flex items-center justify-between py-3">
               <div className="flex items-center gap-2.5">
