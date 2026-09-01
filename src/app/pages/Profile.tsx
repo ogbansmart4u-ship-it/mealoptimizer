@@ -1,4 +1,4 @@
-import { openAffiliateProduct } from "../../lib/affiliates";
+import { openAffiliateProduct, AFFILIATE_CATALOG } from "../../lib/affiliates";
 import React, { useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router";
 import {
@@ -76,6 +76,7 @@ export default function Profile() {
   const { selectedLocation, setSelectedLocation } = useLocation();
   const [showLanguageDialog, setShowLanguageDialog] = useState(false);
   const [showFamilyCircleDialog, setShowFamilyCircleDialog] = useState(false);
+  const [showPartnerStoreModal, setShowPartnerStoreModal] = useState(false);
   const currentLang = supportedLanguages.find((l) => l.code === language) || supportedLanguages[0];
 
   // Instant resilient fallback data — guarantees 0 blank frames or error screens
@@ -865,8 +866,24 @@ export default function Profile() {
           </button>
         </div>
 
-        {/* 4. Quick AI Tools Hub (WhatsApp Logger + Doctor Report + Family Care) */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+        {/* 4. Quick AI Tools Hub (WhatsApp Logger + Doctor Report + Family Care + Partner Store) */}
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          {/* Partner Store & Bio-Hacking Gear */}
+          <div
+            onClick={() => setShowPartnerStoreModal(true)}
+            className="p-4 bg-gradient-to-br from-amber-50 to-orange-50 dark:from-zinc-800 dark:to-zinc-800/90 rounded-3xl border border-amber-200/80 dark:border-zinc-700 cursor-pointer transition-all active:scale-95 shadow-xs"
+          >
+            <div className="flex items-center justify-between mb-2">
+              <div className="p-2 bg-amber-500 text-slate-950 rounded-xl shadow-xs text-base">
+                🛍️
+              </div>
+              <span className="text-[9px] font-black px-1.5 py-0.5 rounded-full bg-amber-200 text-amber-900 uppercase">
+                PARTNERS
+              </span>
+            </div>
+            <h4 className="font-black text-xs text-slate-900 dark:text-white">Partner Health Store</h4>
+            <p className="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5">CGMs, Thorne D3/B12 &amp; Air Fryers</p>
+          </div>
           {/* WhatsApp AI Hub */}
           <div
             onClick={() => setShowWhatsAppDialog(true)}
