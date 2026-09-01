@@ -1,3 +1,4 @@
+import { GROCERY_PARTNERS, getPartnersForLocation } from "../../lib/groceryAffiliates";
 import React, { useState, useEffect, useMemo, useRef } from "react";
 import {
   ChefHat,
@@ -2264,13 +2265,13 @@ export default function Recipe() {
             type="button"
             onClick={() => {
               triggerHaptic("medium");
-              navigate("/grocery");
+              setShowGroceryStoresModal(true);
             }}
             className="p-2.5 bg-white dark:bg-zinc-800 text-slate-800 dark:text-white rounded-2xl text-xs font-black shadow-sm flex items-center justify-between hover:scale-102 active:scale-98 transition-all cursor-pointer border border-teal-100 dark:border-zinc-700"
           >
             <div className="flex items-center gap-2 min-w-0">
               <span className="text-base">🛒</span>
-              <span className="truncate">Grocery &amp; Stores</span>
+              <span className="truncate">Grocery Stores ({locationPartners.length})</span>
             </div>
             <ChevronRight size={14} className="text-[#1f7a8c]" />
           </button>
@@ -2698,13 +2699,25 @@ export default function Recipe() {
                         <span className="text-xs font-black text-gray-900 uppercase tracking-wider">
                           Scaled Ingredients ({selectedRecipe.ingredients.length})
                         </span>
-                        <button
-                          onClick={() => handleExportToGrocery(selectedRecipe)}
-                          className="text-[11px] font-bold text-[#1f7a8c] hover:underline flex items-center gap-1 cursor-pointer"
-                        >
-                          <ShoppingCart size={12} />
-                          <span>Export to Market List</span>
-                        </button>
+                        <div className="flex items-center gap-2">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              triggerHaptic("medium");
+                              setShowGroceryStoresModal(true);
+                            }}
+                            className="text-[10.5px] font-black text-amber-700 bg-amber-100 dark:bg-amber-950 dark:text-amber-300 px-2 py-0.5 rounded-lg flex items-center gap-1 hover:scale-105 active:scale-95 transition-all cursor-pointer"
+                          >
+                            <span>🛒 Order from Store</span>
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => handleExportToGrocery(selectedRecipe)}
+                            className="text-[10.5px] font-bold text-[#1f7a8c] hover:underline flex items-center gap-1 cursor-pointer"
+                          >
+                            <span>+ Save List</span>
+                          </button>
+                        </div>
                       </div>
 
                       <div className="space-y-1.5">
