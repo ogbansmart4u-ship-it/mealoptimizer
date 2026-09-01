@@ -1,5 +1,6 @@
 import { GROCERY_PARTNERS, getPartnersForLocation } from "../../lib/groceryAffiliates";
 import React, { useState, useEffect, useMemo, useRef } from "react";
+import { useNavigate } from "react-router";
 import {
   ChefHat,
   Search,
@@ -1983,10 +1984,17 @@ const MASTER_RECIPES: FullRecipe[] = [
 ];
 
 export default function Recipe() {
+  const navigate = useNavigate();
   const { mode } = useAppMode();
   const { selectedLocation } = useLocation();
   const { t } = useLanguage();
   const { profile } = useUser();
+
+  // 🛒 Partner Grocery Stores Modal State
+  const [showGroceryStoresModal, setShowGroceryStoresModal] = useState(false);
+  const locationPartners = useMemo(() => {
+    return getPartnersForLocation(selectedLocation?.country || "nigeria");
+  }, [selectedLocation]);
 
   const [recipes, setRecipes] = useState<FullRecipe[]>(MASTER_RECIPES);
   const [activeView, setActiveView] = useState<"recipes" | "swaps" | "fruits_veggies">("recipes");
