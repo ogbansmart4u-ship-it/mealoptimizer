@@ -1,3 +1,4 @@
+import { speakWithSarah, stopSarahSpeech } from "../services/voiceService";
 import React, { useState, useEffect, useRef } from "react";
 import {
   Mic,
@@ -296,7 +297,7 @@ export default function VoiceFoodLogger({ isOpen, onClose, onMealSaved }: VoiceF
       } catch {}
     }
     if (typeof window !== "undefined" && window.speechSynthesis) {
-      window.speechSynthesis.cancel();
+      stopSarahSpeech();
     }
     setVoiceState("idle");
     setTranscript("");
@@ -334,42 +335,20 @@ export default function VoiceFoodLogger({ isOpen, onClose, onMealSaved }: VoiceF
 
       // Speak back response if not muted
       if (!voiceMuted && typeof window !== "undefined" && window.speechSynthesis) {
-        speakAvoResponse(parsed.spokenResponse);
+        speakSarahResponse(parsed.spokenResponse);
       }
     }, 600);
   };
 
-  const speakAvoResponse = (text: string) => {
-    if (typeof window === "undefined" || !("speechSynthesis" in window)) return;
-
-    window.speechSynthesis.cancel();
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.rate = 1.02; // Friendly, natural conversational pace
-    utterance.pitch = 1.15; // Cheerful, warm mascot tone
-
-    // Try to pick an English voice
-    const voices = window.speechSynthesis.getVoices();
-    const preferredVoice =
-      voices.find((v) => v.lang === "en-NG") ||
-      voices.find((v) => v.lang === "en-GB" && v.name.includes("Natural")) ||
-      voices.find((v) => v.lang.startsWith("en"));
-    if (preferredVoice) {
-      utterance.voice = preferredVoice;
-    }
-
-    utterance.onstart = () => {
-      setVoiceState("speaking");
-    };
-
-    utterance.onend = () => {
-      setVoiceState("ready");
-    };
-
-    utterance.onerror = () => {
-      setVoiceState("ready");
-    };
-
-    window.speechSynthesis.speak(utterance);
+  const speakSarahResponse = (text: string) => {
+    stopSarahSpeech();
+    speakWithSarah(text, {
+      rate: 0.96,
+      pitch: 1.02,
+      onStart: () => setVoiceState("speaking"),
+      onEnd: () => setVoiceState("ready"),
+      onError: () => setVoiceState("ready"),
+    });
   };
 
   const handleSaveMeal = async () => {

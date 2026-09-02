@@ -1,132 +1,129 @@
-import { useState } from "react";
-import { Plus, Camera, Utensils, X, MessageSquare, Mic, ShoppingCart, Sparkles } from "lucide-react";
+import React, { useState } from "react";
+import { Camera, MessageSquare, Mic, X, Sparkles } from "lucide-react";
 import { useNavigate } from "react-router";
 import WhatsAppConnectDialog from "./WhatsAppConnectDialog";
 import VoiceFoodLogger from "./VoiceFoodLogger";
-import SmartGroceryPlanner from "./SmartGroceryPlanner";
-
-type QuickAction = {
-  id: string;
-  label: string;
-  icon: any;
-  color: string;
-  route: string;
-};
-
-const QUICK_ACTIONS: QuickAction[] = [
-  {
-    id: "voice-log",
-    label: "Voice Log (Pidgin/English)",
-    icon: Mic,
-    color: "bg-gradient-to-r from-rose-500 to-pink-600",
-    route: "voice",
-  },
-  {
-    id: "whatsapp-log",
-    label: "WhatsApp AI Bot",
-    icon: MessageSquare,
-    color: "bg-gradient-to-r from-emerald-500 to-teal-600",
-    route: "whatsapp",
-  },
-  {
-    id: "market-checklist",
-    label: "Smart Market List",
-    icon: ShoppingCart,
-    color: "bg-gradient-to-r from-amber-500 to-orange-600",
-    route: "grocery",
-  },
-  {
-    id: "log-meal",
-    label: "Snap Meal Photo",
-    icon: Camera,
-    color: "bg-gradient-to-r from-blue-500 to-cyan-600",
-    route: "/logs",
-  },
-  {
-    id: "plan-meal",
-    label: "Plan Balanced Meal",
-    icon: Utensils,
-    color: "bg-gradient-to-r from-teal-600 to-emerald-700",
-    route: "/plan-meal",
-  },
-];
+import LocalFoodScanner from "./LocalFoodScanner";
+import SmartVideoConcierge from "./SmartVideoConcierge";
+import { triggerHaptic } from "../utils/celebration";
 
 export default function QuickActionsFAB() {
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const [showWhatsAppModal, setShowWhatsAppModal] = useState(false);
   const [showVoiceModal, setShowVoiceModal] = useState(false);
-  const [showGroceryModal, setShowGroceryModal] = useState(false);
+  const [showScannerModal, setShowScannerModal] = useState(false);
+  const [showSarahConcierge, setShowSarahConcierge] = useState(false);
 
-  const handleActionClick = (route: string) => {
-    if (route === "whatsapp") {
-      setShowWhatsAppModal(true);
-    } else if (route === "voice") {
-      setShowVoiceModal(true);
-    } else if (route === "grocery") {
-      setShowGroceryModal(true);
-    } else {
-      navigate(route);
-    }
-    setIsOpen(false);
+  const toggleMenu = () => {
+    triggerHaptic("medium");
+    setIsOpen(!isOpen);
   };
 
   return (
     <>
-      {/* Floating Action Container with High Z-Index so it stays on top of BottomNav */}
-      <div className="fixed bottom-22 right-5 z-[60] select-none">
-        {/* Expanded Floating Popups */}
+      {/* 🌟 10X FLOATING ACTION BUTTON CONTAINER */}
+      <div className="fixed bottom-22 right-4 sm:right-6 z-[60] select-none">
+        {/* Expanded 3 Curated Glassmorphic Action Items */}
         {isOpen && (
-          <div className="absolute bottom-16 right-0 flex flex-col gap-2.5 mb-2.5 items-end">
-            {QUICK_ACTIONS.map((action, index) => {
-              const Icon = action.icon;
-              return (
-                <button
-                  key={action.id}
-                  onClick={() => handleActionClick(action.route)}
-                  className={`${action.color} text-white rounded-2xl px-4 py-3 shadow-xl hover:shadow-2xl transition-all flex items-center gap-3 active:scale-95 cursor-pointer border border-white/20`}
-                  style={{
-                    animation: `slideUpFade 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards`,
-                    animationDelay: `${index * 30}ms`,
-                  }}
-                >
-                  <span className="text-xs font-black tracking-wide whitespace-nowrap shadow-xs drop-shadow-xs">
-                    {action.label}
-                  </span>
-                  <div className="p-1.5 bg-white/20 rounded-xl shadow-xs">
-                    <Icon className="h-4 w-4 text-white" />
-                  </div>
-                </button>
-              );
-            })}
+          <div className="absolute bottom-16 right-0 flex flex-col gap-2.5 mb-2 items-end z-10">
+            {/* Action 1: Ask Sarah AI Voice Companion */}
+            <button
+              type="button"
+              onClick={() => {
+                triggerHaptic("medium");
+                setIsOpen(false);
+                setShowSarahConcierge(true);
+              }}
+              className="group bg-gradient-to-r from-slate-900 via-[#126778] to-slate-900 text-white rounded-2xl pl-4 pr-3 py-2.5 shadow-2xl border border-teal-400/40 hover:scale-103 active:scale-97 transition-all flex items-center gap-3 cursor-pointer"
+            >
+              <div className="text-right">
+                <span className="text-xs font-black block leading-tight text-white group-hover:text-amber-300 transition-colors">
+                  Ask Sarah AI Voice
+                </span>
+                <span className="text-[9.5px] text-teal-200 font-bold block">
+                  Food advice &amp; meal tips
+                </span>
+              </div>
+              <div className="w-9 h-9 rounded-xl bg-teal-400/20 border border-teal-300/40 flex items-center justify-center text-lg shadow-inner group-hover:scale-110 transition-transform shrink-0">
+                👩🏾‍💼
+              </div>
+            </button>
+
+            {/* Action 2: Snap Plate (AI Vision Camera) */}
+            <button
+              type="button"
+              onClick={() => {
+                triggerHaptic("medium");
+                setIsOpen(false);
+                setShowScannerModal(true);
+              }}
+              className="group bg-gradient-to-r from-[#126778] via-[#0d9488] to-[#14b8a6] text-white rounded-2xl pl-4 pr-3 py-2.5 shadow-2xl border border-white/20 hover:scale-103 active:scale-97 transition-all flex items-center gap-3 cursor-pointer"
+            >
+              <div className="text-right">
+                <span className="text-xs font-black block leading-tight text-white group-hover:text-emerald-200 transition-colors">
+                  Snap Plate
+                </span>
+                <span className="text-[9.5px] text-teal-100 font-bold block">
+                  Camera AI Vision
+                </span>
+              </div>
+              <div className="w-9 h-9 rounded-xl bg-white/20 border border-white/30 flex items-center justify-center shadow-inner group-hover:scale-110 transition-transform shrink-0">
+                <Camera size={18} className="text-white" />
+              </div>
+            </button>
+
+            {/* Action 3: WhatsApp 1-Tap Food Logger */}
+            <button
+              type="button"
+              onClick={() => {
+                triggerHaptic("medium");
+                setIsOpen(false);
+                setShowWhatsAppModal(true);
+              }}
+              className="group bg-gradient-to-r from-emerald-600 to-teal-700 text-white rounded-2xl pl-4 pr-3 py-2.5 shadow-2xl border border-emerald-400/40 hover:scale-103 active:scale-97 transition-all flex items-center gap-3 cursor-pointer"
+            >
+              <div className="text-right">
+                <span className="text-xs font-black block leading-tight text-white group-hover:text-emerald-200 transition-colors">
+                  WhatsApp AI Bot
+                </span>
+                <span className="text-[9.5px] text-emerald-100 font-bold block">
+                  Snap &amp; text meals in chat
+                </span>
+              </div>
+              <div className="w-9 h-9 rounded-xl bg-white/20 border border-white/30 flex items-center justify-center shadow-inner group-hover:scale-110 transition-transform shrink-0">
+                <MessageSquare size={18} className="text-white" />
+              </div>
+            </button>
           </div>
         )}
 
-        {/* Main Glowing Floating Trigger Button */}
+        {/* 🌟 MAIN GLOWING SARAH AI FLOATING TRIGGER */}
         <button
-          onClick={() => setIsOpen(!isOpen)}
-          className={`w-14 h-14 rounded-full shadow-2xl flex items-center justify-center transition-all duration-300 hover:scale-105 active:scale-95 cursor-pointer border-2 border-white/80 ring-4 ${
+          type="button"
+          onClick={toggleMenu}
+          className={`w-13 h-13 sm:w-14 sm:h-14 rounded-full shadow-2xl flex items-center justify-center transition-all duration-300 hover:scale-105 active:scale-95 cursor-pointer border-2 border-white/90 ring-4 relative ${
             isOpen
-              ? "bg-rose-500 rotate-90 ring-rose-400/30 text-white"
-              : "bg-gradient-to-tr from-[#126778] via-[#1f7a8c] to-[#38b2ac] ring-teal-500/30 text-white shadow-teal-900/30"
+              ? "bg-slate-900 rotate-90 ring-teal-400/40 text-white"
+              : "bg-gradient-to-tr from-[#126778] via-[#0d9488] to-[#14b8a6] ring-teal-500/30 text-white shadow-teal-900/40"
           }`}
-          aria-label={isOpen ? "Close quick actions" : "Open quick actions menu"}
+          aria-label={isOpen ? "Close quick actions" : "Open Sarah AI Quick Actions"}
         >
           {isOpen ? (
             <X className="h-6 w-6 text-white" />
           ) : (
             <div className="relative flex items-center justify-center">
-              <Plus className="h-6 w-6 text-white stroke-[2.5]" />
-              <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-amber-400 rounded-full border border-white animate-ping" />
-              <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-amber-400 rounded-full border border-white" />
+              <span className="text-2xl leading-none select-none">👩🏾‍💼</span>
+              <span className="absolute -top-1 -right-1.5 w-3 h-3 bg-emerald-400 rounded-full border-2 border-slate-900 animate-ping" />
+              <span className="absolute -top-1 -right-1.5 w-3 h-3 bg-emerald-400 rounded-full border-2 border-slate-900" />
             </div>
           )}
         </button>
 
-        {/* Dark Backdrop for Floating Actions */}
+        {/* Ambient Dark Backdrop */}
         {isOpen && (
           <div
-            className="fixed inset-0 bg-slate-900/40 backdrop-blur-xs z-[-1]"
+            className="fixed inset-0 bg-slate-950/40 backdrop-blur-xs z-0"
             onClick={() => setIsOpen(false)}
           />
         )}
@@ -143,9 +140,16 @@ export default function QuickActionsFAB() {
         onClose={() => setShowVoiceModal(false)}
       />
 
-      <SmartGroceryPlanner
-        isOpen={showGroceryModal}
-        onClose={() => setShowGroceryModal(false)}
+      <LocalFoodScanner
+        isOpen={showScannerModal}
+        onClose={() => setShowScannerModal(false)}
+      />
+
+      <SmartVideoConcierge
+        isOpen={showSarahConcierge}
+        onClose={() => setShowSarahConcierge(false)}
+        onOpenScanner={() => setShowScannerModal(true)}
+        onOpenWhatsApp={() => setShowWhatsAppModal(true)}
       />
     </>
   );
