@@ -1465,7 +1465,7 @@ export default function Home() {
 
       {/* Floating Action / WhatsApp Modal */}
       <WhatsAppConnectDialog isOpen={showWhatsAppModal} onClose={() => setShowWhatsAppModal(false)} />
-      <div id="tour-fab-actions"><QuickActionsFAB /></div>
+      <div id="tour-fab-actions" />
 
       <HealthProfileWizardModal
         isOpen={showHealthWizard}

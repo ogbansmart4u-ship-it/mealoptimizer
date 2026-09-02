@@ -2,6 +2,7 @@ import { lazy, Suspense, useEffect, useRef } from "react";
 import { createBrowserRouter, useLocation, useOutlet, useNavigationType, Navigate } from "react-router";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { AppBottomNav } from "./components/BottomNav";
+import QuickActionsFAB from "./components/QuickActionsFAB";
 import OfflineBanner from "./components/OfflineBanner";
 import { useSwipeNavigation, MAIN_NAV_TABS } from "./hooks/useSwipeNavigation";
 
@@ -197,6 +198,7 @@ function RootLayout() {
           <Suspense fallback={<PageLoader />}>{outlet}</Suspense>
         </motion.div>
       </AnimatePresence>
+      {showNav && <QuickActionsFAB />}
       {showNav && <AppBottomNav />}
     </>
   );
