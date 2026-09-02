@@ -77,6 +77,7 @@ export default function Profile() {
   const [showLanguageDialog, setShowLanguageDialog] = useState(false);
   const [showFamilyCircleDialog, setShowFamilyCircleDialog] = useState(false);
   const [showPartnerStoreModal, setShowPartnerStoreModal] = useState(false);
+  const [partnerFilter, setPartnerFilter] = useState<string>("all");
   const currentLang = supportedLanguages.find((l) => l.code === language) || supportedLanguages[0];
 
   // Instant resilient fallback data — guarantees 0 blank frames or error screens
