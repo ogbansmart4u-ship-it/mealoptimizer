@@ -3,7 +3,7 @@ import { Crown, Check, Sparkles, X, Loader2 } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "./ui/dialog";
 import { Button } from "./ui/button";
 import { useNavigate } from "react-router";
-import { processPayment, CurrencyCode, PlanTier, getSubscriptionStatus } from "../../lib/payment";
+import { processPayment, BillingCycle, CurrencyCode, PlanTier, getSubscriptionStatus } from "../../lib/payment";
 import { toast } from "sonner";
 import { triggerConfetti, triggerHaptic } from "../utils/celebration";
 import Mascot from "./Mascot";
@@ -21,6 +21,7 @@ export default function UpgradeProModal({
 }: UpgradeProModalProps) {
   const navigate = useNavigate();
   const [isUpgrading, setIsUpgrading] = useState(false);
+  const [selectedCycle, setSelectedCycle] = useState<BillingCycle>("monthly");
 
   const handleQuickUpgrade = async () => {
     setIsUpgrading(true);
@@ -29,7 +30,7 @@ export default function UpgradeProModal({
       await processPayment({
         plan: "pro",
         currency: "USD",
-        cycle: "monthly",
+        cycle: selectedCycle,
         onSuccess: () => {
           triggerHaptic("milestone");
           triggerConfetti("fireworks");
@@ -76,13 +77,47 @@ export default function UpgradeProModal({
             ))}
           </div>
 
-          {/* Pricing CTA */}
-          <div className="text-center py-1">
-            <div className="text-2xl font-black text-white">
-              $9.99 <span className="text-xs font-normal text-slate-400">/ month (or ₦4,500)</span>
-            </div>
-            <span className="text-[10px] text-teal-400 font-bold">
-              Cancel anytime with 1 tap.
+          {/* Billing Cycle Toggle (Monthly vs Annual) */}
+          <div className="flex items-center justify-center p-1 bg-slate-900 border border-slate-800 rounded-2xl">
+            <button
+              type="button"
+              onClick={() => {
+                triggerHaptic("light");
+                setSelectedCycle("monthly");
+              }}
+              className={`flex-1 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                selectedCycle === "monthly"
+                  ? "bg-slate-800 text-white shadow-sm"
+                  : "text-slate-400 hover:text-white"
+              }`}
+            >
+              $9.99 / Month
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                triggerHaptic("light");
+                setSelectedCycle("annual");
+              }}
+              className={`flex-1 py-2 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+                selectedCycle === "annual"
+                  ? "bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 font-black shadow-sm"
+                  : "text-slate-400 hover:text-white"
+              }`}
+            >
+              <span>$79 / Year</span>
+              <span className="bg-black/20 text-[9px] px-1.5 py-0.2 rounded-full font-black uppercase">
+                Save 35%
+              </span>
+            </button>
+          </div>
+
+          {/* Pricing Summary */}
+          <div className="text-center py-0.5">
+            <span className="text-[10.5px] text-teal-300 font-bold">
+              {selectedCycle === "annual"
+                ? "✨ Billed as $79/year (Equivalent to only $6.58/mo)"
+                : "✨ Flexible monthly billing — cancel anytime with 1 tap"}
             </span>
           </div>
 
@@ -94,10 +129,10 @@ export default function UpgradeProModal({
             >
               {isUpgrading ? (
                 <span className="flex items-center gap-2">
-                  <Loader2 size={14} className="animate-spin" /> Activating PRO...
+                  <Loader2 size={14} className="animate-spin" /> Connecting to Stripe...
                 </span>
               ) : (
-                "Upgrade to PRO Now"
+                selectedCycle === "annual" ? "Upgrade to Annual PRO ($79/yr)" : "Upgrade to Monthly PRO ($9.99/mo)"
               )}
             </Button>
 
