@@ -12,6 +12,10 @@ export const STRIPE_PAYMENT_LINKS = {
     monthly: (import.meta as any).env?.VITE_STRIPE_FAMILY_MONTHLY_URL || "https://buy.stripe.com/test_28EfZh7ycdqW55U4HI0Fi02",
     annual: (import.meta as any).env?.VITE_STRIPE_FAMILY_ANNUAL_URL || "https://buy.stripe.com/test_3cI28rg4Ifz469Y5LM0Fi03",
   },
+  enterprise: {
+    monthly: (import.meta as any).env?.VITE_STRIPE_ENTERPRISE_MONTHLY_URL || "https://buy.stripe.com/test_5kQ00j2dS2Micym4HI0Fi00",
+    annual: (import.meta as any).env?.VITE_STRIPE_ENTERPRISE_ANNUAL_URL || "https://buy.stripe.com/test_7sYeVddWA2Mi9ma4HI0Fi01",
+  },
 };
 
 /**
@@ -21,7 +25,7 @@ export const STRIPE_PAYMENT_LINKS = {
 
 export type CurrencyCode = "USD" | "GBP" | "NGN";
 export type BillingCycle = "monthly" | "annual";
-export type PlanTier = "free" | "pro" | "family";
+export type PlanTier = "free" | "pro" | "family" | "enterprise";
 
 export interface PlanPricing {
   id: PlanTier;
@@ -77,6 +81,26 @@ export const SUBSCRIPTION_PLANS: PlanPricing[] = [
       "Diaspora vs Local Ingredient Swaps (Lagos vs London/US)",
     ],
     cta: "Upgrade to PRO",
+  },
+  {
+    id: "enterprise",
+    name: "Clinic & Provider Hub 🏥",
+    badge: "B2B Enterprise",
+    description: "For Endocrinologists, Dietitians, Clinics & HMO Networks",
+    prices: {
+      USD: { monthly: 99, annual: 890, symbol: "$" },
+      GBP: { monthly: 79, annual: 699, symbol: "£" },
+      NGN: { monthly: 65000, annual: 590000, symbol: "₦" },
+    },
+    features: [
+      "Full Access to B2B Clinician & Multi-Patient Dashboard",
+      "Unlimited Patient Glycemic & Potassium/Sodium Risk Roster",
+      "HMO Provider Integrations (AXA, Hygeia, Reliance, Bupa)",
+      "Automated 14-Day & 30-Day Certified Doctor PDF Dossiers",
+      "WhatsApp Physician Patient Feedback Dispatcher",
+      "Custom Clinic Branding & Dedicated Account Dietitian",
+    ],
+    cta: "Unlock Enterprise Clinic Hub",
   },
   {
     id: "family",

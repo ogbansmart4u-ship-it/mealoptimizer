@@ -75,7 +75,7 @@ export default function UpgradePro() {
           triggerConfetti("fireworks");
           toast.success(
             `🎉 You are now subscribed to ${
-              plan === "family" ? "Diaspora Family Care" : "MealOptimiza PRO"
+              plan === "enterprise" ? "Enterprise Clinic & Provider Hub" : plan === "family" ? "Diaspora Family Care" : "MealOptimiza PRO"
             }!`
           );
         },
