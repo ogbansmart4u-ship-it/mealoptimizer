@@ -883,6 +883,33 @@ export default function Profile() {
           </button>
         </div>
 
+        
+        {/* 🏥 B2B CLINICIAN & DIETITIAN ENTERPRISE PORTAL BANNER */}
+        <div
+          onClick={() => navigate("/clinician-portal")}
+          className="bg-gradient-to-r from-[#0a232a] via-[#126778] to-[#0f4c5c] rounded-3xl p-4 sm:p-5 text-white shadow-xl border border-teal-400/30 flex items-center justify-between gap-3.5 cursor-pointer hover:opacity-95 active:scale-[0.99] transition-all relative overflow-hidden"
+        >
+          <div className="absolute right-0 top-0 w-36 h-36 bg-teal-400/10 rounded-full blur-xl pointer-events-none" />
+          <div className="flex items-center gap-3.5 relative z-10 min-w-0">
+            <div className="p-3 bg-white/15 backdrop-blur-md rounded-2xl border border-white/20 text-2xl shrink-0">
+              🩺
+            </div>
+            <div className="min-w-0">
+              <div className="flex items-center gap-2">
+                <h3 className="font-black text-sm text-white">B2B Clinician &amp; Provider Hub</h3>
+                <span className="text-[9px] font-black px-2 py-0.5 rounded-full bg-teal-400 text-slate-950 uppercase tracking-wider">
+                  ENTERPRISE
+                </span>
+              </div>
+              <p className="text-[11px] text-teal-100/90 mt-0.5 truncate">
+                Multi-patient glycemic telemetry, HMO integration &amp; clinical dietetics
+              </p>
+            </div>
+          </div>
+          <ChevronRight className="h-5 w-5 text-teal-300 shrink-0 relative z-10" />
+        </div>
+
+
         {/* 4. Quick AI Tools Hub (WhatsApp Logger + Doctor Report + Family Care + Partner Store) */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
           {/* Partner Store & Bio-Hacking Gear */}
