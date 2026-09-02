@@ -134,35 +134,42 @@ export default function TermsAndConditions() {
           </div>
         </div>
 
-        {/* Intellectual Property */}
+        {/* Intellectual Property & Anti-Cloning Protections */}
         <div className="bg-white rounded-3xl shadow-lg p-6 mb-6">
           <div className="flex items-center gap-3 mb-4">
             <div className="bg-[#e63946] rounded-full p-3">
               <ScaleIcon className="h-5 w-5 text-white" />
             </div>
-            <h2 className="text-lg text-[#1f7a8c]">Intellectual Property</h2>
+            <h2 className="text-lg text-[#1f7a8c]">Intellectual Property &amp; Proprietary Rights</h2>
           </div>
           
           <div className="space-y-3 text-sm text-gray-700">
             <p>
-              All content, features, and functionality of MealOptimiza are owned by us and are protected by international copyright, trademark, and other intellectual property laws.
+              All trademarks, service marks, trade names, visual interfaces, proprietary algorithms, clinical food scoring databases, AI prompt architectures, and software code of <strong>MealOptimiza™</strong> are the exclusive property of MealOptimiza and protected by international intellectual property, copyright, and trade secret laws.
             </p>
             
-            <p className="font-medium text-gray-800">You may NOT:</p>
-            <ul className="space-y-1 pl-4">
+            <p className="font-bold text-gray-900">Strict Prohibitions — You may NOT:</p>
+            <ul className="space-y-1.5 pl-4">
               <li className="flex gap-2">
-                <span className="text-[#1f7a8c] mt-1">•</span>
-                <span>Copy, modify, or distribute our content without permission</span>
+                <span className="text-rose-600 font-bold mt-0.5">•</span>
+                <span>Clone, duplicate, copy, or create derivative works of this application or its UI/UX layout</span>
               </li>
               <li className="flex gap-2">
-                <span className="text-[#1f7a8c] mt-1">•</span>
-                <span>Reverse engineer or decompile the application</span>
+                <span className="text-rose-600 font-bold mt-0.5">•</span>
+                <span>Scrape, extract, or harvest our proprietary African glycemic index dataset or clinical nutrition database</span>
               </li>
               <li className="flex gap-2">
-                <span className="text-[#1f7a8c] mt-1">•</span>
-                <span>Remove any copyright or proprietary notices</span>
+                <span className="text-rose-600 font-bold mt-0.5">•</span>
+                <span>Decompile, reverse-engineer, disassemble, or attempt to derive the source code or underlying architecture</span>
+              </li>
+              <li className="flex gap-2">
+                <span className="text-rose-600 font-bold mt-0.5">•</span>
+                <span>Use automated bots, spiders, or crawlers to access our servers, APIs, or database records</span>
               </li>
             </ul>
+            <p className="text-xs text-gray-500 pt-1">
+              Violations are subject to immediate legal action and statutory damages under applicable international copyright, computer misuse, and intellectual property statutes.
+            </p>
           </div>
         </div>
 

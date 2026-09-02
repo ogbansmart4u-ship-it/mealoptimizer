@@ -18,4 +18,27 @@ export default defineConfig({
     },
   },
   assetsInclude: ['**/*.svg', '**/*.csv'],
+  // 🛡️ SECURITY & PRODUCTION HARDENING (Anti-Cloning & Code Obfuscation)
+  build: {
+    // 1. Disables source maps so Chrome DevTools cannot reconstruct TypeScript source code
+    sourcemap: false,
+    // 2. High-compression minification & variable name mangling
+    minify: 'esbuild',
+    target: 'es2020',
+    cssMinify: true,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ['react', 'react-dom', 'react-router'],
+          motion: ['motion/react'],
+          icons: ['lucide-react'],
+        },
+      },
+    },
+  },
+  esbuild: {
+    // 3. Automatically strips internal console.logs and debuggers in production build
+    drop: process.env.NODE_ENV === 'production' ? ['console', 'debugger'] : [],
+    legalComments: 'none',
+  },
 })

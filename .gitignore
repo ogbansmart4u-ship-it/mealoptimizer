@@ -12,3 +12,10 @@ dist-ssr
 *.sln
 *.sw?
 tmp_test
+
+# 🛡️ Environment Variables & API Secrets
+.env
+.env.*
+*.env
+*.env.local
+*.env.production
