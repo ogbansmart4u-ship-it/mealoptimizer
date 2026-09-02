@@ -83,6 +83,8 @@ export default function SmartVideoConcierge({
   const [aiResponse, setAiResponse] = useState<string | null>(null);
   const [isThinking, setIsThinking] = useState(false);
   const [isListening, setIsListening] = useState(false);
+  const silenceTimerRef = useRef<any>(null);
+  const speechRecognitionRef = useRef<any>(null);
 
   const isProfileComplete = Boolean(
     profile?.age && profile?.weight && (profile?.medicalCondition || (profile?.conditions && profile.conditions.length > 0))
@@ -189,7 +191,7 @@ export default function SmartVideoConcierge({
     }, 450);
   };
 
-  // Voice Input (Microphone Speech-to-Text)
+  // Voice Input (Microphone Speech-to-Text with Extended 60s Duration & 3s Silence Debounce)
   const handleVoiceInput = () => {
     const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
     if (!SpeechRecognition) {
@@ -197,32 +199,85 @@ export default function SmartVideoConcierge({
       return;
     }
 
+    if (isListening) {
+      // User tapped mic button to stop manually
+      if (speechRecognitionRef.current) {
+        try { speechRecognitionRef.current.stop(); } catch {}
+      }
+      setIsListening(false);
+      if (silenceTimerRef.current) clearTimeout(silenceTimerRef.current);
+      if (userQuery.trim()) {
+        handleAskQuestion(userQuery);
+      }
+      return;
+    }
+
     triggerHaptic("medium");
-    const recognition = new SpeechRecognition();
-    recognition.lang = "en-US";
-    recognition.interimResults = false;
+    stopSarahSpeech();
+    setIsSpeaking(false);
 
-    recognition.onstart = () => {
-      setIsListening(true);
-      toast.info("Listening... Ask Sarah your nutrition question!");
-    };
+    try {
+      const recognition = new SpeechRecognition();
+      recognition.lang = selectedLanguage === "fr" ? "fr-FR" : "en-US";
+      recognition.continuous = true;
+      recognition.interimResults = true;
+      recognition.maxAlternatives = 1;
 
-    recognition.onresult = (event: any) => {
-      const transcript = event.results[0][0].transcript;
+      let capturedText = "";
+
+      recognition.onstart = () => {
+        setIsListening(true);
+        toast.info("🎙️ Listening... Speak your full question! (Tap mic when done)");
+      };
+
+      recognition.onresult = (event: any) => {
+        let interim = "";
+        for (let i = 0; i < event.results.length; i++) {
+          const trans = event.results[i][0].transcript;
+          if (event.results[i].isFinal) {
+            capturedText += trans + " ";
+          } else {
+            interim += trans;
+          }
+        }
+        const full = (capturedText + interim).trim();
+        setUserQuery(full);
+
+        // Adaptive Silence Debounce: Wait for 3.0 full seconds of silence before auto-answering
+        if (silenceTimerRef.current) clearTimeout(silenceTimerRef.current);
+        silenceTimerRef.current = setTimeout(() => {
+          if (full.length > 2) {
+            try { recognition.stop(); } catch {}
+            setIsListening(false);
+            handleAskQuestion(full);
+          }
+        }, 3000);
+      };
+
+      recognition.onerror = (event: any) => {
+        console.warn("[VoiceAI] Speech recognition error:", event.error);
+        setIsListening(false);
+        if (silenceTimerRef.current) clearTimeout(silenceTimerRef.current);
+      };
+
+      recognition.onend = () => {
+        setIsListening(false);
+        if (silenceTimerRef.current) clearTimeout(silenceTimerRef.current);
+      };
+
+      speechRecognitionRef.current = recognition;
+      recognition.start();
+
+      // Generous 60-second maximum speaking window
+      setTimeout(() => {
+        if (speechRecognitionRef.current && isListening) {
+          try { speechRecognitionRef.current.stop(); } catch {}
+        }
+      }, 60000);
+    } catch (err) {
+      console.warn("Could not start speech recognition:", err);
       setIsListening(false);
-      handleAskQuestion(transcript);
-    };
-
-    recognition.onerror = () => {
-      setIsListening(false);
-      toast.error("Could not capture voice. Please type your question.");
-    };
-
-    recognition.onend = () => {
-      setIsListening(false);
-    };
-
-    recognition.start();
+    }
   };
 
   const handleStartHealthProfileSetup = () => {

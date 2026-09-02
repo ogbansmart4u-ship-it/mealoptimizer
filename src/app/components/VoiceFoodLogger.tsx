@@ -215,6 +215,7 @@ export default function VoiceFoodLogger({ isOpen, onClose, onMealSaved }: VoiceF
   });
 
   const recognitionRef = useRef<any>(null);
+  const silenceTimerRef = useRef<any>(null);
 
   // Check speech synthesis support on mount
   useEffect(() => {
@@ -233,9 +234,11 @@ export default function VoiceFoodLogger({ isOpen, onClose, onMealSaved }: VoiceF
     const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
     if (SpeechRecognition) {
       const recognition = new SpeechRecognition();
-      recognition.continuous = false;
+      recognition.continuous = true;
       recognition.interimResults = true;
       recognition.lang = "en-NG"; // Supports Nigerian English & cultural accents
+
+      let capturedText = "";
 
       recognition.onstart = () => {
         setVoiceState("listening");
@@ -243,19 +246,34 @@ export default function VoiceFoodLogger({ isOpen, onClose, onMealSaved }: VoiceF
       };
 
       recognition.onresult = (event: any) => {
-        const text = Array.from(event.results)
-          .map((r: any) => r[0].transcript)
-          .join("");
-        setTranscript(text);
+        let interim = "";
+        for (let i = 0; i < event.results.length; i++) {
+          const trans = event.results[i][0].transcript;
+          if (event.results[i].isFinal) {
+            capturedText += trans + " ";
+          } else {
+            interim += trans;
+          }
+        }
+        const full = (capturedText + interim).trim();
+        setTranscript(full);
+
+        // Extended 3.0-second silence window
+        if (silenceTimerRef.current) clearTimeout(silenceTimerRef.current);
+        silenceTimerRef.current = setTimeout(() => {
+          if (full.length > 2) {
+            try { recognition.stop(); } catch {}
+          }
+        }, 3000);
       };
 
       recognition.onerror = (event: any) => {
         console.warn("[VoiceAI] Speech Recognition error:", event.error);
         setVoiceState("idle");
+        if (silenceTimerRef.current) clearTimeout(silenceTimerRef.current);
       };
 
       recognition.onend = () => {
-        // Automatically process once user stops speaking
         setVoiceState((current) => {
           if (current === "listening") {
             setTimeout(() => {
