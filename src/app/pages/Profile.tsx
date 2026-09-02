@@ -1296,6 +1296,118 @@ export default function Profile() {
           </Dialog>
         </div>
 
+        
+      {/* 🛍️ 10X PARTNER HEALTH STORE & BIO-HACKING VAULT MODAL */}
+      <Dialog open={showPartnerStoreModal} onOpenChange={setShowPartnerStoreModal}>
+        <DialogContent className="sm:max-w-2xl rounded-3xl p-5 sm:p-6 bg-slate-950 text-white border border-teal-500/30 max-h-[90vh] flex flex-col">
+          <DialogHeader className="text-left space-y-1 shrink-0">
+            <div className="flex items-center gap-2.5">
+              <div className="p-2.5 bg-gradient-to-tr from-amber-400 to-amber-600 text-slate-950 rounded-2xl text-xl shadow-lg">
+                🛍️
+              </div>
+              <div>
+                <DialogTitle className="text-lg sm:text-xl font-black text-white flex items-center gap-2">
+                  <span>Partner Health Store</span>
+                  <span className="text-[9.5px] font-black px-2 py-0.5 rounded-full bg-emerald-400 text-slate-950 uppercase">
+                    Vetted Clinical Gear
+                  </span>
+                </DialogTitle>
+                <DialogDescription className="text-xs text-teal-200">
+                  Doctor &amp; dietitian-approved tools, CGMs, at-home lab kits &amp; kitchen gear
+                </DialogDescription>
+              </div>
+            </div>
+          </DialogHeader>
+
+          {/* Category Filter Pills */}
+          <div className="flex items-center gap-1.5 overflow-x-auto py-2 shrink-0 no-scrollbar">
+            {[
+              { id: "all", label: "All Gear (8)" },
+              { id: "cgm", label: "CGMs & Sensors 🩸" },
+              { id: "supplement", label: "Supplements 🧬" },
+              { id: "lab_test", label: "Lab Kits 🧪" },
+              { id: "kitchen", label: "Kitchen 🍳" },
+            ].map((cat) => (
+              <button
+                key={cat.id}
+                type="button"
+                onClick={() => {
+                  triggerHaptic("light");
+                  setPartnerFilter(cat.id);
+                }}
+                className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all shrink-0 cursor-pointer ${
+                  partnerFilter === cat.id
+                    ? "bg-gradient-to-r from-teal-500 to-emerald-500 text-slate-950 font-black shadow-sm"
+                    : "bg-white/10 hover:bg-white/15 text-slate-300"
+                }`}
+              >
+                {cat.label}
+              </button>
+            ))}
+          </div>
+
+          {/* Product Cards Scroll View */}
+          <div className="flex-1 overflow-y-auto space-y-3 pr-1 py-2">
+            {Object.values(AFFILIATE_CATALOG)
+              .filter((p) => partnerFilter === "all" || p.category === partnerFilter)
+              .map((product) => (
+                <div
+                  key={product.id}
+                  className="p-4 rounded-2xl bg-white/10 border border-white/10 hover:border-teal-400/40 transition-all space-y-2.5"
+                >
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="flex items-center gap-3">
+                      <span className="text-2xl p-2 bg-white/10 rounded-2xl shadow-inner shrink-0">
+                        {product.emoji}
+                      </span>
+                      <div>
+                        <span className="text-[9.5px] font-black uppercase text-teal-300 tracking-wider">
+                          {product.brand}
+                        </span>
+                        <h4 className="text-sm font-black text-white leading-tight">
+                          {product.name}
+                        </h4>
+                        <p className="text-[11px] text-slate-300 mt-0.5">
+                          {product.tagline}
+                        </p>
+                      </div>
+                    </div>
+                    {product.discountOffer && (
+                      <span className="text-[9.5px] font-black px-2 py-0.5 rounded-full bg-amber-400/20 text-amber-300 border border-amber-400/30 shrink-0">
+                        {product.discountOffer}
+                      </span>
+                    )}
+                  </div>
+
+                  {/* Clinical Reason */}
+                  <div className="p-2.5 bg-slate-900/80 rounded-xl text-[11px] text-teal-100 flex items-start gap-2">
+                    <span className="text-amber-400 font-bold shrink-0">💡 Clinical Note:</span>
+                    <span>{product.clinicalReason}</span>
+                  </div>
+
+                  {/* CTA Button */}
+                  <div className="flex items-center justify-between pt-1">
+                    <span className="text-xs font-bold text-slate-400">
+                      {product.priceEstimate ? `Est. ${product.priceEstimate}` : "Exclusive Member Offer"}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        triggerHaptic("medium");
+                        openAffiliateProduct(product.id);
+                      }}
+                      className="px-4 py-2 bg-gradient-to-r from-teal-500 via-teal-400 to-emerald-400 hover:opacity-95 text-slate-950 font-black text-xs rounded-xl shadow-md transition-all active:scale-95 cursor-pointer flex items-center gap-1.5"
+                    >
+                      <span>Get Partner Offer</span>
+                      <span>➔</span>
+                    </button>
+                  </div>
+                </div>
+              ))}
+          </div>
+        </DialogContent>
+      </Dialog>
+
         {/* 8. WhatsApp Connect Dialog Modal */}
         <WhatsAppConnectDialog isOpen={showWhatsAppDialog} onClose={() => setShowWhatsAppDialog(false)} />
 
