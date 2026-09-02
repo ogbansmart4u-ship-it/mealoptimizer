@@ -5,8 +5,8 @@
  */
 export const STRIPE_PAYMENT_LINKS = {
   pro: {
-    monthly: (import.meta as any).env?.VITE_STRIPE_PRO_MONTHLY_URL || "https://buy.stripe.com/test_7sYeVddWA2Mi9ma4HI0Fi01",
-    annual: (import.meta as any).env?.VITE_STRIPE_PRO_ANNUAL_URL || "https://buy.stripe.com/test_5kQ00j2dS2Micym4HI0Fi00",
+    monthly: (import.meta as any).env?.VITE_STRIPE_PRO_MONTHLY_URL || "https://buy.stripe.com/test_5kQ00j2dS2Micym4HI0Fi00",
+    annual: (import.meta as any).env?.VITE_STRIPE_PRO_ANNUAL_URL || "https://buy.stripe.com/test_7sYeVddWA2Mi9ma4HI0Fi01",
   },
   family: {
     monthly: (import.meta as any).env?.VITE_STRIPE_FAMILY_MONTHLY_URL || "https://buy.stripe.com/test_28EfZh7ycdqW55U4HI0Fi02",
