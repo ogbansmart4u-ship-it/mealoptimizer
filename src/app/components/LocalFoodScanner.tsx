@@ -1,3 +1,4 @@
+import HandPortionGuide from "./HandPortionGuide";
 import { useState, useEffect, useRef } from "react";
 import { MapPin, Sparkles, Mic, MicOff, Volume2, TrendingUp, ChevronRight, X, Camera, Upload, ScanBarcode, CheckCircle2, AlertTriangle, Ban, Lightbulb, Share2, ArrowLeft, RefreshCw, BookmarkPlus } from "lucide-react";
 import { useNavigate } from "react-router";

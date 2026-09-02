@@ -1,3 +1,4 @@
+import HandPortionGuide from "./HandPortionGuide";
 import { speakWithSarah, stopSarahSpeech } from "../services/voiceService";
 import React, { useState, useEffect, useRef } from "react";
 import {

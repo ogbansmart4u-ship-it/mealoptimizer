@@ -1,3 +1,4 @@
+import { soundEffects } from "../utils/soundEffects";
 import React, { useState, useEffect, useRef } from "react";
 import {
   Play,
@@ -83,6 +84,29 @@ export default function SmartVideoConcierge({
   const [aiResponse, setAiResponse] = useState<string | null>(null);
   const [isThinking, setIsThinking] = useState(false);
   const [isListening, setIsListening] = useState(false);
+  // 💡 PREDICTIVE SMART PROMPTS BASED ON TIME OF DAY
+  const predictivePrompts = useMemo(() => {
+    const hr = new Date().getHours();
+    if (hr >= 5 && hr < 11) {
+      return [
+        { icon: "🍳", text: "What low-sugar breakfast keeps me energized?" },
+        { icon: "💧", text: "How much water should I drink this morning?" },
+        { icon: "☕", text: "Is unsweetened Zobo tea healthy for breakfast?" },
+      ];
+    } else if (hr >= 11 && hr < 17) {
+      return [
+        { icon: "🍲", text: "What is the best swallow swap for lunch?" },
+        { icon: "🥗", text: "Why should I eat Ewedu soup before my swallow?" },
+        { icon: "🚶🏾‍♂️", text: "How do I prevent a post-lunch food coma?" },
+      ];
+    } else {
+      return [
+        { icon: "🌙", text: "What light dinner protects my fasting glucose?" },
+        { icon: "🫀", text: "What natural spices lower evening blood pressure?" },
+        { icon: "🥑", text: "Is avocado and boiled egg good for dinner?" },
+      ];
+    }
+  }, []);
   const silenceTimerRef = useRef<any>(null);
   const speechRecognitionRef = useRef<any>(null);
 

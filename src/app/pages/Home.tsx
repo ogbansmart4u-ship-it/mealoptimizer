@@ -1,3 +1,5 @@
+import MetabolicScoreRing from "../components/MetabolicScoreRing";
+import { soundEffects } from "../utils/soundEffects";
 import React, { useState, useRef, useEffect } from "react";
 import {
   Camera, Sparkles, RotateCcw, TrendingUp, Utensils, MapPin, Globe, AlertCircle, AlertTriangle, ChevronDown, ChevronUp, X,
@@ -893,6 +895,7 @@ export default function Home() {
                   type="button"
                   onClick={() => {
                     triggerHaptic("medium");
+                    soundEffects.playCameraShutter();
                     setShowLocalFoodScanner(true);
                   }}
                   className="glass-card-teal rounded-3xl p-3.5 sm:p-4 text-white shadow-xl flex flex-col items-center justify-center gap-1.5 hover:scale-[1.04] active:scale-[0.96] transition-all cursor-pointer group relative overflow-hidden ring-2 ring-teal-300/60 shadow-teal-500/20"
