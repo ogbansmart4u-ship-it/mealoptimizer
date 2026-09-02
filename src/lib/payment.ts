@@ -83,6 +83,25 @@ export const SUBSCRIPTION_PLANS: PlanPricing[] = [
     cta: "Upgrade to PRO",
   },
   {
+    id: "family",
+    name: "Diaspora Parent Care 🌍",
+    badge: "Family Healthcare",
+    description: "Remote metabolic health monitoring for parents in Africa",
+    prices: {
+      USD: { monthly: 29, annual: 249, symbol: "$" },
+      GBP: { monthly: 22, annual: 199, symbol: "£" },
+      NGN: { monthly: 14000, annual: 120000, symbol: "₦" },
+    },
+    features: [
+      "Everything in MealOptimiza PRO for up to 3 family members",
+      "Elderly Parents log meals simply via WhatsApp (No app download required)",
+      "Live WhatsApp & Email alerts for high glucose spikes",
+      "Weekly Clinical Doctor PDF summaries sent straight to your email",
+      "Dedicated Dietitian Priority Review",
+    ],
+    cta: "Start Family Care Plan",
+  },
+  {
     id: "enterprise",
     name: "Clinic & Provider Hub 🏥",
     badge: "B2B Enterprise",
@@ -102,30 +121,8 @@ export const SUBSCRIPTION_PLANS: PlanPricing[] = [
     ],
     cta: "Unlock Enterprise Clinic Hub",
   },
-  {
-    id: "family",
-    name: "Diaspora Parent Care 🌍",
-    badge: "Family Healthcare",
-    description: "Remote metabolic health monitoring for parents in Africa",
-    prices: {
-      USD: { monthly: 29, annual: 249, symbol: "$" },
-      GBP: { monthly: 22, annual: 199, symbol: "£" },
-      NGN: { monthly: 14000, annual: 120000, symbol: "₦" },
-    },
-    features: [
-      "Everything in MealOptimiza PRO for up to 3 family members",
-      "Elderly Parents log meals simply via WhatsApp (No app download required)",
-      "Live WhatsApp & Email alerts for high glucose spikes",
-      "Weekly Clinical Doctor PDF summaries sent straight to your email",
-      "Dedicated Dietitian Priority Review",
-    ],
-    cta: "Start Family Care Plan",
-  },
 ];
 
-/**
- * Gets user's current subscription status
- */
 export function getSubscriptionStatus(userId?: string): { isPro: boolean; plan: PlanTier; expiresAt?: string } {
   try {
     if (userId) {
@@ -274,7 +271,7 @@ export async function processPayment({
   // 1. STRIPE SUBSCRIPTION CHECKOUT (USD, GBP, EUR, CAD)
   // =========================================================================
   if (currency === "USD" || currency === "GBP") {
-    const planLinks = STRIPE_PAYMENT_LINKS[plan as "pro" | "family"];
+    const planLinks = STRIPE_PAYMENT_LINKS[plan as "pro" | "family" | "enterprise"];
     const targetStripeUrl = planLinks ? planLinks[cycle] : null;
 
     if (targetStripeUrl && !targetStripeUrl.includes("placeholder")) {
