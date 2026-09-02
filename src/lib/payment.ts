@@ -13,8 +13,8 @@ export const STRIPE_PAYMENT_LINKS = {
     annual: (import.meta as any).env?.VITE_STRIPE_FAMILY_ANNUAL_URL || "https://buy.stripe.com/test_3cI28rg4Ifz469Y5LM0Fi03",
   },
   enterprise: {
-    monthly: (import.meta as any).env?.VITE_STRIPE_ENTERPRISE_MONTHLY_URL || "https://buy.stripe.com/test_5kQ00j2dS2Micym4HI0Fi00",
-    annual: (import.meta as any).env?.VITE_STRIPE_ENTERPRISE_ANNUAL_URL || "https://buy.stripe.com/test_7sYeVddWA2Mi9ma4HI0Fi01",
+    monthly: (import.meta as any).env?.VITE_STRIPE_ENTERPRISE_MONTHLY_URL || "https://buy.stripe.com/test_aFa9ATcSwgD81TI7TU0Fi04",
+    annual: (import.meta as any).env?.VITE_STRIPE_ENTERPRISE_ANNUAL_URL || "https://buy.stripe.com/test_14AeVdcSw1IegOC3DE0Fi05",
   },
 };
 

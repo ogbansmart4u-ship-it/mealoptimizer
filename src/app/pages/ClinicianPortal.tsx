@@ -31,6 +31,8 @@ import BottomNav from "../components/BottomNav";
 import { useLanguage } from "../contexts/LanguageContext";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "../components/ui/dialog";
 import { toast } from "sonner";
+import { setSubscriptionStatus } from "../../lib/payment";
+import { useEffect } from "react";
 import { triggerConfetti, triggerHaptic } from "../utils/celebration";
 
 export interface ClinicianPatient {
@@ -191,6 +193,19 @@ export default function ClinicianPortal() {
     toast.info("Logged out of Clinician Provider Workspace");
   };
 
+    // 🌟 STRIPE ENTERPRISE UPGRADE SUCCESS LISTENER
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("upgrade") === "success" || params.get("plan") === "enterprise" || params.get("session_id")) {
+      setSubscriptionStatus("enterprise", 12, "active-user");
+      triggerHaptic("milestone");
+      triggerConfetti("fireworks");
+      toast.success("🎉 Enterprise Clinic Hub Activated!", {
+        description: "Your multi-patient telemetry, EMR integration, and doctor PDF features are now fully unlocked.",
+      });
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
+  }, []);
   const [patients, setPatients] = useState<ClinicianPatient[]>(MOCK_CLINICIAN_PATIENTS);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCondition, setSelectedCondition] = useState<string>("All");
