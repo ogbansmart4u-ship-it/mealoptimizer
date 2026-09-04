@@ -19,7 +19,7 @@ import { AchievementNotification } from "./components/AchievementNotification";
 import AppErrorBoundary from "./components/AppErrorBoundary";
 import { initNotificationEngine } from "../lib/notifications";
 import OfflineSyncBanner from "./components/OfflineSyncBanner";
-import PWAInstallBanner from "./components/PWAInstallBanner";
+// PWAInstallBanner removed for App Store / Play Store compliance
 
 function AchievementListener() {
   const { pendingNotification, dismissNotification } = useAchievements();
@@ -72,7 +72,7 @@ export default function App() {
                       <AchievementListener />
                       <NotificationEngineListener />
                       <OfflineSyncBanner />
-                      <PWAInstallBanner />
+                      {/* PWAInstallBanner removed */}
                       <RouterProvider router={router} />
                       <Toaster />
                     </UserProvider>

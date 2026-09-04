@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router";
 import {
   Eye,
@@ -15,6 +15,7 @@ import {
   Zap,
   CheckCircle2,
   ArrowRight,
+  HeartPulse,
 } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
@@ -51,11 +52,17 @@ export default function Login() {
     }
   }, [user?.id, navigate]);
 
-  // Tab State: "login" vs "signup"
-  const isInitialSignUp = location.pathname === "/signup";
-  const [authMode, setAuthMode] = useState<"login" | "signup">(
-    isInitialSignUp ? "signup" : "login"
-  );
+  // Tab State: Smart default to "signup" for new visitors and "login" for returning users
+  const isInitialSignUp = location.pathname === "/signup" || location.pathname === "/direct-signup";
+  const [authMode, setAuthMode] = useState<"signup" | "login">(() => {
+    if (isInitialSignUp) return "signup";
+    try {
+      const hasPreviousSession = localStorage.getItem("mealoptimiza_has_account");
+      return hasPreviousSession === "true" ? "login" : "signup";
+    } catch {
+      return "signup";
+    }
+  });
 
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -72,10 +79,10 @@ export default function Login() {
     confirmPassword: "",
   });
 
-  const handleModeSwitch = (mode: "login" | "signup") => {
+  const handleModeSwitch = (mode: "signup" | "login") => {
     triggerHaptic("light");
     setAuthMode(mode);
-    setMascotGesture("wave");
+    setMascotGesture(mode === "signup" ? "celebrate" : "wave");
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -114,14 +121,15 @@ export default function Login() {
     try {
       if (authMode === "login") {
         await signIn(email, password);
+        try { localStorage.setItem("mealoptimiza_has_account", "true"); } catch {}
         setMascotGesture("celebrate");
         triggerHaptic("success");
-        toast.success("Welcome back! Loading your metabolic dashboard...", {
+        toast.success("Welcome back! Loading your healthy meal dashboard...", {
           duration: 2500,
         });
         setTimeout(() => navigate("/home"), 400);
       } else {
-        // Sign Up Flow — stores pending signup for step-by-step Onboarding or registers directly
+        // Sign Up Flow
         localStorage.setItem(
           "pendingSignup",
           JSON.stringify({
@@ -130,9 +138,10 @@ export default function Login() {
             fullName: formData.fullName.trim(),
           })
         );
+        try { localStorage.setItem("mealoptimiza_has_account", "true"); } catch {}
         setMascotGesture("celebrate");
         triggerHaptic("success");
-        toast.success("Account initialized! Let's personalize your plan.", {
+        toast.success("Account created! Let's personalize your daily meal plan.", {
           duration: 2500,
         });
         setTimeout(() => navigate("/onboarding"), 400);
@@ -222,15 +231,16 @@ export default function Login() {
           <AppLogo size="sm" />
         </div>
 
-        <div className="flex items-center gap-1.5 text-[11px] font-black uppercase tracking-wider text-teal-800 bg-white/70 backdrop-blur-sm px-3 py-1 rounded-full border border-teal-100/70 shadow-xs">
-          <Sparkles size={12} className="text-teal-600" />
-          <span>Metabolic OS</span>
+        {/* 🥑 CONSUMER-FRIENDLY SMART NUTRITION AI BADGE (Replaced confusing 'Metabolic OS') */}
+        <div className="flex items-center gap-1.5 text-[11px] font-black uppercase tracking-wider text-teal-900 bg-white/80 backdrop-blur-sm px-3 py-1 rounded-full border border-teal-200/80 shadow-xs">
+          <Sparkles size={12} className="text-amber-500" />
+          <span>Smart Food &amp; Health AI</span>
         </div>
       </div>
 
       {/* Main Content Container */}
       <div className="px-4 sm:px-5 py-5 flex-1 flex flex-col justify-center max-w-md mx-auto w-full">
-        {/* Mascot & Welcome Greeting Header */}
+        {/* Mascot & Dynamic Personalized Greeting Header */}
         <motion.div
           className="text-center mb-4 flex flex-col items-center"
           initial={{ opacity: 0, y: reduced ? 0 : 10 }}
@@ -245,13 +255,14 @@ export default function Login() {
             </span>
           </div>
 
+          {/* Dynamic Headline Based on Mode */}
           <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight leading-tight">
-            {authMode === "login" ? "Welcome Back! 👋" : "Claim Your Free Plan 🥑"}
+            {authMode === "signup" ? "Start Your Health Journey 🥑" : "Welcome Back! 👋"}
           </h1>
-          <p className="text-xs sm:text-sm text-slate-600 font-medium mt-1">
-            {authMode === "login"
-              ? "Your personalized cultural glucose shield is ready"
-              : "Smart nutrition tailored to your biology & African cuisine"}
+          <p className="text-xs sm:text-sm text-slate-600 font-medium mt-1 max-w-xs">
+            {authMode === "signup"
+              ? "Enjoy delicious African meals with personalized blood sugar & blood pressure balance"
+              : "Sign in to continue your healthy food diary & daily tips"}
           </p>
         </motion.div>
 
@@ -262,7 +273,7 @@ export default function Login() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.38, delay: 0.05, ease }}
         >
-          {/* 45s Metabolic Assessment Launcher Pill */}
+          {/* Friendly Health Quiz Launcher */}
           <button
             type="button"
             onClick={() => {
@@ -274,314 +285,255 @@ export default function Login() {
             <div className="flex items-center gap-2">
               <span className="p-1 bg-white/20 rounded-xl text-base">🩺</span>
               <div className="text-left">
-                <div className="text-[11px] font-black uppercase tracking-wider text-teal-100">
-                  New or Retaking Plan?
+                <div className="text-[10.5px] font-black uppercase tracking-wider text-teal-100">
+                  New to MealOptimiza?
                 </div>
                 <div className="text-xs font-bold text-white">
-                  Take 45s Metabolic Diagnostic
+                  Take the 45s Healthy Food Quiz ➔
                 </div>
               </div>
             </div>
-            <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
+            <ArrowRight size={16} className="text-white/80 group-hover:translate-x-1 transition-transform" />
           </button>
 
-          {/* Segmented Auth Mode Switcher (Sign In vs Create Account) */}
-          <div className="bg-slate-100 dark:bg-zinc-800/90 p-1 rounded-2xl flex gap-1 mb-5">
-            <button
-              type="button"
-              onClick={() => handleModeSwitch("login")}
-              className={`flex-1 py-2 rounded-xl text-xs font-black transition-all cursor-pointer ${
-                authMode === "login"
-                  ? "bg-white dark:bg-zinc-900 text-slate-900 dark:text-white shadow-xs"
-                  : "text-slate-500 hover:text-slate-800 dark:text-zinc-400"
-              }`}
-            >
-              Sign In
-            </button>
+          {/* 🌟 10X SEGMENTED TAB SWITCHER (Create Account vs Sign In) */}
+          <div className="flex p-1 bg-slate-100 dark:bg-zinc-800 rounded-2xl mb-5">
             <button
               type="button"
               onClick={() => handleModeSwitch("signup")}
-              className={`flex-1 py-2 rounded-xl text-xs font-black transition-all cursor-pointer ${
+              className={`flex-1 py-2.5 rounded-xl font-black text-xs transition-all cursor-pointer ${
                 authMode === "signup"
-                  ? "bg-white dark:bg-zinc-900 text-slate-900 dark:text-white shadow-xs"
-                  : "text-slate-500 hover:text-slate-800 dark:text-zinc-400"
+                  ? "bg-white dark:bg-zinc-900 text-slate-900 dark:text-white shadow-sm font-extrabold"
+                  : "text-slate-500 hover:text-slate-900 dark:hover:text-white font-semibold"
               }`}
             >
               Create Account
             </button>
+            <button
+              type="button"
+              onClick={() => handleModeSwitch("login")}
+              className={`flex-1 py-2.5 rounded-xl font-black text-xs transition-all cursor-pointer ${
+                authMode === "login"
+                  ? "bg-white dark:bg-zinc-900 text-slate-900 dark:text-white shadow-sm font-extrabold"
+                  : "text-slate-500 hover:text-slate-900 dark:hover:text-white font-semibold"
+              }`}
+            >
+              Sign In
+            </button>
           </div>
 
-          {/* Quick Social One-Tap Auth */}
-          <div className="grid grid-cols-2 gap-2.5 mb-4">
+          {/* SSO Google & Apple Buttons */}
+          <div className="grid grid-cols-2 gap-2.5 mb-5">
             <button
+              type="button"
               onClick={handleGoogleSignIn}
-              disabled={oauthLoading === "google"}
-              className="flex items-center justify-center gap-2 bg-white dark:bg-zinc-800 border border-slate-200 dark:border-zinc-700 rounded-2xl py-2.5 px-3 hover:bg-slate-50 dark:hover:bg-zinc-700 transition-all text-xs font-bold text-slate-800 dark:text-zinc-200 shadow-2xs hover:shadow-xs active:scale-[0.98] cursor-pointer disabled:opacity-60"
+              disabled={oauthLoading !== null}
+              className="flex items-center justify-center gap-2 py-2.5 px-3 rounded-2xl border border-slate-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 hover:bg-slate-50 dark:hover:bg-zinc-700/80 transition-all text-xs font-bold text-slate-700 dark:text-slate-200 shadow-2xs active:scale-95 cursor-pointer disabled:opacity-60"
             >
               {oauthLoading === "google" ? (
-                <Loader2 className="h-4 w-4 animate-spin text-teal-600" />
+                <Loader2 size={15} className="animate-spin text-teal-600" />
               ) : (
-                <svg className="h-4 w-4 shrink-0" viewBox="0 0 24 24">
-                  <path
-                    fill="#4285F4"
-                    d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
-                  />
-                  <path
-                    fill="#34A853"
-                    d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
-                  />
-                  <path
-                    fill="#FBBC05"
-                    d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
-                  />
-                  <path
-                    fill="#EA3323"
-                    d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
-                  />
+                <svg className="w-4 h-4" viewBox="0 0 24 24">
+                  <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
+                  <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
+                  <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" />
+                  <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" />
                 </svg>
               )}
               <span>Google</span>
             </button>
 
             <button
+              type="button"
               onClick={handleAppleSignIn}
-              disabled={oauthLoading === "apple"}
-              className="flex items-center justify-center gap-2 bg-slate-900 dark:bg-zinc-800 text-white rounded-2xl py-2.5 px-3 hover:bg-black dark:hover:bg-zinc-700 transition-all text-xs font-bold shadow-2xs hover:shadow-xs active:scale-[0.98] cursor-pointer disabled:opacity-60"
+              disabled={oauthLoading !== null}
+              className="flex items-center justify-center gap-2 py-2.5 px-3 rounded-2xl border border-slate-900 bg-slate-950 hover:bg-slate-900 transition-all text-xs font-bold text-white shadow-2xs active:scale-95 cursor-pointer disabled:opacity-60"
             >
               {oauthLoading === "apple" ? (
-                <Loader2 className="h-4 w-4 animate-spin text-white" />
+                <Loader2 size={15} className="animate-spin text-white" />
               ) : (
-                <svg className="h-4 w-4 shrink-0" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09l.01-.01zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z" />
+                <svg className="w-4 h-4 fill-current" viewBox="0 0 170 170">
+                  <path d="M150.37 130.25c-2.45 5.66-5.35 10.87-8.71 15.66-4.58 6.53-8.33 11.05-11.22 13.56-4.48 4.12-9.28 6.23-14.42 6.35-3.69 0-8.14-1.05-13.32-3.18-5.19-2.12-9.97-3.17-14.34-3.17-4.58 0-9.49 1.05-14.75 3.17-5.26 2.13-9.5 3.24-12.74 3.35-4.35.13-9.16-1.9-14.42-6.08-3.7-3.04-7.7-7.85-12-14.44-6.19-9.47-10.97-20.21-14.34-32.22-3.37-12-5.06-23.47-5.06-34.4 0-14.7 3.59-27.1 10.76-37.21 7.18-10.12 16.32-15.34 27.43-15.66 4.79 0 10.33 1.25 16.63 3.75 6.31 2.5 10.32 3.86 12.04 4.08 2.39-.43 6.64-1.89 12.74-4.38 6.1-2.49 11.42-3.65 15.98-3.48 11.96.65 21.64 4.9 29.04 12.74-10.44 6.31-15.56 15.12-15.34 26.43.22 8.92 3.69 16.31 10.44 22.19 6.74 5.87 14.68 9.14 23.82 9.79-2.18 6.74-4.89 13.27-8.15 19.58zM119.22 31.84c0-7.39 2.61-14.35 7.83-20.88 5.22-6.53 11.85-10.55 19.9-12.07.22 1.09.33 2.18.33 3.26 0 7.39-2.72 14.57-8.15 21.53-5.44 6.96-12.18 10.87-20.23 11.74-.22-1.2-.33-2.4-.33-3.58z" />
                 </svg>
               )}
               <span>Apple</span>
             </button>
           </div>
 
-          {/* Clean Modern Divider */}
-          <div className="relative my-3.5">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-slate-200 dark:border-zinc-700"></div>
-            </div>
-            <div className="relative flex justify-center text-[10px] uppercase font-bold tracking-wider">
-              <span className="px-3 bg-white dark:bg-zinc-900 text-slate-400">
-                {authMode === "login" ? "or sign in with email" : "or register with email"}
-              </span>
-            </div>
+          <div className="relative flex items-center justify-center my-4">
+            <div className="border-t border-slate-200 dark:border-zinc-800 w-full" />
+            <span className="bg-white dark:bg-zinc-900 px-3 text-[10px] uppercase font-bold text-slate-400 tracking-wider absolute">
+              {authMode === "signup" ? "Or Register with Email" : "Or Sign In with Email"}
+            </span>
           </div>
 
           {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-3.5">
-            {/* Full Name Field (Sign Up Only) */}
             {authMode === "signup" && (
-              <div className="space-y-1">
-                <label className="text-xs font-bold text-slate-800 dark:text-zinc-200 block">
+              <div>
+                <label className="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1">
                   Full Name
                 </label>
                 <div className="relative">
                   <User className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
                   <Input
-                    name="fullName"
                     type="text"
-                    autoComplete="name"
-                    placeholder="e.g. Amara Okafor"
+                    required
+                    placeholder="e.g. Dr. Ngozi / Tunde"
                     value={formData.fullName}
                     onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
-                    className="pl-10 h-11 bg-slate-50/70 dark:bg-zinc-800/80 border-slate-200 dark:border-zinc-700 rounded-2xl focus-visible:ring-[#1f7a8c] text-sm"
-                    required
+                    className="pl-10 h-11 rounded-2xl border-slate-200 dark:border-zinc-700 bg-slate-50/50 dark:bg-zinc-800/50 text-xs text-slate-900 dark:text-white"
                   />
                 </div>
               </div>
             )}
 
-            {/* Email Field with Autofill & Keychain Ready */}
-            <div className="space-y-1">
-              <label
-                htmlFor="email"
-                className="text-xs font-bold text-slate-800 dark:text-zinc-200 block"
-              >
-                {t("auth.email")}
+            <div>
+              <label className="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1">
+                Email Address
               </label>
               <div className="relative">
                 <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
                 <Input
-                  id="email"
-                  name="email"
                   type="email"
-                  inputMode="email"
-                  autoComplete="username email"
+                  required
                   placeholder="you@example.com"
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  className="pl-10 h-11 bg-slate-50/70 dark:bg-zinc-800/80 border-slate-200 dark:border-zinc-700 rounded-2xl focus-visible:ring-[#1f7a8c] text-sm"
-                  required
+                  className="pl-10 h-11 rounded-2xl border-slate-200 dark:border-zinc-700 bg-slate-50/50 dark:bg-zinc-800/50 text-xs text-slate-900 dark:text-white"
                 />
               </div>
             </div>
 
-            {/* Password Field with Autofill & Keychain Ready */}
-            <div className="space-y-1">
-              <div className="flex items-center justify-between">
-                <label
-                  htmlFor="password"
-                  className="text-xs font-bold text-slate-800 dark:text-zinc-200 block"
-                >
-                  {t("auth.password")}
+            <div>
+              <div className="flex items-center justify-between mb-1">
+                <label className="text-xs font-bold text-slate-700 dark:text-slate-300">
+                  Password
                 </label>
                 {authMode === "login" && (
                   <Link
                     to="/forgot-password"
-                    className="text-[11px] font-bold text-[#1f7a8c] dark:text-teal-400 hover:underline"
+                    className="text-[11px] font-bold text-[#1f7a8c] hover:underline"
                   >
-                    {t("auth.forgot")}
+                    Forgot Password?
                   </Link>
                 )}
               </div>
               <div className="relative">
                 <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
                 <Input
-                  id="password"
-                  name="password"
                   type={showPassword ? "text" : "password"}
-                  autoComplete={authMode === "login" ? "current-password" : "new-password"}
-                  placeholder={authMode === "signup" ? "At least 6 characters" : "Enter your password"}
+                  required
+                  placeholder="Enter your password"
                   value={formData.password}
                   onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                  className="pl-10 pr-10 h-11 bg-slate-50/70 dark:bg-zinc-800/80 border-slate-200 dark:border-zinc-700 rounded-2xl focus-visible:ring-[#1f7a8c] text-sm"
-                  required
+                  className="pl-10 pr-10 h-11 rounded-2xl border-slate-200 dark:border-zinc-700 bg-slate-50/50 dark:bg-zinc-800/50 text-xs text-slate-900 dark:text-white"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors p-1 cursor-pointer"
-                  aria-label={showPassword ? "Hide password" : "Show password"}
+                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
                 >
-                  {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                  {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                 </button>
               </div>
             </div>
 
-            {/* Confirm Password (Sign Up Only) */}
             {authMode === "signup" && (
-              <div className="space-y-1">
-                <label className="text-xs font-bold text-slate-800 dark:text-zinc-200 block">
-                  Confirm Password
-                </label>
-                <div className="relative">
-                  <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
-                  <Input
-                    name="confirmPassword"
-                    type={showConfirmPassword ? "text" : "password"}
-                    autoComplete="new-password"
-                    placeholder="Repeat your password"
-                    value={formData.confirmPassword}
-                    onChange={(e) =>
-                      setFormData({ ...formData, confirmPassword: e.target.value })
-                    }
-                    className="pl-10 pr-10 h-11 bg-slate-50/70 dark:bg-zinc-800/80 border-slate-200 dark:border-zinc-700 rounded-2xl focus-visible:ring-[#1f7a8c] text-sm"
-                    required
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                    className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors p-1 cursor-pointer"
-                  >
-                    {showConfirmPassword ? (
-                      <EyeOff className="h-4 w-4" />
-                    ) : (
-                      <Eye className="h-4 w-4" />
-                    )}
-                  </button>
+              <>
+                <div>
+                  <label className="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1">
+                    Confirm Password
+                  </label>
+                  <div className="relative">
+                    <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                    <Input
+                      type={showConfirmPassword ? "text" : "password"}
+                      required
+                      placeholder="Repeat your password"
+                      value={formData.confirmPassword}
+                      onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
+                      className="pl-10 pr-10 h-11 rounded-2xl border-slate-200 dark:border-zinc-700 bg-slate-50/50 dark:bg-zinc-800/50 text-xs text-slate-900 dark:text-white"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                      className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                    >
+                      {showConfirmPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                    </button>
+                  </div>
                 </div>
-              </div>
+
+                <div className="flex items-start gap-2 pt-1">
+                  <Checkbox
+                    id="terms"
+                    checked={agreedToTerms}
+                    onCheckedChange={(checked) => setAgreedToTerms(checked === true)}
+                    className="mt-0.5 rounded-md"
+                  />
+                  <label htmlFor="terms" className="text-[11px] text-slate-600 dark:text-slate-400 leading-tight">
+                    I agree to the{" "}
+                    <Link to="/terms" target="_blank" className="text-[#1f7a8c] font-bold underline">
+                      Terms of Service
+                    </Link>{" "}
+                    &amp;{" "}
+                    <Link to="/privacy" target="_blank" className="text-[#1f7a8c] font-bold underline">
+                      Privacy Policy
+                    </Link>.
+                  </label>
+                </div>
+              </>
             )}
 
-            {/* Terms Checkbox (Sign Up Only) */}
-            {authMode === "signup" && (
-              <div className="flex items-start gap-2 pt-1">
-                <Checkbox
-                  id="terms"
-                  checked={agreedToTerms}
-                  onCheckedChange={(checked) => setAgreedToTerms(checked === true)}
-                  className="mt-0.5"
-                />
-                <label htmlFor="terms" className="text-[11px] text-slate-600 leading-tight">
-                  I agree to the{" "}
-                  <Link to="/terms" className="text-[#1f7a8c] font-bold hover:underline">
-                    Terms
-                  </Link>{" "}
-                  and{" "}
-                  <Link to="/privacy" className="text-[#1f7a8c] font-bold hover:underline">
-                    Privacy Policy
-                  </Link>
-                </label>
-              </div>
-            )}
-
-            {/* Primary Submit Button */}
             <Button
               type="submit"
               disabled={loading}
-              className="w-full bg-gradient-to-r from-[#1f7a8c] to-[#2a9d8f] hover:from-[#176270] hover:to-[#227f74] text-white h-12 rounded-2xl font-black text-sm shadow-md hover:shadow-lg transition-all active:scale-[0.98] cursor-pointer mt-2 disabled:opacity-70"
+              className="w-full h-11 bg-gradient-to-r from-[#1f7a8c] via-[#0d9488] to-[#115e59] hover:opacity-95 text-white font-extrabold text-xs sm:text-sm rounded-2xl shadow-lg shadow-teal-900/20 active:scale-98 transition-all cursor-pointer flex items-center justify-center gap-2 mt-2"
             >
               {loading ? (
-                <span className="flex items-center justify-center gap-2">
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                  <span>{authMode === "login" ? "Signing In..." : "Creating Account..."}</span>
+                <span className="flex items-center gap-2">
+                  <Loader2 size={16} className="animate-spin" />
+                  {authMode === "signup" ? "Creating Account..." : "Signing in..."}
                 </span>
               ) : (
-                <span className="flex items-center justify-center gap-1.5">
-                  <span>
-                    {authMode === "login" ? "Sign In to Dashboard" : "Start My Free Plan"}
-                  </span>
-                  {authMode === "login" ? <Zap size={15} /> : <ArrowRight size={15} />}
-                </span>
+                <>
+                  <span>{authMode === "signup" ? "Create Free Account" : "Sign In to Dashboard"}</span>
+                  <ArrowRight size={16} />
+                </>
               )}
             </Button>
           </form>
 
-          {/* 1-Tap WhatsApp AI Fast Login */}
-          <div className="mt-3.5 pt-3.5 border-t border-slate-100 dark:border-zinc-800">
+          {/* 1-Tap WhatsApp AI Fast Connect */}
+          <div className="pt-4 border-t border-slate-100 dark:border-zinc-800 mt-4">
             <button
-              onClick={() => setShowWhatsAppModal(true)}
-              className="w-full flex items-center justify-center gap-2 py-2.5 px-3 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 rounded-2xl text-xs font-bold transition-all border border-emerald-200 active:scale-[0.98] cursor-pointer"
+              type="button"
+              onClick={() => {
+                triggerHaptic("medium");
+                setShowWhatsAppModal(true);
+              }}
+              className="w-full py-2.5 px-3 rounded-2xl bg-emerald-50 dark:bg-emerald-950/40 hover:bg-emerald-100/80 border border-emerald-200 dark:border-emerald-800 text-emerald-900 dark:text-emerald-300 text-xs font-bold transition-all flex items-center justify-center gap-2 active:scale-98 cursor-pointer"
             >
-              <MessageSquare size={14} className="text-[#25D366]" />
+              <MessageSquare size={15} className="text-emerald-600" />
               <span>1-Tap WhatsApp AI Fast Connect</span>
             </button>
           </div>
         </motion.div>
-      </div>
 
-      {/* Production-Grade Security & Trust Seal Footer */}
-      <div className="pb-5 px-6 text-center max-w-md mx-auto w-full">
-        <div className="flex flex-wrap items-center justify-center gap-3 text-[11px] text-slate-500 font-semibold mb-1">
-          <span className="flex items-center gap-1">
-            <ShieldCheck size={13} className="text-teal-600" />
-            <span>256-Bit Encrypted</span>
-          </span>
-          <span>•</span>
-          <span className="flex items-center gap-1">
-            <CheckCircle2 size={13} className="text-emerald-600" />
-            <span>HIPAA &amp; NDPR Private</span>
-          </span>
-          <span>•</span>
-          <span className="flex items-center gap-1">
-            <Leaf size={13} className="text-teal-700" />
-            <span>Cultural Nutrition</span>
-          </span>
+        {/* Security & Regulatory Trust Badge */}
+        <div className="mt-4 text-center text-[10.5px] text-slate-500 space-y-1">
+          <div className="flex items-center justify-center gap-1 text-teal-800 dark:text-teal-400 font-semibold">
+            <ShieldCheck size={14} className="text-teal-600" />
+            <span>256-Bit Encrypted • NDPR &amp; HIPAA-Aligned Privacy</span>
+          </div>
+          <p className="text-[9.5px] text-slate-400">
+            Certified Cultural Glycemic Indices &amp; Dietary Guidelines
+          </p>
         </div>
-        <p className="text-[10px] text-slate-400">
-          MealOptimiza &copy; {new Date().getFullYear()} • Engineered for African &amp; Diaspora Health
-        </p>
       </div>
 
-      {/* WhatsApp Fast Connect Modal */}
-      <WhatsAppConnectDialog
-        isOpen={showWhatsAppModal}
-        onClose={() => setShowWhatsAppModal(false)}
-      />
+      <WhatsAppConnectDialog isOpen={showWhatsAppModal} onClose={() => setShowWhatsAppModal(false)} />
     </div>
   );
 }
