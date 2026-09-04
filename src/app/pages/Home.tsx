@@ -1,3 +1,8 @@
+import TriRingMetabolicFlower from "../components/TriRingMetabolicFlower";
+import AfricanPlateSilhouette from "../components/AfricanPlateSilhouette";
+import AvoAcademyBloom from "../components/AvoAcademyBloom";
+import CircadianEnergyWave from "../components/CircadianEnergyWave";
+import GlassmorphicWaterTumbler from "../components/GlassmorphicWaterTumbler";
 import MetabolicScoreRing from "../components/MetabolicScoreRing";
 import { soundEffects } from "../utils/soundEffects";
 import React, { useState, useRef, useEffect } from "react";
@@ -1246,6 +1251,7 @@ export default function Home() {
             </div>
 
             {/* Embedded Avo Academy Component */}
+            <AvoAcademyBloom />
             <AvoAcademy />
           </motion.div>
         )}
