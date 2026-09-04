@@ -70,7 +70,7 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
   const [oauthLoading, setOauthLoading] = useState<"google" | "apple" | null>(null);
   const [mascotGesture, setMascotGesture] = useState<MascotGesture>("wave");
-  const [showWhatsAppModal, setShowWhatsAppModal] = useState(false);
+  
 
   const [formData, setFormData] = useState({
     fullName: "",
@@ -505,20 +505,7 @@ export default function Login() {
             </Button>
           </form>
 
-          {/* 1-Tap WhatsApp AI Fast Connect */}
-          <div className="pt-4 border-t border-slate-100 dark:border-zinc-800 mt-4">
-            <button
-              type="button"
-              onClick={() => {
-                triggerHaptic("medium");
-                setShowWhatsAppModal(true);
-              }}
-              className="w-full py-2.5 px-3 rounded-2xl bg-emerald-50 dark:bg-emerald-950/40 hover:bg-emerald-100/80 border border-emerald-200 dark:border-emerald-800 text-emerald-900 dark:text-emerald-300 text-xs font-bold transition-all flex items-center justify-center gap-2 active:scale-98 cursor-pointer"
-            >
-              <MessageSquare size={15} className="text-emerald-600" />
-              <span>1-Tap WhatsApp AI Fast Connect</span>
-            </button>
-          </div>
+
         </motion.div>
 
         {/* Security & Regulatory Trust Badge */}
@@ -533,7 +520,7 @@ export default function Login() {
         </div>
       </div>
 
-      <WhatsAppConnectDialog isOpen={showWhatsAppModal} onClose={() => setShowWhatsAppModal(false)} />
+      
     </div>
   );
 }
