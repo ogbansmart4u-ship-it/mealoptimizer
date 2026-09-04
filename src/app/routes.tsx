@@ -259,11 +259,7 @@ export const router = createBrowserRouter([
   },
   {
     path: "/goals",
-    element: (
-      <ProtectedRoute>
-        <Goals />
-      </ProtectedRoute>
-    ),
+    element: <Navigate to="/health?tab=goals" replace />,
   },
   {
     path: "/logs",

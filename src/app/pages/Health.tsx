@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import {
   Activity, Target, MapPin, Scale, Calendar, Pill, Stethoscope,
   Lightbulb, BookOpen, Heart, ChevronRight,
@@ -7,7 +7,7 @@ import {
   Zap, Share2, HelpCircle, Check, X, ArrowRight, Info, AlertTriangle, Calculator
 } from "lucide-react";
 import BottomNav from "../components/BottomNav";
-import { useNavigate } from "react-router";
+import { useNavigate, useSearchParams } from "react-router";
 import { useLanguage } from "../contexts/LanguageContext";
 import { useUser } from "../contexts/UserContext";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "../components/ui/dialog";
@@ -368,7 +368,16 @@ export default function Health() {
   const { t } = useLanguage();
   const { profile } = useUser();
 
-  const [healthSectionTab, setHealthSectionTab] = useState<"insights" | "goals">("insights");
+  const [searchParams, setSearchParams] = useSearchParams();
+  const initialTab = searchParams.get("tab") === "goals" ? "goals" : "insights";
+  const [healthSectionTab, setHealthSectionTab] = useState<"insights" | "goals">(initialTab);
+
+  useEffect(() => {
+    const tabParam = searchParams.get("tab");
+    if (tabParam === "goals" && healthSectionTab !== "goals") {
+      setHealthSectionTab("goals");
+    }
+  }, [searchParams]);
   const [activeCategory, setActiveCategory] = useState<EducationalCategory>("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedArticle, setSelectedArticle] = useState<EducationalArticle | null>(null);
