@@ -335,7 +335,7 @@ export const LESSONS: AcademyLesson[] = [
   {
     id: "lesson-1",
     tier: 1,
-    tierName: "Heritage Bio-Foundations",
+    tierName: "Daily Food Basics 🌱",
     title: "The Clinical Food Sequencing Protocol",
     category: "Glucose Science",
     readTime: "90s Audio",
@@ -546,7 +546,7 @@ export const LESSONS: AcademyLesson[] = [
   {
     id: "lesson-10",
     tier: 2,
-    tierName: "Organ-Specific Metabolic Shields",
+    tierName: "Healthy Heart & Sugar 🛡️",
     title: "Zobo Tea: The Natural Way to Relax Blood Pressure",
     category: "Heart & BP",
     readTime: "90s Audio",
@@ -1877,7 +1877,7 @@ export default function AvoAcademy() {
           <div className="flex items-center gap-2">
             <GraduationCap className="h-5 w-5 text-[#1f7a8c]" />
             <span className="text-xs font-black text-gray-900 dark:text-white uppercase tracking-wider">
-              Metabolic Masterclass Curriculum
+              Daily African Food Masterclass 🥑
             </span>
           </div>
           <span className="text-[10px] font-bold text-gray-500">
@@ -1904,10 +1904,10 @@ export default function AvoAcademy() {
           className="grid grid-cols-2 sm:grid-cols-4 gap-2 relative overflow-x-auto pb-1 no-scrollbar"
         >
           {[
-            { tier: 1 as AcademyTier, label: "Tier 1: Foundations", icon: "🌱" },
-            { tier: 2 as AcademyTier, label: "Tier 2: Organ Shields", icon: "🛡️" },
-            { tier: 3 as AcademyTier, label: "Tier 3: Culinary Bio", icon: "🍲" },
-            { tier: 4 as AcademyTier, label: "Tier 4: Longevity & Fast", icon: "👑" },
+            { tier: 1 as AcademyTier, label: "1. Food Basics", icon: "🌱" },
+            { tier: 2 as AcademyTier, label: "2. Heart & Sugar", icon: "🛡️" },
+            { tier: 3 as AcademyTier, label: "3. Kitchen Secrets", icon: "🍲" },
+            { tier: 4 as AcademyTier, label: "4. Long Life", icon: "👑" },
           ].map((t) => {
             const isSelected = selectedTier === t.tier;
             const stat = tierStats[t.tier];
@@ -2031,7 +2031,7 @@ export default function AvoAcademy() {
                       <button
                         type="button"
                         onClick={(e) => handleToggleAudio(e, lesson)}
-                        title="Listen to 90s Sarah Audio"
+                        title="Listen to Sarah AI voice tip"
                         className={`p-1.5 rounded-xl transition-all cursor-pointer ${
                           isAudioActive
                             ? "bg-amber-400 text-slate-950 animate-bounce"
@@ -2082,7 +2082,7 @@ export default function AvoAcademy() {
                   }`}
                 >
                   <Volume2 size={13} />
-                  <span>{isAudioPlaying && playingAudioLessonId === activeLesson.id ? "Pause Voice" : "Listen (Sarah AI)"}</span>
+                  <span>{isAudioPlaying && playingAudioLessonId === activeLesson.id ? "Pause Voice" : "Listen with Sarah AI 🎙️"}</span>
                 </button>
               </div>
 
@@ -2131,7 +2131,7 @@ export default function AvoAcademy() {
                 >
                   <span>
                     {currentSlideIndex === activeLesson.storySlides.length - 1
-                      ? "Take Science Mastery Quiz (+25 XP) 🎯"
+                      ? "Take 10s Quick Quiz (+25 XP) 🎯"
                       : "Next Slide →"}
                   </span>
                 </Button>
@@ -2142,7 +2142,7 @@ export default function AvoAcademy() {
                 <div className="bg-amber-50 dark:bg-amber-950/40 p-4 rounded-2xl border border-amber-200 dark:border-amber-900">
                   <div className="flex items-center gap-1.5 text-xs font-black text-amber-800 dark:text-amber-300 mb-1">
                     <Sparkles size={13} />
-                    <span>Quick Science Mastery Quiz</span>
+                    <span>10-Second Quick Quiz 🎯</span>
                   </div>
                   <h4 className="text-xs sm:text-sm font-bold text-slate-900 dark:text-white">
                     {activeLesson.quiz.question}
