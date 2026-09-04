@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from "react";
 import {
-  Activity, MapPin, Scale, Calendar, Pill, Stethoscope,
+  Activity, Target, MapPin, Scale, Calendar, Pill, Stethoscope,
   Lightbulb, BookOpen, Heart, ChevronRight,
   Shield, Droplet, Moon, Dumbbell, Clock, AlertCircle, FileText,
   Search, Sparkles, CheckCircle2, Bookmark, BookmarkCheck,
@@ -368,6 +368,7 @@ export default function Health() {
   const { t } = useLanguage();
   const { profile } = useUser();
 
+  const [healthSectionTab, setHealthSectionTab] = useState<"insights" | "goals">("insights");
   const [activeCategory, setActiveCategory] = useState<EducationalCategory>("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedArticle, setSelectedArticle] = useState<EducationalArticle | null>(null);

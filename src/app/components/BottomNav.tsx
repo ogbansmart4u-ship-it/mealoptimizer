@@ -64,13 +64,11 @@ function BottomNavBar() {
     return () => clearInterval(interval);
   }, [location.pathname]);
 
-  const navItems = [
-    { path: "/home", icon: Home, label: t("nav.home") },
-    { path: "/goals", icon: Target, label: t("nav.goals") },
-    { path: "/logs", icon: FileText, label: t("nav.logs") },
-    { path: "/health", icon: HeartPulse, label: t("nav.health") },
-    { path: "/recipe", icon: Utensils, label: t("nav.recipe") },
-    { path: "/profile", icon: User, label: t("nav.profile") },
+    const navItems = [
+    { path: "/home", icon: Home, label: t("nav.home") || "Home" },
+    { path: "/recipe", icon: Utensils, label: t("nav.recipe") || "Recipes" },
+    { path: "/health", icon: HeartPulse, label: t("nav.health") || "Health" },
+    { path: "/profile", icon: User, label: t("nav.profile") || "Me" },
   ];
 
   return (
@@ -78,7 +76,7 @@ function BottomNavBar() {
       className="fixed bottom-2 sm:bottom-3 left-1/2 -translate-x-1/2 w-[calc(100%-1.25rem)] max-w-md bg-[#126778]/95 dark:bg-zinc-950/95 backdrop-blur-2xl text-white pt-2.5 pb-2.5 px-2 rounded-3xl shadow-[0_12px_40px_rgba(0,0,0,0.28)] border border-white/25 dark:border-white/10 z-50 transition-all"
       style={{ paddingBottom: "max(0.65rem, env(safe-area-inset-bottom))" }}
     >
-      <div className="max-w-md mx-auto flex justify-around items-center px-4">
+      <div className="max-w-md mx-auto grid grid-cols-4 items-center px-2">
         {navItems.map(({ path, icon: Icon, label }) => {
           const isActive = location.pathname === path;
           const badge = badges[path];
@@ -89,7 +87,7 @@ function BottomNavBar() {
             <Link
               key={path}
               to={path}
-              className={`flex flex-col items-center gap-1 transition-all duration-300 min-w-[46px] relative group ${
+              className={`flex flex-col items-center justify-center py-1 gap-1 transition-all duration-300 w-full relative group ${
                 isActive ? "text-white" : "text-white/70 hover:text-white"
               }`}
             >
