@@ -808,6 +808,20 @@ export default function Home() {
             transition={{ duration: 0.25 }}
             className="space-y-4"
           >
+                        {/* 🌟 10X HERO SUITE: TRI-RING METABOLIC FLOWER & CIRCADIAN WAVE */}
+            <TriRingMetabolicFlower
+              score={Math.round((caloriesConsumed / caloriesTarget) * 100) > 0 ? 92 : 88}
+              fiberScore={95}
+              portionScore={88}
+              waterScore={Math.min(Math.round((waterGlasses / 8) * 100), 100) || 75}
+            />
+
+            <CircadianEnergyWave />
+
+            <AfricanPlateSilhouette
+              onRebalance={() => setShowFixPlateModal(true)}
+            />
+
             {/* 🌟 ZONE 1: THE HERO DAILY ENERGY & SATIETY GAUGE */}
             {dashboardPrefs.showEnergy && (
               <div className="neu-raised rounded-3xl p-4 sm:p-5 space-y-3.5 border border-white/60 dark:border-white/5 relative overflow-hidden">
