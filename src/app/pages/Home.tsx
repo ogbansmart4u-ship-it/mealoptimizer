@@ -808,7 +808,7 @@ export default function Home() {
             transition={{ duration: 0.25 }}
             className="space-y-4"
           >
-                        {/* 🌟 10X HERO SUITE: TRI-RING METABOLIC FLOWER & CIRCADIAN WAVE */}
+                        {/* 🌟 1. HERO HEALTH SCORE RINGS */}
             <TriRingMetabolicFlower
               score={Math.round((caloriesConsumed / caloriesTarget) * 100) > 0 ? 92 : 88}
               fiberScore={95}
@@ -816,6 +816,78 @@ export default function Home() {
               waterScore={Math.min(Math.round((waterGlasses / 8) * 100), 100) || 75}
             />
 
+            {/* 🌟 3 BIG 1-TAP ACTION BUTTONS (Scan Plate, Quick Log, +1 Cup Water) */}
+            <div className="grid grid-cols-3 gap-2.5">
+              {/* Button 1: Scan Food Plate */}
+              <button
+                type="button"
+                onClick={() => {
+                  triggerHaptic("medium");
+                  soundEffects.playCameraShutter();
+                  setShowLocalFoodScanner(true);
+                }}
+                className="glass-card-teal rounded-3xl p-3.5 sm:p-4 text-white shadow-xl flex flex-col items-center justify-center gap-1.5 hover:scale-[1.04] active:scale-[0.96] transition-all cursor-pointer group relative overflow-hidden ring-2 ring-teal-300/60 shadow-teal-500/20"
+              >
+                <div className="w-10 h-10 rounded-2xl bg-white/25 backdrop-blur-md flex items-center justify-center shadow-inner group-hover:scale-110 transition-transform relative">
+                  <span className="absolute -inset-0.5 rounded-2xl bg-teal-200/40 animate-ping opacity-40" />
+                  <span className="text-xl relative z-10 animate-bounce">📸</span>
+                </div>
+                <span className="text-xs font-black leading-tight text-center">Scan Plate</span>
+                <span className="text-[9.5px] text-teal-100 font-bold flex items-center gap-1">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                  Camera AI
+                </span>
+              </button>
+
+              {/* Button 2: Quick Log Meals */}
+              <button
+                type="button"
+                onClick={() => {
+                  triggerHaptic("light");
+                  const el = document.getElementById("today-quick-shelf");
+                  if (el) el.scrollIntoView({ behavior: "smooth" });
+                }}
+                className="neu-raised rounded-3xl p-3.5 sm:p-4 text-slate-900 dark:text-white shadow-md flex flex-col items-center justify-center gap-1.5 hover:scale-[1.03] active:scale-[0.97] transition-all cursor-pointer group border border-white/80 dark:border-white/5"
+              >
+                <div className="w-10 h-10 rounded-2xl bg-amber-50 dark:bg-amber-950 text-amber-600 flex items-center justify-center text-xl shadow-2xs group-hover:scale-110 transition-transform">
+                  ⚡
+                </div>
+                <span className="text-xs font-black leading-tight text-center">Quick Log</span>
+                <span className="text-[9.5px] text-slate-500 font-bold">Common Food</span>
+              </button>
+
+              {/* Button 3: +1 Cup Water with Drinking Mascot */}
+              <div className="neu-raised rounded-3xl p-3 sm:p-3.5 text-cyan-900 dark:text-cyan-200 shadow-md flex flex-col items-center justify-between gap-1 border border-white/80 dark:border-white/5 relative overflow-hidden group">
+                <div
+                  onClick={handleWaterIncrease}
+                  className="w-full flex flex-col items-center justify-center gap-1 cursor-pointer active:scale-95 transition-transform"
+                  title="Tap to drink +1 cup of water"
+                >
+                  <div className="w-11 h-11 rounded-2xl bg-cyan-50 dark:bg-cyan-950 text-cyan-600 flex items-center justify-center shadow-inner group-hover:scale-105 transition-transform overflow-hidden relative">
+                    <Mascot gesture="drink" size={40} className={isDrinkingWater ? "animate-bounce" : ""} />
+                  </div>
+                  <span className="text-xs font-black leading-tight text-center">+1 Cup Water</span>
+                  <span className="text-[9.5px] text-cyan-600 font-bold">{waterGlasses} of 8 drank</span>
+                </div>
+
+                {waterGlasses > 0 && (
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleWaterDecrease();
+                    }}
+                    className="mt-0.5 px-2 py-0.5 rounded-full bg-cyan-100/80 hover:bg-rose-100 text-cyan-800 hover:text-rose-700 text-[9px] font-black transition-all cursor-pointer flex items-center gap-1 border border-cyan-200/60 active:scale-95"
+                    title="Undo last glass (-1 cup)"
+                  >
+                    <RotateCcw size={9} />
+                    <span>Undo (-1)</span>
+                  </button>
+                )}
+              </div>
+            </div>
+
+            {/* 🌟 2. DAILY TIME REMINDER & BALANCED AFRICAN PLATE */}
             <CircadianEnergyWave />
 
             <AfricanPlateSilhouette
@@ -906,78 +978,7 @@ export default function Home() {
               </div>
             )}
 
-            {/* 🌟 ZONE 2: 3 BIG TACTILE 1-TAP ACTION BUTTONS */}
-            {dashboardPrefs.showActions && (
-              <div className="grid grid-cols-3 gap-2.5">
-                {/* Button 1: Scan Food (With Lively Animation & Glowing Ring) */}
-                <button
-                  type="button"
-                  onClick={() => {
-                    triggerHaptic("medium");
-                    soundEffects.playCameraShutter();
-                    setShowLocalFoodScanner(true);
-                  }}
-                  className="glass-card-teal rounded-3xl p-3.5 sm:p-4 text-white shadow-xl flex flex-col items-center justify-center gap-1.5 hover:scale-[1.04] active:scale-[0.96] transition-all cursor-pointer group relative overflow-hidden ring-2 ring-teal-300/60 shadow-teal-500/20"
-                >
-                  <div className="w-10 h-10 rounded-2xl bg-white/25 backdrop-blur-md flex items-center justify-center shadow-inner group-hover:scale-110 transition-transform relative">
-                    <span className="absolute -inset-0.5 rounded-2xl bg-teal-200/40 animate-ping opacity-40" />
-                    <span className="text-xl relative z-10 animate-bounce">📸</span>
-                  </div>
-                  <span className="text-xs font-black leading-tight text-center">Scan Plate</span>
-                  <span className="text-[9.5px] text-teal-100 font-bold flex items-center gap-1">
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                    Camera AI
-                  </span>
-                </button>
 
-                {/* Button 2: Quick Log Meals */}
-                <button
-                  type="button"
-                  onClick={() => {
-                    triggerHaptic("light");
-                    const el = document.getElementById("today-quick-shelf");
-                    if (el) el.scrollIntoView({ behavior: "smooth" });
-                  }}
-                  className="neu-raised rounded-3xl p-3.5 sm:p-4 text-slate-900 dark:text-white shadow-md flex flex-col items-center justify-center gap-1.5 hover:scale-[1.03] active:scale-[0.97] transition-all cursor-pointer group border border-white/80 dark:border-white/5"
-                >
-                  <div className="w-10 h-10 rounded-2xl bg-amber-50 dark:bg-amber-950 text-amber-600 flex items-center justify-center text-xl shadow-2xs group-hover:scale-110 transition-transform">
-                    ⚡
-                  </div>
-                  <span className="text-xs font-black leading-tight text-center">Quick Log</span>
-                  <span className="text-[9.5px] text-slate-500 font-bold">Common Meals</span>
-                </button>
-
-                {/* Button 3: +1 Cup Water with Drinking Mascot & Undo */}
-                <div className="neu-raised rounded-3xl p-3 sm:p-3.5 text-cyan-900 dark:text-cyan-200 shadow-md flex flex-col items-center justify-between gap-1 border border-white/80 dark:border-white/5 relative overflow-hidden group">
-                  <div
-                    onClick={handleWaterIncrease}
-                    className="w-full flex flex-col items-center justify-center gap-1 cursor-pointer active:scale-95 transition-transform"
-                    title="Tap to drink +1 cup of water"
-                  >
-                    <div className="w-11 h-11 rounded-2xl bg-cyan-50 dark:bg-cyan-950 text-cyan-600 flex items-center justify-center shadow-inner group-hover:scale-105 transition-transform overflow-hidden relative">
-                      <Mascot gesture="drink" size={40} className={isDrinkingWater ? "animate-bounce" : ""} />
-                    </div>
-                    <span className="text-xs font-black leading-tight text-center">+1 Cup Water</span>
-                    <span className="text-[9.5px] text-cyan-600 font-bold">{waterGlasses} of 8 drank</span>
-                  </div>
-
-                  {waterGlasses > 0 && (
-                    <button
-                      type="button"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleWaterDecrease();
-                      }}
-                      className="mt-0.5 px-2 py-0.5 rounded-full bg-cyan-100/80 hover:bg-rose-100 text-cyan-800 hover:text-rose-700 text-[9px] font-black transition-all cursor-pointer flex items-center gap-1 border border-cyan-200/60 active:scale-95"
-                      title="Undo last glass (-1 cup)"
-                    >
-                      <RotateCcw size={9} />
-                      <span>Undo (-1)</span>
-                    </button>
-                  )}
-                </div>
-              </div>
-            )}
 
             {/* 🌟 ZONE 3: TODAY'S TIMELY GENTLE TIP (Only 1 smart dynamic card) */}
             {dashboardPrefs.showTip && (
