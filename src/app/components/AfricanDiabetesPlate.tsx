@@ -31,7 +31,7 @@ export const AFRICAN_PLATE_DATABASE: FoodOption[] = [
   // 🥬 50% Non-Starchy Leafy Soups & Vegetables (2 Ladles)
   {
     id: "ewedu",
-    name: "Ewedu (Jute)",
+    name: "Ewedu (Jute Leaves)",
     category: "veggie",
     portionUnit: "2 Ladles (~50% Plate)",
     calories: 25,
@@ -42,7 +42,7 @@ export const AFRICAN_PLATE_DATABASE: FoodOption[] = [
     potassium: 380,
     gi: "low",
     emoji: "🥣",
-    clinicalNote: "Viscous mucilage blunts postprandial glucose absorption by 28%.",
+    clinicalNote: "Viscous mucilage creates a natural gut buffer, slowing carbohydrate absorption.",
   },
   {
     id: "okra",
@@ -57,11 +57,11 @@ export const AFRICAN_PLATE_DATABASE: FoodOption[] = [
     potassium: 420,
     gi: "low",
     emoji: "🥗",
-    clinicalNote: "Soluble fiber traps starch enzymes, delaying gastric emptying.",
+    clinicalNote: "Rich soluble fiber delays gastric emptying for sustained metabolic energy.",
   },
   {
     id: "efo_riro",
-    name: "Efo Riro",
+    name: "Efo Riro (Spinach)",
     category: "veggie",
     portionUnit: "2 Ladles (~50% Plate)",
     calories: 65,
@@ -72,7 +72,7 @@ export const AFRICAN_PLATE_DATABASE: FoodOption[] = [
     potassium: 490,
     gi: "low",
     emoji: "🥬",
-    clinicalNote: "Rich in lutein and magnesium, supporting insulin receptor sensitivity.",
+    clinicalNote: "Packed with lutein, iron, and magnesium to optimize cellular energy production.",
   },
   {
     id: "ugwu",
@@ -87,7 +87,7 @@ export const AFRICAN_PLATE_DATABASE: FoodOption[] = [
     potassium: 540,
     gi: "low",
     emoji: "🌿",
-    clinicalNote: "High potassium and folate protect against endothelial stiffness.",
+    clinicalNote: "High potassium and folate protect cardiovascular health and lower blood pressure.",
   },
   {
     id: "kontomire",
@@ -102,11 +102,11 @@ export const AFRICAN_PLATE_DATABASE: FoodOption[] = [
     potassium: 460,
     gi: "low",
     emoji: "🍲",
-    clinicalNote: "Traditional dark greens packed with iron and prebiotic fiber.",
+    clinicalNote: "Traditional Ghanaian greens loaded with prebiotic fiber for gut microbiome vitality.",
   },
   {
     id: "bitterleaf",
-    name: "Bitter Leaf",
+    name: "Bitter Leaf (Onugbu)",
     category: "veggie",
     portionUnit: "2 Ladles (~50% Plate)",
     calories: 55,
@@ -117,7 +117,7 @@ export const AFRICAN_PLATE_DATABASE: FoodOption[] = [
     potassium: 510,
     gi: "low",
     emoji: "🍃",
-    clinicalNote: "Bioactive peptides support hepatic glycemic regulation.",
+    clinicalNote: "Natural plant bioactives promote optimal metabolic balance and liver function.",
   },
 
   // 🥩 25% Lean Protein & Seafood (1 Palm)
@@ -134,7 +134,7 @@ export const AFRICAN_PLATE_DATABASE: FoodOption[] = [
     potassium: 380,
     gi: "low",
     emoji: "🐟",
-    clinicalNote: "Pure lean protein with 0g carbs, stimulating satiety hormones.",
+    clinicalNote: "Pure lean protein with 0g carbs to stimulate satiety hormones and build muscle.",
   },
   {
     id: "mackerel",
@@ -149,7 +149,7 @@ export const AFRICAN_PLATE_DATABASE: FoodOption[] = [
     potassium: 420,
     gi: "low",
     emoji: "🐟",
-    clinicalNote: "High in marine Omega-3 fatty acids (EPA/DHA).",
+    clinicalNote: "Rich in marine Omega-3 fatty acids (EPA/DHA) for brain and heart vitality.",
   },
   {
     id: "moimoi",
@@ -164,7 +164,7 @@ export const AFRICAN_PLATE_DATABASE: FoodOption[] = [
     potassium: 390,
     gi: "low",
     emoji: "🫘",
-    clinicalNote: "Plant and egg protein blend with slow-release soluble legume fiber.",
+    clinicalNote: "Plant and egg protein blend with slow-release legume fiber.",
   },
   {
     id: "goat_meat",
@@ -179,7 +179,7 @@ export const AFRICAN_PLATE_DATABASE: FoodOption[] = [
     potassium: 390,
     gi: "low",
     emoji: "🥩",
-    clinicalNote: "Lower in saturated fat and cholesterol than beef.",
+    clinicalNote: "Lower in saturated fat and cholesterol than commercial beef cuts.",
   },
   {
     id: "boiled_eggs",
@@ -194,7 +194,7 @@ export const AFRICAN_PLATE_DATABASE: FoodOption[] = [
     potassium: 130,
     gi: "low",
     emoji: "🥚",
-    clinicalNote: "High biological value protein with choline.",
+    clinicalNote: "High biological value protein with choline for metabolic health.",
   },
 
   // 🍠 25% Complex Swallows & Starchy Carbs (1 Fist)
@@ -211,7 +211,7 @@ export const AFRICAN_PLATE_DATABASE: FoodOption[] = [
     potassium: 480,
     gi: "low",
     emoji: "🍠",
-    clinicalNote: "High in resistant starch that bypasses rapid digestion.",
+    clinicalNote: "High in resistant starch that provides clean energy without insulin spikes.",
   },
   {
     id: "amala",
@@ -226,7 +226,7 @@ export const AFRICAN_PLATE_DATABASE: FoodOption[] = [
     potassium: 440,
     gi: "low",
     emoji: "🟤",
-    clinicalNote: "Retains the fibrous cortex of sun-dried yam skins.",
+    clinicalNote: "Retains the fibrous cortex of sun-dried yam skins for all-day stamina.",
   },
   {
     id: "oat_fufu",
@@ -241,7 +241,7 @@ export const AFRICAN_PLATE_DATABASE: FoodOption[] = [
     potassium: 290,
     gi: "low",
     emoji: "🌾",
-    clinicalNote: "Beta-glucan soluble fibers create a viscous gel.",
+    clinicalNote: "Beta-glucan soluble fibers create a protective gel for steady glucose release.",
   },
   {
     id: "ofada_rice",
@@ -256,7 +256,7 @@ export const AFRICAN_PLATE_DATABASE: FoodOption[] = [
     potassium: 220,
     gi: "medium",
     emoji: "🍚",
-    clinicalNote: "Unpolished grain preserving bran layer and slow carbohydrate release.",
+    clinicalNote: "Unpolished grain preserving bran layer and slow-burn carbohydrates.",
   },
   {
     id: "pounded_yam",
@@ -271,7 +271,7 @@ export const AFRICAN_PLATE_DATABASE: FoodOption[] = [
     potassium: 390,
     gi: "high",
     emoji: "⚪",
-    clinicalNote: "Rapidly hydrolyzed starch. Pair with 2+ ladles of Okra.",
+    clinicalNote: "High carbohydrate load. Always pair with 2 ladles of Okra or Ewedu to buffer.",
   },
 
   // 💧 0-Calorie Side Hydration
@@ -288,7 +288,7 @@ export const AFRICAN_PLATE_DATABASE: FoodOption[] = [
     potassium: 10,
     gi: "low",
     emoji: "💧",
-    clinicalNote: "Zero calories. Hydrates kidneys to facilitate glucose excretion.",
+    clinicalNote: "Zero calories. Optimizes cellular hydration and kidney function.",
   },
   {
     id: "zobo",
@@ -303,7 +303,7 @@ export const AFRICAN_PLATE_DATABASE: FoodOption[] = [
     potassium: 140,
     gi: "low",
     emoji: "🌺",
-    clinicalNote: "Rich in anthocyanins supporting healthy blood pressure.",
+    clinicalNote: "Rich in anthocyanins supporting healthy blood pressure and heart health.",
   },
   {
     id: "moringa_tea",
@@ -318,7 +318,7 @@ export const AFRICAN_PLATE_DATABASE: FoodOption[] = [
     potassium: 95,
     gi: "low",
     emoji: "🍵",
-    clinicalNote: "Promotes improved cellular glucose uptake.",
+    clinicalNote: "Natural antioxidants promote cellular vitality and energy metabolism.",
   },
 ];
 
@@ -387,22 +387,22 @@ export default function AfricanDiabetesPlate({
     const kNaRatio = (potassium / Math.max(1, sodium)).toFixed(1);
 
     let glycemicStatus = {
-      label: "🟢 Flat Glycemic Curve (Optimal)",
+      label: "🟢 Flat Glycemic Curve • All-Day Steady Energy ⚡",
       color: "text-emerald-700 bg-emerald-100 dark:bg-emerald-950/60 dark:text-emerald-300 border-emerald-300/80 dark:border-emerald-800",
-      desc: `50% ${selectedVeggie.name} + low-GI ${selectedCarb.name} creates an optimal viscous fiber barrier.`,
+      desc: `50% ${selectedVeggie.name} + low-GI ${selectedCarb.name} creates an optimal viscous fiber barrier to prevent food comas.`,
     };
 
     if (isHighGi && fiber < 6) {
       glycemicStatus = {
-        label: "🔴 Moderate Spike Risk (High GI)",
+        label: "🔴 High Carb Load • Energy Crash Watch",
         color: "text-rose-700 bg-rose-100 dark:bg-rose-950/60 dark:text-rose-300 border-rose-300/80 dark:border-rose-800",
-        desc: `${selectedCarb.name} hydrolyzes rapidly. Pair with 2+ ladles of Okra or swap to Unripe Plantain.`,
+        desc: `${selectedCarb.name} hydrolyzes rapidly. Pair with 2+ ladles of Okra or swap to Unripe Plantain for steady energy.`,
       };
     } else if (isHighGi) {
       glycemicStatus = {
-        label: "🟡 Buffered Glycemic Curve",
+        label: "🟡 Buffered Energy Curve • Steady Vitality",
         color: "text-amber-700 bg-amber-100 dark:bg-amber-950/60 dark:text-amber-300 border-amber-300/80 dark:border-amber-800",
-        desc: `High GI ${selectedCarb.name} is partially buffered by ${selectedVeggie.name}'s soluble fiber.`,
+        desc: `Carbohydrates in ${selectedCarb.name} are smoothly buffered by ${selectedVeggie.name}'s soluble fiber network.`,
       };
     }
 
@@ -445,10 +445,10 @@ export default function AfricanDiabetesPlate({
         sodium_mg: totals.sodium,
         bloodSugarImpact: totals.glycemicStatus.label.includes("Flat") ? "low" : "moderate",
         glycemicLoad: "low",
-        notes: `Built via 9-Inch African Diabetes Plate Method. Drink: ${selectedDrink.name}. K:Na: ${totals.kNaRatio}:1`,
+        notes: `Built via 9-Inch African Vitality Plate Method. Drink: ${selectedDrink.name}. K:Na: ${totals.kNaRatio}:1`,
       });
 
-      toast.success("Balanced 9-Inch Plate logged to your daily diary! 🥑✨");
+      toast.success("Balanced 9-Inch Vitality Plate logged to diary! 🥑✨");
       if (onLoggedSuccess) onLoggedSuccess();
     } catch (err) {
       toast.error("Could not record meal log. Please try again.");
@@ -470,7 +470,7 @@ export default function AfricanDiabetesPlate({
       {/* Top Action Bar */}
       <div className="flex items-center justify-between gap-2">
         <p className="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400">
-          👉 <strong>Tap any quadrant on the plate</strong> to swap foods instantly!
+          👉 <strong>Tap any quadrant on the plate</strong> to swap African superfoods!
         </p>
         <button
           onClick={handleRandomize}
@@ -517,7 +517,7 @@ export default function AfricanDiabetesPlate({
               </span>
             </button>
 
-            {/* 🥩 SECTOR 2: 25% Lean Protein (Top Right Quarter - Positioned away from upper-right curve) */}
+            {/* 🥩 SECTOR 2: 25% Lean Protein (Top Right Quarter) */}
             <button
               type="button"
               onClick={() => handleQuadrantClick("protein")}
@@ -542,7 +542,7 @@ export default function AfricanDiabetesPlate({
               </span>
             </button>
 
-            {/* 🍠 SECTOR 3: 25% Complex Swallow / Carb (Bottom Right Quarter - Positioned away from lower-right curve) */}
+            {/* 🍠 SECTOR 3: 25% Complex Swallow / Carb (Bottom Right Quarter) */}
             <button
               type="button"
               onClick={() => handleQuadrantClick("carb")}
@@ -702,14 +702,14 @@ export default function AfricanDiabetesPlate({
           </span>
         </div>
         <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-zinc-800/80 border border-slate-200/80 dark:border-zinc-700">
-          <span className="text-[9.5px] font-bold text-slate-500 block">K:Na Ratio</span>
+          <span className="text-[9.5px] font-bold text-slate-500 block">Cardio K:Na Ratio</span>
           <span className="text-sm font-black text-[#126778] dark:text-teal-300">
             {totals.kNaRatio}:1.0
           </span>
         </div>
       </div>
 
-      {/* Live Glycemic Feedback Bar */}
+      {/* Live Energy & Glycemic Feedback Bar */}
       <div className={`p-3 rounded-2xl border transition-all ${totals.glycemicStatus.color}`}>
         <div className="flex items-center gap-2 font-black text-xs">
           <Activity size={15} />
@@ -720,14 +720,14 @@ export default function AfricanDiabetesPlate({
         </p>
       </div>
 
-      {/* 🥑 Avo Advice */}
+      {/* 🥑 Avo Vitality Advice */}
       <div className="bg-teal-50/80 dark:bg-teal-950/40 rounded-2xl p-3 border border-teal-200/70 dark:border-teal-800/50 flex items-start gap-2.5">
         <Mascot size={36} className="shrink-0 mt-0.5" />
         <div className="text-[11px] text-slate-700 dark:text-slate-300 leading-relaxed">
           <span className="font-black text-[#126778] dark:text-teal-300 block mb-0.5">
-            Avo's Plate Wisdom:
+            Avo's Vitality Wisdom:
           </span>
-          "Filling 50% of this 9-inch plate with {selectedVeggie.name} provides natural viscous fibers to coat the gut wall and blunt glucose spikes from {selectedCarb.name}!"
+          "Filling 50% of this 9-inch plate with {selectedVeggie.name} provides natural viscous fibers to protect your heart, prevent afternoon fatigue, and ensure steady fat burning with {selectedCarb.name}!"
         </div>
       </div>
 
@@ -738,7 +738,7 @@ export default function AfricanDiabetesPlate({
         className="w-full py-3.5 px-4 bg-gradient-to-r from-[#126778] via-[#0d9488] to-[#0f766e] hover:brightness-110 active:scale-98 text-white font-black text-xs sm:text-sm rounded-2xl shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
       >
         <Zap size={16} className="text-amber-300" />
-        <span>{isLogging ? "Recording Plate to Diary..." : "Log This Balanced 9-Inch Plate ⚡"}</span>
+        <span>{isLogging ? "Recording Plate to Diary..." : "Log This Balanced 9-Inch Vitality Plate ⚡"}</span>
       </button>
     </div>
   );

@@ -33,11 +33,11 @@ export default function AfricanPlateSilhouette({
                 The Balanced African Plate
               </h3>
               <span className="text-[9.5px] font-black uppercase tracking-wider bg-teal-100 dark:bg-teal-950/60 text-[#126778] dark:text-teal-300 px-2 py-0.5 rounded-full border border-teal-200 dark:border-teal-800">
-                ADA 9-Inch Method
+                Golden Portion Ratio
               </span>
             </div>
             <p className="text-[11px] text-slate-500 dark:text-slate-400">
-              Golden ratio: 50% Soup/Veg • 25% Protein • 25% Swallow
+              Optimal balance: 50% Soups/Greens • 25% Lean Protein • 25% Complex Swallow
             </p>
           </div>
         </div>
