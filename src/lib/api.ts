@@ -233,6 +233,7 @@ export async function getMealLogs() {
 }
 
 export async function createMealLog(logData: any) {
+
   const logWithId = {
     ...logData,
     id: logData.id || `log_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`,
@@ -759,3 +760,4 @@ export async function createFood(food: Record<string, any>): Promise<FoodItem> {
 export async function deleteFood(id: string): Promise<void> {
   await apiCall(`/foods/${id}`, { method: 'DELETE' });
 }
+export const addMealLog = createMealLog;

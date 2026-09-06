@@ -18,7 +18,7 @@ import {
 } from "lucide-react";
 import { soundEffects } from "../utils/soundEffects";
 import { triggerHaptic } from "../utils/celebration";
-import { addMealLog } from "../../lib/api";
+import { createMealLog } from "../../lib/api";
 import { toast } from "sonner";
 import Mascot from "./Mascot";
 
@@ -449,7 +449,7 @@ export default function AfricanDiabetesPlate({
       soundEffects.playSuccessJingle();
 
       const mealName = `9-Inch Plate: ${selectedVeggie.name} + ${selectedProtein.name} + ${selectedCarb.name}`;
-      await addMealLog({
+      await createMealLog({
         foodName: mealName,
         mealName: mealName,
         calories: totals.calories,
