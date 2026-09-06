@@ -1,19 +1,8 @@
 import React, { useState, useMemo } from "react";
 import {
-  Utensils,
-  Sparkles,
   Check,
   RotateCcw,
   Activity,
-  Flame,
-  Droplet,
-  ShieldCheck,
-  AlertTriangle,
-  Info,
-  ChevronRight,
-  Plus,
-  X,
-  Heart,
   Zap,
 } from "lucide-react";
 import { soundEffects } from "../utils/soundEffects";
@@ -377,7 +366,8 @@ export default function AfricanDiabetesPlate({
   const [selectedCarb, setSelectedCarb] = useState<FoodOption>(AFRICAN_PLATE_DATABASE[12]); // Unripe Plantain
   const [selectedDrink, setSelectedDrink] = useState<FoodOption>(AFRICAN_PLATE_DATABASE[18]); // Water
 
-  const [activePicker, setActivePicker] = useState<"veggie" | "protein" | "carb" | "drink" | null>(null);
+  // Active highlighted sector for immediate in-place swapping
+  const [activeSector, setActiveSector] = useState<"veggie" | "protein" | "carb" | "drink">("veggie");
   const [isLogging, setIsLogging] = useState(false);
 
   // Aggregated Telemetry
@@ -471,10 +461,38 @@ export default function AfricanDiabetesPlate({
     }
   };
 
+  // Category labels and options
+  const activeOptions = useMemo(() => {
+    return AFRICAN_PLATE_DATABASE.filter((i) => i.category === activeSector);
+  }, [activeSector]);
+
+  const sectorMeta = {
+    veggie: {
+      title: "🥬 50% Non-Starchy Vegetables & Leafy Soups",
+      hint: "Select 2 cooking ladles of nutrient-dense greens to buffer glucose absorption.",
+      color: "border-emerald-500 ring-4 ring-emerald-400/30",
+    },
+    protein: {
+      title: "🥩 25% Lean Protein & Clean Seafood",
+      hint: "Select 1 palm-sized portion to trigger GLP-1 satiety and preserve muscle mass.",
+      color: "border-amber-500 ring-4 ring-amber-400/30",
+    },
+    carb: {
+      title: "🍠 25% Complex Swallows & Starches",
+      hint: "Select 1 closed fist of low-GI resistant starch to maintain steady cellular energy.",
+      color: "border-cyan-500 ring-4 ring-cyan-400/30",
+    },
+    drink: {
+      title: "💧 Side Hydration (0-Calorie)",
+      hint: "Pure water or traditional herbal infusions to hydrate kidneys and support glucose excretion.",
+      color: "border-sky-500 ring-4 ring-sky-400/30",
+    },
+  };
+
   return (
     <div className={`rounded-3xl p-4 sm:p-7 bg-white dark:bg-zinc-900 border border-slate-200/90 dark:border-zinc-800 shadow-xl relative overflow-hidden ${className}`}>
       {/* Header with ADA 9-Inch Badge */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 mb-4 sm:mb-6 pr-8 sm:pr-0">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 mb-4 sm:mb-6">
         <div>
           <div className="flex items-center gap-2 mb-1">
             <span className="text-[9.5px] sm:text-[10px] font-black uppercase tracking-wider bg-teal-100 dark:bg-teal-950/60 text-[#126778] dark:text-teal-300 px-2.5 py-0.5 rounded-full border border-teal-200 dark:border-teal-800 inline-block">
@@ -486,7 +504,7 @@ export default function AfricanDiabetesPlate({
             <span className="text-lg sm:text-xl">🍲</span>
           </h3>
           <p className="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-            Tap any quadrant to swap African food sources and observe live glycemic buffering.
+            Tap any section of the plate below to customize your African food sources in real-time.
           </p>
         </div>
 
@@ -500,9 +518,9 @@ export default function AfricanDiabetesPlate({
         </button>
       </div>
 
-      {/* Main Interactive 9-Inch Plate & Side Cup Visual */}
+      {/* Main Interactive 9-Inch Plate & Side Controls */}
       <div className="flex flex-col lg:flex-row items-center justify-center gap-6 sm:gap-8 my-4">
-        {/* 9-Inch Plate Circle (Spacious, Unclipped Geometry) */}
+        {/* 9-Inch Plate Circle (Spacious, Interactive Geometry) */}
         <div className="relative w-64 h-64 min-[380px]:w-72 min-[380px]:h-72 sm:w-80 sm:h-80 md:w-88 md:h-88 rounded-full p-2 bg-gradient-to-br from-slate-100 via-white to-slate-200 dark:from-zinc-800 dark:via-zinc-850 dark:to-zinc-900 border-4 border-slate-300/80 dark:border-zinc-700 shadow-2xl flex items-center justify-center select-none shrink-0">
           {/* Inner Plate Rim */}
           <div className="w-full h-full rounded-full border-2 border-dashed border-slate-300 dark:border-zinc-700 relative overflow-hidden grid grid-cols-2 grid-rows-2 gap-1.5 p-1 bg-slate-50 dark:bg-zinc-950/60">
@@ -511,12 +529,16 @@ export default function AfricanDiabetesPlate({
               onClick={() => {
                 soundEffects.playBubblePop();
                 triggerHaptic("medium");
-                setActivePicker("veggie");
+                setActiveSector("veggie");
               }}
-              className="row-span-2 col-span-1 rounded-l-full p-2.5 sm:p-4 bg-gradient-to-br from-emerald-50 to-teal-50/90 dark:from-emerald-950/60 dark:to-teal-950/40 border-r-2 border-emerald-300/80 dark:border-emerald-700 hover:brightness-105 active:scale-98 transition-all flex flex-col items-center justify-center text-center cursor-pointer group shadow-xs relative overflow-hidden"
+              className={`row-span-2 col-span-1 rounded-l-full p-2.5 sm:p-4 bg-gradient-to-br from-emerald-50 to-teal-50/90 dark:from-emerald-950/60 dark:to-teal-950/40 border-r-2 border-emerald-300/80 dark:border-emerald-700 hover:brightness-105 active:scale-98 transition-all flex flex-col items-center justify-center text-center cursor-pointer group shadow-xs relative overflow-hidden ${
+                activeSector === "veggie" ? "ring-4 ring-emerald-500/50 scale-[1.02] z-10 brightness-105" : ""
+              }`}
             >
               {/* Unclipped In-Flow Badge */}
-              <span className="inline-flex items-center gap-1 bg-emerald-600 text-white text-[8px] min-[380px]:text-[9px] sm:text-[10px] font-black px-2 py-0.5 rounded-full shadow-2xs mb-1">
+              <span className={`inline-flex items-center gap-1 text-[8px] min-[380px]:text-[9px] sm:text-[10px] font-black px-2 py-0.5 rounded-full shadow-2xs mb-1 transition-all ${
+                activeSector === "veggie" ? "bg-emerald-700 text-white ring-2 ring-white" : "bg-emerald-600 text-white"
+              }`}>
                 🥬 50% VEGGIES
               </span>
 
@@ -533,7 +555,7 @@ export default function AfricanDiabetesPlate({
               </span>
 
               <span className="text-[7.5px] min-[380px]:text-[8px] sm:text-[9px] text-emerald-700 dark:text-emerald-400 font-medium mt-1">
-                Tap to swap ⚡
+                {activeSector === "veggie" ? "● Active Picker" : "Tap to select ⚡"}
               </span>
             </button>
 
@@ -542,12 +564,16 @@ export default function AfricanDiabetesPlate({
               onClick={() => {
                 soundEffects.playBubblePop();
                 triggerHaptic("medium");
-                setActivePicker("protein");
+                setActiveSector("protein");
               }}
-              className="col-span-1 row-span-1 rounded-tr-full p-2 sm:p-3 bg-gradient-to-br from-amber-50 to-orange-50/90 dark:from-amber-950/60 dark:to-orange-950/40 border-b-2 border-amber-300/80 dark:border-amber-700 hover:brightness-105 active:scale-98 transition-all flex flex-col items-center justify-center text-center cursor-pointer group shadow-xs relative overflow-hidden"
+              className={`col-span-1 row-span-1 rounded-tr-full p-2 sm:p-3 bg-gradient-to-br from-amber-50 to-orange-50/90 dark:from-amber-950/60 dark:to-orange-950/40 border-b-2 border-amber-300/80 dark:border-amber-700 hover:brightness-105 active:scale-98 transition-all flex flex-col items-center justify-center text-center cursor-pointer group shadow-xs relative overflow-hidden ${
+                activeSector === "protein" ? "ring-4 ring-amber-500/50 scale-[1.02] z-10 brightness-105" : ""
+              }`}
             >
               {/* Unclipped In-Flow Badge */}
-              <span className="inline-flex items-center gap-1 bg-amber-600 text-white text-[7.5px] min-[380px]:text-[8px] sm:text-[9px] font-black px-1.5 min-[380px]:px-2 py-0.2 rounded-full shadow-2xs mb-0.5">
+              <span className={`inline-flex items-center gap-1 text-[7.5px] min-[380px]:text-[8px] sm:text-[9px] font-black px-1.5 min-[380px]:px-2 py-0.2 rounded-full shadow-2xs mb-0.5 transition-all ${
+                activeSector === "protein" ? "bg-amber-700 text-white ring-2 ring-white" : "bg-amber-600 text-white"
+              }`}>
                 🥩 25% PROTEIN
               </span>
 
@@ -569,12 +595,16 @@ export default function AfricanDiabetesPlate({
               onClick={() => {
                 soundEffects.playBubblePop();
                 triggerHaptic("medium");
-                setActivePicker("carb");
+                setActiveSector("carb");
               }}
-              className="col-span-1 row-span-1 rounded-br-full p-2 sm:p-3 bg-gradient-to-br from-cyan-50 to-sky-50/90 dark:from-cyan-950/60 dark:to-sky-950/40 hover:brightness-105 active:scale-98 transition-all flex flex-col items-center justify-center text-center cursor-pointer group shadow-xs relative overflow-hidden"
+              className={`col-span-1 row-span-1 rounded-br-full p-2 sm:p-3 bg-gradient-to-br from-cyan-50 to-sky-50/90 dark:from-cyan-950/60 dark:to-sky-950/40 hover:brightness-105 active:scale-98 transition-all flex flex-col items-center justify-center text-center cursor-pointer group shadow-xs relative overflow-hidden ${
+                activeSector === "carb" ? "ring-4 ring-cyan-500/50 scale-[1.02] z-10 brightness-105" : ""
+              }`}
             >
               {/* Unclipped In-Flow Badge */}
-              <span className="inline-flex items-center gap-1 bg-cyan-700 text-white text-[7.5px] min-[380px]:text-[8px] sm:text-[9px] font-black px-1.5 min-[380px]:px-2 py-0.2 rounded-full shadow-2xs mb-0.5">
+              <span className={`inline-flex items-center gap-1 text-[7.5px] min-[380px]:text-[8px] sm:text-[9px] font-black px-1.5 min-[380px]:px-2 py-0.2 rounded-full shadow-2xs mb-0.5 transition-all ${
+                activeSector === "carb" ? "bg-cyan-800 text-white ring-2 ring-white" : "bg-cyan-700 text-white"
+              }`}>
                 🍠 25% SWALLOW
               </span>
 
@@ -595,14 +625,16 @@ export default function AfricanDiabetesPlate({
 
         {/* Side Hydration Cup & Telemetry Quick Card */}
         <div className="flex flex-col items-center sm:items-start gap-2.5 sm:gap-3.5 w-full md:w-64">
-          {/* 0-Calorie Drink Cup */}
+          {/* 0-Calorie Drink Cup (Clickable to switch to drink picker) */}
           <button
             onClick={() => {
               soundEffects.playBubblePop();
               triggerHaptic("medium");
-              setActivePicker("drink");
+              setActiveSector("drink");
             }}
-            className="flex items-center gap-3 p-3 bg-gradient-to-r from-sky-50 to-blue-50 dark:from-sky-950/50 dark:to-blue-950/40 rounded-2xl border border-sky-200 dark:border-sky-800 hover:brightness-105 transition-all cursor-pointer shadow-xs active:scale-95 w-full"
+            className={`flex items-center gap-3 p-3 bg-gradient-to-r from-sky-50 to-blue-50 dark:from-sky-950/50 dark:to-blue-950/40 rounded-2xl border transition-all cursor-pointer shadow-xs active:scale-95 w-full ${
+              activeSector === "drink" ? "border-sky-500 ring-4 ring-sky-400/40 scale-[1.02]" : "border-sky-200 dark:border-sky-800 hover:brightness-105"
+            }`}
           >
             <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-sky-500 text-white flex items-center justify-center text-xl shadow-sm shrink-0">
               {selectedDrink.emoji}
@@ -615,7 +647,7 @@ export default function AfricanDiabetesPlate({
                 {selectedDrink.name}
               </span>
               <span className="text-[9.5px] sm:text-[10px] text-slate-500">
-                Tap to change beverage 💧
+                {activeSector === "drink" ? "● Active Picker" : "Tap to change 💧"}
               </span>
             </div>
           </button>
@@ -650,8 +682,132 @@ export default function AfricanDiabetesPlate({
         </div>
       </div>
 
+      {/* 🌟 10X IN-PLACE DIRECT INTERACTIVE SELECTOR STUDIO */}
+      <div className="my-5 p-4 sm:p-5 rounded-3xl bg-slate-50/90 dark:bg-zinc-850/80 border-2 border-teal-200/80 dark:border-teal-900/60 shadow-md animate-in fade-in slide-in-from-top-2 duration-200">
+        {/* Active Category Header & Sector Selector Tabs */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200 dark:border-zinc-700/80 pb-3 mb-3.5">
+          <div>
+            <div className="flex items-center gap-2">
+              <span className="text-xs sm:text-sm font-black text-slate-900 dark:text-white">
+                {sectorMeta[activeSector].title}
+              </span>
+              <span className="text-[9px] font-black bg-teal-600 text-white px-2 py-0.2 rounded-full uppercase">
+                1-Tap Swap
+              </span>
+            </div>
+            <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
+              {sectorMeta[activeSector].hint}
+            </p>
+          </div>
+
+          {/* Quick Segment Switcher */}
+          <div className="flex items-center gap-1 bg-white dark:bg-zinc-900 p-1 rounded-2xl border border-slate-200 dark:border-zinc-700 shrink-0">
+            <button
+              onClick={() => {
+                soundEffects.playTactileTick();
+                triggerHaptic("light");
+                setActiveSector("veggie");
+              }}
+              className={`px-2.5 py-1 rounded-xl text-xs font-black transition-all cursor-pointer ${
+                activeSector === "veggie" ? "bg-emerald-600 text-white shadow-xs" : "text-slate-600 hover:text-slate-900 dark:text-slate-400"
+              }`}
+            >
+              🥬 Veggies (50%)
+            </button>
+            <button
+              onClick={() => {
+                soundEffects.playTactileTick();
+                triggerHaptic("light");
+                setActiveSector("protein");
+              }}
+              className={`px-2.5 py-1 rounded-xl text-xs font-black transition-all cursor-pointer ${
+                activeSector === "protein" ? "bg-amber-600 text-white shadow-xs" : "text-slate-600 hover:text-slate-900 dark:text-slate-400"
+              }`}
+            >
+              🥩 Protein (25%)
+            </button>
+            <button
+              onClick={() => {
+                soundEffects.playTactileTick();
+                triggerHaptic("light");
+                setActiveSector("carb");
+              }}
+              className={`px-2.5 py-1 rounded-xl text-xs font-black transition-all cursor-pointer ${
+                activeSector === "carb" ? "bg-cyan-700 text-white shadow-xs" : "text-slate-600 hover:text-slate-900 dark:text-slate-400"
+              }`}
+            >
+              🍠 Swallow (25%)
+            </button>
+            <button
+              onClick={() => {
+                soundEffects.playTactileTick();
+                triggerHaptic("light");
+                setActiveSector("drink");
+              }}
+              className={`px-2.5 py-1 rounded-xl text-xs font-black transition-all cursor-pointer ${
+                activeSector === "drink" ? "bg-sky-600 text-white shadow-xs" : "text-slate-600 hover:text-slate-900 dark:text-slate-400"
+              }`}
+            >
+              💧 Drink
+            </button>
+          </div>
+        </div>
+
+        {/* 1-Tap Food Cards Grid for the Active Sector */}
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2">
+          {activeOptions.map((item) => {
+            const isSelected =
+              (activeSector === "veggie" && selectedVeggie.id === item.id) ||
+              (activeSector === "protein" && selectedProtein.id === item.id) ||
+              (activeSector === "carb" && selectedCarb.id === item.id) ||
+              (activeSector === "drink" && selectedDrink.id === item.id);
+
+            return (
+              <button
+                key={item.id}
+                onClick={() => {
+                  soundEffects.playBubblePop();
+                  triggerHaptic("medium");
+                  if (activeSector === "veggie") setSelectedVeggie(item);
+                  if (activeSector === "protein") setSelectedProtein(item);
+                  if (activeSector === "carb") setSelectedCarb(item);
+                  if (activeSector === "drink") setSelectedDrink(item);
+                  toast.success(`Selected ${item.name}! Plate updated ✨`);
+                }}
+                className={`p-2.5 rounded-2xl border text-left transition-all cursor-pointer flex flex-col justify-between active:scale-95 ${
+                  isSelected
+                    ? "bg-white dark:bg-zinc-900 border-teal-500 shadow-md ring-2 ring-teal-500/40 scale-[1.02]"
+                    : "bg-white/80 dark:bg-zinc-900/60 border-slate-200 dark:border-zinc-700 hover:border-slate-300 hover:bg-white"
+                }`}
+              >
+                <div>
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="text-xl sm:text-2xl">{item.emoji}</span>
+                    {isSelected && (
+                      <span className="p-1 bg-teal-600 text-white rounded-full">
+                        <Check size={10} />
+                      </span>
+                    )}
+                  </div>
+                  <h5 className="font-black text-[11px] sm:text-xs text-slate-900 dark:text-white leading-tight line-clamp-2">
+                    {item.name}
+                  </h5>
+                  <span className="text-[9.5px] text-slate-500 block mt-0.5 font-medium">
+                    {item.calories} kcal · {item.gi.toUpperCase()} GI
+                  </span>
+                </div>
+
+                <span className="text-[8.5px] text-teal-700 dark:text-teal-400 font-bold mt-1.5 truncate">
+                  {item.portionUnit}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
       {/* Live Glycemic Radar Feedback Bar */}
-      <div className={`p-3 sm:p-3.5 rounded-2xl border transition-all mt-3 sm:mt-4 mb-4 ${totals.glycemicStatus.color}`}>
+      <div className={`p-3.5 rounded-2xl border transition-all mb-4 ${totals.glycemicStatus.color}`}>
         <div className="flex items-center gap-2 font-black text-xs sm:text-sm">
           <Activity size={16} />
           <span>{totals.glycemicStatus.label}</span>
@@ -662,8 +818,8 @@ export default function AfricanDiabetesPlate({
       </div>
 
       {/* 🥑 Avo Clinical Scribe Insight Bubble */}
-      <div className="bg-teal-50/80 dark:bg-teal-950/40 rounded-2xl p-3 sm:p-3.5 border border-teal-200/70 dark:border-teal-800/50 flex items-start gap-2.5 sm:gap-3 mb-4 sm:mb-5">
-        <Mascot size={38} className="shrink-0 mt-0.5" />
+      <div className="bg-teal-50/80 dark:bg-teal-950/40 rounded-2xl p-3.5 border border-teal-200/70 dark:border-teal-800/50 flex items-start gap-3 mb-5">
+        <Mascot size={44} className="shrink-0 mt-0.5" />
         <div className="text-[11px] sm:text-xs text-slate-700 dark:text-slate-300 leading-relaxed">
           <span className="font-black text-[#126778] dark:text-teal-300 block mb-0.5">
             Avo's Diabetes Plate Wisdom:
@@ -676,90 +832,11 @@ export default function AfricanDiabetesPlate({
       <button
         onClick={handleLogMeal}
         disabled={isLogging}
-        className="w-full py-3.5 px-4 sm:px-5 bg-gradient-to-r from-[#126778] via-[#0d9488] to-[#0f766e] hover:brightness-110 active:scale-98 text-white font-black text-xs sm:text-sm rounded-2xl shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+        className="w-full py-3.5 px-5 bg-gradient-to-r from-[#126778] via-[#0d9488] to-[#0f766e] hover:brightness-110 active:scale-98 text-white font-black text-xs sm:text-sm rounded-2xl shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
       >
         <Zap size={16} className="text-amber-300" />
         <span>{isLogging ? "Recording Plate to Diary..." : "Log This Balanced 9-Inch Plate ⚡"}</span>
       </button>
-
-      {/* Interactive Food Picker Modal / Bottom Sheet */}
-      {activePicker && (
-        <div className="fixed inset-0 z-50 bg-black/65 backdrop-blur-xs flex items-end sm:items-center justify-center p-2 sm:p-4 animate-in fade-in duration-200">
-          <div className="bg-white dark:bg-zinc-900 rounded-t-3xl sm:rounded-3xl p-4 sm:p-6 w-full max-w-lg max-h-[85vh] overflow-y-auto border border-slate-200 dark:border-zinc-800 shadow-2xl">
-            <div className="flex items-center justify-between border-b border-slate-100 dark:border-zinc-800 pb-2.5 sm:pb-3 mb-3 sm:mb-4">
-              <div>
-                <span className="text-[9.5px] sm:text-[10px] font-black uppercase text-[#126778] dark:text-teal-300 tracking-wider">
-                  {activePicker === "veggie" && "50% Zone • Leafy Greens & Soups"}
-                  {activePicker === "protein" && "25% Zone • Lean Protein & Seafood"}
-                  {activePicker === "carb" && "25% Zone • Complex Swallows & Starches"}
-                  {activePicker === "drink" && "Hydration • Zero-Calorie Beverages"}
-                </span>
-                <h4 className="font-black text-sm sm:text-base text-slate-900 dark:text-white mt-0.5">
-                  Choose Your African Food Source
-                </h4>
-              </div>
-              <button
-                onClick={() => setActivePicker(null)}
-                className="p-1.5 sm:p-2 hover:bg-slate-100 dark:hover:bg-zinc-800 rounded-full text-slate-400 hover:text-slate-600 transition-colors cursor-pointer"
-              >
-                <X size={18} />
-              </button>
-            </div>
-
-            {/* Food Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-2.5">
-              {AFRICAN_PLATE_DATABASE.filter((i) => i.category === activePicker).map((item) => {
-                const isSelected =
-                  (activePicker === "veggie" && selectedVeggie.id === item.id) ||
-                  (activePicker === "protein" && selectedProtein.id === item.id) ||
-                  (activePicker === "carb" && selectedCarb.id === item.id) ||
-                  (activePicker === "drink" && selectedDrink.id === item.id);
-
-                return (
-                  <button
-                    key={item.id}
-                    onClick={() => {
-                      soundEffects.playBubblePop();
-                      triggerHaptic("medium");
-                      if (activePicker === "veggie") setSelectedVeggie(item);
-                      if (activePicker === "protein") setSelectedProtein(item);
-                      if (activePicker === "carb") setSelectedCarb(item);
-                      if (activePicker === "drink") setSelectedDrink(item);
-                      setActivePicker(null);
-                    }}
-                    className={`p-2.5 sm:p-3 rounded-2xl border text-left transition-all cursor-pointer flex flex-col justify-between ${
-                      isSelected
-                        ? "bg-teal-50 dark:bg-teal-950/60 border-teal-500 shadow-xs ring-2 ring-teal-500/20"
-                        : "bg-slate-50 dark:bg-zinc-800/60 border-slate-200 dark:border-zinc-700 hover:border-slate-300"
-                    }`}
-                  >
-                    <div>
-                      <div className="flex items-center justify-between mb-1">
-                        <span className="text-xl sm:text-2xl">{item.emoji}</span>
-                        {isSelected && (
-                          <span className="p-1 bg-teal-600 text-white rounded-full">
-                            <Check size={12} />
-                          </span>
-                        )}
-                      </div>
-                      <h5 className="font-black text-xs text-slate-900 dark:text-white leading-tight">
-                        {item.name}
-                      </h5>
-                      <span className="text-[9.5px] sm:text-[10px] text-slate-500 block mt-0.5">
-                        {item.portionUnit} · {item.calories} kcal
-                      </span>
-                    </div>
-
-                    <p className="text-[9px] sm:text-[9.5px] text-slate-600 dark:text-slate-400 mt-1.5 italic line-clamp-2">
-                      {item.clinicalNote}
-                    </p>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }
