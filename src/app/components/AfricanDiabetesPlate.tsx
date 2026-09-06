@@ -501,11 +501,11 @@ export default function AfricanDiabetesPlate({
       </div>
 
       {/* Main Interactive 9-Inch Plate & Side Cup Visual */}
-      <div className="flex flex-col md:flex-row items-center justify-center gap-5 sm:gap-8 my-3 sm:my-4">
-        {/* 9-Inch Plate Circle (Responsive scaling on small screens) */}
-        <div className="relative w-56 h-56 min-[380px]:w-64 min-[380px]:h-64 sm:w-72 sm:h-72 rounded-full p-1.5 sm:p-2 bg-gradient-to-br from-slate-100 via-white to-slate-200 dark:from-zinc-800 dark:via-zinc-850 dark:to-zinc-900 border-4 border-slate-300/80 dark:border-zinc-700 shadow-2xl flex items-center justify-center select-none shrink-0">
+      <div className="flex flex-col lg:flex-row items-center justify-center gap-6 sm:gap-8 my-4">
+        {/* 9-Inch Plate Circle (Spacious, Unclipped Geometry) */}
+        <div className="relative w-64 h-64 min-[380px]:w-72 min-[380px]:h-72 sm:w-80 sm:h-80 md:w-88 md:h-88 rounded-full p-2 bg-gradient-to-br from-slate-100 via-white to-slate-200 dark:from-zinc-800 dark:via-zinc-850 dark:to-zinc-900 border-4 border-slate-300/80 dark:border-zinc-700 shadow-2xl flex items-center justify-center select-none shrink-0">
           {/* Inner Plate Rim */}
-          <div className="w-full h-full rounded-full border-2 border-dashed border-slate-300 dark:border-zinc-700 relative overflow-hidden grid grid-cols-2 grid-rows-2 gap-1 p-1 bg-slate-50 dark:bg-zinc-950/60">
+          <div className="w-full h-full rounded-full border-2 border-dashed border-slate-300 dark:border-zinc-700 relative overflow-hidden grid grid-cols-2 grid-rows-2 gap-1.5 p-1 bg-slate-50 dark:bg-zinc-950/60">
             {/* SECTOR 1: 50% Non-Starchy Vegetables (Left Half) */}
             <button
               onClick={() => {
@@ -513,22 +513,27 @@ export default function AfricanDiabetesPlate({
                 triggerHaptic("medium");
                 setActivePicker("veggie");
               }}
-              className="row-span-2 col-span-1 rounded-l-full p-2 min-[380px]:p-3 bg-gradient-to-br from-emerald-50 to-teal-50/90 dark:from-emerald-950/60 dark:to-teal-950/40 border-r-2 border-emerald-300/80 dark:border-emerald-700 hover:brightness-105 active:scale-98 transition-all flex flex-col items-center justify-center text-center cursor-pointer relative group overflow-hidden shadow-xs"
+              className="row-span-2 col-span-1 rounded-l-full p-2.5 sm:p-4 bg-gradient-to-br from-emerald-50 to-teal-50/90 dark:from-emerald-950/60 dark:to-teal-950/40 border-r-2 border-emerald-300/80 dark:border-emerald-700 hover:brightness-105 active:scale-98 transition-all flex flex-col items-center justify-center text-center cursor-pointer group shadow-xs relative overflow-hidden"
             >
-              <div className="absolute top-1.5 left-2 min-[380px]:top-2 min-[380px]:left-3 bg-emerald-600 text-white text-[7.5px] min-[380px]:text-[8.5px] sm:text-[9px] font-black px-1.5 py-0.5 rounded-full shadow-2xs">
-                50% VEGGIES
-              </div>
-              <span className="text-2xl min-[380px]:text-3xl sm:text-4xl mb-0.5 min-[380px]:mb-1 group-hover:scale-110 transition-transform animate-in zoom-in-50 duration-200">
+              {/* Unclipped In-Flow Badge */}
+              <span className="inline-flex items-center gap-1 bg-emerald-600 text-white text-[8px] min-[380px]:text-[9px] sm:text-[10px] font-black px-2 py-0.5 rounded-full shadow-2xs mb-1">
+                🥬 50% VEGGIES
+              </span>
+
+              <span className="text-2xl min-[380px]:text-3xl sm:text-4xl my-0.5 sm:my-1 group-hover:scale-110 transition-transform animate-in zoom-in-50 duration-200">
                 {selectedVeggie.emoji}
               </span>
-              <span className="text-[10px] min-[380px]:text-[11px] sm:text-xs font-black text-emerald-950 dark:text-emerald-100 leading-tight px-1 line-clamp-2">
+
+              <span className="text-[10.5px] min-[380px]:text-xs sm:text-sm font-black text-emerald-950 dark:text-emerald-100 leading-tight px-1 line-clamp-2">
                 {selectedVeggie.name}
               </span>
-              <span className="text-[8.5px] min-[380px]:text-[9.5px] sm:text-[10px] text-emerald-800 dark:text-emerald-300 font-bold mt-0.5">
+
+              <span className="text-[8px] min-[380px]:text-[9px] sm:text-[10px] text-emerald-800 dark:text-emerald-300 font-bold mt-0.5 sm:mt-1 bg-white/80 dark:bg-zinc-900/80 px-2 py-0.5 rounded-full border border-emerald-200/60 dark:border-emerald-800/40">
                 🥣 2 Ladles ({selectedVeggie.calories} kcal)
               </span>
-              <span className="text-[8px] min-[380px]:text-[8.5px] sm:text-[9px] text-emerald-700/80 dark:text-emerald-400 font-medium">
-                Tap to change ⚡
+
+              <span className="text-[7.5px] min-[380px]:text-[8px] sm:text-[9px] text-emerald-700 dark:text-emerald-400 font-medium mt-1">
+                Tap to swap ⚡
               </span>
             </button>
 
@@ -539,18 +544,22 @@ export default function AfricanDiabetesPlate({
                 triggerHaptic("medium");
                 setActivePicker("protein");
               }}
-              className="col-span-1 row-span-1 rounded-tr-full p-1.5 min-[380px]:p-2.5 bg-gradient-to-br from-amber-50 to-orange-50/90 dark:from-amber-950/60 dark:to-orange-950/40 border-b-2 border-amber-300/80 dark:border-amber-700 hover:brightness-105 active:scale-98 transition-all flex flex-col items-center justify-center text-center cursor-pointer relative group overflow-hidden shadow-xs"
+              className="col-span-1 row-span-1 rounded-tr-full p-2 sm:p-3 bg-gradient-to-br from-amber-50 to-orange-50/90 dark:from-amber-950/60 dark:to-orange-950/40 border-b-2 border-amber-300/80 dark:border-amber-700 hover:brightness-105 active:scale-98 transition-all flex flex-col items-center justify-center text-center cursor-pointer group shadow-xs relative overflow-hidden"
             >
-              <div className="absolute top-1 right-2 min-[380px]:top-1.5 min-[380px]:right-3 bg-amber-600 text-white text-[7px] min-[380px]:text-[8px] sm:text-[8.5px] font-black px-1.5 py-0.2 rounded-full shadow-2xs">
-                25% PROTEIN
-              </div>
-              <span className="text-xl min-[380px]:text-2xl sm:text-3xl mb-0.5 group-hover:scale-110 transition-transform">
+              {/* Unclipped In-Flow Badge */}
+              <span className="inline-flex items-center gap-1 bg-amber-600 text-white text-[7.5px] min-[380px]:text-[8px] sm:text-[9px] font-black px-1.5 min-[380px]:px-2 py-0.2 rounded-full shadow-2xs mb-0.5">
+                🥩 25% PROTEIN
+              </span>
+
+              <span className="text-xl min-[380px]:text-2xl sm:text-3xl my-0.5 group-hover:scale-110 transition-transform">
                 {selectedProtein.emoji}
               </span>
-              <span className="text-[9.5px] min-[380px]:text-[10.5px] sm:text-[11px] font-black text-amber-950 dark:text-amber-100 leading-tight truncate max-w-[80px] min-[380px]:max-w-[100px]">
+
+              <span className="text-[9.5px] min-[380px]:text-[10.5px] sm:text-xs font-black text-amber-950 dark:text-amber-100 leading-tight px-1 max-w-[110px] truncate">
                 {selectedProtein.name}
               </span>
-              <span className="text-[8px] min-[380px]:text-[9px] sm:text-[9.5px] text-amber-800 dark:text-amber-300 font-bold">
+
+              <span className="text-[7.5px] min-[380px]:text-[8.5px] sm:text-[9.5px] text-amber-800 dark:text-amber-300 font-bold mt-0.5 bg-white/80 dark:bg-zinc-900/80 px-1.5 py-0.2 rounded-full border border-amber-200/60 dark:border-amber-800/40">
                 ✋ 1 Palm ({selectedProtein.calories} kcal)
               </span>
             </button>
@@ -562,18 +571,22 @@ export default function AfricanDiabetesPlate({
                 triggerHaptic("medium");
                 setActivePicker("carb");
               }}
-              className="col-span-1 row-span-1 rounded-br-full p-1.5 min-[380px]:p-2.5 bg-gradient-to-br from-cyan-50 to-sky-50/90 dark:from-cyan-950/60 dark:to-sky-950/40 hover:brightness-105 active:scale-98 transition-all flex flex-col items-center justify-center text-center cursor-pointer relative group overflow-hidden shadow-xs"
+              className="col-span-1 row-span-1 rounded-br-full p-2 sm:p-3 bg-gradient-to-br from-cyan-50 to-sky-50/90 dark:from-cyan-950/60 dark:to-sky-950/40 hover:brightness-105 active:scale-98 transition-all flex flex-col items-center justify-center text-center cursor-pointer group shadow-xs relative overflow-hidden"
             >
-              <div className="absolute bottom-1 right-2 min-[380px]:bottom-1.5 min-[380px]:right-3 bg-cyan-700 text-white text-[7px] min-[380px]:text-[8px] sm:text-[8.5px] font-black px-1.5 py-0.2 rounded-full shadow-2xs">
-                25% SWALLOW
-              </div>
-              <span className="text-xl min-[380px]:text-2xl sm:text-3xl mb-0.5 group-hover:scale-110 transition-transform">
+              {/* Unclipped In-Flow Badge */}
+              <span className="inline-flex items-center gap-1 bg-cyan-700 text-white text-[7.5px] min-[380px]:text-[8px] sm:text-[9px] font-black px-1.5 min-[380px]:px-2 py-0.2 rounded-full shadow-2xs mb-0.5">
+                🍠 25% SWALLOW
+              </span>
+
+              <span className="text-xl min-[380px]:text-2xl sm:text-3xl my-0.5 group-hover:scale-110 transition-transform">
                 {selectedCarb.emoji}
               </span>
-              <span className="text-[9.5px] min-[380px]:text-[10.5px] sm:text-[11px] font-black text-cyan-950 dark:text-cyan-100 leading-tight truncate max-w-[80px] min-[380px]:max-w-[100px]">
+
+              <span className="text-[9.5px] min-[380px]:text-[10.5px] sm:text-xs font-black text-cyan-950 dark:text-cyan-100 leading-tight px-1 max-w-[110px] truncate">
                 {selectedCarb.name}
               </span>
-              <span className="text-[8px] min-[380px]:text-[9px] sm:text-[9.5px] text-cyan-800 dark:text-cyan-300 font-bold">
+
+              <span className="text-[7.5px] min-[380px]:text-[8.5px] sm:text-[9.5px] text-cyan-800 dark:text-cyan-300 font-bold mt-0.5 bg-white/80 dark:bg-zinc-900/80 px-1.5 py-0.2 rounded-full border border-cyan-200/60 dark:border-cyan-800/40">
                 ✊ 1 Fist ({selectedCarb.calories} kcal)
               </span>
             </button>
@@ -581,7 +594,7 @@ export default function AfricanDiabetesPlate({
         </div>
 
         {/* Side Hydration Cup & Telemetry Quick Card */}
-        <div className="flex flex-col items-center sm:items-start gap-2.5 sm:gap-3.5 w-full md:w-60">
+        <div className="flex flex-col items-center sm:items-start gap-2.5 sm:gap-3.5 w-full md:w-64">
           {/* 0-Calorie Drink Cup */}
           <button
             onClick={() => {
@@ -589,19 +602,19 @@ export default function AfricanDiabetesPlate({
               triggerHaptic("medium");
               setActivePicker("drink");
             }}
-            className="flex items-center gap-3 p-2.5 sm:p-3 bg-gradient-to-r from-sky-50 to-blue-50 dark:from-sky-950/50 dark:to-blue-950/40 rounded-2xl border border-sky-200 dark:border-sky-800 hover:brightness-105 transition-all cursor-pointer shadow-xs active:scale-95 w-full"
+            className="flex items-center gap-3 p-3 bg-gradient-to-r from-sky-50 to-blue-50 dark:from-sky-950/50 dark:to-blue-950/40 rounded-2xl border border-sky-200 dark:border-sky-800 hover:brightness-105 transition-all cursor-pointer shadow-xs active:scale-95 w-full"
           >
-            <div className="w-10 h-10 min-[380px]:w-12 min-[380px]:h-12 rounded-full bg-sky-500 text-white flex items-center justify-center text-lg min-[380px]:text-xl shadow-sm shrink-0">
+            <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-sky-500 text-white flex items-center justify-center text-xl shadow-sm shrink-0">
               {selectedDrink.emoji}
             </div>
             <div className="text-left min-w-0">
-              <span className="text-[8.5px] min-[380px]:text-[9px] font-black text-sky-800 dark:text-sky-300 uppercase tracking-wider block">
+              <span className="text-[8.5px] sm:text-[9px] font-black text-sky-800 dark:text-sky-300 uppercase tracking-wider block">
                 Side Hydration (0-Calorie)
               </span>
-              <span className="text-[11px] min-[380px]:text-xs font-black text-slate-900 dark:text-white block truncate">
+              <span className="text-xs sm:text-sm font-black text-slate-900 dark:text-white block truncate">
                 {selectedDrink.name}
               </span>
-              <span className="text-[9.5px] min-[380px]:text-[10px] text-slate-500">
+              <span className="text-[9.5px] sm:text-[10px] text-slate-500">
                 Tap to change beverage 💧
               </span>
             </div>
@@ -609,27 +622,27 @@ export default function AfricanDiabetesPlate({
 
           {/* Quick Macro Breakdown Pills */}
           <div className="grid grid-cols-2 gap-2 w-full text-xs">
-            <div className="p-2 min-[380px]:p-2.5 rounded-xl bg-slate-50 dark:bg-zinc-800/80 border border-slate-200/80 dark:border-zinc-700">
-              <span className="text-[9px] min-[380px]:text-[10px] font-bold text-slate-500 block">Total Calories</span>
-              <span className="text-xs min-[380px]:text-sm font-black text-slate-900 dark:text-white">
-                {totals.calories} <span className="text-[9px] min-[380px]:text-[10px] font-normal text-slate-400">kcal</span>
+            <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-zinc-800/80 border border-slate-200/80 dark:border-zinc-700">
+              <span className="text-[9.5px] sm:text-[10px] font-bold text-slate-500 block">Total Calories</span>
+              <span className="text-sm font-black text-slate-900 dark:text-white">
+                {totals.calories} <span className="text-[9.5px] font-normal text-slate-400">kcal</span>
               </span>
             </div>
-            <div className="p-2 min-[380px]:p-2.5 rounded-xl bg-slate-50 dark:bg-zinc-800/80 border border-slate-200/80 dark:border-zinc-700">
-              <span className="text-[9px] min-[380px]:text-[10px] font-bold text-slate-500 block">Fiber Buffer</span>
-              <span className="text-xs min-[380px]:text-sm font-black text-emerald-600 dark:text-emerald-400">
-                {totals.fiber.toFixed(1)}g <span className="text-[9px] min-[380px]:text-[10px] font-normal text-slate-400">fiber</span>
+            <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-zinc-800/80 border border-slate-200/80 dark:border-zinc-700">
+              <span className="text-[9.5px] sm:text-[10px] font-bold text-slate-500 block">Fiber Buffer</span>
+              <span className="text-sm font-black text-emerald-600 dark:text-emerald-400">
+                {totals.fiber.toFixed(1)}g <span className="text-[9.5px] font-normal text-slate-400">fiber</span>
               </span>
             </div>
-            <div className="p-2 min-[380px]:p-2.5 rounded-xl bg-slate-50 dark:bg-zinc-800/80 border border-slate-200/80 dark:border-zinc-700">
-              <span className="text-[9px] min-[380px]:text-[10px] font-bold text-slate-500 block">Lean Protein</span>
-              <span className="text-xs min-[380px]:text-sm font-black text-amber-600 dark:text-amber-400">
+            <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-zinc-800/80 border border-slate-200/80 dark:border-zinc-700">
+              <span className="text-[9.5px] sm:text-[10px] font-bold text-slate-500 block">Lean Protein</span>
+              <span className="text-sm font-black text-amber-600 dark:text-amber-400">
                 {totals.protein}g
               </span>
             </div>
-            <div className="p-2 min-[380px]:p-2.5 rounded-xl bg-slate-50 dark:bg-zinc-800/80 border border-slate-200/80 dark:border-zinc-700">
-              <span className="text-[9px] min-[380px]:text-[10px] font-bold text-slate-500 block">K:Na Cardio Ratio</span>
-              <span className="text-xs min-[380px]:text-sm font-black text-[#126778] dark:text-teal-300">
+            <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-zinc-800/80 border border-slate-200/80 dark:border-zinc-700">
+              <span className="text-[9.5px] sm:text-[10px] font-bold text-slate-500 block">K:Na Cardio Ratio</span>
+              <span className="text-sm font-black text-[#126778] dark:text-teal-300">
                 {totals.kNaRatio}:1.0
               </span>
             </div>
