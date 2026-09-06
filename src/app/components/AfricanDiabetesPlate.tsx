@@ -31,7 +31,7 @@ export const AFRICAN_PLATE_DATABASE: FoodOption[] = [
   // 🥬 50% Non-Starchy Leafy Soups & Vegetables (2 Ladles)
   {
     id: "ewedu",
-    name: "Ewedu (Jute Leaves)",
+    name: "Ewedu (Jute)",
     category: "veggie",
     portionUnit: "2 Ladles (~50% Plate)",
     calories: 25,
@@ -61,7 +61,7 @@ export const AFRICAN_PLATE_DATABASE: FoodOption[] = [
   },
   {
     id: "efo_riro",
-    name: "Efo Riro (Spinach)",
+    name: "Efo Riro",
     category: "veggie",
     portionUnit: "2 Ladles (~50% Plate)",
     calories: 65,
@@ -76,7 +76,7 @@ export const AFRICAN_PLATE_DATABASE: FoodOption[] = [
   },
   {
     id: "ugwu",
-    name: "Ugwu (Fluted Pumpkin)",
+    name: "Ugwu Greens",
     category: "veggie",
     portionUnit: "2 Ladles (~50% Plate)",
     calories: 50,
@@ -91,7 +91,7 @@ export const AFRICAN_PLATE_DATABASE: FoodOption[] = [
   },
   {
     id: "kontomire",
-    name: "Kontomire (Cocoyam)",
+    name: "Kontomire",
     category: "veggie",
     portionUnit: "2 Ladles (~50% Plate)",
     calories: 70,
@@ -106,7 +106,7 @@ export const AFRICAN_PLATE_DATABASE: FoodOption[] = [
   },
   {
     id: "bitterleaf",
-    name: "Bitter Leaf (Onugbu)",
+    name: "Bitter Leaf",
     category: "veggie",
     portionUnit: "2 Ladles (~50% Plate)",
     calories: 55,
@@ -138,7 +138,7 @@ export const AFRICAN_PLATE_DATABASE: FoodOption[] = [
   },
   {
     id: "mackerel",
-    name: "Titus / Mackerel",
+    name: "Titus Mackerel",
     category: "protein",
     portionUnit: "1 Palm (~25% Plate)",
     calories: 190,
@@ -183,7 +183,7 @@ export const AFRICAN_PLATE_DATABASE: FoodOption[] = [
   },
   {
     id: "boiled_eggs",
-    name: "Boiled Farm Eggs",
+    name: "2 Boiled Eggs",
     category: "protein",
     portionUnit: "1 Palm (~25% Plate)",
     calories: 140,
@@ -245,7 +245,7 @@ export const AFRICAN_PLATE_DATABASE: FoodOption[] = [
   },
   {
     id: "ofada_rice",
-    name: "Brown / Ofada Rice",
+    name: "Ofada / Brown Rice",
     category: "carb",
     portionUnit: "1 Fist (~25% Plate)",
     calories: 180,
@@ -482,9 +482,9 @@ export default function AfricanDiabetesPlate({
         </button>
       </div>
 
-      {/* 🍽️ THE 9-INCH CIRCULAR PLATE (Comfortably sized with ample outer margin) */}
+      {/* 🍽️ THE 9-INCH CIRCULAR PLATE (Geometrically perfected with zero edge clipping) */}
       <div className="py-2 flex justify-center">
-        <div className="relative w-[250px] h-[250px] min-[380px]:w-[270px] min-[380px]:h-[270px] sm:w-[290px] sm:h-[290px] rounded-full p-2 bg-gradient-to-br from-slate-100 via-white to-slate-200 dark:from-zinc-800 dark:via-zinc-850 dark:to-zinc-900 border-4 border-slate-300/90 dark:border-zinc-700 shadow-xl flex items-center justify-center select-none shrink-0 mx-auto">
+        <div className="relative w-[260px] h-[260px] min-[380px]:w-[280px] min-[380px]:h-[280px] sm:w-[310px] sm:h-[310px] rounded-full p-2 bg-gradient-to-br from-slate-100 via-white to-slate-200 dark:from-zinc-800 dark:via-zinc-850 dark:to-zinc-900 border-4 border-slate-300/90 dark:border-zinc-700 shadow-xl flex items-center justify-center select-none shrink-0 mx-auto">
           {/* Inner Plate Rim */}
           <div className="w-full h-full rounded-full border-2 border-dashed border-slate-300 dark:border-zinc-700 overflow-hidden grid grid-cols-2 grid-rows-2 gap-1 p-1 bg-slate-50 dark:bg-zinc-950/60">
             
@@ -492,16 +492,15 @@ export default function AfricanDiabetesPlate({
             <button
               type="button"
               onClick={() => handleQuadrantClick("veggie")}
-              className={`row-span-2 col-span-1 rounded-l-full p-2 bg-gradient-to-br from-emerald-50 to-teal-50/90 dark:from-emerald-950/70 dark:to-teal-950/50 border-r border-emerald-300 dark:border-emerald-800 transition-all flex flex-col items-center justify-center text-center cursor-pointer group active:scale-95 ${
+              className={`row-span-2 col-span-1 rounded-l-full px-2 py-3 bg-gradient-to-br from-emerald-50 to-teal-50/90 dark:from-emerald-950/70 dark:to-teal-950/50 border-r border-emerald-300 dark:border-emerald-800 transition-all flex flex-col items-center justify-center text-center cursor-pointer group active:scale-95 ${
                 activeCategory === "veggie" ? "ring-2 ring-emerald-500/80 brightness-105" : "hover:brightness-105"
               }`}
             >
-              {/* Centered Pill - Clear of edges */}
               <span className="inline-block text-[8px] min-[380px]:text-[8.5px] font-black px-2 py-0.5 rounded-full bg-emerald-700 text-white shadow-xs mb-1">
                 🥬 50% VEGGIES
               </span>
 
-              <span className="text-3xl min-[380px]:text-4xl my-0.5 group-hover:scale-110 transition-transform">
+              <span className="text-3xl min-[380px]:text-4xl my-0.5 group-hover:scale-110 transition-transform drop-shadow-xs">
                 {selectedVeggie.emoji}
               </span>
 
@@ -518,15 +517,14 @@ export default function AfricanDiabetesPlate({
               </span>
             </button>
 
-            {/* 🥩 SECTOR 2: 25% Lean Protein (Top Right Quarter) */}
+            {/* 🥩 SECTOR 2: 25% Lean Protein (Top Right Quarter - Positioned away from upper-right curve) */}
             <button
               type="button"
               onClick={() => handleQuadrantClick("protein")}
-              className={`col-span-1 row-span-1 rounded-tr-full p-1.5 bg-gradient-to-br from-amber-50 to-orange-50/90 dark:from-amber-950/70 dark:to-orange-950/50 border-b border-amber-300 dark:border-amber-800 transition-all flex flex-col items-center justify-center text-center cursor-pointer group active:scale-95 ${
+              className={`col-span-1 row-span-1 rounded-tr-full px-1.5 pt-3 pb-1 bg-gradient-to-br from-amber-50 to-orange-50/90 dark:from-amber-950/70 dark:to-orange-950/50 border-b border-amber-300 dark:border-amber-800 transition-all flex flex-col items-center justify-center text-center cursor-pointer group active:scale-95 ${
                 activeCategory === "protein" ? "ring-2 ring-amber-500/80 brightness-105" : "hover:brightness-105"
               }`}
             >
-              {/* Centered Pill - Clear of edges */}
               <span className="inline-block text-[7px] min-[380px]:text-[7.5px] font-black px-1.5 py-0.2 rounded-full bg-amber-700 text-white shadow-xs mb-0.5">
                 🥩 25% PROTEIN
               </span>
@@ -535,7 +533,7 @@ export default function AfricanDiabetesPlate({
                 {selectedProtein.emoji}
               </span>
 
-              <span className="text-[9px] min-[380px]:text-[10px] font-black text-amber-950 dark:text-amber-100 leading-tight px-0.5 max-w-[95px] truncate">
+              <span className="text-[8.5px] min-[380px]:text-[9.5px] font-black text-amber-950 dark:text-amber-100 leading-tight px-0.5 max-w-[90px] truncate">
                 {selectedProtein.name}
               </span>
 
@@ -544,15 +542,14 @@ export default function AfricanDiabetesPlate({
               </span>
             </button>
 
-            {/* 🍠 SECTOR 3: 25% Complex Swallow / Carb (Bottom Right Quarter) */}
+            {/* 🍠 SECTOR 3: 25% Complex Swallow / Carb (Bottom Right Quarter - Positioned away from lower-right curve) */}
             <button
               type="button"
               onClick={() => handleQuadrantClick("carb")}
-              className={`col-span-1 row-span-1 rounded-br-full p-1.5 bg-gradient-to-br from-cyan-50 to-sky-50/90 dark:from-cyan-950/70 dark:to-sky-950/50 transition-all flex flex-col items-center justify-center text-center cursor-pointer group active:scale-95 ${
+              className={`col-span-1 row-span-1 rounded-br-full px-1.5 pt-1 pb-3 bg-gradient-to-br from-cyan-50 to-sky-50/90 dark:from-cyan-950/70 dark:to-sky-950/50 transition-all flex flex-col items-center justify-center text-center cursor-pointer group active:scale-95 ${
                 activeCategory === "carb" ? "ring-2 ring-cyan-500/80 brightness-105" : "hover:brightness-105"
               }`}
             >
-              {/* Centered Pill - Clear of edges */}
               <span className="inline-block text-[7px] min-[380px]:text-[7.5px] font-black px-1.5 py-0.2 rounded-full bg-cyan-800 text-white shadow-xs mb-0.5">
                 🍠 25% SWALLOW
               </span>
@@ -561,7 +558,7 @@ export default function AfricanDiabetesPlate({
                 {selectedCarb.emoji}
               </span>
 
-              <span className="text-[9px] min-[380px]:text-[10px] font-black text-cyan-950 dark:text-cyan-100 leading-tight px-0.5 max-w-[95px] truncate">
+              <span className="text-[8.5px] min-[380px]:text-[9.5px] font-black text-cyan-950 dark:text-cyan-100 leading-tight px-0.5 max-w-[90px] truncate">
                 {selectedCarb.name}
               </span>
 
