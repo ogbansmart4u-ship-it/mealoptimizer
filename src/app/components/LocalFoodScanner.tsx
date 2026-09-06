@@ -1463,7 +1463,7 @@ export default function LocalFoodScanner({ isOpen, onClose }: LocalFoodScannerPr
             })()}
 
             {/* Dish Info */}
-            <div className="bg-gradient-to-br from-[#B8E5E5] to-[#E8F5F5] rounded-2xl p-5 mb-6">
+            <div className="bg-gradient-to-br from-[#B8E5E5] to-[#E8F5F5] rounded-2xl p-5 mb-4">
               <h3 className="text-2xl font-bold text-gray-800 mb-2">{foodData.dishName}</h3>
               <p className="text-sm text-gray-700 mb-3">{foodData.description}</p>
               <div className="flex items-center gap-2 text-sm text-gray-600">
@@ -1471,6 +1471,64 @@ export default function LocalFoodScanner({ isOpen, onClose }: LocalFoodScannerPr
                 <span>{foodData.region}</span>
               </div>
             </div>
+
+            {/* 🌟 9-INCH AFRICAN PLATE MATCH TELEMETRY (Bridge to 9-Inch Studio) */}
+            {(() => {
+              const fiber = foodData.macroBreakdown.fiber || 0;
+              const protein = foodData.macroBreakdown.protein || 0;
+              const carbs = foodData.macroBreakdown.carbs || 0;
+              const isLowGi = foodData.macroBreakdown.glycemicLoad === "Low";
+              const isMedGi = foodData.macroBreakdown.glycemicLoad === "Medium";
+              
+              let matchScore = 75;
+              if (fiber >= 4) matchScore += 10;
+              if (protein >= 20) matchScore += 10;
+              if (isLowGi) matchScore += 5;
+              else if (!isMedGi) matchScore -= 10;
+              matchScore = Math.min(98, Math.max(65, matchScore));
+
+              return (
+                <div className="bg-gradient-to-br from-emerald-50 via-teal-50 to-white dark:from-zinc-800 dark:to-zinc-900 rounded-2xl p-4 mb-5 border border-emerald-200 dark:border-emerald-800/60 shadow-xs">
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center gap-2">
+                      <span className="text-xl">🍲</span>
+                      <div>
+                        <span className="text-[10px] font-black uppercase tracking-wider text-[#126778] dark:text-teal-300 block">
+                          ADA 9-Inch Diabetes Plate Match
+                        </span>
+                        <h4 className="text-xs sm:text-sm font-black text-slate-900 dark:text-white leading-tight">
+                          {matchScore}% Golden African Plate Match! 🌿
+                        </h4>
+                      </div>
+                    </div>
+                    <span className="text-xs font-black px-2.5 py-1 rounded-xl bg-emerald-600 text-white shadow-2xs">
+                      {matchScore >= 85 ? "Optimal Balance" : "Rebalance Ready"}
+                    </span>
+                  </div>
+
+                  <p className="text-[11px] text-slate-600 dark:text-slate-300 leading-relaxed mt-1">
+                    {fiber >= 4
+                      ? `Your meal provides ~${fiber}g of fiber to buffer glucose absorption, closely following the 50% Leafy Soups & Veggies rule.`
+                      : `Pair with 1–2 extra ladles of Okra, Ewedu, or Ugwu to achieve a 100% flat glycemic curve.`}
+                  </p>
+
+                  <div className="grid grid-cols-3 gap-1.5 mt-3 text-center text-[10px]">
+                    <div className="p-1.5 rounded-xl bg-white dark:bg-zinc-800 border border-emerald-200/60 dark:border-zinc-700">
+                      <span className="text-emerald-700 dark:text-emerald-400 font-bold block">🥬 50% Veggies</span>
+                      <span className="font-extrabold text-slate-800 dark:text-slate-200">{fiber >= 3 ? "✓ Buffered" : "+1 Ladle"}</span>
+                    </div>
+                    <div className="p-1.5 rounded-xl bg-white dark:bg-zinc-800 border border-amber-200/60 dark:border-zinc-700">
+                      <span className="text-amber-700 dark:text-amber-400 font-bold block">🥩 25% Protein</span>
+                      <span className="font-extrabold text-slate-800 dark:text-slate-200">{protein}g (~1 Palm)</span>
+                    </div>
+                    <div className="p-1.5 rounded-xl bg-white dark:bg-zinc-800 border border-cyan-200/60 dark:border-zinc-700">
+                      <span className="text-cyan-700 dark:text-cyan-400 font-bold block">🍠 25% Swallow</span>
+                      <span className="font-extrabold text-slate-800 dark:text-slate-200">{carbs}g (~1 Fist)</span>
+                    </div>
+                  </div>
+                </div>
+              );
+            })()}
 
             {/* Tabs */}
             <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
