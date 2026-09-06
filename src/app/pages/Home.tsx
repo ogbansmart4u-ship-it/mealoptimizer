@@ -890,9 +890,7 @@ export default function Home() {
             {/* 🌟 2. DAILY TIME REMINDER & BALANCED AFRICAN PLATE */}
             <CircadianEnergyWave />
 
-            <AfricanPlateSilhouette
-              onRebalance={() => setShowFixPlateModal(true)}
-            />
+            <AfricanPlateSilhouette />
 
             {/* 🌟 ZONE 1: THE HERO DAILY ENERGY & SATIETY GAUGE */}
             {dashboardPrefs.showEnergy && (
