@@ -356,6 +356,14 @@ export default function QuickLogShelf({
 
             {/* Quick action shortcuts */}
             <div className="flex items-center gap-1 shrink-0">
+              <button
+                onClick={onOpenCustom || (() => navigate("/logs", { state: { openAdd: true } }))}
+                title="Add custom food entry"
+                className="px-2 py-1 rounded-xl bg-teal-50 hover:bg-teal-100 text-[#126778] dark:bg-teal-950/60 dark:text-teal-300 font-bold text-xs transition-all flex items-center gap-1 cursor-pointer active:scale-95 shadow-2xs border border-teal-200/60 dark:border-teal-800"
+              >
+                <Plus size={12} />
+                <span>+ Custom</span>
+              </button>
               {onOpenVoice && (
                 <button
                   onClick={onOpenVoice}

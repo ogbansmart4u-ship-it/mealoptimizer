@@ -992,64 +992,7 @@ export default function Home() {
               />
             )}
 
-            {/* 🌟 ZONE 4: TODAY'S MEAL TIMELINE (Breakfast • Lunch • Dinner • Snacks) */}
-            {dashboardPrefs.showMeals && (
-              <div className="glass-card rounded-3xl p-4 sm:p-5 shadow-lg space-y-3">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <Utensils size={16} className="text-[#126778] dark:text-teal-300" />
-                    <h3 className="text-xs sm:text-sm font-black text-slate-900 dark:text-white uppercase tracking-wider">
-                      Today's Meals ({todayLogs.length})
-                    </h3>
-                  </div>
-                  <button
-                    onClick={() => navigate("/logs", { state: { openAdd: true } })}
-                    className="text-xs font-black text-[#126778] dark:text-teal-300 hover:underline cursor-pointer flex items-center gap-0.5"
-                  >
-                    <span>+ Custom Entry</span>
-                  </button>
-                </div>
 
-                {todayLogs.length === 0 ? (
-                  <div className="text-center py-6 px-4 bg-slate-50/70 dark:bg-zinc-800/40 rounded-2xl border border-dashed border-slate-200 dark:border-zinc-700">
-                    <span className="text-3xl block mb-1">🍲</span>
-                    <p className="text-xs font-bold text-slate-700 dark:text-slate-300">No meals logged yet today</p>
-                    <p className="text-[11px] text-slate-400 mt-0.5">Snap your food or tap Quick Log to get started!</p>
-                    <button
-                      onClick={() => setShowLocalFoodScanner(true)}
-                      className="mt-3 px-4 py-2 bg-[#126778] text-white text-xs font-black rounded-xl shadow-md cursor-pointer hover:scale-105 active:scale-95 transition-all"
-                    >
-                      📸 Scan Your Plate
-                    </button>
-                  </div>
-                ) : (
-                  <div className="space-y-2">
-                    {todayLogs.map((log: any, idx: number) => (
-                      <div
-                        key={log.id || idx}
-                        className="p-3 rounded-2xl bg-white/80 dark:bg-zinc-800/80 border border-slate-200/80 dark:border-zinc-700 flex items-center justify-between gap-3 shadow-2xs hover:shadow-xs transition-all"
-                      >
-                        <div className="flex items-center gap-3 min-w-0">
-                          <span className="text-2xl shrink-0 p-1 bg-slate-50 dark:bg-zinc-700 rounded-xl">{log.emoji || "🍲"}</span>
-                          <div className="min-w-0">
-                            <span className="text-xs font-black text-slate-900 dark:text-white block leading-tight truncate">
-                              {log.name || log.dishName || "Meal"}
-                            </span>
-                            <span className="text-[10.5px] text-slate-500 font-medium block mt-0.5">
-                              {log.mealType ? log.mealType.toUpperCase() : "MEAL"} • {log.calories || 0} kcal • {log.time || "Today"}
-                            </span>
-                          </div>
-                        </div>
-
-                        <span className="text-[10px] font-black px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 shrink-0">
-                          Steady Sugar 🟢
-                        </span>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-            )}
 
                         {/* 🛒 SMART MEAL PLANNING & GROCERY STORES PORTAL */}
             <div className="grid grid-cols-2 gap-2.5 my-1">
@@ -1176,13 +1119,22 @@ export default function Home() {
                       {t('home.weeklyConsistency')}
                     </span>
                   </div>
-                  <button
-                    onClick={() => navigate("/logs")}
-                    className="text-xs font-bold text-[#126778] dark:text-teal-300 hover:underline flex items-center gap-0.5 cursor-pointer"
-                  >
-                    <span>{t('home.viewAll')}</span>
-                    <ChevronRight className="h-3.5 w-3.5" />
-                  </button>
+                  <div className="flex items-center gap-2.5">
+                    <button
+                      onClick={() => navigate("/logs", { state: { openAdd: true } })}
+                      className="text-xs font-black text-[#126778] dark:text-teal-300 hover:underline flex items-center gap-0.5 cursor-pointer bg-teal-50 dark:bg-teal-950/60 px-2 py-0.5 rounded-lg border border-teal-200/60 dark:border-teal-800/60"
+                    >
+                      <Plus size={11} />
+                      <span>+ Custom Entry</span>
+                    </button>
+                    <button
+                      onClick={() => navigate("/logs")}
+                      className="text-xs font-bold text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white flex items-center gap-0.5 cursor-pointer"
+                    >
+                      <span>{t('home.viewAll')}</span>
+                      <ChevronRight className="h-3.5 w-3.5" />
+                    </button>
+                  </div>
                 </div>
 
                 <div className="grid grid-cols-7 gap-1">
