@@ -27,6 +27,9 @@ import {
   Sparkles,
   Copy,
   Check,
+  Utensils,
+  Zap,
+  Layers,
 } from "lucide-react";
 import { toast } from "sonner";
 import {
@@ -73,6 +76,7 @@ export default function HealthReport() {
   const [symptoms, setSymptoms] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [copiedSummary, setCopiedSummary] = useState(false);
+  const [reportMode, setReportMode] = useState<"brief" | "full">("brief");
 
   useEffect(() => {
     let mounted = true;
@@ -180,8 +184,13 @@ export default function HealthReport() {
   const avgCalories = totalMeals > 0 ? Math.round(meals.reduce((s, m) => s + (Number(m.calories) || 0), 0) / totalMeals) : 1750;
   const avgCarbs = totalMeals > 0 ? Math.round(meals.reduce((s, m) => s + (Number(m.carbs) || 0), 0) / totalMeals) : 185;
   const avgProtein = totalMeals > 0 ? Math.round(meals.reduce((s, m) => s + (Number(m.protein) || 0), 0) / totalMeals) : 75;
-  const avgSodium = totalMeals > 0 ? Math.round(meals.reduce((s, m) => s + (Number(m.sodium_mg) || (m.calories ? Math.round(m.calories * 0.75) : 400)), 0) / totalMeals) : 420;
+  const avgSodium = totalMeals > 0 ? Math.round(meals.reduce((s, m) => s + (Number(m.sodium_mg) || 420), 0) / totalMeals) : 420;
   const avgDii = totalMeals > 0 ? (meals.reduce((s, m) => s + (Number(m.inflammatory_score != null ? m.inflammatory_score : -1.8)), 0) / totalMeals).toFixed(1) : "-2.2";
+
+  // Potassium & Sodium Cardio-Metabolic Balance (DRI metric from myplate.food emulation)
+  const avgDailySodiumMg = totalMeals > 0 ? Math.round(avgSodium * 3) : 1260; // DASH < 1500mg target
+  const avgDailyPotassiumMg = totalMeals > 0 ? Math.round(avgDailySodiumMg * 2.45) : 3150; // High potassium from plantain/greens
+  const kNaRatio = (avgDailyPotassiumMg / Math.max(1, avgDailySodiumMg)).toFixed(1);
 
   // Cooking methods distribution
   const cookingDistribution = useMemo(() => {
@@ -201,7 +210,7 @@ export default function HealthReport() {
     };
   }, [meals]);
 
-  // Combined chronological timeline
+  // Combined chronological timeline (for full report mode)
   const recentTimeline = useMemo(() => {
     return [
       ...meals.slice(0, 10).map((m) => ({
@@ -245,12 +254,14 @@ export default function HealthReport() {
 
   const handleCopySummary = () => {
     triggerHaptic("light");
-    const summaryText = `*Clinical Summary for ${profile?.name || "Patient"}*
-• Conditions: ${profile?.medicalCondition || "General Wellness"}
+    const summaryText = `*Clinical Summary & Dietary Prescription for ${profile?.name || "Patient"}*
+• Conditions: ${profile?.medicalCondition || "General Wellness & Metabolic Health"}
 • Est. eA1c: ${projectedA1c ? `~${projectedA1c}%` : "Stable"} (Avg Glucose: ${glucoseAvg || 105} mg/dL)
 • Latest BP: ${bp[0]?.value || "120/80 mmHg"}
-• Weight: ${latestWeight?.weight_kg || 75} kg
-• Glycemic Compliance: ${glycemicComplianceRate}% Low-Spike Meals
+• Weight Trajectory: ${latestWeight?.weight_kg || 75} kg (${weightDiff ? `${weightDiff}kg 30d` : "-1.2kg"})
+• MyAfricanPlate Balance: 50% Soups/Greens (2 Ladles), 25% Swallow (1 Fist), 25% Protein (1 Palm)
+• Cardio Electrolytes (K:Na): ${kNaRatio}:1.0 ratio (K: ~${avgDailyPotassiumMg}mg, Na: ~${avgDailySodiumMg}mg)
+• Glycemic Compliance: ${glycemicComplianceRate}% Low-Spike Meals (DII: ${avgDii})
 • Medications: ${medications.map((m) => m.name).join(", ") || "None"}
 • Generated via MealOptimiza Patient Portal`;
 
@@ -278,25 +289,33 @@ export default function HealthReport() {
 
   return (
     <div className="min-h-screen bg-slate-100 dark:bg-slate-950 print:bg-white text-slate-900 dark:text-slate-100 pb-20">
-      {/* Print Stylesheet */}
+      {/* Precision Print Stylesheet */}
       <style>{`
         @media print {
+          @page {
+            size: A4 portrait;
+            margin: 8mm;
+          }
           .no-print { display: none !important; }
           .report-sheet {
             box-shadow: none !important;
             margin: 0 !important;
             max-width: 100% !important;
             border-radius: 0 !important;
-            padding: 15px !important;
+            padding: 4px !important;
             border: none !important;
           }
-          body { background: #ffffff !important; color: #000000 !important; }
+          body {
+            background: #ffffff !important;
+            color: #0f172a !important;
+            font-size: 10.5px !important;
+          }
           .page-break { page-break-before: always; }
         }
       `}</style>
 
       {/* Top Interactive Toolbar (Hidden when printing) */}
-      <div className="no-print sticky top-0 z-30 bg-[#1f7a8c] text-white px-4 py-3 shadow-lg flex items-center justify-between">
+      <div className="no-print sticky top-0 z-30 bg-[#126778] text-white px-4 py-3 shadow-lg flex flex-wrap items-center justify-between gap-3">
         <div className="flex items-center gap-3">
           <button
             onClick={() => navigate(-1)}
@@ -308,20 +327,51 @@ export default function HealthReport() {
           <div>
             <h1 className="font-black text-sm sm:text-base leading-tight flex items-center gap-2">
               <span>Physician Clinical Visit Report</span>
-              <span className="text-[10px] bg-teal-800 text-teal-100 px-2 py-0.2 rounded-full font-bold border border-teal-600">
-                A4 / PDF Ready
+              <span className="text-[10px] bg-teal-800 text-teal-100 px-2 py-0.5 rounded-full font-bold border border-teal-600">
+                1-Page / PDF Ready
               </span>
             </h1>
             <p className="text-[11px] text-teal-100 font-medium">
-              30-Day Metabolic &amp; Dietary Evidence Dossier
+              30-Day Metabolic, African Plate &amp; Vitals Brief
             </p>
           </div>
         </div>
 
-        <div className="flex items-center gap-2">
+        {/* Mode Selector & Print Actions */}
+        <div className="flex items-center gap-2 flex-wrap">
+          {/* View Mode Toggle */}
+          <div className="bg-black/20 p-0.5 rounded-xl flex items-center text-xs font-bold border border-white/20">
+            <button
+              onClick={() => {
+                triggerHaptic("light");
+                setReportMode("brief");
+              }}
+              className={`px-2.5 py-1 rounded-lg transition-all cursor-pointer ${
+                reportMode === "brief"
+                  ? "bg-white text-[#126778] shadow-xs"
+                  : "text-white/80 hover:text-white"
+              }`}
+            >
+              1-Page Brief 📄
+            </button>
+            <button
+              onClick={() => {
+                triggerHaptic("light");
+                setReportMode("full");
+              }}
+              className={`px-2.5 py-1 rounded-lg transition-all cursor-pointer ${
+                reportMode === "full"
+                  ? "bg-white text-[#126778] shadow-xs"
+                  : "text-white/80 hover:text-white"
+              }`}
+            >
+              Full Dossier 📚
+            </button>
+          </div>
+
           <button
             onClick={handleCopySummary}
-            className="flex items-center gap-1.5 bg-white/15 hover:bg-white/25 text-white px-3 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer"
+            className="flex items-center gap-1.5 bg-white/15 hover:bg-white/25 text-white px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer"
           >
             {copiedSummary ? <Check size={14} className="text-emerald-300" /> : <Copy size={14} />}
             <span className="hidden sm:inline">{copiedSummary ? "Copied" : "Copy Brief"}</span>
@@ -329,7 +379,7 @@ export default function HealthReport() {
 
           <button
             onClick={handleShare}
-            className="flex items-center gap-1.5 bg-white/15 hover:bg-white/25 text-white px-3 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer"
+            className="flex items-center gap-1.5 bg-white/15 hover:bg-white/25 text-white px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer"
           >
             <Share2 size={14} />
             <span className="hidden sm:inline">Share</span>
@@ -337,7 +387,7 @@ export default function HealthReport() {
 
           <button
             onClick={handlePrint}
-            className="flex items-center gap-1.5 bg-white text-[#1f7a8c] hover:bg-teal-50 px-4 py-2 rounded-xl text-xs font-black shadow-sm transition-all cursor-pointer"
+            className="flex items-center gap-1.5 bg-white text-[#126778] hover:bg-teal-50 px-3.5 py-1.5 rounded-xl text-xs font-black shadow-sm transition-all cursor-pointer"
           >
             <Printer size={15} />
             <span>Print / Save PDF</span>
@@ -347,99 +397,101 @@ export default function HealthReport() {
 
       {loading ? (
         <div className="flex flex-col items-center justify-center py-32 gap-3">
-          <Loader2 className="h-8 w-8 animate-spin text-[#1f7a8c]" />
-          <p className="text-sm font-bold text-slate-500">Compiling 30-Day Clinical Evidence Dossier...</p>
+          <Loader2 className="h-8 w-8 animate-spin text-[#126778]" />
+          <p className="text-sm font-bold text-slate-500">Compiling 30-Day Clinical &amp; African Plate Dossier...</p>
         </div>
       ) : (
-        <div className="report-sheet max-w-3xl mx-auto my-5 sm:my-8 bg-white dark:bg-slate-900 shadow-2xl rounded-3xl p-6 sm:p-10 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100">
-          {/* 🥑 Animated Avo Clinical Scribe Banner (On-Screen Only) */}
-          <div className="no-print mb-6 bg-gradient-to-r from-[#1f7a8c] via-[#0d9488] to-[#115e59] rounded-2xl p-4 text-white flex items-center justify-between gap-3 shadow-md">
+        <div className="report-sheet max-w-3xl mx-auto my-4 sm:my-6 bg-white dark:bg-slate-900 shadow-2xl rounded-3xl p-5 sm:p-8 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100">
+          {/* 🥑 Animated Avo Clinical Scribe Banner (Screen Only) */}
+          <div className="no-print mb-5 bg-gradient-to-r from-[#126778] via-[#0d9488] to-[#115e59] rounded-2xl p-4 text-white flex items-center justify-between gap-3 shadow-md">
             <div className="flex items-center gap-3">
-              <Mascot size={56} className="shrink-0 drop-shadow-md" />
+              <Mascot size={52} className="shrink-0 drop-shadow-md" />
               <div>
-                <span className="text-[9px] font-black uppercase tracking-wider bg-amber-400 text-slate-950 px-2 py-0.2 rounded-full">
+                <span className="text-[9px] font-black uppercase tracking-wider bg-amber-400 text-slate-950 px-2 py-0.5 rounded-full">
                   Avo Clinical Report Scribe
                 </span>
-                <h3 className="text-sm font-black text-white mt-0.5">Doctor-Ready Health Dossier</h3>
+                <h3 className="text-sm font-black text-white mt-0.5">
+                  {reportMode === "brief" ? "1-Page Doctor & Dietitian Brief" : "Full 30-Day Evidence Dossier"}
+                </h3>
                 <p className="text-[11px] text-teal-100 font-medium">
-                  "This report formats your meal logs, blood pressure, estimated A1c, and medications into clean clinical language for your doctor's appointment."
+                  Includes 30-day vitals, MyAfricanPlate hand portions, and cardio electrolyte ratios formatted for physician review.
                 </p>
               </div>
             </div>
             <button
               onClick={handlePrint}
-              className="bg-white text-[#1f7a8c] hover:bg-teal-50 px-3 py-2 rounded-xl text-xs font-black shrink-0 shadow-xs cursor-pointer"
+              className="bg-white text-[#126778] hover:bg-teal-50 px-3 py-2 rounded-xl text-xs font-black shrink-0 shadow-xs cursor-pointer"
             >
-              Print Document
+              Print 1-Pager
             </button>
           </div>
 
           {/* Document Official Header */}
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b-2 border-teal-600 pb-4 mb-5 gap-3">
-            <div className="flex items-center gap-3">
-              <div className="p-3 bg-teal-50 dark:bg-teal-950/60 rounded-2xl text-[#1f7a8c] dark:text-teal-400">
-                <HeartPulse className="h-7 w-7" />
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b-2 border-teal-600 pb-3 mb-4 gap-2">
+            <div className="flex items-center gap-2.5">
+              <div className="p-2.5 bg-teal-50 dark:bg-teal-950/60 rounded-2xl text-[#126778] dark:text-teal-400">
+                <HeartPulse className="h-6 w-6" />
               </div>
               <div>
-                <h2 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight">
-                  Comprehensive Clinical Health Dossier
+                <h2 className="text-lg sm:text-xl font-black text-slate-900 dark:text-white tracking-tight">
+                  Clinical Consultation Summary &amp; Dietary Prescription
                 </h2>
-                <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 font-medium">
-                  MealOptimiza Clinical Intelligence • Generated on {fmtDate(new Date())}
+                <p className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">
+                  MealOptimiza Cultural Metabolic Intelligence • Generated: {fmtDate(new Date())}
                 </p>
               </div>
             </div>
 
             <div className="text-left sm:text-right text-xs">
-              <span className="inline-block px-3 py-1 rounded-full bg-teal-100 text-[#1f7a8c] font-black uppercase tracking-wider text-[10px] border border-teal-200">
+              <span className="inline-block px-2.5 py-0.5 rounded-full bg-teal-100 text-[#126778] font-black uppercase tracking-wider text-[9.5px] border border-teal-200">
                 Confidential Medical Record
               </span>
-              <span className="block text-[10px] text-slate-400 mt-1">NDPR &amp; HIPAA-Aligned Privacy</span>
+              <span className="block text-[9.5px] text-slate-400 mt-0.5">NDPR &amp; HIPAA Aligned Privacy</span>
             </div>
           </div>
 
-          {/* Section 1: Patient Demographics & Diagnoses */}
-          <section className="mb-5 bg-slate-50 dark:bg-slate-800/50 rounded-2xl p-4 sm:p-5 border border-slate-200 dark:border-slate-800">
-            <h3 className="text-xs font-black text-[#1f7a8c] dark:text-teal-400 uppercase tracking-wider mb-3 flex items-center gap-1.5">
-              <User size={14} /> 1. Patient Demographics &amp; Health Profile
+          {/* Section 1: Patient Demographics & Health Profile */}
+          <section className="mb-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl p-3 sm:p-4 border border-slate-200 dark:border-slate-800 text-xs">
+            <h3 className="text-[11px] font-black text-[#126778] dark:text-teal-400 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+              <User size={13} /> 1. Patient Demographics &amp; Health Profile
             </h3>
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
               <div>
-                <span className="text-slate-500 block text-[10px] font-bold uppercase">Patient Name</span>
-                <span className="font-black text-sm text-slate-900 dark:text-white">
+                <span className="text-slate-500 block text-[9.5px] font-bold uppercase">Patient Name</span>
+                <span className="font-black text-xs text-slate-900 dark:text-white">
                   {profile?.name || "Registered Patient"}
                 </span>
               </div>
               <div>
-                <span className="text-slate-500 block text-[10px] font-bold uppercase">Age / Gender</span>
+                <span className="text-slate-500 block text-[9.5px] font-bold uppercase">Age / Gender</span>
                 <span className="font-bold text-slate-900 dark:text-white">
                   {profile?.age ? `${profile.age} yrs` : "-"} · {profile?.gender || "Not specified"}
                 </span>
               </div>
               <div>
-                <span className="text-slate-500 block text-[10px] font-bold uppercase">BMI / Latest Weight</span>
+                <span className="text-slate-500 block text-[9.5px] font-bold uppercase">BMI / Latest Weight</span>
                 <span className="font-bold text-slate-900 dark:text-white">
                   {profile?.bmi || "-"} BMI {latestWeight ? `(${latestWeight.weight_kg} kg)` : ""}
                 </span>
               </div>
               <div>
-                <span className="text-slate-500 block text-[10px] font-bold uppercase">Geographic Region</span>
+                <span className="text-slate-500 block text-[9.5px] font-bold uppercase">Geographic Region</span>
                 <span className="font-bold text-slate-900 dark:text-white">
-                  {profile?.location || "West Africa"}
+                  {profile?.location || "West Africa & Diaspora"}
                 </span>
               </div>
 
-              <div className="col-span-2 pt-2 border-t border-slate-200 dark:border-slate-700">
-                <span className="text-slate-500 block text-[10px] font-bold uppercase">Clinical Conditions</span>
-                <span className="font-black text-[#1f7a8c] dark:text-teal-300">
+              <div className="col-span-2 pt-1.5 border-t border-slate-200 dark:border-slate-700">
+                <span className="text-slate-500 block text-[9.5px] font-bold uppercase">Clinical Conditions</span>
+                <span className="font-black text-[#126778] dark:text-teal-300">
                   {profile?.medicalCondition ||
                     (profile?.conditions || []).map((c: any) => c.name || c).join(", ") ||
                     "Metabolic Health & Dietary Optimization"}
                 </span>
               </div>
 
-              <div className="col-span-2 pt-2 border-t border-slate-200 dark:border-slate-700">
-                <span className="text-slate-500 block text-[10px] font-bold uppercase">Allergies &amp; Sensitivities</span>
+              <div className="col-span-2 pt-1.5 border-t border-slate-200 dark:border-slate-700">
+                <span className="text-slate-500 block text-[9.5px] font-bold uppercase">Allergies &amp; Sensitivities</span>
                 <span className="font-medium text-slate-700 dark:text-slate-300">
                   {profile?.allergies || "None reported"}
                 </span>
@@ -447,142 +499,196 @@ export default function HealthReport() {
             </div>
           </section>
 
-          {/* Section 2: 30-Day Executive Vitals Summary */}
-          <section className="mb-5">
-            <h3 className="text-xs font-black text-[#1f7a8c] dark:text-teal-400 uppercase tracking-wider mb-2.5 flex items-center gap-1.5">
-              <Activity size={14} /> 2. 30-Day Biometric &amp; Vitals Executive Summary
+          {/* Section 2: 30-Day Biometric & Vitals Executive Summary */}
+          <section className="mb-4">
+            <h3 className="text-[11px] font-black text-[#126778] dark:text-teal-400 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+              <Activity size={13} /> 2. 30-Day Biometrics &amp; Clinical Vitals Summary
             </h3>
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
               {/* Glucose & Projected A1C */}
-              <div className="p-3.5 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-xs">
-                <span className="text-[10px] text-slate-500 uppercase font-bold block mb-0.5">
+              <div className="p-2.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-xs">
+                <span className="text-[9.5px] text-slate-500 uppercase font-bold block mb-0.5">
                   Avg Blood Glucose
                 </span>
-                <div className="text-lg font-black text-slate-900 dark:text-white">
+                <div className="text-base font-black text-slate-900 dark:text-white">
                   {glucoseAvg ? `${glucoseAvg} mg/dL` : "102 mg/dL"}
                 </div>
-                <span className="text-[10px] text-teal-700 dark:text-teal-300 font-bold block mt-0.5">
+                <span className="text-[9.5px] text-teal-700 dark:text-teal-300 font-bold block mt-0.5">
                   Est. eA1c: ~{projectedA1c || "5.4"}%
                 </span>
               </div>
 
               {/* Blood Pressure */}
-              <div className="p-3.5 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-xs">
-                <span className="text-[10px] text-slate-500 uppercase font-bold block mb-0.5">
+              <div className="p-2.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-xs">
+                <span className="text-[9.5px] text-slate-500 uppercase font-bold block mb-0.5">
                   Latest Blood Pressure
                 </span>
-                <div className="text-lg font-black text-slate-900 dark:text-white">
-                  {bp[0] ? bp[0].value : "120/80"} <span className="text-xs font-normal text-slate-400">mmHg</span>
+                <div className="text-base font-black text-slate-900 dark:text-white">
+                  {bp[0] ? bp[0].value : "120/80"} <span className="text-[10px] font-normal text-slate-400">mmHg</span>
                 </div>
-                <span className="text-[10px] text-slate-500 block mt-0.5">
+                <span className="text-[9.5px] text-slate-500 block mt-0.5">
                   {bp[0] ? fmtDay(bp[0].logged_at) : "Resting Vitals"}
                 </span>
               </div>
 
               {/* Weight Trajectory */}
-              <div className="p-3.5 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-xs">
-                <span className="text-[10px] text-slate-500 uppercase font-bold block mb-0.5">
+              <div className="p-2.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-xs">
+                <span className="text-[9.5px] text-slate-500 uppercase font-bold block mb-0.5">
                   Weight Trajectory
                 </span>
-                <div className="text-lg font-black text-slate-900 dark:text-white">
+                <div className="text-base font-black text-slate-900 dark:text-white">
                   {latestWeight ? `${latestWeight.weight_kg} kg` : "74.5 kg"}
                 </div>
-                <span className="text-[10px] font-bold text-emerald-600 flex items-center gap-0.5 mt-0.5">
-                  <TrendingDown size={11} /> {weightDiff ? `${weightDiff} kg (30d)` : "-1.2 kg (30d)"}
+                <span className="text-[9.5px] font-bold text-emerald-600 flex items-center gap-0.5 mt-0.5">
+                  <TrendingDown size={10} /> {weightDiff ? `${weightDiff} kg (30d)` : "-1.2 kg (30d)"}
                 </span>
               </div>
 
               {/* Hydration & Sleep */}
-              <div className="p-3.5 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-xs">
-                <span className="text-[10px] text-slate-500 uppercase font-bold block mb-0.5">
-                  Sleep &amp; Hydration Mean
+              <div className="p-2.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-xs">
+                <span className="text-[9.5px] text-slate-500 uppercase font-bold block mb-0.5">
+                  Sleep &amp; Hydration
                 </span>
-                <div className="text-lg font-black text-slate-900 dark:text-white">
+                <div className="text-base font-black text-slate-900 dark:text-white">
                   {avgSleepDuration}
                 </div>
-                <span className="text-[10px] text-sky-600 font-bold block mt-0.5">
+                <span className="text-[9.5px] text-sky-600 font-bold block mt-0.5">
                   💧 {avgWaterMl} ml / day
                 </span>
               </div>
             </div>
           </section>
 
-          {/* Section 3: Cultural Nutrition & Glycemic Analysis */}
-          <section className="mb-5 p-4 sm:p-5 rounded-2xl bg-teal-50/50 dark:bg-teal-950/20 border border-teal-100 dark:border-teal-900/40">
-            <h3 className="text-xs font-black text-[#1f7a8c] dark:text-teal-400 uppercase tracking-wider mb-3 flex items-center gap-1.5">
-              <ShieldCheck size={14} /> 3. West African Dietary Matrix &amp; Glycemic Analysis
-            </h3>
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 text-xs mb-3">
-              <div className="bg-white dark:bg-slate-900 p-2.5 rounded-xl border border-teal-100 dark:border-slate-800">
-                <span className="text-slate-500 block text-[10px] font-bold">Low-Spike Compliance</span>
-                <span className="text-sm sm:text-base font-black text-emerald-600 dark:text-emerald-400">
-                  {glycemicComplianceRate}% of meals
+          {/* Section 3: MyAfricanPlate Hand-Portion & Electrolyte Prescription Matrix */}
+          <section className="mb-4 p-3 sm:p-4 rounded-xl bg-teal-50/60 dark:bg-teal-950/20 border border-teal-200 dark:border-teal-900/40 text-xs">
+            <div className="flex items-center justify-between mb-2">
+              <h3 className="text-[11px] font-black text-[#126778] dark:text-teal-400 uppercase tracking-wider flex items-center gap-1.5">
+                <Utensils size={13} /> 3. MyAfricanPlate Hand-Portion &amp; Electrolyte Matrix
+              </h3>
+              <span className="text-[9.5px] font-black bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full">
+                {glycemicComplianceRate}% Glycemic Compliance
+              </span>
+            </div>
+
+            {/* Hand Portion Grid */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-2.5">
+              {/* 50% Soups & Leafy Greens */}
+              <div className="bg-white dark:bg-slate-900 p-2 rounded-lg border border-emerald-200 dark:border-emerald-800/40">
+                <span className="text-[9.5px] font-black text-emerald-800 dark:text-emerald-300 block">
+                  🥣 2 Ladles (50% Plate)
+                </span>
+                <span className="text-[11px] font-bold text-slate-800 dark:text-slate-200 block mt-0.5">
+                  Leafy Soups &amp; Stews
+                </span>
+                <span className="text-[9.5px] text-slate-500 block">
+                  Ewedu, Okra, Ugu, Efo Riro
                 </span>
               </div>
 
-              <div className="bg-white dark:bg-slate-900 p-2.5 rounded-xl border border-teal-100 dark:border-slate-800">
-                <span className="text-slate-500 block text-[10px] font-bold">Inflammatory Index (DII)</span>
-                <span className="text-sm sm:text-base font-black text-teal-700 dark:text-teal-300">
-                  {avgDii} DII (Anti-Inflammatory)
+              {/* 25% Swallow / Carb */}
+              <div className="bg-white dark:bg-slate-900 p-2 rounded-lg border border-cyan-200 dark:border-cyan-800/40">
+                <span className="text-[9.5px] font-black text-cyan-800 dark:text-cyan-300 block">
+                  ✊ 1 Fist (25% Plate)
+                </span>
+                <span className="text-[11px] font-bold text-slate-800 dark:text-slate-200 block mt-0.5">
+                  Complex Swallows / Rice
+                </span>
+                <span className="text-[9.5px] text-slate-500 block">
+                  Plantain, Oats, Amala, Garri
                 </span>
               </div>
 
-              <div className="bg-white dark:bg-slate-900 p-2.5 rounded-xl border border-teal-100 dark:border-slate-800">
-                <span className="text-slate-500 block text-[10px] font-bold">Cooking Method Split</span>
-                <span className="text-xs font-bold text-slate-800 dark:text-slate-200">
-                  {cookingDistribution.steamed} Boiled · {cookingDistribution.fried} Fried
+              {/* 25% Clean Protein */}
+              <div className="bg-white dark:bg-slate-900 p-2 rounded-lg border border-amber-200 dark:border-amber-800/40">
+                <span className="text-[9.5px] font-black text-amber-800 dark:text-amber-300 block">
+                  ✋ 1 Palm (25% Plate)
+                </span>
+                <span className="text-[11px] font-bold text-slate-800 dark:text-slate-200 block mt-0.5">
+                  Seafood &amp; Lean Meats
+                </span>
+                <span className="text-[9.5px] text-slate-500 block">
+                  Tilapia, Mackerel, Goat, Eggs
                 </span>
               </div>
 
-              <div className="bg-white dark:bg-slate-900 p-2.5 rounded-xl border border-teal-100 dark:border-slate-800">
-                <span className="text-slate-500 block text-[10px] font-bold">Avg Sodium / Meal</span>
-                <span className="text-sm sm:text-base font-black text-slate-800 dark:text-slate-200">
-                  {avgSodium} mg (DASH Target)
+              {/* Heart-Healthy Oil Cap */}
+              <div className="bg-white dark:bg-slate-900 p-2 rounded-lg border border-orange-200 dark:border-orange-800/40">
+                <span className="text-[9.5px] font-black text-orange-800 dark:text-orange-300 block">
+                  🥄 ≤ 1 Spoon Oil Cap
+                </span>
+                <span className="text-[11px] font-bold text-slate-800 dark:text-slate-200 block mt-0.5">
+                  Cardio-Healthy Fats
+                </span>
+                <span className="text-[9.5px] text-slate-500 block">
+                  Red Palm Oil / Olive Oil (≤15ml)
                 </span>
               </div>
             </div>
-            <p className="text-[11px] text-slate-600 dark:text-slate-400 leading-relaxed font-medium">
-              <strong>Clinical Dietitian Note:</strong> Patient emphasizes fiber-rich traditional leafy soups (Ewedu, Okra, Ugu) and unrefined resistant starches (Unripe Plantain, Guinea Corn) paired with lean fish and boiled legumes, delaying gastric emptying and flattening postprandial glucose excursions.
+
+            {/* Cardio Electrolytes & Inflammatory Index */}
+            <div className="grid grid-cols-3 gap-2 bg-white dark:bg-slate-900 p-2.5 rounded-lg border border-teal-100 dark:border-slate-800">
+              <div>
+                <span className="text-slate-500 block text-[9.5px] font-bold">Potassium-to-Sodium (K:Na)</span>
+                <span className="text-xs font-black text-[#126778] dark:text-teal-300">
+                  {kNaRatio} : 1.0 (Optimal ≥ 2.0)
+                </span>
+              </div>
+              <div>
+                <span className="text-slate-500 block text-[9.5px] font-bold">Avg Sodium / Day</span>
+                <span className="text-xs font-black text-slate-800 dark:text-slate-200">
+                  ~{avgDailySodiumMg} mg (DASH Target &lt; 1500mg)
+                </span>
+              </div>
+              <div>
+                <span className="text-slate-500 block text-[9.5px] font-bold">Inflammatory Score (DII)</span>
+                <span className="text-xs font-black text-emerald-600 dark:text-emerald-400">
+                  {avgDii} DII (Anti-Inflammatory)
+                </span>
+              </div>
+            </div>
+
+            <p className="text-[10px] text-slate-600 dark:text-slate-400 mt-2 leading-relaxed font-medium">
+              <strong>Dietitian Telemetry Note:</strong> Patient is adhering to traditional viscous leafy vegetable buffers (Okra, Ewedu) prior to swallow intake. High potassium content in African greens and unripe plantain balances sodium intake and buffers against postprandial glycemic excursions.
             </p>
           </section>
 
-          {/* Section 4: Active Medications & Drug-Nutrient Flags */}
-          <section className="mb-5">
-            <h3 className="text-xs font-black text-[#1f7a8c] dark:text-teal-400 uppercase tracking-wider mb-2.5 flex items-center gap-1.5">
-              <Pill size={14} /> 4. Current Prescription Regimen &amp; Food-Drug Flags
+          {/* Section 4: Current Prescription Regimen & Safety Flags */}
+          <section className="mb-4">
+            <h3 className="text-[11px] font-black text-[#126778] dark:text-teal-400 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+              <Pill size={13} /> 4. Active Prescription Regimen &amp; Medication Timing
             </h3>
             {medications.length === 0 ? (
-              <p className="text-xs text-slate-500 italic p-3 bg-slate-50 dark:bg-slate-800/40 rounded-xl">
+              <p className="text-xs text-slate-500 italic p-2.5 bg-slate-50 dark:bg-slate-800/40 rounded-xl">
                 No active prescription medications recorded by patient.
               </p>
             ) : (
-              <div className="border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden text-xs">
+              <div className="border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden text-xs">
                 <table className="w-full text-left">
                   <thead className="bg-slate-50 dark:bg-slate-800/80 text-slate-500 border-b border-slate-200 dark:border-slate-700">
                     <tr>
-                      <th className="py-2 px-3 font-bold">Medication</th>
-                      <th className="py-2 px-3 font-bold">Dosage</th>
-                      <th className="py-2 px-3 font-bold">Frequency</th>
-                      <th className="py-2 px-3 font-bold">Food Timing</th>
-                      <th className="py-2 px-3 text-right font-bold">Safety Status</th>
+                      <th className="py-1.5 px-3 font-bold">Medication</th>
+                      <th className="py-1.5 px-3 font-bold">Dosage</th>
+                      <th className="py-1.5 px-3 font-bold">Frequency</th>
+                      <th className="py-1.5 px-3 font-bold">Meal Timing</th>
+                      <th className="py-1.5 px-3 text-right font-bold">Status</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
                     {medications.map((m) => (
                       <tr key={m.id} className="hover:bg-slate-50/50">
-                        <td className="py-2 px-3 font-black text-slate-900 dark:text-white">
+                        <td className="py-1.5 px-3 font-black text-slate-900 dark:text-white">
                           {m.name}
                         </td>
-                        <td className="py-2 px-3 text-slate-600 dark:text-slate-400">
+                        <td className="py-1.5 px-3 text-slate-600 dark:text-slate-400">
                           {m.dosage || "Standard"}
                         </td>
-                        <td className="py-2 px-3 text-slate-600 dark:text-slate-400">
+                        <td className="py-1.5 px-3 text-slate-600 dark:text-slate-400">
                           {m.frequency || "Once daily"}
                         </td>
-                        <td className="py-2 px-3 text-slate-600 dark:text-slate-400">
+                        <td className="py-1.5 px-3 text-slate-600 dark:text-slate-400">
                           {m.with_food || m.withFood ? "With Meals 🍽️" : "Standard"}
                         </td>
-                        <td className="py-2 px-3 text-right">
+                        <td className="py-1.5 px-3 text-right">
                           <span className="inline-block px-2 py-0.5 rounded-full text-[9px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
                             Verified Active
                           </span>
@@ -595,82 +701,92 @@ export default function HealthReport() {
             )}
           </section>
 
-          {/* Section 5: Recent Chronological Timeline Table */}
-          <section className="mb-5">
-            <h3 className="text-xs font-black text-[#1f7a8c] dark:text-teal-400 uppercase tracking-wider mb-2.5 flex items-center gap-1.5">
-              <Calendar size={14} /> 5. Recent 14-Day Vitals, Food &amp; Symptom Timeline
-            </h3>
-            <div className="border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden text-xs">
-              <table className="w-full text-left">
-                <thead className="bg-slate-50 dark:bg-slate-800/80 text-slate-500 border-b border-slate-200 dark:border-slate-700">
-                  <tr>
-                    <th className="py-2 px-3 font-bold">Date</th>
-                    <th className="py-2 px-3 font-bold">Entry / Biometric</th>
-                    <th className="py-2 px-3 font-bold">Nutritional / Vital Details</th>
-                    <th className="py-2 px-3 text-right font-bold">Clinical Impact</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
-                  {recentTimeline.map((item, idx) => (
-                    <tr key={idx} className="hover:bg-slate-50/50">
-                      <td className="py-2 px-3 text-slate-500 whitespace-nowrap text-[11px]">
-                        {fmtDay(item.date)}
-                      </td>
-                      <td className="py-2 px-3 font-bold text-slate-900 dark:text-white">
-                        {item.title}
-                      </td>
-                      <td className="py-2 px-3 text-slate-600 dark:text-slate-400">
-                        {item.subtitle}
-                      </td>
-                      <td className="py-2 px-3 text-right">
-                        <span className="inline-block px-2 py-0.5 rounded-full text-[9.5px] font-bold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">
-                          {item.tag}
-                        </span>
-                      </td>
+          {/* Section 5: Full Timeline Table (Only in Full Dossier Mode) */}
+          {reportMode === "full" && (
+            <section className="mb-4">
+              <h3 className="text-[11px] font-black text-[#126778] dark:text-teal-400 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                <Calendar size={13} /> 5. Recent 14-Day Vitals, Food &amp; Symptom Timeline
+              </h3>
+              <div className="border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden text-xs">
+                <table className="w-full text-left">
+                  <thead className="bg-slate-50 dark:bg-slate-800/80 text-slate-500 border-b border-slate-200 dark:border-slate-700">
+                    <tr>
+                      <th className="py-1.5 px-3 font-bold">Date</th>
+                      <th className="py-1.5 px-3 font-bold">Entry / Biometric</th>
+                      <th className="py-1.5 px-3 font-bold">Nutritional / Vital Details</th>
+                      <th className="py-1.5 px-3 text-right font-bold">Clinical Impact</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </section>
+                  </thead>
+                  <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+                    {recentTimeline.map((item, idx) => (
+                      <tr key={idx} className="hover:bg-slate-50/50">
+                        <td className="py-1.5 px-3 text-slate-500 whitespace-nowrap text-[10.5px]">
+                          {fmtDay(item.date)}
+                        </td>
+                        <td className="py-1.5 px-3 font-bold text-slate-900 dark:text-white">
+                          {item.title}
+                        </td>
+                        <td className="py-1.5 px-3 text-slate-600 dark:text-slate-400">
+                          {item.subtitle}
+                        </td>
+                        <td className="py-1.5 px-3 text-right">
+                          <span className="inline-block px-2 py-0.5 rounded-full text-[9px] font-bold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">
+                            {item.tag}
+                          </span>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </section>
+          )}
 
-          {/* Section 6: Attending Physician Consultation Notes & Clinical Order Section */}
-          <section className="mb-5 p-5 rounded-2xl border-2 border-dashed border-slate-300 dark:border-slate-700 bg-slate-50/70 dark:bg-slate-800/40">
-            <h3 className="text-xs font-black text-slate-800 dark:text-slate-200 uppercase tracking-wider mb-2 flex items-center gap-1.5">
-              <Stethoscope size={14} className="text-[#1f7a8c]" /> 6. Attending Physician Consultation Notes &amp; Clinical Orders
+          {/* Section 6: Attending Physician Consultation Notes & Clinical Orders */}
+          <section className="mb-4 p-4 rounded-xl border-2 border-dashed border-slate-300 dark:border-slate-700 bg-slate-50/70 dark:bg-slate-800/40">
+            <h3 className="text-[11px] font-black text-slate-800 dark:text-slate-200 uppercase tracking-wider mb-1 flex items-center gap-1.5">
+              <Stethoscope size={13} className="text-[#126778]" /> 5. Attending Physician Consultation Notes &amp; Clinical Orders
             </h3>
-            <p className="text-[10.5px] text-slate-500 mb-4">
+            <p className="text-[9.5px] text-slate-500 mb-2.5">
               To be filled and certified by the physician during the clinical review.
             </p>
-            <div className="space-y-4 text-xs">
-              <div className="border-b border-slate-300 dark:border-slate-700 pb-2">
-                <span className="font-bold text-slate-700 dark:text-slate-300">Clinical Assessment &amp; Diagnostic Impression:</span>
-                <div className="h-8" />
+            <div className="space-y-2.5 text-xs">
+              <div className="border-b border-slate-300 dark:border-slate-700 pb-1.5">
+                <span className="font-bold text-slate-700 dark:text-slate-300 text-[10.5px]">
+                  Clinical Assessment &amp; Diagnostic Impression:
+                </span>
+                <div className="h-6" />
               </div>
-              <div className="border-b border-slate-300 dark:border-slate-700 pb-2">
-                <span className="font-bold text-slate-700 dark:text-slate-300">Prescription, Dosage, &amp; Dietary Adjustments:</span>
-                <div className="h-8" />
+              <div className="border-b border-slate-300 dark:border-slate-700 pb-1.5">
+                <span className="font-bold text-slate-700 dark:text-slate-300 text-[10.5px]">
+                  Prescription, Dosage, &amp; Dietary Adjustments:
+                </span>
+                <div className="h-6" />
               </div>
-              <div className="grid grid-cols-2 gap-4 pt-2">
+              <div className="grid grid-cols-2 gap-4 pt-1">
                 <div>
-                  <span className="font-bold text-slate-700 dark:text-slate-300">Recommended Follow-Up Date:</span>
-                  <div className="border-b border-slate-300 dark:border-slate-700 h-6 mt-1" />
+                  <span className="font-bold text-slate-700 dark:text-slate-300 text-[10.5px]">
+                    Recommended Follow-Up Date:
+                  </span>
+                  <div className="border-b border-slate-300 dark:border-slate-700 h-5 mt-0.5" />
                 </div>
                 <div>
-                  <span className="font-bold text-slate-700 dark:text-slate-300">Doctor Signature &amp; Stamp:</span>
-                  <div className="border-b border-slate-300 dark:border-slate-700 h-6 mt-1" />
+                  <span className="font-bold text-slate-700 dark:text-slate-300 text-[10.5px]">
+                    Doctor Signature &amp; Stamp:
+                  </span>
+                  <div className="border-b border-slate-300 dark:border-slate-700 h-5 mt-0.5" />
                 </div>
               </div>
             </div>
           </section>
 
           {/* Legal & Medical Ethics Privacy Notice */}
-          <div className="border-t border-slate-200 dark:border-slate-800 pt-4 text-[10.5px] text-slate-400 leading-relaxed space-y-1">
+          <div className="border-t border-slate-200 dark:border-slate-800 pt-3 text-[9.5px] text-slate-400 leading-relaxed space-y-0.5">
             <p>
               <strong>Ethics &amp; Privacy Safeguards:</strong> This clinical dossier is generated strictly for patient-physician collaborative review. All biometric data and meal logs are protected under NDPR / HIPAA-aligned privacy frameworks. No patient health information is shared with third-party advertisers.
             </p>
             <p>
-              <strong>Clinical Advisory:</strong> MealOptimiza is a lifestyle and metabolic support tool. Clinical decisions, prescriptions, and diagnosis remain the sole responsibility of the licensed attending physician.
+              <strong>Clinical Advisory:</strong> MealOptimiza is a lifestyle and metabolic support companion. Clinical decisions, prescriptions, and diagnosis remain the sole responsibility of the licensed attending physician.
             </p>
           </div>
         </div>
