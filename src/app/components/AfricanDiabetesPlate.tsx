@@ -346,28 +346,37 @@ export default function AfricanDiabetesPlate({
 
   // Cycle food on quadrant tap
   const handleQuadrantClick = (category: "veggie" | "protein" | "carb" | "drink") => {
-    soundEffects.playBubblePop();
-    triggerHaptic("medium");
+    try {
+      soundEffects.playBubblePop();
+    } catch {}
+    try {
+      triggerHaptic("medium");
+    } catch {}
+
     setActiveCategory(category);
 
     if (category === "veggie") {
       const idx = veggieList.findIndex((i) => i.id === selectedVeggie.id);
-      const nextItem = veggieList[(idx + 1) % veggieList.length];
+      const nextIdx = idx >= 0 ? (idx + 1) % veggieList.length : 0;
+      const nextItem = veggieList[nextIdx];
       setSelectedVeggie(nextItem);
       toast.success(`🥬 50% Veggies: Swapped to ${nextItem.name}!`, { duration: 1500 });
     } else if (category === "protein") {
       const idx = proteinList.findIndex((i) => i.id === selectedProtein.id);
-      const nextItem = proteinList[(idx + 1) % proteinList.length];
+      const nextIdx = idx >= 0 ? (idx + 1) % proteinList.length : 0;
+      const nextItem = proteinList[nextIdx];
       setSelectedProtein(nextItem);
       toast.success(`🥩 25% Protein: Swapped to ${nextItem.name}!`, { duration: 1500 });
     } else if (category === "carb") {
       const idx = carbList.findIndex((i) => i.id === selectedCarb.id);
-      const nextItem = carbList[(idx + 1) % carbList.length];
+      const nextIdx = idx >= 0 ? (idx + 1) % carbList.length : 0;
+      const nextItem = carbList[nextIdx];
       setSelectedCarb(nextItem);
       toast.success(`🍠 25% Swallow: Swapped to ${nextItem.name}!`, { duration: 1500 });
     } else if (category === "drink") {
       const idx = drinkList.findIndex((i) => i.id === selectedDrink.id);
-      const nextItem = drinkList[(idx + 1) % drinkList.length];
+      const nextIdx = idx >= 0 ? (idx + 1) % drinkList.length : 0;
+      const nextItem = drinkList[nextIdx];
       setSelectedDrink(nextItem);
       toast.success(`💧 Hydration: Swapped to ${nextItem.name}!`, { duration: 1500 });
     }
