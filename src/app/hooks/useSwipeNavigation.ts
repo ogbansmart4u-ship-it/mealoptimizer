@@ -4,10 +4,8 @@ import { triggerHaptic } from "../utils/celebration";
 
 export const MAIN_NAV_TABS = [
   "/home",
-  "/goals",
-  "/logs",
-  "/health",
   "/recipe",
+  "/health",
   "/profile",
 ] as const;
 
@@ -22,7 +20,7 @@ interface SwipeConfig {
 
 /**
  * Custom hook providing native-grade horizontal swipe gesture navigation
- * between main application tabs (Home <-> Goals <-> Logs <-> Health <-> Recipe <-> Profile).
+ * between main 4 application tabs (Home <-> Recipes <-> Health <-> Profile).
  */
 export function useSwipeNavigation(config?: SwipeConfig) {
   const location = useLocation();
