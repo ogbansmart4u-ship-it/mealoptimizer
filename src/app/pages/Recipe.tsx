@@ -2539,251 +2539,342 @@ export default function Recipe() {
       {/* 3. INTERACTIVE 10X RECIPE & COOKING MODAL (IN-FRAME)         */}
       {/* ============================================================ */}
       <Dialog open={!!selectedRecipe} onOpenChange={(open) => !open && setSelectedRecipe(null)}>
-        <DialogContent className="max-w-lg max-h-[88vh] p-5 sm:p-6 flex flex-col rounded-3xl">
+        <DialogContent className="max-w-lg max-h-[88vh] p-4 sm:p-6 flex flex-col rounded-3xl bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 shadow-2xl">
           {selectedRecipe && (
             <>
+              {/* Top Hero Bar */}
               <DialogHeader className="pb-1 text-left">
                 <div className="flex items-center justify-between gap-2 mb-1">
-                  <span
-                    className={`text-[9.5px] font-black px-2.5 py-0.5 rounded-full border ${
-                      selectedRecipe.glycemicIndex === "Low"
-                        ? "bg-emerald-100 text-emerald-800 border-emerald-300"
-                        : "bg-amber-100 text-amber-800 border-amber-300"
-                    }`}
-                  >
-                    {selectedRecipe.glycemicIndex} Glycemic Spike
-                  </span>
+                  <div className="flex items-center gap-1.5 flex-wrap">
+                    <span
+                      className={`text-[9px] font-black px-2.5 py-0.5 rounded-full border ${
+                        selectedRecipe.glycemicIndex === "Low"
+                          ? "bg-emerald-100 text-emerald-800 border-emerald-300 dark:bg-emerald-950 dark:text-emerald-300"
+                          : "bg-amber-100 text-amber-800 border-amber-300 dark:bg-amber-950 dark:text-amber-300"
+                      }`}
+                    >
+                      🩸 {selectedRecipe.glycemicIndex} GI
+                    </span>
+                    <span className="text-[9px] font-black px-2 py-0.5 rounded-full bg-slate-100 dark:bg-zinc-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-zinc-700">
+                      ⏱️ {selectedRecipe.prepTime + selectedRecipe.cookTime} min
+                    </span>
+                    <span className="text-[9px] font-black px-2 py-0.5 rounded-full bg-slate-100 dark:bg-zinc-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-zinc-700">
+                      🔥 {selectedRecipe.difficulty}
+                    </span>
+                  </div>
 
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-1">
                     <button
                       onClick={(e) => toggleFavorite(selectedRecipe.id, e)}
                       className="p-1 text-rose-500 hover:scale-110 transition-transform cursor-pointer"
+                      title="Save Favorite"
                     >
                       <Heart className={`h-5 w-5 ${selectedRecipe.isFavorite ? "fill-rose-500" : ""}`} />
                     </button>
                   </div>
                 </div>
 
-                <DialogTitle className="text-lg sm:text-xl font-black text-gray-900 leading-snug">
-                  {selectedRecipe.name}
+                <DialogTitle className="text-base sm:text-lg font-black text-slate-900 dark:text-white leading-snug flex items-center gap-2">
+                  <span className="text-2xl">{selectedRecipe.emoji}</span>
+                  <span>{selectedRecipe.name}</span>
                 </DialogTitle>
-                <DialogDescription className="text-xs text-teal-800 font-bold flex items-center gap-1 mt-0.5">
-                  <Sparkles size={12} className="text-amber-500" />
+                <DialogDescription className="sr-only">
                   {selectedRecipe.clinicalNote}
                 </DialogDescription>
               </DialogHeader>
 
-              <div className="flex-1 overflow-y-auto overscroll-contain space-y-4 py-2 pr-1 text-xs">
-                {/* Mode Selector: Recipe View vs Interactive Cooking Mode */}
-                <div className="flex bg-slate-100 p-1 rounded-2xl gap-1">
+              <div className="flex-1 overflow-y-auto overscroll-contain space-y-3 py-1 pr-1 text-xs">
+                {/* Mode Selector Pill: Bento Pods vs Step-by-Step Cooking Stage */}
+                <div className="flex bg-slate-100 dark:bg-zinc-800/80 p-1 rounded-2xl gap-1">
                   <button
-                    onClick={() => setIsCookingMode(false)}
-                    className={`flex-1 py-1.5 rounded-xl font-bold text-xs transition-all cursor-pointer ${
-                      !isCookingMode ? "bg-white text-teal-800 shadow-2xs" : "text-gray-500"
+                    onClick={() => {
+                      try { soundEffects.playTactileTick(); } catch {}
+                      setIsCookingMode(false);
+                    }}
+                    className={`flex-1 py-1.5 rounded-xl font-black text-xs transition-all cursor-pointer ${
+                      !isCookingMode
+                        ? "bg-white dark:bg-zinc-900 text-teal-800 dark:text-teal-300 shadow-xs"
+                        : "text-slate-500 hover:text-slate-900 dark:hover:text-white"
                     }`}
                   >
-                    📖 Ingredients &amp; Nutrition
+                    🍱 Bento Pods
                   </button>
                   <button
-                    onClick={() => setIsCookingMode(true)}
-                    className={`flex-1 py-1.5 rounded-xl font-bold text-xs transition-all cursor-pointer flex items-center justify-center gap-1 ${
-                      isCookingMode ? "bg-gradient-to-r from-[#1f7a8c] to-[#4ecdc4] text-white shadow-2xs" : "text-gray-500"
+                    onClick={() => {
+                      try { soundEffects.playBubblePop(); } catch {}
+                      try { triggerHaptic("medium"); } catch {}
+                      setIsCookingMode(true);
+                    }}
+                    className={`flex-1 py-1.5 rounded-xl font-black text-xs transition-all cursor-pointer flex items-center justify-center gap-1 ${
+                      isCookingMode
+                        ? "bg-gradient-to-r from-[#1f7a8c] to-[#4ecdc4] text-white shadow-xs"
+                        : "text-slate-500 hover:text-slate-900 dark:hover:text-white"
                     }`}
                   >
-                    👨‍🍳 Step-by-Step Cooking
+                    <Play size={12} className="fill-current" />
+                    <span>Live Cook Mode 🚀</span>
                   </button>
                 </div>
 
                 {/* -------------------------------------------------- */}
-                {/* VIEW A: INGREDIENTS & SCALER VIEW                  */}
+                {/* VIEW A: CONTAINERIZED BENTO EXPLOSION PODS         */}
                 {/* -------------------------------------------------- */}
                 {!isCookingMode && (
-                  <>
-                    {/* Dynamic Portion Scaler */}
-                    <div className="bg-slate-50 border border-slate-200/80 rounded-2xl p-3 flex items-center justify-between gap-3">
-                      <div>
-                        <span className="text-[10px] font-bold text-gray-500 uppercase tracking-wider block">
-                          Adjust Servings (Auto-Scale)
-                        </span>
-                        <span className="text-xs font-black text-gray-900">
-                          Cooking for: {portionMultiplier} {portionMultiplier === 1 ? "Person" : "People"}
-                        </span>
-                      </div>
-
-                      <div className="flex items-center gap-1.5 bg-white p-1 rounded-xl border border-slate-200 shadow-2xs">
-                        {[1, 2, 4, 6].map((num) => (
-                          <button
-                            key={num}
-                            onClick={() => {
-                              triggerHaptic("light");
-                              setPortionMultiplier(num);
-                            }}
-                            className={`px-2.5 py-1 rounded-lg text-xs font-black transition-all cursor-pointer ${
-                              portionMultiplier === num
-                                ? "bg-[#1f7a8c] text-white"
-                                : "text-gray-600 hover:bg-slate-100"
-                            }`}
-                          >
-                            {num}x
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* Scaled Macro Strip */}
-                    <div className="grid grid-cols-4 gap-1.5 text-center">
-                      <div className="bg-orange-50/70 p-2 rounded-xl border border-orange-200/80">
-                        <span className="text-[9px] text-gray-500 font-bold block">Total Cals</span>
-                        <span className="text-xs font-black text-orange-700">
-                          {Math.round((selectedRecipe.baseCalories / selectedRecipe.baseServings) * portionMultiplier)}
-                        </span>
-                        <span className="text-[8px] text-gray-400 block">kcal</span>
-                      </div>
-                      <div className="bg-blue-50/70 p-2 rounded-xl border border-blue-200/80">
-                        <span className="text-[9px] text-gray-500 font-bold block">Protein</span>
-                        <span className="text-xs font-black text-blue-700">
-                          {Math.round((selectedRecipe.baseProtein / selectedRecipe.baseServings) * portionMultiplier)}g
-                        </span>
-                        <span className="text-[8px] text-gray-400 block">Muscle</span>
-                      </div>
-                      <div className="bg-emerald-50/70 p-2 rounded-xl border border-emerald-200/80">
-                        <span className="text-[9px] text-gray-500 font-bold block">Carbs</span>
-                        <span className="text-xs font-black text-emerald-700">
-                          {Math.round((selectedRecipe.baseCarbs / selectedRecipe.baseServings) * portionMultiplier)}g
-                        </span>
-                        <span className="text-[8px] text-gray-400 block">Energy</span>
-                      </div>
-                      <div className="bg-purple-50/70 p-2 rounded-xl border border-purple-200/80">
-                        <span className="text-[9px] text-gray-500 font-bold block">Fats</span>
-                        <span className="text-xs font-black text-purple-700">
-                          {Math.round((selectedRecipe.baseFats / selectedRecipe.baseServings) * portionMultiplier)}g
-                        </span>
-                        <span className="text-[8px] text-gray-400 block">Healthy</span>
-                      </div>
-                    </div>
-
-                    {/* Interactive Swaps Controls */}
-                    <div className="grid grid-cols-2 gap-2">
+                  <div className="space-y-2.5">
+                    {/* BENTO POD 1: 🛒 INGREDIENTS & DIASPORA SWAPS */}
+                    <div className="rounded-2xl border border-slate-200 dark:border-zinc-800 bg-slate-50/70 dark:bg-zinc-900/60 overflow-hidden transition-all shadow-xs">
                       <button
+                        type="button"
                         onClick={() => {
-                          setDiasporaMode(!diasporaMode);
-                          triggerHaptic("light");
+                          try { soundEffects.playBubblePop(); } catch {}
+                          try { triggerHaptic("light"); } catch {}
+                          setActiveBentoSection(activeBentoSection === "ingredients" ? null : "ingredients");
                         }}
-                        className={`p-2.5 rounded-2xl border text-left text-xs transition-all cursor-pointer flex items-center justify-between ${
-                          diasporaMode
-                            ? "bg-teal-50 border-[#1f7a8c] text-teal-950 font-bold shadow-2xs"
-                            : "bg-slate-50 border-slate-200 text-gray-600 hover:bg-slate-100"
-                        }`}
+                        className="w-full p-3 flex items-center justify-between text-left cursor-pointer hover:bg-slate-100/70 dark:hover:bg-zinc-800/50 transition-colors"
                       >
-                        <div className="min-w-0">
-                          <span className="text-[10px] uppercase font-bold text-[#1f7a8c] block">🌍 Diaspora Swaps</span>
-                          <span className="text-[11px] truncate block">UK / US Supermarket Mode</span>
-                        </div>
-                        <span className="text-sm font-black">{diasporaMode ? "ON" : "OFF"}</span>
-                      </button>
-
-                      <button
-                        onClick={() => {
-                          setLowSodiumMode(!lowSodiumMode);
-                          triggerHaptic("light");
-                        }}
-                        className={`p-2.5 rounded-2xl border text-left text-xs transition-all cursor-pointer flex items-center justify-between ${
-                          lowSodiumMode
-                            ? "bg-rose-50 border-rose-400 text-rose-950 font-bold shadow-2xs"
-                            : "bg-slate-50 border-slate-200 text-gray-600 hover:bg-slate-100"
-                        }`}
-                      >
-                        <div className="min-w-0">
-                          <span className="text-[10px] uppercase font-bold text-rose-700 block">🫀 Low-Sodium Mode</span>
-                          <span className="text-[11px] truncate block">No-Cube DASH Shield</span>
-                        </div>
-                        <span className="text-sm font-black">{lowSodiumMode ? "ON" : "OFF"}</span>
-                      </button>
-                    </div>
-
-                    {/* Checkable Ingredient List */}
-                    <div>
-                      <div className="flex items-center justify-between mb-2">
-                        <span className="text-xs font-black text-gray-900 uppercase tracking-wider">
-                          Scaled Ingredients ({selectedRecipe.ingredients.length})
-                        </span>
                         <div className="flex items-center gap-2">
-                          <button
-                            type="button"
-                            onClick={() => {
-                              triggerHaptic("medium");
-                              setShowGroceryStoresModal(true);
-                            }}
-                            className="text-[10.5px] font-black text-amber-700 bg-amber-100 dark:bg-amber-950 dark:text-amber-300 px-2 py-0.5 rounded-lg flex items-center gap-1 hover:scale-105 active:scale-95 transition-all cursor-pointer"
-                          >
-                            <span>🛒 Order from Store</span>
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => handleExportToGrocery(selectedRecipe)}
-                            className="text-[10.5px] font-bold text-[#1f7a8c] hover:underline flex items-center gap-1 cursor-pointer"
-                          >
-                            <span>+ Save List</span>
-                          </button>
+                          <span className="text-base">🛒</span>
+                          <div>
+                            <span className="text-xs font-black text-slate-900 dark:text-white block">
+                              Scaled Ingredients ({selectedRecipe.ingredients.length})
+                            </span>
+                            <span className="text-[10px] text-slate-500 block">
+                              {activeBentoSection === "ingredients" ? "Tap to collapse" : "Tap to explode & check off 💥"}
+                            </span>
+                          </div>
                         </div>
-                      </div>
+                        <span className="text-[10.5px] font-bold text-teal-700 dark:text-teal-400 bg-teal-50 dark:bg-teal-950/80 px-2 py-0.5 rounded-lg border border-teal-200/60 dark:border-teal-800">
+                          {portionMultiplier}x Servings {activeBentoSection === "ingredients" ? "▲" : "▼"}
+                        </span>
+                      </button>
 
-                      <div className="space-y-1.5">
-                        {selectedRecipe.ingredients.map((ing, idx) => {
-                          const isChecked = Boolean(checkedIngredients[ing.name]);
-                          const scaledAmount = Number((ing.amount * portionMultiplier).toFixed(1));
-                          const displayText =
-                            diasporaMode && ing.diasporaSwap
-                              ? ing.diasporaSwap
-                              : lowSodiumMode && ing.lowSodiumSwap
-                              ? ing.lowSodiumSwap
-                              : ing.name;
-
-                          return (
-                            <div
-                              key={idx}
-                              onClick={() =>
-                                setCheckedIngredients({
-                                  ...checkedIngredients,
-                                  [ing.name]: !isChecked,
-                                })
-                              }
-                              className={`p-2.5 rounded-xl border text-xs flex items-center justify-between gap-2 cursor-pointer transition-all ${
-                                isChecked
-                                  ? "bg-slate-50 border-slate-200 text-gray-400 line-through"
-                                  : "bg-white border-slate-200/80 text-gray-800 shadow-2xs hover:border-teal-300"
-                              }`}
-                            >
-                              <div className="flex items-center gap-2 min-w-0">
-                                <div
-                                  className={`h-4 w-4 rounded-md border flex items-center justify-center shrink-0 ${
-                                    isChecked ? "bg-[#1f7a8c] border-[#1f7a8c] text-white" : "border-gray-300"
+                      {/* Exploded Ingredients Section */}
+                      {activeBentoSection === "ingredients" && (
+                        <div className="p-3 pt-0 border-t border-slate-200/60 dark:border-zinc-800 space-y-2.5 animate-fade-in">
+                          {/* Portion Multiplier */}
+                          <div className="flex items-center justify-between gap-2 pt-2">
+                            <span className="text-[10px] font-bold text-slate-500 uppercase">
+                              Servings Scaler:
+                            </span>
+                            <div className="flex items-center gap-1 bg-white dark:bg-zinc-800 p-0.5 rounded-xl border border-slate-200 dark:border-zinc-700">
+                              {[1, 2, 4, 6].map((num) => (
+                                <button
+                                  key={num}
+                                  onClick={() => {
+                                    try { triggerHaptic("light"); } catch {}
+                                    setPortionMultiplier(num);
+                                  }}
+                                  className={`px-2 py-0.5 rounded-lg text-[10.5px] font-black transition-all cursor-pointer ${
+                                    portionMultiplier === num
+                                      ? "bg-[#1f7a8c] text-white"
+                                      : "text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-zinc-700"
                                   }`}
                                 >
-                                  {isChecked && <Check size={10} />}
-                                </div>
-                                <span className="font-semibold truncate">{displayText}</span>
-                              </div>
-
-                              <span className="font-black text-teal-800 bg-teal-50 px-2 py-0.5 rounded-md shrink-0">
-                                {scaledAmount} {ing.unit}
-                              </span>
+                                  {num}x
+                                </button>
+                              ))}
                             </div>
-                          );
-                        })}
-                      </div>
+                          </div>
+
+                          {/* Swap Toggles */}
+                          <div className="grid grid-cols-2 gap-1.5">
+                            <button
+                              type="button"
+                              onClick={() => {
+                                try { triggerHaptic("light"); } catch {}
+                                setDiasporaMode(!diasporaMode);
+                              }}
+                              className={`p-2 rounded-xl border text-left transition-all cursor-pointer flex items-center justify-between ${
+                                diasporaMode
+                                  ? "bg-teal-50 dark:bg-teal-950/60 border-teal-500 text-teal-950 dark:text-teal-200 font-bold"
+                                  : "bg-white dark:bg-zinc-800 border-slate-200 dark:border-zinc-700 text-slate-600 dark:text-slate-400"
+                              }`}
+                            >
+                              <span className="text-[10px] font-bold">🌍 UK/US Swaps</span>
+                              <span className="text-[10px] font-black">{diasporaMode ? "ON" : "OFF"}</span>
+                            </button>
+
+                            <button
+                              type="button"
+                              onClick={() => {
+                                try { triggerHaptic("light"); } catch {}
+                                setLowSodiumMode(!lowSodiumMode);
+                              }}
+                              className={`p-2 rounded-xl border text-left transition-all cursor-pointer flex items-center justify-between ${
+                                lowSodiumMode
+                                  ? "bg-rose-50 dark:bg-rose-950/60 border-rose-400 text-rose-950 dark:text-rose-200 font-bold"
+                                  : "bg-white dark:bg-zinc-800 border-slate-200 dark:border-zinc-700 text-slate-600 dark:text-slate-400"
+                              }`}
+                            >
+                              <span className="text-[10px] font-bold">🫀 Low-Sodium</span>
+                              <span className="text-[10px] font-black">{lowSodiumMode ? "ON" : "OFF"}</span>
+                            </button>
+                          </div>
+
+                          {/* Checkable Ingredients List */}
+                          <div className="space-y-1.5 max-h-[160px] overflow-y-auto pr-1">
+                            {selectedRecipe.ingredients.map((ing, idx) => {
+                              const isChecked = Boolean(checkedIngredients[ing.name]);
+                              const scaledAmount = Number((ing.amount * portionMultiplier).toFixed(1));
+                              const displayText =
+                                diasporaMode && ing.diasporaSwap
+                                  ? ing.diasporaSwap
+                                  : lowSodiumMode && ing.lowSodiumSwap
+                                  ? ing.lowSodiumSwap
+                                  : ing.name;
+
+                              return (
+                                <div
+                                  key={idx}
+                                  onClick={() =>
+                                    setCheckedIngredients({
+                                      ...checkedIngredients,
+                                      [ing.name]: !isChecked,
+                                    })
+                                  }
+                                  className={`p-2 rounded-xl border text-[11px] flex items-center justify-between gap-2 cursor-pointer transition-all ${
+                                    isChecked
+                                      ? "bg-slate-100 dark:bg-zinc-800/40 border-slate-200 text-slate-400 line-through"
+                                      : "bg-white dark:bg-zinc-800 border-slate-200/80 dark:border-zinc-700 text-slate-800 dark:text-slate-200 shadow-2xs hover:border-teal-400"
+                                  }`}
+                                >
+                                  <div className="flex items-center gap-1.5 min-w-0">
+                                    <div
+                                      className={`h-3.5 w-3.5 rounded-md border flex items-center justify-center shrink-0 ${
+                                        isChecked ? "bg-[#1f7a8c] border-[#1f7a8c] text-white" : "border-slate-300 dark:border-zinc-600"
+                                      }`}
+                                    >
+                                      {isChecked && <Check size={8} />}
+                                    </div>
+                                    <span className="font-semibold truncate">{displayText}</span>
+                                  </div>
+
+                                  <span className="font-black text-teal-800 dark:text-teal-300 bg-teal-50 dark:bg-teal-950/80 px-1.5 py-0.2 rounded-md shrink-0 text-[10px]">
+                                    {scaledAmount} {ing.unit}
+                                  </span>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      )}
                     </div>
-                  </>
+
+                    {/* BENTO POD 2: 📊 METABOLIC MACRO MATRIX */}
+                    <div className="rounded-2xl border border-slate-200 dark:border-zinc-800 bg-slate-50/70 dark:bg-zinc-900/60 overflow-hidden transition-all shadow-xs">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          try { soundEffects.playBubblePop(); } catch {}
+                          try { triggerHaptic("light"); } catch {}
+                          setActiveBentoSection(activeBentoSection === "macros" ? null : "macros");
+                        }}
+                        className="w-full p-3 flex items-center justify-between text-left cursor-pointer hover:bg-slate-100/70 dark:hover:bg-zinc-800/50 transition-colors"
+                      >
+                        <div className="flex items-center gap-2">
+                          <span className="text-base">📊</span>
+                          <div>
+                            <span className="text-xs font-black text-slate-900 dark:text-white block">
+                              Metabolic Macro Matrix &amp; Vitality
+                            </span>
+                            <span className="text-[10px] text-slate-500 block">
+                              {Math.round((selectedRecipe.baseCalories / selectedRecipe.baseServings) * portionMultiplier)} kcal • {Math.round((selectedRecipe.baseProtein / selectedRecipe.baseServings) * portionMultiplier)}g Protein
+                            </span>
+                          </div>
+                        </div>
+                        <span className="text-slate-400 font-bold text-xs">
+                          {activeBentoSection === "macros" ? "▲" : "▼"}
+                        </span>
+                      </button>
+
+                      {/* Exploded Macro Strip */}
+                      {activeBentoSection === "macros" && (
+                        <div className="p-3 pt-0 border-t border-slate-200/60 dark:border-zinc-800 space-y-2 animate-fade-in">
+                          <div className="grid grid-cols-4 gap-1.5 pt-2 text-center">
+                            <div className="bg-orange-50/80 dark:bg-orange-950/40 p-1.5 rounded-xl border border-orange-200/80 dark:border-orange-800/60">
+                              <span className="text-[8.5px] text-slate-500 block font-bold">Calories</span>
+                              <span className="text-xs font-black text-orange-700 dark:text-orange-400">
+                                {Math.round((selectedRecipe.baseCalories / selectedRecipe.baseServings) * portionMultiplier)}
+                              </span>
+                              <span className="text-[7.5px] text-slate-400 block">kcal</span>
+                            </div>
+                            <div className="bg-blue-50/80 dark:bg-blue-950/40 p-1.5 rounded-xl border border-blue-200/80 dark:border-blue-800/60">
+                              <span className="text-[8.5px] text-slate-500 block font-bold">Protein</span>
+                              <span className="text-xs font-black text-blue-700 dark:text-blue-400">
+                                {Math.round((selectedRecipe.baseProtein / selectedRecipe.baseServings) * portionMultiplier)}g
+                              </span>
+                              <span className="text-[7.5px] text-slate-400 block">Muscle</span>
+                            </div>
+                            <div className="bg-emerald-50/80 dark:bg-emerald-950/40 p-1.5 rounded-xl border border-emerald-200/80 dark:border-emerald-800/60">
+                              <span className="text-[8.5px] text-slate-500 block font-bold">Carbs</span>
+                              <span className="text-xs font-black text-emerald-700 dark:text-emerald-400">
+                                {Math.round((selectedRecipe.baseCarbs / selectedRecipe.baseServings) * portionMultiplier)}g
+                              </span>
+                              <span className="text-[7.5px] text-slate-400 block">Energy</span>
+                            </div>
+                            <div className="bg-purple-50/80 dark:bg-purple-950/40 p-1.5 rounded-xl border border-purple-200/80 dark:border-purple-800/60">
+                              <span className="text-[8.5px] text-slate-500 block font-bold">Fats</span>
+                              <span className="text-xs font-black text-purple-700 dark:text-purple-400">
+                                {Math.round((selectedRecipe.baseFats / selectedRecipe.baseServings) * portionMultiplier)}g
+                              </span>
+                              <span className="text-[7.5px] text-slate-400 block">Healthy</span>
+                            </div>
+                          </div>
+
+                          <div className="p-2 bg-emerald-50 dark:bg-emerald-950/40 rounded-xl border border-emerald-200/80 dark:border-emerald-800/50 text-[10.5px] text-emerald-900 dark:text-emerald-300 font-medium leading-relaxed">
+                            🌿 <strong>Vitality Shield:</strong> {selectedRecipe.healthBenefits}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* BENTO POD 3: 🥑 AVO'S CLINICAL SECRET */}
+                    <div className="rounded-2xl border border-slate-200 dark:border-zinc-800 bg-slate-50/70 dark:bg-zinc-900/60 overflow-hidden transition-all shadow-xs">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          try { soundEffects.playBubblePop(); } catch {}
+                          try { triggerHaptic("light"); } catch {}
+                          setActiveBentoSection(activeBentoSection === "wisdom" ? null : "wisdom");
+                        }}
+                        className="w-full p-3 flex items-center justify-between text-left cursor-pointer hover:bg-slate-100/70 dark:hover:bg-zinc-800/50 transition-colors"
+                      >
+                        <div className="flex items-center gap-2">
+                          <Mascot gesture="thumbsup" size={24} className="shrink-0" />
+                          <div>
+                            <span className="text-xs font-black text-[#126778] dark:text-teal-300 block">
+                              Avo's Bio-Synergy Secret
+                            </span>
+                            <span className="text-[10px] text-slate-500 block truncate max-w-[200px]">
+                              {selectedRecipe.clinicalNote}
+                            </span>
+                          </div>
+                        </div>
+                        <span className="text-slate-400 font-bold text-xs">
+                          {activeBentoSection === "wisdom" ? "▲" : "▼"}
+                        </span>
+                      </button>
+
+                      {/* Exploded Speech Bubble */}
+                      {activeBentoSection === "wisdom" && (
+                        <div className="p-3 pt-0 border-t border-slate-200/60 dark:border-zinc-800 animate-fade-in">
+                          <div className="p-3 bg-teal-50/80 dark:bg-teal-950/40 rounded-xl border border-teal-200/70 dark:border-teal-800/50 text-xs text-slate-700 dark:text-slate-300 leading-relaxed font-medium mt-2">
+                            "{selectedRecipe.clinicalNote}"
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </div>
                 )}
 
                 {/* -------------------------------------------------- */}
                 {/* VIEW B: INTERACTIVE STEP-BY-STEP COOKING MODE      */}
                 {/* -------------------------------------------------- */}
                 {isCookingMode && (
-                  <div className="space-y-4">
+                  <div className="space-y-3 animate-fade-in">
                     {/* Live Cooking Timer Pill */}
                     {timerSeconds > 0 && (
-                      <div className="p-3 bg-orange-50 border border-orange-200 rounded-2xl flex items-center justify-between gap-3 text-orange-950 shadow-2xs">
+                      <div className="p-3 bg-orange-50 dark:bg-orange-950/50 border border-orange-200 dark:border-orange-800 rounded-2xl flex items-center justify-between gap-3 text-orange-950 dark:text-orange-200 shadow-2xs">
                         <div className="flex items-center gap-2 font-mono text-base font-black">
                           <Clock className="h-4 w-4 text-orange-600 animate-spin" />
                           <span>
@@ -2803,7 +2894,7 @@ export default function Recipe() {
                               setTimerRunning(false);
                               setTimerSeconds(0);
                             }}
-                            className="p-1 text-gray-500 hover:text-gray-900 cursor-pointer"
+                            className="p-1 text-slate-500 hover:text-slate-900 cursor-pointer"
                           >
                             <RotateCcw size={14} />
                           </button>
@@ -2812,7 +2903,7 @@ export default function Recipe() {
                     )}
 
                     {/* Step Card Navigation */}
-                    <div className="flex items-center justify-between text-xs font-bold text-gray-500">
+                    <div className="flex items-center justify-between text-xs font-bold text-slate-500">
                       <span>Step {currentStepIdx + 1} of {selectedRecipe.steps.length}</span>
                       <div className="flex items-center gap-1">
                         {selectedRecipe.steps.map((_, i) => (
@@ -2823,7 +2914,7 @@ export default function Recipe() {
                                 ? "w-6 bg-[#1f7a8c]"
                                 : i < currentStepIdx
                                 ? "w-2 bg-teal-400"
-                                : "w-2 bg-slate-200"
+                                : "w-2 bg-slate-200 dark:bg-zinc-700"
                             }`}
                           />
                         ))}
@@ -2831,9 +2922,9 @@ export default function Recipe() {
                     </div>
 
                     {/* Active Step Hero Card */}
-                    <div className="p-4 bg-gradient-to-br from-teal-50/60 to-emerald-50/50 rounded-2xl border border-teal-200 space-y-3">
+                    <div className="p-4 bg-gradient-to-br from-teal-50/80 to-emerald-50/60 dark:from-zinc-800 dark:to-zinc-850 rounded-2xl border border-teal-200 dark:border-zinc-700 space-y-3">
                       <div className="flex items-center justify-between">
-                        <span className="text-[10px] font-black uppercase tracking-wider text-teal-800 bg-teal-100 px-2 py-0.5 rounded-md">
+                        <span className="text-[10px] font-black uppercase tracking-wider text-teal-800 dark:text-teal-300 bg-teal-100 dark:bg-teal-950 px-2 py-0.5 rounded-md">
                           Flame: {selectedRecipe.steps[currentStepIdx].flameLevel || "Medium"}
                         </span>
                         {selectedRecipe.steps[currentStepIdx].timerMinutes && (
@@ -2849,13 +2940,13 @@ export default function Recipe() {
                         )}
                       </div>
 
-                      <p className="text-sm font-semibold text-gray-900 leading-relaxed">
+                      <p className="text-xs sm:text-sm font-semibold text-slate-900 dark:text-white leading-relaxed">
                         {selectedRecipe.steps[currentStepIdx].instruction}
                       </p>
 
                       {selectedRecipe.steps[currentStepIdx].avoTip && (
-                        <div className="p-3 bg-white rounded-xl border border-teal-100 text-[11px] text-teal-900 flex items-start gap-2 shadow-2xs">
-                          <Mascot gesture="wave" size={32} className="shrink-0" />
+                        <div className="p-2.5 bg-white dark:bg-zinc-900 rounded-xl border border-teal-100 dark:border-zinc-700 text-[11px] text-teal-950 dark:text-teal-200 flex items-start gap-2 shadow-2xs">
+                          <Mascot gesture="wave" size={28} className="shrink-0" />
                           <span className="leading-snug">
                             <strong>Avo's Chef Tip:</strong> {selectedRecipe.steps[currentStepIdx].avoTip}
                           </span>
@@ -2868,15 +2959,15 @@ export default function Recipe() {
                       <button
                         disabled={currentStepIdx === 0}
                         onClick={() => setCurrentStepIdx((prev) => Math.max(0, prev - 1))}
-                        className="px-4 py-2 bg-slate-100 hover:bg-slate-200 disabled:opacity-40 text-gray-700 font-bold rounded-xl text-xs cursor-pointer"
+                        className="px-3 py-2 bg-slate-100 hover:bg-slate-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 disabled:opacity-40 text-slate-700 dark:text-slate-300 font-bold rounded-xl text-xs cursor-pointer"
                       >
-                        Previous Step
+                        Previous
                       </button>
                       <button
                         onClick={() => {
                           if (currentStepIdx < selectedRecipe.steps.length - 1) {
                             setCurrentStepIdx((prev) => prev + 1);
-                            triggerHaptic("light");
+                            try { triggerHaptic("light"); } catch {}
                           } else {
                             toast.success("Cooking Complete! Ready to enjoy and log 🎉");
                             handleLogToDiary(selectedRecipe);
@@ -2896,8 +2987,8 @@ export default function Recipe() {
                 )}
               </div>
 
-              {/* Sticky In-Frame Action Footer */}
-              <div className="pt-3 border-t border-gray-100 flex gap-2 mt-auto shrink-0">
+              {/* Sticky Action Footer */}
+              <div className="pt-2.5 border-t border-slate-100 dark:border-zinc-800 flex gap-2 mt-auto shrink-0">
                 <button
                   onClick={() => handleLogToDiary(selectedRecipe)}
                   className="flex-1 bg-gradient-to-r from-emerald-600 to-teal-600 hover:opacity-95 text-white font-black text-xs py-2.5 rounded-xl shadow-md cursor-pointer flex items-center justify-center gap-1.5 active:scale-95 transition-all"
@@ -2908,7 +2999,7 @@ export default function Recipe() {
 
                 <button
                   onClick={() => setSelectedRecipe(null)}
-                  className="px-4 py-2.5 border border-slate-200 rounded-xl text-xs font-bold text-gray-700 hover:bg-slate-50 cursor-pointer"
+                  className="px-4 py-2.5 border border-slate-200 dark:border-zinc-700 rounded-xl text-xs font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-zinc-800 cursor-pointer"
                 >
                   Close
                 </button>
