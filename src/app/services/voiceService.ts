@@ -1,10 +1,11 @@
 // Voice Synthesis Service for Sarah, The Nutrition Assistant
-// Ultra-Natural Conversational Voice Engine with Multilingual Fallbacks & Mobile Optimization
+// Ultra-Natural Conversational Voice Engine with STRICT Female Voice Enforcement
 
 const DEFAULT_ELEVENLABS_VOICE_ID = "YIgPmt6aTfZFf6mjP9RC";
 const audioCache = new Map<string, string>();
 let currentAudio: HTMLAudioElement | null = null;
 let isCancelled = false;
+let currentSessionId = 0;
 let keepAliveTimer: any = null;
 
 export interface SpeakOptions {
@@ -37,11 +38,33 @@ if (typeof window !== "undefined" && "speechSynthesis" in window) {
   };
 }
 
+// Known male voice keywords across Windows, macOS, iOS, Android, and Chromium
+const MALE_VOICE_KEYWORDS = [
+  "david", "george", "richard", "mark", "thomas", "paul", "james", "john",
+  "male", "guy", "daniel", "stefan", "bernard", "alain", "claude", "henri",
+  "jean", "pierre", "louis", "michel", "arthur", "oliver", "alex", "fred",
+  "ralph", "albert", "bruce", "junior", "derrick", "gordon", "adam", "antony",
+  "harry", "charles", "edward", "brian", "frank", "sam", "matt", "peter", "tom",
+  "microsoft david", "google us english male", "google uk english male",
+  "fr-fr-thomas", "fr-fr-paul", "fr-fr-alain"
+];
+
+/**
+ * Ensures Sarah NEVER speaks with a male voice under any circumstances.
+ */
+export function isStrictlyFemale(v: SpeechSynthesisVoice): boolean {
+  if (!v || !v.name) return false;
+  const name = v.name.toLowerCase();
+  if (MALE_VOICE_KEYWORDS.some((kw) => name.includes(kw))) {
+    return false;
+  }
+  return true;
+}
+
 /**
  * Phonetic & Conversational Normalizer
- * Cleans emojis and expands clinical acronyms.
- * For African languages (Yoruba, Igbo, Hausa, Pidgin), strips complex diacritics
- * into clean phonetic Latin so standard mobile synthesizers pronounce words fluidly.
+ * Cleans emojis, expands clinical acronyms, and normalizes African diacritics
+ * into clean phonetic Latin so female synthesizers pronounce words smoothly.
  */
 export function sanitizeTextForSpeech(rawText: string, lang: string = "en"): string {
   if (!rawText) return "";
@@ -75,12 +98,12 @@ export function sanitizeTextForSpeech(rawText: string, lang: string = "en"): str
     .replace(/\b3\)\s*/g, " Third, ")
     .replace(/\b4\)\s*/g, " Fourth, ");
 
-  // 5. Phonetic normalization for African languages if using English/African synthesized engines
+  // 5. Phonetic normalization for African languages (Yoruba, Igbo, Hausa, Pidgin)
   const l = (lang || "en").toLowerCase();
   if (l === "yo" || l === "ig" || l === "ha" || l === "pcm") {
     text = text
       .normalize("NFD")
-      .replace(/[\u0300-\u036f]/g, "") // Strip tone accents
+      .replace(/[\u0300-\u036f]/g, "") // Strip combining tone accents
       .replace(/[ẹẸ]/g, "e")
       .replace(/[ọỌ]/g, "o")
       .replace(/[ṣṢ]/g, "s")
@@ -97,7 +120,7 @@ export function sanitizeTextForSpeech(rawText: string, lang: string = "en"): str
 }
 
 /**
- * Finds the best available natural/neural voice on the device matching the target language.
+ * Finds the highest quality strictly female voice available on the device.
  */
 export function getBestNaturalVoice(targetLang: string = "en"): SpeechSynthesisVoice | null {
   if (typeof window === "undefined" || !("speechSynthesis" in window)) return null;
@@ -105,117 +128,142 @@ export function getBestNaturalVoice(targetLang: string = "en"): SpeechSynthesisV
   let voices = cachedVoices.length > 0 ? cachedVoices : updateVoiceCache();
   if (!voices || voices.length === 0) return null;
 
+  // Filter out all male voices first
+  const femaleVoices = voices.filter(isStrictlyFemale);
+  const pool = femaleVoices.length > 0 ? femaleVoices : voices;
+
   const l = (targetLang || "en").toLowerCase();
 
-  // 1. French Voice
+  // 1. French Female Voice Selection
   if (l === "fr" || l.startsWith("fr")) {
-    const frenchFemale = voices.find(
+    const frenchFemale = pool.find(
       (v) =>
         v.lang.toLowerCase().startsWith("fr") &&
-        (v.name.toLowerCase().includes("natural") ||
-          v.name.toLowerCase().includes("celine") ||
+        (v.name.toLowerCase().includes("celine") ||
           v.name.toLowerCase().includes("hortense") ||
-          v.name.toLowerCase().includes("thomas") ||
+          v.name.toLowerCase().includes("julie") ||
+          v.name.toLowerCase().includes("amelie") ||
+          v.name.toLowerCase().includes("denise") ||
+          v.name.toLowerCase().includes("marine") ||
+          v.name.toLowerCase().includes("marie") ||
+          v.name.toLowerCase().includes("lucie") ||
+          v.name.toLowerCase().includes("claire") ||
+          v.name.toLowerCase().includes("audrey") ||
+          v.name.toLowerCase().includes("virginie") ||
           v.name.toLowerCase().includes("google français") ||
           v.name.toLowerCase().includes("female") ||
-          v.name.toLowerCase().includes("julie") ||
-          v.name.toLowerCase().includes("amelie"))
+          v.name.toLowerCase().includes("natural"))
     );
     if (frenchFemale) return frenchFemale;
 
-    const anyFrench = voices.find((v) => v.lang.toLowerCase().startsWith("fr"));
-    if (anyFrench) return anyFrench;
+    const anyFrenchFemale = pool.find((v) => v.lang.toLowerCase().startsWith("fr"));
+    if (anyFrenchFemale) return anyFrenchFemale;
   }
 
-  // 2. Nigerian Pidgin / African Regional Voices
+  // 2. Nigerian Pidgin / African Regional Female Voice Selection
   if (l === "pcm" || l === "en-ng" || l.includes("ng")) {
-    const nigerianVoice = voices.find(
+    const ngFemale = pool.find(
       (v) =>
-        v.lang.toLowerCase().includes("en-ng") ||
-        v.name.toLowerCase().includes("nigeria") ||
-        v.name.toLowerCase().includes("en-ng")
+        (v.lang.toLowerCase().includes("en-ng") || v.name.toLowerCase().includes("nigeria")) &&
+        isStrictlyFemale(v)
     );
-    if (nigerianVoice) return nigerianVoice;
+    if (ngFemale) return ngFemale;
 
-    const africanVoice = voices.find(
-      (v) => v.lang.toLowerCase().includes("en-za") || v.lang.toLowerCase().includes("en-gh")
+    const africanFemale = pool.find(
+      (v) => (v.lang.toLowerCase().includes("en-za") || v.lang.toLowerCase().includes("en-gh")) && isStrictlyFemale(v)
     );
-    if (africanVoice) return africanVoice;
+    if (africanFemale) return africanFemale;
   }
 
-  // 3. Yoruba / Igbo / Hausa Voice
+  // 3. Yoruba / Igbo / Hausa Female Voice Selection
   if (l === "yo" || l.startsWith("yo")) {
-    const yoVoice = voices.find((v) => v.lang.toLowerCase().startsWith("yo"));
-    if (yoVoice) return yoVoice;
-    const ngVoice = voices.find(
-      (v) => v.lang.toLowerCase().includes("en-ng") || v.name.toLowerCase().includes("nigeria")
-    );
-    if (ngVoice) return ngVoice;
+    const yoFemale = pool.find((v) => v.lang.toLowerCase().startsWith("yo") && isStrictlyFemale(v));
+    if (yoFemale) return yoFemale;
+    const ngFemale = pool.find((v) => (v.lang.toLowerCase().includes("en-ng") || v.name.toLowerCase().includes("nigeria")) && isStrictlyFemale(v));
+    if (ngFemale) return ngFemale;
   }
 
   if (l === "ig" || l.startsWith("ig")) {
-    const igVoice = voices.find((v) => v.lang.toLowerCase().startsWith("ig"));
-    if (igVoice) return igVoice;
-    const ngVoice = voices.find(
-      (v) => v.lang.toLowerCase().includes("en-ng") || v.name.toLowerCase().includes("nigeria")
-    );
-    if (ngVoice) return ngVoice;
+    const igFemale = pool.find((v) => v.lang.toLowerCase().startsWith("ig") && isStrictlyFemale(v));
+    if (igFemale) return igFemale;
+    const ngFemale = pool.find((v) => (v.lang.toLowerCase().includes("en-ng") || v.name.toLowerCase().includes("nigeria")) && isStrictlyFemale(v));
+    if (ngFemale) return ngFemale;
   }
 
   if (l === "ha" || l.startsWith("ha")) {
-    const haVoice = voices.find((v) => v.lang.toLowerCase().startsWith("ha"));
-    if (haVoice) return haVoice;
-    const ngVoice = voices.find(
-      (v) => v.lang.toLowerCase().includes("en-ng") || v.name.toLowerCase().includes("nigeria")
-    );
-    if (ngVoice) return ngVoice;
+    const haFemale = pool.find((v) => v.lang.toLowerCase().startsWith("ha") && isStrictlyFemale(v));
+    if (haFemale) return haFemale;
+    const ngFemale = pool.find((v) => (v.lang.toLowerCase().includes("en-ng") || v.name.toLowerCase().includes("nigeria")) && isStrictlyFemale(v));
+    if (ngFemale) return ngFemale;
   }
 
-  // 4. Premium Natural / Neural English Voices
-  const highPriorityNames = [
+  // 4. Premium Female English Voices (Top Priority across all OS platforms)
+  const priorityFemaleNames = [
+    // iOS / Mac Safari Enhanced Voices
     "Samantha (Enhanced)",
     "Ava (Premium)",
     "Serena (Enhanced)",
     "Karen (Enhanced)",
     "Moira (Enhanced)",
     "Tessa (Enhanced)",
-    "Google UK English Female",
-    "Google US English",
+    "Victoria",
+    "Fiona",
+    // Windows Desktop & Edge Natural Female Voices
+    "Microsoft Jenny Online (Natural)",
     "Microsoft Libby Online (Natural)",
     "Microsoft Sonia Online (Natural)",
-    "Microsoft Jenny Online (Natural)",
+    "Microsoft Aria Online (Natural)",
+    "Microsoft Zira Desktop",
+    "Microsoft Zira",
+    "Zira",
+    // Google Chrome Neural Female Voices
+    "Google UK English Female",
+    "Google US English Female",
+    "Google US English",
     "en-GB-Neural2-F",
     "en-US-Neural2-F",
+    "en-US-Wavenet-F",
+    "en-US-Standard-F",
   ];
 
-  for (const name of highPriorityNames) {
-    const match = voices.find((v) => v.name.toLowerCase().includes(name.toLowerCase()));
+  for (const name of priorityFemaleNames) {
+    const match = pool.find((v) => v.name.toLowerCase().includes(name.toLowerCase()) && isStrictlyFemale(v));
     if (match) return match;
   }
 
-  // 5. Natural Female English
-  const naturalFemale = voices.find(
+  // 5. Any Verified Female English Voice
+  const femaleEnglish = pool.find(
     (v) =>
       v.lang.toLowerCase().startsWith("en") &&
-      (v.name.toLowerCase().includes("natural") ||
-        v.name.toLowerCase().includes("female") ||
+      isStrictlyFemale(v) &&
+      (v.name.toLowerCase().includes("female") ||
+        v.name.toLowerCase().includes("woman") ||
         v.name.toLowerCase().includes("samantha") ||
+        v.name.toLowerCase().includes("zira") ||
         v.name.toLowerCase().includes("karen") ||
         v.name.toLowerCase().includes("siri") ||
-        v.name.toLowerCase().includes("tessa"))
+        v.name.toLowerCase().includes("tessa") ||
+        v.name.toLowerCase().includes("kendra") ||
+        v.name.toLowerCase().includes("joanna") ||
+        v.name.toLowerCase().includes("salli") ||
+        v.name.toLowerCase().includes("ivy") ||
+        v.name.toLowerCase().includes("kimberly") ||
+        v.name.toLowerCase().includes("amy") ||
+        v.name.toLowerCase().includes("emma"))
   );
-  if (naturalFemale) return naturalFemale;
+  if (femaleEnglish) return femaleEnglish;
 
-  const englishVoice = voices.find(
-    (v) => v.lang.toLowerCase().startsWith("en-gb") || v.lang.toLowerCase().startsWith("en-us") || v.lang.toLowerCase().startsWith("en")
-  );
-  if (englishVoice) return englishVoice;
+  // 6. Any Strictly Female Voice from Pool
+  const anyFemale = pool.find((v) => isStrictlyFemale(v) && v.lang.toLowerCase().startsWith("en"));
+  if (anyFemale) return anyFemale;
+
+  if (femaleVoices.length > 0) return femaleVoices[0];
 
   return voices[0] || null;
 }
 
 /**
- * Speaks text naturally using ElevenLabs or high-quality Web Speech API
+ * Speaks text naturally using ElevenLabs or strictly female Web Speech API
  */
 export async function speakWithSarah(
   rawText: string,
@@ -293,7 +341,7 @@ export async function speakWithSarah(
 }
 
 /**
- * Continuous Web Speech Synthesis with natural human conversational pacing.
+ * Continuous Web Speech Synthesis with strict female voice locking and session synchronization.
  * Chunks long paragraphs into natural sentences to avoid mobile 15-second cutoff and robotic cadence.
  */
 function speakNaturalWebSpeech(text: string, options: SpeakOptions = {}) {
@@ -301,6 +349,10 @@ function speakNaturalWebSpeech(text: string, options: SpeakOptions = {}) {
     options.onEnd?.();
     return;
   }
+
+  // Lock this new speech session to prevent old sessions or parallel loops from talking over
+  currentSessionId++;
+  const thisSessionId = currentSessionId;
 
   window.speechSynthesis.cancel();
   if (keepAliveTimer) {
@@ -320,7 +372,8 @@ function speakNaturalWebSpeech(text: string, options: SpeakOptions = {}) {
   }
 
   const targetLang = options.lang || "en";
-  const voice = getBestNaturalVoice(targetLang);
+  // Lock the female voice for ALL sentences in this stream
+  const lockedFemaleVoice = getBestNaturalVoice(targetLang);
 
   // Chrome/Mobile keepalive to prevent audio freeze
   keepAliveTimer = setInterval(() => {
@@ -334,37 +387,42 @@ function speakNaturalWebSpeech(text: string, options: SpeakOptions = {}) {
   let currentIndex = 0;
   options.onStart?.();
 
-  const speakNextSentence = (retryWithoutVoice = false) => {
-    if (isCancelled || currentIndex >= sentences.length) {
-      if (keepAliveTimer) {
-        clearInterval(keepAliveTimer);
-        keepAliveTimer = null;
+  const speakNextSentence = () => {
+    // If user cancelled, or a newer session started, terminate immediately!
+    if (isCancelled || thisSessionId !== currentSessionId || currentIndex >= sentences.length) {
+      if (thisSessionId === currentSessionId) {
+        if (keepAliveTimer) {
+          clearInterval(keepAliveTimer);
+          keepAliveTimer = null;
+        }
+        options.onEnd?.();
       }
-      options.onEnd?.();
       return;
     }
 
     const sentence = sentences[currentIndex];
     const utterance = new SpeechSynthesisUtterance(sentence);
     utterance.rate = options.rate || 0.94; // Warm, relaxed human conversational pace
-    utterance.pitch = options.pitch || 1.02; // Warm friendly clinical tone
+    utterance.pitch = options.pitch || 1.06; // Warm, pleasant female clinical pitch
     utterance.volume = 1.0;
 
-    if (voice && !retryWithoutVoice) {
-      utterance.voice = voice;
-      utterance.lang = voice.lang || "en-US";
+    // STRICT: Always assign the locked female voice!
+    if (lockedFemaleVoice) {
+      utterance.voice = lockedFemaleVoice;
+      utterance.lang = lockedFemaleVoice.lang || (targetLang === "fr" ? "fr-FR" : "en-US");
     } else {
       utterance.lang = targetLang === "fr" ? "fr-FR" : "en-US";
     }
 
     utterance.onend = () => {
+      if (thisSessionId !== currentSessionId || isCancelled) return;
       currentIndex++;
       if (currentIndex < sentences.length) {
         setTimeout(() => {
-          if (!isCancelled) {
+          if (!isCancelled && thisSessionId === currentSessionId) {
             speakNextSentence();
           }
-        }, 70);
+        }, 65);
       } else {
         if (keepAliveTimer) {
           clearInterval(keepAliveTimer);
@@ -376,13 +434,10 @@ function speakNaturalWebSpeech(text: string, options: SpeakOptions = {}) {
 
     utterance.onerror = (e) => {
       console.warn("Speech synthesis chunk warning:", e);
-      if (!retryWithoutVoice) {
-        // Retry current sentence with standard fallback
-        speakNextSentence(true);
-        return;
-      }
+      if (thisSessionId !== currentSessionId || isCancelled) return;
+      // Skip failed chunk and advance with the SAME female voice
       currentIndex++;
-      if (currentIndex < sentences.length && !isCancelled) {
+      if (currentIndex < sentences.length) {
         speakNextSentence();
       } else {
         if (keepAliveTimer) {
@@ -406,6 +461,7 @@ function speakNaturalWebSpeech(text: string, options: SpeakOptions = {}) {
 
 export function stopSarahSpeech() {
   isCancelled = true;
+  currentSessionId++; // Invalidate active session immediately
   if (keepAliveTimer) {
     clearInterval(keepAliveTimer);
     keepAliveTimer = null;

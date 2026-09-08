@@ -374,9 +374,9 @@ export default function VoiceFoodLogger({ isOpen, onClose, onMealSaved }: VoiceF
       triggerConfetti("burst");
       toast.success(`${parsedMeal.foodName} Logged! 🎉`);
 
-      // Avo farewell audio
+      // Sarah farewell audio
       if (!voiceMuted && typeof window !== "undefined" && window.speechSynthesis) {
-        speakAvoResponse(`Logged! Keep up the healthy habits, ${userName}!`);
+        speakSarahResponse(`Logged! Keep up the healthy habits, ${userName}!`);
       }
 
       if (onMealSaved) onMealSaved(newMeal);
