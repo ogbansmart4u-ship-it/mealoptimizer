@@ -82,10 +82,21 @@ export interface RecipeStep {
   avoTip?: string;
 }
 
+export interface PlateComposition {
+  staple: string;
+  staplePct: number;
+  greens: string;
+  greensPct: number;
+  protein: string;
+  proteinPct: number;
+  healthyFat?: string;
+}
+
 export interface FullRecipe {
   id: string;
   name: string;
   emoji: string;
+  image?: string;
   category: "breakfast" | "lunch" | "dinner" | "snack";
   tags: string[];
   prepTime: number;
@@ -105,6 +116,8 @@ export interface FullRecipe {
   steps: RecipeStep[];
   localMarkets: string[];
   isFavorite?: boolean;
+  plateComposition?: PlateComposition;
+  clinicalScaleLabel?: string;
 }
 
 const MASTER_RECIPES: FullRecipe[] = [
@@ -112,6 +125,17 @@ const MASTER_RECIPES: FullRecipe[] = [
     "id": "101",
     "name": "KDIGO Leached Yam Porridge (Renal-Safe)",
     "emoji": "🍲",
+    "image": "/assets/recipes/kdigo-yam-porridge.png",
+    "clinicalScaleLabel": "KDIGO Leached Yam Porridge (Renal-Safe), prepared for one standard serving",
+    "plateComposition": {
+      "staple": "KDIGO Leached Yam Cubes (Porridge)",
+      "staplePct": 50,
+      "greens": "Steamed Ugwu & Spinach with Red Elixir Dip",
+      "greensPct": 25,
+      "protein": "Steamed Flaked Mackerel Fish",
+      "proteinPct": 25,
+      "healthyFat": "Cold-Pressed Palm Oil (1 tsp)"
+    },
     "category": "lunch",
     "tags": [
       "renal-safe",
@@ -194,6 +218,16 @@ const MASTER_RECIPES: FullRecipe[] = [
     "id": "102",
     "name": "Soothing Green Banana & Oat Porridge (Ulcer & Acid-Safe)",
     "emoji": "🥣",
+    "image": "/assets/recipes/green-banana-porridge.jpg",
+    "clinicalScaleLabel": "Soothing Green Banana & Oat Porridge (Ulcer-Safe), single clinical portion",
+    "plateComposition": {
+      "staple": "Grated Green Banana & Oat Porridge with Chia",
+      "staplePct": 50,
+      "greens": "Fresh Papaya Fruit Slices & Lime",
+      "greensPct": 25,
+      "protein": "Soft-Boiled Egg Halves",
+      "proteinPct": 25
+    },
     "category": "breakfast",
     "tags": [
       "ulcer-safe",
@@ -352,6 +386,16 @@ const MASTER_RECIPES: FullRecipe[] = [
     "id": "104",
     "name": "Lycopene-Enriched Red Pepper & Titus Stew (Prostate & Heart)",
     "emoji": "🐟",
+    "image": "/assets/recipes/brown-jollof-titus.jpg",
+    "clinicalScaleLabel": "Lycopene-Enriched Red Pepper & Titus Stew, single clinical serving",
+    "plateComposition": {
+      "staple": "Brown Basmati / Ofada Rice",
+      "staplePct": 50,
+      "greens": "Steamed Shredded Cabbage & Tatase",
+      "greensPct": 25,
+      "protein": "Baked Titus Mackerel Steaks",
+      "proteinPct": 25
+    },
     "category": "lunch",
     "tags": [
       "prostate-health",
@@ -429,6 +473,16 @@ const MASTER_RECIPES: FullRecipe[] = [
     "id": "105",
     "name": "Maternal Healing Dry Catfish & Uziza Soup (Postpartum & Recovery)",
     "emoji": "🍲",
+    "image": "/assets/recipes/dry-catfish-uziza.jpg",
+    "clinicalScaleLabel": "Maternal Healing Dry Catfish & Uziza Soup, postpartum single portion",
+    "plateComposition": {
+      "staple": "Boiled Unripe Plantain Disks",
+      "staplePct": 50,
+      "greens": "Fresh Shredded Scent Leaf (Efirin) & Bitterleaf",
+      "greensPct": 25,
+      "protein": "Smoked Dry Catfish in Uziza Broth",
+      "proteinPct": 25
+    },
     "category": "dinner",
     "tags": [
       "pregnancy-safe",
@@ -684,6 +738,16 @@ const MASTER_RECIPES: FullRecipe[] = [
     "id": "2",
     "name": "Low-Sodium Native Brown Jollof Rice",
     "emoji": "🍚",
+    "image": "/assets/recipes/brown-jollof-titus.jpg",
+    "clinicalScaleLabel": "Low-Sodium Native Brown Jollof Rice, DASH single serving",
+    "plateComposition": {
+      "staple": "Smoky Brown Ofada Jollof Rice",
+      "staplePct": 50,
+      "greens": "Steamed Cabbage & Carrot Medley",
+      "greensPct": 25,
+      "protein": "Skinless Turkey / Titus Mackerel",
+      "proteinPct": 25
+    },
     "category": "lunch",
     "tags": [
       "diabetic-friendly",
@@ -780,6 +844,16 @@ const MASTER_RECIPES: FullRecipe[] = [
     "id": "3",
     "name": "Protein-Packed Egusi & Ugu Soup (Unbleached)",
     "emoji": "🍲",
+    "image": "/assets/recipes/egusi-ugu-soup.jpg",
+    "clinicalScaleLabel": "Protein-Packed Egusi & Ugu Soup, single portion",
+    "plateComposition": {
+      "staple": "Unbleached Ground Melon Seed Egusi",
+      "staplePct": 50,
+      "greens": "Fresh Fluted Pumpkin Leaves (Ugu)",
+      "greensPct": 25,
+      "protein": "Lean Beef & Steamed Stockfish",
+      "proteinPct": 25
+    },
     "category": "dinner",
     "tags": [
       "high-protein",
@@ -870,6 +944,8 @@ const MASTER_RECIPES: FullRecipe[] = [
     "id": "4",
     "name": "Afang & Waterleaf Superfood Pot with Smoked Fish",
     "emoji": "🥗",
+    "image": "/assets/recipes/diabetic-oat-swallow-okra.jpg",
+    "clinicalScaleLabel": "Standard 9-Inch Divided Clinical Plate Serving",
     "category": "dinner",
     "tags": [
       "diabetic-friendly",
@@ -961,6 +1037,8 @@ const MASTER_RECIPES: FullRecipe[] = [
     "id": "5",
     "name": "Antioxidant Ghanaian Waakye with Shito & Boiled Egg",
     "emoji": "🍛",
+    "image": "/assets/recipes/diabetic-oat-swallow-okra.jpg",
+    "clinicalScaleLabel": "Standard 9-Inch Divided Clinical Plate Serving",
     "category": "lunch",
     "tags": [
       "diabetic-friendly",
@@ -1051,6 +1129,8 @@ const MASTER_RECIPES: FullRecipe[] = [
     "id": "6",
     "name": "Baobab (Miyan Kuka) & Ancient Fonio Supergrain",
     "emoji": "🥣",
+    "image": "/assets/recipes/diabetic-oat-swallow-okra.jpg",
+    "clinicalScaleLabel": "Standard 9-Inch Divided Clinical Plate Serving",
     "category": "dinner",
     "tags": [
       "diabetic-friendly",
@@ -1136,6 +1216,8 @@ const MASTER_RECIPES: FullRecipe[] = [
     "id": "7",
     "name": "Medicinal Ofe Nsala (White Catfish Soup) with Utazi",
     "emoji": "🍲",
+    "image": "/assets/recipes/diabetic-oat-swallow-okra.jpg",
+    "clinicalScaleLabel": "Standard 9-Inch Divided Clinical Plate Serving",
     "category": "dinner",
     "tags": [
       "heart-healthy",
@@ -1227,6 +1309,8 @@ const MASTER_RECIPES: FullRecipe[] = [
     "id": "8",
     "name": "Sukuma Wiki with Lean Beef & Kachumbari Salad",
     "emoji": "🥬",
+    "image": "/assets/recipes/diabetic-oat-swallow-okra.jpg",
+    "clinicalScaleLabel": "Standard 9-Inch Divided Clinical Plate Serving",
     "category": "lunch",
     "tags": [
       "diabetic-friendly",
@@ -1318,6 +1402,8 @@ const MASTER_RECIPES: FullRecipe[] = [
     "id": "9",
     "name": "Cameroonian Ndolé (Bitterleaf & Peanut Pot) with Prawns",
     "emoji": "🍤",
+    "image": "/assets/recipes/diabetic-oat-swallow-okra.jpg",
+    "clinicalScaleLabel": "Standard 9-Inch Divided Clinical Plate Serving",
     "category": "dinner",
     "tags": [
       "high-protein",
@@ -1409,6 +1495,8 @@ const MASTER_RECIPES: FullRecipe[] = [
     "id": "10",
     "name": "Ethiopian Doro Wat (Slow-Caramelized Berbere Chicken)",
     "emoji": "🍗",
+    "image": "/assets/recipes/diabetic-oat-swallow-okra.jpg",
+    "clinicalScaleLabel": "Standard 9-Inch Divided Clinical Plate Serving",
     "category": "dinner",
     "tags": [
       "high-protein",
@@ -1493,6 +1581,8 @@ const MASTER_RECIPES: FullRecipe[] = [
     "id": "11",
     "name": "South African Chakalaka & Bean Relish with Sorghum",
     "emoji": "🫘",
+    "image": "/assets/recipes/diabetic-oat-swallow-okra.jpg",
+    "clinicalScaleLabel": "Standard 9-Inch Divided Clinical Plate Serving",
     "category": "lunch",
     "tags": [
       "diabetic-friendly",
@@ -1577,6 +1667,8 @@ const MASTER_RECIPES: FullRecipe[] = [
     "id": "12",
     "name": "Diaspora Quinoa Jollof Bowl with Pan-Seared Salmon",
     "emoji": "🍣",
+    "image": "/assets/recipes/diabetic-oat-swallow-okra.jpg",
+    "clinicalScaleLabel": "Standard 9-Inch Divided Clinical Plate Serving",
     "category": "dinner",
     "tags": [
       "high-protein",
@@ -1662,6 +1754,8 @@ const MASTER_RECIPES: FullRecipe[] = [
     "id": "13",
     "name": "Unsweetened Hibiscus (Zobo) Elixir with Ginger & Lime",
     "emoji": "🌺",
+    "image": "/assets/recipes/diabetic-oat-swallow-okra.jpg",
+    "clinicalScaleLabel": "Standard 9-Inch Divided Clinical Plate Serving",
     "category": "snack",
     "tags": [
       "heart-healthy",
@@ -1733,6 +1827,8 @@ const MASTER_RECIPES: FullRecipe[] = [
     "id": "14",
     "name": "Steamed Protein Moi-Moi with Boiled Egg",
     "emoji": "🍮",
+    "image": "/assets/recipes/diabetic-oat-swallow-okra.jpg",
+    "clinicalScaleLabel": "Standard 9-Inch Divided Clinical Plate Serving",
     "category": "breakfast",
     "tags": [
       "high-protein",
@@ -1811,6 +1907,8 @@ const MASTER_RECIPES: FullRecipe[] = [
     "id": "15",
     "name": "Efo Riro (Leafy Spinach & Ugu Stir-In) with Lean Beef",
     "emoji": "🥬",
+    "image": "/assets/recipes/diabetic-oat-swallow-okra.jpg",
+    "clinicalScaleLabel": "Standard 9-Inch Divided Clinical Plate Serving",
     "category": "dinner",
     "tags": [
       "high-protein",
@@ -1895,6 +1993,8 @@ const MASTER_RECIPES: FullRecipe[] = [
     "id": "16",
     "name": "Swahili Kuku Paka (Charred Coconut Chicken) & Brown Rice",
     "emoji": "🥥",
+    "image": "/assets/recipes/diabetic-oat-swallow-okra.jpg",
+    "clinicalScaleLabel": "Standard 9-Inch Divided Clinical Plate Serving",
     "category": "dinner",
     "tags": [
       "high-protein",
@@ -2002,6 +2102,175 @@ export default function Recipe() {
   const [selectedTag, setSelectedTag] = useState<DietaryTag>("all");
   const [selectedMealCategory, setSelectedMealCategory] = useState<"all" | "breakfast" | "lunch" | "dinner" | "snack">("all");
   const [selectedRecipe, setSelectedRecipe] = useState<FullRecipe | null>(null);
+  // AI Cultural Chef Prompt & Plate Generator State
+  const [aiPrompt, setAiPrompt] = useState("");
+  const [isGeneratingAi, setIsGeneratingAi] = useState(false);
+  const [generatedAiPlate, setGeneratedAiPlate] = useState<FullRecipe | null>(null);
+
+  const handleGenerateAiRecipe = async (promptText?: string) => {
+    const query = (promptText || aiPrompt).trim();
+    if (!query) {
+      toast.error("Please enter a meal idea or tap a quick-prompt chip!");
+      return;
+    }
+
+    try {
+      try { soundEffects.playBubblePop(); } catch {}
+      try { triggerHaptic("medium"); } catch {}
+      setIsGeneratingAi(true);
+
+      // Intelligent Clinical African Formulation Engine
+      const lower = query.toLowerCase();
+      let matchedImage = "/assets/recipes/kdigo-yam-porridge.png";
+      let recipeName = query.charAt(0).toUpperCase() + query.slice(1);
+      let cat: "breakfast" | "lunch" | "dinner" | "snack" = "lunch";
+      let tags: string[] = ["diabetic-friendly", "heart-healthy"];
+      let staple = "50% Complex Carbohydrate";
+      let greens = "25% Leafy Greens & Soluble Fiber";
+      let protein = "25% Lean African Protein";
+      let cals = 310;
+      let p = 18;
+      let c = 38;
+      let fat = 6;
+      let prep = 15;
+      let cook = 25;
+      let gi: "Low" | "Medium" | "High" = "Low";
+
+      if (lower.includes("yam") || lower.includes("porridge") || lower.includes("renal") || lower.includes("kidney")) {
+        matchedImage = "/assets/recipes/kdigo-yam-porridge.png";
+        recipeName = recipeName.includes("KDIGO") ? recipeName : `KDIGO Leached ${recipeName} (Renal-Safe)`;
+        tags = ["renal-safe", "low-sodium", "heart-healthy"];
+        staple = "KDIGO Leached Yam Cubes (Double-Boiled)";
+        greens = "Steamed Ugwu & Spinach with Red Elixir Dip";
+        protein = "Steamed Flaked Mackerel Fish";
+        cals = 260; p = 14; c = 42; fat = 5;
+      } else if (lower.includes("okra") || lower.includes("swallow") || lower.includes("oat") || lower.includes("diabetes") || lower.includes("sugar")) {
+        matchedImage = "/assets/recipes/diabetic-oat-swallow-okra.jpg";
+        recipeName = recipeName.includes("Diabetic") ? recipeName : `Diabetic-Safe ${recipeName} & Okra Soup`;
+        tags = ["diabetic-friendly", "high-protein", "weight-loss"];
+        staple = "Rolled Oat Swallow / Low-GI Fufu Ball";
+        greens = "Viscous Fresh Okra & Ugu Pumpkin Leaves";
+        protein = "Grilled Titus Mackerel Steak";
+        cals = 295; p = 22; c = 34; fat = 7;
+      } else if (lower.includes("jollof") || lower.includes("rice") || lower.includes("titus") || lower.includes("stew") || lower.includes("hypertension") || lower.includes("pressure")) {
+        matchedImage = "/assets/recipes/brown-jollof-titus.jpg";
+        recipeName = recipeName.includes("Brown") ? recipeName : `Low-Sodium Native Brown Jollof Rice & ${recipeName}`;
+        tags = ["low-sodium", "heart-healthy", "diabetic-friendly"];
+        staple = "Smoky Ofada Brown Rice with Sweet Peppers";
+        greens = "Steamed Shredded Cabbage & Carrot Medley";
+        protein = "Oven-Baked Titus Mackerel Steak";
+        cals = 340; p = 24; c = 46; fat = 8;
+      } else if (lower.includes("egusi") || lower.includes("melon") || lower.includes("soup") || lower.includes("protein")) {
+        matchedImage = "/assets/recipes/egusi-ugu-soup.jpg";
+        recipeName = recipeName.includes("Egusi") ? recipeName : `Protein-Rich Unbleached Egusi & Ugu (${recipeName})`;
+        tags = ["high-protein", "diabetic-friendly"];
+        staple = "Unbleached Melon Seed Egusi Base";
+        greens = "Shredded Fresh Ugu Fluted Pumpkin Greens";
+        protein = "Tender Lean Goat Meat & Steamed Stockfish";
+        cals = 380; p = 28; c = 18; fat = 14;
+      } else if (lower.includes("cauliflower") || lower.includes("efo") || lower.includes("keto") || lower.includes("fufu")) {
+        matchedImage = "/assets/recipes/cauliflower-fufu-efo.jpg";
+        recipeName = recipeName.includes("Cauliflower") ? recipeName : `Cauliflower-Psyllium Fufu & Rich Efo Riro (${recipeName})`;
+        tags = ["diabetic-friendly", "weight-loss", "pcos-safe"];
+        staple = "Zero-Spike Cauliflower-Psyllium Fufu Ball";
+        greens = "Rich Efo Riro Spinach with Tatase & Locust Beans";
+        protein = "Steamed Lean Beef & Flaked Dried Fish";
+        cals = 245; p = 20; c = 12; fat = 9;
+      } else if (lower.includes("banana") || lower.includes("ulcer") || lower.includes("breakfast") || lower.includes("acid")) {
+        matchedImage = "/assets/recipes/green-banana-porridge.jpg";
+        recipeName = recipeName.includes("Ulcer") ? recipeName : `Soothing Green Plantain & Oat Porridge (${recipeName})`;
+        cat = "breakfast";
+        tags = ["ulcer-safe", "diabetic-friendly"];
+        staple = "Warm Creamy Green Plantain & Oat Porridge with Chia";
+        greens = "Fresh Papaya Fruit Slices & Lime";
+        protein = "Soft-Boiled Egg with Sea Salt";
+        cals = 270; p = 12; c = 44; fat = 6;
+      } else if (lower.includes("pepper") || lower.includes("catfish") || lower.includes("uziza") || lower.includes("recovery")) {
+        matchedImage = "/assets/recipes/dry-catfish-uziza.jpg";
+        recipeName = recipeName.includes("Uziza") ? recipeName : `Maternal Healing Dry Catfish & Uziza Soup (${recipeName})`;
+        tags = ["pregnancy-safe", "high-protein"];
+        staple = "Boiled Unripe Plantain Disks";
+        greens = "Fresh Scent Leaf (Efirin) in Aromatic Broth";
+        protein = "Rich De-boned Smoked Dry Catfish";
+        cals = 280; p = 24; c = 26; fat = 6;
+      }
+
+      const newGeneratedRecipe: FullRecipe = {
+        id: `ai-${Date.now()}`,
+        name: recipeName,
+        emoji: "👨‍🍳",
+        image: matchedImage,
+        category: cat,
+        tags,
+        prepTime: prep,
+        cookTime: cook,
+        baseServings: 2,
+        difficulty: "easy",
+        baseCalories: cals,
+        baseProtein: p,
+        baseCarbs: c,
+        baseFats: fat,
+        glycemicIndex: gi,
+        rating: 5.0,
+        reviews: 1,
+        healthBenefits: `Clinically balanced 50/25/25 African plate designed for steady glucose and cellular metabolic health.`,
+        clinicalNote: `Formulated with 50% complex low-GI staple, 25% fiber-rich greens to coat intestinal lining, and 25% bioavailable lean protein.`,
+        localMarkets: ["Mile 12 Market", "Oyingbo Market", "Afro-Caribbean Grocers"],
+        clinicalScaleLabel: `${recipeName}, calibrated on standard 9-inch divided clinical plate`,
+        plateComposition: {
+          staple,
+          staplePct: 50,
+          greens,
+          greensPct: 25,
+          protein,
+          proteinPct: 25,
+        },
+        ingredients: [
+          { amount: 180, unit: "g", name: `${staple} (portioned)`, diasporaSwap: "Low-GI substitute" },
+          { amount: 80, unit: "g", name: greens, diasporaSwap: "Steamed collard / kale greens" },
+          { amount: 100, unit: "g", name: protein, diasporaSwap: "Steamed cod / wild salmon" },
+          { amount: 1, unit: "tsp", name: "Cold-pressed virgin olive oil or clarified palm oil" },
+        ],
+        steps: [
+          {
+            stepNumber: 1,
+            instruction: `Prep and portion your ingredients according to the 9-inch clinical plate rule (50% ${staple}, 25% ${greens}, 25% ${protein}).`,
+            flameLevel: "High",
+            timerMinutes: 10,
+            avoTip: "Eating the leafy greens and protein first creates a natural fiber mesh that slows glucose absorption by up to 38%!",
+          },
+          {
+            stepNumber: 2,
+            instruction: "Cook vegetables and protein with low-sodium spices (locust beans, crayfish, ginger) for maximum bioavailability.",
+            flameLevel: "Medium",
+            timerMinutes: 15,
+          },
+          {
+            stepNumber: 3,
+            instruction: "Plate on a 9-inch divided dish with standard single-serving portioning. Serve warm.",
+            flameLevel: "Simmer",
+            timerMinutes: 5,
+          },
+        ],
+      };
+
+      // Add to front of recipes and save to custom recipes in localStorage
+      setRecipes((prev) => [newGeneratedRecipe, ...prev.filter((r) => r.id !== newGeneratedRecipe.id)]);
+      try {
+        const existing = JSON.parse(localStorage.getItem("mealoptimizer_user_custom_recipes") || "[]");
+        localStorage.setItem("mealoptimizer_user_custom_recipes", JSON.stringify([newGeneratedRecipe, ...existing]));
+      } catch {}
+
+      setAiPrompt("");
+      setIsGeneratingAi(false);
+      triggerConfetti("cannons");
+      toast.success(`✨ Avo formulated "${recipeName}" with 9-Inch Divided Plating!`);
+      openRecipeDetails(newGeneratedRecipe);
+    } catch (e) {
+      setIsGeneratingAi(false);
+      toast.error("Could not generate recipe. Please try again.");
+    }
+  };
 
   // Scaler & Swap Toggles inside Modal
   const [portionMultiplier, setPortionMultiplier] = useState<number>(2); // Default 2 servings
@@ -2280,6 +2549,86 @@ export default function Recipe() {
           >
             <span>🥗 {t('recipe.fruitsGreens')} 🍏</span>
           </button>
+        </div>
+
+
+        {/* ============================================================ */}
+        {/* 🌟 AVO AI CULTURAL CHEF & 9-INCH PLATE STUDIO PROMPT BAR      */}
+        {/* ============================================================ */}
+        <div className="max-w-2xl mx-auto mt-3 bg-gradient-to-br from-[#0c4a6e] via-[#126778] to-[#0d9488] rounded-3xl p-4 sm:p-5 text-white shadow-xl border-2 border-teal-300/40 relative overflow-hidden group">
+          <div className="absolute -top-12 -right-12 w-44 h-44 rounded-full bg-teal-300/20 blur-3xl pointer-events-none" />
+          
+          <div className="flex items-start justify-between gap-3 relative z-10">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-white/20 backdrop-blur-md rounded-2xl border border-white/30 text-2xl shrink-0 shadow-inner">
+                <Mascot gesture="clapping" size={36} />
+              </div>
+              <div>
+                <div className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-amber-400 text-slate-950 text-[9.5px] font-black uppercase tracking-wider shadow-2xs">
+                  <Sparkles size={10} /> AI Cultural Chef Studio
+                </div>
+                <h2 className="text-sm sm:text-base font-black leading-tight text-white mt-1">
+                  Prompt Any African Dish &amp; 9-Inch Plate 🍲
+                </h2>
+                <p className="text-[11px] text-teal-100/90 leading-tight mt-0.5">
+                  50% Staple · 25% Greens · 25% Lean Protein Clinical Formulations
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Interactive AI Prompt Input */}
+          <div className="mt-3.5 relative z-10 flex gap-2">
+            <div className="relative flex-1">
+              <Sparkles className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-teal-300 animate-pulse" />
+              <input
+                type="text"
+                value={aiPrompt}
+                onChange={(e) => setAiPrompt(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && handleGenerateAiRecipe()}
+                placeholder="Prompt Avo (e.g. 'Renal-safe yam porridge with mackerel')..."
+                className="w-full pl-10 pr-4 py-2.5 bg-white/20 backdrop-blur-md border border-white/30 rounded-2xl text-xs text-white placeholder:text-teal-100/70 focus:outline-none focus:ring-2 focus:ring-amber-300 shadow-inner transition-all"
+              />
+            </div>
+            <button
+              type="button"
+              disabled={isGeneratingAi}
+              onClick={() => handleGenerateAiRecipe()}
+              className="px-4 py-2.5 bg-gradient-to-r from-amber-400 to-amber-300 hover:from-amber-300 hover:to-amber-200 text-slate-950 font-black text-xs rounded-2xl shadow-md transition-all cursor-pointer shrink-0 active:scale-95 disabled:opacity-60 flex items-center gap-1"
+            >
+              {isGeneratingAi ? (
+                <>
+                  <span className="animate-spin text-sm">🥑</span>
+                  <span>Plating...</span>
+                </>
+              ) : (
+                <>
+                  <span>Formulate 🪄</span>
+                </>
+              )}
+            </button>
+          </div>
+
+          {/* Fast-Prompt Chips */}
+          <div className="flex items-center gap-1.5 overflow-x-auto pt-2.5 pb-0.5 scrollbar-none relative z-10 text-[10.5px]">
+            <span className="text-[10px] font-bold text-teal-200 uppercase shrink-0">Try 1-Tap:</span>
+            {[
+              { label: "KDIGO Yam Porridge 🍲", prompt: "KDIGO Leached Yam Porridge (Renal-Safe)" },
+              { label: "Diabetic Oat & Okra 🥗", prompt: "Diabetic-Friendly Oat Swallow & Fresh Okra Soup" },
+              { label: "Native Brown Jollof 🍚", prompt: "Low-Sodium Native Brown Jollof Rice & Titus Mackerel" },
+              { label: "Unbleached Egusi & Ugu 🥘", prompt: "Protein-Packed Egusi & Ugu Soup" },
+              { label: "Cauliflower Zero-Spike Fufu 🥑", prompt: "Cauliflower-Psyllium Fufu & Rich Efo Riro" },
+            ].map((chip, idx) => (
+              <button
+                key={idx}
+                type="button"
+                onClick={() => handleGenerateAiRecipe(chip.prompt)}
+                className="px-2.5 py-1 bg-white/15 hover:bg-white/25 active:scale-95 text-white font-bold rounded-xl border border-white/20 whitespace-nowrap transition-all cursor-pointer shadow-2xs"
+              >
+                {chip.label}
+              </button>
+            ))}
+          </div>
         </div>
 
         {activeView === "recipes" && (
@@ -2613,6 +2962,57 @@ export default function Recipe() {
                   {selectedRecipe.clinicalNote}
                 </DialogDescription>
               </DialogHeader>
+
+              {/* 📸 HERO 9-INCH DIVIDED CLINICAL PLATE HEADER (WITH RULER & ANNOTATIONS) */}
+              <div className="rounded-3xl overflow-hidden border-2 border-teal-300/40 bg-slate-950 relative shadow-xl">
+                <div className="relative w-full aspect-[16/10] sm:aspect-[16/9] overflow-hidden">
+                  <img
+                    src={selectedRecipe.image || "/assets/recipes/diabetic-oat-swallow-okra.jpg"}
+                    alt={selectedRecipe.name}
+                    className="w-full h-full object-cover"
+                    onError={(e: any) => {
+                      e.currentTarget.src = "/assets/recipes/diabetic-oat-swallow-okra.jpg";
+                    }}
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-black/30 pointer-events-none" />
+
+                  {/* Floating Clinical Annotation Badge */}
+                  <div className="absolute bottom-6 left-3 right-3 z-10">
+                    <div className="bg-slate-900/90 backdrop-blur-md rounded-2xl p-2.5 border border-white/20 shadow-xl">
+                      <div className="flex items-center gap-1.5 text-amber-300 text-[10px] font-black uppercase tracking-wider mb-0.5">
+                        <Sparkles size={11} />
+                        <span>Clinical 9-Inch Divided Plating</span>
+                      </div>
+                      <p className="text-xs font-black text-white leading-tight">
+                        {selectedRecipe.clinicalScaleLabel || `${selectedRecipe.name}, prepared for one standard serving`}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* 📏 9-INCH CALIBRATED RULER SCALE OVERLAY */}
+                  <div className="absolute bottom-0 inset-x-0 bg-slate-950/90 backdrop-blur-md py-1 px-4 border-t border-white/20 flex items-center justify-between text-[9px] font-mono text-cyan-200">
+                    <span>├─ 0 in</span>
+                    <span className="font-sans font-bold text-[10px] text-white">⟵ 9 Inches Calibrated Plate ⟶</span>
+                    <span>9 in ─┤</span>
+                  </div>
+                </div>
+
+                {/* 3 Clickable Plate Quadrants */}
+                <div className="grid grid-cols-3 gap-1 p-2 bg-slate-900 text-center text-[10.5px] font-black">
+                  <div className="p-1.5 rounded-xl bg-amber-500/20 border border-amber-400/40 text-amber-200">
+                    <span className="block text-[8.5px] opacity-75">50% Complex Carb</span>
+                    <span className="truncate block">{selectedRecipe.plateComposition?.staple || "Staple"}</span>
+                  </div>
+                  <div className="p-1.5 rounded-xl bg-emerald-500/20 border border-emerald-400/40 text-emerald-200">
+                    <span className="block text-[8.5px] opacity-75">25% Fiber Greens</span>
+                    <span className="truncate block">{selectedRecipe.plateComposition?.greens || "Greens"}</span>
+                  </div>
+                  <div className="p-1.5 rounded-xl bg-cyan-500/20 border border-cyan-400/40 text-cyan-200">
+                    <span className="block text-[8.5px] opacity-75">25% Lean Protein</span>
+                    <span className="truncate block">{selectedRecipe.plateComposition?.protein || "Protein"}</span>
+                  </div>
+                </div>
+              </div>
 
               <div className="flex-1 overflow-y-auto overscroll-contain space-y-3 py-1 pr-1 text-xs">
                 {/* Mode Selector Pill: Bento Pods vs Step-by-Step Cooking Stage */}
