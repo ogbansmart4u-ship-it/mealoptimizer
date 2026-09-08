@@ -2010,6 +2010,7 @@ export default function Recipe() {
 
   // Step-by-Step Cooking Mode State
   const [isCookingMode, setIsCookingMode] = useState<boolean>(false);
+  const [activeBentoSection, setActiveBentoSection] = useState<"ingredients" | "macros" | "wisdom" | null>("ingredients");
   const [currentStepIdx, setCurrentStepIdx] = useState<number>(0);
   const [checkedIngredients, setCheckedIngredients] = useState<Record<string, boolean>>({});
 
@@ -2164,6 +2165,7 @@ export default function Recipe() {
     setSelectedRecipe(recipe);
     setPortionMultiplier(recipe.baseServings);
     setIsCookingMode(false);
+    setActiveBentoSection("ingredients");
     setCurrentStepIdx(0);
     setCheckedIngredients({});
     setTimerRunning(false);

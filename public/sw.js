@@ -3,7 +3,7 @@
  * 100% Guaranteed Offline SPA Shell + Cache-First Static Assets
  */
 
-const CACHE_NAME = 'mealoptimiza-pwa-v6.0-container-ui';
+const CACHE_NAME = 'mealoptimiza-pwa-v6.1-fix';
 
 const PRECACHE_ASSETS = [
   '/',
