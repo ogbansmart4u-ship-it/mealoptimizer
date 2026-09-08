@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router";
 import { ShieldCheck, Stethoscope, AlertTriangle, CheckCircle2, Lock, HeartHandshake } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "./ui/dialog";
 import { Button } from "./ui/button";
 
 export default function MedicalDisclaimerModal() {
+  const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
@@ -18,6 +20,17 @@ export default function MedicalDisclaimerModal() {
   const handleAccept = () => {
     localStorage.setItem("mealoptimiza_medical_disclaimer_accepted", "true");
     setIsOpen(false);
+
+    // Promptly launch onboarding questionnaire if user has not completed setup
+    const hasCompletedOnboarding =
+      localStorage.getItem("onboardingComplete") === "true" ||
+      localStorage.getItem("hasCompletedHealthSetup") === "true";
+
+    if (!hasCompletedOnboarding) {
+      setTimeout(() => {
+        navigate("/onboarding");
+      }, 350);
+    }
   };
 
   return (

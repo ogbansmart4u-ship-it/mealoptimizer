@@ -161,6 +161,7 @@ export default function Home() {
   const [showVoiceLogger, setShowVoiceLogger] = useState(false);
   const [showGroceryPlanner, setShowGroceryPlanner] = useState(false);
   const [activeHomeTab, setActiveHomeTab] = useState<"today" | "academy" | "clinical">("today");
+  const [academyCategory, setAcademyCategory] = useState<"daily" | "masterclasses">("daily");
   const [showFoodWrapped, setShowFoodWrapped] = useState(false);
   const [showWearableSyncModal, setShowWearableSyncModal] = useState(false);
   const [showNotificationSettings, setShowNotificationSettings] = useState(false);
@@ -754,7 +755,39 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Main Content Area with Tabbed Architecture */}
+      {/* Questionnaire Quick Launch Prompt (Shown if onboarding incomplete) */}
+      {typeof window !== "undefined" &&
+        localStorage.getItem("onboardingComplete") !== "true" &&
+        localStorage.getItem("hasCompletedHealthSetup") !== "true" && (
+          <div className="px-3.5 sm:px-6 max-w-2xl mx-auto w-full mb-3">
+            <div
+              onClick={() => {
+                triggerHaptic("medium");
+                navigate("/onboarding");
+              }}
+              className="rounded-3xl p-3.5 bg-gradient-to-r from-amber-500 via-teal-600 to-[#126778] text-white shadow-lg flex items-center justify-between gap-3 cursor-pointer hover:brightness-105 active:scale-98 transition-all border border-amber-300/40"
+            >
+              <div className="flex items-center gap-2.5 min-w-0">
+                <div className="p-2 bg-white/20 rounded-2xl shrink-0">
+                  <Sparkles size={18} className="text-amber-300" />
+                </div>
+                <div className="min-w-0">
+                  <span className="text-xs font-black block truncate">
+                    Complete Your Health Blueprint 🥑
+                  </span>
+                  <span className="text-[10px] text-teal-100 block truncate">
+                    6 Quick Questions to customize your meals &amp; blood sugar plan
+                  </span>
+                </div>
+              </div>
+              <div className="flex items-center gap-1 text-[11px] font-black px-3 py-1.5 rounded-xl bg-white text-slate-900 shrink-0 shadow-xs">
+                <span>Start Survey</span>
+                <ChevronRight size={12} />
+              </div>
+            </div>
+          </div>
+        )}
+
       {/* Main Content Area with Tabbed Architecture */}
       <div className="px-3.5 sm:px-6 mt-2 max-w-2xl mx-auto w-full min-w-0">
         {/* Segmented Tab Navigation Control */}
@@ -1215,9 +1248,44 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Embedded Avo Academy Component */}
-            <AvoAcademyBloom />
-            <AvoAcademy />
+            {/* Sub-Category Switcher: Daily Mystery Capsule vs Full Masterclasses */}
+            <div className="flex bg-white/70 dark:bg-zinc-800/70 p-1 rounded-2xl gap-1 border border-teal-100 dark:border-zinc-700 shadow-2xs">
+              <button
+                type="button"
+                onClick={() => {
+                  triggerHaptic("light");
+                  setAcademyCategory("daily");
+                }}
+                className={`flex-1 py-2 px-3 rounded-xl font-black text-xs transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
+                  academyCategory === "daily"
+                    ? "bg-[#126778] text-white shadow-sm"
+                    : "text-slate-600 dark:text-slate-400 hover:text-slate-900"
+                }`}
+              >
+                <span>🥑 60s Daily Mastery</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  triggerHaptic("light");
+                  setAcademyCategory("masterclasses");
+                }}
+                className={`flex-1 py-2 px-3 rounded-xl font-black text-xs transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
+                  academyCategory === "masterclasses"
+                    ? "bg-[#126778] text-white shadow-sm"
+                    : "text-slate-600 dark:text-slate-400 hover:text-slate-900"
+                }`}
+              >
+                <span>🎓 Health Protocols &amp; Lab</span>
+              </button>
+            </div>
+
+            {/* Render Selected View */}
+            {academyCategory === "daily" ? (
+              <AvoAcademyBloom />
+            ) : (
+              <AvoAcademy />
+            )}
           </motion.div>
         )}
 

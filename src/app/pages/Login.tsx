@@ -124,10 +124,22 @@ export default function Login() {
         try { localStorage.setItem("mealoptimiza_has_account", "true"); } catch {}
         setMascotGesture("celebrate");
         triggerHaptic("success");
-        toast.success("Welcome back! Loading your healthy meal dashboard...", {
-          duration: 2500,
-        });
-        setTimeout(() => navigate("/home"), 400);
+
+        const hasCompletedOnboarding =
+          localStorage.getItem("onboardingComplete") === "true" ||
+          localStorage.getItem("hasCompletedHealthSetup") === "true";
+
+        if (!hasCompletedOnboarding) {
+          toast.success("Welcome! Let's complete your health blueprint 🥑", {
+            duration: 2500,
+          });
+          setTimeout(() => navigate("/onboarding"), 400);
+        } else {
+          toast.success("Welcome back! Loading your healthy meal dashboard...", {
+            duration: 2500,
+          });
+          setTimeout(() => navigate("/home"), 400);
+        }
       } else {
         // Sign Up Flow
         localStorage.setItem(
