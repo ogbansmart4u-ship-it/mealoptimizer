@@ -33,6 +33,7 @@ import { Button } from "../components/ui/button";
 import { toast } from "sonner";
 import { useLanguage } from "../contexts/LanguageContext";
 import { getHydrationLogs, createHydrationLog, deleteHydrationLog } from "../../lib/api";
+import { refreshHydrationLogs } from "../services/hydrationSync";
 import { celebrate, triggerConfetti, triggerHaptic } from "../components/celebrate";
 import { shareHydrationNudgeToWhatsApp } from "../../lib/whatsapp";
 import { motion } from "motion/react";
@@ -206,6 +207,7 @@ export default function HydrationTracker() {
         logs: [...prev.logs, newLog],
         totalIntake: updatedTotal,
       }));
+      refreshHydrationLogs().catch(() => {});
 
       if (updatedTotal >= dailyGoal && hydrationData.totalIntake < dailyGoal) {
         celebrate("Goal Achieved! 💧🎉", "You drank your full 2,500ml daily target today!", {
@@ -235,6 +237,7 @@ export default function HydrationTracker() {
         logs: prev.logs.slice(0, -1),
         totalIntake: Math.max(0, prev.totalIntake - lastLog.amount),
       }));
+      refreshHydrationLogs().catch(() => {});
       toast.info("Last drink removed");
     } catch (err: any) {
       toast.error(err.message ?? "Could not remove entry");

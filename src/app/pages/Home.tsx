@@ -3,6 +3,7 @@ import AfricanPlateSilhouette from "../components/AfricanPlateSilhouette";
 import AvoAcademyBloom from "../components/AvoAcademyBloom";
 import CircadianEnergyWave from "../components/CircadianEnergyWave";
 import GlassmorphicWaterTumbler from "../components/GlassmorphicWaterTumbler";
+import { useHydrationSync, GLASS_ML, DEFAULT_GOAL_GLASSES } from "../services/hydrationSync";
 import MetabolicScoreRing from "../components/MetabolicScoreRing";
 import { soundEffects } from "../utils/soundEffects";
 import React, { useState, useRef, useEffect } from "react";
@@ -308,12 +309,15 @@ export default function Home() {
     };
   }, [dailyProgress]);
 
-  // Water tracker
-  const waterGoal = 10;
-  const GLASS_ML = 250;
-  const [waterMl, setWaterMl] = useState(0);
-  const [homeWaterIds, setHomeWaterIds] = useState<string[]>([]);
-  const [waterBusy, setWaterBusy] = useState(false);
+  // Synchronized Global Hydration Engine (Unified across Home, Avo Popups, Modals)
+  const {
+    totalMl: waterMl,
+    glasses: waterGlasses,
+    goalGlasses: waterGoal,
+    addGlass: handleWaterAddCustom,
+    removeGlass: handleWaterDecrease,
+    refresh: refreshWater,
+  } = useHydrationSync();
   const [isDrinkingWater, setIsDrinkingWater] = useState(false);
   // 🎛️ Dynamic Dashboard Preferences (Configurable in Profile)
   const [dashboardPrefs, setDashboardPrefs] = useState(() => {
@@ -356,34 +360,7 @@ export default function Home() {
     setLockedProFeature(featureName);
     setShowProLockModal(true);
   };
-  const waterGlasses = Math.round(waterMl / GLASS_ML);
-
-  const loadWater = () => {
-    const today = new Date().toISOString().split("T")[0];
-    getHydrationLogs()
-      .then((items: any[]) => {
-        const todays = (items ?? []).filter((it) => String(it.logged_at ?? "").startsWith(today));
-        const total = todays.reduce((sum, it) => sum + (it.amount_ml ?? 0), 0);
-        setWaterMl(total);
-        setHomeWaterIds(
-          todays
-            .filter((it) => (it.amount_ml ?? 0) === GLASS_ML && (it.type ?? "water") === "water")
-            .map((it) => String(it.id)),
-        );
-      })
-      .catch(() => {});
-  };
-
-  useEffect(() => { loadWater(); }, []);
-  useEffect(() => {
-    const onFocus = () => loadWater();
-    window.addEventListener("focus", onFocus);
-    document.addEventListener("visibilitychange", onFocus);
-    return () => {
-      window.removeEventListener("focus", onFocus);
-      document.removeEventListener("visibilitychange", onFocus);
-    };
-  }, []);
+  // Water sync is automatically handled live by useHydrationSync and event bus
 
   const [selectedMeal, setSelectedMeal] = useState<MealMetadata | null>(null);
   const [showMealPrescription, setShowMealPrescription] = useState(false);
@@ -396,37 +373,9 @@ export default function Home() {
   });
 
   const handleWaterIncrease = async () => {
-    if (waterBusy) return;
-    setWaterBusy(true);
     setIsDrinkingWater(true);
     setTimeout(() => setIsDrinkingWater(false), 2400);
-
-    triggerHaptic("success");
-    setWaterMl((ml) => ml + GLASS_ML);
-    try {
-      const item = await createHydrationLog({
-        amount_ml: GLASS_ML,
-        type: "water",
-        logged_at: new Date().toISOString(),
-      });
-      if (item?.id) setHomeWaterIds((ids) => [...ids, String(item.id)]);
-      const nextGlasses = waterGlasses + 1;
-      if (nextGlasses >= waterGoal) {
-        celebrate("Hydration Goal Achieved! 💧🎉", `${nextGlasses} of ${waterGoal} glasses completed today!`, {
-          confettiStyle: "cannons",
-          hapticPattern: "milestone",
-        });
-      } else {
-        celebrate("Water Logged! 💧 (+250ml)", `${nextGlasses}/${waterGoal} glasses today`, {
-          confetti: false,
-          hapticPattern: "light",
-        });
-      }
-    } catch {
-      setWaterMl((ml) => Math.max(0, ml - GLASS_ML));
-    } finally {
-      setWaterBusy(false);
-    }
+    await handleWaterAddCustom(GLASS_ML, "water", "Pure Water Glass");
   };
 
   const { nudge: smartNudge, closeNudge: closeSmartNudge } = useSmartNudges({
@@ -440,47 +389,6 @@ export default function Home() {
   });
 
   const [showWaterReminderModal, setShowWaterReminderModal] = useState(false);
-
-  const handleWaterAddCustom = async (amountMl: number = 250) => {
-    if (waterBusy) return;
-    setWaterBusy(true);
-    setWaterMl((ml) => ml + amountMl);
-    try {
-      const item = await createHydrationLog({
-        amount_ml: amountMl,
-        type: amountMl === 300 ? "zobo" : "water",
-        logged_at: new Date().toISOString(),
-      });
-      if (item?.id) setHomeWaterIds((ids) => [...ids, String(item.id)]);
-      const nextGlasses = Math.round((waterMl + amountMl) / GLASS_ML);
-      if (nextGlasses >= waterGoal) {
-        celebrate("Hydration Goal Achieved! 💧🎉", `${waterGoal} of ${waterGoal} glasses completed today!`, {
-          confettiStyle: "cannons",
-          hapticPattern: "milestone",
-        });
-      }
-    } catch {
-      setWaterMl((ml) => Math.max(0, ml - amountMl));
-    } finally {
-      setWaterBusy(false);
-    }
-  };
-
-  const handleWaterDecrease = async () => {
-    if (waterBusy || homeWaterIds.length === 0) return;
-    setWaterBusy(true);
-    const id = homeWaterIds[homeWaterIds.length - 1];
-    setHomeWaterIds((ids) => ids.slice(0, -1));
-    setWaterMl((ml) => Math.max(0, ml - GLASS_ML));
-    try {
-      await deleteHydrationLog(id);
-    } catch {
-      setHomeWaterIds((ids) => [...ids, id]);
-      setWaterMl((ml) => ml + GLASS_ML);
-    } finally {
-      setWaterBusy(false);
-    }
-  };
 
   const getTimeBasedGreeting = () => {
     const currentHour = new Date().getHours();
@@ -971,13 +879,20 @@ export default function Home() {
                     <span className="text-[9.5px] font-bold text-purple-700 dark:text-purple-400">🥑 Fats</span>
                     <strong className="text-xs font-black text-slate-900 dark:text-white mt-0.5">{fatsConsumed}g</strong>
                   </div>
-                  <div className="neu-inset p-1.5 rounded-2xl flex flex-col justify-between items-center text-center">
+                  <div 
+                    onClick={() => {
+                      triggerHaptic("medium");
+                      setShowWaterReminderModal(true);
+                    }}
+                    className="neu-inset p-1.5 rounded-2xl flex flex-col justify-between items-center text-center cursor-pointer hover:ring-2 hover:ring-cyan-400/50 transition-all group"
+                    title="Tap to open Avo Water Station 💧"
+                  >
                     <div className="flex items-center gap-1">
                       <Mascot gesture="drink" size={16} />
-                      <span className="text-[9.5px] font-bold text-cyan-700 dark:text-cyan-400">Water</span>
+                      <span className="text-[9.5px] font-bold text-cyan-700 dark:text-cyan-400 group-hover:text-cyan-800">Water 💧</span>
                     </div>
-                    <strong className="text-xs font-black text-cyan-900 dark:text-cyan-200">{waterGlasses}/8 cups</strong>
-                    <div className="flex items-center gap-1 mt-0.5">
+                    <strong className="text-xs font-black text-cyan-900 dark:text-cyan-200">{waterGlasses}/{waterGoal} cups</strong>
+                    <div className="flex items-center gap-1 mt-0.5" onClick={(e) => e.stopPropagation()}>
                       <button
                         type="button"
                         onClick={handleWaterIncrease}
@@ -1769,7 +1684,7 @@ export default function Home() {
         isOpen={showWaterReminderModal}
         onClose={() => setShowWaterReminderModal(false)}
         currentGlasses={waterGlasses}
-        targetGlasses={8}
+        targetGlasses={waterGoal}
         onAddGlass={handleWaterAddCustom}
       />
 
