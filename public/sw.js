@@ -3,7 +3,7 @@
  * 100% Guaranteed Offline SPA Shell + Cache-First Static Assets
  */
 
-const CACHE_NAME = 'mealoptimiza-pwa-v7.3-fruit-plate-synergy';
+const CACHE_NAME = 'mealoptimiza-pwa-v7.4-fix-plate-satellite';
 
 const PRECACHE_ASSETS = [
   '/',

@@ -694,7 +694,7 @@ export const AFRICAN_PLATE_DATABASE: FoodOption[] = [
     gi: "low",
     emoji: "🍹",
     clinicalNote: "Sparkling botanical infusion with zero added sugar for celebratory, heart-healthy hydration.",
-  },,
+  },
   // 🍊 Step 4: Whole Fruit & Metabolic Buffers (1 Serving / 1/2 Cup)
   {
     id: "garden_egg_snack",
