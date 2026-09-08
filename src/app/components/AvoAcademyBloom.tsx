@@ -137,14 +137,14 @@ export default function AvoAcademyBloom() {
               <div>
                 <div className="flex items-center gap-2">
                   <span className="text-xs font-black text-slate-900 dark:text-white">
-                    Avo Academy 60s Mastery
+                    Today's 60s Food Secret 🥑
                   </span>
                   <span className="text-[9px] font-black px-2 py-0.5 rounded-full bg-amber-400 text-slate-950 uppercase tracking-wide">
                     Day {streakDays}/7 🔥
                   </span>
                 </div>
                 <p className="text-[11px] text-slate-600 dark:text-slate-300 font-medium mt-0.5 flex items-center gap-1">
-                  <span>Today's Vitality Secret:</span>
+                  <span>Today's Food Secret:</span>
                   <strong className="text-amber-700 dark:text-amber-300 font-bold">The Soup Shield</strong>
                 </p>
               </div>
@@ -152,7 +152,7 @@ export default function AvoAcademyBloom() {
 
             {/* Tap to Burst Call-to-Action Pill */}
             <div className="flex items-center gap-1.5 bg-amber-400 hover:bg-amber-300 text-slate-950 font-black text-xs px-3.5 py-2 rounded-2xl shadow-sm group-hover:scale-105 transition-all shrink-0">
-              <span>Tap to Crack Open 💥</span>
+              <span>Tap to Reveal 💡</span>
               <ChevronRight size={14} />
             </div>
           </div>

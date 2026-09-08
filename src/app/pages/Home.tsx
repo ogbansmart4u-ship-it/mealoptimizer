@@ -806,7 +806,7 @@ export default function Home() {
             }`}
           >
             <BookOpen size={14} className="shrink-0" />
-            <span className="truncate">Academy</span>
+            <span className="truncate">Food Wisdom</span>
           </button>
 
           <button
@@ -817,8 +817,8 @@ export default function Home() {
                 : "text-gray-600 dark:text-gray-400 hover:text-gray-900 hover:bg-gray-100/60"
             }`}
           >
-            <Stethoscope size={14} className="shrink-0" />
-            <span className="truncate">Clinical</span>
+            <Heart size={14} className="shrink-0" />
+            <span className="truncate">Health &amp; Vitals</span>
           </button>
         </div>
 
@@ -1218,10 +1218,10 @@ export default function Home() {
                     <Sparkles size={10} className="shrink-0" /> {new Date().toLocaleString("default", { month: "long" })} Food Wrapped
                   </div>
                   <h3 className="text-sm sm:text-base font-black leading-tight mt-1 truncate">
-                    Your Cultural Food Archetype 🏆
+                    Your Monthly Food &amp; Energy Story 🏆
                   </h3>
                   <p className="text-[11px] text-teal-50/90 leading-snug line-clamp-1">
-                    See your monthly glucose stability score &amp; share to WhatsApp!
+                    See how your meals supported your body this month!
                   </p>
                 </div>
               </div>
@@ -1241,7 +1241,7 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Sub-Category Switcher: Daily Mystery Capsule vs Full Masterclasses */}
+            {/* Sub-Category Switcher: Daily Food Secret vs African Nutrition Guides */}
             <div className="flex bg-white/70 dark:bg-zinc-800/70 p-1 rounded-2xl gap-1 border border-teal-100 dark:border-zinc-700 shadow-2xs">
               <button
                 type="button"
@@ -1255,7 +1255,7 @@ export default function Home() {
                     : "text-slate-600 dark:text-slate-400 hover:text-slate-900"
                 }`}
               >
-                <span>🥑 60s Daily Mastery</span>
+                <span>🥑 Today's 60s Food Secret</span>
               </button>
               <button
                 type="button"
@@ -1269,7 +1269,7 @@ export default function Home() {
                     : "text-slate-600 dark:text-slate-400 hover:text-slate-900"
                 }`}
               >
-                <span>🎓 Health Protocols &amp; Lab</span>
+                <span>🍲 African Food Guides</span>
               </button>
             </div>
 
