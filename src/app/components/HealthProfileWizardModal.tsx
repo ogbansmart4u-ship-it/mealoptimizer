@@ -50,25 +50,35 @@ export default function HealthProfileWizardModal({
   const [isSaving, setIsSaving] = useState(false);
   const [activeGesture, setActiveGesture] = useState<string>("writing");
 
-  // Step 1: Health Goals (Multi-Select)
-  const [healthGoals, setHealthGoals] = useState<string[]>([
-    "Control Blood Sugar & Prevent Spikes",
-  ]);
+  // Step 1: Health Goals (Multi-Select, None compulsory)
+  const [healthGoals, setHealthGoals] = useState<string[]>(() => {
+    if (profile?.medicalCondition && profile.medicalCondition !== "None") {
+      return profile.medicalCondition.split(",").map((s) => s.trim()).filter(Boolean);
+    }
+    return [];
+  });
 
-  // Step 2: Cultural Diet (Multi-Select)
-  const [culturalDiets, setCulturalDiets] = useState<string[]>([
-    "Nigerian (Egusi, Jollof, Yam, Eba, Soups)",
-  ]);
+  // Step 2: Cultural Diet (Multi-Select, None compulsory)
+  const [culturalDiets, setCulturalDiets] = useState<string[]>(() => {
+    const saved = localStorage.getItem("userDiet");
+    if (saved) return saved.split(",").map((s) => s.trim()).filter(Boolean);
+    return [];
+  });
 
-  // Step 3: Daily Hurdles (Multi-Select)
-  const [mainHurdles, setMainHurdles] = useState<string[]>([
-    "Heavy swallows & late-night eating (Pounded Yam, Eba, Fufu)",
-  ]);
+  // Step 3: Daily Hurdles (Multi-Select, None compulsory)
+  const [mainHurdles, setMainHurdles] = useState<string[]>(() => {
+    const saved = localStorage.getItem("userHurdle");
+    if (saved) return saved.split(",").map((s) => s.trim()).filter(Boolean);
+    return [];
+  });
 
-  // Step 4: Medications (Multi-Select)
-  const [medications, setMedications] = useState<string[]>([
-    "None / I only manage through healthy food",
-  ]);
+  // Step 4: Medications (Multi-Select, None compulsory)
+  const [medications, setMedications] = useState<string[]>(() => {
+    if (profile?.medications && profile.medications !== "None") {
+      return profile.medications.split(",").map((s) => s.trim()).filter(Boolean);
+    }
+    return [];
+  });
 
   // Step 5: Biometrics & BMI
   const [ageRange, setAgeRange] = useState("30-45");
@@ -110,7 +120,6 @@ export default function HealthProfileWizardModal({
     triggerNoteTaking();
     setHealthGoals((prev) => {
       if (prev.includes(goal)) {
-        if (prev.length === 1) return prev;
         return prev.filter((g) => g !== goal);
       } else {
         return [...prev, goal];
@@ -122,7 +131,6 @@ export default function HealthProfileWizardModal({
     triggerNoteTaking();
     setCulturalDiets((prev) => {
       if (prev.includes(diet)) {
-        if (prev.length === 1) return prev;
         return prev.filter((d) => d !== diet);
       } else {
         return [...prev, diet];
@@ -134,7 +142,6 @@ export default function HealthProfileWizardModal({
     triggerNoteTaking();
     setMainHurdles((prev) => {
       if (prev.includes(hurdle)) {
-        if (prev.length === 1) return prev;
         return prev.filter((h) => h !== hurdle);
       } else {
         return [...prev, hurdle];
@@ -146,11 +153,10 @@ export default function HealthProfileWizardModal({
     triggerNoteTaking();
     setMedications((prev) => {
       if (med.includes("None")) {
-        return [med];
+        return prev.includes(med) ? [] : [med];
       }
       const filtered = prev.filter((m) => !m.includes("None"));
       if (filtered.includes(med)) {
-        if (filtered.length === 1) return ["None / I only manage through healthy food"];
         return filtered.filter((m) => m !== med);
       } else {
         return [...filtered, med];
@@ -194,10 +200,10 @@ export default function HealthProfileWizardModal({
     } catch {}
 
     try {
-      const goalStr = healthGoals.join(", ");
-      const dietStr = culturalDiets.join(", ");
-      const hurdleStr = mainHurdles.join(", ");
-      const medStr = medications.join(", ");
+      const goalStr = healthGoals.length > 0 ? healthGoals.join(", ") : "General Health & Wellness";
+      const dietStr = culturalDiets.length > 0 ? culturalDiets.join(", ") : "All Cultural African Cuisines";
+      const hurdleStr = mainHurdles.length > 0 ? mainHurdles.join(", ") : "None specified";
+      const medStr = medications.length > 0 ? medications.join(", ") : "None";
 
       const numericAge =
         ageRange === "18-29" ? 25 : ageRange === "30-45" ? 38 : ageRange === "46-60" ? 52 : 65;
@@ -296,16 +302,7 @@ export default function HealthProfileWizardModal({
             </div>
           </div>
 
-          <div className="flex items-center gap-2 shrink-0">
-            <button
-              onClick={handleDismiss}
-              className="p-1.5 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-xl text-zinc-400 hover:text-zinc-600 transition-colors cursor-pointer"
-              title="Close and explore dashboard"
-              aria-label="Close"
-            >
-              <X size={18} />
-            </button>
-          </div>
+          {/* Dialog close is handled by Radix DialogContent top-right button */}
         </div>
 
         {/* Micro Progress Bar */}

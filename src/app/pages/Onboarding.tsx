@@ -57,25 +57,16 @@ export default function Onboarding() {
     navigate("/home");
   };
 
-  // Diagnostic State (Multi-Select Enabled)
-  const [healthGoals, setHealthGoals] = useState<string[]>([
-    "Reverse / Manage Type 2 Diabetes & Pre-Diabetes",
-  ]);
-  const [culturalDiets, setCulturalDiets] = useState<string[]>([
-    "Nigerian (Egusi, Jollof, Yam, Eba, Soups)",
-  ]);
-  const [mainHurdles, setMainHurdles] = useState<string[]>([
-    "Heavy late-night swallows (Pounded Yam, Eba, Fufu)",
-  ]);
-  const [medications, setMedications] = useState<string[]>([
-    "Metformin / Insulin / Diabetes medications",
-  ]);
+  // Diagnostic State (Multi-Select Enabled, None compulsory)
+  const [healthGoals, setHealthGoals] = useState<string[]>([]);
+  const [culturalDiets, setCulturalDiets] = useState<string[]>([]);
+  const [mainHurdles, setMainHurdles] = useState<string[]>([]);
+  const [medications, setMedications] = useState<string[]>([]);
 
   const toggleHealthGoal = (goal: string) => {
     triggerHaptic("light");
     setHealthGoals((prev) => {
       if (prev.includes(goal)) {
-        if (prev.length === 1) return prev; // Keep at least one
         return prev.filter((g) => g !== goal);
       } else {
         return [...prev, goal];
@@ -87,7 +78,6 @@ export default function Onboarding() {
     triggerHaptic("light");
     setCulturalDiets((prev) => {
       if (prev.includes(diet)) {
-        if (prev.length === 1) return prev;
         return prev.filter((d) => d !== diet);
       } else {
         return [...prev, diet];
@@ -99,7 +89,6 @@ export default function Onboarding() {
     triggerHaptic("light");
     setMainHurdles((prev) => {
       if (prev.includes(hurdle)) {
-        if (prev.length === 1) return prev;
         return prev.filter((h) => h !== hurdle);
       } else {
         return [...prev, hurdle];
@@ -111,11 +100,10 @@ export default function Onboarding() {
     triggerHaptic("light");
     setMedications((prev) => {
       if (med.includes("None")) {
-        return [med];
+        return prev.includes(med) ? [] : [med];
       }
       const filtered = prev.filter((m) => !m.includes("None"));
       if (filtered.includes(med)) {
-        if (filtered.length === 1) return ["None / Managing strictly through diet & lifestyle"];
         return filtered.filter((m) => m !== med);
       } else {
         return [...filtered, med];
@@ -180,10 +168,10 @@ export default function Onboarding() {
 
     try {
       // Save diagnostic responses (Multi-Select Arrays Joined)
-      const goalStr = healthGoals.join(", ");
-      const dietStr = culturalDiets.join(", ");
-      const hurdleStr = mainHurdles.join(", ");
-      const medStr = medications.join(", ");
+      const goalStr = healthGoals.length > 0 ? healthGoals.join(", ") : "General Health & Wellness";
+      const dietStr = culturalDiets.length > 0 ? culturalDiets.join(", ") : "All Cultural African Cuisines";
+      const hurdleStr = mainHurdles.length > 0 ? mainHurdles.join(", ") : "None specified";
+      const medStr = medications.length > 0 ? medications.join(", ") : "None";
 
       localStorage.setItem("userGoal", goalStr);
       localStorage.setItem("userDiet", dietStr);
@@ -390,7 +378,7 @@ export default function Onboarding() {
                     What are your health &amp; metabolic priorities?
                   </h2>
                   <p className="text-xs text-teal-700 font-bold mt-1 bg-teal-50 py-1 px-3 rounded-full inline-block border border-teal-200/80">
-                    ✨ Select all that apply ({healthGoals.length} selected)
+                    ✨ Select any that apply ({healthGoals.length > 0 ? `${healthGoals.length} selected` : "Optional • Tap to select/deselect"})
                   </p>
                 </div>
 
@@ -459,7 +447,7 @@ export default function Onboarding() {
                     What kinds of food do you usually eat at home?
                   </h2>
                   <p className="text-xs text-teal-700 font-bold mt-1 bg-teal-50 py-1 px-3 rounded-full inline-block border border-teal-200/80">
-                    ✨ Select all that apply ({culturalDiets.length} selected)
+                    ✨ Select any that apply ({culturalDiets.length > 0 ? `${culturalDiets.length} selected` : "Optional • Tap to select/deselect"})
                   </p>
                 </div>
 
@@ -530,7 +518,7 @@ export default function Onboarding() {
                     What is your biggest challenge with eating healthy?
                   </h2>
                   <p className="text-xs text-teal-700 font-bold mt-1 bg-teal-50 py-1 px-3 rounded-full inline-block border border-teal-200/80">
-                    ✨ Select all that apply ({mainHurdles.length} selected)
+                    ✨ Select any that apply ({mainHurdles.length > 0 ? `${mainHurdles.length} selected` : "Optional • Tap to select/deselect"})
                   </p>
                 </div>
 
@@ -600,7 +588,7 @@ export default function Onboarding() {
                     Do you take any regular medication or vitamins?
                   </h2>
                   <p className="text-xs text-teal-700 font-bold mt-1 bg-teal-50 py-1 px-3 rounded-full inline-block border border-teal-200/80">
-                    ✨ Select all that apply ({medications.length} selected)
+                    ✨ Select any that apply ({medications.length > 0 ? `${medications.length} selected` : "Optional • Tap to select/deselect"})
                   </p>
                 </div>
 

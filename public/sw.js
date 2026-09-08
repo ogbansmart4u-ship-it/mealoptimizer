@@ -3,7 +3,7 @@
  * 100% Guaranteed Offline SPA Shell + Cache-First Static Assets
  */
 
-const CACHE_NAME = 'mealoptimiza-pwa-v8.2-humanized-questionnaire-close-button';
+const CACHE_NAME = 'mealoptimiza-pwa-v8.3-flexible-questionnaire-deselection';
 
 const PRECACHE_ASSETS = [
   '/',
