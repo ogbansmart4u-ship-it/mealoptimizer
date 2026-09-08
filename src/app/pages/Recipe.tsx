@@ -587,16 +587,16 @@ const MASTER_RECIPES: FullRecipe[] = [
   },
 {
     "id": "2",
-    "name": "Low-Sodium Native Brown Jollof Rice",
+    "name": "Low-Sodium Native Brown Jollof Rice & Baked Titus Steak",
     "emoji": "🍚",
     "image": "/assets/recipes/brown-jollof-titus.webp",
-    "clinicalScaleLabel": "Low-Sodium Native Brown Jollof Rice, DASH single serving",
+    "clinicalScaleLabel": "Low-Sodium Native Brown Jollof Rice with Baked Titus Steak, DASH clinical plate",
     "plateComposition": {
       "staple": "Smoky Brown Ofada Jollof Rice",
       "staplePct": 50,
       "greens": "Steamed Cabbage & Carrot Medley",
       "greensPct": 25,
-      "protein": "Skinless Turkey / Titus Mackerel",
+      "protein": "Oven-Baked Titus (Mackerel) Steak with Lemon",
       "proteinPct": 25
     },
     "category": "lunch",
@@ -616,12 +616,12 @@ const MASTER_RECIPES: FullRecipe[] = [
     "glycemicIndex": "Medium",
     "rating": 4.8,
     "reviews": 218,
-    "healthBenefits": "Whole brown rice provides slow-release energy; umami base replaces industrial bouillon cubes.",
-    "clinicalNote": "Sodium reduced by 65% compared to standard restaurant party Jollof.",
+    "healthBenefits": "Whole brown rice provides slow-release energy; oven-baked Titus mackerel supplies Omega-3 EPA/DHA; umami base replaces industrial bouillon cubes.",
+    "clinicalNote": "Sodium reduced by 65% compared to standard restaurant party Jollof. Potassium-to-sodium ratio supports healthy arterial tone.",
     "localMarkets": [
       "Tejuosho Market",
       "Balogun Market",
-      "ShopRite / Whole Foods"
+      "ShopRite / Whole Foods Fresh Fish Aisle"
     ],
     "ingredients": [
       {
@@ -633,8 +633,14 @@ const MASTER_RECIPES: FullRecipe[] = [
       {
         "amount": 150,
         "unit": "g",
-        "name": "Skinless chicken breast or turkey",
-        "diasporaSwap": "Tofu or lean beef strips"
+        "name": "Fresh Titus (Mackerel) fish steak, seasoned with turmeric & black pepper",
+        "diasporaSwap": "Fresh Atlantic mackerel or wild salmon steak"
+      },
+      {
+        "amount": 1,
+        "unit": "cup",
+        "name": "Steamed shredded green cabbage & sweet carrot medley",
+        "diasporaSwap": "Steamed green beans & carrots"
       },
       {
         "amount": 1,
@@ -665,29 +671,41 @@ const MASTER_RECIPES: FullRecipe[] = [
         "unit": "tbsp",
         "name": "Cold-pressed olive oil",
         "lowSodiumSwap": "Zero-salt vegetable broth reduction"
+      },
+      {
+        "amount": 1,
+        "unit": "wedge",
+        "name": "Fresh lemon wedge for garnish",
+        "diasporaSwap": "Fresh lime slice"
       }
     ],
     "steps": [
       {
         "stepNumber": 1,
-        "instruction": "Rinse brown rice thoroughly under cold water. Parboil for 15 minutes, drain, and set aside.",
-        "flameLevel": "High",
-        "timerMinutes": 15,
-        "avoTip": "Parboiling brown rice strips excess starch surface dust, keeping grains separate and fluffy."
+        "instruction": "Season Titus mackerel steak with turmeric, black pepper, and garlic. Bake in oven or pan-sear on medium heat for 12 minutes until golden, flaky, and tender. Garnish with a fresh lemon wedge.",
+        "flameLevel": "Medium",
+        "timerMinutes": 12,
+        "avoTip": "Titus fish delivers cardio-protective Omega-3 EPA/DHA lipids that support vascular health!"
       },
       {
         "stepNumber": 2,
-        "instruction": "In a heavy pot, saute onions, garlic, ginger, and Iru in olive oil for 3 minutes until aromatic. Pour in blended tomato-pepper reduction.",
+        "instruction": "In a heavy pot, sauté chopped onions, garlic, ginger, and Iru in olive oil for 3 minutes until fragrant. Pour in blended tomato-pepper reduction and slow-simmer.",
         "flameLevel": "Medium",
         "timerMinutes": 5,
         "avoTip": "Iru and crayfish provide natural glutamates (umami), eliminating the need for sodium-heavy seasoning cubes!"
       },
       {
         "stepNumber": 3,
-        "instruction": "Add chicken broth, bay leaves, thyme, and drained brown rice. Cover tightly with foil and pot lid. Simmer on low heat for 25 minutes until liquid is absorbed.",
+        "instruction": "Add aromatic vegetable broth, bay leaves, thyme, and drained brown rice. Cover tightly with foil and pot lid. Simmer on low heat for 25 minutes until fluffy.",
         "flameLevel": "Low",
         "timerMinutes": 25,
         "avoTip": "Tightly sealing with foil traps steam, ensuring brown rice cooks completely tender."
+      },
+      {
+        "stepNumber": 4,
+        "instruction": "Quickly steam shredded cabbage and carrots for 3 minutes until tender-crisp. Plate 50% brown Jollof rice, 25% cabbage-carrot medley, and 25% baked Titus mackerel steak.",
+        "flameLevel": "Low",
+        "timerMinutes": 3
       }
     ]
   },
@@ -1161,41 +1179,55 @@ const MASTER_RECIPES: FullRecipe[] = [
     "name": "Sukuma Wiki with Lean Beef & Kachumbari Salad",
     "emoji": "🥬",
     "image": "/assets/recipes/sukuma-wiki-beef.webp",
-    "clinicalScaleLabel": "Standard 9-Inch Divided Clinical Plate Serving",
+    "clinicalScaleLabel": "Sukuma Wiki with Lean Beef & Kachumbari Salad, clinical 9-inch plate",
+    "plateComposition": {
+      "staple": "Steamed Wholegrain Brown Basmati Rice",
+      "staplePct": 50,
+      "greens": "Braised Sukuma Wiki (Collard Greens)",
+      "greensPct": 25,
+      "protein": "Lean Beef Chunks & Fresh Kachumbari",
+      "proteinPct": 25
+    },
     "category": "lunch",
     "tags": [
-      "diabetic-friendly",
       "high-protein",
+      "diabetic-friendly",
       "heart-healthy",
       "weight-loss"
     ],
     "prepTime": 15,
-    "cookTime": 20,
-    "baseServings": 2,
+    "cookTime": 25,
+    "baseServings": 3,
     "difficulty": "easy",
-    "baseCalories": 310,
-    "baseProtein": 34,
-    "baseCarbs": 14,
+    "baseCalories": 340,
+    "baseProtein": 32,
+    "baseCarbs": 24,
     "baseFats": 12,
     "glycemicIndex": "Low",
     "rating": 4.9,
-    "reviews": 184,
-    "healthBenefits": "Collard greens and kale pack over 200% daily Vitamin K, lutein, and magnesium for glucose control.",
-    "clinicalNote": "Glycemic load < 5. East African staple for stabilizing morning blood glucose levels.",
+    "reviews": 178,
+    "healthBenefits": "Sukuma Wiki (collards) delivers potent glucosinolates and plant calcium; fresh tomato-onion Kachumbari supplies lycopene and quercetin.",
+    "clinicalNote": "Low glycemic load with high alkaline mineral content. Ideal for cardiovascular and diabetic glucose management.",
     "localMarkets": [
-      "Kariakoo Market",
+      "City Market Nairobi",
       "Gikomba Market",
-      "Whole Foods / Sainsbury's Kale & Collards"
+      "Tesco / Local Greens Stall"
     ],
     "ingredients": [
       {
-        "amount": 300,
-        "unit": "g",
-        "name": "Fresh Sukuma Wiki (Collard greens or Curly Kale)",
-        "diasporaSwap": "Spring greens or Swiss chard"
+        "amount": 0.5,
+        "unit": "cup",
+        "name": "Steamed wholegrain brown Basmati rice or Ugali (50% staple)",
+        "diasporaSwap": "Quinoa or cauliflower rice"
       },
       {
         "amount": 200,
+        "unit": "g",
+        "name": "Fresh Sukuma Wiki (Collard greens or Curly Kale)",
+        "diasporaSwap": "Fresh collard greens or spring greens"
+      },
+      {
+        "amount": 150,
         "unit": "g",
         "name": "Extra-lean minced or diced beef",
         "diasporaSwap": "Skinless chicken breast or grass-fed turkey"
@@ -1242,7 +1274,7 @@ const MASTER_RECIPES: FullRecipe[] = [
       },
       {
         "stepNumber": 3,
-        "instruction": "Fold in shredded Sukuma Wiki greens. Toss briskly for 4 minutes until wilted yet vibrant green. Serve with fresh Kachumbari tomato salad.",
+        "instruction": "Fold in shredded Sukuma Wiki greens. Toss briskly for 4 minutes until wilted yet vibrant green. Serve with fresh Kachumbari tomato salad and brown rice.",
         "flameLevel": "High",
         "timerMinutes": 4,
         "avoTip": "Do not overcook greens; keeping a slight crunch preserves vitamin C and glucosinolates!"
@@ -1254,7 +1286,15 @@ const MASTER_RECIPES: FullRecipe[] = [
     "name": "Cameroonian Ndolé (Bitterleaf & Peanut Pot) with Prawns",
     "emoji": "🍤",
     "image": "/assets/recipes/cameroonian-ndole.webp",
-    "clinicalScaleLabel": "Standard 9-Inch Divided Clinical Plate Serving",
+    "clinicalScaleLabel": "Cameroonian Ndolé with Prawns & Baked Plantains, clinical 9-inch plate",
+    "plateComposition": {
+      "staple": "Baked/Steamed Plantain Slices",
+      "staplePct": 50,
+      "greens": "Simmered Bitterleaf & Peanut Ndolé",
+      "greensPct": 25,
+      "protein": "Sautéed Tiger Prawns & Smoked Fish",
+      "proteinPct": 25
+    },
     "category": "dinner",
     "tags": [
       "high-protein",
@@ -1268,19 +1308,25 @@ const MASTER_RECIPES: FullRecipe[] = [
     "difficulty": "medium",
     "baseCalories": 370,
     "baseProtein": 36,
-    "baseCarbs": 15,
+    "baseCarbs": 28,
     "baseFats": 19,
     "glycemicIndex": "Low",
     "rating": 5,
     "reviews": 215,
     "healthBenefits": "Washed bitterleaf provides hepatoprotective vernoniosides; roasted peanuts supply monounsaturated lipids.",
-    "clinicalNote": "Ketogenic-compatible macro ratio. Very high satiety with zero post-prandial glucose spike.",
+    "clinicalNote": "Balanced clinical ratio with plantains, bitterleaf greens, and lean tiger prawns. Zero post-prandial glucose spike.",
     "localMarkets": [
       "Marché Central Douala",
       "Mfoundi Market Yaoundé",
       "African Specialty Supermarket"
     ],
     "ingredients": [
+      {
+        "amount": 2,
+        "unit": "medium",
+        "name": "Ripe or semi-ripe plantains, sliced & baked/steamed (50% staple)",
+        "diasporaSwap": "Baked sweet potato or green plantains"
+      },
       {
         "amount": 2,
         "unit": "cups",
@@ -1335,7 +1381,7 @@ const MASTER_RECIPES: FullRecipe[] = [
       },
       {
         "stepNumber": 3,
-        "instruction": "In a small skillet, sauté prawns with sliced onions in olive oil for 3 minutes until pink, then pour sizzling over the Ndolé pot.",
+        "instruction": "In a small skillet, sauté prawns with sliced onions in olive oil for 3 minutes until pink, then pour sizzling over the Ndolé pot. Serve alongside sliced baked plantains.",
         "flameLevel": "High",
         "timerMinutes": 3,
         "avoTip": "Pouring sizzling prawns and onions on top unlocks deep aroma."
@@ -1347,7 +1393,15 @@ const MASTER_RECIPES: FullRecipe[] = [
     "name": "Ethiopian Doro Wat (Slow-Caramelized Berbere Chicken)",
     "emoji": "🍗",
     "image": "/assets/recipes/ethiopian-doro-wat.webp",
-    "clinicalScaleLabel": "Standard 9-Inch Divided Clinical Plate Serving",
+    "clinicalScaleLabel": "Ethiopian Doro Wat with Injera Flatbread, clinical 9-inch plate",
+    "plateComposition": {
+      "staple": "Fermented Teff Injera Flatbread",
+      "staplePct": 50,
+      "greens": "Braised Spiced Gomen Collard Greens",
+      "greensPct": 25,
+      "protein": "Berbere Chicken Drumstick & Boiled Egg",
+      "proteinPct": 25
+    },
     "category": "dinner",
     "tags": [
       "high-protein",
@@ -1360,7 +1414,7 @@ const MASTER_RECIPES: FullRecipe[] = [
     "difficulty": "medium",
     "baseCalories": 380,
     "baseProtein": 38,
-    "baseCarbs": 12,
+    "baseCarbs": 26,
     "baseFats": 18,
     "glycemicIndex": "Low",
     "rating": 5,
@@ -1373,6 +1427,18 @@ const MASTER_RECIPES: FullRecipe[] = [
       "Spice Specialty Stores"
     ],
     "ingredients": [
+      {
+        "amount": 1,
+        "unit": "round",
+        "name": "Fermented Teff Injera flatbread (50% staple)",
+        "diasporaSwap": "Whole wheat flatbread or steamed brown rice"
+      },
+      {
+        "amount": 1,
+        "unit": "cup",
+        "name": "Braised Gomen collard greens (25% greens)",
+        "diasporaSwap": "Steamed kale or spinach"
+      },
       {
         "amount": 500,
         "unit": "g",
