@@ -12,6 +12,7 @@ export interface SpeakOptions {
   apiKey?: string;
   rate?: number;
   pitch?: number;
+  lang?: "en" | "pcm" | "yo" | "ig" | "ha" | "fr" | string;
   onStart?: () => void;
   onEnd?: () => void;
   onError?: (err: any) => void;
@@ -60,13 +61,68 @@ export function sanitizeTextForSpeech(rawText: string): string {
 /**
  * Finds the highest quality natural/neural voice available on the device
  */
-export function getBestNaturalVoice(): SpeechSynthesisVoice | null {
+export function getBestNaturalVoice(targetLang: string = "en"): SpeechSynthesisVoice | null {
   if (typeof window === "undefined" || !("speechSynthesis" in window)) return null;
 
   const voices = window.speechSynthesis.getVoices();
   if (!voices || voices.length === 0) return null;
 
-  // 1. Top priority: iOS Safari Enhanced/Premium & Google Neural voices
+  const l = (targetLang || "en").toLowerCase();
+
+  // 1. French Voice Selection
+  if (l === "fr" || l.startsWith("fr")) {
+    const frenchFemale = voices.find(
+      (v) =>
+        v.lang.toLowerCase().startsWith("fr") &&
+        (v.name.toLowerCase().includes("natural") ||
+          v.name.toLowerCase().includes("celine") ||
+          v.name.toLowerCase().includes("hortense") ||
+          v.name.toLowerCase().includes("thomas") ||
+          v.name.toLowerCase().includes("google français") ||
+          v.name.toLowerCase().includes("female"))
+    );
+    if (frenchFemale) return frenchFemale;
+    const anyFrench = voices.find((v) => v.lang.toLowerCase().startsWith("fr"));
+    if (anyFrench) return anyFrench;
+  }
+
+  // 2. Nigerian Pidgin / West African English Voice Selection
+  if (l === "pcm" || l === "en-ng" || l.includes("ng")) {
+    const nigerianVoice = voices.find(
+      (v) =>
+        v.lang.toLowerCase().includes("en-ng") ||
+        v.name.toLowerCase().includes("nigeria") ||
+        v.name.toLowerCase().includes("en-ng")
+    );
+    if (nigerianVoice) return nigerianVoice;
+
+    const africanVoice = voices.find((v) => v.lang.toLowerCase().includes("en-za") || v.lang.toLowerCase().includes("en-gh"));
+    if (africanVoice) return africanVoice;
+  }
+
+  // 3. Yoruba / Igbo / Hausa Voice Selection
+  if (l === "yo" || l.startsWith("yo")) {
+    const yoVoice = voices.find((v) => v.lang.toLowerCase().startsWith("yo"));
+    if (yoVoice) return yoVoice;
+    const ngVoice = voices.find((v) => v.lang.toLowerCase().includes("en-ng") || v.name.toLowerCase().includes("nigeria"));
+    if (ngVoice) return ngVoice;
+  }
+
+  if (l === "ig" || l.startsWith("ig")) {
+    const igVoice = voices.find((v) => v.lang.toLowerCase().startsWith("ig"));
+    if (igVoice) return igVoice;
+    const ngVoice = voices.find((v) => v.lang.toLowerCase().includes("en-ng") || v.name.toLowerCase().includes("nigeria"));
+    if (ngVoice) return ngVoice;
+  }
+
+  if (l === "ha" || l.startsWith("ha")) {
+    const haVoice = voices.find((v) => v.lang.toLowerCase().startsWith("ha"));
+    if (haVoice) return haVoice;
+    const ngVoice = voices.find((v) => v.lang.toLowerCase().includes("en-ng") || v.name.toLowerCase().includes("nigeria"));
+    if (ngVoice) return ngVoice;
+  }
+
+  // 4. High-Priority Natural / Neural English Voices
   const highPriorityNames = [
     "Samantha (Enhanced)",
     "Ava (Premium)",
@@ -88,7 +144,7 @@ export function getBestNaturalVoice(): SpeechSynthesisVoice | null {
     if (match) return match;
   }
 
-  // 2. High-quality natural English female voice
+  // 5. Natural Female English
   const naturalFemale = voices.find(
     (v) =>
       v.lang.startsWith("en") &&
@@ -101,7 +157,6 @@ export function getBestNaturalVoice(): SpeechSynthesisVoice | null {
   );
   if (naturalFemale) return naturalFemale;
 
-  // 3. Any English voice
   const englishVoice = voices.find((v) => v.lang.startsWith("en-GB") || v.lang.startsWith("en-US") || v.lang.startsWith("en"));
   if (englishVoice) return englishVoice;
 
@@ -208,9 +263,18 @@ function speakNaturalWebSpeech(text: string, options: SpeakOptions = {}) {
     return;
   }
 
-  const voice = getBestNaturalVoice();
+  const voice = getBestNaturalVoice(options.lang || "en");
   let currentIndex = 0;
   options.onStart?.();
+
+  const localeMap: Record<string, string> = {
+    en: "en-US",
+    pcm: "en-NG",
+    yo: "yo-NG",
+    ig: "ig-NG",
+    ha: "ha-NG",
+    fr: "fr-FR",
+  };
 
   const speakNextSentence = () => {
     if (isCancelled || currentIndex >= sentences.length) {
@@ -223,6 +287,7 @@ function speakNaturalWebSpeech(text: string, options: SpeakOptions = {}) {
     utterance.rate = options.rate || 0.94; // Warm, relaxed human conversational pace
     utterance.pitch = options.pitch || 1.02; // Warm friendly clinical tone
     utterance.volume = 1.0;
+    utterance.lang = localeMap[options.lang || "en"] || "en-US";
 
     if (voice) {
       utterance.voice = voice;

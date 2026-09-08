@@ -3,7 +3,7 @@
  * 100% Guaranteed Offline SPA Shell + Cache-First Static Assets
  */
 
-const CACHE_NAME = 'mealoptimiza-pwa-v7.5-humanized-home-tabs';
+const CACHE_NAME = 'mealoptimiza-pwa-v7.6-multilingual-sarah';
 
 const PRECACHE_ASSETS = [
   '/',

@@ -46,24 +46,140 @@ interface SmartVideoConciergeProps {
   onOpenHealthSetup?: () => void;
 }
 
-// Preset Clinical & African Nutrition Knowledge Base for instant conversational answers
-const CLINICAL_KNOWLEDGE_BASE: Record<string, string> = {
-  profile_importance:
-    "Filling in your Health Profile is super easy and helps MealOptimiza learn what you need! When you tell us your goals, age, or any health conditions, we customize your daily food tips so you can enjoy your favorite cultural dishes safely.",
-  app_superpowers:
-    "Here is how MealOptimiza helps you every day: First, you can snap a photo of any meal to check calories and easy tips. Second, you can find gentle swallow swaps that keep your blood sugar steady. Third, you get a clean market shopping list. And fourth, you can share a simple health summary with your doctor anytime!",
-  grocery:
-    "Our Smart Grocery List makes shopping easy! It sorts your ingredients by supermarket aisle so you can quickly pick up your fresh greens, fish, and swallows without forgetting anything.",
-  swallow:
-    "You do not have to give up swallow! Try delicious swaps like plantain flour, oat swallow, or amala. When you pair swallow with drawing soups like Okra or Ewedu, it helps your body digest sugar much more gently so you feel energized and full.",
-  bp:
-    "To keep your heart strong and blood pressure healthy: use tasty natural seasonings like locust beans (iru), garlic, ginger, and crayfish instead of lots of seasoning cubes, and drink plenty of water every day!",
-  zobo:
-    "Zobo tea is delicious and naturally helps relax your blood vessels! Brew it with ginger and cloves without adding white sugar. If you take blood pressure pills, drink it with meals to stay steady.",
-  fasting:
-    "When breaking a fast, start gentle! Drink a glass of water or light soup first, followed by boiled eggs or avocado before eating your main swallow or rice. This prevents stomach tiredness and keeps you feeling great.",
-  sequencing:
-    "Here is a simple kitchen trick: Eat a few spoons of your vegetable soup or fish first before your swallow or rice. It keeps your blood sugar super steady and stops the afternoon food coma!",
+// Preset Multilingual Clinical & African Nutrition Knowledge Base (EN, PCM, YO, IG, HA, FR)
+const MULTILINGUAL_KNOWLEDGE_BASE: Record<string, Record<string, string>> = {
+  en: {
+    profile_importance:
+      "Filling in your Health Profile is super easy and helps MealOptimiza learn what you need! When you tell us your goals, age, or any health conditions, we customize your daily food tips so you can enjoy your favorite cultural dishes safely.",
+    app_superpowers:
+      "Here is how MealOptimiza helps you every day: First, you can snap a photo of any meal to check calories and easy tips. Second, you can find gentle swallow swaps that keep your blood sugar steady. Third, you get a clean market shopping list. And fourth, you can share a simple health summary with your doctor anytime!",
+    grocery:
+      "Our Smart Grocery List makes shopping easy! It sorts your ingredients by supermarket aisle so you can quickly pick up your fresh greens, fish, and swallows without forgetting anything.",
+    swallow:
+      "You do not have to give up swallow! Try delicious swaps like plantain flour, oat swallow, or amala. When you pair swallow with drawing soups like Okra or Ewedu, it helps your body digest sugar much more gently so you feel energized and full.",
+    bp:
+      "To keep your heart strong and blood pressure healthy: use tasty natural seasonings like locust beans (iru), garlic, ginger, and crayfish instead of lots of seasoning cubes, and drink plenty of water every day!",
+    zobo:
+      "Zobo tea is delicious and naturally helps relax your blood vessels! Brew it with ginger and cloves without adding white sugar. If you take blood pressure pills, drink it with meals to stay steady.",
+    fasting:
+      "When breaking a fast, start gentle! Drink a glass of water or light soup first, followed by boiled eggs or avocado before eating your main swallow or rice. This prevents stomach tiredness and keeps you feeling great.",
+    sequencing:
+      "Here is a simple kitchen trick: Eat a few spoons of your vegetable soup or fish first before your swallow or rice. It keeps your blood sugar super steady and stops the afternoon food coma!",
+    weight_gain:
+      "To build healthy weight and strong muscle, add clean calorie density! Fortify your morning Akamu with whole milk and peanut butter (+350 kcal), enjoy rich Groundnut and Egusi soup with fish and eggs, and snack on roasted groundnuts with bananas.",
+    fruit:
+      "Enjoy whole African fruits like Garden Egg with spicy peanut paste, Agbalumo, or Guava right after your meal as a dessert anchor. Eating fruit after fiber and protein slows fructose absorption by 40%!",
+  },
+  pcm: {
+    profile_importance:
+      "To fill your Health Profile dey very simple and e go help MealOptimiza understand wetin your body need! When you tell us your age, weight, and goals, we go tailor your daily meal tips so you fit chop your favorite food with peace of mind.",
+    app_superpowers:
+      "See how MealOptimiza dey help you every day: 1) You fit snap photo of your food to check calories and advice. 2) You fit find better swallow swaps wey no go spike your blood sugar. 3) You get market shopping list wey dey arrange everything well well. 4) You fit share health report give your doctor anytime!",
+    grocery:
+      "Our Smart Market List dey make shopping dey very easy! E dey arrange your items by market line so you fit quickly buy your fresh ugwu, fish, and swallow without forgetting anything.",
+    swallow:
+      "You no need stop your swallow at all! Try better swaps like unripe plantain fufu, oat swallow, or amala. When you combine your swallow with drawing soup like Okra or Ewedu, your sugar go balance well well and you no go feel heavy.",
+    bp:
+      "To make your heart strong and keep blood pressure calm: use natural seasoning like Iru (locust beans), garlic, ginger, and crayfish instead of packing plenty seasoning cubes, and make you dey drink water well well.",
+    zobo:
+      "Zobo tea dey sweet and e dey help relax your blood pressure! Boil am with ginger and cloves without adding white sugar. E dey very good for body!",
+    fasting:
+      "When you dey break fast, take am easy! Drink clean water or light pepper soup first, chop boiled egg or avocado before you touch your heavy swallow. E go make your stomach relax.",
+    sequencing:
+      "See simple kitchen secret: Chop 3-4 spoons of your vegetable soup or fish first before your swallow or rice. E dey prevent sugar spike and e no go make you sleep off after food!",
+    weight_gain:
+      "If you wan gain solid weight and muscle: mix full milk and 2 spoons of peanut butter inside your morning Akamu (+350 clean calories), chop rich Egusi and Groundnut soup with fish and eggs, and snack on groundnut with banana!",
+    fruit:
+      "Chop complete fruit like Garden Egg with groundnut paste (Ose Oji) or Agbalumo after your food. When you chop fruit after soup and protein, your body go absorb the sweetness gently!",
+  },
+  yo: {
+    profile_importance:
+      "Kíkọ àwọn ẹ̀kúnrẹ́rẹ́ ìlera yín sínú Health Profile rọrùn púpọ̀, ó sì ń ran MealOptimiza lọ́wọ́ láti mọ oúnjẹ tó bá ara yín mu. Ẹ lè gbádùn àwọn oúnjẹ ìbílẹ̀ yín láìsí ìbẹ̀rù kankan!",
+    app_superpowers:
+      "Bí MealOptimiza ṣe ń ràn yín lọ́wọ́ nìyí: 1) Ẹ lè ya fọ́tò oúnjẹ yín fún àtúnyẹ̀wò kíákíá. 2) Ẹ lè yan àwọn oúnjẹ swallow tó ń tọ́jú ìwọ̀n ṣúgà. 3) Ẹ ní àkójọ ọjà fún ríra oúnjẹ tútù. 4) Ẹ lè fi àkọsílẹ̀ ìlera hàn dọ́kítà yín!",
+    grocery:
+      "Àkójọ ọjà wa ń jẹ́ kí ríra oúnjẹ ní ọjà rọrùn púpọ̀! Ó ń to ewébẹ̀, ẹja, àti oúnjẹ yín lẹ́sẹẹsẹ kí ẹ má baà gbàgbé ohunkóhun.",
+    swallow:
+      "Ẹ kò ní láti fi swallow sílẹ̀! Ẹ gbìyànjú Àmàlà, plantain fufu, tàbí oat fufu. Nígbà tí ẹ bá fi jẹ ọbẹ̀ Ewédú tàbí Ọ́kìrọ̀ tó ń fà, ṣúgà ara yín yóò dọ́gba dáradára.",
+    bp:
+      "Láti tọ́jú ẹ̀jẹ̀ ríru àti ọkàn yín: Ẹ lo èròjà àbínibí bíi Iru, ata-ilẹ̀, ayù, àti edé dípò maggi púpọ̀, kí ẹ sì máa mu omi dáradára lójojúmọ́.",
+    zobo:
+      "Zobo dára púpọ̀ fún ìtura iṣan ẹ̀jẹ̀! Ẹ bọ́ ọ pẹ̀lú ata-ilẹ̀ àti kànáfùrù láìsí ṣúgà funfun. Ó ń fún ara ní okun àti ìlera pípé.",
+    fasting:
+      "Tí ẹ bá ń tú àwẹ̀, ẹ kọ́kọ́ mu omi tàbí ọbẹ̀ fẹ́lẹ́fẹ́lẹ́, kí ẹ jẹ ẹyin sísè tàbí avocado kí ẹ tó jẹ oúnjẹ líle. Èyí kò ní jẹ́ kí inú yín rún.",
+    sequencing:
+      "Ọgbọ́n oúnjẹ pàtàkì: Ẹ kọ́kọ́ jẹ ṣíbí mélòó kan nínú ọbẹ̀ ewébẹ̀ tàbí ẹja yín kí ẹ tó bẹ̀rẹ̀ sí í jẹ swallow tàbí ìrẹsì. Kò ní jẹ́ kí oorun gbé yín lẹ́yìn oúnjẹ!",
+    weight_gain:
+      "Láti ní ìwọ̀n ara tó dára àti iṣan tó lágbára: Ẹ fi wàrà àti ẹ̀pà sí inú Ògì àárọ̀ yín, ẹ jẹ ọbẹ̀ Ẹ̀gúsí àti Ẹ̀pà pẹ̀lú ẹja, kí ẹ sì máa jẹ ẹ̀pà àti ọ̀gẹ̀dẹ̀.",
+    fruit:
+      "Ẹ jẹ èso bíi Igbá pẹ̀lú Òsé Ọjị tàbí Àgbálùmọ̀ lẹ́yìn oúnjẹ yín. Èyí kò ní jẹ́ kí ṣúgà ara yín ga lójijì!",
+  },
+  ig: {
+    profile_importance:
+      "Imejupụta Health Profile gị dị ezigbo mfe ma na-enyere MealOptimiza aka ịghọta mkpa ahụ gị! Ọ na-enye gị ndụmọdụ nri ga-enyere gị aka ịnụ ụtọ nri ọdịnala anyị n'enweghị nsogbu.",
+    app_superpowers:
+      "Otu MealOptimiza si enyere gị aka: 1) I nwere ike ịse foto nri gị maka nyocha kalori. 2) Họrọ swallow dị mma maka shuga gị. 3) Ndepụta ahịa maka nri ọhụrụ. 4) Kesaa akụkọ ahụike nye dọkịta gị!",
+    grocery:
+      "Ndepụta Ahịa anyị na-eme ka ịzụ ahịa dị mfe! Ọ na-ahazi akwụkwọ nri, azụ, na swallow ka ị ghara ichefu ihe ọ bụla.",
+    swallow:
+      "Ikwesighi ịkwụsị iri swallow! Jiri amala, unripe plantain fufu, ma ọ bụ oat fufu. Mgbe i ji ofe Ọkwụrụ ma ọ bụ Ewedu na-adọ adọ rie ya, shuga gị ga-adị nwayọ.",
+    bp:
+      "Iji chebe obi gị na ọbara mgbali elu: jiri Dawadawa/Iru, galik, jinja, na oporo mee nri kama iji ọtụtụ maggi, ma na-aṅụ ezigbo mmiri kwa ụbọchị.",
+    zobo:
+      "Mmiri Zobo dị ezigbo mma maka izu ike nke akwara ọbara! Sie ya na jinja na cloves n'etinyeghị shuga ọcha. Ọ na-eweta ezigbo ahụike.",
+    fasting:
+      "Mgbe ị na-agbasa ọnụ, were nwayọ! Buru ụzọ ṅụọ mmiri ma ọ bụ obere ofe, rie akwa siri esi tupu i rie nri siri ike ka afọ ghara ịgbọ gị.",
+    sequencing:
+      "Usoro nri dị mfe: Buru ụzọ rie ngaji ole na ole nke akwụkwọ nri ma ọ bụ azụ tupu i rie swallow ma ọ bụ osikapa ka ahụ gị wee nwee ume mgbe niile!",
+    weight_gain:
+      "Iji nwee ezigbo ahụ na ike: tinye mmiri ara ehi na ahụekere n'ime Akamu ụtụtụ gị (+350 kalori), rie ofe Egusi na Ofe Ahụekere nwere azụ na akwa!",
+    fruit:
+      "Rie mkpụrụ osisi dị ka Anara na Ọsẹ Ọjị ma ọ bụ Udara mgbe i risịrị nri. Ọ na-enyere ahụ aka ịgbari nri n'ụzọ dị mma!",
+  },
+  ha: {
+    profile_importance:
+      "Cika Bayanan Lafiyarku yana da sauƙi kuma yana taimaka wa MealOptimiza sanin abincin da ya dace da jikinku don ku ci abincinku na gargajiya cikin ƙoshin lafiya.",
+    app_superpowers:
+      "Ga yadda MealOptimiza ke taimaka muku: 1) Ɗaukar hoton abinci don sanin kalori. 2) Zaɓin tuwo mai lafiya wanda ba ya ɗaga sukarin jini. 3) Jerin sayayyar kasuwa. 4) Raba rahoton lafiya tare da likitanku!",
+    grocery:
+      "Jerin Kasuwanmu na Sauƙaƙa sayayya! Yana tsara ganyaye, kifi, da hatsi don kada ku manta da komai a kasuwa.",
+    swallow:
+      "Ba kwa buƙatar daina cin tuwo! Gwada tuwon masara, tuwon dawa, ko plantain fufu. Idan kuka haɗa da miyar kuɓewa ko ɗanwake, sukarin jini zai daidaita.",
+    bp:
+      "Don kiyaye lafiyar zuciya da saukar da hawan jini: yi amfani da daddawa, tafarnuwa, citta, da kifi maimakon sinadarin dandano mai yawa, sannan a sha ruwa sosai.",
+    zobo:
+      "Shayin Zobo yana da daɗi kuma yana taimakawa wajen buɗe hanyoyin jini! A dafa shi da citta da kanumfari ba tare da ƙara sukari ba.",
+    fasting:
+      "Idan za a buɗe baki, a fara da ruwa ko miya mai sauƙi, sannan a ci dafaffen ƙwai kafin a ci babban abinci don kiyaye cikin ku.",
+    sequencing:
+      "Dabarar cin abinci: Fara cin ganye ko kifi kafin a fara cin tuwo ko shinkafa. Wannan yana hana kasala da ɗaga sukari bayan cin abinci!",
+    weight_gain:
+      "Don samun ƙiba mai kyau da ƙarfin jiki: ƙara madara da gyaɗa a cikin Kokon safe (+350 kalori), ci Miyar Gyaɗa da Egusi tare da kifi da ƙwai!",
+    fruit:
+      "Ku ci 'ya'yan itace kamar Gauta tare da yaji ko Agbalumo bayan cin abinci don samun daidaiton sukari da narkar da abinci cikin sauƙi!",
+  },
+  fr: {
+    profile_importance:
+      "Remplir votre Profil de Santé est très simple et aide MealOptimiza à personnaliser vos conseils nutritionnels afin que vous puissiez savourer vos plats préférés en toute sécurité.",
+    app_superpowers:
+      "Voici comment MealOptimiza vous aide: 1) Analysez vos repas en photo. 2) Découvrez des alternatives saines pour vos féculents. 3) Liste de courses intelligente par rayon. 4) Partagez votre bilan de santé avec votre médecin !",
+    grocery:
+      "Notre liste de courses intelligente classe vos ingrédients par rayon pour faire vos achats de légumes, poissons et céréales en toute sérénité.",
+    swallow:
+      "Nul besoin d'abandonner vos plats traditionnels ! Privilégiez la farine de banane plantain, l'igname ou l'avoine avec une sauce riche en fibres (Gombo, Épinards) pour stabiliser votre glycémie.",
+    bp:
+      "Pour protéger votre cœur et votre tension : utilisez des épices naturelles (ail, gingembre, graines de néré) plutôt que des bouillons salés, et hydratez-vous régulièrement.",
+    zobo:
+      "L'infusion d'Hibiscus (Bissap / Zobo) favorise la détente vasculaire ! Préparez-la avec du gingembre et des clous de girofle sans sucre raffiné.",
+    fasting:
+      "Pour rompre le jeûne, commencez en douceur : buvez de l'eau ou un bouillon léger, suivi d'œufs bouillis ou d'avocat avant votre repas principal.",
+    sequencing:
+      "Astuce repas : Mangez d'abord quelques cuillères de légumes ou de poisson avant vos féculents. Cela évite les pics de glycémie et les coups de fatigue !",
+    weight_gain:
+      "Pour une prise de poids saine et musculaire : enrichissez votre bouillie matinale avec du lait entier et du beurre de cacahuète (+350 kcal) et savourez des soupes traditionnelles riches en poisson et œufs.",
+    fruit:
+      "Dégustez des fruits entiers comme la goyave ou l'avocat juste après votre repas. Les fibres solubles ralentissent l'absorption des glucides de 40 % !",
+  },
 };
 
 export default function SmartVideoConcierge({
@@ -84,20 +200,56 @@ export default function SmartVideoConcierge({
   const [aiResponse, setAiResponse] = useState<string | null>(null);
   const [isThinking, setIsThinking] = useState(false);
   const [isListening, setIsListening] = useState(false);
-  // 💡 PREDICTIVE SMART PROMPTS BASED ON TIME OF DAY
+  // 💡 PREDICTIVE SMART PROMPTS (Multilingual & Time-of-Day Adaptive)
   const predictivePrompts = useMemo(() => {
     const hr = new Date().getHours();
+    if (selectedLanguage === "pcm") {
+      return [
+        { icon: "🍲", text: "Which swallow swap better pass for blood sugar?" },
+        { icon: "🫀", text: "How I fit lower blood pressure with African spices?" },
+        { icon: "💪", text: "How I fit gain healthy weight with African food?" },
+      ];
+    }
+    if (selectedLanguage === "yo") {
+      return [
+        { icon: "🍲", text: "Swallow wo ló dára jù fún ìwọ̀n ṣúgà?" },
+        { icon: "🫀", text: "Báwo ni mo ṣe lè dín ẹ̀jẹ̀ ríru kù pẹ̀lú èròjà àbínibí?" },
+        { icon: "💪", text: "Báwo ni mo ṣe lè ní ìwọ̀n ara tó dára?" },
+      ];
+    }
+    if (selectedLanguage === "ig") {
+      return [
+        { icon: "🍲", text: "Olee swallow kacha mma maka shuga?" },
+        { icon: "🫀", text: "Kedu ka m ga-esi belata ọbara mgbali elu?" },
+        { icon: "💪", text: "Kedu ka m ga-esi nwekwuo ahụ na ike?" },
+      ];
+    }
+    if (selectedLanguage === "ha") {
+      return [
+        { icon: "🍲", text: "Wane tuwo ne ya fi dacewa da sukarin jini?" },
+        { icon: "🫀", text: "Yaya zan rage hawan jini da kayan miya na gida?" },
+        { icon: "💪", text: "Yaya zan samu ƙiba mai kyau da ƙarfi?" },
+      ];
+    }
+    if (selectedLanguage === "fr") {
+      return [
+        { icon: "🍲", text: "Quelle alternative pour stabiliser ma glycémie ?" },
+        { icon: "🫀", text: "Comment protéger ma tension avec des épices naturelles ?" },
+        { icon: "💪", text: "Comment prendre du muscle avec la cuisine africaine ?" },
+      ];
+    }
+    // Default English (Time Adaptive)
     if (hr >= 5 && hr < 11) {
       return [
         { icon: "🍳", text: "What low-sugar breakfast keeps me energized?" },
         { icon: "💧", text: "How much water should I drink this morning?" },
-        { icon: "☕", text: "Is unsweetened Zobo tea healthy for breakfast?" },
+        { icon: "💪", text: "How do I build healthy weight & muscle with African food?" },
       ];
     } else if (hr >= 11 && hr < 17) {
       return [
         { icon: "🍲", text: "What is the best swallow swap for lunch?" },
         { icon: "🥗", text: "Why should I eat Ewedu soup before my swallow?" },
-        { icon: "🚶🏾‍♂️", text: "How do I prevent a post-lunch food coma?" },
+        { icon: "🍊", text: "How should I combine whole fruits with my meal?" },
       ];
     } else {
       return [
@@ -106,7 +258,7 @@ export default function SmartVideoConcierge({
         { icon: "🥑", text: "Is avocado and boiled egg good for dinner?" },
       ];
     }
-  }, []);
+  }, [selectedLanguage]);
   const silenceTimerRef = useRef<any>(null);
   const speechRecognitionRef = useRef<any>(null);
 
@@ -123,11 +275,12 @@ export default function SmartVideoConcierge({
     fr: `Bienvenue sur MealOptimiza ! Je suis Sarah, votre Assistante en Nutrition. Prenez des photos de vos plats pour une analyse instantanée et découvrez notre liste de courses intelligente. Complétez votre profil de santé ci-dessous pour des recommandations personnalisées !`,
   };
 
-  // Fluid Speech function with automatic start/stop and strict lip-sync trigger
-  const speakText = (text: string) => {
+  // Fluid Multilingual Speech function with lip-sync and dynamic voice selection
+  const speakText = (text: string, lang: string = selectedLanguage) => {
     if (isMuted) return;
     speakWithSarah(text, {
       voiceId: "YIgPmt6aTfZFf6mjP9RC",
+      lang: lang,
       rate: speechRate,
       pitch: 1.02,
       onStart: () => setIsSpeaking(true),
@@ -181,41 +334,59 @@ export default function SmartVideoConcierge({
 
   const handleAskQuestion = (query: string) => {
     if (!query.trim()) return;
-    triggerHaptic("medium");
+    setUserQuery(query);
     setIsThinking(true);
-    setUserQuery("");
+    triggerHaptic("light");
+    stopSarahSpeech();
 
     const q = query.toLowerCase();
+    const langKb = MULTILINGUAL_KNOWLEDGE_BASE[selectedLanguage] || MULTILINGUAL_KNOWLEDGE_BASE.en;
     let answer = "";
 
-    if (q.includes("profile") || q.includes("demographic") || q.includes("importance") || q.includes("why fill") || q.includes("setup")) {
-      answer = CLINICAL_KNOWLEDGE_BASE.profile_importance;
-    } else if (q.includes("market") || q.includes("grocery") || q.includes("shopping") || q.includes("aisle") || q.includes("store")) {
-      answer = CLINICAL_KNOWLEDGE_BASE.grocery;
-    } else if (q.includes("app") || q.includes("feature") || q.includes("can do") || q.includes("what can") || q.includes("superpower")) {
-      answer = CLINICAL_KNOWLEDGE_BASE.app_superpowers;
-    } else if (q.includes("swallow") || q.includes("pounded yam") || q.includes("garri") || q.includes("eba") || q.includes("diabetes") || q.includes("sugar")) {
-      answer = CLINICAL_KNOWLEDGE_BASE.swallow;
-    } else if (q.includes("bp") || q.includes("blood pressure") || q.includes("hypertension") || q.includes("salt") || q.includes("sodium")) {
-      answer = CLINICAL_KNOWLEDGE_BASE.bp;
-    } else if (q.includes("zobo") || q.includes("hibiscus") || q.includes("tea") || q.includes("drink")) {
-      answer = CLINICAL_KNOWLEDGE_BASE.zobo;
-    } else if (q.includes("fast") || q.includes("fasting") || q.includes("autophagy") || q.includes("break")) {
-      answer = CLINICAL_KNOWLEDGE_BASE.fasting;
-    } else if (q.includes("sequence") || q.includes("order") || q.includes("first") || q.includes("plate")) {
-      answer = CLINICAL_KNOWLEDGE_BASE.sequencing;
+    if (q.includes("profile") || q.includes("setup") || q.includes("start") || q.includes("why") || q.includes("bayani") || q.includes("nkọwa")) {
+      answer = langKb.profile_importance;
+    } else if (q.includes("app") || q.includes("superpower") || q.includes("help") || q.includes("what") || q.includes("ọrụ") || q.includes("taimako") || q.includes("ẹrọ")) {
+      answer = langKb.app_superpowers;
+    } else if (q.includes("market") || q.includes("grocery") || q.includes("shopping") || q.includes("store") || q.includes("ahịa") || q.includes("ọjà") || q.includes("kasuwa") || q.includes("courses")) {
+      answer = langKb.grocery;
+    } else if (q.includes("swallow") || q.includes("amala") || q.includes("fufu") || q.includes("garri") || q.includes("yam") || q.includes("carb") || q.includes("tuwo") || q.includes("ọka")) {
+      answer = langKb.swallow;
+    } else if (q.includes("bp") || q.includes("pressure") || q.includes("hypertension") || q.includes("salt") || q.includes("maggi") || q.includes("iru") || q.includes("ọbara") || q.includes("ẹ̀jẹ̀") || q.includes("hawan jini") || q.includes("tension")) {
+      answer = langKb.bp;
+    } else if (q.includes("zobo") || q.includes("hibiscus") || q.includes("tea") || q.includes("drink") || q.includes("shayi") || q.includes("mmiri zobo") || q.includes("bissap")) {
+      answer = langKb.zobo;
+    } else if (q.includes("fast") || q.includes("fasting") || q.includes("autophagy") || q.includes("break") || q.includes("àwẹ̀") || q.includes("azum") || q.includes("ọnụ") || q.includes("jeûne")) {
+      answer = langKb.fasting;
+    } else if (q.includes("sequence") || q.includes("order") || q.includes("first") || q.includes("plate") || q.includes("ofe") || q.includes("miya") || q.includes("ọbẹ̀")) {
+      answer = langKb.sequencing;
+    } else if (q.includes("gain") || q.includes("weight") || q.includes("muscle") || q.includes("bulk") || q.includes("ƙiba") || q.includes("ibu") || q.includes("sanra") || q.includes("muscle")) {
+      answer = langKb.weight_gain;
+    } else if (q.includes("fruit") || q.includes("garden egg") || q.includes("agbalumo") || q.includes("udara") || q.includes("ube") || q.includes("guava") || q.includes("èso") || q.includes("mkpụrụ") || q.includes("'ya'yan itace")) {
+      answer = langKb.fruit;
     } else {
-      answer = `That is a wonderful question regarding ${query}! For maximum personalized accuracy, make sure your Health Profile is calibrated. When paired with high-fiber African vegetable soups like Ewedu, Okra, or Ugu, your meals maintain balanced blood sugar and optimal vitality.`;
+      if (selectedLanguage === "pcm") {
+        answer = `Better question regarding ${query}! To make sure say you get accurate guidance, check your Health Profile. When you combine your favorite food with African vegetable soups like Ewedu or Okra, your blood sugar go stay steady!`;
+      } else if (selectedLanguage === "yo") {
+        answer = `Ìbéèrè dáradára nípa ${query}! Láti rí ìmọ̀ràn tó péye jù, ẹ ri i dájú pé ẹ kọ àwọn ẹ̀kúnrẹ́rẹ́ ìlera yín sínú Health Profile. Oúnjẹ yín yóò fún yín ní ìlera pípé pẹ̀lú ọbẹ̀ ewébẹ̀ bíi Ewédú àti Ọ́kìrọ̀!`;
+      } else if (selectedLanguage === "ig") {
+        answer = `Ajụjụ magburu onwe ya gbasara ${query}! Iji nweta ezigbo ndụmọdụ, mejuo Health Profile gị. Mgbe i ji ofe akwụkwọ nri dị ka Ọkwụrụ ma ọ bụ Ewedu rie nri gị, shuga gị ga-adị mma!`;
+      } else if (selectedLanguage === "ha") {
+        answer = `Kyakkyawar tambaya game da ${query}! Don samun ingantacciyar shawara, ku tabbatar kun cika Bayanan Lafiyarku. Cin abinci tare da miyar ganye kamar kuɓewa zai kiyaye lafiyarku!`;
+      } else if (selectedLanguage === "fr") {
+        answer = `Excellente question concernant ${query} ! Pour des conseils personnalisés, complétez votre Profil de Santé. Accompagnés de sauces traditionnelles riches en légumes (Gombo, Épinards), vos repas vous apportent une énergie durable !`;
+      } else {
+        answer = `That is a wonderful question regarding ${query}! For maximum personalized accuracy, make sure your Health Profile is calibrated. When paired with high-fiber African vegetable soups like Ewedu, Okra, or Ugu, your meals maintain balanced blood sugar and optimal vitality.`;
+      }
     }
 
     setTimeout(() => {
       setIsThinking(false);
       setAiResponse(answer);
-      speakText(answer);
-    }, 450);
+      speakText(answer, selectedLanguage);
+    }, 400);
   };
 
-  // Voice Input (Microphone Speech-to-Text with Extended 60s Duration & 3s Silence Debounce)
+    // Voice Input (Microphone Speech-to-Text with Extended 60s Duration & 3s Silence Debounce)
   const handleVoiceInput = () => {
     const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
     if (!SpeechRecognition) {
@@ -242,7 +413,15 @@ export default function SmartVideoConcierge({
 
     try {
       const recognition = new SpeechRecognition();
-      recognition.lang = selectedLanguage === "fr" ? "fr-FR" : "en-US";
+      const langLocaleMap: Record<string, string> = {
+        en: "en-US",
+        pcm: "en-NG",
+        yo: "yo-NG",
+        ig: "ig-NG",
+        ha: "ha-NG",
+        fr: "fr-FR",
+      };
+      recognition.lang = langLocaleMap[selectedLanguage] || "en-US";
       recognition.continuous = true;
       recognition.interimResults = true;
       recognition.maxAlternatives = 1;
