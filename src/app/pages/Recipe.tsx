@@ -125,7 +125,7 @@ const MASTER_RECIPES: FullRecipe[] = [
     "id": "101",
     "name": "KDIGO Leached Yam Porridge (Renal-Safe)",
     "emoji": "🍲",
-    "image": "/assets/recipes/kdigo-yam-porridge.png",
+    "image": "/assets/recipes/kdigo-yam-porridge.webp",
     "clinicalScaleLabel": "KDIGO Leached Yam Porridge (Renal-Safe), prepared for one standard serving",
     "plateComposition": {
       "staple": "KDIGO Leached Yam Cubes (Porridge)",
@@ -218,7 +218,7 @@ const MASTER_RECIPES: FullRecipe[] = [
     "id": "102",
     "name": "Soothing Green Banana & Oat Porridge (Ulcer & Acid-Safe)",
     "emoji": "🥣",
-    "image": "/assets/recipes/green-banana-porridge.jpg",
+    "image": "/assets/recipes/green-banana-porridge.webp",
     "clinicalScaleLabel": "Soothing Green Banana & Oat Porridge (Ulcer-Safe), single clinical portion",
     "plateComposition": {
       "staple": "Grated Green Banana & Oat Porridge with Chia",
@@ -386,7 +386,7 @@ const MASTER_RECIPES: FullRecipe[] = [
     "id": "104",
     "name": "Lycopene-Enriched Red Pepper & Titus Stew (Prostate & Heart)",
     "emoji": "🐟",
-    "image": "/assets/recipes/brown-jollof-titus.jpg",
+    "image": "/assets/recipes/brown-jollof-titus.webp",
     "clinicalScaleLabel": "Lycopene-Enriched Red Pepper & Titus Stew, single clinical serving",
     "plateComposition": {
       "staple": "Brown Basmati / Ofada Rice",
@@ -473,7 +473,7 @@ const MASTER_RECIPES: FullRecipe[] = [
     "id": "105",
     "name": "Maternal Healing Dry Catfish & Uziza Soup (Postpartum & Recovery)",
     "emoji": "🍲",
-    "image": "/assets/recipes/dry-catfish-uziza.jpg",
+    "image": "/assets/recipes/dry-catfish-uziza.webp",
     "clinicalScaleLabel": "Maternal Healing Dry Catfish & Uziza Soup, postpartum single portion",
     "plateComposition": {
       "staple": "Boiled Unripe Plantain Disks",
@@ -738,7 +738,7 @@ const MASTER_RECIPES: FullRecipe[] = [
     "id": "2",
     "name": "Low-Sodium Native Brown Jollof Rice",
     "emoji": "🍚",
-    "image": "/assets/recipes/brown-jollof-titus.jpg",
+    "image": "/assets/recipes/brown-jollof-titus.webp",
     "clinicalScaleLabel": "Low-Sodium Native Brown Jollof Rice, DASH single serving",
     "plateComposition": {
       "staple": "Smoky Brown Ofada Jollof Rice",
@@ -844,7 +844,7 @@ const MASTER_RECIPES: FullRecipe[] = [
     "id": "3",
     "name": "Protein-Packed Egusi & Ugu Soup (Unbleached)",
     "emoji": "🍲",
-    "image": "/assets/recipes/egusi-ugu-soup.jpg",
+    "image": "/assets/recipes/egusi-ugu-soup.webp",
     "clinicalScaleLabel": "Protein-Packed Egusi & Ugu Soup, single portion",
     "plateComposition": {
       "staple": "Unbleached Ground Melon Seed Egusi",
@@ -944,7 +944,7 @@ const MASTER_RECIPES: FullRecipe[] = [
     "id": "4",
     "name": "Afang & Waterleaf Superfood Pot with Smoked Fish",
     "emoji": "🥗",
-    "image": "/assets/recipes/diabetic-oat-swallow-okra.jpg",
+    "image": "/assets/recipes/afang-waterleaf-pot.webp",
     "clinicalScaleLabel": "Standard 9-Inch Divided Clinical Plate Serving",
     "category": "dinner",
     "tags": [
@@ -1037,7 +1037,7 @@ const MASTER_RECIPES: FullRecipe[] = [
     "id": "5",
     "name": "Antioxidant Ghanaian Waakye with Shito & Boiled Egg",
     "emoji": "🍛",
-    "image": "/assets/recipes/diabetic-oat-swallow-okra.jpg",
+    "image": "/assets/recipes/ghanaian-waakye-egg.webp",
     "clinicalScaleLabel": "Standard 9-Inch Divided Clinical Plate Serving",
     "category": "lunch",
     "tags": [
@@ -1129,7 +1129,7 @@ const MASTER_RECIPES: FullRecipe[] = [
     "id": "6",
     "name": "Baobab (Miyan Kuka) & Ancient Fonio Supergrain",
     "emoji": "🥣",
-    "image": "/assets/recipes/diabetic-oat-swallow-okra.jpg",
+    "image": "/assets/recipes/baobab-kuka-fonio.webp",
     "clinicalScaleLabel": "Standard 9-Inch Divided Clinical Plate Serving",
     "category": "dinner",
     "tags": [
@@ -1216,7 +1216,7 @@ const MASTER_RECIPES: FullRecipe[] = [
     "id": "7",
     "name": "Medicinal Ofe Nsala (White Catfish Soup) with Utazi",
     "emoji": "🍲",
-    "image": "/assets/recipes/diabetic-oat-swallow-okra.jpg",
+    "image": "/assets/recipes/ofe-nsala-catfish.webp",
     "clinicalScaleLabel": "Standard 9-Inch Divided Clinical Plate Serving",
     "category": "dinner",
     "tags": [
@@ -1309,7 +1309,7 @@ const MASTER_RECIPES: FullRecipe[] = [
     "id": "8",
     "name": "Sukuma Wiki with Lean Beef & Kachumbari Salad",
     "emoji": "🥬",
-    "image": "/assets/recipes/diabetic-oat-swallow-okra.jpg",
+    "image": "/assets/recipes/sukuma-wiki-beef.webp",
     "clinicalScaleLabel": "Standard 9-Inch Divided Clinical Plate Serving",
     "category": "lunch",
     "tags": [
@@ -1402,7 +1402,7 @@ const MASTER_RECIPES: FullRecipe[] = [
     "id": "9",
     "name": "Cameroonian Ndolé (Bitterleaf & Peanut Pot) with Prawns",
     "emoji": "🍤",
-    "image": "/assets/recipes/diabetic-oat-swallow-okra.jpg",
+    "image": "/assets/recipes/cameroonian-ndole.webp",
     "clinicalScaleLabel": "Standard 9-Inch Divided Clinical Plate Serving",
     "category": "dinner",
     "tags": [
@@ -1495,7 +1495,7 @@ const MASTER_RECIPES: FullRecipe[] = [
     "id": "10",
     "name": "Ethiopian Doro Wat (Slow-Caramelized Berbere Chicken)",
     "emoji": "🍗",
-    "image": "/assets/recipes/diabetic-oat-swallow-okra.jpg",
+    "image": "/assets/recipes/ethiopian-doro-wat.webp",
     "clinicalScaleLabel": "Standard 9-Inch Divided Clinical Plate Serving",
     "category": "dinner",
     "tags": [
@@ -1581,7 +1581,7 @@ const MASTER_RECIPES: FullRecipe[] = [
     "id": "11",
     "name": "South African Chakalaka & Bean Relish with Sorghum",
     "emoji": "🫘",
-    "image": "/assets/recipes/diabetic-oat-swallow-okra.jpg",
+    "image": "/assets/recipes/ghanaian-waakye-egg.webp",
     "clinicalScaleLabel": "Standard 9-Inch Divided Clinical Plate Serving",
     "category": "lunch",
     "tags": [
@@ -1667,7 +1667,7 @@ const MASTER_RECIPES: FullRecipe[] = [
     "id": "12",
     "name": "Diaspora Quinoa Jollof Bowl with Pan-Seared Salmon",
     "emoji": "🍣",
-    "image": "/assets/recipes/diabetic-oat-swallow-okra.jpg",
+    "image": "/assets/recipes/brown-jollof-titus.webp",
     "clinicalScaleLabel": "Standard 9-Inch Divided Clinical Plate Serving",
     "category": "dinner",
     "tags": [
@@ -1754,7 +1754,7 @@ const MASTER_RECIPES: FullRecipe[] = [
     "id": "13",
     "name": "Unsweetened Hibiscus (Zobo) Elixir with Ginger & Lime",
     "emoji": "🌺",
-    "image": "/assets/recipes/diabetic-oat-swallow-okra.jpg",
+    "image": "/assets/recipes/green-banana-porridge.webp",
     "clinicalScaleLabel": "Standard 9-Inch Divided Clinical Plate Serving",
     "category": "snack",
     "tags": [
@@ -1827,7 +1827,7 @@ const MASTER_RECIPES: FullRecipe[] = [
     "id": "14",
     "name": "Steamed Protein Moi-Moi with Boiled Egg",
     "emoji": "🍮",
-    "image": "/assets/recipes/diabetic-oat-swallow-okra.jpg",
+    "image": "/assets/recipes/kdigo-yam-porridge.webp",
     "clinicalScaleLabel": "Standard 9-Inch Divided Clinical Plate Serving",
     "category": "breakfast",
     "tags": [
@@ -1907,7 +1907,7 @@ const MASTER_RECIPES: FullRecipe[] = [
     "id": "15",
     "name": "Efo Riro (Leafy Spinach & Ugu Stir-In) with Lean Beef",
     "emoji": "🥬",
-    "image": "/assets/recipes/diabetic-oat-swallow-okra.jpg",
+    "image": "/assets/recipes/cauliflower-fufu-efo.webp",
     "clinicalScaleLabel": "Standard 9-Inch Divided Clinical Plate Serving",
     "category": "dinner",
     "tags": [
@@ -1993,7 +1993,7 @@ const MASTER_RECIPES: FullRecipe[] = [
     "id": "16",
     "name": "Swahili Kuku Paka (Charred Coconut Chicken) & Brown Rice",
     "emoji": "🥥",
-    "image": "/assets/recipes/diabetic-oat-swallow-okra.jpg",
+    "image": "/assets/recipes/cameroonian-ndole.webp",
     "clinicalScaleLabel": "Standard 9-Inch Divided Clinical Plate Serving",
     "category": "dinner",
     "tags": [

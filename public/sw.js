@@ -3,7 +3,7 @@
  * 100% Guaranteed Offline SPA Shell + Cache-First Static Assets
  */
 
-const CACHE_NAME = 'mealoptimiza-pwa-v8.5-visual-recipe-studio-9inch-plates';
+const CACHE_NAME = 'mealoptimiza-pwa-v8.6-unique-deduplicated-plates';
 
 const PRECACHE_ASSETS = [
   '/',
