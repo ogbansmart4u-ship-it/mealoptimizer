@@ -1,11 +1,11 @@
 // Voice Synthesis Service for Sarah, The Nutrition Assistant
-// Ultra-Natural Conversational Voice Engine with Mobile Voice Optimization & Lip-Sync
+// Ultra-Natural Conversational Voice Engine with Multilingual Fallbacks & Mobile Optimization
 
 const DEFAULT_ELEVENLABS_VOICE_ID = "YIgPmt6aTfZFf6mjP9RC";
 const audioCache = new Map<string, string>();
 let currentAudio: HTMLAudioElement | null = null;
-let currentUtteranceQueue: SpeechSynthesisUtterance[] = [];
 let isCancelled = false;
+let keepAliveTimer: any = null;
 
 export interface SpeakOptions {
   voiceId?: string;
@@ -18,58 +18,96 @@ export interface SpeakOptions {
   onError?: (err: any) => void;
 }
 
+// In-memory voices cache for fast synchronous access
+let cachedVoices: SpeechSynthesisVoice[] = [];
+
+function updateVoiceCache(): SpeechSynthesisVoice[] {
+  if (typeof window === "undefined" || !("speechSynthesis" in window)) return [];
+  const voices = window.speechSynthesis.getVoices();
+  if (voices && voices.length > 0) {
+    cachedVoices = voices;
+  }
+  return cachedVoices;
+}
+
+if (typeof window !== "undefined" && "speechSynthesis" in window) {
+  updateVoiceCache();
+  window.speechSynthesis.onvoiceschanged = () => {
+    updateVoiceCache();
+  };
+}
+
 /**
  * Phonetic & Conversational Normalizer
- * Cleans text of emojis and expands clinical acronyms so mobile TTS sounds human and fluid.
+ * Cleans emojis and expands clinical acronyms.
+ * For African languages (Yoruba, Igbo, Hausa, Pidgin), strips complex diacritics
+ * into clean phonetic Latin so standard mobile synthesizers pronounce words fluidly.
  */
-export function sanitizeTextForSpeech(rawText: string): string {
+export function sanitizeTextForSpeech(rawText: string, lang: string = "en"): string {
   if (!rawText) return "";
 
   let text = rawText
     // 1. Remove emojis and visual icons
     .replace(/[\u{1F300}-\u{1F9FF}\u{1FA00}-\u{1FAFF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{1F1E6}-\u{1F1FF}]/gu, "")
-    // 2. Remove markdown bold/italic/code syntax
+    // 2. Remove markdown bold/italic/code/bracket syntax
     .replace(/[*_#~`>[\]()]/g, " ")
-    // 3. Expand clinical acronyms into natural spoken words
+    // 3. Expand common abbreviations
     .replace(/\beA1c\b/gi, "estimated A one C")
     .replace(/\bHbA1c\b/gi, "hemoglobin A one C")
     .replace(/\bGLUT4\b/gi, "GLUT four")
     .replace(/\bGLP-1\b/gi, "GLP one")
-    .replace(/\bPCOS\b/gi, "P-C-O-S")
+    .replace(/\bPCOS\b/gi, "P C O S")
     .replace(/\bPUD\b/gi, "peptic ulcer disease")
     .replace(/\bBP\b/g, "blood pressure")
     .replace(/\bGI\b/g, "glycemic index")
     .replace(/\bKDIGO\b/gi, "kidney disease guidelines")
     .replace(/\bPDF\b/gi, "P D F")
     .replace(/\bAI\b/g, "A I")
-    .replace(/\bXP\b/gi, "experience points")
+    .replace(/\bXP\b/gi, "points")
     .replace(/\b2\.5L\b/gi, "two and a half liters")
     .replace(/\b100%\b/g, "one hundred percent")
     .replace(/\b30%\b/g, "thirty percent")
     .replace(/\b38%\b/g, "thirty eight percent")
+    .replace(/\b40%\b/g, "forty percent")
     // 4. Convert lists (1), 2), 3)) to conversational connectors
     .replace(/\b1\)\s*/g, " First, ")
     .replace(/\b2\)\s*/g, " Second, ")
     .replace(/\b3\)\s*/g, " Third, ")
-    .replace(/\b4\)\s*/g, " Fourth, ")
-    .replace(/\s+/g, " ")
-    .trim();
+    .replace(/\b4\)\s*/g, " Fourth, ");
 
-  return text;
+  // 5. Phonetic normalization for African languages if using English/African synthesized engines
+  const l = (lang || "en").toLowerCase();
+  if (l === "yo" || l === "ig" || l === "ha" || l === "pcm") {
+    text = text
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "") // Strip tone accents
+      .replace(/[ẹẸ]/g, "e")
+      .replace(/[ọỌ]/g, "o")
+      .replace(/[ṣṢ]/g, "s")
+      .replace(/[ịỊ]/g, "i")
+      .replace(/[ụỤ]/g, "u")
+      .replace(/[ṅṄ]/g, "n")
+      .replace(/[ɓƁ]/g, "b")
+      .replace(/[ɗƊ]/g, "d")
+      .replace(/[ƙƘ]/g, "k")
+      .replace(/[ƴƳ]/g, "y");
+  }
+
+  return text.replace(/\s+/g, " ").trim();
 }
 
 /**
- * Finds the highest quality natural/neural voice available on the device
+ * Finds the best available natural/neural voice on the device matching the target language.
  */
 export function getBestNaturalVoice(targetLang: string = "en"): SpeechSynthesisVoice | null {
   if (typeof window === "undefined" || !("speechSynthesis" in window)) return null;
 
-  const voices = window.speechSynthesis.getVoices();
+  let voices = cachedVoices.length > 0 ? cachedVoices : updateVoiceCache();
   if (!voices || voices.length === 0) return null;
 
   const l = (targetLang || "en").toLowerCase();
 
-  // 1. French Voice Selection
+  // 1. French Voice
   if (l === "fr" || l.startsWith("fr")) {
     const frenchFemale = voices.find(
       (v) =>
@@ -79,14 +117,17 @@ export function getBestNaturalVoice(targetLang: string = "en"): SpeechSynthesisV
           v.name.toLowerCase().includes("hortense") ||
           v.name.toLowerCase().includes("thomas") ||
           v.name.toLowerCase().includes("google français") ||
-          v.name.toLowerCase().includes("female"))
+          v.name.toLowerCase().includes("female") ||
+          v.name.toLowerCase().includes("julie") ||
+          v.name.toLowerCase().includes("amelie"))
     );
     if (frenchFemale) return frenchFemale;
+
     const anyFrench = voices.find((v) => v.lang.toLowerCase().startsWith("fr"));
     if (anyFrench) return anyFrench;
   }
 
-  // 2. Nigerian Pidgin / West African English Voice Selection
+  // 2. Nigerian Pidgin / African Regional Voices
   if (l === "pcm" || l === "en-ng" || l.includes("ng")) {
     const nigerianVoice = voices.find(
       (v) =>
@@ -96,33 +137,41 @@ export function getBestNaturalVoice(targetLang: string = "en"): SpeechSynthesisV
     );
     if (nigerianVoice) return nigerianVoice;
 
-    const africanVoice = voices.find((v) => v.lang.toLowerCase().includes("en-za") || v.lang.toLowerCase().includes("en-gh"));
+    const africanVoice = voices.find(
+      (v) => v.lang.toLowerCase().includes("en-za") || v.lang.toLowerCase().includes("en-gh")
+    );
     if (africanVoice) return africanVoice;
   }
 
-  // 3. Yoruba / Igbo / Hausa Voice Selection
+  // 3. Yoruba / Igbo / Hausa Voice
   if (l === "yo" || l.startsWith("yo")) {
     const yoVoice = voices.find((v) => v.lang.toLowerCase().startsWith("yo"));
     if (yoVoice) return yoVoice;
-    const ngVoice = voices.find((v) => v.lang.toLowerCase().includes("en-ng") || v.name.toLowerCase().includes("nigeria"));
+    const ngVoice = voices.find(
+      (v) => v.lang.toLowerCase().includes("en-ng") || v.name.toLowerCase().includes("nigeria")
+    );
     if (ngVoice) return ngVoice;
   }
 
   if (l === "ig" || l.startsWith("ig")) {
     const igVoice = voices.find((v) => v.lang.toLowerCase().startsWith("ig"));
     if (igVoice) return igVoice;
-    const ngVoice = voices.find((v) => v.lang.toLowerCase().includes("en-ng") || v.name.toLowerCase().includes("nigeria"));
+    const ngVoice = voices.find(
+      (v) => v.lang.toLowerCase().includes("en-ng") || v.name.toLowerCase().includes("nigeria")
+    );
     if (ngVoice) return ngVoice;
   }
 
   if (l === "ha" || l.startsWith("ha")) {
     const haVoice = voices.find((v) => v.lang.toLowerCase().startsWith("ha"));
     if (haVoice) return haVoice;
-    const ngVoice = voices.find((v) => v.lang.toLowerCase().includes("en-ng") || v.name.toLowerCase().includes("nigeria"));
+    const ngVoice = voices.find(
+      (v) => v.lang.toLowerCase().includes("en-ng") || v.name.toLowerCase().includes("nigeria")
+    );
     if (ngVoice) return ngVoice;
   }
 
-  // 4. High-Priority Natural / Neural English Voices
+  // 4. Premium Natural / Neural English Voices
   const highPriorityNames = [
     "Samantha (Enhanced)",
     "Ava (Premium)",
@@ -147,7 +196,7 @@ export function getBestNaturalVoice(targetLang: string = "en"): SpeechSynthesisV
   // 5. Natural Female English
   const naturalFemale = voices.find(
     (v) =>
-      v.lang.startsWith("en") &&
+      v.lang.toLowerCase().startsWith("en") &&
       (v.name.toLowerCase().includes("natural") ||
         v.name.toLowerCase().includes("female") ||
         v.name.toLowerCase().includes("samantha") ||
@@ -157,7 +206,9 @@ export function getBestNaturalVoice(targetLang: string = "en"): SpeechSynthesisV
   );
   if (naturalFemale) return naturalFemale;
 
-  const englishVoice = voices.find((v) => v.lang.startsWith("en-GB") || v.lang.startsWith("en-US") || v.lang.startsWith("en"));
+  const englishVoice = voices.find(
+    (v) => v.lang.toLowerCase().startsWith("en-gb") || v.lang.toLowerCase().startsWith("en-us") || v.lang.toLowerCase().startsWith("en")
+  );
   if (englishVoice) return englishVoice;
 
   return voices[0] || null;
@@ -170,13 +221,14 @@ export async function speakWithSarah(
   rawText: string,
   options: SpeakOptions = {}
 ): Promise<void> {
-  const voiceId = options.voiceId || import.meta.env.VITE_ELEVENLABS_VOICE_ID || DEFAULT_ELEVENLABS_VOICE_ID;
-  const apiKey = options.apiKey || import.meta.env.VITE_ELEVENLABS_API_KEY;
+  const voiceId = options.voiceId || (import.meta as any).env?.VITE_ELEVENLABS_VOICE_ID || DEFAULT_ELEVENLABS_VOICE_ID;
+  const apiKey = options.apiKey || (import.meta as any).env?.VITE_ELEVENLABS_API_KEY;
 
   stopSarahSpeech();
   isCancelled = false;
 
-  const sanitized = sanitizeTextForSpeech(rawText);
+  const targetLang = options.lang || "en";
+  const sanitized = sanitizeTextForSpeech(rawText, targetLang);
   if (!sanitized) {
     options.onEnd?.();
     return;
@@ -251,6 +303,10 @@ function speakNaturalWebSpeech(text: string, options: SpeakOptions = {}) {
   }
 
   window.speechSynthesis.cancel();
+  if (keepAliveTimer) {
+    clearInterval(keepAliveTimer);
+    keepAliveTimer = null;
+  }
 
   // Split into natural sentences for human breathing pauses
   const sentences = text
@@ -263,21 +319,27 @@ function speakNaturalWebSpeech(text: string, options: SpeakOptions = {}) {
     return;
   }
 
-  const voice = getBestNaturalVoice(options.lang || "en");
+  const targetLang = options.lang || "en";
+  const voice = getBestNaturalVoice(targetLang);
+
+  // Chrome/Mobile keepalive to prevent audio freeze
+  keepAliveTimer = setInterval(() => {
+    if (typeof window !== "undefined" && "speechSynthesis" in window) {
+      if (window.speechSynthesis.paused) {
+        window.speechSynthesis.resume();
+      }
+    }
+  }, 3500);
+
   let currentIndex = 0;
   options.onStart?.();
 
-  const localeMap: Record<string, string> = {
-    en: "en-US",
-    pcm: "en-NG",
-    yo: "yo-NG",
-    ig: "ig-NG",
-    ha: "ha-NG",
-    fr: "fr-FR",
-  };
-
-  const speakNextSentence = () => {
+  const speakNextSentence = (retryWithoutVoice = false) => {
     if (isCancelled || currentIndex >= sentences.length) {
+      if (keepAliveTimer) {
+        clearInterval(keepAliveTimer);
+        keepAliveTimer = null;
+      }
       options.onEnd?.();
       return;
     }
@@ -287,49 +349,67 @@ function speakNaturalWebSpeech(text: string, options: SpeakOptions = {}) {
     utterance.rate = options.rate || 0.94; // Warm, relaxed human conversational pace
     utterance.pitch = options.pitch || 1.02; // Warm friendly clinical tone
     utterance.volume = 1.0;
-    utterance.lang = localeMap[options.lang || "en"] || "en-US";
 
-    if (voice) {
+    if (voice && !retryWithoutVoice) {
       utterance.voice = voice;
+      utterance.lang = voice.lang || "en-US";
+    } else {
+      utterance.lang = targetLang === "fr" ? "fr-FR" : "en-US";
     }
 
     utterance.onend = () => {
       currentIndex++;
       if (currentIndex < sentences.length) {
-        // Natural 80ms breath pause between thoughts
         setTimeout(() => {
           if (!isCancelled) {
             speakNextSentence();
           }
-        }, 80);
+        }, 70);
       } else {
+        if (keepAliveTimer) {
+          clearInterval(keepAliveTimer);
+          keepAliveTimer = null;
+        }
         options.onEnd?.();
       }
     };
 
     utterance.onerror = (e) => {
       console.warn("Speech synthesis chunk warning:", e);
+      if (!retryWithoutVoice) {
+        // Retry current sentence with standard fallback
+        speakNextSentence(true);
+        return;
+      }
       currentIndex++;
       if (currentIndex < sentences.length && !isCancelled) {
         speakNextSentence();
       } else {
+        if (keepAliveTimer) {
+          clearInterval(keepAliveTimer);
+          keepAliveTimer = null;
+        }
         options.onEnd?.();
       }
     };
 
+    // Unpause if suspended
+    if (window.speechSynthesis.paused) {
+      window.speechSynthesis.resume();
+    }
+
     window.speechSynthesis.speak(utterance);
   };
-
-  // Mobile Audio Context Wakeup
-  if (window.speechSynthesis.paused) {
-    window.speechSynthesis.resume();
-  }
 
   speakNextSentence();
 }
 
 export function stopSarahSpeech() {
   isCancelled = true;
+  if (keepAliveTimer) {
+    clearInterval(keepAliveTimer);
+    keepAliveTimer = null;
+  }
   if (currentAudio) {
     currentAudio.pause();
     currentAudio.currentTime = 0;
@@ -342,10 +422,3 @@ export function stopSarahSpeech() {
 
 export const stopSpeaking = stopSarahSpeech;
 export const speakText = speakWithSarah;
-
-// Pre-warm voices on browser load
-if (typeof window !== "undefined" && "speechSynthesis" in window) {
-  window.speechSynthesis.onvoiceschanged = () => {
-    getBestNaturalVoice();
-  };
-}
