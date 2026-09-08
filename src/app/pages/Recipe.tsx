@@ -223,7 +223,7 @@ const MASTER_RECIPES: FullRecipe[] = [
     "plateComposition": {
       "staple": "Grated Green Banana & Oat Porridge with Chia",
       "staplePct": 50,
-      "greens": "Fresh Papaya Fruit Slices & Lime",
+      "greens": "Fresh Pawpaw (Papaya) Slices",
       "greensPct": 25,
       "protein": "Soft-Boiled Egg Halves",
       "proteinPct": 25
