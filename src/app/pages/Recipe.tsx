@@ -304,6 +304,16 @@ const MASTER_RECIPES: FullRecipe[] = [
     "id": "103",
     "name": "Sprouted Soya Awara & Sesame Ugwu Greens (Hormone-Balance)",
     "emoji": "🥗",
+    "image": "/assets/recipes/sukuma-wiki-beef.webp",
+    "clinicalScaleLabel": "Sprouted Soya Awara & Sesame Ugwu Greens, standard 9-inch divided clinical plate",
+    "plateComposition": {
+      "staple": "Steamed Quinoa / Brown Basmati Grain",
+      "staplePct": 50,
+      "greens": "Shredded Sesame Ugwu Pumpkin Greens",
+      "greensPct": 25,
+      "protein": "Pan-Seared Organic Soya Awara (Curd)",
+      "proteinPct": 25
+    },
     "category": "dinner",
     "tags": [
       "hormone-balance",
@@ -559,6 +569,16 @@ const MASTER_RECIPES: FullRecipe[] = [
     "id": "106",
     "name": "Cauliflower-Psyllium Fufu & Rich Efo Riro (Zero-Spike Swallow)",
     "emoji": "🥣",
+    "image": "/assets/recipes/cauliflower-fufu-efo.webp",
+    "clinicalScaleLabel": "Cauliflower-Psyllium Fufu & Rich Efo Riro, standard 9-inch divided clinical plate",
+    "plateComposition": {
+      "staple": "Zero-Spike Cauliflower-Psyllium Fufu Ball",
+      "staplePct": 50,
+      "greens": "Rich Efo Riro Spinach & Locust Beans",
+      "greensPct": 25,
+      "protein": "Steamed Lean Beef & Flaked Dried Fish",
+      "proteinPct": 25
+    },
     "category": "dinner",
     "tags": [
       "diabetic-friendly",
@@ -642,6 +662,16 @@ const MASTER_RECIPES: FullRecipe[] = [
     "id": "1",
     "name": "Diabetic-Friendly Oat Swallow & Fresh Okra Soup",
     "emoji": "🥣",
+    "image": "/assets/recipes/diabetic-oat-swallow-okra.webp",
+    "clinicalScaleLabel": "Diabetic-Friendly Oat Swallow & Fresh Okra Soup, standard 9-inch divided clinical plate",
+    "plateComposition": {
+      "staple": "Rolled Oat Swallow / Low-GI Fufu Ball",
+      "staplePct": 50,
+      "greens": "Viscous Fresh Okra & Ugu Pumpkin Leaves",
+      "greensPct": 25,
+      "protein": "Grilled Titus Mackerel Fish Steak",
+      "proteinPct": 25
+    },
     "category": "lunch",
     "tags": [
       "diabetic-friendly",
@@ -2121,7 +2151,7 @@ export default function Recipe() {
 
       // Intelligent Clinical African Formulation Engine
       const lower = query.toLowerCase();
-      let matchedImage = "/assets/recipes/kdigo-yam-porridge.png";
+      let matchedImage = "/assets/recipes/kdigo-yam-porridge.webp";
       let recipeName = query.charAt(0).toUpperCase() + query.slice(1);
       let cat: "breakfast" | "lunch" | "dinner" | "snack" = "lunch";
       let tags: string[] = ["diabetic-friendly", "heart-healthy"];
@@ -2137,7 +2167,7 @@ export default function Recipe() {
       let gi: "Low" | "Medium" | "High" = "Low";
 
       if (lower.includes("yam") || lower.includes("porridge") || lower.includes("renal") || lower.includes("kidney")) {
-        matchedImage = "/assets/recipes/kdigo-yam-porridge.png";
+        matchedImage = "/assets/recipes/kdigo-yam-porridge.webp";
         recipeName = recipeName.includes("KDIGO") ? recipeName : `KDIGO Leached ${recipeName} (Renal-Safe)`;
         tags = ["renal-safe", "low-sodium", "heart-healthy"];
         staple = "KDIGO Leached Yam Cubes (Double-Boiled)";
@@ -2145,7 +2175,7 @@ export default function Recipe() {
         protein = "Steamed Flaked Mackerel Fish";
         cals = 260; p = 14; c = 42; fat = 5;
       } else if (lower.includes("okra") || lower.includes("swallow") || lower.includes("oat") || lower.includes("diabetes") || lower.includes("sugar")) {
-        matchedImage = "/assets/recipes/diabetic-oat-swallow-okra.jpg";
+        matchedImage = "/assets/recipes/diabetic-oat-swallow-okra.webp";
         recipeName = recipeName.includes("Diabetic") ? recipeName : `Diabetic-Safe ${recipeName} & Okra Soup`;
         tags = ["diabetic-friendly", "high-protein", "weight-loss"];
         staple = "Rolled Oat Swallow / Low-GI Fufu Ball";
@@ -2153,7 +2183,7 @@ export default function Recipe() {
         protein = "Grilled Titus Mackerel Steak";
         cals = 295; p = 22; c = 34; fat = 7;
       } else if (lower.includes("jollof") || lower.includes("rice") || lower.includes("titus") || lower.includes("stew") || lower.includes("hypertension") || lower.includes("pressure")) {
-        matchedImage = "/assets/recipes/brown-jollof-titus.jpg";
+        matchedImage = "/assets/recipes/brown-jollof-titus.webp";
         recipeName = recipeName.includes("Brown") ? recipeName : `Low-Sodium Native Brown Jollof Rice & ${recipeName}`;
         tags = ["low-sodium", "heart-healthy", "diabetic-friendly"];
         staple = "Smoky Ofada Brown Rice with Sweet Peppers";
@@ -2161,7 +2191,7 @@ export default function Recipe() {
         protein = "Oven-Baked Titus Mackerel Steak";
         cals = 340; p = 24; c = 46; fat = 8;
       } else if (lower.includes("egusi") || lower.includes("melon") || lower.includes("soup") || lower.includes("protein")) {
-        matchedImage = "/assets/recipes/egusi-ugu-soup.jpg";
+        matchedImage = "/assets/recipes/egusi-ugu-soup.webp";
         recipeName = recipeName.includes("Egusi") ? recipeName : `Protein-Rich Unbleached Egusi & Ugu (${recipeName})`;
         tags = ["high-protein", "diabetic-friendly"];
         staple = "Unbleached Melon Seed Egusi Base";
@@ -2169,7 +2199,7 @@ export default function Recipe() {
         protein = "Tender Lean Goat Meat & Steamed Stockfish";
         cals = 380; p = 28; c = 18; fat = 14;
       } else if (lower.includes("cauliflower") || lower.includes("efo") || lower.includes("keto") || lower.includes("fufu")) {
-        matchedImage = "/assets/recipes/cauliflower-fufu-efo.jpg";
+        matchedImage = "/assets/recipes/cauliflower-fufu-efo.webp";
         recipeName = recipeName.includes("Cauliflower") ? recipeName : `Cauliflower-Psyllium Fufu & Rich Efo Riro (${recipeName})`;
         tags = ["diabetic-friendly", "weight-loss", "pcos-safe"];
         staple = "Zero-Spike Cauliflower-Psyllium Fufu Ball";
@@ -2177,7 +2207,7 @@ export default function Recipe() {
         protein = "Steamed Lean Beef & Flaked Dried Fish";
         cals = 245; p = 20; c = 12; fat = 9;
       } else if (lower.includes("banana") || lower.includes("ulcer") || lower.includes("breakfast") || lower.includes("acid")) {
-        matchedImage = "/assets/recipes/green-banana-porridge.jpg";
+        matchedImage = "/assets/recipes/green-banana-porridge.webp";
         recipeName = recipeName.includes("Ulcer") ? recipeName : `Soothing Green Plantain & Oat Porridge (${recipeName})`;
         cat = "breakfast";
         tags = ["ulcer-safe", "diabetic-friendly"];
@@ -2186,7 +2216,7 @@ export default function Recipe() {
         protein = "Soft-Boiled Egg with Sea Salt";
         cals = 270; p = 12; c = 44; fat = 6;
       } else if (lower.includes("pepper") || lower.includes("catfish") || lower.includes("uziza") || lower.includes("recovery")) {
-        matchedImage = "/assets/recipes/dry-catfish-uziza.jpg";
+        matchedImage = "/assets/recipes/dry-catfish-uziza.webp";
         recipeName = recipeName.includes("Uziza") ? recipeName : `Maternal Healing Dry Catfish & Uziza Soup (${recipeName})`;
         tags = ["pregnancy-safe", "high-protein"];
         staple = "Boiled Unripe Plantain Disks";
@@ -2819,7 +2849,7 @@ export default function Recipe() {
             </div>
           ) : (
             filteredRecipes.map((recipe) => {
-              const plateImg = recipe.image || "/assets/recipes/diabetic-oat-swallow-okra.jpg";
+              const plateImg = recipe.image || "/assets/recipes/diabetic-oat-swallow-okra.webp";
 
               return (
                 <div
@@ -2840,7 +2870,7 @@ export default function Recipe() {
                       decoding="async"
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                       onError={(e: any) => {
-                        e.currentTarget.src = "/assets/recipes/diabetic-oat-swallow-okra.jpg";
+                        e.currentTarget.src = "/assets/recipes/diabetic-oat-swallow-okra.webp";
                       }}
                     />
 
@@ -2998,11 +3028,11 @@ export default function Recipe() {
               <div className="rounded-3xl overflow-hidden border-2 border-teal-300/40 bg-slate-950 relative shadow-xl">
                 <div className="relative w-full aspect-[16/10] sm:aspect-[16/9] overflow-hidden">
                   <img
-                    src={selectedRecipe.image || "/assets/recipes/diabetic-oat-swallow-okra.jpg"}
+                    src={selectedRecipe.image || "/assets/recipes/diabetic-oat-swallow-okra.webp"}
                     alt={selectedRecipe.name}
                     className="w-full h-full object-cover"
                     onError={(e: any) => {
-                      e.currentTarget.src = "/assets/recipes/diabetic-oat-swallow-okra.jpg";
+                      e.currentTarget.src = "/assets/recipes/diabetic-oat-swallow-okra.webp";
                     }}
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-black/30 pointer-events-none" />

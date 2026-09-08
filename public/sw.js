@@ -3,7 +3,7 @@
  * 100% Guaranteed Offline SPA Shell + Cache-First Static Assets
  */
 
-const CACHE_NAME = 'mealoptimiza-pwa-v8.6-unique-deduplicated-plates';
+const CACHE_NAME = 'mealoptimiza-pwa-v8.7-deduplicated-fufu-plate';
 
 const PRECACHE_ASSETS = [
   '/',
