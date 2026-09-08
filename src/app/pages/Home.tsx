@@ -132,31 +132,14 @@ export default function Home() {
   const [showWhatsAppModal, setShowWhatsAppModal] = useState(false);
   const [showHealthWizard, setShowHealthWizard] = useState(() => {
     try {
-      const isHealthDone = localStorage.getItem("hasCompletedHealthSetup") === "true";
-      const isOnboardingDone = localStorage.getItem("onboardingComplete") === "true";
-      const userProfileRaw = localStorage.getItem("user-profile") || localStorage.getItem("user_profile");
-      let hasData = false;
-      if (userProfileRaw) {
-        try {
-          const p = JSON.parse(userProfileRaw);
-          if (p.age || p.medicalCondition || p.goal || p.weight || (p.conditions && p.conditions.length > 0)) hasData = true;
-        } catch {}
-      }
-      return !isHealthDone && !isOnboardingDone && !hasData;
+      const isQuestionnaireDone =
+        localStorage.getItem("mealoptimiza_questionnaire_completed") === "true" ||
+        localStorage.getItem("onboardingComplete") === "true";
+      return !isQuestionnaireDone;
     } catch {
       return false;
     }
   });
-
-  // If profile from UserContext is already calibrated, automatically suppress wizard
-  useEffect(() => {
-    if (profile?.medicalCondition || profile?.age || profile?.weight || (profile?.conditions && profile.conditions.length > 0)) {
-      setShowHealthWizard(false);
-      try {
-        localStorage.setItem("hasCompletedHealthSetup", "true");
-      } catch {}
-    }
-  }, [profile?.medicalCondition, profile?.age, profile?.weight, profile?.conditions]);
   const [showSpotlightTour, setShowSpotlightTour] = useState(false);
   const [showVoiceLogger, setShowVoiceLogger] = useState(false);
   const [showGroceryPlanner, setShowGroceryPlanner] = useState(false);
@@ -1813,7 +1796,16 @@ export default function Home() {
       />
 
       {/* Clinical Governance & Medical Regulatory Disclaimer Modal */}
-      <MedicalDisclaimerModal />
+      <MedicalDisclaimerModal
+        onAccept={() => {
+          const isDone =
+            localStorage.getItem("mealoptimiza_questionnaire_completed") === "true" ||
+            localStorage.getItem("onboardingComplete") === "true";
+          if (!isDone) {
+            setShowHealthWizard(true);
+          }
+        }}
+      />
     </div>
   );
 }

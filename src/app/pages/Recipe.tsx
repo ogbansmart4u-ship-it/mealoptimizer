@@ -2430,37 +2430,47 @@ export default function Recipe() {
             filteredRecipes.map((recipe) => (
               <div
                 key={recipe.id}
-                onClick={() => openRecipeDetails(recipe)}
-                className="bg-white rounded-3xl p-4 sm:p-5 shadow-xs hover:shadow-md border border-teal-100/90 transition-all cursor-pointer group"
+                onClick={() => {
+                  try { soundEffects.playBubblePop(); } catch {}
+                  try { triggerHaptic("medium"); } catch {}
+                  openRecipeDetails(recipe);
+                }}
+                className="bg-white dark:bg-zinc-900 rounded-3xl p-4 sm:p-5 shadow-xs hover:shadow-lg border-2 border-teal-100 dark:border-zinc-800 hover:border-teal-400 dark:hover:border-teal-600 transition-all cursor-pointer group active:scale-[0.99] relative overflow-hidden"
               >
-                <div className="flex items-start justify-between gap-3">
-                  <div className="flex items-start gap-3 min-w-0 flex-1">
-                    <span className="text-3xl shrink-0 p-2 bg-gradient-to-br from-teal-50 to-emerald-50 rounded-2xl shadow-2xs border border-teal-100 group-hover:scale-105 transition-transform">
+                {/* Background Ambient Aura */}
+                <div className="absolute -right-8 -bottom-8 w-28 h-28 bg-teal-400/10 dark:bg-teal-500/10 rounded-full blur-xl pointer-events-none group-hover:scale-125 transition-transform" />
+
+                <div className="flex items-start justify-between gap-3 relative z-10">
+                  <div className="flex items-start gap-3.5 min-w-0 flex-1">
+                    <span className="text-3xl sm:text-4xl shrink-0 p-2.5 bg-gradient-to-br from-teal-50 to-emerald-50 dark:from-zinc-800 dark:to-zinc-800/80 rounded-2xl shadow-2xs border border-teal-100 dark:border-zinc-700 group-hover:scale-110 transition-transform">
                       {recipe.emoji}
                     </span>
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center gap-1.5 flex-wrap mb-1">
                         <span
-                          className={`text-[9.5px] font-black px-2 py-0.5 rounded-full border ${
+                          className={`text-[9.5px] font-black px-2.5 py-0.5 rounded-full border ${
                             recipe.glycemicIndex === "Low"
-                              ? "bg-emerald-50 text-emerald-800 border-emerald-200"
+                              ? "bg-emerald-50 text-emerald-800 border-emerald-300 dark:bg-emerald-950 dark:text-emerald-300"
                               : recipe.glycemicIndex === "Medium"
-                              ? "bg-amber-50 text-amber-800 border-amber-200"
-                              : "bg-rose-50 text-rose-800 border-rose-200"
+                              ? "bg-amber-50 text-amber-800 border-amber-300 dark:bg-amber-950 dark:text-amber-300"
+                              : "bg-rose-50 text-rose-800 border-rose-300 dark:bg-rose-950 dark:text-rose-300"
                           }`}
                         >
-                          {recipe.glycemicIndex} Glycemic Spike
+                          🩸 {recipe.glycemicIndex} GI
                         </span>
-                        <span className="text-[10px] text-gray-400 font-semibold flex items-center gap-0.5">
+                        <span className="text-[10px] text-gray-500 dark:text-gray-400 font-bold flex items-center gap-0.5">
                           <Clock size={11} /> {recipe.prepTime + recipe.cookTime}m
+                        </span>
+                        <span className="text-[10px] font-black text-orange-600 dark:text-orange-400 bg-orange-50 dark:bg-orange-950/60 px-2 py-0.5 rounded-full border border-orange-200/80 dark:border-orange-800">
+                          🔥 {recipe.baseCalories} kcal
                         </span>
                       </div>
 
-                      <h3 className="text-sm sm:text-base font-extrabold text-gray-900 group-hover:text-[#1f7a8c] transition-colors leading-snug">
+                      <h3 className="text-sm sm:text-base font-extrabold text-gray-900 dark:text-white group-hover:text-[#1f7a8c] transition-colors leading-snug">
                         {recipe.name}
                       </h3>
 
-                      <p className="text-xs text-gray-600 mt-1 line-clamp-2 leading-relaxed">
+                      <p className="text-xs text-gray-600 dark:text-gray-300 mt-1 line-clamp-2 leading-relaxed font-medium">
                         {recipe.healthBenefits}
                       </p>
                     </div>
@@ -2476,56 +2486,33 @@ export default function Recipe() {
                   </button>
                 </div>
 
-                {/* Feasibility & Satiety Index (Clinical Feasibility Scoring) */}
-                <div className="flex items-center gap-2 mt-2.5 pt-2 border-t border-slate-100/80 text-[10px] text-slate-600 font-semibold overflow-x-auto scrollbar-none">
-                  <span className="bg-teal-50 text-teal-800 px-2 py-0.5 rounded-md border border-teal-100 flex items-center gap-1 shrink-0">
-                    <span>⏱️</span>
-                    <span>{recipe.prepTime + recipe.cookTime}m prep</span>
-                  </span>
-                  <span className="bg-blue-50 text-blue-800 px-2 py-0.5 rounded-md border border-blue-100 flex items-center gap-1 shrink-0">
-                    <span>💰</span>
-                    <span>{recipe.baseCalories > 450 ? "Household Budget" : "Low Cost"}</span>
-                  </span>
-                  <span className="bg-emerald-50 text-emerald-800 px-2 py-0.5 rounded-md border border-emerald-100 flex items-center gap-1 shrink-0 font-bold">
-                    <span>🔋</span>
-                    <span>{recipe.baseProtein >= 25 ? "High Satiety (Full 4-5h)" : "Balanced Satiety (3h)"}</span>
-                  </span>
-                </div>
-
-                {/* Macro Strip */}
-                <div className="grid grid-cols-4 gap-1.5 mt-2 text-center">
-                  <div className="bg-slate-50 p-1.5 rounded-xl border border-slate-200/60">
-                    <span className="text-[9px] text-gray-400 font-bold block">Calories</span>
-                    <span className="text-xs font-black text-orange-600">{recipe.baseCalories}</span>
-                    <span className="text-[8px] text-gray-400 block">kcal</span>
-                  </div>
-                  <div className="bg-slate-50 p-1.5 rounded-xl border border-slate-200/60">
+                {/* Macro Strip Capsule */}
+                <div className="grid grid-cols-3 gap-2 mt-3 pt-2.5 border-t border-slate-100 dark:border-zinc-800 text-center relative z-10">
+                  <div className="bg-slate-50 dark:bg-zinc-800/60 p-1.5 rounded-xl border border-slate-200/60 dark:border-zinc-700">
                     <span className="text-[9px] text-gray-400 font-bold block">Protein</span>
-                    <span className="text-xs font-black text-blue-600">{recipe.baseProtein}g</span>
-                    <span className="text-[8px] text-gray-400 block">Muscle</span>
+                    <span className="text-xs font-black text-blue-600 dark:text-blue-400">{recipe.baseProtein}g</span>
                   </div>
-                  <div className="bg-slate-50 p-1.5 rounded-xl border border-slate-200/60">
+                  <div className="bg-slate-50 dark:bg-zinc-800/60 p-1.5 rounded-xl border border-slate-200/60 dark:border-zinc-700">
                     <span className="text-[9px] text-gray-400 font-bold block">Carbs</span>
-                    <span className="text-xs font-black text-emerald-600">{recipe.baseCarbs}g</span>
-                    <span className="text-[8px] text-gray-400 block">Energy</span>
+                    <span className="text-xs font-black text-emerald-600 dark:text-emerald-400">{recipe.baseCarbs}g</span>
                   </div>
-                  <div className="bg-slate-50 p-1.5 rounded-xl border border-slate-200/60">
+                  <div className="bg-slate-50 dark:bg-zinc-800/60 p-1.5 rounded-xl border border-slate-200/60 dark:border-zinc-700">
                     <span className="text-[9px] text-gray-400 font-bold block">Fats</span>
-                    <span className="text-xs font-black text-purple-600">{recipe.baseFats}g</span>
-                    <span className="text-[8px] text-gray-400 block">Healthy</span>
+                    <span className="text-xs font-black text-purple-600 dark:text-purple-400">{recipe.baseFats}g</span>
                   </div>
                 </div>
 
-                {/* Action Row */}
-                <div className="flex items-center justify-between mt-3 text-xs">
-                  <div className="flex items-center gap-1 text-[11px] font-bold text-teal-800 bg-teal-50 px-2.5 py-1 rounded-xl">
+                {/* Explosion Action Button */}
+                <div className="flex items-center justify-between mt-3 pt-2 text-xs relative z-10">
+                  <div className="flex items-center gap-1 text-[11px] font-bold text-teal-800 dark:text-teal-300 bg-teal-50 dark:bg-teal-950/80 px-2.5 py-1 rounded-xl">
                     <Sparkles size={12} className="text-amber-500" />
-                    <span>{recipe.ingredients.length} Whole Ingredients</span>
+                    <span>{recipe.ingredients.length} Scaled Ingredients</span>
                   </div>
 
-                  <span className="text-[#1f7a8c] font-black flex items-center gap-0.5 group-hover:translate-x-1 transition-transform">
-                    View Recipe &amp; Cook <ChevronRight size={14} />
-                  </span>
+                  <div className="px-3.5 py-1.5 bg-gradient-to-r from-[#1f7a8c] to-[#0d9488] text-white font-black rounded-xl text-[11px] shadow-sm flex items-center gap-1 group-hover:brightness-110 transition-all">
+                    <span>Explode Bento 💥</span>
+                    <ChevronRight size={13} />
+                  </div>
                 </div>
               </div>
             ))

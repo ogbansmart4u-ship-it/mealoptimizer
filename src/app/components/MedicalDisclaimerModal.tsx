@@ -4,7 +4,11 @@ import { ShieldCheck, Stethoscope, AlertTriangle, CheckCircle2, Lock, HeartHands
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "./ui/dialog";
 import { Button } from "./ui/button";
 
-export default function MedicalDisclaimerModal() {
+interface MedicalDisclaimerModalProps {
+  onAccept?: () => void;
+}
+
+export default function MedicalDisclaimerModal({ onAccept }: MedicalDisclaimerModalProps = {}) {
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
 
@@ -21,10 +25,16 @@ export default function MedicalDisclaimerModal() {
     localStorage.setItem("mealoptimiza_medical_disclaimer_accepted", "true");
     setIsOpen(false);
 
+    // If parent supplied onAccept callback, trigger it immediately (e.g., launch HealthProfileWizardModal)
+    if (onAccept) {
+      onAccept();
+      return;
+    }
+
     // Promptly launch onboarding questionnaire if user has not completed setup
     const hasCompletedOnboarding =
-      localStorage.getItem("onboardingComplete") === "true" ||
-      localStorage.getItem("hasCompletedHealthSetup") === "true";
+      localStorage.getItem("mealoptimiza_questionnaire_completed") === "true" ||
+      localStorage.getItem("onboardingComplete") === "true";
 
     if (!hasCompletedOnboarding) {
       setTimeout(() => {

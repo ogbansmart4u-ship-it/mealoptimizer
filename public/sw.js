@@ -3,7 +3,7 @@
  * 100% Guaranteed Offline SPA Shell + Cache-First Static Assets
  */
 
-const CACHE_NAME = 'mealoptimiza-pwa-v6.2-onboarding-fix';
+const CACHE_NAME = 'mealoptimiza-pwa-v7.0-questionnaire-bento-release';
 
 const PRECACHE_ASSETS = [
   '/',
