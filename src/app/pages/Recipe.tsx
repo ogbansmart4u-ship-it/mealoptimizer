@@ -2023,8 +2023,16 @@ const MASTER_RECIPES: FullRecipe[] = [
     "id": "16",
     "name": "Swahili Kuku Paka (Charred Coconut Chicken) & Brown Rice",
     "emoji": "🥥",
-    "image": "/assets/recipes/cameroonian-ndole.webp",
-    "clinicalScaleLabel": "Standard 9-Inch Divided Clinical Plate Serving",
+    "image": "/assets/recipes/ethiopian-doro-wat.webp",
+    "clinicalScaleLabel": "Swahili Kuku Paka (Charred Coconut Chicken) & Brown Rice, standard 9-inch clinical plate",
+    "plateComposition": {
+      "staple": "Steamed Wholegrain Brown Basmati Rice",
+      "staplePct": 50,
+      "greens": "Fresh Coriander & Lime Kachumbari Greens",
+      "greensPct": 25,
+      "protein": "Charred Coconut Curry Chicken Pieces",
+      "proteinPct": 25
+    },
     "category": "dinner",
     "tags": [
       "high-protein",
