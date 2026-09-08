@@ -1524,11 +1524,6 @@ export default function Home() {
       <FoodWrappedModal
         isOpen={showFoodWrapped}
         onClose={() => setShowFoodWrapped(false)}
-        monthlyMealsCount={Math.max(weekLogs.length * 4, 28)}
-        glucoseStabilityPercent={94}
-        topSuperfood="Fluted Pumpkin (Ugu) & Ewedu"
-        spikesPrevented={16}
-        waterGlassesCount={Math.max(waterGlasses * 20, 185)}
       />
       <NotificationSettingsDialog isOpen={showNotificationSettings} onClose={() => setShowNotificationSettings(false)} />
 
@@ -1767,11 +1762,7 @@ export default function Home() {
         onOpenHealthSetup={() => setShowHealthWizard(true)}
       />
 
-      {/* Monthly Food Wrapped Story Modal */}
-      <FoodWrappedModal
-        isOpen={showFoodWrapped}
-        onClose={() => setShowFoodWrapped(false)}
-      />
+
 
       {/* 10X Water & Cellular Hydration Reminder Modal with Avo Drinking Water Mascot */}
       <WaterReminderModal
