@@ -32,6 +32,7 @@ import {
   GraduationCap,
   Medal,
   Check,
+  Copy,
   Send,
   ChevronLeft,
   ChevronDown,
