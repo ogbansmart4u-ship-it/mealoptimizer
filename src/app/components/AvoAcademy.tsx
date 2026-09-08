@@ -32,8 +32,11 @@ import {
   GraduationCap,
   Medal,
   Check,
-  Copy,
   Send,
+  ChevronLeft,
+  ChevronDown,
+  ChevronUp,
+  LayoutGrid,
 } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "./ui/dialog";
 import { Button } from "./ui/button";
@@ -1302,7 +1305,11 @@ export const CULTURAL_MYTHS = [
 
 export default function AvoAcademy() {
   const { user } = useUser();
+  const isUserPro = Boolean(user?.isPro || (user as any)?.subscriptionTier === "pro");
   const [selectedTier, setSelectedTier] = useState<AcademyTier>(1);
+  const [isTierExpanded, setIsTierExpanded] = useState<boolean>(true);
+  const [tierViewMode, setTierViewMode] = useState<"deck" | "grid">("deck");
+  const [activeDeckIndex, setActiveDeckIndex] = useState<number>(0);
   const tierScrollRef = useRef<HTMLDivElement>(null);
   // 🥳 Party Guides & Diploma State
   const [selectedPartyGuide, setSelectedPartyGuide] = useState<PartyGuide | null>(null);
@@ -1870,193 +1877,441 @@ export default function AvoAcademy() {
       </div>
 
       {/* =================================================================== */}
-      {/* 2. 4-TIER PROGRESSION TRACK SWITCHER (TIER 1 TO TIER 4)              */}
+      {/* 2. CONTAINERIZED DAILY AFRICAN FOOD MASTERCLASS WITH EMERGING TIERS */}
       {/* =================================================================== */}
-      <div className="bg-white dark:bg-zinc-900 rounded-3xl p-3.5 shadow-md border border-teal-100/90 dark:border-zinc-800 space-y-3">
-        <div className="flex items-center justify-between px-1">
-          <div className="flex items-center gap-2">
-            <GraduationCap className="h-5 w-5 text-[#1f7a8c]" />
-            <span className="text-xs font-black text-gray-900 dark:text-white uppercase tracking-wider">
-              Daily African Food Masterclass 🥑
+      <div className="bg-white dark:bg-zinc-900 rounded-3xl p-4 sm:p-5 shadow-lg border border-teal-100/90 dark:border-zinc-800 space-y-4">
+        {/* Masterclass Header */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 px-1">
+          <div className="flex items-center gap-2.5">
+            <div className="p-2.5 bg-teal-50 dark:bg-teal-950/70 rounded-2xl text-[#1f7a8c] dark:text-teal-300 border border-teal-100 dark:border-teal-900/50 shadow-2xs">
+              <GraduationCap className="h-5 w-5" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="text-xs sm:text-sm font-black text-gray-900 dark:text-white uppercase tracking-wider">
+                  Daily African Food Masterclass 🥑
+                </span>
+                <span className="text-[9.5px] font-bold px-2 py-0.5 rounded-full bg-amber-100 text-amber-900 dark:bg-amber-950 dark:text-amber-300">
+                  4 Tiers
+                </span>
+              </div>
+              <p className="text-[10.5px] text-gray-500 dark:text-gray-400 font-medium mt-0.5">
+                Master 36 evidence-based cultural meal lessons & clinical shields
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2 self-start sm:self-auto">
+            <span className="text-[10px] sm:text-xs font-bold px-2.5 py-1 rounded-full bg-teal-50 text-teal-800 dark:bg-teal-950 dark:text-teal-300 border border-teal-200/60 font-mono">
+              {completedLessonIds.length}/{LESSONS.length} Lessons ({Math.round((completedLessonIds.length / LESSONS.length) * 100)}%)
             </span>
           </div>
-          <span className="text-[10px] font-bold text-gray-500">
-            {completedLessonIds.length} of {LESSONS.length} Lessons Completed (
-            {Math.round((completedLessonIds.length / LESSONS.length) * 100)}%)
-          </span>
         </div>
 
-        {/* Left-to-Right Animated Shimmer Progress Bar */}
-        <div className="w-full bg-slate-100 dark:bg-zinc-800 h-1.5 rounded-full overflow-hidden relative shadow-inner">
-          <motion.div
-            className="h-full bg-gradient-to-r from-teal-500 via-emerald-400 to-amber-400 rounded-full"
-            initial={{ width: "25%" }}
-            animate={{
-              width: selectedTier === 1 ? "25%" : selectedTier === 2 ? "50%" : selectedTier === 3 ? "75%" : "100%",
-            }}
-            transition={{ duration: 0.45, ease: "easeOut" }}
-          />
+        {/* Masterclass Global Shimmer Progress Bar */}
+        <div className="space-y-1">
+          <div className="w-full bg-slate-100 dark:bg-zinc-800 h-2 rounded-full overflow-hidden relative shadow-inner">
+            <motion.div
+              className="h-full bg-gradient-to-r from-teal-500 via-emerald-400 to-amber-400 rounded-full"
+              initial={{ width: "25%" }}
+              animate={{
+                width: `${Math.max(5, (completedLessonIds.length / LESSONS.length) * 100)}%`,
+              }}
+              transition={{ duration: 0.45, ease: "easeOut" }}
+            />
+          </div>
         </div>
 
-        {/* 4-Tier Segmented Tabs with Left-to-Right Scroll Animation & Sliding Indicator */}
-        <div
-          ref={tierScrollRef}
-          className="grid grid-cols-2 sm:grid-cols-4 gap-2 relative overflow-x-auto pb-1 no-scrollbar"
-        >
-          {[
-            { tier: 1 as AcademyTier, label: "1. Food Basics", icon: "🌱" },
-            { tier: 2 as AcademyTier, label: "2. Heart & Sugar", icon: "🛡️" },
-            { tier: 3 as AcademyTier, label: "3. Kitchen Secrets", icon: "🍲" },
-            { tier: 4 as AcademyTier, label: "4. Long Life", icon: "👑" },
-          ].map((t) => {
-            const isSelected = selectedTier === t.tier;
-            const stat = tierStats[t.tier];
-            const isCompleted = stat.completed === stat.total;
+        {/* 4-Tier Progression Switcher Cards */}
+        <div className="space-y-2">
+          <div className="flex items-center justify-between px-1">
+            <span className="text-[10.5px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400">
+              Select Progression Tier
+            </span>
+            <span className="text-[10px] font-semibold text-teal-600 dark:text-teal-400 flex items-center gap-1">
+              <Sparkles size={11} /> Tap tier to emerge lessons
+            </span>
+          </div>
 
-            return (
+          <div
+            ref={tierScrollRef}
+            className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 relative"
+          >
+            {[
+              { tier: 1 as AcademyTier, label: "1. Food Basics", subtitle: "Foundations & Sequencing", icon: "🌱" },
+              { tier: 2 as AcademyTier, label: "2. Heart & Sugar", subtitle: "Organ Metabolic Shields", icon: "🛡️" },
+              { tier: 3 as AcademyTier, label: "3. Kitchen Secrets", subtitle: "Culinary Biochemistry", icon: "🍲" },
+              { tier: 4 as AcademyTier, label: "4. Long Life", subtitle: "Circadian Bio-Hacking", icon: "👑" },
+            ].map((t) => {
+              const isSelected = selectedTier === t.tier;
+              const stat = tierStats[t.tier];
+              const isCompleted = stat.completed === stat.total;
+
+              return (
+                <button
+                  key={t.tier}
+                  type="button"
+                  onClick={() => {
+                    triggerHaptic("light");
+                    setSelectedTier(t.tier);
+                    setIsTierExpanded(true);
+                    setActiveDeckIndex(0);
+                  }}
+                  className={`p-3 rounded-2xl border text-left transition-all cursor-pointer flex flex-col justify-between h-22 relative overflow-hidden group ${
+                    isSelected
+                      ? "bg-slate-900 text-white border-slate-900 shadow-lg scale-[1.02] ring-2 ring-teal-400/60"
+                      : "bg-slate-50 dark:bg-zinc-800/60 hover:bg-teal-50/50 border-slate-200/80 dark:border-zinc-700 text-slate-800 dark:text-slate-200"
+                  }`}
+                >
+                  {/* Active Slide Highlight Indicator */}
+                  {isSelected && (
+                    <motion.div
+                      layoutId="activeTierIndicator"
+                      className="absolute inset-0 bg-gradient-to-br from-slate-900 via-teal-950 to-slate-900 border border-teal-400/40 rounded-2xl -z-0"
+                      transition={{ type: "spring", stiffness: 350, damping: 30 }}
+                    />
+                  )}
+
+                  <div className="flex items-center justify-between relative z-10">
+                    <span className="text-xl">{t.icon}</span>
+                    {isCompleted ? (
+                      <span className="text-[9px] font-black px-1.5 py-0.5 rounded-full bg-emerald-500 text-white flex items-center gap-0.5 shadow-2xs">
+                        <Check size={10} /> Done
+                      </span>
+                    ) : (
+                      <span
+                        className={`text-[9.5px] font-mono font-bold ${
+                          isSelected ? "text-amber-300" : "text-slate-500"
+                        }`}
+                      >
+                        {stat.completed}/{stat.total}
+                      </span>
+                    )}
+                  </div>
+
+                  <div className="relative z-10 mt-1">
+                    <div className="text-[11px] font-black leading-tight truncate">{t.label}</div>
+                    <div className={`text-[9px] truncate ${isSelected ? "text-teal-200/90" : "text-slate-500 dark:text-slate-400"}`}>
+                      {t.subtitle}
+                    </div>
+                    <div className="w-full bg-black/30 h-1 rounded-full overflow-hidden mt-1.5">
+                      <div
+                        className="bg-emerald-400 h-full rounded-full transition-all duration-500"
+                        style={{ width: `${(stat.completed / stat.total) * 100}%` }}
+                      />
+                    </div>
+                  </div>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* EMERGING TIER LESSONS PANEL WITH MINIMIZED DECK / EXPANDED GRID VIEW */}
+        <div className="pt-2 border-t border-slate-100 dark:border-zinc-800">
+          {/* Tier Control Bar */}
+          <div className="flex items-center justify-between gap-2 px-1 mb-3">
+            <div className="flex items-center gap-1.5 min-w-0">
+              <span className="text-xs font-black uppercase tracking-wider text-slate-800 dark:text-slate-200 truncate">
+                {selectedTier === 1 && "Tier 1: Cultural Food Foundations (9 Lessons)"}
+                {selectedTier === 2 && "Tier 2: Organ Metabolic Shields (9 Lessons)"}
+                {selectedTier === 3 && "Tier 3: Culinary Biochemistry (9 Lessons)"}
+                {selectedTier === 4 && "Tier 4: Circadian Longevity (9 Lessons)"}
+              </span>
+            </div>
+
+            <div className="flex items-center gap-1.5 shrink-0">
+              {tierStats[selectedTier].completed === tierStats[selectedTier].total && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setCertificateTier(selectedTier);
+                    setShowCertificateModal(true);
+                  }}
+                  className="text-[10px] sm:text-[11px] font-black text-emerald-600 hover:text-emerald-700 dark:text-emerald-400 flex items-center gap-1 px-2 py-1 bg-emerald-50 dark:bg-emerald-950/60 rounded-xl border border-emerald-200/60 cursor-pointer"
+                >
+                  <Award size={12} />
+                  <span>Credential 📜</span>
+                </button>
+              )}
+
+              {/* Toggle Deck / Grid View Switcher */}
+              <div className="flex items-center bg-slate-100 dark:bg-zinc-800 p-0.5 rounded-xl border border-slate-200/80 dark:border-zinc-700 text-[10.5px]">
+                <button
+                  type="button"
+                  onClick={() => {
+                    triggerHaptic("light");
+                    setTierViewMode("deck");
+                    setIsTierExpanded(true);
+                  }}
+                  className={`px-2 py-1 rounded-lg font-bold flex items-center gap-1 cursor-pointer transition-all ${
+                    tierViewMode === "deck"
+                      ? "bg-white dark:bg-zinc-900 text-teal-800 dark:text-teal-300 shadow-2xs"
+                      : "text-slate-500 hover:text-slate-900 dark:hover:text-white"
+                  }`}
+                  title="Slide Deck Mode"
+                >
+                  <span>📱 Deck</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    triggerHaptic("light");
+                    setTierViewMode("grid");
+                    setIsTierExpanded(true);
+                  }}
+                  className={`px-2 py-1 rounded-lg font-bold flex items-center gap-1 cursor-pointer transition-all ${
+                    tierViewMode === "grid"
+                      ? "bg-white dark:bg-zinc-900 text-teal-800 dark:text-teal-300 shadow-2xs"
+                      : "text-slate-500 hover:text-slate-900 dark:hover:text-white"
+                  }`}
+                  title="All 9 Lessons Grid"
+                >
+                  <LayoutGrid size={11} />
+                  <span>Grid (9)</span>
+                </button>
+              </div>
+
+              {/* Minimize / Expand Drawer Toggle */}
               <button
-                key={t.tier}
                 type="button"
                 onClick={() => {
                   triggerHaptic("light");
-                  setSelectedTier(t.tier);
+                  setIsTierExpanded(!isTierExpanded);
                 }}
-                className={`p-2.5 rounded-2xl border text-left transition-all cursor-pointer flex flex-col justify-between h-20 relative overflow-hidden ${
-                  isSelected
-                    ? "bg-slate-900 text-white border-slate-900 shadow-lg scale-[1.02]"
-                    : "bg-slate-50 dark:bg-zinc-800/60 hover:bg-teal-50/50 border-slate-200/80 dark:border-zinc-700 text-slate-800 dark:text-slate-200"
-                }`}
+                className="p-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-slate-600 dark:text-slate-300 cursor-pointer transition-all"
+                title={isTierExpanded ? "Minimize tier lessons" : "Expand tier lessons"}
               >
-                {/* Active Slide Highlight Indicator */}
-                {isSelected && (
-                  <motion.div
-                    layoutId="activeTierIndicator"
-                    className="absolute inset-0 bg-gradient-to-br from-slate-900 via-teal-950 to-slate-900 border border-teal-400/40 rounded-2xl -z-0"
-                    transition={{ type: "spring", stiffness: 350, damping: 30 }}
-                  />
-                )}
-
-                <div className="flex items-center justify-between relative z-10">
-                  <span className="text-base">{t.icon}</span>
-                  {isCompleted ? (
-                    <span className="text-[9px] font-black px-1.5 py-0.5 rounded-full bg-emerald-500 text-white flex items-center gap-0.5 shadow-2xs">
-                      <Check size={10} /> Done
-                    </span>
-                  ) : (
-                    <span
-                      className={`text-[9.5px] font-mono font-bold ${
-                        isSelected ? "text-amber-300" : "text-slate-500"
-                      }`}
-                    >
-                      {stat.completed}/{stat.total}
-                    </span>
-                  )}
-                </div>
-
-                <div className="relative z-10">
-                  <div className="text-[11px] font-black leading-tight truncate">{t.label}</div>
-                  <div className="w-full bg-black/30 h-1 rounded-full overflow-hidden mt-1.5">
-                    <div
-                      className="bg-emerald-400 h-full rounded-full transition-all duration-500"
-                      style={{ width: `${(stat.completed / stat.total) * 100}%` }}
-                    />
-                  </div>
-                </div>
+                {isTierExpanded ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
               </button>
-            );
-          })}
-        </div>
-      </div>
+            </div>
+          </div>
 
-      {/* =================================================================== */}
-      {/* 3. TIER LESSONS GRID (9 LESSONS PER TIER)                            */}
-      {/* =================================================================== */}
-      <div className="space-y-2.5">
-        <div className="flex items-center justify-between px-1">
-          <span className="text-xs font-black uppercase tracking-wider text-slate-700 dark:text-slate-300">
-            {selectedTier === 1 && "Tier 1: Cultural Food Foundations & Sequencing (9 Lessons)"}
-            {selectedTier === 2 && "Tier 2: Organ-Specific Metabolic Shields (9 Lessons)"}
-            {selectedTier === 3 && "Tier 3: Cultural Biochemistry & Culinary Masterclass (9 Lessons)"}
-            {selectedTier === 4 && "Tier 4: Longevity, Fasting & Circadian Bio-Hacking (9 Lessons)"}
-          </span>
-
-          {tierStats[selectedTier].completed === tierStats[selectedTier].total && (
-            <button
-              type="button"
-              onClick={() => {
-                setCertificateTier(selectedTier);
-                setShowCertificateModal(true);
-              }}
-              className="text-[11px] font-black text-emerald-600 hover:text-emerald-700 flex items-center gap-1 cursor-pointer"
-            >
-              <Award size={13} />
-              <span>View Credential 📜</span>
-            </button>
-          )}
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
-          {tierLessons.map((lesson, idx) => {
-            const isCompleted = completedLessonIds.includes(lesson.id);
-            const isAudioActive = playingAudioLessonId === lesson.id && isAudioPlaying;
-
-            return (
+          {/* AnimatePresence for Emerging Tier */}
+          <AnimatePresence mode="wait">
+            {isTierExpanded && (
               <motion.div
-                key={lesson.id}
-                initial={{ opacity: 0, y: 16 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.25, delay: idx * 0.04, ease: "easeOut" }}
-                onClick={() => handleStartLesson(lesson)}
-                className={`p-4 rounded-3xl border transition-all cursor-pointer flex flex-col justify-between min-h-[140px] group hover:shadow-md hover:scale-[1.01] active:scale-[0.99] ${
-                  isCompleted
-                    ? "bg-white dark:bg-zinc-900 border-teal-200/80 dark:border-zinc-800"
-                    : "bg-white dark:bg-zinc-900 border-slate-200 dark:border-zinc-800"
-                }`}
+                key={`tier-container-${selectedTier}-${tierViewMode}`}
+                initial={{ opacity: 0, y: 12, scale: 0.99 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: -12, scale: 0.99 }}
+                transition={{ duration: 0.3, ease: "easeOut" }}
               >
-                <div>
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-2xl">{lesson.icon}</span>
-                    <div className="flex items-center gap-1">
-                      {isCompleted ? (
-                        <span className="text-[9.5px] font-black px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 flex items-center gap-1">
-                          <CheckCircle2 size={11} /> Done
-                        </span>
-                      ) : (
-                        <span className="text-[9.5px] font-bold px-2 py-0.5 rounded-full bg-amber-50 text-amber-800 dark:bg-zinc-800 dark:text-zinc-300">
-                          +25 XP
-                        </span>
-                      )}
+                {tierViewMode === "deck" ? (
+                  /* ========================================================= */
+                  /* A. FOCUSED SLIDE DECK (MINIMIZED 1-OF-9 INTERACTIVE VIEW)  */
+                  /* ========================================================= */
+                  <div className="space-y-3">
+                    {(() => {
+                      const lesson = tierLessons[activeDeckIndex] || tierLessons[0];
+                      if (!lesson) return null;
+                      const isCompleted = completedLessonIds.includes(lesson.id);
+                      const isAudioActive = playingAudioLessonId === lesson.id && isAudioPlaying;
 
-                      {/* Sarah Audio Trigger Button */}
-                      <button
-                        type="button"
-                        onClick={(e) => handleToggleAudio(e, lesson)}
-                        title="Listen to Sarah AI voice tip"
-                        className={`p-1.5 rounded-xl transition-all cursor-pointer ${
-                          isAudioActive
-                            ? "bg-amber-400 text-slate-950 animate-bounce"
-                            : "bg-teal-50 hover:bg-teal-100 text-[#1f7a8c] dark:bg-zinc-800 dark:text-teal-300"
-                        }`}
-                      >
-                        {isAudioActive ? <VolumeX size={13} /> : <Volume2 size={13} />}
-                      </button>
-                    </div>
+                      return (
+                        <div className="bg-gradient-to-br from-slate-900 via-teal-950 to-slate-900 rounded-3xl p-4 sm:p-5 text-white border border-teal-500/30 shadow-xl relative overflow-hidden">
+                          {/* Top Tag & Badges */}
+                          <div className="flex items-center justify-between mb-3 relative z-10">
+                            <div className="flex items-center gap-2">
+                              <span className="text-2xl p-2 bg-white/10 rounded-2xl backdrop-blur-xs">
+                                {lesson.icon}
+                              </span>
+                              <div>
+                                <span className="text-[10px] font-black uppercase tracking-wider text-teal-300 block">
+                                  Lesson {activeDeckIndex + 1} of {tierLessons.length} · {lesson.category}
+                                </span>
+                                <span className="text-[10px] text-teal-100/70 font-medium">
+                                  {lesson.readTime} read
+                                </span>
+                              </div>
+                            </div>
+
+                            <div className="flex items-center gap-1.5">
+                              {isCompleted ? (
+                                <span className="text-[10px] font-black px-2.5 py-1 rounded-full bg-emerald-500 text-white flex items-center gap-1 shadow-2xs">
+                                  <CheckCircle2 size={12} /> Done
+                                </span>
+                              ) : (
+                                <span className="text-[10px] font-bold px-2.5 py-1 rounded-full bg-amber-400 text-slate-950 shadow-2xs">
+                                  +25 XP
+                                </span>
+                              )}
+
+                              {/* Sarah Voice Tip */}
+                              <button
+                                type="button"
+                                onClick={(e) => handleToggleAudio(e, lesson)}
+                                title="Listen to Sarah AI voice tip"
+                                className={`px-2.5 py-1 rounded-xl text-[10px] font-black transition-all cursor-pointer flex items-center gap-1 ${
+                                  isAudioActive
+                                    ? "bg-amber-400 text-slate-950 animate-bounce"
+                                    : "bg-white/15 hover:bg-white/25 text-white border border-white/20"
+                                }`}
+                              >
+                                {isAudioActive ? <VolumeX size={12} /> : <Volume2 size={12} />}
+                                <span>{isAudioActive ? "Stop" : "Sarah Audio 🎙️"}</span>
+                              </button>
+                            </div>
+                          </div>
+
+                          {/* Lesson Title & Headline */}
+                          <div className="space-y-1.5 mb-4 relative z-10">
+                            <h4 className="text-base sm:text-lg font-black text-white leading-snug">
+                              {lesson.title}
+                            </h4>
+                            <p className="text-xs text-teal-100/90 leading-relaxed font-medium">
+                              {lesson.headline}
+                            </p>
+                          </div>
+
+                          {/* Action Button: Start Lesson */}
+                          <div className="flex items-center gap-2 mb-4 relative z-10">
+                            <Button
+                              onClick={() => handleStartLesson(lesson)}
+                              className="flex-1 bg-gradient-to-r from-teal-400 to-emerald-400 hover:from-teal-300 hover:to-emerald-300 text-slate-950 h-11 rounded-2xl font-black text-xs shadow-md flex items-center justify-center gap-2 cursor-pointer active:scale-98"
+                            >
+                              <span>{isCompleted ? "Review Lesson Again 🔄" : "Start This Lesson (+25 XP) 🚀"}</span>
+                            </Button>
+                          </div>
+
+                          {/* 9-Slide Deck Navigator with Left/Right Buttons & 9 Dots */}
+                          <div className="flex items-center justify-between pt-2 border-t border-white/10 relative z-10">
+                            <button
+                              type="button"
+                              onClick={() => {
+                                triggerHaptic("light");
+                                setActiveDeckIndex((prev) => Math.max(0, prev - 1));
+                              }}
+                              disabled={activeDeckIndex === 0}
+                              className={`text-xs font-black flex items-center gap-1 px-3 py-1.5 rounded-xl cursor-pointer transition-all ${
+                                activeDeckIndex === 0
+                                  ? "opacity-30 cursor-not-allowed text-white/50"
+                                  : "bg-white/10 hover:bg-white/20 text-white"
+                              }`}
+                            >
+                              <ChevronLeft size={14} />
+                              <span>Prev</span>
+                            </button>
+
+                            {/* 9-Step Interactive Dots / Pills */}
+                            <div className="flex items-center gap-1 sm:gap-1.5 overflow-x-auto px-1 max-w-[200px] sm:max-w-none no-scrollbar">
+                              {tierLessons.map((l, dotIdx) => {
+                                const isDotActive = dotIdx === activeDeckIndex;
+                                const isDotDone = completedLessonIds.includes(l.id);
+
+                                return (
+                                  <button
+                                    key={l.id}
+                                    type="button"
+                                    onClick={() => {
+                                      triggerHaptic("light");
+                                      setActiveDeckIndex(dotIdx);
+                                    }}
+                                    className={`transition-all rounded-full cursor-pointer flex items-center justify-center ${
+                                      isDotActive
+                                        ? "w-6 h-2.5 bg-teal-300 ring-2 ring-teal-400/50"
+                                        : isDotDone
+                                        ? "w-2.5 h-2.5 bg-emerald-400 hover:bg-emerald-300"
+                                        : "w-2.5 h-2.5 bg-white/25 hover:bg-white/50"
+                                    }`}
+                                    title={`Go to Lesson ${dotIdx + 1}: ${l.title}`}
+                                  />
+                                );
+                              })}
+                            </div>
+
+                            <button
+                              type="button"
+                              onClick={() => {
+                                triggerHaptic("light");
+                                setActiveDeckIndex((prev) => Math.min(tierLessons.length - 1, prev + 1));
+                              }}
+                              disabled={activeDeckIndex === tierLessons.length - 1}
+                              className={`text-xs font-black flex items-center gap-1 px-3 py-1.5 rounded-xl cursor-pointer transition-all ${
+                                activeDeckIndex === tierLessons.length - 1
+                                  ? "opacity-30 cursor-not-allowed text-white/50"
+                                  : "bg-white/10 hover:bg-white/20 text-white"
+                              }`}
+                            >
+                              <span>Next</span>
+                              <ChevronRight size={14} />
+                            </button>
+                          </div>
+                        </div>
+                      );
+                    })()}
                   </div>
+                ) : (
+                  /* ========================================================= */
+                  /* B. EXPANDED 9-LESSON GRID VIEW                            */
+                  /* ========================================================= */
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+                    {tierLessons.map((lesson, idx) => {
+                      const isCompleted = completedLessonIds.includes(lesson.id);
+                      const isAudioActive = playingAudioLessonId === lesson.id && isAudioPlaying;
 
-                  <span className="text-[10px] font-bold text-[#1f7a8c] dark:text-teal-400 block leading-tight">
-                    Lesson {idx + 1} · {lesson.category}
-                  </span>
-                  <h4 className="text-xs font-black text-slate-900 dark:text-white leading-snug mt-1 group-hover:text-teal-700 transition-colors">
-                    {lesson.title}
-                  </h4>
-                </div>
+                      return (
+                        <motion.div
+                          key={lesson.id}
+                          initial={{ opacity: 0, y: 14 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ duration: 0.22, delay: idx * 0.03, ease: "easeOut" }}
+                          onClick={() => handleStartLesson(lesson)}
+                          className={`p-3.5 rounded-2xl border transition-all cursor-pointer flex flex-col justify-between min-h-[135px] group hover:shadow-md hover:scale-[1.01] active:scale-[0.99] ${
+                            isCompleted
+                              ? "bg-slate-50/80 dark:bg-zinc-800/80 border-teal-200/80 dark:border-zinc-700"
+                              : "bg-white dark:bg-zinc-900 border-slate-200 dark:border-zinc-800"
+                          }`}
+                        >
+                          <div>
+                            <div className="flex items-center justify-between mb-1.5">
+                              <span className="text-xl">{lesson.icon}</span>
+                              <div className="flex items-center gap-1">
+                                {isCompleted ? (
+                                  <span className="text-[9px] font-black px-1.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 flex items-center gap-0.5">
+                                    <CheckCircle2 size={10} /> Done
+                                  </span>
+                                ) : (
+                                  <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-amber-50 text-amber-800 dark:bg-zinc-800 dark:text-zinc-300">
+                                    +25 XP
+                                  </span>
+                                )}
 
-                <p className="text-[10.5px] text-slate-500 dark:text-slate-400 line-clamp-2 mt-2 font-medium">
-                  {lesson.headline}
-                </p>
+                                {/* Sarah Audio Trigger Button */}
+                                <button
+                                  type="button"
+                                  onClick={(e) => handleToggleAudio(e, lesson)}
+                                  title="Listen to Sarah AI voice tip"
+                                  className={`p-1.5 rounded-xl transition-all cursor-pointer ${
+                                    isAudioActive
+                                      ? "bg-amber-400 text-slate-950 animate-bounce"
+                                      : "bg-teal-50 hover:bg-teal-100 text-[#1f7a8c] dark:bg-zinc-800 dark:text-teal-300"
+                                  }`}
+                                >
+                                  {isAudioActive ? <VolumeX size={12} /> : <Volume2 size={12} />}
+                                </button>
+                              </div>
+                            </div>
+
+                            <span className="text-[9.5px] font-bold text-[#1f7a8c] dark:text-teal-400 block leading-tight">
+                              Lesson {idx + 1} · {lesson.category}
+                            </span>
+                            <h4 className="text-[11.5px] font-black text-slate-900 dark:text-white leading-snug mt-0.5 group-hover:text-teal-700 transition-colors line-clamp-2">
+                              {lesson.title}
+                            </h4>
+                          </div>
+
+                          <p className="text-[10px] text-slate-500 dark:text-slate-400 line-clamp-2 mt-1.5 font-medium">
+                            {lesson.headline}
+                          </p>
+                        </motion.div>
+                      );
+                    })}
+                  </div>
+                )}
               </motion.div>
-            );
-          })}
+            )}
+          </AnimatePresence>
         </div>
       </div>
 
