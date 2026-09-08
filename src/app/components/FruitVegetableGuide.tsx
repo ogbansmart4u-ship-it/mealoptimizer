@@ -523,19 +523,55 @@ export default function FruitVegetableGuide() {
   return (
     <div className="bg-white dark:bg-zinc-900/90 rounded-3xl p-5 sm:p-6 border border-emerald-100 dark:border-zinc-800 shadow-xl transition-all">
       {/* Top Banner Header */}
-      <div className="flex items-center justify-between gap-3 mb-4">
+      <div className="flex items-center justify-between gap-3 mb-3">
         <div>
           <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/70 border border-emerald-200 text-emerald-800 dark:text-emerald-300 text-[10px] font-black uppercase tracking-wider mb-1">
             <Leaf size={11} className="text-emerald-600 animate-pulse" />
-            <span>Phytochemical &amp; Fiber Engine</span>
+            <span>African Botanical Produce &amp; Meal Sequencing</span>
           </div>
           <h2 className="text-base sm:text-lg font-black text-gray-900 dark:text-zinc-100 flex items-center gap-2">
-            <span>Metabolic Fruits &amp; Healing Greens 🍏🥬</span>
+            <span>African Fruits &amp; Healing Greens 🍏🥬</span>
           </h2>
           <p className="text-xs text-gray-500 dark:text-zinc-400 mt-0.5">
-            Clinical glycemic profiling, blood pressure protection, and gut healing produce from Africa &amp; the tropics.
+            How to pair whole low-GI fruits with your 9-inch African plate to double mineral absorption and stop sugar spikes.
           </p>
         </div>
+      </div>
+
+      {/* 🌟 4-STEP MEAL SEQUENCING & 9-INCH PLATE COMBINATION GUIDE */}
+      <div className="p-3.5 bg-gradient-to-r from-teal-50/90 via-emerald-50/80 to-amber-50/70 dark:from-teal-950/40 dark:via-emerald-950/40 dark:to-zinc-900/60 rounded-2xl border border-teal-200/80 dark:border-teal-800/60 mb-4 space-y-2">
+        <div className="flex items-center justify-between">
+          <span className="text-[10px] uppercase font-black tracking-wider text-teal-800 dark:text-teal-300 flex items-center gap-1">
+            <Sparkles size={12} className="text-amber-500" />
+            <span>Golden Rule: How to Combine Fruit with African Meals</span>
+          </span>
+          <span className="text-[9.5px] font-bold text-emerald-700 dark:text-emerald-300 bg-white/90 dark:bg-zinc-900 px-2 py-0.5 rounded-full border border-emerald-200">
+            Step 4 Sequence
+          </span>
+        </div>
+
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5 text-center text-xs">
+          <div className="bg-white/90 dark:bg-zinc-800/80 p-2 rounded-xl border border-emerald-200/60">
+            <span className="text-[9px] font-black text-emerald-700 block uppercase">1. Fiber Soups (0-5m)</span>
+            <span className="text-[10.5px] font-bold text-slate-800 dark:text-slate-200">Okra / Ewedu</span>
+          </div>
+          <div className="bg-white/90 dark:bg-zinc-800/80 p-2 rounded-xl border border-amber-200/60">
+            <span className="text-[9px] font-black text-amber-700 block uppercase">2. Protein (5-15m)</span>
+            <span className="text-[10.5px] font-bold text-slate-800 dark:text-slate-200">Fish / Eggs / Meat</span>
+          </div>
+          <div className="bg-white/90 dark:bg-zinc-800/80 p-2 rounded-xl border border-cyan-200/60">
+            <span className="text-[9px] font-black text-cyan-700 block uppercase">3. Swallow Carbs</span>
+            <span className="text-[10.5px] font-bold text-slate-800 dark:text-slate-200">Amala / Plantain</span>
+          </div>
+          <div className="bg-white/90 dark:bg-zinc-800/80 p-2 rounded-xl border border-orange-200/60 ring-1 ring-orange-400/40">
+            <span className="text-[9px] font-black text-orange-700 block uppercase">4. Fruit Buffer</span>
+            <span className="text-[10.5px] font-bold text-slate-800 dark:text-slate-200">Garden Egg / Guava</span>
+          </div>
+        </div>
+
+        <p className="text-[10.5px] text-slate-600 dark:text-slate-300 leading-snug">
+          💡 <strong>Why this works:</strong> Eating whole fruit <em>after</em> fiber and protein slows fructose absorption by <strong>40%</strong>, keeping your blood sugar calm and giving you steady all-day vitality.
+        </p>
       </div>
 
       {/* Filter Tabs */}

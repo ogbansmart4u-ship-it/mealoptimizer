@@ -14,7 +14,7 @@ import Mascot from "./Mascot";
 export interface FoodOption {
   id: string;
   name: string;
-  category: "veggie" | "protein" | "carb" | "drink";
+  category: "veggie" | "protein" | "carb" | "drink" | "fruit";
   portionUnit: string;
   calories: number;
   protein: number;
@@ -694,6 +694,112 @@ export const AFRICAN_PLATE_DATABASE: FoodOption[] = [
     gi: "low",
     emoji: "🍹",
     clinicalNote: "Sparkling botanical infusion with zero added sugar for celebratory, heart-healthy hydration.",
+  },,
+  // 🍊 Step 4: Whole Fruit & Metabolic Buffers (1 Serving / 1/2 Cup)
+  {
+    id: "garden_egg_snack",
+    name: "African Garden Egg & Peanut Dip",
+    category: "fruit",
+    portionUnit: "1 Garden Egg + 1 tsp Ose Oji",
+    calories: 45,
+    protein: 2,
+    carbs: 5,
+    fiber: 3.5,
+    sodium: 15,
+    potassium: 290,
+    gi: "low",
+    emoji: "🍆",
+    clinicalNote: "Chlorogenic acid acts as a natural amylase inhibitor, buffering starch conversion into sugar.",
+  },
+  {
+    id: "agbalumo_fruit",
+    name: "African Star Apple (Agbalumo / Udara)",
+    category: "fruit",
+    portionUnit: "1 Whole Fruit",
+    calories: 55,
+    protein: 1,
+    carbs: 12,
+    fiber: 4.2,
+    sodium: 5,
+    potassium: 240,
+    gi: "low",
+    emoji: "🍊",
+    clinicalNote: "Rich in ascorbic acid and soluble pectin fiber; slows post-meal gastric emptying.",
+  },
+  {
+    id: "ube_pear_fruit",
+    name: "African Pear / Bush Butter (Ube)",
+    category: "fruit",
+    portionUnit: "2 Roasted / Softened Pears",
+    calories: 95,
+    protein: 2,
+    carbs: 4,
+    fiber: 3.8,
+    sodium: 5,
+    potassium: 310,
+    gi: "low",
+    emoji: "🥑",
+    clinicalNote: "Monounsaturated oleic fats provide clean satiety and cardiovascular elasticity.",
+  },
+  {
+    id: "fresh_guava",
+    name: "Fresh Pink Guava Slices",
+    category: "fruit",
+    portionUnit: "1/2 Whole Guava with Seeds",
+    calories: 40,
+    protein: 1,
+    carbs: 8,
+    fiber: 4.0,
+    sodium: 3,
+    potassium: 280,
+    gi: "low",
+    emoji: "🍈",
+    clinicalNote: "Contains 4x the Vitamin C of oranges, doubling non-heme iron absorption from leafy soups.",
+  },
+  {
+    id: "pawpaw_lime",
+    name: "Fresh Pawpaw (Papaya) with Lime",
+    category: "fruit",
+    portionUnit: "1/2 Cup Diced",
+    calories: 45,
+    protein: 1,
+    carbs: 10,
+    fiber: 2.2,
+    sodium: 3,
+    potassium: 210,
+    gi: "low",
+    emoji: "🥭",
+    clinicalNote: "Active papain enzymes break down dense meat proteins and soothe post-meal digestion.",
+  },
+  {
+    id: "watermelon_dessert",
+    name: "Fresh Watermelon (Dessert Anchor)",
+    category: "fruit",
+    portionUnit: "1 Measured Slice (100g)",
+    calories: 30,
+    protein: 0.6,
+    carbs: 7.5,
+    fiber: 0.4,
+    sodium: 1,
+    potassium: 112,
+    gi: "high",
+    emoji: "🍉",
+    clinicalNote: "Eaten strictly AFTER fiber and protein so the lycopene hydrates without spiking glucose.",
+  },
+  {
+    id: "tigernuts_aya",
+    name: "Fresh Tiger Nuts (Ofio / Aya)",
+    category: "fruit",
+    portionUnit: "1 Handful (30g)",
+    calories: 60,
+    protein: 1,
+    carbs: 7,
+    fiber: 4.5,
+    sodium: 2,
+    potassium: 190,
+    gi: "low",
+    emoji: "🥜",
+    clinicalNote: "Dense prebiotic resistant starch feeds healthy Akkermansia gut bacteria.",
   },
 ];
 
@@ -710,19 +816,21 @@ export default function AfricanDiabetesPlate({
   const proteinList = useMemo(() => AFRICAN_PLATE_DATABASE.filter((i) => i.category === "protein"), []);
   const carbList = useMemo(() => AFRICAN_PLATE_DATABASE.filter((i) => i.category === "carb"), []);
   const drinkList = useMemo(() => AFRICAN_PLATE_DATABASE.filter((i) => i.category === "drink"), []);
+  const fruitList = useMemo(() => AFRICAN_PLATE_DATABASE.filter((i) => i.category === "fruit"), []);
 
   const [selectedVeggie, setSelectedVeggie] = useState<FoodOption>(() => AFRICAN_PLATE_DATABASE.find(i => i.id === "ewedu") || AFRICAN_PLATE_DATABASE[0]);
   const [selectedProtein, setSelectedProtein] = useState<FoodOption>(() => AFRICAN_PLATE_DATABASE.find(i => i.id === "tilapia") || AFRICAN_PLATE_DATABASE[12]);
   const [selectedCarb, setSelectedCarb] = useState<FoodOption>(() => AFRICAN_PLATE_DATABASE.find(i => i.id === "unripe_plantain_fufu") || AFRICAN_PLATE_DATABASE[24]);
   const [selectedDrink, setSelectedDrink] = useState<FoodOption>(() => AFRICAN_PLATE_DATABASE.find(i => i.id === "water") || AFRICAN_PLATE_DATABASE[36]);
+  const [selectedFruit, setSelectedFruit] = useState<FoodOption>(() => AFRICAN_PLATE_DATABASE.find(i => i.id === "garden_egg_snack") || AFRICAN_PLATE_DATABASE.find(i => i.category === "fruit") || AFRICAN_PLATE_DATABASE[0]);
 
-  const [activeCategory, setActiveCategory] = useState<"veggie" | "protein" | "carb" | "drink">("veggie");
+  const [activeCategory, setActiveCategory] = useState<"veggie" | "protein" | "carb" | "drink" | "fruit">("veggie");
   const [isLogging, setIsLogging] = useState(false);
 
 
 
-  // Cycle food on quadrant tap
-  const handleQuadrantClick = (category: "veggie" | "protein" | "carb" | "drink") => {
+  // Cycle food on quadrant or satellite tap
+  const handleQuadrantClick = (category: "veggie" | "protein" | "carb" | "drink" | "fruit") => {
     try {
       soundEffects.playBubblePop();
     } catch {}
@@ -756,12 +864,18 @@ export default function AfricanDiabetesPlate({
       const nextItem = drinkList[nextIdx];
       setSelectedDrink(nextItem);
       toast.success(`💧 Hydration: Swapped to ${nextItem.name}!`, { duration: 1500 });
+    } else if (category === "fruit") {
+      const idx = fruitList.findIndex((i) => i.id === selectedFruit.id);
+      const nextIdx = idx >= 0 ? (idx + 1) % fruitList.length : 0;
+      const nextItem = fruitList[nextIdx];
+      setSelectedFruit(nextItem);
+      toast.success(`🍊 Fruit Buffer: Swapped to ${nextItem.name}!`, { duration: 1500 });
     }
   };
 
   // Aggregated Telemetry
   const totals = useMemo(() => {
-    const items = [selectedVeggie, selectedProtein, selectedCarb, selectedDrink];
+    const items = [selectedVeggie, selectedProtein, selectedCarb, selectedDrink, selectedFruit];
     const calories = items.reduce((s, i) => s + i.calories, 0);
     const protein = items.reduce((s, i) => s + i.protein, 0);
     const carbs = items.reduce((s, i) => s + i.carbs, 0);
@@ -848,8 +962,9 @@ export default function AfricanDiabetesPlate({
     if (activeCategory === "veggie") return veggieList;
     if (activeCategory === "protein") return proteinList;
     if (activeCategory === "carb") return carbList;
-    return drinkList;
-  }, [activeCategory, veggieList, proteinList, carbList, drinkList]);
+    if (activeCategory === "drink") return drinkList;
+    return fruitList;
+  }, [activeCategory, veggieList, proteinList, carbList, drinkList, fruitList]);
 
   return (
     <div className={`space-y-4 ${className}`}>
@@ -956,29 +1071,56 @@ export default function AfricanDiabetesPlate({
         </div>
       </div>
 
-      {/* 💧 Side Hydration (Clickable Pill) */}
-      <button
-        type="button"
-        onClick={() => handleQuadrantClick("drink")}
-        className={`w-full max-w-sm mx-auto flex items-center justify-between p-2.5 bg-sky-50/90 dark:bg-sky-950/50 rounded-2xl border border-sky-200 dark:border-sky-800 transition-all cursor-pointer active:scale-98 ${
-          activeCategory === "drink" ? "ring-2 ring-sky-500" : "hover:brightness-105"
-        }`}
-      >
-        <div className="flex items-center gap-2">
-          <span className="text-xl">{selectedDrink.emoji}</span>
-          <div className="text-left">
-            <span className="text-[9px] font-black uppercase text-sky-800 dark:text-sky-300 block">
-              💧 Side Hydration (0-Calorie)
-            </span>
-            <span className="text-xs font-black text-slate-900 dark:text-white block">
-              {selectedDrink.name} ({selectedDrink.calories} kcal)
-            </span>
+      {/* 💧 + 🍊 DUAL SATELLITE (Side Hydration & Step 4 Fruit Buffer) */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-w-md mx-auto w-full">
+        {/* Satellite 1: Side Hydration */}
+        <button
+          type="button"
+          onClick={() => handleQuadrantClick("drink")}
+          className={`flex items-center justify-between p-2.5 bg-sky-50/90 dark:bg-sky-950/50 rounded-2xl border border-sky-200 dark:border-sky-800 transition-all cursor-pointer active:scale-98 ${
+            activeCategory === "drink" ? "ring-2 ring-sky-500 shadow-xs" : "hover:brightness-105"
+          }`}
+        >
+          <div className="flex items-center gap-2 min-w-0">
+            <span className="text-xl shrink-0">{selectedDrink.emoji}</span>
+            <div className="text-left min-w-0">
+              <span className="text-[8.5px] font-black uppercase text-sky-800 dark:text-sky-300 block">
+                💧 Hydration
+              </span>
+              <span className="text-[11px] font-black text-slate-900 dark:text-white block truncate">
+                {selectedDrink.name}
+              </span>
+            </div>
           </div>
-        </div>
-        <span className="text-[9px] font-bold text-sky-700 dark:text-sky-400 bg-white/80 dark:bg-zinc-900 px-2 py-1 rounded-xl">
-          Tap to swap 🔄
-        </span>
-      </button>
+          <span className="text-[8.5px] font-bold text-sky-700 dark:text-sky-400 bg-white/80 dark:bg-zinc-900 px-1.5 py-0.5 rounded-lg shrink-0">
+            Swap 🔄
+          </span>
+        </button>
+
+        {/* Satellite 2: Step 4 Fruit Buffer */}
+        <button
+          type="button"
+          onClick={() => handleQuadrantClick("fruit")}
+          className={`flex items-center justify-between p-2.5 bg-emerald-50/90 dark:bg-emerald-950/50 rounded-2xl border border-emerald-200 dark:border-emerald-800 transition-all cursor-pointer active:scale-98 ${
+            activeCategory === "fruit" ? "ring-2 ring-emerald-500 shadow-xs" : "hover:brightness-105"
+          }`}
+        >
+          <div className="flex items-center gap-2 min-w-0">
+            <span className="text-xl shrink-0">{selectedFruit.emoji}</span>
+            <div className="text-left min-w-0">
+              <span className="text-[8.5px] font-black uppercase text-emerald-800 dark:text-emerald-300 block">
+                🍊 Step 4: Fruit Buffer
+              </span>
+              <span className="text-[11px] font-black text-slate-900 dark:text-white block truncate">
+                {selectedFruit.name}
+              </span>
+            </div>
+          </div>
+          <span className="text-[8.5px] font-bold text-emerald-700 dark:text-emerald-400 bg-white/80 dark:bg-zinc-900 px-1.5 py-0.5 rounded-lg shrink-0">
+            Swap 🔄
+          </span>
+        </button>
+      </div>
 
       {/* 🌟 1-TAP INLINE FOOD CHIPS (Simple & Direct) */}
       <div className="p-3 bg-slate-50 dark:bg-zinc-800/60 rounded-2xl border border-slate-200/80 dark:border-zinc-700/60">
@@ -988,32 +1130,39 @@ export default function AfricanDiabetesPlate({
             {activeCategory === "protein" && "🥩 25% Lean Proteins"}
             {activeCategory === "carb" && "🍠 25% Swallows & Carbs"}
             {activeCategory === "drink" && "💧 Hydration Drinks"}
+            {activeCategory === "fruit" && "🍊 Step 4: Fruit Buffers"}
           </span>
           {/* Category Tabs */}
-          <div className="flex items-center gap-1 text-[10px] font-bold">
+          <div className="flex items-center gap-1 text-[9.5px] font-bold overflow-x-auto">
             <button
               onClick={() => setActiveCategory("veggie")}
-              className={`px-2 py-0.5 rounded-lg transition-all cursor-pointer ${activeCategory === "veggie" ? "bg-emerald-600 text-white" : "text-slate-500"}`}
+              className={`px-1.5 py-0.5 rounded-lg transition-all cursor-pointer ${activeCategory === "veggie" ? "bg-emerald-600 text-white" : "text-slate-500"}`}
             >
               Veggies
             </button>
             <button
               onClick={() => setActiveCategory("protein")}
-              className={`px-2 py-0.5 rounded-lg transition-all cursor-pointer ${activeCategory === "protein" ? "bg-amber-600 text-white" : "text-slate-500"}`}
+              className={`px-1.5 py-0.5 rounded-lg transition-all cursor-pointer ${activeCategory === "protein" ? "bg-amber-600 text-white" : "text-slate-500"}`}
             >
               Protein
             </button>
             <button
               onClick={() => setActiveCategory("carb")}
-              className={`px-2 py-0.5 rounded-lg transition-all cursor-pointer ${activeCategory === "carb" ? "bg-cyan-700 text-white" : "text-slate-500"}`}
+              className={`px-1.5 py-0.5 rounded-lg transition-all cursor-pointer ${activeCategory === "carb" ? "bg-cyan-700 text-white" : "text-slate-500"}`}
             >
               Swallow
             </button>
             <button
               onClick={() => setActiveCategory("drink")}
-              className={`px-2 py-0.5 rounded-lg transition-all cursor-pointer ${activeCategory === "drink" ? "bg-sky-600 text-white" : "text-slate-500"}`}
+              className={`px-1.5 py-0.5 rounded-lg transition-all cursor-pointer ${activeCategory === "drink" ? "bg-sky-600 text-white" : "text-slate-500"}`}
             >
               Drink
+            </button>
+            <button
+              onClick={() => setActiveCategory("fruit")}
+              className={`px-1.5 py-0.5 rounded-lg transition-all cursor-pointer ${activeCategory === "fruit" ? "bg-orange-600 text-white" : "text-slate-500"}`}
+            >
+              Fruit
             </button>
           </div>
         </div>
@@ -1025,7 +1174,8 @@ export default function AfricanDiabetesPlate({
               (activeCategory === "veggie" && selectedVeggie.id === item.id) ||
               (activeCategory === "protein" && selectedProtein.id === item.id) ||
               (activeCategory === "carb" && selectedCarb.id === item.id) ||
-              (activeCategory === "drink" && selectedDrink.id === item.id);
+              (activeCategory === "drink" && selectedDrink.id === item.id) ||
+              (activeCategory === "fruit" && selectedFruit.id === item.id);
 
             return (
               <button
@@ -1037,6 +1187,7 @@ export default function AfricanDiabetesPlate({
                   if (activeCategory === "protein") setSelectedProtein(item);
                   if (activeCategory === "carb") setSelectedCarb(item);
                   if (activeCategory === "drink") setSelectedDrink(item);
+                  if (activeCategory === "fruit") setSelectedFruit(item);
                   toast.success(`Selected ${item.name}! Plate updated ✨`);
                 }}
                 className={`p-2 rounded-xl border text-left transition-all cursor-pointer flex items-center justify-between active:scale-95 ${

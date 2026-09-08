@@ -2010,7 +2010,7 @@ export default function Recipe() {
 
   // Step-by-Step Cooking Mode State
   const [isCookingMode, setIsCookingMode] = useState<boolean>(false);
-  const [activeBentoSection, setActiveBentoSection] = useState<"ingredients" | "macros" | "wisdom" | null>("ingredients");
+  const [activeBentoSection, setActiveBentoSection] = useState<"ingredients" | "macros" | "wisdom" | "fruit" | null>("ingredients");
   const [currentStepIdx, setCurrentStepIdx] = useState<number>(0);
   const [checkedIngredients, setCheckedIngredients] = useState<Record<string, boolean>>({});
 
@@ -2018,6 +2018,48 @@ export default function Recipe() {
   const [timerSeconds, setTimerSeconds] = useState<number>(0);
   const [timerRunning, setTimerRunning] = useState<boolean>(false);
   const timerIntervalRef = useRef<any>(null);
+
+  // Dynamic Synergistic Fruit & Dessert Pairing for Active Recipe
+  const fruitPairing = useMemo(() => {
+    if (!selectedRecipe) return null;
+    const name = selectedRecipe.name.toLowerCase();
+    const tags = selectedRecipe.tags || [];
+    
+    if (name.includes("yam") || name.includes("rice") || name.includes("fufu") || name.includes("garri") || selectedRecipe.baseCarbs > 40) {
+      return {
+        emoji: "🍆",
+        name: "African Garden Egg & Spicy Peanut Dip (Ose Oji)",
+        reason: "Chlorogenic acid in Garden Egg acts as a natural buffer, slowing carbohydrate breakdown from this meal by ~25%.",
+        calories: 35,
+        timing: "Enjoy as a crunchy starter or dessert anchor 5 mins after eating",
+      };
+    }
+    if (name.includes("ugwu") || name.includes("spinach") || name.includes("afang") || name.includes("efo") || name.includes("soup") || tags.includes("renal-safe")) {
+      return {
+        emoji: "🍊",
+        name: "African Star Apple (Agbalumo) or Fresh Guava Slice",
+        reason: "Natural Vitamin C in Star Apple/Guava converts non-heme plant iron in leafy soups into soluble form, doubling iron absorption!",
+        calories: 45,
+        timing: "Enjoy whole right after finishing your bowl of soup",
+      };
+    }
+    if (tags.includes("high-protein") || tags.includes("weight-loss") || name.includes("fish") || name.includes("chicken")) {
+      return {
+        emoji: "🥭",
+        name: "Fresh Pawpaw (Papaya) with a Squeeze of Lime",
+        reason: "Natural papain enzymes in Pawpaw accelerate protein digestion and soothe the stomach after rich seafood and poultry.",
+        calories: 45,
+        timing: "Enjoy 2-3 slices 10 mins post-meal for easy digestion",
+      };
+    }
+    return {
+      emoji: "🥑",
+      name: "African Pear (Ube) or Garden Egg",
+      reason: "Low glycemic index and high natural pectin fiber to keep energy steady and avoid afternoon drowsiness.",
+      calories: 40,
+      timing: "Enjoy as a refreshing post-meal dessert anchor",
+    };
+  }, [selectedRecipe]);
 
   // Load cloud favorites & user snapped custom recipes from database
   useEffect(() => {
@@ -2853,6 +2895,70 @@ export default function Recipe() {
                         </div>
                       )}
                     </div>
+
+                    {/* BENTO POD 4: 🍊 STEP 4: AVO'S FRUIT & DESSERT PAIRING */}
+                    {fruitPairing && (
+                      <div className="rounded-2xl border border-slate-200 dark:border-zinc-800 bg-slate-50/70 dark:bg-zinc-900/60 overflow-hidden transition-all shadow-xs">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            try { soundEffects.playBubblePop(); } catch {}
+                            try { triggerHaptic("light"); } catch {}
+                            setActiveBentoSection(activeBentoSection === "fruit" ? null : "fruit");
+                          }}
+                          className="w-full p-3 flex items-center justify-between text-left cursor-pointer hover:bg-slate-100/70 dark:hover:bg-zinc-800/50 transition-colors"
+                        >
+                          <div className="flex items-center gap-2">
+                            <span className="text-base">{fruitPairing.emoji}</span>
+                            <div>
+                              <span className="text-xs font-black text-emerald-800 dark:text-emerald-300 block">
+                                Step 4: Fruit &amp; Dessert Pairing 🍊
+                              </span>
+                              <span className="text-[10px] text-slate-500 block truncate max-w-[200px]">
+                                {fruitPairing.name} (+{fruitPairing.calories} kcal)
+                              </span>
+                            </div>
+                          </div>
+                          <span className="text-slate-400 font-bold text-xs">
+                            {activeBentoSection === "fruit" ? "▲" : "▼"}
+                          </span>
+                        </button>
+
+                        {/* Exploded Fruit Synergy Card */}
+                        {activeBentoSection === "fruit" && (
+                          <div className="p-3 pt-0 border-t border-slate-200/60 dark:border-zinc-800 space-y-2 animate-fade-in">
+                            <div className="p-3 bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-emerald-950/40 dark:to-teal-950/40 rounded-xl border border-emerald-200 dark:border-emerald-800 text-xs text-slate-700 dark:text-slate-300 space-y-1.5 mt-2">
+                              <div className="flex items-center justify-between">
+                                <span className="font-black text-emerald-950 dark:text-emerald-100 text-xs">
+                                  {fruitPairing.emoji} {fruitPairing.name}
+                                </span>
+                                <span className="text-[10px] font-bold bg-emerald-200 dark:bg-emerald-900 text-emerald-900 dark:text-emerald-200 px-2 py-0.5 rounded-full">
+                                  +{fruitPairing.calories} kcal
+                                </span>
+                              </div>
+                              <p className="text-[11px] leading-relaxed text-slate-600 dark:text-slate-300">
+                                <strong>Why pair with this meal:</strong> {fruitPairing.reason}
+                              </p>
+                              <div className="text-[10px] font-bold text-teal-800 dark:text-teal-300 bg-white/80 dark:bg-zinc-900/80 p-1.5 rounded-lg border border-teal-100 dark:border-zinc-700 flex items-center gap-1">
+                                <span>⏱️ <strong>How to time it:</strong> {fruitPairing.timing}</span>
+                              </div>
+                            </div>
+
+                            <button
+                              type="button"
+                              onClick={() => {
+                                try { soundEffects.playSuccessJingle(); } catch {}
+                                try { triggerHaptic("medium"); } catch {}
+                                toast.success(`Added ${fruitPairing.name} buffer to plate! 🥑`);
+                              }}
+                              className="w-full py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs flex items-center justify-center gap-1.5 cursor-pointer shadow-2xs active:scale-95 transition-all"
+                            >
+                              <span>+ Add This Fruit Buffer to Plate 🍽️</span>
+                            </button>
+                          </div>
+                        )}
+                      </div>
+                    )}
                   </div>
                 )}
 
