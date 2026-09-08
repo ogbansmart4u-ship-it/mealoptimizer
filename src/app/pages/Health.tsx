@@ -16,7 +16,7 @@ import MicronutrientShieldCard from "../components/MicronutrientShieldCard";
 import WearableSyncModal from "../components/WearableSyncModal";
 import { toast } from "sonner";
 
-export type EducationalCategory = "all" | "sugar" | "heart" | "herbs" | "metabolism" | "drugs";
+export type EducationalCategory = "all" | "sugar" | "heart" | "herbs" | "metabolism" | "gain" | "drugs";
 
 export interface EducationalArticle {
   id: string;
@@ -47,256 +47,304 @@ const EDUCATIONAL_ARTICLES: EducationalArticle[] = [
   {
     id: "diabetes-glycemic-shield",
     category: "sugar",
-    categoryLabel: "Blood Sugar & Glycemic Index",
-    title: "Taming West African Starches for Steady Blood Sugar",
-    icon: "🩺",
+    categoryLabel: "Blood Sugar & Steady Energy",
+    title: "How to Enjoy Swallow & Rice Without Blood Sugar Spikes",
+    icon: "🥣",
     color: "text-rose-700 dark:text-rose-400",
     badgeBg: "bg-rose-50 dark:bg-rose-950/60 border-rose-200 dark:border-rose-900",
     readTime: "2 min read",
-    headline: "How resistant starch and viscosity buffer glucose excursions without giving up cultural dishes.",
-    clinicalImpact: "HbA1c ↓ 0.4% - 0.7% over 12 weeks",
-    recommendedFor: ["diabetes", "type 2 diabetes", "prediabetes", "insulin resistance", "metabolic"],
+    headline: "Enjoy your favorite cultural meals while keeping your blood sugar calm and steady.",
+    clinicalImpact: "Helps prevent sudden afternoon sugar crashes & fatigue",
+    recommendedFor: ["diabetes", "type 2 diabetes", "prediabetes", "insulin resistance", "metabolic", "sugar"],
     summary:
-      "Traditional swallows like pounded yam and white garri have a high Glycemic Index (GI > 75). However, when swallow is paired with viscous slimy soups (Ewedu, Okra, Ogbono) or cooled and reheated (creating Retrograded Resistant Starch Type 3), glucose absorption rate is slowed by up to 38%.",
+      "You do not have to give up pounded yam, eba, or rice! When you pair your favorite swallow with drawing vegetable soups (like Ewedu, Okra, or Ogbono) or allow boiled yams and rice to cool slightly before eating, your body absorbs the carbohydrates much more slowly and smoothly.",
     keyBiomarkers: [
-      { name: "Fasting Blood Glucose", target: "< 100 mg/dL (5.6 mmol/L)", note: "Assesses baseline hepatic insulin sensitivity." },
-      { name: "2-Hour Postprandial", target: "< 140 mg/dL (7.8 mmol/L)", note: "Monitors meal-specific carbohydrate clearance." },
-      { name: "HbA1c", target: "< 6.5% - 7.0%", note: "Reflects 3-month average glycation." },
+      { name: "Morning Fasting Sugar", target: "Under 100 mg/dL (5.6 mmol/L)", note: "Your baseline blood sugar when you wake up in the morning." },
+      { name: "2 Hours After Eating", target: "Under 140 mg/dL (7.8 mmol/L)", note: "How smoothly your body turns your meal into steady energy." },
+      { name: "3-Month Average (HbA1c)", target: "Under 6.5% - 7.0%", note: "Your overall blood sugar health over the last 3 months." },
     ],
     eatThisVsModerate: [
-      { eat: "Oat swallow, Unripe Plantain flour, Guinea Corn (Baba)", moderate: "Pounded Yam, Instant Starch, White Garri", reason: "Higher soluble beta-glucans and slower gastric emptying." },
-      { eat: "Okra, Ewedu, Ogbono with high vegetable-to-swallow ratio", moderate: "Dry plain carb swallows without viscous soup", reason: "Soluble mucilage acts as a physical barrier against rapid enzymatic glucose absorption." },
-      { eat: "Lean fish, boiled eggs, cowpeas (Beans) as carb buffers", moderate: "Sweetened soft drinks, malt drinks", reason: "Protein-induced GLP-1 release promotes satiety and improves insulin response." },
+      { eat: "Oat swallow, Unripe Plantain, Guinea Corn (Akaru/Baba)", moderate: "Oversized mounds of white Garri or instant starch", reason: "Rich in natural fiber that digests slowly and keeps you full for hours." },
+      { eat: "Generous Okra, Ewedu, or Ogbono soup on your plate", moderate: "Eating swallow dry without enough vegetable soup", reason: "The natural drawing texture coats the stomach and prevents quick sugar rushes." },
+      { eat: "Fresh fish, boiled eggs, or beans alongside your meal", moderate: "Sugary sodas, sweet malt drinks, and energy drinks", reason: "Protein helps you stay satisfied and prevents afternoon slumps." },
     ],
     actionableHabits: [
-      "The 'Fiber First' Rule: Eat 3-4 spoonfuls of leafy soup or salad before taking the first swallow bite.",
-      "Resistant Starch Prep: Cooking boiled sweet potatoes or beans ahead of time and cooling overnight increases resistant starch by 40%.",
-      "Post-Meal 10-Minute Walk: Light physical movement within 30 minutes after dining pulls glucose into muscle cells via GLUT4 independent of insulin.",
+      "The 'Soup First' Habit: Enjoy 3-4 spoonfuls of rich vegetable soup before taking your first bite of swallow.",
+      "The 'Cook & Cool' Secret: Cook boiled sweet potatoes, yams, or rice ahead of time—cooling them slightly makes them gentler on blood sugar.",
+      "Gentle 10-Minute Walk: A calm 10-minute stroll after lunch or dinner helps your muscles use food energy immediately.",
     ],
-    scientificReference: "Lancet Diabetes & Endocrinology / Nigerian Journal of Nutritional Sciences (2024)",
+    scientificReference: "Nigerian Journal of Nutritional Sciences & Global Metabolic Health Guidelines",
     quiz: {
-      question: "Which soup property most effectively blunts glucose absorption during a swallow meal?",
+      question: "Which soup texture naturally helps keep your blood sugar steady after eating swallow?",
       options: [
-        "High saturated fat from bleached palm oil",
-        "Viscous soluble mucilage from Ewedu, Okra, or Ogbono",
-        "Extra table salt and bouillon cubes",
-        "Eating the swallow cold without soup",
+        "Heavy bleached palm oil with excess salt",
+        "Natural drawing soup like Ewedu, Okra, or Ogbono",
+        "Extra seasoning cubes in the soup",
+        "Eating the swallow cold with no soup",
       ],
       correctIndex: 1,
-      explanation: "Soluble mucilage forms a gel-like matrix in the small intestine, slowing enzymatic breakdown of starches and blunting blood glucose spikes.",
+      explanation: "Drawing soups like Ewedu and Okra create a natural soothing barrier in your digestive tract that slows down digestion and prevents sudden sugar spikes!",
     },
   },
   {
     id: "hypertension-sodium-balance",
     category: "heart",
-    categoryLabel: "Heart & Blood Pressure",
-    title: "The Sodium-to-Potassium Ratio in Nigerian Cooking",
+    categoryLabel: "Heart Health & Calm Pressure",
+    title: "Delicious Low-Salt Flavor Secrets for Nigerian Soups",
     icon: "❤️",
     color: "text-red-700 dark:text-red-400",
     badgeBg: "bg-red-50 dark:bg-red-950/60 border-red-200 dark:border-red-900",
     readTime: "3 min read",
-    headline: "Why boosting dietary potassium with leafy greens lowers systolic BP more effectively than sodium restriction alone.",
-    clinicalImpact: "Systolic BP ↓ 5-8 mmHg, Diastolic BP ↓ 3-5 mmHg",
-    recommendedFor: ["hypertension", "high blood pressure", "heart", "cardiovascular", "stroke"],
+    headline: "How to make mouthwatering soups with less salt by using rich traditional spices.",
+    clinicalImpact: "Supports calm, relaxed blood pressure & healthy kidneys",
+    recommendedFor: ["hypertension", "high blood pressure", "heart", "cardiovascular", "stroke", "blood pressure"],
     summary:
-      "In West African cuisine, high reliance on bouillon seasoning cubes, smoked dried fish with sodium preservatives, and table salt shifts the intracellular sodium-potassium pump. Increasing potassium through Ugu, Garden Egg, and Sweet Potatoes helps the kidneys excrete sodium through natriuresis.",
+      "You do not need 4 seasoning cubes for soup to taste incredible! Traditional West African ingredients like fermented locust beans (Iru/Dawadawa), dried crayfish, garlic, ginger, and scent leaf deliver deep, mouthwatering savory flavor while protecting your heart and kidneys from excess salt.",
     keyBiomarkers: [
-      { name: "Systolic Blood Pressure", target: "< 120-130 mmHg", note: "Cardiovascular arterial wall tension." },
-      { name: "Diastolic Blood Pressure", target: "< 80 mmHg", note: "Resting vascular resistance." },
-      { name: "Sodium/Potassium Urinary Ratio", target: "< 1.0", note: "Direct clinical marker of dietary balance." },
+      { name: "Resting Blood Pressure", target: "Around 120/80 mmHg", note: "The gentle, relaxed pressure of blood moving through your arteries." },
+      { name: "Daily Salt (Sodium)", target: "Under 2,000 mg daily", note: "Keeping salt moderate prevents water retention and puffy ankles." },
     ],
     eatThisVsModerate: [
-      { eat: "Locust beans (Iru/Dawadawa), garlic, ginger, crayfish for flavor", moderate: "Multiple sodium bouillon cubes per pot", reason: "Fermented Iru provides savory umami (glutamate) with zero added chemical sodium." },
-      { eat: "Ugu (Fluted pumpkin), Spinach, Plantain, Garden Egg", moderate: "Salted stockfish, processed corned beef, canned meats", reason: "Potassium relaxes arterial walls and induces natural diuresis." },
-      { eat: "Fresh Hibiscus (Zobo) tea unsweetened with ginger & cloves", moderate: "Energy drinks, high-caffeine beverages", reason: "Hibiscus calyces contain anthocyanins that act as mild natural ACE inhibitors." },
+      { eat: "Locust beans (Iru/Dawadawa), crayfish, garlic, ginger, scent leaf", moderate: "Dropping 3-4 commercial seasoning cubes into a single pot", reason: "Fermented Iru gives deep savory umami taste with zero industrial salt." },
+      { eat: "Ugu (fluted pumpkin), spinach, plantain, garden eggs", moderate: "Heavily salted dry stockfish or canned processed meats", reason: "Packed with natural potassium that relaxes blood vessels and flushes excess water." },
+      { eat: "Fresh homemade Zobo (Hibiscus) tea with ginger & cloves", moderate: "High-caffeine energy drinks with lots of added sugar", reason: "Natural Hibiscus is known to soothe blood vessels and promote calm circulation." },
     ],
     actionableHabits: [
-      "The 'Half-Cube' Swap: Cut bouillon cube usage in half and replace the missing depth with ground crayfish, Iru, garlic, and thyme.",
-      "Rinse Preserved Fish: Soak and boil smoked fish/stockfish in warm water and discard the first rinse to remove up to 30% of surface curing salt.",
-      "Daily Hibiscus Cup: 1 cup of unsweetened Zobo infusion daily has been shown to assist endothelial relaxation.",
+      "The 'Half-Cube' Swap: Cut seasoning cubes in half and boost the rich flavor with ground crayfish, Iru, garlic, and thyme.",
+      "Rinse Smoked Fish: Soak smoked fish or stockfish in warm water and discard the first rinse to wash away excess surface salt.",
+      "Daily Hibiscus Cup: Enjoy 1 cup of unsweetened homemade Zobo infusion daily to promote relaxed circulation.",
     ],
-    scientificReference: "American Heart Association (AHA) & West African College of Physicians",
+    scientificReference: "West African Heart Health Guidelines & Cardiovascular Nutrition Science",
     quiz: {
-      question: "What natural traditional seasoning provides deep umami flavor while reducing reliance on sodium cubes?",
+      question: "What natural traditional seasoning provides deep savory flavor while cutting down excess salt?",
       options: [
-        "Monosodium glutamate crystals",
+        "Extra table salt and chemical crystals",
         "Fermented African Locust Beans (Iru / Dawadawa)",
-        "Salted potash (Kaun)",
-        "Bleached palm oil",
+        "Heavy salted potash (Kaun)",
+        "Bleached burnt palm oil",
       ],
       correctIndex: 1,
-      explanation: "Fermented locust beans (Iru/Dawadawa) deliver natural savory peptide umami without the high industrial sodium found in commercial seasoning cubes.",
+      explanation: "Fermented locust beans (Iru/Dawadawa) deliver rich savory umami naturally, cutting down the need for salty seasoning cubes!",
     },
   },
   {
     id: "african-superfoods-herbs",
     category: "herbs",
-    categoryLabel: "African Superfoods & Herbs",
-    title: "Clinical Science of Bitter Leaf, Ewedu & Ugu",
+    categoryLabel: "African Super-Greens & Herbs",
+    title: "The Superpowers of Bitter Leaf, Ewedu & Ugu",
     icon: "🌿",
     color: "text-emerald-700 dark:text-emerald-400",
     badgeBg: "bg-emerald-50 dark:bg-emerald-950/60 border-emerald-200 dark:border-emerald-900",
     readTime: "2 min read",
-    headline: "Unpacking the antioxidant polyphenols, iron bioavailability, and lipid-balancing virtues of local greens.",
-    clinicalImpact: "Total Antioxidant Capacity ↑ 30%, Liver Enzyme Balance",
-    recommendedFor: ["all", "general", "wellness", "cholesterol", "liver"],
+    headline: "How local vegetables boost your blood levels, cleanse your liver, and energize your body.",
+    clinicalImpact: "Builds strong red blood cells & boosts natural vitality",
+    recommendedFor: ["all", "general", "wellness", "cholesterol", "liver", "energy"],
     summary:
-      "West African leafy greens are among the most nutrient-dense botanical foods on earth. Vernonia amygdalina (Bitter Leaf) is packed with vernodalin and luteolin, Corchorus olitorius (Ewedu) provides carotenoids and beta-carotene, while Telfairia occidentalis (Ugu) supplies bioavailable non-heme iron and folate.",
+      "West African leafy greens are among the healthiest vegetables on the planet! Bitter Leaf helps your liver cleanse toxins, Ewedu supports smooth gut health, and Ugu (fluted pumpkin) is packed with natural iron and folate to keep your blood rich and your energy high.",
     keyBiomarkers: [
-      { name: "Serum Ferritin / Hemoglobin", target: "13.5-17.5 g/dL (M), 12.0-15.5 g/dL (F)", note: "Oxygen-carrying capacity supported by Ugu." },
-      { name: "ALT / AST (Liver Enzymes)", target: "< 35 U/L", note: "Protected by bitter leaf and antioxidant flavonoids." },
+      { name: "Blood Level (Hemoglobin)", target: "12 - 16 g/dL", note: "The strength of your red blood cells carrying oxygen and stamina." },
+      { name: "Liver Vitality", target: "Healthy & Clear", note: "Protected by natural bitter herbs and colorful leafy greens." },
     ],
     eatThisVsModerate: [
-      { eat: "Freshly squeezed Ugu juice with a squeeze of citrus (Vitamin C)", moderate: "Boiling vegetables for 30+ minutes until brown", reason: "Vitamin C converts non-heme iron into soluble ferrous form; over-boiling leaches water-soluble vitamins." },
-      { eat: "Bitter leaf lightly washed (retaining mild bitterness)", moderate: "Squeezing out 100% of the bitter green juice", reason: "The bitter sesquiterpene lactones are the active metabolic agents supporting liver bile flow." },
-      { eat: "Ukazi, Afang, and Waterleaf in diverse weekly rotation", moderate: "Mono-diet of only 1 vegetable type", reason: "Phytochemical diversity nourishes diverse gut microbial species." },
+      { eat: "Freshly chopped Ugu added at the end of cooking with citrus/tomatoes", moderate: "Boiling vegetables for 30+ minutes until dark brown", reason: "Gentle cooking keeps vitamins alive; vitamin C helps your body absorb the iron." },
+      { eat: "Bitter leaf with a gentle, mild bitter taste remaining", moderate: "Washing bitter leaf until 100% of the green juice is gone", reason: "That mild bitterness is where the cleansing, health-protecting nutrients live." },
+      { eat: "Ukazi, Afang, Waterleaf, and Scent Leaf in weekly rotation", moderate: "Eating only 1 single type of vegetable every day", reason: "Mixing your greens gives your body a complete rainbow of vitamins." },
     ],
     actionableHabits: [
-      "Gentle Blanching: Cook leafy greens for no more than 3-5 minutes at the very end of soup cooking to preserve heat-sensitive folates.",
-      "Pair with Vitamin C: Add tomatoes, peppers, or lime to green vegetable dishes to double iron absorption.",
-      "Bitter Morning Sip: A small infusion of bitter leaf tea 2-3 mornings a week stimulates digestive enzymes.",
+      "Gentle 3-Minute Steam: Add your leafy greens during the last 3 minutes of soup cooking so they stay bright green and vitamin-rich.",
+      "Citrus Boost: Squeeze fresh lime or add fresh tomatoes to vegetable meals to help your body absorb twice as much iron.",
+      "Morning Herbal Sip: A gentle cup of bitter leaf or moringa tea a couple of mornings a week wakes up your digestion.",
     ],
-    scientificReference: "Journal of Ethnopharmacology & Phytomedicine (2025)",
+    scientificReference: "African Botanical Medicine & Nutritional Sciences",
     quiz: {
-      question: "Why should you avoid washing out 100% of the bitter taste from Bitter Leaf before cooking?",
+      question: "Why should you leave a little bit of the bitter taste when washing Bitter Leaf for soup?",
       options: [
-        "Because the bitterness contains the bioactive sesquiterpene lactones that aid metabolic health",
-        "Because washing bitter leaf destroys carbohydrates",
-        "Because it makes the soup cook slower",
-        "Because bitter leaf is toxic when fully washed",
+        "Because the mild bitter taste holds the active nutrients that cleanse the liver and support digestion",
+        "Because washing bitter leaf destroys food carbohydrates",
+        "Because it makes the soup cook faster",
+        "Because unwashed bitter leaf has no nutrients",
       ],
       correctIndex: 0,
-      explanation: "The bitter phytochemicals (luteolin, vernodalin) are precisely the therapeutic compounds responsible for insulin sensitization and liver bile support.",
+      explanation: "That gentle natural bitterness comes from active plant compounds that support your liver, balance digestion, and protect your cells!",
+    },
+  },
+  {
+    id: "healthy-weight-muscle-gain",
+    category: "gain",
+    categoryLabel: "Weight & Muscle Building 💪",
+    title: "How to Build Healthy Weight & Muscle with African Foods",
+    icon: "💪",
+    color: "text-emerald-700 dark:text-emerald-400",
+    badgeBg: "bg-emerald-50 dark:bg-emerald-950/60 border-emerald-200 dark:border-emerald-900",
+    readTime: "3 min read",
+    headline: "How to gain good weight, build strong muscle, and boost stamina with nutrient-dense African superfoods.",
+    clinicalImpact: "+300-500 kcal clean daily surplus • Firm muscle without belly fat",
+    recommendedFor: ["weight gain", "muscle", "underweight", "stamina", "fitness", "bodybuilding", "athletic", "gain"],
+    summary:
+      "Wanting to gain weight does NOT mean eating sugary junk foods or sodas that cause potbellies and sluggishness! The healthiest way to build firm muscle and gain good weight is through nutrient-dense African whole foods: hearty Egusi soup, Groundnut soup, Avocados, Mackerel fish, Boiled Eggs, Fortified Akamu with Milk & Peanuts, and wholesome Plantain & Beans.",
+    keyBiomarkers: [
+      { name: "Daily Calorie Surplus", target: "+300 to +500 kcal/day (2,450 kcal total)", note: "Gradually adds 0.5kg of healthy lean mass per week without sugar crashes." },
+      { name: "Daily Protein Target", target: "1.6 - 2.0g per kg body weight (~130g/day)", note: "Provides essential building blocks for muscle repair, strength, and tone." },
+      { name: "Healthy Fat Density", target: "~85g healthy fats daily", note: "From groundnuts, egusi, avocados, and whole eggs for clean, long-lasting energy." },
+    ],
+    eatThisVsModerate: [
+      { eat: "Groundnut soup, rich Egusi soup with extra fish & eggs, Avocado with Plantain", moderate: "Deep-fried puff-puff, sugary pastries, and commercial sodas", reason: "Whole traditional fats build firm muscle and stamina; refined junk food only creates visceral belly fat and fatigue." },
+      { eat: "Rich Akamu/Ogi fortified with whole milk, crushed peanuts & banana", moderate: "Plain watery Akamu with 4 spoons of white table sugar", reason: "Fortifying traditional porridge triples the protein and healthy calories without causing a sudden glucose crash." },
+      { eat: "Beans paired with boiled ripe plantain, boiled eggs, and mackerel fish", moderate: "Skipping meals or eating only 1 huge late-night swallow", reason: "Spreading protein across 3 solid meals and 2 wholesome snacks ensures your body continually repairs and builds muscle." },
+    ],
+    actionableHabits: [
+      "The 'Power Akamu' Bowl: Blend 2 tablespoons of peanut butter or crushed roasted groundnuts and whole milk into your morning Ogi for +350 clean calories.",
+      "Eat Every 3-4 Hours: Have 3 hearty meals plus 2 nutrient-dense snacks (roasted groundnuts & bananas, boiled eggs, or avocado toast) daily.",
+      "Strength & Resistance Work: Pair your extra calories with basic bodyweight squats, push-ups, or gym workouts so the food builds firm muscle instead of just soft fat.",
+    ],
+    scientificReference: "African Sports Nutrition Review & International Society of Sports Nutrition (ISSN)",
+    quiz: {
+      question: "What is the healthiest way to gain good weight and build muscle using African foods?",
+      options: [
+        "Drinking 3 bottles of sugary soda and eating pastries every day",
+        "Eating nutrient-dense superfoods like Egusi, Groundnut soup, Eggs, Fish, and fortified Akamu with strength exercise",
+        "Starving all day and eating 1 giant bowl of garri at midnight",
+        "Avoiding all fats and eating only plain white rice",
+      ],
+      correctIndex: 1,
+      explanation: "Nutrient-dense African staples like groundnuts, egusi, beans, eggs, and fish deliver clean calories and high protein to build healthy muscle without creating belly fat or sugar spikes!",
     },
   },
   {
     id: "pcos-hormonal-metabolism",
     category: "metabolism",
-    categoryLabel: "PCOS & Hormonal Metabolism",
-    title: "Managing PCOS & Insulin Resistance with African Diets",
+    categoryLabel: "Hormone Health & Belly Balance",
+    title: "Balancing Hormones & Beating Belly Fat with African Meals",
     icon: "🥑",
     color: "text-purple-700 dark:text-purple-400",
     badgeBg: "bg-purple-50 dark:bg-purple-950/60 border-purple-200 dark:border-purple-900",
     readTime: "3 min read",
-    headline: "Targeting hyperinsulinemia, reducing androgen flare-ups, and balancing ovulatory cycles through whole-food nutrition.",
-    clinicalImpact: "Fasting Insulin ↓ 25%, Improved Menstrual Regularity",
-    recommendedFor: ["pcos", "fertility", "hormones", "weight loss", "acne"],
+    headline: "How simple swaps in your breakfast and dinner help regulate cycles and calm cravings.",
+    clinicalImpact: "Supports regular monthly cycles & steady waistline",
+    recommendedFor: ["pcos", "fertility", "hormones", "weight loss", "acne", "women"],
     summary:
-      "Polycystic Ovary Syndrome (PCOS) is primarily driven by compensatory hyperinsulinemia—excess insulin signals the ovaries to overproduce testosterone. Transitioning to a high-protein African breakfast, incorporating anti-inflammatory spices (turmeric, ginger, cloves), and moderating refined starches dramatically improves cycle predictability.",
+      "Hormonal challenges like irregular cycles, acne, and stubborn belly fat are often triggered by morning sugar rushes. Starting your day with protein (like boiled eggs, steamed Moi-Moi, or fish pepper soup) instead of sweet bread or sugary tea keeps cravings away all day.",
     keyBiomarkers: [
-      { name: "Fasting Insulin", target: "< 8 uIU/mL", note: "Key driver of ovarian androgen synthesis." },
-      { name: "HOMA-IR Score", target: "< 1.5", note: "Quantifies cellular insulin resistance index." },
-      { name: "LH / FSH Ratio", target: "~ 1:1", note: "Hormonal ratio signaling regular ovulation." },
+      { name: "Morning Energy & Craving Control", target: "Steady & Calm", note: "Staying fully energized without intense 3 PM sugar cravings." },
+      { name: "Monthly Cycle Regularity", target: "Predictable & Smooth", note: "Promoted by balanced blood sugar and nourishing healthy fats." },
     ],
     eatThisVsModerate: [
-      { eat: "Boiled eggs, Akara made from whole cowpeas, fish pepper soup breakfast", moderate: "Sweet tea, white bread, sugar-sweetened puff puff", reason: "Savory high-protein breakfast prevents morning glucose spikes and day-long sugar cravings." },
-      { eat: "Avocado, Walnuts, Chia/Flaxseed, Pumpkin seeds (Egusi in moderation)", moderate: "Deep-fried industrial palm olein and trans fats", reason: "Healthy fats support steroid hormone synthesis and progesterone balance." },
-      { eat: "Moi Moi with boiled eggs, vegetable stir-fries with chicken", moderate: "Large plates of late-night white rice (Jollof/Fried)", reason: "Evening heavy carbs worsen overnight insulin surges and disrupt restorative sleep." },
+      { eat: "Boiled eggs, steamed Moi-Moi, or warm fish pepper soup for breakfast", moderate: "White bread with sugary tea, pastries, or sweet puff puff", reason: "Savory protein prevents morning sugar spikes and keeps you satisfied till lunchtime." },
+      { eat: "Avocado, walnuts, pumpkin seeds (Egusi), and groundnuts in good portions", moderate: "Deep-fried street snacks cooked in reused burnt vegetable oil", reason: "Healthy fats support your body's natural hormone production." },
+      { eat: "Moi-Moi with fish, beans, and vegetable stir-fries for dinner", moderate: "Huge late-night plates of white rice or swallow right before bed", reason: "A lighter dinner lets your body rest and recover peacefully overnight." },
     ],
     actionableHabits: [
-      "The 'Savory Breakfast' Rule: Start the day with protein and healthy fats (e.g. 2 eggs + steamed Moi-Moi) rather than cereal or pastry.",
-      "Myo-Inositol rich staples: Include beans, citrus fruits, and cantaloupes to naturally support ovarian receptor sensitivity.",
-      "Spearmint / Green Tea: Drink 1 cup of spearmint infusion in the afternoon to naturally downregulate excess free testosterone.",
+      "The 'Savory Breakfast' Rule: Start your morning with protein (eggs, Moi-Moi, or fish) rather than sweet snacks or white bread.",
+      "Healthy Seed Toppings: Sprinkle a handful of pumpkin seeds or groundnuts over your meals for hormone-building healthy fats.",
+      "Soothing Spearmint Tea: Enjoy a warm cup of spearmint or green tea in the afternoon to promote calm, clear skin.",
     ],
-    scientificReference: "Endocrine Society Clinical Practice Guidelines & BJOG",
+    scientificReference: "Women's Health & African Endocrinology Studies",
     quiz: {
-      question: "What is the primary underlying driver connecting diet and androgen excess in most PCOS cases?",
+      question: "What is the best way to start your morning to prevent sugar cravings and support hormone balance?",
       options: [
-        "Low salt intake in soups",
-        "Compensatory hyperinsulinemia (excess circulating insulin)",
-        "Drinking too much unsweetened water",
-        "Eating too much fresh fish",
+        "Sweet sugary tea with 3 slices of white bread",
+        "A savory protein breakfast like boiled eggs, steamed Moi-Moi, or fish soup",
+        "Skipping breakfast completely and drinking sweetened soda",
+        "Eating fried sweet plantain alone",
       ],
       correctIndex: 1,
-      explanation: "High circulating insulin stimulates the theca cells in ovaries to produce excess androgens (testosterone), disrupting follicular maturation and cycles.",
+      explanation: "Starting your morning with protein stabilizes your blood sugar right away, preventing morning spikes and keeping your hormones in harmony!",
     },
   },
   {
     id: "gut-microbiome-fermentation",
     category: "metabolism",
-    categoryLabel: "Gut Health & Fermentation",
-    title: "Probiotics & Prebiotics in African Fermented Staples",
+    categoryLabel: "Gut Health & Easy Digestion",
+    title: "The Gut-Healing Power of Ogi, Iru & Fermented Foods",
     icon: "🧫",
     color: "text-amber-700 dark:text-amber-400",
     badgeBg: "bg-amber-50 dark:bg-amber-950/60 border-amber-200 dark:border-amber-900",
     readTime: "2 min read",
-    headline: "How Ogi, Iru, Ogiri, and fermented cassava nourish the short-chain fatty acid (SCFA) gut microbiome.",
-    clinicalImpact: "Butyrate production ↑ 45%, Reduced Gut Inflammation",
+    headline: "How traditional fermented foods ease bloating, improve digestion, and boost immunity.",
+    clinicalImpact: "Soothes bloating & builds strong digestive defense",
     recommendedFor: ["gut", "digestion", "bloating", "ibs", "metabolism", "immunity"],
     summary:
-      "Indigenous African fermentation processes utilize wild Lactobacillus, Leuconostoc, and Bacillus species. These beneficial bacteria break down anti-nutrients (phytates and tannins), make iron and zinc 300% more bioavailable, and synthesize gut-healing Short-Chain Fatty Acids (Butyrate and Acetate).",
+      "Traditional African fermentation is a natural health secret! Foods like smooth Akamu (Ogi), Iru, and properly fermented cassava contain friendly bacteria that soothe the stomach, prevent bloating, and make vitamins and minerals much easier for your body to absorb.",
     keyBiomarkers: [
-      { name: "Gut SCFA Ratio", target: "High Butyrate / Acetate", note: "Fuel for colonocytes and tight junction integrity." },
-      { name: "High-Sensitivity CRP (hs-CRP)", target: "< 1.0 mg/L", note: "Systemic baseline inflammation indicator." },
+      { name: "Digestive Comfort", target: "Smooth & Light", note: "Enjoying meals without painful bloating, heaviness, or gas." },
+      { name: "Natural Immune Defense", target: "Strong & Resilient", note: "Over 70% of your body's immune defense starts in a healthy gut." },
     ],
     eatThisVsModerate: [
-      { eat: "Fermented Ogi / Akamu (unsweetened), traditional Iru / Ogiri", moderate: "Commercial ultra-processed yogurts loaded with 20g sugar", reason: "Live lactobacillus without glucose spike." },
-      { eat: "Tigernuts (Ofio / Aya) and Baobab pulp (high prebiotic inulin)", moderate: "Refined flour snacks and artificial sweeteners", reason: "Prebiotic oligosaccharides feed beneficial Bifidobacteria." },
-      { eat: "Slow-fermented garri in moderate portion with fiber soup", moderate: "Unfermented raw cassava derivatives", reason: "Proper fermentation detoxifies cyanogenic glycosides and enriches organic acids." },
+      { eat: "Fresh traditional Akamu (Ogi) spiced with ginger and cloves", moderate: "Commercial ultra-processed yogurts loaded with 4 spoons of sugar", reason: "Natural fermented porridge feeds good gut bacteria without spiking sugar." },
+      { eat: "Tigernuts (Ofio / Aya) and Baobab fruit", moderate: "Refined flour snacks, biscuits, and artificial sweeteners", reason: "Natural tigernuts are packed with prebiotic fiber that nourishes healthy digestion." },
+      { eat: "Slow-fermented Garri enjoyed in moderate portions with vegetable soup", moderate: "Unfermented raw or hurried cassava derivatives", reason: "Traditional slow fermentation breaks down harsh compounds and makes food gentle on digestion." },
     ],
     actionableHabits: [
-      "Daily Prebiotic Snack: Eat a handful of raw or roasted tigernuts (Aya) for 10g of insoluble prebiotic gut fuel.",
-      "Traditional Iru in Stews: Add Iru into tomato stew and soups 5 minutes before flame-off to preserve probiotic peptides.",
-      "Unsweetened Ogi: Sweeten morning Ogi with ginger, cloves, and cinnamon instead of 3 spoons of table sugar.",
+      "Tigernut Snack: Enjoy a handful of fresh or roasted tigernuts (Aya) for natural gut-loving fiber.",
+      "Traditional Iru in Stews: Add Iru into tomato stew and soups 5 minutes before turning off the flame to preserve its goodness.",
+      "Spice Your Morning Ogi: Flavor morning Akamu with ginger, cloves, and cinnamon instead of table sugar.",
     ],
-    scientificReference: "Nature Microbiology & African Journal of Biotechnology",
+    scientificReference: "African Food Microbiology & Gut Wellness Research",
     quiz: {
-      question: "What key metabolic benefit does traditional fermentation provide to grains and legumes?",
+      question: "What key health benefit does traditional fermentation give to African grains and beans?",
       options: [
         "Increases chemical sugar content by 500%",
-        "Deactivates anti-nutrients (phytates) and releases bioavailable minerals (iron/zinc)",
-        "Makes foods last forever without refrigeration",
-        "Converts protein into saturated fat",
+        "Unlocks minerals like iron and zinc and makes food easy to digest",
+        "Makes food last forever without cooking",
+        "Turns protein into pure grease",
       ],
       correctIndex: 1,
-      explanation: "Lactic acid fermentation breaks the bond between phytates and minerals, dramatically unlocking iron, calcium, and zinc for intestinal absorption.",
+      explanation: "Traditional natural fermentation breaks down anti-nutrients, unlocking iron, calcium, and zinc so your body can absorb them easily!",
     },
   },
   {
     id: "drug-nutrient-interactions",
     category: "drugs",
-    categoryLabel: "Medication & Nutrient Synergy",
-    title: "Medication & Nutrient Safety Guide",
+    categoryLabel: "Medication & Meal Safety",
+    title: "How to Pair Everyday Foods with Medications Safely",
     icon: "💊",
     color: "text-teal-700 dark:text-teal-400",
     badgeBg: "bg-teal-50 dark:bg-teal-950/60 border-teal-200 dark:border-teal-900",
     readTime: "3 min read",
-    headline: "Protecting your liver, kidneys, and nutrient absorption when taking blood pressure or diabetes drugs.",
-    clinicalImpact: "Prevents B12 & Potassium Deficiencies, Reduces GI side effects",
-    recommendedFor: ["medications", "metformin", "amlodipine", "losartan", "statins"],
+    headline: "Simple food tips to prevent stomach upset and keep your medicines working at their best.",
+    clinicalImpact: "Prevents stomach cramps & protects nutrient levels",
+    recommendedFor: ["medications", "metformin", "amlodipine", "losartan", "statins", "drugs"],
     summary:
-      "Common chronic medications have distinct interactions with diet. For example, Metformin depletes Vitamin B12 over time; ACE inhibitors / ARBs (Lisinopril, Losartan) retain potassium; while Calcium Channel Blockers (Amlodipine) must never be taken with grapefruit.",
+      "Taking chronic medications works best when paired with the right foods. For example, taking Metformin with your main meal prevents stomach cramps, and replenishing Vitamin B12 with eggs or fish keeps your nerves sharp and strong.",
     keyBiomarkers: [
-      { name: "Serum Vitamin B12", target: "> 400 pg/mL", note: "Crucial for peripheral nerve health in Metformin users." },
-      { name: "Serum Potassium (K+)", target: "3.5 - 5.0 mEq/L", note: "Monitored with Losartan / Lisinopril." },
-      { name: "eGFR / Serum Creatinine", target: "> 60 mL/min/1.73m²", note: "Kidney filtration safety marker." },
+      { name: "Nerve Vitality & Vitamin B12", target: "Strong & Active", note: "Keeps hands and feet feeling sharp and energized if taking Metformin." },
+      { name: "Gentle Digestion", target: "Comfortable & Easy", note: "Taking tablets with food prevents nausea and stomach irritation." },
     ],
     eatThisVsModerate: [
-      { eat: "Eggs, mackerel, beef liver, or B12 supplement (if on Metformin)", moderate: "Taking Metformin on an empty stomach", reason: "Prevents diabetic peripheral neuropathy and reduces gastrointestinal nausea." },
-      { eat: "Take Amlodipine with plain water", moderate: "Grapefruit or grapefruit juice with Amlodipine", reason: "Grapefruit furanocoumarins inhibit CYP3A4, causing toxic spikes in blood pressure drug levels." },
-      { eat: "Moderate hydration (2.5L water) when taking diuretics (HCTZ)", moderate: "Alcohol and heavy herbal concoctions combined with prescription drugs", reason: "Prevents acute kidney strain and dangerous hypotensive episodes." },
+      { eat: "Eggs, mackerel fish, or beef liver (to keep Vitamin B12 strong)", moderate: "Swallowing strong medicines on an empty stomach", reason: "Eating a wholesome meal first protects your stomach lining and prevents nausea." },
+      { eat: "Take blood pressure tablets with clean plain water", moderate: "Drinking grapefruit juice when taking Amlodipine", reason: "Grapefruit can make blood pressure medicine absorb too quickly into the bloodstream." },
+      { eat: "Stay well hydrated (6-8 glasses of water daily)", moderate: "Mixing alcohol or heavy untested herbal mixtures with prescription drugs", reason: "Water helps your kidneys process medications smoothly and safely." },
     ],
     actionableHabits: [
-      "Metformin Timing: Take Metformin midway through your largest meal (e.g. Lunch with beans/soup) to eliminate stomach cramps.",
-      "Annual B12 Check: If you have been on Metformin for > 12 months, ask your doctor to test serum B12 and homocysteine.",
-      "Separate Herbs by 2 Hours: Keep traditional herbal teas (like Zobo or Moringa) 2 hours apart from pharmaceutical tablets.",
+      "Take Tablets Mid-Meal: Take medications like Metformin midway through your lunch or dinner to eliminate stomach cramps.",
+      "Ask for Vitamin B12: If taking sugar medication long-term, ask your health provider to check your B12 levels during routine visits.",
+      "Separate Herbal Teas by 2 Hours: Keep traditional herbal teas (like Zobo or Moringa) 2 hours apart from your medical tablets.",
     ],
-    scientificReference: "Mayo Clinic Clinical Pharmacology & BNF Guidelines",
+    scientificReference: "Clinical Pharmacology Guidelines & Everyday Nutrition",
     quiz: {
-      question: "Which essential vitamin should long-term Metformin users monitor to prevent peripheral neuropathy?",
+      question: "Which essential vitamin should long-term Metformin users monitor to keep their nerves strong and healthy?",
       options: [
         "Vitamin C",
-        "Vitamin B12 (Cobalamin)",
-        "Vitamin K2",
+        "Vitamin B12",
+        "Vitamin K",
         "Vitamin A",
       ],
       correctIndex: 1,
-      explanation: "Long-term Metformin therapy impairs ileal calcium-dependent absorption of Vitamin B12 in up to 30% of patients, necessitating dietary replenishment.",
+      explanation: "Long-term Metformin use can lower Vitamin B12 absorption over time, so eating eggs, fish, or taking a B12 supplement keeps your nerves healthy!",
     },
   },
 ];
 
 const CULTURAL_MYTHS = [
+  {
+    id: "myth-weightgain",
+    title: "Myth: 'The only way to gain weight is to eat junk food, pastries, and sugary drinks.'",
+    verdict: "FALSE",
+    isFalse: true,
+    reality:
+      "Eating junk food and sugary sodas only leads to belly fat, sluggishness, and high blood sugar. The healthy African way to gain good weight and build muscle is nutrient-dense whole foods: Groundnut soup, Egusi, Beans with Plantain, Eggs, Fish, and fortified Akamu!",
+    icon: "💪",
+  },
   {
     id: "myth-garri",
     title: "Myth: 'Garri causes diabetes and must never be eaten again.'",
@@ -336,6 +384,12 @@ const CULTURAL_MYTHS = [
 ];
 
 const CLINICAL_CONSULT_PROMPTS = [
+  {
+    q: "How can I gain healthy weight and build muscle with African food?",
+    a: "Focus on clean calorie density! Fortify your morning Akamu with peanut butter and milk, enjoy hearty soups like Groundnut and Egusi with fish and boiled eggs, and snack on roasted groundnuts with bananas. Combine this with bodyweight exercises so the energy builds firm muscle instead of belly fat!",
+    badge: "Healthy Weight & Muscle",
+    icon: "💪",
+  },
   {
     q: "Can I drink Zobo (Hibiscus) if I have High Blood Pressure?",
     a: "Yes! Fresh Hibiscus calyces contain natural polyphenols and organic acids that gently relax arterial blood vessels (similar to mild ACE inhibition). Key rule: Brew it unsweetened or with ginger, cloves, and lime—do NOT add cups of refined white sugar.",
@@ -466,7 +520,7 @@ export default function Health() {
         <div className="max-w-2xl mx-auto flex items-center justify-between">
           <div>
             <span className="text-[10px] uppercase tracking-wider font-extrabold text-[#1f7a8c] block">
-              Clinical &amp; Evidence Hub
+              African Health &amp; Vitality Hub 🌿
             </span>
             <h1 className="text-xl sm:text-2xl font-black text-gray-900 leading-tight">
               {t("nav.health")} &amp; Knowledge 🩺
@@ -486,12 +540,12 @@ export default function Health() {
             </div>
             <div className="min-w-0">
               <div className="text-xs font-black text-gray-900 truncate">
-                {profile?.name ? `Personalized for ${profile.name}` : "Clinical Health Insights"}
+                {profile?.name ? `Personalized for ${profile.name}` : "African Health &amp; Food Wisdom 🥑"}
               </div>
               <div className="text-[11px] text-gray-600 truncate">
                 {profile?.bloodPressure
                   ? `BP: ${profile.bloodPressure} mmHg • BMI: ${profile.bmi || "23.4"}`
-                  : "Science-backed nutrition tailored to West African biology"}
+                  : "Simple, practical food tips for healthy African living"}
               </div>
             </div>
           </div>
@@ -531,10 +585,10 @@ export default function Health() {
                   </span>
                 </div>
                 <h3 className="text-sm sm:text-base font-black text-white mt-1 leading-tight">
-                  Metabolic Food Calculators 🧮
+                  Easy Food Calculators 🧮
                 </h3>
                 <p className="text-[11px] text-teal-100/90 font-medium truncate mt-0.5">
-                  Calculate carb swaps, dilute soup sodium &amp; sequence meals
+                  Check your swallow portions, balance soup salt &amp; plan your plate
                 </p>
               </div>
             </div>
@@ -565,10 +619,10 @@ export default function Health() {
                   </span>
                 </div>
                 <h3 className="text-sm sm:text-base font-black text-white mt-1 leading-tight">
-                  Download Doctor Clinical Report 🩺
+                  Share Meal Summary with Your Doctor 📄
                 </h3>
                 <p className="text-[11px] text-teal-100/90 font-medium truncate mt-0.5">
-                  Generate a certified PDF summary of your meals &amp; blood sugar to share with your doctor
+                  Download an easy-to-read summary of your meals &amp; blood sugar to show your doctor
                 </p>
               </div>
             </div>
@@ -595,10 +649,10 @@ export default function Health() {
                 </span>
               </div>
               <h3 className="text-sm sm:text-base font-black text-white mt-1 leading-tight">
-                Connect Health Devices &amp; Sensors ⌚
+                Connect Smartwatch &amp; Sensors ⌚
               </h3>
               <p className="text-[11px] text-teal-100/90 font-medium truncate mt-0.5">
-                Connect your Apple Watch, Dexcom, or Libre sensor for live health updates
+                Sync Apple Watch, Dexcom, or Libre for effortless health tracking
               </p>
             </div>
           </div>
@@ -673,10 +727,10 @@ export default function Health() {
               </div>
               <div>
                 <h2 className="text-base font-black text-gray-900">
-                  Health Education &amp; Science 📚
+                  Health &amp; Food Wisdom 📚
                 </h2>
                 <p className="text-xs text-gray-500">
-                  Evidence-based nutrition guides for African dietary wellness
+                  Simple, everyday guides for healthy African living
                 </p>
               </div>
             </div>
@@ -706,8 +760,9 @@ export default function Health() {
               { id: "all", label: "⚡ All Guides" },
               { id: "sugar", label: "🩺 Blood Sugar" },
               { id: "heart", label: "❤️ Heart & BP" },
+              { id: "gain", label: "💪 Weight & Muscle" },
               { id: "herbs", label: "🌿 Super-Herbs" },
-              { id: "metabolism", label: "🥑 Gut & PCOS" },
+              { id: "metabolism", label: "🥑 Gut & Hormones" },
               { id: "drugs", label: "💊 Drug Safety" },
             ].map((cat) => (
               <button
@@ -870,10 +925,10 @@ export default function Health() {
             </div>
             <div>
               <h2 className="text-sm font-black text-gray-900">
-                Quick Clinical Consult with Avo 💬
+                Ask Avo: Quick Health &amp; Food Answers 💬
               </h2>
               <p className="text-xs text-gray-500">
-                Tap common medical nutrition questions for instant answers
+                Tap common food and health questions for easy answers
               </p>
             </div>
           </div>
@@ -982,7 +1037,7 @@ export default function Health() {
                 <div>
                   <h4 className="text-xs font-black text-gray-900 uppercase tracking-wider mb-2 flex items-center gap-1.5">
                     <Activity className="h-4 w-4 text-[#1f7a8c]" />
-                    Clinical Biomarker Targets
+                    Key Health Checks &amp; Targets
                   </h4>
                   <div className="grid grid-cols-1 gap-2">
                     {selectedArticle.keyBiomarkers.map((bio, idx) => (
@@ -1003,7 +1058,7 @@ export default function Health() {
                 <div>
                   <h4 className="text-xs font-black text-gray-900 uppercase tracking-wider mb-2 flex items-center gap-1.5">
                     <Scale className="h-4 w-4 text-[#1f7a8c]" />
-                    Traditional Food Optimization Matrix
+                    Easy Food Choices for This Goal
                   </h4>
                   <div className="space-y-2">
                     {selectedArticle.eatThisVsModerate.map((row, idx) => (
@@ -1030,11 +1085,11 @@ export default function Health() {
                   </div>
                 </div>
 
-                {/* 3 Actionable Daily Micro-Habits */}
+                {/* 3 Simple Daily Habits */}
                 <div>
                   <h4 className="text-xs font-black text-gray-900 uppercase tracking-wider mb-2 flex items-center gap-1.5">
                     <Zap className="h-4 w-4 text-amber-500" />
-                    3 Actionable Daily Micro-Habits
+                    3 Simple Daily Habits
                   </h4>
                   <div className="space-y-2">
                     {selectedArticle.actionableHabits.map((habit, idx) => (

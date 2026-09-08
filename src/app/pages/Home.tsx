@@ -252,13 +252,21 @@ export default function Home() {
   const todayLogs = weekLogs.filter((l) => l?.date === todayKey);
   const sumField = (f: string) => todayLogs.reduce((s, l) => s + (Number(l?.[f]) || 0), 0);
   const caloriesConsumed = sumField("calories");
-  const caloriesTarget = 2000;
+  
+  // Dynamic Caloric & Macro Targets based on User Health Profile & Weight Goals
+  const userConditionOrGoal = (profile?.medicalCondition || localStorage.getItem("userGoal") || "").toLowerCase();
+  const currentW = parseFloat(profile?.weight || localStorage.getItem("userWeight") || "74") || 74;
+  const targetW = parseFloat(profile?.targetWeight || localStorage.getItem("targetWeight") || "68") || 68;
+  const isWeightGainGoal = userConditionOrGoal.includes("gain") || userConditionOrGoal.includes("muscle") || targetW > currentW;
+  const isWeightLossGoal = userConditionOrGoal.includes("lose") || userConditionOrGoal.includes("belly fat") || targetW < currentW;
+
+  const caloriesTarget = isWeightGainGoal ? 2450 : isWeightLossGoal ? 1800 : 2000;
   const proteinConsumed = sumField("protein");
-  const proteinTarget = 100;
+  const proteinTarget = isWeightGainGoal ? 130 : isWeightLossGoal ? 110 : 100;
   const carbsConsumed = sumField("carbs");
-  const carbsTarget = 150;
+  const carbsTarget = isWeightGainGoal ? 240 : isWeightLossGoal ? 140 : 150;
   const fatsConsumed = sumField("fats");
-  const fatsTarget = 67;
+  const fatsTarget = isWeightGainGoal ? 85 : isWeightLossGoal ? 55 : 67;
 
   // Gauge percentage (0-100)
   const dailyProgress =

@@ -2423,7 +2423,7 @@ export default function Recipe() {
             <div className="bg-white rounded-3xl p-8 text-center shadow-xs border border-teal-100">
               <MascotEmptyState
                 title="No recipes found"
-                subtitle="Try searching a different ingredient or clearing your clinical filters."
+                subtitle="Try searching a different ingredient or clearing your food filters."
               />
             </div>
           ) : (
@@ -2510,7 +2510,7 @@ export default function Recipe() {
                   </div>
 
                   <div className="px-3.5 py-1.5 bg-gradient-to-r from-[#1f7a8c] to-[#0d9488] text-white font-black rounded-xl text-[11px] shadow-sm flex items-center gap-1 group-hover:brightness-110 transition-all">
-                    <span>Explode Bento 💥</span>
+                    <span>View Recipe Details 🍲</span>
                     <ChevronRight size={13} />
                   </div>
                 </div>
@@ -2601,7 +2601,7 @@ export default function Recipe() {
                     }`}
                   >
                     <Play size={12} className="fill-current" />
-                    <span>Live Cook Mode 🚀</span>
+                    <span>Step-by-Step Cook 🍳</span>
                   </button>
                 </div>
 
@@ -2625,10 +2625,10 @@ export default function Recipe() {
                           <span className="text-base">🛒</span>
                           <div>
                             <span className="text-xs font-black text-slate-900 dark:text-white block">
-                              Scaled Ingredients ({selectedRecipe.ingredients.length})
+                              Ingredients & Portion Scaler ({selectedRecipe.ingredients.length})
                             </span>
                             <span className="text-[10px] text-slate-500 block">
-                              {activeBentoSection === "ingredients" ? "Tap to collapse" : "Tap to explode & check off 💥"}
+                              {activeBentoSection === "ingredients" ? "Tap to collapse" : "Tap to view ingredients & check off 🍲"}
                             </span>
                           </div>
                         </div>
@@ -2764,7 +2764,7 @@ export default function Recipe() {
                           <span className="text-base">📊</span>
                           <div>
                             <span className="text-xs font-black text-slate-900 dark:text-white block">
-                              Metabolic Macro Matrix &amp; Vitality
+                              Nutrition Breakdown &amp; Energy 📊
                             </span>
                             <span className="text-[10px] text-slate-500 block">
                               {Math.round((selectedRecipe.baseCalories / selectedRecipe.baseServings) * portionMultiplier)} kcal • {Math.round((selectedRecipe.baseProtein / selectedRecipe.baseServings) * portionMultiplier)}g Protein
@@ -2811,7 +2811,7 @@ export default function Recipe() {
                           </div>
 
                           <div className="p-2 bg-emerald-50 dark:bg-emerald-950/40 rounded-xl border border-emerald-200/80 dark:border-emerald-800/50 text-[10.5px] text-emerald-900 dark:text-emerald-300 font-medium leading-relaxed">
-                            🌿 <strong>Vitality Shield:</strong> {selectedRecipe.healthBenefits}
+                            🌿 <strong>Why This Meal Is Great For You:</strong> {selectedRecipe.healthBenefits}
                           </div>
                         </div>
                       )}
@@ -2832,7 +2832,7 @@ export default function Recipe() {
                           <Mascot gesture="thumbsup" size={24} className="shrink-0" />
                           <div>
                             <span className="text-xs font-black text-[#126778] dark:text-teal-300 block">
-                              Avo's Bio-Synergy Secret
+                              Avo's Kitchen & Cooking Tip 🥑
                             </span>
                             <span className="text-[10px] text-slate-500 block truncate max-w-[200px]">
                               {selectedRecipe.clinicalNote}

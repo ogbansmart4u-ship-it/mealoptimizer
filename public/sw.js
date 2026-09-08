@@ -3,7 +3,7 @@
  * 100% Guaranteed Offline SPA Shell + Cache-First Static Assets
  */
 
-const CACHE_NAME = 'mealoptimiza-pwa-v7.1-onboarding-sequence-fix';
+const CACHE_NAME = 'mealoptimiza-pwa-v7.2-humanized-vitality';
 
 const PRECACHE_ASSETS = [
   '/',

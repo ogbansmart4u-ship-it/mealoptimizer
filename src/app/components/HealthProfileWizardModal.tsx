@@ -330,6 +330,7 @@ export default function HealthProfileWizardModal({
               { title: "Joint Pain, Arthritis & Stiffness", icon: "🦴", desc: "Ease knee/joint pain and move freely without swelling" },
               { title: "Menopause & Hot Flash Relief", icon: "🌸", desc: "Cool down hot flashes, balance mood & keep bones strong" },
               { title: "Burn Belly Fat & Lose Weight", icon: "⚖️", desc: "Trim waistline while still eating satisfying cultural meals" },
+              { title: "Build Muscle & Healthy Weight Gain", icon: "💪", desc: "Gain healthy weight, build muscle & stamina with nutrient-dense African meals" },
               { title: "Boost Daily Energy & General Wellness", icon: "🧬", desc: "Feel lighter, sleep better & stay energized all day" },
             ].map((item) => {
               const isSelected = healthGoals.includes(item.title);
