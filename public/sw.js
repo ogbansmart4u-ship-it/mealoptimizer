@@ -3,7 +3,7 @@
  * 100% Guaranteed Offline SPA Shell + Cache-First Static Assets
  */
 
-const CACHE_NAME = 'mealoptimiza-pwa-v8.8-fixed-chicken-recipe-image';
+const CACHE_NAME = 'mealoptimiza-pwa-v8.9-zero-repeated-images';
 
 const PRECACHE_ASSETS = [
   '/',
