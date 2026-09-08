@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { 
+  X,
   ChevronRight, 
   ArrowRight, 
   CheckCircle2, 
@@ -47,6 +48,14 @@ export default function Onboarding() {
   const { signUp, user } = useAuth();
 
   const [step, setStep] = useState<OnboardingStep>("welcome");
+
+  const handleCloseOnboarding = () => {
+    triggerHaptic("light");
+    localStorage.setItem("mealoptimiza_questionnaire_completed", "true");
+    localStorage.setItem("onboardingComplete", "true");
+    localStorage.setItem("hasCompletedHealthSetup", "true");
+    navigate("/home");
+  };
 
   // Diagnostic State (Multi-Select Enabled)
   const [healthGoals, setHealthGoals] = useState<string[]>([
@@ -275,7 +284,17 @@ export default function Onboarding() {
         {/* 1. WELCOME SCREEN                                            */}
         {/* ============================================================ */}
         {step === "welcome" && (
-          <div className="bg-white rounded-3xl shadow-2xl p-6 sm:p-8 text-center animate-in fade-in zoom-in-95 duration-300 border border-teal-100">
+          <div className="bg-white rounded-3xl shadow-2xl p-6 sm:p-8 text-center animate-in fade-in zoom-in-95 duration-300 border border-teal-100 relative">
+            {/* Top Right Close Button */}
+            <button
+              type="button"
+              onClick={handleCloseOnboarding}
+              className="absolute top-4 right-4 p-2 rounded-full text-gray-400 hover:text-gray-700 hover:bg-teal-50 transition-colors cursor-pointer"
+              aria-label="Close questionnaire"
+              title="Skip to Dashboard"
+            >
+              <X size={20} />
+            </button>
             <div className="flex justify-center mb-3">
               <AppLogo size="md" />
             </div>
@@ -337,18 +356,29 @@ export default function Onboarding() {
         {/* ============================================================ */}
         {step.startsWith("diagnostic_") && (
           <div className="bg-white rounded-3xl shadow-2xl p-6 sm:p-8 animate-in fade-in zoom-in-95 duration-300 border border-teal-100 relative">
-            {/* Top Micro Progress Bar */}
-            <div className="mb-5">
-              <div className="flex items-center justify-between text-[11px] font-black text-[#1f7a8c] mb-1.5">
-                <span>METABOLIC INTAKE</span>
-                <span>Question {getStepProgressNumber()} of 6</span>
+            {/* Top Micro Progress Bar & Close Button */}
+            <div className="flex items-center justify-between gap-3 mb-5">
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center justify-between text-[11px] font-black text-[#1f7a8c] mb-1.5">
+                  <span className="flex items-center gap-1">🥑 HEALTH INTAKE</span>
+                  <span>Question {getStepProgressNumber()} of 6</span>
+                </div>
+                <div className="w-full h-2 bg-gray-100 rounded-full overflow-hidden">
+                  <div 
+                    className="h-full bg-gradient-to-r from-[#1f7a8c] to-[#0d9488] rounded-full transition-all duration-300"
+                    style={{ width: `${(getStepProgressNumber() / 6) * 100}%` }}
+                  />
+                </div>
               </div>
-              <div className="w-full h-2 bg-gray-100 rounded-full overflow-hidden">
-                <div 
-                  className="h-full bg-gradient-to-r from-[#1f7a8c] to-[#0d9488] rounded-full transition-all duration-300"
-                  style={{ width: `${(getStepProgressNumber() / 6) * 100}%` }}
-                />
-              </div>
+              <button
+                type="button"
+                onClick={handleCloseOnboarding}
+                className="p-1.5 -mr-1 -mt-1 rounded-full text-gray-400 hover:text-gray-700 hover:bg-teal-50 transition-colors cursor-pointer shrink-0"
+                aria-label="Close questionnaire"
+                title="Close and explore dashboard"
+              >
+                <X size={20} />
+              </button>
             </div>
 
             {/* Q1: Clinical Priority (Multi-Select) */}
@@ -876,7 +906,17 @@ export default function Onboarding() {
         {/* STAGE 2.5: GLYCEMIC SPIKE REVERSAL SIMULATION PAYOFF         */}
         {/* ============================================================ */}
         {step === "simulation_payoff" && (
-          <div className="bg-white rounded-3xl shadow-2xl p-6 sm:p-7 text-center animate-in fade-in zoom-in-95 duration-300 border border-teal-100">
+          <div className="bg-white rounded-3xl shadow-2xl p-6 sm:p-7 text-center animate-in fade-in zoom-in-95 duration-300 border border-teal-100 relative">
+            {/* Top Right Close Button */}
+            <button
+              type="button"
+              onClick={handleCloseOnboarding}
+              className="absolute top-4 right-4 p-2 rounded-full text-gray-400 hover:text-gray-700 hover:bg-teal-50 transition-colors cursor-pointer"
+              aria-label="Close"
+              title="Close to Dashboard"
+            >
+              <X size={20} />
+            </button>
             <div className="flex items-center justify-center gap-1.5 mb-2">
               <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping" />
               <span className="text-[10px] font-black uppercase tracking-wider text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">
@@ -959,6 +999,16 @@ export default function Onboarding() {
         {/* ============================================================ */}
         {step === "paywall" && (
           <div className="bg-white rounded-3xl shadow-2xl p-6 sm:p-7 text-center animate-in fade-in zoom-in-95 duration-300 border-2 border-teal-300 relative">
+            {/* Top Right Close Button */}
+            <button
+              type="button"
+              onClick={handleCloseOnboarding}
+              className="absolute top-4 right-4 p-2 rounded-full text-gray-400 hover:text-gray-700 hover:bg-teal-50 transition-colors cursor-pointer"
+              aria-label="Close"
+              title="Close to Dashboard"
+            >
+              <X size={20} />
+            </button>
             {/* Top Badge */}
             <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-gradient-to-r from-amber-400 to-orange-400 text-slate-950 text-[10px] font-black uppercase tracking-wider shadow-sm mb-2">
               <Crown size={12} className="fill-slate-950" />

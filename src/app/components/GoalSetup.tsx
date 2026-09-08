@@ -11,6 +11,7 @@
 
 import { useEffect, useState } from "react";
 import {
+  X,
   Salad, TrendingDown, TrendingUp, Moon, Droplet, HeartPulse, Dumbbell, Wallet,
   Check, ChevronRight, ChevronLeft, Sparkles, Loader2,
 } from "lucide-react";
@@ -171,7 +172,17 @@ export default function GoalSetup() {
     <div className="fixed inset-0 z-[60] bg-black/40 flex items-end sm:items-center justify-center p-0 sm:p-4">
       <div className="bg-white w-full sm:max-w-md sm:rounded-3xl rounded-t-3xl shadow-2xl max-h-[92vh] overflow-y-auto">
         {/* Header */}
-        <div className="bg-gradient-to-r from-[#1f7a8c] to-[#4ecdc4] px-6 pt-7 pb-6 sm:rounded-t-3xl">
+        <div className="bg-gradient-to-r from-[#1f7a8c] to-[#4ecdc4] px-6 pt-7 pb-6 sm:rounded-t-3xl relative">
+          {/* Top Right Close Button */}
+          <button
+            type="button"
+            onClick={skip}
+            className="absolute top-5 right-5 p-2 rounded-full text-white/80 hover:text-white hover:bg-white/20 transition-colors cursor-pointer"
+            aria-label="Close setup"
+            title="Close and explore dashboard"
+          >
+            <X className="h-5 w-5" />
+          </button>
           <div className="flex items-center gap-2 text-white/90 text-xs font-semibold mb-2">
             <Sparkles className="h-4 w-4" /> {t('goalsetup.badge')}
           </div>

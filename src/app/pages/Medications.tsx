@@ -265,7 +265,15 @@ export default function Medications() {
               </p>
             </div>
           </div>
-          <Pill className="h-7 w-7 text-[#1f7a8c] shrink-0" />
+          <button
+            type="button"
+            onClick={() => navigate("/home")}
+            className="text-[#1f7a8c] hover:bg-white/40 rounded-full p-2 transition-colors cursor-pointer"
+            aria-label="Close to Home"
+            title="Close and return to Home"
+          >
+            <X className="h-6 w-6" />
+          </button>
         </div>
       </div>
 

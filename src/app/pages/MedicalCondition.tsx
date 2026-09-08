@@ -165,15 +165,26 @@ export default function MedicalCondition() {
     <div className="min-h-screen bg-gradient-to-b from-[#B8E5E5] to-[#E8F5F5] pb-8">
       {/* Header */}
       <div className="bg-gradient-to-r from-[#1f7a8c] to-[#4ecdc4] px-6 pt-12 pb-6">
-        <div className="flex items-center mb-6">
+        <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center gap-3 flex-1 min-w-0">
+            <button
+              onClick={() => navigate(-1)}
+              className="text-white hover:bg-white/10 rounded-full p-2 transition-colors cursor-pointer"
+              aria-label="Go back"
+            >
+              <ChevronLeft className="h-6 w-6" />
+            </button>
+            <h1 className="text-2xl text-white font-black truncate">{t("medcond.title")}</h1>
+          </div>
           <button
-            onClick={() => navigate(-1)}
-            className="mr-4 text-white hover:bg-white/10 rounded-full p-2 transition-colors"
+            type="button"
+            onClick={() => navigate("/home")}
+            className="text-white/80 hover:text-white hover:bg-white/15 rounded-full p-2 transition-colors cursor-pointer ml-2"
+            aria-label="Close and return to Home"
+            title="Close to Home"
           >
-            <ChevronLeft className="h-6 w-6" />
+            <X className="h-6 w-6" />
           </button>
-          <h1 className="text-2xl text-white flex-1">{t("medcond.title")}</h1>
-          <Stethoscope className="h-6 w-6 text-white" />
         </div>
       </div>
 
