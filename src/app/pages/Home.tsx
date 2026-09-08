@@ -132,10 +132,12 @@ export default function Home() {
   const [showWhatsAppModal, setShowWhatsAppModal] = useState(false);
   const [showHealthWizard, setShowHealthWizard] = useState(() => {
     try {
+      const isDisclaimerAccepted = localStorage.getItem("mealoptimiza_medical_disclaimer_accepted") === "true";
       const isQuestionnaireDone =
         localStorage.getItem("mealoptimiza_questionnaire_completed") === "true" ||
         localStorage.getItem("onboardingComplete") === "true";
-      return !isQuestionnaireDone;
+      // Disclaimer shows first; if already accepted previously, show questionnaire directly if incomplete
+      return isDisclaimerAccepted && !isQuestionnaireDone;
     } catch {
       return false;
     }

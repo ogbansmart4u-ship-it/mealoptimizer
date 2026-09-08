@@ -184,6 +184,7 @@ export default function Onboarding() {
       localStorage.setItem("userWeight", currentWeight);
       localStorage.setItem("targetWeight", targetWeight);
       localStorage.setItem("userHeight", heightCm);
+      localStorage.setItem("mealoptimiza_questionnaire_completed", "true");
       localStorage.setItem("onboardingComplete", "true");
       localStorage.setItem("hasCompletedHealthSetup", "true");
 

@@ -15,8 +15,8 @@ export default function MedicalDisclaimerModal({ onAccept }: MedicalDisclaimerMo
   useEffect(() => {
     const hasAccepted = localStorage.getItem("mealoptimiza_medical_disclaimer_accepted");
     if (!hasAccepted) {
-      // Show safety notice on initial visit / launch
-      const timer = setTimeout(() => setIsOpen(true), 800);
+      // Show safety notice promptly on initial visit / launch
+      const timer = setTimeout(() => setIsOpen(true), 300);
       return () => clearTimeout(timer);
     }
   }, []);

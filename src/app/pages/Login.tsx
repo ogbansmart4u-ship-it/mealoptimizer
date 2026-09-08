@@ -119,44 +119,37 @@ export default function Login() {
     triggerHaptic("medium");
 
     try {
-      if (authMode === "login") {
+      if (authMode === "signup") {
+        try {
+          await signUp(email, password, {
+            name: formData.fullName.trim(),
+          });
+        } catch (signupErr: any) {
+          if (signupErr.message?.includes("User already registered") || signupErr.message?.includes("already registered")) {
+            toast.error("Account already exists. Switching to Sign In...");
+            setAuthMode("login");
+            setLoading(false);
+            return;
+          }
+          throw signupErr;
+        }
+
+        try { localStorage.setItem("mealoptimiza_has_account", "true"); } catch {}
+        setMascotGesture("celebrate");
+        triggerHaptic("success");
+        toast.success("Account created! Welcome to MealOptimiza 🥑", {
+          duration: 2500,
+        });
+        setTimeout(() => navigate("/home"), 400);
+      } else {
         await signIn(email, password);
         try { localStorage.setItem("mealoptimiza_has_account", "true"); } catch {}
         setMascotGesture("celebrate");
         triggerHaptic("success");
-
-        const hasCompletedOnboarding =
-          localStorage.getItem("onboardingComplete") === "true" ||
-          localStorage.getItem("hasCompletedHealthSetup") === "true";
-
-        if (!hasCompletedOnboarding) {
-          toast.success("Welcome! Let's complete your health blueprint 🥑", {
-            duration: 2500,
-          });
-          setTimeout(() => navigate("/onboarding"), 400);
-        } else {
-          toast.success("Welcome back! Loading your healthy meal dashboard...", {
-            duration: 2500,
-          });
-          setTimeout(() => navigate("/home"), 400);
-        }
-      } else {
-        // Sign Up Flow
-        localStorage.setItem(
-          "pendingSignup",
-          JSON.stringify({
-            email,
-            password,
-            fullName: formData.fullName.trim(),
-          })
-        );
-        try { localStorage.setItem("mealoptimiza_has_account", "true"); } catch {}
-        setMascotGesture("celebrate");
-        triggerHaptic("success");
-        toast.success("Account created! Let's personalize your daily meal plan.", {
-          duration: 2500,
+        toast.success("Welcome back! Loading your dashboard...", {
+          duration: 2000,
         });
-        setTimeout(() => navigate("/onboarding"), 400);
+        setTimeout(() => navigate("/home"), 400);
       }
     } catch (error: any) {
       setMascotGesture("idle");
