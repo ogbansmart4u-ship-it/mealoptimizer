@@ -32,6 +32,10 @@ import {
   Share2,
   BookOpen,
   Info,
+  Camera as CameraIcon,
+  Mic,
+  MicOff,
+  Volume2,
 } from "lucide-react";
 import { getCollection, createCollectionItem, deleteCollectionItem, createMealLog } from "../../lib/api";
 import BottomNav from "../components/BottomNav";
@@ -48,6 +52,8 @@ import AmbientBackground from "../components/AmbientBackground";
 import Mascot from "../components/Mascot";
 import AfricanSwapEngine from "../components/AfricanSwapEngine";
 import FruitVegetableGuide from "../components/FruitVegetableGuide";
+import { PlateScannerModal } from "../components/PlateScannerModal";
+import { avoVoiceCoach, type AvoDialect } from "../services/AvoVoiceCoach";
 import { toast } from "sonner";
 import { triggerConfetti, triggerHaptic } from "../utils/celebration";
 
@@ -1802,6 +1808,84 @@ export default function Recipe() {
     toast.info(`Timer set for ${minutes} minutes ⏱️`);
   };
 
+  // 📷 10X Upgrade: 9-Inch AR Plate Scanner & Calibrator Modal
+  const [isScannerOpen, setIsScannerOpen] = useState<boolean>(false);
+
+  // 🎙️ 10X Upgrade: Avo Voice Hands-Free Cooking Assistant
+  const [isVoiceCoachActive, setIsVoiceCoachActive] = useState<boolean>(false);
+  const [isAvoListening, setIsAvoListening] = useState<boolean>(false);
+  const [isAvoSpeaking, setIsAvoSpeaking] = useState<boolean>(false);
+  const [avoDialect, setAvoDialect] = useState<AvoDialect>("en");
+
+  // Wire Voice Coach Callbacks
+  useEffect(() => {
+    avoVoiceCoach.setDialect(avoDialect);
+    avoVoiceCoach.setCallbacks({
+      onNextStep: () => {
+        if (selectedRecipe && currentStepIdx < selectedRecipe.steps.length - 1) {
+          try { triggerHaptic("light"); } catch {}
+          setCurrentStepIdx((prev) => prev + 1);
+        }
+      },
+      onPrevStep: () => {
+        if (currentStepIdx > 0) {
+          try { triggerHaptic("light"); } catch {}
+          setCurrentStepIdx((prev) => prev - 1);
+        }
+      },
+      onRepeatStep: () => {
+        if (selectedRecipe && selectedRecipe.steps[currentStepIdx]) {
+          const step = selectedRecipe.steps[currentStepIdx];
+          avoVoiceCoach.speakCookingStep(
+            step.stepNumber,
+            selectedRecipe.steps.length,
+            step.instruction,
+            step.avoTip
+          );
+        }
+      },
+      onStartTimer: () => {
+        if (selectedRecipe && selectedRecipe.steps[currentStepIdx]?.timerMinutes) {
+          startStepTimer(selectedRecipe.steps[currentStepIdx].timerMinutes!);
+        }
+      },
+      onStopTimer: () => {
+        setTimerRunning(false);
+      },
+      onStatusChange: (listening, speaking) => {
+        setIsAvoListening(listening);
+        setIsAvoSpeaking(speaking);
+      },
+      onError: (msg) => {
+        toast.error(msg);
+      },
+    });
+  }, [selectedRecipe, currentStepIdx, avoDialect]);
+
+  // Read active step aloud when step changes and voice coach is active
+  useEffect(() => {
+    if (isVoiceCoachActive && selectedRecipe && isCookingMode) {
+      const step = selectedRecipe.steps[currentStepIdx];
+      if (step) {
+        avoVoiceCoach.speakCookingStep(
+          step.stepNumber,
+          selectedRecipe.steps.length,
+          step.instruction,
+          step.avoTip
+        );
+      }
+    }
+  }, [currentStepIdx, isVoiceCoachActive, isCookingMode, selectedRecipe]);
+
+  // Stop voice on modal close
+  useEffect(() => {
+    if (!selectedRecipe || !isCookingMode) {
+      avoVoiceCoach.stopSpeaking();
+      avoVoiceCoach.stopListening();
+      setIsVoiceCoachActive(false);
+    }
+  }, [selectedRecipe, isCookingMode]);
+
   const toggleFavorite = async (id: string, e?: React.MouseEvent) => {
     e?.stopPropagation();
     triggerHaptic("light");
@@ -1996,6 +2080,19 @@ export default function Recipe() {
                 </p>
               </div>
             </div>
+
+            <button
+              type="button"
+              onClick={() => {
+                try { soundEffects.playBubblePop(); } catch {}
+                try { triggerHaptic("medium"); } catch {}
+                setIsScannerOpen(true);
+              }}
+              className="px-3 py-2 rounded-2xl bg-gradient-to-r from-emerald-400 to-teal-300 text-slate-950 font-black text-xs shadow-lg hover:brightness-110 active:scale-95 transition-all flex items-center gap-1.5 shrink-0 border border-white/40 cursor-pointer"
+            >
+              <CameraIcon size={14} />
+              <span>Scan Plate (AR)</span>
+            </button>
           </div>
 
           {/* Interactive AI Prompt Input */}
@@ -2849,6 +2946,109 @@ export default function Recipe() {
                       </div>
                     )}
 
+                    {/* 🎙️ 10X Upgrade: Avo Voice Hands-Free Cooking Assistant */}
+                    <div className="p-3 bg-gradient-to-r from-teal-900/90 to-emerald-950/90 border border-teal-400/40 rounded-2xl flex items-center justify-between gap-2 text-white shadow-md">
+                      <div className="flex items-center gap-2">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            try { triggerHaptic("medium"); } catch {}
+                            const next = !isVoiceCoachActive;
+                            setIsVoiceCoachActive(next);
+                            if (next) {
+                              avoVoiceCoach.startListening();
+                              const step = selectedRecipe.steps[currentStepIdx];
+                              if (step) {
+                                avoVoiceCoach.speakCookingStep(
+                                  step.stepNumber,
+                                  selectedRecipe.steps.length,
+                                  step.instruction,
+                                  step.avoTip
+                                );
+                              }
+                              toast.success("Avo Voice Chef Active! Speak: 'Next', 'Back', or 'Start timer' 🎙️");
+                            } else {
+                              avoVoiceCoach.stopSpeaking();
+                              avoVoiceCoach.stopListening();
+                              toast.info("Avo Voice Chef Paused.");
+                            }
+                          }}
+                          className={`p-2 rounded-xl border flex items-center gap-1.5 text-xs font-black transition-all cursor-pointer ${
+                            isVoiceCoachActive
+                              ? "bg-emerald-500 text-slate-950 border-emerald-300 shadow-md ring-2 ring-emerald-400/50"
+                              : "bg-white/10 text-slate-300 border-white/20 hover:bg-white/20"
+                          }`}
+                        >
+                          {isVoiceCoachActive ? (
+                            <>
+                              <Mic size={14} className={isAvoListening ? "animate-pulse text-slate-950" : ""} />
+                              <span>Avo Voice: ON</span>
+                            </>
+                          ) : (
+                            <>
+                              <MicOff size={14} />
+                              <span>Avo Voice: OFF</span>
+                            </>
+                          )}
+                        </button>
+
+                        {/* Dialect selector */}
+                        <div className="flex items-center bg-white/10 p-0.5 rounded-xl text-[10px] font-bold">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              try { triggerHaptic("light"); } catch {}
+                              setAvoDialect("en");
+                              avoVoiceCoach.setDialect("en");
+                              toast.info("Avo dialect: Clinical English 🇺🇸");
+                            }}
+                            className={`px-2 py-0.5 rounded-lg transition-all cursor-pointer ${
+                              avoDialect === "en" ? "bg-teal-400 text-slate-950 font-black" : "text-slate-300 hover:text-white"
+                            }`}
+                          >
+                            Clinical
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              try { triggerHaptic("light"); } catch {}
+                              setAvoDialect("pcm");
+                              avoVoiceCoach.setDialect("pcm");
+                              toast.info("Avo dialect: Nigerian Pidgin 🇳🇬");
+                            }}
+                            className={`px-2 py-0.5 rounded-lg transition-all cursor-pointer ${
+                              avoDialect === "pcm" ? "bg-amber-400 text-slate-950 font-black" : "text-slate-300 hover:text-white"
+                            }`}
+                          >
+                            Pidgin
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* Read aloud step button */}
+                      <button
+                        type="button"
+                        onClick={() => {
+                          try { triggerHaptic("light"); } catch {}
+                          const step = selectedRecipe.steps[currentStepIdx];
+                          if (step) {
+                            avoVoiceCoach.speakCookingStep(
+                              step.stepNumber,
+                              selectedRecipe.steps.length,
+                              step.instruction,
+                              step.avoTip
+                            );
+                          }
+                        }}
+                        className={`p-2 rounded-xl bg-white/10 hover:bg-white/20 text-teal-200 transition-all cursor-pointer ${
+                          isAvoSpeaking ? "ring-2 ring-teal-400 animate-pulse" : ""
+                        }`}
+                        title="Read step aloud"
+                      >
+                        <Volume2 size={16} />
+                      </button>
+                    </div>
+
                     {/* Step Card Navigation */}
                     <div className="flex items-center justify-between text-xs font-bold text-slate-500">
                       <span>Step {currentStepIdx + 1} of {selectedRecipe.steps.length}</span>
@@ -2955,6 +3155,30 @@ export default function Recipe() {
           )}
         </DialogContent>
       </Dialog>
+
+      {/* 📷 10X Upgrade: 9-Inch AR Plate Scanner & Calibrator Modal */}
+      <PlateScannerModal
+        isOpen={isScannerOpen}
+        onClose={() => setIsScannerOpen(false)}
+        onSaveMealLog={(data) => {
+          try { triggerConfetti(); } catch {}
+          try { triggerHaptic("success"); } catch {}
+          toast.success(`Avo Plate Score: ${data.score}%! Saved to Food Journal 🥑`);
+        }}
+      />
+
+      {/* 📷 Floating AR Scanner Trigger Button */}
+      <button
+        onClick={() => {
+          try { triggerHaptic("medium"); } catch {}
+          setIsScannerOpen(true);
+        }}
+        className="fixed bottom-24 right-4 z-40 px-4 py-3 bg-gradient-to-r from-teal-500 to-emerald-400 text-slate-950 font-black text-xs rounded-2xl shadow-2xl border-2 border-white/60 hover:scale-105 active:scale-95 transition-all flex items-center gap-2 cursor-pointer backdrop-blur-md"
+        title="Scan plate with 9-inch AR Calibrator"
+      >
+        <CameraIcon size={16} />
+        <span className="tracking-wide">Scan Plate (AR)</span>
+      </button>
     </div>
   );
 }

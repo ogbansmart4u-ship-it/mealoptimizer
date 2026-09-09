@@ -1,9 +1,9 @@
 /**
- * MealOptimiza Service Worker (PWA Offline Engine v5.0)
+ * MealOptimiza Service Worker (PWA Offline Engine v10.0)
  * 100% Guaranteed Offline SPA Shell + Cache-First Static Assets
  */
 
-const CACHE_NAME = 'mealoptimiza-pwa-v9.6-busted-plate-images';
+const CACHE_NAME = 'mealoptimiza-pwa-v10.0-ar-scanner-voice';
 
 const PRECACHE_ASSETS = [
   '/',
