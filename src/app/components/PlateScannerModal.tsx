@@ -20,7 +20,7 @@ import {
 } from "lucide-react";
 import Mascot from "./Mascot";
 import { soundEffects } from "../utils/soundEffects";
-import { triggerHaptic } from "../utils/haptics";
+import { triggerHaptic } from "../utils/celebration";
 
 interface PlateScannerModalProps {
   isOpen: boolean;
