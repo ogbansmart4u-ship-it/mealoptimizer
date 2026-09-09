@@ -272,8 +272,13 @@ export default function HealthProfileWizardModal({
       <DialogContent className="max-w-lg p-5 sm:p-7 rounded-3xl max-h-[92vh] overflow-y-auto bg-white dark:bg-zinc-900 border border-teal-100 dark:border-zinc-800 shadow-2xl">
         {/* Step Indicator Header with Animated 3D Avo Scribe */}
         <div className="flex items-center justify-between border-b border-teal-100/60 dark:border-zinc-800 pb-3.5 mb-4">
-          <div className="flex items-center gap-3">
-            <Mascot gesture={activeGesture} size={50} className="shrink-0 drop-shadow-md" />
+          <div className="flex items-center gap-3.5">
+            <div className="relative shrink-0">
+              <Mascot gesture={activeGesture || "writing"} size={58} className="shrink-0 drop-shadow-md" alt="Avo Scribe taking clinical notes" />
+              <span className="absolute -bottom-1 -right-1 bg-amber-400 text-slate-950 text-[9px] font-black px-1.5 py-0.2 rounded-full shadow-xs border border-white">
+                ✍️ Scribe
+              </span>
+            </div>
             <div>
               <div className="flex items-center gap-1.5 mb-0.5">
                 <span className="text-[9.5px] uppercase font-black tracking-wider bg-teal-50 text-[#1f7a8c] dark:bg-teal-950/70 dark:text-teal-300 px-2 py-0.2 rounded-full border border-teal-200 dark:border-teal-800">

@@ -28,9 +28,21 @@ export default function MascotVectorRig({
   const isSleeping = g === "sleeping" || g === "sleep" || g === "rest";
 
   let animClass = "animate-bounce";
-  if (isClapping) animClass = "animate-pulse";
-  else if (isSleeping) animClass = "opacity-90";
-  else if (isWriting) animClass = "animate-pulse";
+  let imgSrc = "/assets/mascot/avo-wave.webp";
+  if (isWriting) {
+    animClass = "animate-pulse";
+    imgSrc = "/assets/mascot/avo-write.webp";
+  } else if (isClapping) {
+    animClass = "animate-pulse";
+    imgSrc = "/assets/mascot/avo-clap.apng";
+  } else if (isSleeping) {
+    animClass = "opacity-90";
+    imgSrc = "/assets/mascot/avo-sleep.apng";
+  } else if (isJumping) {
+    imgSrc = "/assets/mascot/avo-jump.webp";
+  } else if (isSad) {
+    imgSrc = "/assets/mascot/avo-sad.webp";
+  }
 
   return (
     <div
@@ -40,7 +52,7 @@ export default function MascotVectorRig({
       role="img"
     >
       <img
-        src="/assets/mascot/avo-wave.webp"
+        src={imgSrc}
         alt={alt}
         className={`w-full h-full object-contain drop-shadow-md ${animClass}`}
         onError={(e) => {

@@ -75,6 +75,33 @@ export default function Mascot({
     );
   }
 
+  // For gestures with transparent animated WebP / APNG (writing, clapping, sleeping),
+  // render directly via <img> for true alpha transparency, zero black borders, and 100% reliable playback
+  const isDirectImage =
+    gesture === "writing" ||
+    gesture === "write" ||
+    gesture === "notetaking" ||
+    asset.webp.endsWith(".apng");
+
+  if (isDirectImage) {
+    return (
+      <div
+        className={`inline-block relative select-none pointer-events-none ${className}`}
+        style={{ width: size, height: size * 1.15 }}
+        aria-label={alt}
+        role="img"
+      >
+        <img
+          src={asset.webp}
+          alt={alt}
+          className="w-full h-full object-contain drop-shadow-md transition-opacity duration-200"
+          style={{ filter: "drop-shadow(0 4px 10px rgba(0, 0, 0, 0.12))" }}
+          onError={() => setVideoError(true)}
+        />
+      </div>
+    );
+  }
+
   return (
     <div
       className={`inline-block relative select-none pointer-events-none ${className}`}

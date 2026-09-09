@@ -3,7 +3,7 @@
  * 100% Guaranteed Offline SPA Shell + Cache-First Static Assets
  */
 
-const CACHE_NAME = 'mealoptimiza-pwa-v9.1-ulcer-safe-papaya-no-lemon';
+const CACHE_NAME = 'mealoptimiza-pwa-v9.2-avo-writing-questionnaire';
 
 const PRECACHE_ASSETS = [
   '/',

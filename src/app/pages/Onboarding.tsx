@@ -344,24 +344,33 @@ export default function Onboarding() {
         {/* ============================================================ */}
         {step.startsWith("diagnostic_") && (
           <div className="bg-white rounded-3xl shadow-2xl p-6 sm:p-8 animate-in fade-in zoom-in-95 duration-300 border border-teal-100 relative">
-            {/* Top Micro Progress Bar & Close Button */}
-            <div className="flex items-center justify-between gap-3 mb-5">
+            {/* Header with Mascot AVO Scribe Taking Notes & Progress Bar */}
+            <div className="flex items-center gap-3.5 pb-4 mb-5 border-b border-teal-100/70">
+              <div className="relative shrink-0">
+                <Mascot gesture="writing" size={56} className="drop-shadow-md" alt="Avo Scribe taking clinical notes" />
+                <span className="absolute -bottom-1 -right-1 bg-amber-400 text-slate-950 text-[9px] font-black px-1.5 py-0.2 rounded-full shadow-xs border border-white">
+                  ✍️ Scribe
+                </span>
+              </div>
               <div className="flex-1 min-w-0">
-                <div className="flex items-center justify-between text-[11px] font-black text-[#1f7a8c] mb-1.5">
+                <div className="flex items-center justify-between text-[11px] font-black text-[#1f7a8c] mb-1">
                   <span className="flex items-center gap-1">🥑 HEALTH INTAKE</span>
                   <span>Question {getStepProgressNumber()} of 6</span>
                 </div>
-                <div className="w-full h-2 bg-gray-100 rounded-full overflow-hidden">
+                <div className="w-full h-2 bg-gray-100 rounded-full overflow-hidden mb-1">
                   <div 
                     className="h-full bg-gradient-to-r from-[#1f7a8c] to-[#0d9488] rounded-full transition-all duration-300"
                     style={{ width: `${(getStepProgressNumber() / 6) * 100}%` }}
                   />
                 </div>
+                <p className="text-[10px] text-gray-500 font-medium truncate">
+                  Avo Scribe is recording your answers to calibrate your plan
+                </p>
               </div>
               <button
                 type="button"
                 onClick={handleCloseOnboarding}
-                className="p-1.5 -mr-1 -mt-1 rounded-full text-gray-400 hover:text-gray-700 hover:bg-teal-50 transition-colors cursor-pointer shrink-0"
+                className="p-1.5 -mr-1 -mt-4 rounded-full text-gray-400 hover:text-gray-700 hover:bg-teal-50 transition-colors cursor-pointer shrink-0 self-start"
                 aria-label="Close questionnaire"
                 title="Close and explore dashboard"
               >
@@ -833,8 +842,14 @@ export default function Onboarding() {
         {/* ============================================================ */}
         {step === "calculating" && (
           <div className="bg-white rounded-3xl shadow-2xl p-8 text-center animate-in fade-in zoom-in-95 duration-300 border border-teal-100">
-            <div className="my-4 flex justify-center">
-              <div className="relative flex items-center justify-center w-28 h-28">
+            <div className="my-4 flex flex-col items-center justify-center gap-4">
+              <div className="relative">
+                <Mascot gesture="writing" size={88} className="drop-shadow-lg" alt="Avo Scribe calculating your plan" />
+                <span className="absolute -bottom-1 -right-1 bg-amber-400 text-slate-950 text-[10px] font-black px-2 py-0.5 rounded-full shadow-xs border border-white">
+                  ✍️ Scribe
+                </span>
+              </div>
+              <div className="relative flex items-center justify-center w-24 h-24">
                 <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
                   <circle
                     cx="50"
