@@ -128,12 +128,12 @@ const MASTER_RECIPES: FullRecipe[] = [
     "image": "/assets/recipes/kdigo-yam-porridge.webp",
     "clinicalScaleLabel": "KDIGO Leached Yam Porridge (Renal-Safe), prepared for one standard serving",
     "plateComposition": {
-      "staple": "KDIGO Leached Yam Cubes (Porridge)",
-      "staplePct": 50,
       "greens": "Steamed Ugwu & Spinach with Red Elixir Dip",
-      "greensPct": 25,
+      "greensPct": 50,
       "protein": "Steamed Flaked Mackerel Fish",
       "proteinPct": 25,
+      "staple": "KDIGO Leached Yam Cubes (Porridge)",
+      "staplePct": 25,
       "healthyFat": "Cold-Pressed Palm Oil (1 tsp)"
     },
     "category": "lunch",
@@ -221,12 +221,12 @@ const MASTER_RECIPES: FullRecipe[] = [
     "image": "/assets/recipes/green-banana-porridge.webp",
     "clinicalScaleLabel": "Soothing Green Banana & Oat Porridge (Ulcer-Safe), single clinical portion",
     "plateComposition": {
-      "staple": "Grated Green Banana & Oat Porridge with Chia",
-      "staplePct": 50,
       "greens": "Fresh Pawpaw (Papaya) Slices",
-      "greensPct": 25,
+      "greensPct": 50,
       "protein": "Soft-Boiled Egg Halves",
-      "proteinPct": 25
+      "proteinPct": 25,
+      "staple": "Grated Green Banana & Oat Porridge with Chia",
+      "staplePct": 25
     },
     "category": "breakfast",
     "tags": [
@@ -307,12 +307,12 @@ const MASTER_RECIPES: FullRecipe[] = [
     "image": "/assets/recipes/dry-catfish-uziza.webp",
     "clinicalScaleLabel": "Maternal Healing Dry Catfish & Uziza Soup, postpartum single portion",
     "plateComposition": {
-      "staple": "Boiled Unripe Plantain Disks",
-      "staplePct": 50,
       "greens": "Fresh Shredded Scent Leaf (Efirin) & Bitterleaf",
-      "greensPct": 25,
+      "greensPct": 50,
       "protein": "Smoked Dry Catfish in Uziza Broth",
-      "proteinPct": 25
+      "proteinPct": 25,
+      "staple": "Boiled Unripe Plantain Disks",
+      "staplePct": 25
     },
     "category": "dinner",
     "tags": [
@@ -393,12 +393,12 @@ const MASTER_RECIPES: FullRecipe[] = [
     "image": "/assets/recipes/cauliflower-fufu-efo.webp",
     "clinicalScaleLabel": "Cauliflower-Psyllium Fufu & Rich Efo Riro, standard 9-inch divided clinical plate",
     "plateComposition": {
-      "staple": "Zero-Spike Cauliflower-Psyllium Fufu Ball",
-      "staplePct": 50,
       "greens": "Rich Efo Riro Spinach & Locust Beans",
-      "greensPct": 25,
+      "greensPct": 50,
       "protein": "Steamed Lean Beef & Flaked Dried Fish",
-      "proteinPct": 25
+      "proteinPct": 25,
+      "staple": "Zero-Spike Cauliflower-Psyllium Fufu Ball",
+      "staplePct": 25
     },
     "category": "dinner",
     "tags": [
@@ -486,12 +486,12 @@ const MASTER_RECIPES: FullRecipe[] = [
     "image": "/assets/recipes/diabetic-oat-swallow-okra.webp",
     "clinicalScaleLabel": "Diabetic-Friendly Oat Swallow & Fresh Okra Soup, standard 9-inch divided clinical plate",
     "plateComposition": {
-      "staple": "Rolled Oat Swallow / Low-GI Fufu Ball",
-      "staplePct": 50,
       "greens": "Viscous Fresh Okra & Ugu Pumpkin Leaves",
-      "greensPct": 25,
+      "greensPct": 50,
       "protein": "Grilled Titus Mackerel Fish Steak",
-      "proteinPct": 25
+      "proteinPct": 25,
+      "staple": "Rolled Oat Swallow / Low-GI Fufu Ball",
+      "staplePct": 25
     },
     "category": "lunch",
     "tags": [
@@ -592,12 +592,12 @@ const MASTER_RECIPES: FullRecipe[] = [
     "image": "/assets/recipes/brown-jollof-titus.webp",
     "clinicalScaleLabel": "Low-Sodium Native Brown Jollof Rice with Baked Titus Steak, DASH clinical plate",
     "plateComposition": {
-      "staple": "Smoky Brown Ofada Jollof Rice",
-      "staplePct": 50,
       "greens": "Steamed Cabbage & Carrot Medley",
-      "greensPct": 25,
+      "greensPct": 50,
       "protein": "Oven-Baked Titus (Mackerel) Steak with Lemon",
-      "proteinPct": 25
+      "proteinPct": 25,
+      "staple": "Smoky Brown Ofada Jollof Rice",
+      "staplePct": 25
     },
     "category": "lunch",
     "tags": [
@@ -703,7 +703,7 @@ const MASTER_RECIPES: FullRecipe[] = [
       },
       {
         "stepNumber": 4,
-        "instruction": "Quickly steam shredded cabbage and carrots for 3 minutes until tender-crisp. Plate 50% brown Jollof rice, 25% cabbage-carrot medley, and 25% baked Titus mackerel steak.",
+        "instruction": "Quickly steam shredded cabbage and carrots for 3 minutes until tender-crisp. Plate 50% steamed cabbage-carrot medley (greens), 25% baked Titus mackerel steak (protein), and 25% brown Jollof rice (carb staple) according to the 9-inch clinical plate rule.",
         "flameLevel": "Low",
         "timerMinutes": 3
       }
@@ -716,12 +716,12 @@ const MASTER_RECIPES: FullRecipe[] = [
     "image": "/assets/recipes/egusi-ugu-soup.webp",
     "clinicalScaleLabel": "Protein-Packed Egusi & Ugu Soup, single portion",
     "plateComposition": {
-      "staple": "Unbleached Ground Melon Seed Egusi",
-      "staplePct": 50,
       "greens": "Fresh Fluted Pumpkin Leaves (Ugu)",
-      "greensPct": 25,
+      "greensPct": 50,
       "protein": "Lean Beef & Steamed Stockfish",
-      "proteinPct": 25
+      "proteinPct": 25,
+      "staple": "Unbleached Ground Melon Seed Egusi",
+      "staplePct": 25
     },
     "category": "dinner",
     "tags": [
@@ -1181,12 +1181,12 @@ const MASTER_RECIPES: FullRecipe[] = [
     "image": "/assets/recipes/sukuma-wiki-beef.webp",
     "clinicalScaleLabel": "Sukuma Wiki with Lean Beef & Kachumbari Salad, clinical 9-inch plate",
     "plateComposition": {
-      "staple": "Steamed Wholegrain Brown Basmati Rice",
-      "staplePct": 50,
       "greens": "Braised Sukuma Wiki (Collard Greens)",
-      "greensPct": 25,
+      "greensPct": 50,
       "protein": "Lean Beef Chunks & Fresh Kachumbari",
-      "proteinPct": 25
+      "proteinPct": 25,
+      "staple": "Steamed Wholegrain Brown Basmati Rice",
+      "staplePct": 25
     },
     "category": "lunch",
     "tags": [
@@ -1217,7 +1217,7 @@ const MASTER_RECIPES: FullRecipe[] = [
       {
         "amount": 0.5,
         "unit": "cup",
-        "name": "Steamed wholegrain brown Basmati rice or Ugali (50% staple)",
+        "name": "Steamed wholegrain brown Basmati rice or Ugali (25% staple)",
         "diasporaSwap": "Quinoa or cauliflower rice"
       },
       {
@@ -1288,12 +1288,12 @@ const MASTER_RECIPES: FullRecipe[] = [
     "image": "/assets/recipes/cameroonian-ndole.webp",
     "clinicalScaleLabel": "Cameroonian Ndolé with Prawns & Baked Plantains, clinical 9-inch plate",
     "plateComposition": {
-      "staple": "Baked/Steamed Plantain Slices",
-      "staplePct": 50,
       "greens": "Simmered Bitterleaf & Peanut Ndolé",
-      "greensPct": 25,
+      "greensPct": 50,
       "protein": "Sautéed Tiger Prawns & Smoked Fish",
-      "proteinPct": 25
+      "proteinPct": 25,
+      "staple": "Baked/Steamed Plantain Slices",
+      "staplePct": 25
     },
     "category": "dinner",
     "tags": [
@@ -1324,13 +1324,13 @@ const MASTER_RECIPES: FullRecipe[] = [
       {
         "amount": 2,
         "unit": "medium",
-        "name": "Ripe or semi-ripe plantains, sliced & baked/steamed (50% staple)",
+        "name": "Ripe or semi-ripe plantains, sliced & baked/steamed (25% staple)",
         "diasporaSwap": "Baked sweet potato or green plantains"
       },
       {
         "amount": 2,
         "unit": "cups",
-        "name": "Thoroughly washed shredded bitterleaf",
+        "name": "Thoroughly washed shredded bitterleaf (50% greens)",
         "diasporaSwap": "Washed frozen bitterleaf or cavolo nero"
       },
       {
@@ -1381,7 +1381,7 @@ const MASTER_RECIPES: FullRecipe[] = [
       },
       {
         "stepNumber": 3,
-        "instruction": "In a small skillet, sauté prawns with sliced onions in olive oil for 3 minutes until pink, then pour sizzling over the Ndolé pot. Serve alongside sliced baked plantains.",
+        "instruction": "In a small skillet, sauté prawns with sliced onions in olive oil for 3 minutes until pink, then drop sizzling over the Ndolé pot. Serve alongside sliced baked plantains.",
         "flameLevel": "High",
         "timerMinutes": 3,
         "avoTip": "Pouring sizzling prawns and onions on top unlocks deep aroma."
@@ -1395,12 +1395,12 @@ const MASTER_RECIPES: FullRecipe[] = [
     "image": "/assets/recipes/ethiopian-doro-wat.webp",
     "clinicalScaleLabel": "Ethiopian Doro Wat with Injera Flatbread, clinical 9-inch plate",
     "plateComposition": {
-      "staple": "Fermented Teff Injera Flatbread",
-      "staplePct": 50,
       "greens": "Braised Spiced Gomen Collard Greens",
-      "greensPct": 25,
+      "greensPct": 50,
       "protein": "Berbere Chicken Drumstick & Boiled Egg",
-      "proteinPct": 25
+      "proteinPct": 25,
+      "staple": "Fermented Teff Injera Flatbread",
+      "staplePct": 25
     },
     "category": "dinner",
     "tags": [
@@ -1430,13 +1430,13 @@ const MASTER_RECIPES: FullRecipe[] = [
       {
         "amount": 1,
         "unit": "round",
-        "name": "Fermented Teff Injera flatbread (50% staple)",
+        "name": "Fermented Teff Injera flatbread (25% staple)",
         "diasporaSwap": "Whole wheat flatbread or steamed brown rice"
       },
       {
         "amount": 1,
         "unit": "cup",
-        "name": "Braised Gomen collard greens (25% greens)",
+        "name": "Braised Gomen collard greens (50% greens)",
         "diasporaSwap": "Steamed kale or spinach"
       },
       {
@@ -1538,9 +1538,9 @@ export default function Recipe() {
       let recipeName = query.charAt(0).toUpperCase() + query.slice(1);
       let cat: "breakfast" | "lunch" | "dinner" | "snack" = "lunch";
       let tags: string[] = ["diabetic-friendly", "heart-healthy"];
-      let staple = "50% Complex Carbohydrate";
-      let greens = "25% Leafy Greens & Soluble Fiber";
+      let greens = "50% Leafy Greens & Soluble Fiber";
       let protein = "25% Lean African Protein";
+      let staple = "25% Complex Low-GI Carbohydrate";
       let cals = 310;
       let p = 18;
       let c = 38;
@@ -1553,58 +1553,58 @@ export default function Recipe() {
         matchedImage = "/assets/recipes/kdigo-yam-porridge.webp";
         recipeName = recipeName.includes("KDIGO") ? recipeName : `KDIGO Leached ${recipeName} (Renal-Safe)`;
         tags = ["renal-safe", "low-sodium", "heart-healthy"];
-        staple = "KDIGO Leached Yam Cubes (Double-Boiled)";
         greens = "Steamed Ugwu & Spinach with Red Elixir Dip";
         protein = "Steamed Flaked Mackerel Fish";
+        staple = "KDIGO Leached Yam Cubes (Double-Boiled)";
         cals = 260; p = 14; c = 42; fat = 5;
       } else if (lower.includes("okra") || lower.includes("swallow") || lower.includes("oat") || lower.includes("diabetes") || lower.includes("sugar")) {
         matchedImage = "/assets/recipes/diabetic-oat-swallow-okra.webp";
         recipeName = recipeName.includes("Diabetic") ? recipeName : `Diabetic-Safe ${recipeName} & Okra Soup`;
         tags = ["diabetic-friendly", "high-protein", "weight-loss"];
-        staple = "Rolled Oat Swallow / Low-GI Fufu Ball";
         greens = "Viscous Fresh Okra & Ugu Pumpkin Leaves";
         protein = "Grilled Titus Mackerel Steak";
+        staple = "Rolled Oat Swallow / Low-GI Fufu Ball";
         cals = 295; p = 22; c = 34; fat = 7;
       } else if (lower.includes("jollof") || lower.includes("rice") || lower.includes("titus") || lower.includes("stew") || lower.includes("hypertension") || lower.includes("pressure")) {
         matchedImage = "/assets/recipes/brown-jollof-titus.webp";
         recipeName = recipeName.includes("Brown") ? recipeName : `Low-Sodium Native Brown Jollof Rice & ${recipeName}`;
         tags = ["low-sodium", "heart-healthy", "diabetic-friendly"];
-        staple = "Smoky Ofada Brown Rice with Sweet Peppers";
         greens = "Steamed Shredded Cabbage & Carrot Medley";
         protein = "Oven-Baked Titus Mackerel Steak";
+        staple = "Smoky Ofada Brown Rice with Sweet Peppers";
         cals = 340; p = 24; c = 46; fat = 8;
       } else if (lower.includes("egusi") || lower.includes("melon") || lower.includes("soup") || lower.includes("protein")) {
         matchedImage = "/assets/recipes/egusi-ugu-soup.webp";
         recipeName = recipeName.includes("Egusi") ? recipeName : `Protein-Rich Unbleached Egusi & Ugu (${recipeName})`;
         tags = ["high-protein", "diabetic-friendly"];
-        staple = "Unbleached Melon Seed Egusi Base";
         greens = "Shredded Fresh Ugu Fluted Pumpkin Greens";
         protein = "Tender Lean Goat Meat & Steamed Stockfish";
+        staple = "Unbleached Melon Seed Egusi Base";
         cals = 380; p = 28; c = 18; fat = 14;
       } else if (lower.includes("cauliflower") || lower.includes("efo") || lower.includes("keto") || lower.includes("fufu")) {
         matchedImage = "/assets/recipes/cauliflower-fufu-efo.webp";
         recipeName = recipeName.includes("Cauliflower") ? recipeName : `Cauliflower-Psyllium Fufu & Rich Efo Riro (${recipeName})`;
         tags = ["diabetic-friendly", "weight-loss", "pcos-safe"];
-        staple = "Zero-Spike Cauliflower-Psyllium Fufu Ball";
         greens = "Rich Efo Riro Spinach with Tatase & Locust Beans";
         protein = "Steamed Lean Beef & Flaked Dried Fish";
+        staple = "Zero-Spike Cauliflower-Psyllium Fufu Ball";
         cals = 245; p = 20; c = 12; fat = 9;
       } else if (lower.includes("banana") || lower.includes("ulcer") || lower.includes("breakfast") || lower.includes("acid")) {
         matchedImage = "/assets/recipes/green-banana-porridge.webp";
         recipeName = recipeName.includes("Ulcer") ? recipeName : `Soothing Green Plantain & Oat Porridge (${recipeName})`;
         cat = "breakfast";
         tags = ["ulcer-safe", "diabetic-friendly"];
-        staple = "Warm Creamy Green Plantain & Oat Porridge with Chia";
-        greens = "Fresh Papaya Fruit Slices & Lime";
+        greens = "Fresh Pawpaw (Papaya) Slices";
         protein = "Soft-Boiled Egg with Sea Salt";
+        staple = "Warm Creamy Green Plantain & Oat Porridge with Chia";
         cals = 270; p = 12; c = 44; fat = 6;
       } else if (lower.includes("pepper") || lower.includes("catfish") || lower.includes("uziza") || lower.includes("recovery")) {
         matchedImage = "/assets/recipes/dry-catfish-uziza.webp";
         recipeName = recipeName.includes("Uziza") ? recipeName : `Maternal Healing Dry Catfish & Uziza Soup (${recipeName})`;
         tags = ["pregnancy-safe", "high-protein"];
-        staple = "Boiled Unripe Plantain Disks";
         greens = "Fresh Scent Leaf (Efirin) in Aromatic Broth";
         protein = "Rich De-boned Smoked Dry Catfish";
+        staple = "Boiled Unripe Plantain Disks";
         cals = 280; p = 24; c = 26; fat = 6;
       }
 
@@ -1626,28 +1626,28 @@ export default function Recipe() {
         glycemicIndex: gi,
         rating: 5.0,
         reviews: 1,
-        healthBenefits: `Clinically balanced 50/25/25 African plate designed for steady glucose and cellular metabolic health.`,
-        clinicalNote: `Formulated with 50% complex low-GI staple, 25% fiber-rich greens to coat intestinal lining, and 25% bioavailable lean protein.`,
+        healthBenefits: `Clinically balanced 9-inch African plate (50% fiber greens, 25% lean protein, 25% complex swallow) designed for steady glucose and cellular metabolic health.`,
+        clinicalNote: `Formulated according to the 9-inch clinical plate rule: 50% fiber-rich greens to coat intestinal lining and blunt glucose absorption, 25% bioavailable lean protein, and 25% portion-controlled low-GI complex staple.`,
         localMarkets: ["Mile 12 Market", "Oyingbo Market", "Afro-Caribbean Grocers"],
         clinicalScaleLabel: `${recipeName}, calibrated on standard 9-inch divided clinical plate`,
         plateComposition: {
-          staple,
-          staplePct: 50,
           greens,
-          greensPct: 25,
+          greensPct: 50,
           protein,
           proteinPct: 25,
+          staple,
+          staplePct: 25,
         },
         ingredients: [
-          { amount: 180, unit: "g", name: `${staple} (portioned)`, diasporaSwap: "Low-GI substitute" },
-          { amount: 80, unit: "g", name: greens, diasporaSwap: "Steamed collard / kale greens" },
-          { amount: 100, unit: "g", name: protein, diasporaSwap: "Steamed cod / wild salmon" },
+          { amount: 180, unit: "g", name: `${greens} (50% plate portion)`, diasporaSwap: "Steamed collard / kale greens" },
+          { amount: 100, unit: "g", name: `${protein} (25% plate portion)`, diasporaSwap: "Steamed cod / wild salmon" },
+          { amount: 80, unit: "g", name: `${staple} (25% portion-controlled carb)`, diasporaSwap: "Low-GI substitute" },
           { amount: 1, unit: "tsp", name: "Cold-pressed virgin olive oil or clarified palm oil" },
         ],
         steps: [
           {
             stepNumber: 1,
-            instruction: `Prep and portion your ingredients according to the 9-inch clinical plate rule (50% ${staple}, 25% ${greens}, 25% ${protein}).`,
+            instruction: `Prep and portion your ingredients according to the 9-inch clinical plate rule (50% ${greens}, 25% ${protein}, 25% ${staple}).`,
             flameLevel: "High",
             timerMinutes: 10,
             avoTip: "Eating the leafy greens and protein first creates a natural fiber mesh that slows glucose absorption by up to 38%!",
@@ -1984,7 +1984,7 @@ export default function Recipe() {
                   Prompt Any African Dish &amp; 9-Inch Plate 🍲
                 </h2>
                 <p className="text-[11px] text-teal-100/90 leading-tight mt-0.5">
-                  50% Staple · 25% Greens · 25% Lean Protein Clinical Formulations
+                  50% Fiber Greens · 25% Lean Protein · 25% Complex Swallow / Carb Formulations
                 </p>
               </div>
             </div>
@@ -2296,14 +2296,14 @@ export default function Recipe() {
                     <div className="absolute bottom-3 left-3 right-3 z-10">
                       <div className="bg-slate-950/80 backdrop-blur-md rounded-2xl p-2 border border-white/20 shadow-lg flex items-center justify-between text-[10px] font-black text-white">
                         <div className="flex items-center gap-1.5 truncate">
-                          <span className="px-1.5 py-0.5 rounded-lg bg-amber-400 text-slate-950 font-black shrink-0">
-                            50% Carb
-                          </span>
                           <span className="px-1.5 py-0.5 rounded-lg bg-emerald-400 text-slate-950 font-black shrink-0">
-                            25% Greens
+                            50% Greens
                           </span>
                           <span className="px-1.5 py-0.5 rounded-lg bg-cyan-400 text-slate-950 font-black shrink-0">
                             25% Protein
+                          </span>
+                          <span className="px-1.5 py-0.5 rounded-lg bg-amber-400 text-slate-950 font-black shrink-0">
+                            25% Carb
                           </span>
                         </div>
                         <span className="text-teal-300 font-bold shrink-0 ml-1">
@@ -2443,17 +2443,17 @@ export default function Recipe() {
 
                 {/* 3 Clickable Plate Quadrants */}
                 <div className="grid grid-cols-3 gap-1 p-2 bg-slate-900 text-center text-[10.5px] font-black">
-                  <div className="p-1.5 rounded-xl bg-amber-500/20 border border-amber-400/40 text-amber-200">
-                    <span className="block text-[8.5px] opacity-75">50% Complex Carb</span>
-                    <span className="truncate block">{selectedRecipe.plateComposition?.staple || "Staple"}</span>
-                  </div>
                   <div className="p-1.5 rounded-xl bg-emerald-500/20 border border-emerald-400/40 text-emerald-200">
-                    <span className="block text-[8.5px] opacity-75">25% Fiber Greens</span>
+                    <span className="block text-[8.5px] opacity-75">50% Fiber Greens</span>
                     <span className="truncate block">{selectedRecipe.plateComposition?.greens || "Greens"}</span>
                   </div>
                   <div className="p-1.5 rounded-xl bg-cyan-500/20 border border-cyan-400/40 text-cyan-200">
                     <span className="block text-[8.5px] opacity-75">25% Lean Protein</span>
                     <span className="truncate block">{selectedRecipe.plateComposition?.protein || "Protein"}</span>
+                  </div>
+                  <div className="p-1.5 rounded-xl bg-amber-500/20 border border-amber-400/40 text-amber-200">
+                    <span className="block text-[8.5px] opacity-75">25% Complex Carb</span>
+                    <span className="truncate block">{selectedRecipe.plateComposition?.staple || "Staple"}</span>
                   </div>
                 </div>
               </div>
