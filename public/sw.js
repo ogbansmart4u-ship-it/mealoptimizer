@@ -3,7 +3,7 @@
  * 100% Guaranteed Offline SPA Shell + Cache-First Static Assets
  */
 
-const CACHE_NAME = 'mealoptimiza-pwa-v9.5-all-plate-images-50-veggies';
+const CACHE_NAME = 'mealoptimiza-pwa-v9.6-busted-plate-images';
 
 const PRECACHE_ASSETS = [
   '/',

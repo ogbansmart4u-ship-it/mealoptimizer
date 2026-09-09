@@ -120,6 +120,14 @@ export interface FullRecipe {
   clinicalScaleLabel?: string;
 }
 
+export const RECIPE_IMG_VERSION = "v=9.5-50veggies";
+export const getVersionedImage = (url?: string) => {
+  if (!url) return `/assets/recipes/diabetic-oat-swallow-okra.webp?${RECIPE_IMG_VERSION}`;
+  if (url.startsWith("http") || url.startsWith("data:")) return url;
+  const sep = url.includes("?") ? "&" : "?";
+  return `${url}${sep}${RECIPE_IMG_VERSION}`;
+};
+
 const MASTER_RECIPES: FullRecipe[] = [
 {
     "id": "101",
@@ -2232,7 +2240,7 @@ export default function Recipe() {
             </div>
           ) : (
             filteredRecipes.map((recipe) => {
-              const plateImg = recipe.image || "/assets/recipes/diabetic-oat-swallow-okra.webp";
+              const plateImg = getVersionedImage(recipe.image);
 
               return (
                 <div
@@ -2253,7 +2261,7 @@ export default function Recipe() {
                       decoding="async"
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                       onError={(e: any) => {
-                        e.currentTarget.src = "/assets/recipes/diabetic-oat-swallow-okra.webp";
+                        e.currentTarget.src = getVersionedImage("/assets/recipes/diabetic-oat-swallow-okra.webp");
                       }}
                     />
 
@@ -2411,11 +2419,11 @@ export default function Recipe() {
               <div className="rounded-3xl overflow-hidden border-2 border-teal-300/40 bg-slate-950 relative shadow-xl">
                 <div className="relative w-full aspect-[16/10] sm:aspect-[16/9] overflow-hidden">
                   <img
-                    src={selectedRecipe.image || "/assets/recipes/diabetic-oat-swallow-okra.webp"}
+                    src={getVersionedImage(selectedRecipe.image)}
                     alt={selectedRecipe.name}
                     className="w-full h-full object-cover"
                     onError={(e: any) => {
-                      e.currentTarget.src = "/assets/recipes/diabetic-oat-swallow-okra.webp";
+                      e.currentTarget.src = getVersionedImage("/assets/recipes/diabetic-oat-swallow-okra.webp");
                     }}
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-black/30 pointer-events-none" />
