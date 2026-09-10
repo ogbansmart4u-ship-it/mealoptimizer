@@ -38,6 +38,8 @@ import {
   Volume2,
   TrendingUp,
   Activity,
+  FileText,
+  Stethoscope,
 } from "lucide-react";
 import { getCollection, createCollectionItem, deleteCollectionItem, createMealLog } from "../../lib/api";
 import BottomNav from "../components/BottomNav";
@@ -56,6 +58,8 @@ import AfricanSwapEngine from "../components/AfricanSwapEngine";
 import FruitVegetableGuide from "../components/FruitVegetableGuide";
 import { PlateScannerModal } from "../components/PlateScannerModal";
 import { GlycemicSimulatorModal } from "../components/GlycemicSimulatorModal";
+import { DoctorExportModal } from "../components/DoctorExportModal";
+import { SmartGroceryModal } from "../components/SmartGroceryModal";
 import { avoVoiceCoach, type AvoDialect } from "../services/AvoVoiceCoach";
 import { toast } from "sonner";
 import { triggerConfetti, triggerHaptic } from "../utils/celebration";
@@ -1818,6 +1822,10 @@ export default function Recipe() {
   const [isGlycemicModalOpen, setIsGlycemicModalOpen] = useState<boolean>(false);
   const [glycemicTargetMeal, setGlycemicTargetMeal] = useState<any>(null);
 
+  // 🏥 10X Upgrade: Doctor Consultation PDF Export & Smart Grocery Cart
+  const [isDoctorExportOpen, setIsDoctorExportOpen] = useState<boolean>(false);
+  const [isSmartGroceryOpen, setIsSmartGroceryOpen] = useState<boolean>(false);
+
   // 🎙️ 10X Upgrade: Avo Voice Hands-Free Cooking Assistant
   const [isVoiceCoachActive, setIsVoiceCoachActive] = useState<boolean>(false);
   const [isAvoListening, setIsAvoListening] = useState<boolean>(false);
@@ -2109,6 +2117,20 @@ export default function Recipe() {
               >
                 <TrendingUp size={14} className="text-amber-300" />
                 <span className="hidden sm:inline">CGM Curve</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  try { soundEffects.playBubblePop(); } catch {}
+                  try { triggerHaptic("medium"); } catch {}
+                  setIsDoctorExportOpen(true);
+                }}
+                className="px-2.5 py-2 rounded-2xl bg-white/20 hover:bg-white/30 text-white font-black text-xs shadow-md active:scale-95 transition-all flex items-center gap-1.5 border border-white/30 cursor-pointer"
+                title="Certified Doctor Nutrition Summary Report"
+              >
+                <Stethoscope size={14} className="text-emerald-300" />
+                <span className="hidden sm:inline">Doctor PDF</span>
               </button>
 
               <button
@@ -2767,6 +2789,25 @@ export default function Recipe() {
                               );
                             })}
                           </div>
+
+                          {/* 🛒 10X Smart Grocery Routing Button */}
+                          <button
+                            type="button"
+                            onClick={() => {
+                              try { soundEffects.playBubblePop(); } catch {}
+                              try { triggerHaptic("medium"); } catch {}
+                              setIsSmartGroceryOpen(true);
+                            }}
+                            className="w-full py-2 px-3 bg-gradient-to-r from-amber-400 via-amber-500 to-amber-600 hover:opacity-95 text-slate-950 font-black text-xs rounded-xl shadow-xs cursor-pointer flex items-center justify-between active:scale-95 transition-all mt-2"
+                          >
+                            <div className="flex items-center gap-1.5">
+                              <ShoppingCart size={13} />
+                              <span>Smart Grocery Fulfillment (Supermarket vs African Store)</span>
+                            </div>
+                            <span className="text-[10px] bg-slate-950/20 px-1.5 py-0.5 rounded-md font-bold">
+                              Order Cart →
+                            </span>
+                          </button>
                         </div>
                       )}
                     </div>
@@ -3208,6 +3249,20 @@ export default function Recipe() {
                 </button>
 
                 <button
+                  type="button"
+                  onClick={() => {
+                    try { soundEffects.playBubblePop(); } catch {}
+                    try { triggerHaptic("medium"); } catch {}
+                    setIsDoctorExportOpen(true);
+                  }}
+                  className="px-3 py-2.5 bg-slate-100 dark:bg-zinc-800 hover:bg-slate-200 dark:hover:bg-zinc-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-zinc-700 rounded-xl text-xs font-black cursor-pointer flex items-center justify-center gap-1 active:scale-95 transition-all"
+                  title="Certified Doctor Nutrition Summary Report"
+                >
+                  <Stethoscope size={14} className="text-teal-600" />
+                  <span className="hidden sm:inline">Doctor PDF</span>
+                </button>
+
+                <button
                   onClick={() => setSelectedRecipe(null)}
                   className="px-4 py-2.5 border border-slate-200 dark:border-zinc-700 rounded-xl text-xs font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-zinc-800 cursor-pointer"
                 >
@@ -3255,6 +3310,22 @@ export default function Recipe() {
           try { triggerConfetti(); } catch {}
           try { triggerHaptic("success"); } catch {}
         }}
+      />
+
+      {/* 🏥 10X Upgrade: Doctor Consultation Summary PDF Export Modal */}
+      <DoctorExportModal
+        isOpen={isDoctorExportOpen}
+        onClose={() => setIsDoctorExportOpen(false)}
+        recipeName={selectedRecipe?.name}
+      />
+
+      {/* 🛒 10X Upgrade: Diaspora Smart Grocery Cart Fulfillment Modal */}
+      <SmartGroceryModal
+        isOpen={isSmartGroceryOpen}
+        onClose={() => setIsSmartGroceryOpen(false)}
+        recipeName={selectedRecipe?.name || "Afro-Metabolic 9-Inch Plate"}
+        ingredients={selectedRecipe?.ingredients || []}
+        initialServings={portionMultiplier}
       />
 
       {/* 📈 Floating CGM Simulator Trigger Button */}
