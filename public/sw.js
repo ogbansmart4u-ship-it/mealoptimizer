@@ -3,7 +3,7 @@
  * 100% Guaranteed Offline SPA Shell + Cache-First Static Assets
  */
 
-const CACHE_NAME = 'mealoptimiza-pwa-v10.4-ar-scanner-fixed';
+const CACHE_NAME = 'mealoptimiza-pwa-v10.5-50veggies-20260910';
 
 const PRECACHE_ASSETS = [
   '/',
@@ -13,6 +13,13 @@ const PRECACHE_ASSETS = [
   '/icon-512.png',
   '/manifest.webmanifest',
 ];
+
+// Allow clients to trigger immediate activation
+self.addEventListener('message', (event) => {
+  if (event.data && event.data.type === 'SKIP_WAITING') {
+    self.skipWaiting();
+  }
+});
 
 // Install: precache core app shell
 self.addEventListener('install', (event) => {
@@ -95,7 +102,23 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // B. Static Assets (JS, CSS, Images, Fonts, Video, WebM): Stale-While-Revalidate
+  // B. Recipe & Food Visual Assets: Network-First (Guarantees fresh 50% divided plate photography on mobile & tablet)
+  if (url.pathname.includes('/assets/recipes/')) {
+    event.respondWith(
+      fetch(request)
+        .then((networkResponse) => {
+          if (networkResponse && networkResponse.status === 200) {
+            const copy = networkResponse.clone();
+            caches.open(CACHE_NAME).then((cache) => cache.put(request, copy));
+          }
+          return networkResponse;
+        })
+        .catch(() => caches.match(request))
+    );
+    return;
+  }
+
+  // C. Static Assets (JS, CSS, Icons, Fonts, Video, WebM): Stale-While-Revalidate
   event.respondWith(
     caches.match(request).then((cachedResponse) => {
       const fetchPromise = fetch(request)

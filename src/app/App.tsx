@@ -54,6 +54,29 @@ try {
   /* ignore storage access restrictions */
 }
 
+// 🧹 Mobile & Tablet Stale Image Cache Buster: Purge old cache stores & sync to v10.5
+try {
+  if (typeof window !== "undefined") {
+    const CURRENT_ASSET_VER = "v10.5-50veggies-20260910";
+    const storedVer = localStorage.getItem("mealoptimizer_asset_ver");
+    if (storedVer !== CURRENT_ASSET_VER) {
+      if ("caches" in window) {
+        caches.keys().then((keys) => {
+          keys.forEach((key) => {
+            if (!key.includes(CURRENT_ASSET_VER)) {
+              console.log("[App] Purging stale browser cache store:", key);
+              caches.delete(key);
+            }
+          });
+        });
+      }
+      localStorage.setItem("mealoptimizer_asset_ver", CURRENT_ASSET_VER);
+    }
+  }
+} catch {
+  /* ignore storage / cache access restrictions */
+}
+
 // MealOptimiza - Nutrition app with personalized meal planning
 export default function App() {
   return (

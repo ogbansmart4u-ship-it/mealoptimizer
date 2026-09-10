@@ -143,12 +143,13 @@ export interface FullRecipe {
   clinicalScaleLabel?: string;
 }
 
-export const RECIPE_IMG_VERSION = "v=9.5-50veggies";
+export const RECIPE_IMG_VERSION = "v=10.5-50veggies-20260910";
 export const getVersionedImage = (url?: string) => {
   if (!url) return `/assets/recipes/diabetic-oat-swallow-okra.webp?${RECIPE_IMG_VERSION}`;
-  if (url.startsWith("http") || url.startsWith("data:")) return url;
-  const sep = url.includes("?") ? "&" : "?";
-  return `${url}${sep}${RECIPE_IMG_VERSION}`;
+  if (url.startsWith("data:")) return url;
+  // Strip any existing query parameter (such as ?v=9.5-50veggies) so they don't chain or persist stale cache
+  const cleanUrl = url.split("?")[0];
+  return `${cleanUrl}?${RECIPE_IMG_VERSION}`;
 };
 
 const MASTER_RECIPES: FullRecipe[] = [
@@ -1779,9 +1780,13 @@ export default function Recipe() {
     try {
       const customRecipes: FullRecipe[] = JSON.parse(localStorage.getItem("mealoptimizer_user_custom_recipes") || "[]");
       if (customRecipes.length > 0) {
+        const sanitizedCustom = customRecipes.map((r) => ({
+          ...r,
+          image: r.image ? getVersionedImage(r.image) : r.image,
+        }));
         setRecipes((prev) => {
           const existingIds = new Set(prev.map((r) => r.id));
-          const uniqueCustom = customRecipes.filter((r) => !existingIds.has(r.id));
+          const uniqueCustom = sanitizedCustom.filter((r) => !existingIds.has(r.id));
           return [...uniqueCustom, ...prev];
         });
       }
