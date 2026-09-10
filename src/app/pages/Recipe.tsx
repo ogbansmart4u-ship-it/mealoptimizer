@@ -1,5 +1,5 @@
 import { GROCERY_PARTNERS, getPartnersForLocation } from "../../lib/groceryAffiliates";
-import React, { useState, useEffect, useMemo, useRef } from "react";
+import React, { useState, useEffect, useMemo, useRef, lazy, Suspense } from "react";
 import { useNavigate } from "react-router";
 import {
   ChefHat,
@@ -54,13 +54,23 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { Button } from "../components/ui/button";
 import AmbientBackground from "../components/AmbientBackground";
 import Mascot from "../components/Mascot";
-import AfricanSwapEngine from "../components/AfricanSwapEngine";
-import FruitVegetableGuide from "../components/FruitVegetableGuide";
-import { PlateScannerModal } from "../components/PlateScannerModal";
-import { GlycemicSimulatorModal } from "../components/GlycemicSimulatorModal";
-import { DoctorExportModal } from "../components/DoctorExportModal";
-import { SmartGroceryModal } from "../components/SmartGroceryModal";
 import { avoVoiceCoach, type AvoDialect } from "../services/AvoVoiceCoach";
+
+// ⚡ 10X Route-Based Performance Optimization: Lazy-load heavy modals & engines on demand
+const AfricanSwapEngine = lazy(() => import("../components/AfricanSwapEngine"));
+const FruitVegetableGuide = lazy(() => import("../components/FruitVegetableGuide"));
+const PlateScannerModal = lazy(() =>
+  import("../components/PlateScannerModal").then((m) => ({ default: m.PlateScannerModal }))
+);
+const GlycemicSimulatorModal = lazy(() =>
+  import("../components/GlycemicSimulatorModal").then((m) => ({ default: m.GlycemicSimulatorModal }))
+);
+const DoctorExportModal = lazy(() =>
+  import("../components/DoctorExportModal").then((m) => ({ default: m.DoctorExportModal }))
+);
+const SmartGroceryModal = lazy(() =>
+  import("../components/SmartGroceryModal").then((m) => ({ default: m.SmartGroceryModal }))
+);
 import { toast } from "sonner";
 import { triggerConfetti, triggerHaptic } from "../utils/celebration";
 
@@ -2513,6 +2523,38 @@ export default function Recipe() {
         </div>
           </>
         )}
+
+        {/* ⚡ Lazy-loaded Swap Engine Sub-View */}
+        {activeView === "swaps" && (
+          <div className="max-w-2xl mx-auto mt-4">
+            <Suspense
+              fallback={
+                <div className="p-8 text-center bg-white dark:bg-zinc-900 rounded-3xl border border-slate-200 dark:border-zinc-800 shadow-sm">
+                  <div className="animate-spin text-2xl mb-2">🥑</div>
+                  <span className="text-xs font-bold text-slate-500">Loading African Swap Engine...</span>
+                </div>
+              }
+            >
+              <AfricanSwapEngine />
+            </Suspense>
+          </div>
+        )}
+
+        {/* ⚡ Lazy-loaded Fruit & Vegetable Guide Sub-View */}
+        {activeView === "fruits_veggies" && (
+          <div className="max-w-2xl mx-auto mt-4">
+            <Suspense
+              fallback={
+                <div className="p-8 text-center bg-white dark:bg-zinc-900 rounded-3xl border border-slate-200 dark:border-zinc-800 shadow-sm">
+                  <div className="animate-spin text-2xl mb-2">🥗</div>
+                  <span className="text-xs font-bold text-slate-500">Loading Fruit & Vegetable Guide...</span>
+                </div>
+              }
+            >
+              <FruitVegetableGuide />
+            </Suspense>
+          </div>
+        )}
       </div>
 
       <BottomNav />
@@ -3275,15 +3317,19 @@ export default function Recipe() {
       </Dialog>
 
       {/* 📷 10X Upgrade: 9-Inch AR Plate Scanner & Calibrator Modal */}
-      <PlateScannerModal
-        isOpen={isScannerOpen}
-        onClose={() => setIsScannerOpen(false)}
-        onSaveMealLog={(data) => {
-          try { triggerConfetti(); } catch {}
-          try { triggerHaptic("success"); } catch {}
-          toast.success(`Avo Plate Score: ${data.score}%! Saved to Food Journal 🥑`);
-        }}
-      />
+      {isScannerOpen && (
+        <Suspense fallback={null}>
+          <PlateScannerModal
+            isOpen={isScannerOpen}
+            onClose={() => setIsScannerOpen(false)}
+            onSaveMealLog={(data) => {
+              try { triggerConfetti(); } catch {}
+              try { triggerHaptic("success"); } catch {}
+              toast.success(`Avo Plate Score: ${data.score}%! Saved to Food Journal 🥑`);
+            }}
+          />
+        </Suspense>
+      )}
 
       {/* 📷 Floating AR Scanner Trigger Button */}
       <button
@@ -3299,34 +3345,46 @@ export default function Recipe() {
       </button>
 
       {/* 📈 10X Upgrade: Postprandial CGM Glycemic Curve & Biomarker Simulator Modal */}
-      <GlycemicSimulatorModal
-        isOpen={isGlycemicModalOpen}
-        onClose={() => {
-          setIsGlycemicModalOpen(false);
-          setGlycemicTargetMeal(null);
-        }}
-        meal={glycemicTargetMeal}
-        onLogSaved={() => {
-          try { triggerConfetti(); } catch {}
-          try { triggerHaptic("success"); } catch {}
-        }}
-      />
+      {isGlycemicModalOpen && (
+        <Suspense fallback={null}>
+          <GlycemicSimulatorModal
+            isOpen={isGlycemicModalOpen}
+            onClose={() => {
+              setIsGlycemicModalOpen(false);
+              setGlycemicTargetMeal(null);
+            }}
+            meal={glycemicTargetMeal}
+            onLogSaved={() => {
+              try { triggerConfetti(); } catch {}
+              try { triggerHaptic("success"); } catch {}
+            }}
+          />
+        </Suspense>
+      )}
 
       {/* 🏥 10X Upgrade: Doctor Consultation Summary PDF Export Modal */}
-      <DoctorExportModal
-        isOpen={isDoctorExportOpen}
-        onClose={() => setIsDoctorExportOpen(false)}
-        recipeName={selectedRecipe?.name}
-      />
+      {isDoctorExportOpen && (
+        <Suspense fallback={null}>
+          <DoctorExportModal
+            isOpen={isDoctorExportOpen}
+            onClose={() => setIsDoctorExportOpen(false)}
+            recipeName={selectedRecipe?.name}
+          />
+        </Suspense>
+      )}
 
       {/* 🛒 10X Upgrade: Diaspora Smart Grocery Cart Fulfillment Modal */}
-      <SmartGroceryModal
-        isOpen={isSmartGroceryOpen}
-        onClose={() => setIsSmartGroceryOpen(false)}
-        recipeName={selectedRecipe?.name || "Afro-Metabolic 9-Inch Plate"}
-        ingredients={selectedRecipe?.ingredients || []}
-        initialServings={portionMultiplier}
-      />
+      {isSmartGroceryOpen && (
+        <Suspense fallback={null}>
+          <SmartGroceryModal
+            isOpen={isSmartGroceryOpen}
+            onClose={() => setIsSmartGroceryOpen(false)}
+            recipeName={selectedRecipe?.name || "Afro-Metabolic 9-Inch Plate"}
+            ingredients={selectedRecipe?.ingredients || []}
+            initialServings={portionMultiplier}
+          />
+        </Suspense>
+      )}
 
       {/* 📈 Floating CGM Simulator Trigger Button */}
       <button

@@ -1,9 +1,9 @@
 /**
- * MealOptimiza Service Worker (PWA Offline Engine v10.2)
+ * MealOptimiza Service Worker (PWA Offline Engine v10.3)
  * 100% Guaranteed Offline SPA Shell + Cache-First Static Assets
  */
 
-const CACHE_NAME = 'mealoptimiza-pwa-v10.2-clinician-smart-cart';
+const CACHE_NAME = 'mealoptimiza-pwa-v10.3-complete-10x-blueprint';
 
 const PRECACHE_ASSETS = [
   '/',
