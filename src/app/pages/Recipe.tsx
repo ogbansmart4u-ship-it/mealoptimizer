@@ -40,6 +40,7 @@ import {
   Activity,
   FileText,
   Stethoscope,
+  Trash2,
 } from "lucide-react";
 import { getCollection, createCollectionItem, deleteCollectionItem, createMealLog } from "../../lib/api";
 import BottomNav from "../components/BottomNav";
@@ -150,6 +151,26 @@ export const getVersionedImage = (url?: string) => {
   // Strip any existing query parameter (such as ?v=9.5-50veggies) so they don't chain or persist stale cache
   const cleanUrl = url.split("?")[0];
   return `${cleanUrl}?${RECIPE_IMG_VERSION}`;
+};
+
+export const getFallbackPlateImage = (recipe?: Partial<FullRecipe> | string) => {
+  const name = (typeof recipe === "string" ? recipe : recipe?.name || "").toLowerCase();
+  if (name.includes("rice") || name.includes("jollof") || name.includes("ofada")) {
+    return getVersionedImage("/assets/recipes/brown-jollof-titus.webp");
+  }
+  if (name.includes("efo") || name.includes("spinach") || name.includes("shoko")) {
+    return getVersionedImage("/assets/recipes/cauliflower-fufu-efo.webp");
+  }
+  if (name.includes("egusi") || name.includes("melon")) {
+    return getVersionedImage("/assets/recipes/egusi-ugu-soup.webp");
+  }
+  if (name.includes("yam") || name.includes("porridge") || name.includes("renal")) {
+    return getVersionedImage("/assets/recipes/kdigo-yam-porridge.webp");
+  }
+  if (name.includes("catfish") || name.includes("uziza") || name.includes("pepper")) {
+    return getVersionedImage("/assets/recipes/dry-catfish-uziza.webp");
+  }
+  return getVersionedImage("/assets/recipes/diabetic-oat-swallow-okra.webp");
 };
 
 const MASTER_RECIPES: FullRecipe[] = [
@@ -1717,6 +1738,26 @@ export default function Recipe() {
     }
   };
 
+  const handleDeleteCustomRecipe = (id: string) => {
+    try { triggerHaptic("medium"); } catch {}
+    setRecipes((prev) => prev.filter((r) => r.id !== id));
+    try {
+      const existing = JSON.parse(localStorage.getItem("mealoptimizer_user_custom_recipes") || "[]");
+      const updated = existing.filter((r: any) => r.id !== id);
+      localStorage.setItem("mealoptimizer_user_custom_recipes", JSON.stringify(updated));
+      toast.success("Removed custom recipe from your menu.");
+    } catch {}
+  };
+
+  const handleClearAllCustomRecipes = () => {
+    try { triggerHaptic("success"); } catch {}
+    setRecipes(MASTER_RECIPES);
+    try {
+      localStorage.removeItem("mealoptimizer_user_custom_recipes");
+      toast.success("Reset menu to official 14 clinical 9-inch plate recipes! 🥑");
+    } catch {}
+  };
+
   // Scaler & Swap Toggles inside Modal
   const [portionMultiplier, setPortionMultiplier] = useState<number>(2); // Default 2 servings
   const [diasporaMode, setDiasporaMode] = useState<boolean>(false);
@@ -2396,6 +2437,25 @@ export default function Recipe() {
         {/* 2. RECIPE CARDS GRID                                         */}
         {/* ============================================================ */}
         <div className="space-y-4">
+          {/* Custom Recipes Banner */}
+          {recipes.some((r) => r.id.startsWith("ai-") || !MASTER_RECIPES.some((m) => m.id === r.id)) && (
+            <div className="p-3.5 bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800/60 rounded-2xl flex items-center justify-between gap-2 text-xs text-amber-900 dark:text-amber-200 shadow-xs">
+              <div className="flex items-center gap-2">
+                <Sparkles size={16} className="text-amber-600 dark:text-amber-400 shrink-0" />
+                <span>
+                  Custom AI formulations saved on this device are currently displayed at the top.
+                </span>
+              </div>
+              <button
+                type="button"
+                onClick={handleClearAllCustomRecipes}
+                className="px-3 py-1.5 bg-amber-600 hover:bg-amber-700 active:scale-95 text-white font-black text-[11px] rounded-xl shrink-0 cursor-pointer shadow-xs transition-transform"
+              >
+                Reset Menu
+              </button>
+            </div>
+          )}
+
           {filteredRecipes.length === 0 ? (
             <div className="bg-white rounded-3xl p-8 text-center shadow-xs border border-teal-100">
               <MascotEmptyState
@@ -2405,7 +2465,8 @@ export default function Recipe() {
             </div>
           ) : (
             filteredRecipes.map((recipe) => {
-              const plateImg = getVersionedImage(recipe.image);
+              const isCustom = recipe.id.startsWith("ai-") || !MASTER_RECIPES.some((m) => m.id === recipe.id);
+              const plateImg = getVersionedImage(recipe.image || getFallbackPlateImage(recipe));
 
               return (
                 <div
@@ -2426,7 +2487,7 @@ export default function Recipe() {
                       decoding="async"
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                       onError={(e: any) => {
-                        e.currentTarget.src = getVersionedImage("/assets/recipes/diabetic-oat-swallow-okra.webp");
+                        e.currentTarget.src = getFallbackPlateImage(recipe);
                       }}
                     />
 
@@ -2451,18 +2512,40 @@ export default function Recipe() {
                         <span className="text-[10px] font-black px-2.5 py-1 rounded-full bg-slate-900/80 backdrop-blur-md text-amber-300 border border-white/20 shadow-md">
                           🔥 {recipe.baseCalories} kcal
                         </span>
+
+                        {isCustom && (
+                          <span className="text-[10px] font-black px-2 py-0.5 rounded-full bg-cyan-500/90 text-white border border-cyan-300/40 shadow-md">
+                            Custom Formulation
+                          </span>
+                        )}
                       </div>
 
-                      <button
-                        type="button"
-                        onClick={(e) => toggleFavorite(recipe.id, e)}
-                        className="p-2 rounded-full bg-slate-900/70 backdrop-blur-md text-white hover:text-rose-500 border border-white/20 transition-all hover:scale-110 active:scale-95 shadow-md cursor-pointer"
-                        title="Save Favorite"
-                      >
-                        <Heart
-                          className={`h-4 w-4 ${recipe.isFavorite ? "fill-rose-500 text-rose-500" : ""}`}
-                        />
-                      </button>
+                      <div className="flex items-center gap-1.5">
+                        {isCustom && (
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleDeleteCustomRecipe(recipe.id);
+                            }}
+                            className="p-2 rounded-full bg-rose-600/90 hover:bg-rose-700 text-white backdrop-blur-md border border-white/20 transition-all hover:scale-110 active:scale-95 shadow-md cursor-pointer"
+                            title="Delete this custom recipe"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </button>
+                        )}
+
+                        <button
+                          type="button"
+                          onClick={(e) => toggleFavorite(recipe.id, e)}
+                          className="p-2 rounded-full bg-slate-900/70 backdrop-blur-md text-white hover:text-rose-500 border border-white/20 transition-all hover:scale-110 active:scale-95 shadow-md cursor-pointer"
+                          title="Save Favorite"
+                        >
+                          <Heart
+                            className={`h-4 w-4 ${recipe.isFavorite ? "fill-rose-500 text-rose-500" : ""}`}
+                          />
+                        </button>
+                      </div>
                     </div>
 
                     {/* Bottom Plate Breakdown Strip OVER the Image */}
@@ -2616,11 +2699,11 @@ export default function Recipe() {
               <div className="rounded-3xl overflow-hidden border-2 border-teal-300/40 bg-slate-950 relative shadow-xl">
                 <div className="relative w-full aspect-[16/10] sm:aspect-[16/9] overflow-hidden">
                   <img
-                    src={getVersionedImage(selectedRecipe.image)}
+                    src={getVersionedImage(selectedRecipe.image || getFallbackPlateImage(selectedRecipe))}
                     alt={selectedRecipe.name}
                     className="w-full h-full object-cover"
                     onError={(e: any) => {
-                      e.currentTarget.src = getVersionedImage("/assets/recipes/diabetic-oat-swallow-okra.webp");
+                      e.currentTarget.src = getFallbackPlateImage(selectedRecipe);
                     }}
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-black/30 pointer-events-none" />
