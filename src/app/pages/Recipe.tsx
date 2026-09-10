@@ -36,6 +36,8 @@ import {
   Mic,
   MicOff,
   Volume2,
+  TrendingUp,
+  Activity,
 } from "lucide-react";
 import { getCollection, createCollectionItem, deleteCollectionItem, createMealLog } from "../../lib/api";
 import BottomNav from "../components/BottomNav";
@@ -53,6 +55,7 @@ import Mascot from "../components/Mascot";
 import AfricanSwapEngine from "../components/AfricanSwapEngine";
 import FruitVegetableGuide from "../components/FruitVegetableGuide";
 import { PlateScannerModal } from "../components/PlateScannerModal";
+import { GlycemicSimulatorModal } from "../components/GlycemicSimulatorModal";
 import { avoVoiceCoach, type AvoDialect } from "../services/AvoVoiceCoach";
 import { toast } from "sonner";
 import { triggerConfetti, triggerHaptic } from "../utils/celebration";
@@ -1811,6 +1814,10 @@ export default function Recipe() {
   // 📷 10X Upgrade: 9-Inch AR Plate Scanner & Calibrator Modal
   const [isScannerOpen, setIsScannerOpen] = useState<boolean>(false);
 
+  // 📈 10X Upgrade: Postprandial CGM Glycemic Simulator & Bio-Feedback Modal
+  const [isGlycemicModalOpen, setIsGlycemicModalOpen] = useState<boolean>(false);
+  const [glycemicTargetMeal, setGlycemicTargetMeal] = useState<any>(null);
+
   // 🎙️ 10X Upgrade: Avo Voice Hands-Free Cooking Assistant
   const [isVoiceCoachActive, setIsVoiceCoachActive] = useState<boolean>(false);
   const [isAvoListening, setIsAvoListening] = useState<boolean>(false);
@@ -2081,18 +2088,42 @@ export default function Recipe() {
               </div>
             </div>
 
-            <button
-              type="button"
-              onClick={() => {
-                try { soundEffects.playBubblePop(); } catch {}
-                try { triggerHaptic("medium"); } catch {}
-                setIsScannerOpen(true);
-              }}
-              className="px-3 py-2 rounded-2xl bg-gradient-to-r from-emerald-400 to-teal-300 text-slate-950 font-black text-xs shadow-lg hover:brightness-110 active:scale-95 transition-all flex items-center gap-1.5 shrink-0 border border-white/40 cursor-pointer"
-            >
-              <CameraIcon size={14} />
-              <span>Scan Plate (AR)</span>
-            </button>
+            <div className="flex items-center gap-1.5 shrink-0">
+              <button
+                type="button"
+                onClick={() => {
+                  try { soundEffects.playBubblePop(); } catch {}
+                  try { triggerHaptic("medium"); } catch {}
+                  setGlycemicTargetMeal({
+                    name: "African Metabolic 9-Inch Plate",
+                    emoji: "🍲",
+                    carbs: 52,
+                    fiber: 14,
+                    protein: 30,
+                    fats: 10,
+                  });
+                  setIsGlycemicModalOpen(true);
+                }}
+                className="px-2.5 py-2 rounded-2xl bg-white/20 hover:bg-white/30 text-white font-black text-xs shadow-md active:scale-95 transition-all flex items-center gap-1.5 border border-white/30 cursor-pointer"
+                title="Simulate 3-Hour CGM Glycemic Curve"
+              >
+                <TrendingUp size={14} className="text-amber-300" />
+                <span className="hidden sm:inline">CGM Curve</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  try { soundEffects.playBubblePop(); } catch {}
+                  try { triggerHaptic("medium"); } catch {}
+                  setIsScannerOpen(true);
+                }}
+                className="px-3 py-2 rounded-2xl bg-gradient-to-r from-emerald-400 to-teal-300 text-slate-950 font-black text-xs shadow-lg hover:brightness-110 active:scale-95 transition-all flex items-center gap-1.5 border border-white/40 cursor-pointer"
+              >
+                <CameraIcon size={14} />
+                <span>Scan Plate (AR)</span>
+              </button>
+            </div>
           </div>
 
           {/* Interactive AI Prompt Input */}
@@ -2804,6 +2835,38 @@ export default function Recipe() {
                           <div className="p-2 bg-emerald-50 dark:bg-emerald-950/40 rounded-xl border border-emerald-200/80 dark:border-emerald-800/50 text-[10.5px] text-emerald-900 dark:text-emerald-300 font-medium leading-relaxed">
                             🌿 <strong>Why This Meal Is Great For You:</strong> {selectedRecipe.healthBenefits}
                           </div>
+
+                          {/* 📈 10X Upgrade: Simulate 3-Hour CGM Curve for this Recipe */}
+                          <button
+                            type="button"
+                            onClick={() => {
+                              try { soundEffects.playBubblePop(); } catch {}
+                              try { triggerHaptic("medium"); } catch {}
+                              setGlycemicTargetMeal({
+                                name: selectedRecipe.name,
+                                emoji: selectedRecipe.emoji,
+                                carbs: Math.round((selectedRecipe.baseCarbs / selectedRecipe.baseServings) * portionMultiplier),
+                                fiber: Math.round(14 * (selectedRecipe.plateComposition?.greensPct ? selectedRecipe.plateComposition.greensPct / 50 : 1)),
+                                protein: Math.round((selectedRecipe.baseProtein / selectedRecipe.baseServings) * portionMultiplier),
+                                fats: Math.round((selectedRecipe.baseFats / selectedRecipe.baseServings) * portionMultiplier),
+                                glycemicIndex: selectedRecipe.glycemicIndex,
+                                clinicalNote: selectedRecipe.clinicalNote,
+                              });
+                              setIsGlycemicModalOpen(true);
+                            }}
+                            className="w-full py-2.5 px-3 bg-gradient-to-r from-teal-600 via-emerald-600 to-[#1f7a8c] hover:opacity-95 text-white font-black text-xs rounded-xl shadow-md cursor-pointer flex items-center justify-between active:scale-95 transition-all"
+                          >
+                            <div className="flex items-center gap-2">
+                              <span className="text-sm">📈</span>
+                              <div className="text-left">
+                                <span className="block leading-tight font-black">Simulate Postprandial CGM Curve</span>
+                                <span className="block text-[9.5px] text-teal-100 font-medium">See how 50% fiber blunts glucose spike &amp; log bio-feedback</span>
+                              </div>
+                            </div>
+                            <span className="text-[10px] bg-white/20 px-2 py-1 rounded-lg font-black shrink-0">
+                              Simulate →
+                            </span>
+                          </button>
                         </div>
                       )}
                     </div>
@@ -3178,6 +3241,41 @@ export default function Recipe() {
       >
         <CameraIcon size={16} />
         <span className="tracking-wide">Scan Plate (AR)</span>
+      </button>
+
+      {/* 📈 10X Upgrade: Postprandial CGM Glycemic Curve & Biomarker Simulator Modal */}
+      <GlycemicSimulatorModal
+        isOpen={isGlycemicModalOpen}
+        onClose={() => {
+          setIsGlycemicModalOpen(false);
+          setGlycemicTargetMeal(null);
+        }}
+        meal={glycemicTargetMeal}
+        onLogSaved={() => {
+          try { triggerConfetti(); } catch {}
+          try { triggerHaptic("success"); } catch {}
+        }}
+      />
+
+      {/* 📈 Floating CGM Simulator Trigger Button */}
+      <button
+        onClick={() => {
+          try { triggerHaptic("medium"); } catch {}
+          setGlycemicTargetMeal({
+            name: "Afro-Metabolic 9-Inch Plate",
+            emoji: "🥗",
+            carbs: 52,
+            fiber: 14,
+            protein: 30,
+            fats: 10,
+          });
+          setIsGlycemicModalOpen(true);
+        }}
+        className="fixed bottom-24 left-4 z-40 px-3.5 py-3 bg-slate-900/90 hover:bg-slate-900 text-teal-300 font-black text-xs rounded-2xl shadow-2xl border-2 border-teal-500/50 hover:scale-105 active:scale-95 transition-all flex items-center gap-2 cursor-pointer backdrop-blur-md"
+        title="Simulate 3-Hour CGM Glycemic Curve"
+      >
+        <TrendingUp size={16} className="text-amber-400" />
+        <span className="tracking-wide text-white">CGM Curve</span>
       </button>
     </div>
   );

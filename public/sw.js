@@ -1,9 +1,9 @@
 /**
- * MealOptimiza Service Worker (PWA Offline Engine v10.0)
+ * MealOptimiza Service Worker (PWA Offline Engine v10.1)
  * 100% Guaranteed Offline SPA Shell + Cache-First Static Assets
  */
 
-const CACHE_NAME = 'mealoptimiza-pwa-v10.0-ar-scanner-voice';
+const CACHE_NAME = 'mealoptimiza-pwa-v10.1-cgm-glycemic-simulator';
 
 const PRECACHE_ASSETS = [
   '/',
