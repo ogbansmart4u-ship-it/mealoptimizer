@@ -1,11 +1,16 @@
-import React, { useState } from "react";
+import React, { useState, lazy, Suspense } from "react";
 import { Camera, MessageSquare, Mic, X, Sparkles } from "lucide-react";
 import { useNavigate } from "react-router";
 import WhatsAppConnectDialog from "./WhatsAppConnectDialog";
 import VoiceFoodLogger from "./VoiceFoodLogger";
 import LocalFoodScanner from "./LocalFoodScanner";
 import SmartVideoConcierge from "./SmartVideoConcierge";
-import { triggerHaptic } from "../utils/celebration";
+import { triggerHaptic, triggerConfetti } from "../utils/celebration";
+import { toast } from "sonner";
+
+const PlateScannerModal = lazy(() =>
+  import("./PlateScannerModal").then((m) => ({ default: m.PlateScannerModal }))
+);
 
 export default function QuickActionsFAB() {
   const navigate = useNavigate();
@@ -13,6 +18,7 @@ export default function QuickActionsFAB() {
   const [showWhatsAppModal, setShowWhatsAppModal] = useState(false);
   const [showVoiceModal, setShowVoiceModal] = useState(false);
   const [showScannerModal, setShowScannerModal] = useState(false);
+  const [showARPlateScanner, setShowARPlateScanner] = useState(false);
   const [showSarahConcierge, setShowSarahConcierge] = useState(false);
 
   const toggleMenu = () => {
@@ -50,22 +56,22 @@ export default function QuickActionsFAB() {
               </div>
             </button>
 
-            {/* Action 2: Snap Plate (AI Vision Camera) */}
+            {/* Action 2: Snap Plate (9-Inch AR Plate Calibrator) */}
             <button
               type="button"
               onClick={() => {
                 triggerHaptic("medium");
                 setIsOpen(false);
-                setShowScannerModal(true);
+                setShowARPlateScanner(true);
               }}
               className="group bg-gradient-to-r from-[#126778] via-[#0d9488] to-[#14b8a6] text-white rounded-2xl pl-4 pr-3 py-2.5 shadow-2xl border border-white/20 hover:scale-103 active:scale-97 transition-all flex items-center gap-3 cursor-pointer"
             >
               <div className="text-right">
                 <span className="text-xs font-black block leading-tight text-white group-hover:text-emerald-200 transition-colors">
-                  Snap Plate
+                  Snap Plate (AR)
                 </span>
                 <span className="text-[9.5px] text-teal-100 font-bold block">
-                  Camera AI Vision
+                  9-Inch Plate Calibrator
                 </span>
               </div>
               <div className="w-9 h-9 rounded-xl bg-white/20 border border-white/30 flex items-center justify-center shadow-inner group-hover:scale-110 transition-transform shrink-0">
@@ -145,10 +151,24 @@ export default function QuickActionsFAB() {
         onClose={() => setShowScannerModal(false)}
       />
 
+      {showARPlateScanner && (
+        <Suspense fallback={null}>
+          <PlateScannerModal
+            isOpen={showARPlateScanner}
+            onClose={() => setShowARPlateScanner(false)}
+            onSaveMealLog={(data) => {
+              try { triggerConfetti(); } catch {}
+              try { triggerHaptic("success"); } catch {}
+              toast.success(`Avo Plate Score: ${data.score}%! Saved to Food Journal 🥑`);
+            }}
+          />
+        </Suspense>
+      )}
+
       <SmartVideoConcierge
         isOpen={showSarahConcierge}
         onClose={() => setShowSarahConcierge(false)}
-        onOpenScanner={() => setShowScannerModal(true)}
+        onOpenScanner={() => setShowARPlateScanner(true)}
         onOpenWhatsApp={() => setShowWhatsAppModal(true)}
       />
     </>
