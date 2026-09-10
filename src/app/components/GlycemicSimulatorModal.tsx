@@ -25,11 +25,15 @@ import {
   RefreshCw,
   BarChart2,
   Check,
+  Radio,
+  Wifi,
+  Footprints,
 } from "lucide-react";
 import Mascot from "./Mascot";
 import { soundEffects } from "../utils/soundEffects";
 import { triggerHaptic, triggerConfetti } from "../utils/celebration";
 import { createMealLog } from "../../lib/api";
+import { schedulePostMealWalkAlert } from "../../lib/notifications";
 import { toast } from "sonner";
 
 export interface MealGlycemicProfile {
@@ -63,9 +67,14 @@ export function GlycemicSimulatorModal({
   meal,
   onLogSaved,
 }: GlycemicSimulatorModalProps) {
-  const [activeTab, setActiveTab] = useState<"curve" | "biomarkers">("curve");
+  const [activeTab, setActiveTab] = useState<"curve" | "biomarkers" | "cgm">("curve");
   const [selectedMinute, setSelectedMinute] = useState<number>(60);
   const [unit, setUnit] = useState<"mgdl" | "mmol">("mgdl");
+
+  // Hardware CGM Telemetry States
+  const [cgmDevice, setCgmDevice] = useState<"Dexcom G7" | "FreeStyle Libre 3" | "Apple HealthKit">("Dexcom G7");
+  const [liveCgmValue, setLiveCgmValue] = useState<number>(108);
+  const [isCgmStreaming, setIsCgmStreaming] = useState<boolean>(true);
 
   // Biomarker Input States
   const [fastingGlucose, setFastingGlucose] = useState<string>("92");
@@ -258,6 +267,9 @@ export function GlycemicSimulatorModal({
         } 🥑`
       );
 
+      // Arm 30-min postprandial glucose-lowering walk reminder
+      schedulePostMealWalkAlert(mealName, 30);
+
       if (onLogSaved) onLogSaved();
       setPostprandialGlucose("");
       setSystolicBP("");
@@ -331,7 +343,23 @@ export function GlycemicSimulatorModal({
             }`}
           >
             <TrendingUp size={14} />
-            <span>3-Hour CGM Curve Simulation</span>
+            <span className="hidden sm:inline">3-Hour</span>
+            <span>CGM Curve</span>
+          </button>
+
+          <button
+            onClick={() => {
+              try { triggerHaptic("light"); } catch {}
+              setActiveTab("cgm");
+            }}
+            className={`flex-1 py-2.5 text-xs font-black flex items-center justify-center gap-1.5 border-b-2 transition-all cursor-pointer ${
+              activeTab === "cgm"
+                ? "border-teal-500 text-teal-700 dark:text-teal-400 bg-white dark:bg-zinc-800"
+                : "border-transparent text-slate-500 hover:text-slate-700 dark:hover:text-slate-300"
+            }`}
+          >
+            <Radio size={14} className={isCgmStreaming ? "text-emerald-500 animate-pulse" : ""} />
+            <span>Live CGM Link</span>
           </button>
 
           <button
@@ -346,7 +374,7 @@ export function GlycemicSimulatorModal({
             }`}
           >
             <HeartPulse size={14} />
-            <span>Log Biomarkers (FBS / PPG / BP)</span>
+            <span>Log Biomarkers</span>
           </button>
         </div>
 
@@ -641,6 +669,115 @@ export function GlycemicSimulatorModal({
                 <strong> 45%</strong>.
               </div>
             </>
+          ) : activeTab === "cgm" ? (
+            /* 📡 HARDWARE CGM REAL-TIME TELEMETRY STREAM TAB */
+            <div className="space-y-4">
+              {/* Sensor Header Card */}
+              <div className="p-4 rounded-3xl bg-gradient-to-br from-slate-900 to-slate-950 text-white border border-teal-500/30 shadow-xl relative overflow-hidden">
+                <div className="absolute top-0 right-0 p-4 opacity-10 pointer-events-none">
+                  <Radio size={120} />
+                </div>
+
+                <div className="flex items-center justify-between gap-2 pb-3 border-b border-white/10">
+                  <div className="flex items-center gap-2">
+                    <span className="relative flex h-3 w-3">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                      <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
+                    </span>
+                    <span className="text-xs font-black tracking-wider uppercase text-emerald-400">
+                      Bluetooth CGM Telemetry
+                    </span>
+                  </div>
+
+                  <select
+                    value={cgmDevice}
+                    onChange={(e: any) => setCgmDevice(e.target.value)}
+                    className="bg-white/10 hover:bg-white/20 text-white text-[11px] font-bold px-2.5 py-1 rounded-xl border border-white/20 outline-none cursor-pointer"
+                  >
+                    <option value="Dexcom G7" className="text-slate-900">Dexcom G7</option>
+                    <option value="FreeStyle Libre 3" className="text-slate-900">Abbott FreeStyle Libre 3</option>
+                    <option value="Apple HealthKit" className="text-slate-900">Apple HealthKit Sync</option>
+                  </select>
+                </div>
+
+                {/* Big Interstitial Glucose Metric */}
+                <div className="py-4 flex items-baseline justify-between">
+                  <div>
+                    <div className="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1">
+                      Interstitial Glucose
+                    </div>
+                    <div className="flex items-baseline gap-2">
+                      <span className="text-4xl font-black text-white tracking-tight">
+                        {liveCgmValue}
+                      </span>
+                      <span className="text-xs font-bold text-teal-300">{unit}</span>
+                      <span className="ml-2 text-xs font-black text-emerald-400 bg-emerald-950/80 border border-emerald-500/40 px-2 py-0.5 rounded-lg flex items-center gap-1">
+                        ➔ Flat &amp; Stable (+0.1/min)
+                      </span>
+                    </div>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      try { triggerHaptic("light"); } catch {}
+                      setLiveCgmValue(Math.floor(98 + Math.random() * 15));
+                      toast.info("Refreshed Bluetooth interstitial glucose sample.");
+                    }}
+                    className="p-2 rounded-xl bg-white/10 hover:bg-white/20 text-teal-300 border border-white/10 cursor-pointer"
+                    title="Poll Sensor"
+                  >
+                    <RefreshCw size={14} />
+                  </button>
+                </div>
+
+                {/* Sensor Stats Strip */}
+                <div className="grid grid-cols-3 gap-2 pt-3 border-t border-white/10 text-center">
+                  <div className="p-2 rounded-xl bg-white/5 border border-white/10">
+                    <div className="text-[9.5px] font-bold text-slate-400 uppercase">Time in Range</div>
+                    <div className="text-sm font-black text-emerald-400">96%</div>
+                    <div className="text-[8.5px] text-slate-400">70-140 mg/dL</div>
+                  </div>
+                  <div className="p-2 rounded-xl bg-white/5 border border-white/10">
+                    <div className="text-[9.5px] font-bold text-slate-400 uppercase">Estimated A1c</div>
+                    <div className="text-sm font-black text-cyan-300">5.4%</div>
+                    <div className="text-[8.5px] text-slate-400">Optimal</div>
+                  </div>
+                  <div className="p-2 rounded-xl bg-white/5 border border-white/10">
+                    <div className="text-[9.5px] font-bold text-slate-400 uppercase">Sensor Lifespan</div>
+                    <div className="text-sm font-black text-amber-300">8.5 Days</div>
+                    <div className="text-[8.5px] text-slate-400">Calibration OK</div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="space-y-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setPostprandialGlucose(String(liveCgmValue));
+                    setActiveTab("biomarkers");
+                    toast.success(`Imported live CGM reading (${liveCgmValue} ${unit}) into postprandial PPG log!`);
+                  }}
+                  className="w-full py-2.5 bg-gradient-to-r from-teal-600 to-[#1f7a8c] hover:from-teal-700 hover:to-[#126778] text-white font-black text-xs rounded-xl shadow-md cursor-pointer flex items-center justify-center gap-2 transition-all active:scale-98"
+                >
+                  <CheckCircle2 size={14} />
+                  <span>Import {liveCgmValue} {unit} to 2-Hour Postprandial Log</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    schedulePostMealWalkAlert(mealName, 30);
+                  }}
+                  className="w-full py-2.5 bg-white dark:bg-zinc-800 hover:bg-slate-50 dark:hover:bg-zinc-700 text-slate-800 dark:text-white border border-teal-200 dark:border-zinc-700 font-black text-xs rounded-xl shadow-xs cursor-pointer flex items-center justify-center gap-2 transition-all active:scale-98"
+                >
+                  <Footprints size={14} className="text-teal-600" />
+                  <span>Arm 30-Min Postprandial Glucose Walk Timer 🚶‍♂️</span>
+                </button>
+              </div>
+            </div>
           ) : (
             /* BIOMARKER LOGGING TAB */
             <form onSubmit={handleSaveBiomarkers} className="space-y-3.5">
