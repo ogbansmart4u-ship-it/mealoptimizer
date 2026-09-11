@@ -880,6 +880,7 @@ export default function Home() {
                     <strong className="text-xs font-black text-slate-900 dark:text-white mt-0.5">{fatsConsumed}g</strong>
                   </div>
                   <div 
+                    id="tour-water-tracker"
                     onClick={() => {
                       triggerHaptic("medium");
                       setShowWaterReminderModal(true);
@@ -927,7 +928,7 @@ export default function Home() {
                 onOpenScanner={() => setShowLocalFoodScanner(true)}
                 onOpenWater={() => setShowWaterReminderModal(true)}
                 onOpenQuickLog={() => {
-                  const el = document.getElementById("today-quick-shelf");
+                  const el = document.getElementById("tour-quick-shelf") || document.getElementById("today-quick-shelf");
                   if (el) el.scrollIntoView({ behavior: "smooth" });
                 }}
               />
@@ -999,7 +1000,7 @@ export default function Home() {
             </div>
 
             {/* 1-Tap Quick-Log Shelf */}
-            <div id="today-quick-shelf" className="my-1">
+            <div id="tour-quick-shelf" className="my-1">
               <QuickLogShelf
                 onLogItem={handleQuickLogItem}
                 onOpenVoice={() => setShowVoiceLogger(true)}
@@ -1415,7 +1416,6 @@ export default function Home() {
 
       {/* Floating Action / WhatsApp Modal */}
       <WhatsAppConnectDialog isOpen={showWhatsAppModal} onClose={() => setShowWhatsAppModal(false)} />
-      <div id="tour-fab-actions" />
 
       <HealthProfileWizardModal
         isOpen={showHealthWizard}

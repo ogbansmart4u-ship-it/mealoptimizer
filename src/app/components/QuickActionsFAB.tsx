@@ -29,7 +29,7 @@ export default function QuickActionsFAB() {
   return (
     <>
       {/* 🌟 10X FLOATING ACTION BUTTON CONTAINER */}
-      <div className="fixed bottom-22 right-4 sm:right-6 z-[60] select-none">
+      <div id="tour-fab-actions" className="fixed bottom-22 right-4 sm:right-6 z-[60] select-none">
         {/* Expanded 3 Curated Glassmorphic Action Items */}
         {isOpen && (
           <div className="absolute bottom-16 right-0 flex flex-col gap-2.5 mb-2 items-end z-10">

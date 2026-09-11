@@ -52,18 +52,26 @@ export default function SpotlightTour({ isOpen, onClose }: SpotlightTourProps) {
     const updatePosition = () => {
       const el = document.getElementById(step.targetId);
       if (el) {
-        el.scrollIntoView({ behavior: "smooth", block: "center" });
-        setTimeout(() => {
-          setRect(el.getBoundingClientRect());
-        }, 250);
+        setRect(el.getBoundingClientRect());
       } else {
         setRect(null);
       }
     };
 
-    updatePosition();
-    window.addEventListener("resize", updatePosition);
-    return () => window.removeEventListener("resize", updatePosition);
+    const el = document.getElementById(step.targetId);
+    if (el) {
+      el.scrollIntoView({ behavior: "smooth", block: "center" });
+      const timer = setTimeout(updatePosition, 300);
+      window.addEventListener("resize", updatePosition);
+      window.addEventListener("scroll", updatePosition, { passive: true });
+      return () => {
+        clearTimeout(timer);
+        window.removeEventListener("resize", updatePosition);
+        window.removeEventListener("scroll", updatePosition);
+      };
+    } else {
+      setRect(null);
+    }
   }, [isOpen, currentStep, step.targetId]);
 
   if (!isOpen) return null;
@@ -85,10 +93,20 @@ export default function SpotlightTour({ isOpen, onClose }: SpotlightTourProps) {
     onClose();
   };
 
+  // Determine whether dialog should be placed at top or bottom
+  // If target element is in the lower half of the screen, place dialog at the top to avoid overlap
+  const isTargetInLowerHalf = rect
+    ? rect.bottom > (typeof window !== "undefined" ? window.innerHeight - 260 : 400)
+    : false;
+  const isTop = step.position === "top" || isTargetInLowerHalf;
+
   return (
-    <div className="fixed inset-0 z-50 overflow-hidden pointer-events-auto">
-      {/* Dark overlay backdrop */}
-      <div className="absolute inset-0 bg-black/60 backdrop-blur-[2px] transition-opacity duration-300" />
+    <div className="fixed inset-0 z-[100] overflow-hidden pointer-events-auto">
+      {/* Dark overlay backdrop covering full viewport including BottomNav */}
+      <div
+        className="absolute inset-0 bg-black/65 backdrop-blur-[2px] transition-opacity duration-300"
+        onClick={handleSkip}
+      />
 
       {/* Spotlight cutout highlight if target exists */}
       {rect && (
@@ -103,8 +121,14 @@ export default function SpotlightTour({ isOpen, onClose }: SpotlightTourProps) {
         />
       )}
 
-      {/* Tour Step Dialog Box */}
-      <div className="fixed inset-x-4 bottom-8 sm:bottom-12 max-w-md mx-auto z-50 animate-in fade-in slide-in-from-bottom-4 duration-300">
+      {/* Tour Step Dialog Box - positioned safely above BottomNav or at top */}
+      <div
+        className={`fixed inset-x-4 max-w-md mx-auto z-[101] animate-in fade-in duration-300 ${
+          isTop
+            ? "top-[calc(1.25rem+env(safe-area-inset-top))] sm:top-10 slide-in-from-top-4"
+            : "bottom-[calc(5.75rem+env(safe-area-inset-bottom))] sm:bottom-24 slide-in-from-bottom-4"
+        }`}
+      >
         <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-3xl p-5 sm:p-6 shadow-2xl">
           <div className="flex items-start justify-between gap-3 mb-2">
             <div className="flex items-center gap-3">
