@@ -509,7 +509,7 @@ export default function GroceryList() {
   });
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#B8E5E5] via-[#E8F5F5] to-[#F8FBFB] pb-28">
+    <div className="min-h-screen bg-canvas-organic dark:bg-[#0F1412] pb-28">
       {/* Header */}
       <PageHeader
         title={t("grocery.title")}

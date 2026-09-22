@@ -145,14 +145,14 @@ export default function MyMealPlans() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-[#B8E5E5] to-[#E8F5F5] flex items-center justify-center">
+      <div className="min-h-screen bg-canvas-organic dark:bg-[#0F1412] flex items-center justify-center">
         <MascotLoader label={t("myplans.loading")} size={96} />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#B8E5E5] to-[#E8F5F5] pb-24">
+    <div className="min-h-screen bg-canvas-organic dark:bg-[#0F1412] pb-24">
       {/* Header */}
       <PageHeader
         title={t("myplans.title")}
@@ -235,7 +235,7 @@ export default function MyMealPlans() {
                       <div className="flex gap-2">
                         <button
                           onClick={() => navigate(`/meal-plan?id=${plan.id}`)}
-                          className="text-[#1f7a8c] hover:bg-[#B8E5E5] rounded-full p-2 transition-colors"
+                          className="text-[#164E3D] dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-950/40 rounded-full p-2 transition-colors"
                           title={t("myplans.viewDetails")}
                         >
                           <Eye className="h-5 w-5" />
@@ -257,35 +257,35 @@ export default function MyMealPlans() {
 
                     {/* Quick Stats */}
                     <div className="grid grid-cols-3 gap-3">
-                      <div className="bg-orange-50 rounded-xl p-3">
+                      <div className="bg-orange-50 dark:bg-orange-950/20 rounded-xl p-3">
                         <div className="flex items-center gap-1 mb-1">
                           <Flame className="h-3 w-3 text-orange-600" />
-                          <p className="text-xs text-gray-600">{t("mealview.calories")}</p>
+                          <p className="text-xs text-gray-600 dark:text-stone-400">{t("mealview.calories")}</p>
                         </div>
-                        <p className="text-sm text-gray-800">{plan.plan_json.calories}</p>
+                        <p className="text-sm font-bold text-gray-800 dark:text-stone-100">{plan.plan_json.calories}</p>
                       </div>
 
-                      <div className="bg-blue-50 rounded-xl p-3">
+                      <div className="bg-blue-50 dark:bg-blue-950/20 rounded-xl p-3">
                         <div className="flex items-center gap-1 mb-1">
                           <Activity className="h-3 w-3 text-blue-600" />
-                          <p className="text-xs text-gray-600">{t("mealview.protein")}</p>
+                          <p className="text-xs text-gray-600 dark:text-stone-400">{t("mealview.protein")}</p>
                         </div>
-                        <p className="text-sm text-gray-800">{plan.plan_json.protein}g</p>
+                        <p className="text-sm font-bold text-gray-800 dark:text-stone-100">{plan.plan_json.protein}g</p>
                       </div>
 
-                      <div className="bg-green-50 rounded-xl p-3">
+                      <div className="bg-green-50 dark:bg-emerald-950/20 rounded-xl p-3">
                         <div className="flex items-center gap-1 mb-1">
-                          <Activity className="h-3 w-3 text-green-600" />
-                          <p className="text-xs text-gray-600">{t("mealview.carbs")}</p>
+                          <Activity className="h-3 w-3 text-[#164E3D] dark:text-emerald-400" />
+                          <p className="text-xs text-gray-600 dark:text-stone-400">{t("mealview.carbs")}</p>
                         </div>
-                        <p className="text-sm text-gray-800">{plan.plan_json.carbs}g</p>
+                        <p className="text-sm font-bold text-gray-800 dark:text-stone-100">{plan.plan_json.carbs}g</p>
                       </div>
                     </div>
 
                     {/* Goal Badge */}
-                    <div className="mt-3 inline-flex items-center gap-1 px-3 py-1 bg-[#B8E5E5] rounded-full">
-                      <Activity className="h-3 w-3 text-[#1f7a8c]" />
-                      <p className="text-xs text-[#1f7a8c]">{plan.currentGoal === "General Health & Nutrition" ? t("planmeal.defaultGoal") : plan.currentGoal}</p>
+                    <div className="mt-3 inline-flex items-center gap-1 px-3 py-1 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-800 dark:text-emerald-300 border border-emerald-200/60 rounded-full">
+                      <Activity className="h-3 w-3 text-[#164E3D] dark:text-emerald-400" />
+                      <p className="text-xs font-semibold">{plan.currentGoal === "General Health & Nutrition" ? t("planmeal.defaultGoal") : plan.currentGoal}</p>
                     </div>
                   </div>
 

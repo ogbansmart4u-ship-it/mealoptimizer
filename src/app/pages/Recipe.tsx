@@ -2060,36 +2060,36 @@ export default function Recipe() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#B8E5E5] via-[#E8F5F5] to-[#F8FBFB] pb-28 relative">
+    <div className="min-h-screen bg-canvas-organic dark:bg-[#0F1412] pb-28 relative">
       {/* High-Visibility Ambient Background Animation */}
       <AmbientBackground />
 
       {/* Top Header */}
-      <div className="relative z-10 bg-gradient-to-b from-[#A5DBDB] to-[#B8E5E5] px-4 sm:px-6 pt-9 pb-5 border-b border-teal-500/15">
+      <div className="relative z-10 bg-white/80 dark:bg-[#171E1B]/80 backdrop-blur-xl px-4 sm:px-6 pt-9 pb-5 border-b border-stone-200/60 dark:border-stone-800/60 shadow-xs">
         <div className="max-w-2xl mx-auto flex items-center justify-between">
           <div>
-            <span className="text-[10px] uppercase tracking-wider font-extrabold text-[#1f7a8c] block">
-              Metabolic Culinary Lab
+            <span className="text-xs uppercase tracking-wider font-semibold text-[#164E3D] dark:text-emerald-400 block">
+              Healthy Cultural Recipes
             </span>
-            <h1 className="text-xl sm:text-2xl font-black text-gray-900 leading-tight">
-              {t('recipe.title')} 🍲
+            <h1 className="text-xl sm:text-2xl font-bold text-stone-900 dark:text-stone-100 leading-tight">
+              {t('recipe.title')}
             </h1>
           </div>
           <ProfilePictureUpload />
         </div>
 
         {/* Top View Switcher: Clinical Recipes vs African Swap Engine vs Fruits & Greens */}
-        <div className="max-w-2xl mx-auto mt-3 bg-white/60 dark:bg-zinc-800/60 p-1 rounded-2xl flex gap-1 border border-teal-100 dark:border-zinc-700/80 shadow-2xs">
+        <div className="max-w-2xl mx-auto mt-3 bg-stone-100 dark:bg-stone-800/80 p-1 rounded-2xl flex gap-1 border border-stone-200/60 dark:border-stone-700/60 shadow-xs">
           <button
             type="button"
             onClick={() => {
               triggerHaptic("light");
               setActiveView("recipes");
             }}
-            className={`flex-1 py-2 px-2.5 rounded-xl text-[11px] sm:text-xs font-black transition-all flex items-center justify-center gap-1 cursor-pointer truncate ${
+            className={`flex-1 py-2 px-2.5 rounded-xl text-xs font-semibold transition-all flex items-center justify-center gap-1 cursor-pointer truncate ${
               activeView === "recipes"
-                ? "bg-[#1f7a8c] text-white shadow-sm"
-                : "text-slate-700 dark:text-zinc-300 hover:bg-white/40"
+                ? "bg-[#164E3D] text-white shadow-xs"
+                : "text-stone-600 dark:text-stone-300 hover:text-stone-900 dark:hover:text-white"
             }`}
           >
             <span>🍲 {t('recipe.title')} ({recipes.length})</span>
@@ -2101,13 +2101,13 @@ export default function Recipe() {
               triggerHaptic("light");
               setActiveView("swaps");
             }}
-            className={`flex-1 py-2 px-2.5 rounded-xl text-[11px] sm:text-xs font-black transition-all flex items-center justify-center gap-1 cursor-pointer truncate ${
+            className={`flex-1 py-2 px-2.5 rounded-xl text-xs font-semibold transition-all flex items-center justify-center gap-1 cursor-pointer truncate ${
               activeView === "swaps"
-                ? "bg-[#1f7a8c] text-white shadow-sm"
-                : "text-slate-700 dark:text-zinc-300 hover:bg-white/40"
+                ? "bg-[#164E3D] text-white shadow-xs"
+                : "text-stone-600 dark:text-stone-300 hover:text-stone-900 dark:hover:text-white"
             }`}
           >
-            <Sparkles size={12} className="text-amber-300 animate-pulse shrink-0" />
+            <Sparkles size={13} className="text-amber-300 shrink-0" />
             <span>{t('recipe.swapEngine')} 🔄</span>
           </button>
 
@@ -2117,10 +2117,10 @@ export default function Recipe() {
               triggerHaptic("light");
               setActiveView("fruits_veggies");
             }}
-            className={`flex-1 py-2 px-2.5 rounded-xl text-[11px] sm:text-xs font-black transition-all flex items-center justify-center gap-1 cursor-pointer truncate ${
+            className={`flex-1 py-2 px-2.5 rounded-xl text-xs font-semibold transition-all flex items-center justify-center gap-1 cursor-pointer truncate ${
               activeView === "fruits_veggies"
-                ? "bg-[#1f7a8c] text-white shadow-sm"
-                : "text-slate-700 dark:text-zinc-300 hover:bg-white/40"
+                ? "bg-[#164E3D] text-white shadow-xs"
+                : "text-stone-600 dark:text-stone-300 hover:text-stone-900 dark:hover:text-white"
             }`}
           >
             <span>🥗 {t('recipe.fruitsGreens')} 🍏</span>
@@ -2131,23 +2131,23 @@ export default function Recipe() {
         {/* ============================================================ */}
         {/* 🌟 AVO AI CULTURAL CHEF & 9-INCH PLATE STUDIO PROMPT BAR      */}
         {/* ============================================================ */}
-        <div className="max-w-2xl mx-auto mt-3 bg-gradient-to-br from-[#0c4a6e] via-[#126778] to-[#0d9488] rounded-3xl p-4 sm:p-5 text-white shadow-xl border-2 border-teal-300/40 relative overflow-hidden group">
-          <div className="absolute -top-12 -right-12 w-44 h-44 rounded-full bg-teal-300/20 blur-3xl pointer-events-none" />
+        <div className="max-w-2xl mx-auto mt-3 bg-gradient-to-br from-[#164E3D] via-[#1B5E4A] to-[#124233] rounded-3xl p-4 sm:p-5 text-white shadow-sm border border-emerald-800/40 relative overflow-hidden group">
+          <div className="absolute -top-12 -right-12 w-44 h-44 rounded-full bg-emerald-400/10 blur-3xl pointer-events-none" />
           
           <div className="flex items-start justify-between gap-3 relative z-10">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-white/20 backdrop-blur-md rounded-2xl border border-white/30 text-2xl shrink-0 shadow-inner">
+              <div className="p-2 bg-white/15 backdrop-blur-md rounded-2xl border border-white/20 text-2xl shrink-0 shadow-xs">
                 <Mascot gesture="clapping" size={36} />
               </div>
               <div>
-                <div className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-amber-400 text-slate-950 text-[9.5px] font-black uppercase tracking-wider shadow-2xs">
-                  <Sparkles size={10} /> AI Cultural Chef Studio
+                <div className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-amber-400/95 text-stone-950 text-xs font-semibold uppercase tracking-wider shadow-xs">
+                  <Sparkles size={11} /> AI Recipe Studio
                 </div>
-                <h2 className="text-sm sm:text-base font-black leading-tight text-white mt-1">
-                  Prompt Any African Dish &amp; 9-Inch Plate 🍲
+                <h2 className="text-sm sm:text-base font-bold leading-tight text-white mt-1">
+                  Create Balanced African Meals 🍲
                 </h2>
-                <p className="text-[11px] text-teal-100/90 leading-tight mt-0.5">
-                  50% Fiber Greens · 25% Lean Protein · 25% Complex Swallow / Carb Formulations
+                <p className="text-xs text-emerald-100/90 leading-tight mt-0.5">
+                  50% Greens &amp; Veggies · 25% Protein · 25% Complex Carbs
                 </p>
               </div>
             </div>
@@ -2168,11 +2168,11 @@ export default function Recipe() {
                   });
                   setIsGlycemicModalOpen(true);
                 }}
-                className="px-2.5 py-2 rounded-2xl bg-white/20 hover:bg-white/30 text-white font-black text-xs shadow-md active:scale-95 transition-all flex items-center gap-1.5 border border-white/30 cursor-pointer"
+                className="px-2.5 py-2 rounded-xl bg-white/15 hover:bg-white/25 text-white font-medium text-xs shadow-xs active:scale-95 transition-all flex items-center gap-1.5 border border-white/20 cursor-pointer"
                 title="Simulate 3-Hour CGM Glycemic Curve"
               >
                 <TrendingUp size={14} className="text-amber-300" />
-                <span className="hidden sm:inline">CGM Curve</span>
+                <span className="hidden sm:inline">Blood Sugar Curve</span>
               </button>
 
               <button
@@ -2182,7 +2182,7 @@ export default function Recipe() {
                   try { triggerHaptic("medium"); } catch {}
                   setIsDoctorExportOpen(true);
                 }}
-                className="px-2.5 py-2 rounded-2xl bg-white/20 hover:bg-white/30 text-white font-black text-xs shadow-md active:scale-95 transition-all flex items-center gap-1.5 border border-white/30 cursor-pointer"
+                className="px-2.5 py-2 rounded-xl bg-white/15 hover:bg-white/25 text-white font-medium text-xs shadow-xs active:scale-95 transition-all flex items-center gap-1.5 border border-white/20 cursor-pointer"
                 title="Certified Doctor Nutrition Summary Report"
               >
                 <Stethoscope size={14} className="text-emerald-300" />
@@ -2196,10 +2196,10 @@ export default function Recipe() {
                   try { triggerHaptic("medium"); } catch {}
                   setIsScannerOpen(true);
                 }}
-                className="px-3 py-2 rounded-2xl bg-gradient-to-r from-emerald-400 to-teal-300 text-slate-950 font-black text-xs shadow-lg hover:brightness-110 active:scale-95 transition-all flex items-center gap-1.5 border border-white/40 cursor-pointer"
+                className="px-3 py-2 rounded-xl bg-[#D97706] hover:bg-[#B45309] text-white font-semibold text-xs shadow-xs active:scale-95 transition-all flex items-center gap-1.5 cursor-pointer"
               >
                 <CameraIcon size={14} />
-                <span>Scan Plate (AR)</span>
+                <span>Scan Plate</span>
               </button>
             </div>
           </div>
@@ -2207,21 +2207,21 @@ export default function Recipe() {
           {/* Interactive AI Prompt Input */}
           <div className="mt-3.5 relative z-10 flex gap-2">
             <div className="relative flex-1">
-              <Sparkles className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-teal-300 animate-pulse" />
+              <Sparkles className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-emerald-200" />
               <input
                 type="text"
                 value={aiPrompt}
                 onChange={(e) => setAiPrompt(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && handleGenerateAiRecipe()}
-                placeholder="Prompt Avo (e.g. 'Renal-safe yam porridge with mackerel')..."
-                className="w-full pl-10 pr-4 py-2.5 bg-white/20 backdrop-blur-md border border-white/30 rounded-2xl text-xs text-white placeholder:text-teal-100/70 focus:outline-none focus:ring-2 focus:ring-amber-300 shadow-inner transition-all"
+                placeholder="Ask Avo (e.g. 'Yam porridge with mackerel and spinach')..."
+                className="w-full pl-10 pr-4 py-2.5 bg-white/15 backdrop-blur-md border border-white/25 rounded-2xl text-xs text-white placeholder:text-white/60 focus:outline-none focus:ring-2 focus:ring-[#D97706] shadow-inner transition-all"
               />
             </div>
             <button
               type="button"
               disabled={isGeneratingAi}
               onClick={() => handleGenerateAiRecipe()}
-              className="px-4 py-2.5 bg-gradient-to-r from-amber-400 to-amber-300 hover:from-amber-300 hover:to-amber-200 text-slate-950 font-black text-xs rounded-2xl shadow-md transition-all cursor-pointer shrink-0 active:scale-95 disabled:opacity-60 flex items-center gap-1"
+              className="px-4 py-2.5 bg-[#D97706] hover:bg-[#B45309] text-white font-bold text-xs rounded-2xl shadow-xs transition-all cursor-pointer shrink-0 active:scale-95 disabled:opacity-60 flex items-center gap-1"
             >
               {isGeneratingAi ? (
                 <>
@@ -2230,27 +2230,27 @@ export default function Recipe() {
                 </>
               ) : (
                 <>
-                  <span>Formulate 🪄</span>
+                  <span>Create 🪄</span>
                 </>
               )}
             </button>
           </div>
 
           {/* Fast-Prompt Chips */}
-          <div className="flex items-center gap-1.5 overflow-x-auto pt-2.5 pb-1 visible-scrollbar-x relative z-10 text-[10.5px]">
-            <span className="text-[10px] font-bold text-teal-200 uppercase shrink-0">Try 1-Tap:</span>
+          <div className="flex items-center gap-1.5 overflow-x-auto pt-2.5 pb-1 visible-scrollbar-x relative z-10 text-xs">
+            <span className="text-xs font-semibold text-emerald-200 uppercase tracking-wide shrink-0">Try 1-Tap:</span>
             {[
               { label: "KDIGO Yam Porridge 🍲", prompt: "KDIGO Leached Yam Porridge (Renal-Safe)" },
               { label: "Diabetic Oat & Okra 🥗", prompt: "Diabetic-Friendly Oat Swallow & Fresh Okra Soup" },
               { label: "Native Brown Jollof 🍚", prompt: "Low-Sodium Native Brown Jollof Rice & Titus Mackerel" },
               { label: "Unbleached Egusi & Ugu 🥘", prompt: "Protein-Packed Egusi & Ugu Soup" },
-              { label: "Cauliflower Zero-Spike Fufu 🥑", prompt: "Cauliflower-Psyllium Fufu & Rich Efo Riro" },
+              { label: "Cauliflower Low-Carb Fufu 🥑", prompt: "Cauliflower-Psyllium Fufu & Rich Efo Riro" },
             ].map((chip, idx) => (
               <button
                 key={idx}
                 type="button"
                 onClick={() => handleGenerateAiRecipe(chip.prompt)}
-                className="px-2.5 py-1 bg-white/15 hover:bg-white/25 active:scale-95 text-white font-bold rounded-xl border border-white/20 whitespace-nowrap transition-all cursor-pointer shadow-2xs"
+                className="px-3 py-1 bg-white/15 hover:bg-white/25 active:scale-95 text-white font-medium text-xs rounded-full border border-white/20 whitespace-nowrap transition-all cursor-pointer shadow-xs"
               >
                 {chip.label}
               </button>
@@ -2262,57 +2262,57 @@ export default function Recipe() {
           <>
             {/* Search Bar */}
             <div className="max-w-2xl mx-auto mt-3 relative">
-              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-stone-400" />
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder={t('recipe.searchPlaceholder')}
-                className="w-full pl-10 pr-4 py-2.5 bg-white/95 backdrop-blur-md border border-teal-100/90 rounded-2xl text-xs text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[#1f7a8c] shadow-xs transition-all"
+                className="w-full pl-10 pr-4 py-2.5 bg-white dark:bg-[#171E1B] border border-stone-200/80 dark:border-stone-800 rounded-2xl text-xs text-stone-900 dark:text-stone-100 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-[#164E3D] shadow-xs transition-all"
               />
             </div>
 
-                    {/* 📅 7-DAY MEAL PLANNER & 🛒 GROCERY SHORTCUT BAR */}
-        <div className="max-w-2xl mx-auto mt-3 grid grid-cols-2 gap-2">
-          <button
-            type="button"
-            onClick={() => {
-              triggerHaptic("medium");
-              navigate("/plan-meal");
-            }}
-            className="p-2.5 bg-gradient-to-r from-[#126778] to-[#1f7a8c] text-white rounded-2xl text-xs font-black shadow-sm flex items-center justify-between hover:scale-102 active:scale-98 transition-all cursor-pointer border border-white/20"
-          >
-            <div className="flex items-center gap-2 min-w-0">
-              <span className="text-base">📅</span>
-              <span className="truncate">7-Day Meal Plan</span>
-            </div>
-            <ChevronRight size={14} />
-          </button>
+            {/* 📅 7-DAY MEAL PLANNER & 🛒 GROCERY SHORTCUT BAR */}
+            <div className="max-w-2xl mx-auto mt-3 grid grid-cols-2 gap-2">
+              <button
+                type="button"
+                onClick={() => {
+                  triggerHaptic("medium");
+                  navigate("/plan-meal");
+                }}
+                className="p-2.5 bg-[#164E3D] hover:bg-[#113E30] text-white rounded-2xl text-xs font-semibold shadow-xs flex items-center justify-between hover:scale-101 active:scale-98 transition-all cursor-pointer"
+              >
+                <div className="flex items-center gap-2 min-w-0">
+                  <span className="text-base">📅</span>
+                  <span className="truncate">7-Day Meal Plan</span>
+                </div>
+                <ChevronRight size={14} />
+              </button>
 
-          <button
-            type="button"
-            onClick={() => {
-              triggerHaptic("medium");
-              navigate("/grocery");
-            }}
-            className="p-2.5 bg-white dark:bg-zinc-800 text-slate-800 dark:text-white rounded-2xl text-xs font-black shadow-sm flex items-center justify-between hover:scale-102 active:scale-98 transition-all cursor-pointer border border-teal-100 dark:border-zinc-700"
-          >
-            <div className="flex items-center gap-2 min-w-0">
-              <span className="text-base">🛒</span>
-              <span className="truncate">Grocery &amp; Stores ({locationPartners.length})</span>
+              <button
+                type="button"
+                onClick={() => {
+                  triggerHaptic("medium");
+                  navigate("/grocery");
+                }}
+                className="p-2.5 bg-white dark:bg-[#171E1B] text-stone-800 dark:text-stone-100 rounded-2xl text-xs font-semibold shadow-xs flex items-center justify-between hover:scale-101 active:scale-98 transition-all cursor-pointer border border-stone-200/80 dark:border-stone-800"
+              >
+                <div className="flex items-center gap-2 min-w-0">
+                  <span className="text-base">🛒</span>
+                  <span className="truncate">Grocery &amp; Stores ({locationPartners.length})</span>
+                </div>
+                <ChevronRight size={14} className="text-[#164E3D] dark:text-emerald-400" />
+              </button>
             </div>
-            <ChevronRight size={14} className="text-[#1f7a8c]" />
-          </button>
-        </div>
 
             {/* Location & Diaspora Context Strip */}
-            <div className="max-w-2xl mx-auto mt-2 flex items-center justify-between text-[11px] text-teal-900 bg-white/70 backdrop-blur-xs px-3 py-1.5 rounded-xl border border-teal-100">
-              <div className="flex items-center gap-1.5 font-bold">
-                <MapPin size={13} className="text-[#1f7a8c]" />
+            <div className="max-w-2xl mx-auto mt-2 flex items-center justify-between text-xs text-stone-700 dark:text-stone-300 bg-white/80 dark:bg-[#171E1B]/80 backdrop-blur-xs px-3 py-1.5 rounded-xl border border-stone-200/60 dark:border-stone-800/60 shadow-xs">
+              <div className="flex items-center gap-1.5 font-medium">
+                <MapPin size={13} className="text-[#164E3D] dark:text-emerald-400" />
                 <span>Region: {selectedLocation.flag} {selectedLocation.displayName}</span>
               </div>
-              <span className="text-[10px] text-teal-700 font-semibold">
-                {diasporaMode ? "🌍 Diaspora Supermarket Swaps Active" : "🇳🇬 Local Market Sourcing"}
+              <span className="text-xs text-stone-500 dark:text-stone-400 font-medium">
+                {diasporaMode ? "🌍 Diaspora Supermarket Swaps" : "🇳🇬 Local Market Sourcing"}
               </span>
             </div>
           </>
@@ -2363,17 +2363,17 @@ export default function Recipe() {
                     triggerHaptic("light");
                     setSelectedTag(pill.id as DietaryTag);
                   }}
-                  className={`px-3 py-1.5 rounded-full text-xs font-bold shrink-0 transition-all cursor-pointer flex items-center gap-1.5 border shadow-2xs ${
+                  className={`px-3 py-1.5 rounded-full text-xs font-semibold shrink-0 transition-all cursor-pointer flex items-center gap-1.5 border shadow-xs ${
                     isSelected
-                      ? "bg-[#1f7a8c] text-white border-[#1f7a8c] ring-2 ring-teal-500/20"
-                      : "bg-white text-slate-700 border-slate-200 hover:bg-slate-50 hover:border-slate-300"
+                      ? "bg-[#164E3D] text-white border-[#164E3D] ring-2 ring-emerald-600/20"
+                      : "bg-white dark:bg-[#171E1B] text-stone-700 dark:text-stone-300 border-stone-200/80 dark:border-stone-800 hover:bg-stone-50 dark:hover:bg-stone-800"
                   }`}
                 >
                   <span>{pill.icon}</span>
                   <span>{pill.label}</span>
                   <span
-                    className={`text-[10px] px-1.5 py-0.2 rounded-full font-black ${
-                      isSelected ? "bg-white/20 text-white" : "bg-slate-100 text-slate-500"
+                    className={`text-xs px-2 py-0.5 rounded-full font-bold ${
+                      isSelected ? "bg-white/20 text-white" : "bg-stone-100 dark:bg-stone-800 text-stone-500 dark:text-stone-400"
                     }`}
                   >
                     {count}
@@ -2398,10 +2398,10 @@ export default function Recipe() {
                   triggerHaptic("light");
                   setSelectedMealCategory(cat.id as any);
                 }}
-                className={`px-2.5 py-1 rounded-lg text-[11px] font-bold shrink-0 transition-all cursor-pointer ${
+                className={`px-3 py-1 rounded-xl text-xs font-semibold shrink-0 transition-all cursor-pointer ${
                   selectedMealCategory === cat.id
-                    ? "bg-teal-900 text-white font-black"
-                    : "bg-white/70 text-slate-600 hover:bg-white border border-slate-200/60"
+                    ? "bg-[#164E3D] text-white font-bold shadow-xs"
+                    : "bg-white/80 dark:bg-[#171E1B]/80 text-stone-600 dark:text-stone-300 hover:bg-white border border-stone-200/60 dark:border-stone-800/60"
                 }`}
               >
                 {cat.label}
@@ -2411,7 +2411,7 @@ export default function Recipe() {
         </div>
 
         {/* Meal Type Filter Tabs */}
-        <div className="flex bg-white/90 p-1 rounded-2xl border border-teal-100 shadow-2xs gap-1">
+        <div className="flex bg-stone-100 dark:bg-stone-800/80 p-1 rounded-2xl border border-stone-200/60 dark:border-stone-700/60 shadow-xs gap-1">
           {(["all", "breakfast", "lunch", "dinner", "snack"] as const).map((cat) => (
             <button
               key={cat}
@@ -2419,10 +2419,10 @@ export default function Recipe() {
                 triggerHaptic("light");
                 setSelectedMealCategory(cat);
               }}
-              className={`flex-1 py-1.5 rounded-xl text-xs font-bold capitalize transition-all cursor-pointer ${
+              className={`flex-1 py-1.5 rounded-xl text-xs font-semibold capitalize transition-all cursor-pointer ${
                 selectedMealCategory === cat
-                  ? "bg-teal-50 text-[#1f7a8c] shadow-2xs"
-                  : "text-gray-500 hover:text-gray-900"
+                  ? "bg-white dark:bg-[#171E1B] text-[#164E3D] dark:text-emerald-400 shadow-xs"
+                  : "text-stone-500 hover:text-stone-900 dark:hover:text-stone-100"
               }`}
             >
               {cat === "all" ? "All Meals" : cat}
@@ -2476,7 +2476,7 @@ export default function Recipe() {
                     try { triggerHaptic("medium"); } catch {}
                     openRecipeDetails(recipe);
                   }}
-                  className="bg-white dark:bg-zinc-900 rounded-3xl overflow-hidden shadow-md hover:shadow-xl border-2 border-teal-100 dark:border-zinc-800 hover:border-teal-400 dark:hover:border-teal-500 transition-all cursor-pointer group active:scale-[0.99] relative flex flex-col"
+                  className="bg-white dark:bg-[#171E1B] rounded-3xl overflow-hidden shadow-xs hover:shadow-md border border-stone-200/80 dark:border-stone-800/80 transition-all cursor-pointer group active:scale-[0.99] relative flex flex-col"
                 >
                   {/* 📸 HERO 9-INCH DIVIDED CLINICAL PLATE PHOTOGRAPHY (DOMINANT VISUAL) */}
                   <div className="relative w-full aspect-[16/10] sm:aspect-[16/9] bg-slate-950 overflow-hidden">
@@ -2498,7 +2498,7 @@ export default function Recipe() {
                     <div className="absolute top-3 left-3 right-3 flex items-center justify-between z-10">
                       <div className="flex items-center gap-1.5 flex-wrap">
                         <span
-                          className={`text-[10px] font-black px-2.5 py-1 rounded-full backdrop-blur-md shadow-md border ${
+                          className={`text-xs font-semibold px-2.5 py-1 rounded-full backdrop-blur-md shadow-xs border ${
                             recipe.glycemicIndex === "Low"
                               ? "bg-emerald-500/90 text-white border-emerald-300/40"
                               : recipe.glycemicIndex === "Medium"
@@ -2509,13 +2509,13 @@ export default function Recipe() {
                           🩸 {recipe.glycemicIndex} GI
                         </span>
 
-                        <span className="text-[10px] font-black px-2.5 py-1 rounded-full bg-slate-900/80 backdrop-blur-md text-amber-300 border border-white/20 shadow-md">
+                        <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-slate-900/80 backdrop-blur-md text-amber-300 border border-white/20 shadow-xs">
                           🔥 {recipe.baseCalories} kcal
                         </span>
 
                         {isCustom && (
-                          <span className="text-[10px] font-black px-2 py-0.5 rounded-full bg-cyan-500/90 text-white border border-cyan-300/40 shadow-md">
-                            Custom Formulation
+                          <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-[#164E3D]/90 text-white border border-emerald-300/40 shadow-xs">
+                            Custom
                           </span>
                         )}
                       </div>
@@ -2528,7 +2528,7 @@ export default function Recipe() {
                               e.stopPropagation();
                               handleDeleteCustomRecipe(recipe.id);
                             }}
-                            className="p-2 rounded-full bg-rose-600/90 hover:bg-rose-700 text-white backdrop-blur-md border border-white/20 transition-all hover:scale-110 active:scale-95 shadow-md cursor-pointer"
+                            className="p-2 rounded-full bg-rose-600/90 hover:bg-rose-700 text-white backdrop-blur-md border border-white/20 transition-all hover:scale-110 active:scale-95 shadow-xs cursor-pointer"
                             title="Delete this custom recipe"
                           >
                             <Trash2 className="h-4 w-4" />
@@ -2538,7 +2538,7 @@ export default function Recipe() {
                         <button
                           type="button"
                           onClick={(e) => toggleFavorite(recipe.id, e)}
-                          className="p-2 rounded-full bg-slate-900/70 backdrop-blur-md text-white hover:text-rose-500 border border-white/20 transition-all hover:scale-110 active:scale-95 shadow-md cursor-pointer"
+                          className="p-2 rounded-full bg-slate-900/70 backdrop-blur-md text-white hover:text-rose-500 border border-white/20 transition-all hover:scale-110 active:scale-95 shadow-xs cursor-pointer"
                           title="Save Favorite"
                         >
                           <Heart
@@ -2550,19 +2550,19 @@ export default function Recipe() {
 
                     {/* Bottom Plate Breakdown Strip OVER the Image */}
                     <div className="absolute bottom-3 left-3 right-3 z-10">
-                      <div className="bg-slate-950/80 backdrop-blur-md rounded-2xl p-2 border border-white/20 shadow-lg flex items-center justify-between text-[10px] font-black text-white">
+                      <div className="bg-slate-950/80 backdrop-blur-md rounded-2xl p-2 border border-white/20 shadow-lg flex items-center justify-between text-xs font-semibold text-white">
                         <div className="flex items-center gap-1.5 truncate">
-                          <span className="px-1.5 py-0.5 rounded-lg bg-emerald-400 text-slate-950 font-black shrink-0">
+                          <span className="px-2 py-0.5 rounded-lg bg-emerald-500 text-slate-950 font-bold shrink-0">
                             50% Greens
                           </span>
-                          <span className="px-1.5 py-0.5 rounded-lg bg-cyan-400 text-slate-950 font-black shrink-0">
+                          <span className="px-2 py-0.5 rounded-lg bg-teal-400 text-slate-950 font-bold shrink-0">
                             25% Protein
                           </span>
-                          <span className="px-1.5 py-0.5 rounded-lg bg-amber-400 text-slate-950 font-black shrink-0">
+                          <span className="px-2 py-0.5 rounded-lg bg-amber-400 text-slate-950 font-bold shrink-0">
                             25% Carb
                           </span>
                         </div>
-                        <span className="text-teal-300 font-bold shrink-0 ml-1">
+                        <span className="text-emerald-300 font-medium shrink-0 ml-1">
                           ⏱️ {recipe.prepTime + recipe.cookTime}m
                         </span>
                       </div>
@@ -2570,37 +2570,37 @@ export default function Recipe() {
                   </div>
 
                   {/* 📝 Clean, Uncluttered Bottom Bar */}
-                  <div className="p-4 bg-white dark:bg-zinc-900 flex flex-col justify-between flex-1">
+                  <div className="p-4 bg-white dark:bg-[#171E1B] flex flex-col justify-between flex-1">
                     <div>
                       <div className="flex items-center justify-between gap-2 mb-1">
-                        <h3 className="text-sm sm:text-base font-black text-slate-900 dark:text-white group-hover:text-[#1f7a8c] transition-colors leading-tight">
+                        <h3 className="text-base font-bold text-stone-900 dark:text-stone-100 group-hover:text-[#164E3D] transition-colors leading-tight">
                           {recipe.name}
                         </h3>
-                        <span className="text-xs font-black text-amber-500 shrink-0">
+                        <span className="text-xs font-semibold text-amber-500 shrink-0">
                           ⭐ {recipe.rating}
                         </span>
                       </div>
-                      <p className="text-[11px] text-slate-600 dark:text-slate-300 font-medium line-clamp-1 leading-snug">
+                      <p className="text-xs text-stone-600 dark:text-stone-300 font-normal line-clamp-1 leading-snug">
                         {recipe.healthBenefits}
                       </p>
                     </div>
 
                     {/* Macro Capsules Row */}
-                    <div className="grid grid-cols-4 gap-1.5 mt-3 pt-2.5 border-t border-slate-100 dark:border-zinc-800 text-center">
-                      <div className="bg-slate-50 dark:bg-zinc-800/60 py-1 px-1 rounded-xl border border-slate-200/60 dark:border-zinc-700">
-                        <span className="text-[8.5px] text-slate-400 font-bold block">Protein</span>
-                        <span className="text-[11px] font-black text-blue-600 dark:text-blue-400">{recipe.baseProtein}g</span>
+                    <div className="grid grid-cols-4 gap-1.5 mt-3 pt-2.5 border-t border-stone-100 dark:border-stone-800 text-center">
+                      <div className="bg-stone-50 dark:bg-stone-800/50 py-1.5 px-1 rounded-xl border border-stone-200/60 dark:border-stone-700/60">
+                        <span className="text-xs text-stone-400 dark:text-stone-400 font-medium block">Protein</span>
+                        <span className="text-xs font-bold text-stone-900 dark:text-stone-100">{recipe.baseProtein}g</span>
                       </div>
-                      <div className="bg-slate-50 dark:bg-zinc-800/60 py-1 px-1 rounded-xl border border-slate-200/60 dark:border-zinc-700">
-                        <span className="text-[8.5px] text-slate-400 font-bold block">Carbs</span>
-                        <span className="text-[11px] font-black text-emerald-600 dark:text-emerald-400">{recipe.baseCarbs}g</span>
+                      <div className="bg-stone-50 dark:bg-stone-800/50 py-1.5 px-1 rounded-xl border border-stone-200/60 dark:border-stone-700/60">
+                        <span className="text-xs text-stone-400 dark:text-stone-400 font-medium block">Carbs</span>
+                        <span className="text-xs font-bold text-stone-900 dark:text-stone-100">{recipe.baseCarbs}g</span>
                       </div>
-                      <div className="bg-slate-50 dark:bg-zinc-800/60 py-1 px-1 rounded-xl border border-slate-200/60 dark:border-zinc-700">
-                        <span className="text-[8.5px] text-slate-400 font-bold block">Fats</span>
-                        <span className="text-[11px] font-black text-purple-600 dark:text-purple-400">{recipe.baseFats}g</span>
+                      <div className="bg-stone-50 dark:bg-stone-800/50 py-1.5 px-1 rounded-xl border border-stone-200/60 dark:border-stone-700/60">
+                        <span className="text-xs text-stone-400 dark:text-stone-400 font-medium block">Fats</span>
+                        <span className="text-xs font-bold text-stone-900 dark:text-stone-100">{recipe.baseFats}g</span>
                       </div>
-                      <div className="bg-teal-50 dark:bg-teal-950/80 py-1 px-1 rounded-xl border border-teal-200/60 dark:border-teal-800 flex items-center justify-center text-[#1f7a8c] dark:text-teal-300 font-black text-[10px]">
-                        <span>View Plate ➔</span>
+                      <div className="bg-emerald-50 dark:bg-emerald-950/60 py-1.5 px-1 rounded-xl border border-emerald-200/60 dark:border-emerald-800/60 flex items-center justify-center text-[#164E3D] dark:text-emerald-300 font-semibold text-xs">
+                        <span>View ➔</span>
                       </div>
                     </div>
                   </div>
@@ -2651,7 +2651,7 @@ export default function Recipe() {
       {/* 3. INTERACTIVE 10X RECIPE & COOKING MODAL (IN-FRAME)         */}
       {/* ============================================================ */}
       <Dialog open={!!selectedRecipe} onOpenChange={(open) => !open && setSelectedRecipe(null)}>
-        <DialogContent className="max-w-lg max-h-[88vh] p-4 sm:p-6 flex flex-col rounded-3xl bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 shadow-2xl">
+        <DialogContent className="max-w-lg max-h-[88vh] p-4 sm:p-6 flex flex-col rounded-3xl bg-white dark:bg-[#171E1B] border border-stone-200/80 dark:border-stone-800 shadow-2xl">
           {selectedRecipe && (
             <>
               {/* Top Hero Bar */}
@@ -2659,7 +2659,7 @@ export default function Recipe() {
                 <div className="flex items-center justify-between gap-2 mb-1">
                   <div className="flex items-center gap-1.5 flex-wrap">
                     <span
-                      className={`text-[9px] font-black px-2.5 py-0.5 rounded-full border ${
+                      className={`text-xs font-semibold px-2.5 py-0.5 rounded-full border ${
                         selectedRecipe.glycemicIndex === "Low"
                           ? "bg-emerald-100 text-emerald-800 border-emerald-300 dark:bg-emerald-950 dark:text-emerald-300"
                           : "bg-amber-100 text-amber-800 border-amber-300 dark:bg-amber-950 dark:text-amber-300"
@@ -2667,10 +2667,10 @@ export default function Recipe() {
                     >
                       🩸 {selectedRecipe.glycemicIndex} GI
                     </span>
-                    <span className="text-[9px] font-black px-2 py-0.5 rounded-full bg-slate-100 dark:bg-zinc-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-zinc-700">
+                    <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-stone-100 dark:bg-stone-800 text-stone-700 dark:text-stone-300 border border-stone-200 dark:border-stone-700">
                       ⏱️ {selectedRecipe.prepTime + selectedRecipe.cookTime} min
                     </span>
-                    <span className="text-[9px] font-black px-2 py-0.5 rounded-full bg-slate-100 dark:bg-zinc-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-zinc-700">
+                    <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-stone-100 dark:bg-stone-800 text-stone-700 dark:text-stone-300 border border-stone-200 dark:border-stone-700">
                       🔥 {selectedRecipe.difficulty}
                     </span>
                   </div>
@@ -2686,7 +2686,7 @@ export default function Recipe() {
                   </div>
                 </div>
 
-                <DialogTitle className="text-base sm:text-lg font-black text-slate-900 dark:text-white leading-snug flex items-center gap-2">
+                <DialogTitle className="text-lg font-bold text-stone-900 dark:text-stone-100 leading-snug flex items-center gap-2">
                   <span className="text-2xl">{selectedRecipe.emoji}</span>
                   <span>{selectedRecipe.name}</span>
                 </DialogTitle>
@@ -2696,7 +2696,7 @@ export default function Recipe() {
               </DialogHeader>
 
               {/* 📸 HERO 9-INCH DIVIDED CLINICAL PLATE HEADER (WITH RULER & ANNOTATIONS) */}
-              <div className="rounded-3xl overflow-hidden border-2 border-teal-300/40 bg-slate-950 relative shadow-xl">
+              <div className="rounded-3xl overflow-hidden border border-stone-200/80 dark:border-stone-800 bg-stone-950 relative shadow-md">
                 <div className="relative w-full aspect-[16/10] sm:aspect-[16/9] overflow-hidden">
                   <img
                     src={getVersionedImage(selectedRecipe.image || getFallbackPlateImage(selectedRecipe))}
@@ -2706,61 +2706,61 @@ export default function Recipe() {
                       e.currentTarget.src = getFallbackPlateImage(selectedRecipe);
                     }}
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-black/30 pointer-events-none" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-stone-950 via-transparent to-black/30 pointer-events-none" />
 
                   {/* Floating Clinical Annotation Badge */}
                   <div className="absolute bottom-6 left-3 right-3 z-10">
-                    <div className="bg-slate-900/90 backdrop-blur-md rounded-2xl p-2.5 border border-white/20 shadow-xl">
-                      <div className="flex items-center gap-1.5 text-amber-300 text-[10px] font-black uppercase tracking-wider mb-0.5">
+                    <div className="bg-stone-900/90 backdrop-blur-md rounded-2xl p-2.5 border border-white/15 shadow-md">
+                      <div className="flex items-center gap-1.5 text-amber-300 text-xs font-semibold uppercase tracking-wider mb-0.5">
                         <Sparkles size={11} />
-                        <span>Clinical 9-Inch Divided Plating</span>
+                        <span>Balanced 9-Inch Plate</span>
                       </div>
-                      <p className="text-xs font-black text-white leading-tight">
+                      <p className="text-xs font-semibold text-white leading-tight">
                         {selectedRecipe.clinicalScaleLabel || `${selectedRecipe.name}, prepared for one standard serving`}
                       </p>
                     </div>
                   </div>
 
                   {/* 📏 9-INCH CALIBRATED RULER SCALE OVERLAY */}
-                  <div className="absolute bottom-0 inset-x-0 bg-slate-950/90 backdrop-blur-md py-1 px-4 border-t border-white/20 flex items-center justify-between text-[9px] font-mono text-cyan-200">
+                  <div className="absolute bottom-0 inset-x-0 bg-stone-950/90 backdrop-blur-md py-1 px-4 border-t border-white/15 flex items-center justify-between text-xs font-mono text-cyan-200">
                     <span>├─ 0 in</span>
-                    <span className="font-sans font-bold text-[10px] text-white">⟵ 9 Inches Calibrated Plate ⟶</span>
+                    <span className="font-sans font-semibold text-xs text-white">⟵ 9 Inches Calibrated Plate ⟶</span>
                     <span>9 in ─┤</span>
                   </div>
                 </div>
 
                 {/* 3 Clickable Plate Quadrants */}
-                <div className="grid grid-cols-3 gap-1 p-2 bg-slate-900 text-center text-[10.5px] font-black">
+                <div className="grid grid-cols-3 gap-1 p-2 bg-stone-900 text-center text-xs font-semibold">
                   <div className="p-1.5 rounded-xl bg-emerald-500/20 border border-emerald-400/40 text-emerald-200">
-                    <span className="block text-[8.5px] opacity-75">50% Fiber Greens</span>
-                    <span className="truncate block">{selectedRecipe.plateComposition?.greens || "Greens"}</span>
+                    <span className="block text-xs opacity-80">50% Greens</span>
+                    <span className="truncate block font-bold">{selectedRecipe.plateComposition?.greens || "Greens"}</span>
                   </div>
-                  <div className="p-1.5 rounded-xl bg-cyan-500/20 border border-cyan-400/40 text-cyan-200">
-                    <span className="block text-[8.5px] opacity-75">25% Lean Protein</span>
-                    <span className="truncate block">{selectedRecipe.plateComposition?.protein || "Protein"}</span>
+                  <div className="p-1.5 rounded-xl bg-teal-500/20 border border-teal-400/40 text-teal-200">
+                    <span className="block text-xs opacity-80">25% Protein</span>
+                    <span className="truncate block font-bold">{selectedRecipe.plateComposition?.protein || "Protein"}</span>
                   </div>
                   <div className="p-1.5 rounded-xl bg-amber-500/20 border border-amber-400/40 text-amber-200">
-                    <span className="block text-[8.5px] opacity-75">25% Complex Carb</span>
-                    <span className="truncate block">{selectedRecipe.plateComposition?.staple || "Staple"}</span>
+                    <span className="block text-xs opacity-80">25% Carbs</span>
+                    <span className="truncate block font-bold">{selectedRecipe.plateComposition?.staple || "Staple"}</span>
                   </div>
                 </div>
               </div>
 
               <div className="flex-1 overflow-y-auto overscroll-contain space-y-3 py-1 pr-1 text-xs">
-                {/* Mode Selector Pill: Bento Pods vs Step-by-Step Cooking Stage */}
-                <div className="flex bg-slate-100 dark:bg-zinc-800/80 p-1 rounded-2xl gap-1">
+                {/* Mode Selector Pill */}
+                <div className="flex bg-stone-100 dark:bg-stone-800/80 p-1 rounded-2xl gap-1 border border-stone-200/60 dark:border-stone-700/60 shadow-xs">
                   <button
                     onClick={() => {
                       try { soundEffects.playTactileTick(); } catch {}
                       setIsCookingMode(false);
                     }}
-                    className={`flex-1 py-1.5 rounded-xl font-black text-xs transition-all cursor-pointer ${
+                    className={`flex-1 py-1.5 rounded-xl font-semibold text-xs transition-all cursor-pointer ${
                       !isCookingMode
-                        ? "bg-white dark:bg-zinc-900 text-teal-800 dark:text-teal-300 shadow-xs"
-                        : "text-slate-500 hover:text-slate-900 dark:hover:text-white"
+                        ? "bg-white dark:bg-[#171E1B] text-[#164E3D] dark:text-emerald-400 shadow-xs"
+                        : "text-stone-500 hover:text-stone-900 dark:hover:text-white"
                     }`}
                   >
-                    🍱 Bento Pods
+                    📋 Recipe &amp; Ingredients
                   </button>
                   <button
                     onClick={() => {
@@ -2768,10 +2768,10 @@ export default function Recipe() {
                       try { triggerHaptic("medium"); } catch {}
                       setIsCookingMode(true);
                     }}
-                    className={`flex-1 py-1.5 rounded-xl font-black text-xs transition-all cursor-pointer flex items-center justify-center gap-1 ${
+                    className={`flex-1 py-1.5 rounded-xl font-semibold text-xs transition-all cursor-pointer flex items-center justify-center gap-1 ${
                       isCookingMode
-                        ? "bg-gradient-to-r from-[#1f7a8c] to-[#4ecdc4] text-white shadow-xs"
-                        : "text-slate-500 hover:text-slate-900 dark:hover:text-white"
+                        ? "bg-[#164E3D] text-white shadow-xs"
+                        : "text-stone-500 hover:text-stone-900 dark:hover:text-white"
                     }`}
                   >
                     <Play size={12} className="fill-current" />
@@ -2780,12 +2780,12 @@ export default function Recipe() {
                 </div>
 
                 {/* -------------------------------------------------- */}
-                {/* VIEW A: CONTAINERIZED BENTO EXPLOSION PODS         */}
+                {/* VIEW A: INGREDIENTS & NUTRITION PODS               */}
                 {/* -------------------------------------------------- */}
                 {!isCookingMode && (
                   <div className="space-y-2.5">
                     {/* BENTO POD 1: 🛒 INGREDIENTS & DIASPORA SWAPS */}
-                    <div className="rounded-2xl border border-slate-200 dark:border-zinc-800 bg-slate-50/70 dark:bg-zinc-900/60 overflow-hidden transition-all shadow-xs">
+                    <div className="rounded-2xl border border-stone-200/80 dark:border-stone-800 bg-stone-50/70 dark:bg-[#121715]/70 overflow-hidden transition-all shadow-xs">
                       <button
                         type="button"
                         onClick={() => {
@@ -2793,33 +2793,33 @@ export default function Recipe() {
                           try { triggerHaptic("light"); } catch {}
                           setActiveBentoSection(activeBentoSection === "ingredients" ? null : "ingredients");
                         }}
-                        className="w-full p-3 flex items-center justify-between text-left cursor-pointer hover:bg-slate-100/70 dark:hover:bg-zinc-800/50 transition-colors"
+                        className="w-full p-3 flex items-center justify-between text-left cursor-pointer hover:bg-stone-100/70 dark:hover:bg-stone-800/50 transition-colors"
                       >
                         <div className="flex items-center gap-2">
                           <span className="text-base">🛒</span>
                           <div>
-                            <span className="text-xs font-black text-slate-900 dark:text-white block">
-                              Ingredients & Portion Scaler ({selectedRecipe.ingredients.length})
+                            <span className="text-xs font-bold text-stone-900 dark:text-white block">
+                              Ingredients &amp; Servings ({selectedRecipe.ingredients.length})
                             </span>
-                            <span className="text-[10px] text-slate-500 block">
+                            <span className="text-xs text-stone-500 block">
                               {activeBentoSection === "ingredients" ? "Tap to collapse" : "Tap to view ingredients & check off 🍲"}
                             </span>
                           </div>
                         </div>
-                        <span className="text-[10.5px] font-bold text-teal-700 dark:text-teal-400 bg-teal-50 dark:bg-teal-950/80 px-2 py-0.5 rounded-lg border border-teal-200/60 dark:border-teal-800">
+                        <span className="text-xs font-semibold text-emerald-800 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/80 px-2 py-0.5 rounded-lg border border-emerald-200/60 dark:border-emerald-800">
                           {portionMultiplier}x Servings {activeBentoSection === "ingredients" ? "▲" : "▼"}
                         </span>
                       </button>
 
                       {/* Exploded Ingredients Section */}
                       {activeBentoSection === "ingredients" && (
-                        <div className="p-3 pt-0 border-t border-slate-200/60 dark:border-zinc-800 space-y-2.5 animate-fade-in">
+                        <div className="p-3 pt-0 border-t border-stone-200/60 dark:border-stone-800 space-y-2.5 animate-fade-in">
                           {/* Portion Multiplier */}
                           <div className="flex items-center justify-between gap-2 pt-2">
-                            <span className="text-[10px] font-bold text-slate-500 uppercase">
-                              Servings Scaler:
+                            <span className="text-xs font-semibold text-stone-500 uppercase">
+                              Servings:
                             </span>
-                            <div className="flex items-center gap-1 bg-white dark:bg-zinc-800 p-0.5 rounded-xl border border-slate-200 dark:border-zinc-700">
+                            <div className="flex items-center gap-1 bg-white dark:bg-stone-800 p-0.5 rounded-xl border border-stone-200 dark:border-stone-700">
                               {[1, 2, 4, 6].map((num) => (
                                 <button
                                   key={num}
@@ -2827,10 +2827,10 @@ export default function Recipe() {
                                     try { triggerHaptic("light"); } catch {}
                                     setPortionMultiplier(num);
                                   }}
-                                  className={`px-2 py-0.5 rounded-lg text-[10.5px] font-black transition-all cursor-pointer ${
+                                  className={`px-2.5 py-0.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
                                     portionMultiplier === num
-                                      ? "bg-[#1f7a8c] text-white"
-                                      : "text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-zinc-700"
+                                      ? "bg-[#164E3D] text-white"
+                                      : "text-stone-600 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-700"
                                   }`}
                                 >
                                   {num}x
@@ -2849,12 +2849,12 @@ export default function Recipe() {
                               }}
                               className={`p-2 rounded-xl border text-left transition-all cursor-pointer flex items-center justify-between ${
                                 diasporaMode
-                                  ? "bg-teal-50 dark:bg-teal-950/60 border-teal-500 text-teal-950 dark:text-teal-200 font-bold"
-                                  : "bg-white dark:bg-zinc-800 border-slate-200 dark:border-zinc-700 text-slate-600 dark:text-slate-400"
+                                  ? "bg-emerald-50 dark:bg-emerald-950/60 border-emerald-500 text-emerald-950 dark:text-emerald-200 font-semibold"
+                                  : "bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700 text-stone-600 dark:text-stone-400"
                               }`}
                             >
-                              <span className="text-[10px] font-bold">🌍 UK/US Swaps</span>
-                              <span className="text-[10px] font-black">{diasporaMode ? "ON" : "OFF"}</span>
+                              <span className="text-xs font-medium">🌍 UK/US Swaps</span>
+                              <span className="text-xs font-bold">{diasporaMode ? "ON" : "OFF"}</span>
                             </button>
 
                             <button
@@ -2865,12 +2865,12 @@ export default function Recipe() {
                               }}
                               className={`p-2 rounded-xl border text-left transition-all cursor-pointer flex items-center justify-between ${
                                 lowSodiumMode
-                                  ? "bg-rose-50 dark:bg-rose-950/60 border-rose-400 text-rose-950 dark:text-rose-200 font-bold"
-                                  : "bg-white dark:bg-zinc-800 border-slate-200 dark:border-zinc-700 text-slate-600 dark:text-slate-400"
+                                  ? "bg-rose-50 dark:bg-rose-950/60 border-rose-400 text-rose-950 dark:text-rose-200 font-semibold"
+                                  : "bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700 text-stone-600 dark:text-stone-400"
                               }`}
                             >
-                              <span className="text-[10px] font-bold">🫀 Low-Sodium</span>
-                              <span className="text-[10px] font-black">{lowSodiumMode ? "ON" : "OFF"}</span>
+                              <span className="text-xs font-medium">🫀 Low-Sodium</span>
+                              <span className="text-xs font-bold">{lowSodiumMode ? "ON" : "OFF"}</span>
                             </button>
                           </div>
 
@@ -2895,24 +2895,24 @@ export default function Recipe() {
                                       [ing.name]: !isChecked,
                                     })
                                   }
-                                  className={`p-2 rounded-xl border text-[11px] flex items-center justify-between gap-2 cursor-pointer transition-all ${
+                                  className={`p-2 rounded-xl border text-xs flex items-center justify-between gap-2 cursor-pointer transition-all ${
                                     isChecked
-                                      ? "bg-slate-100 dark:bg-zinc-800/40 border-slate-200 text-slate-400 line-through"
-                                      : "bg-white dark:bg-zinc-800 border-slate-200/80 dark:border-zinc-700 text-slate-800 dark:text-slate-200 shadow-2xs hover:border-teal-400"
+                                      ? "bg-stone-100 dark:bg-stone-800/40 border-stone-200 text-stone-400 line-through"
+                                      : "bg-white dark:bg-stone-800 border-stone-200/80 dark:border-stone-700 text-stone-800 dark:text-stone-200 shadow-xs hover:border-emerald-500"
                                   }`}
                                 >
-                                  <div className="flex items-center gap-1.5 min-w-0">
+                                  <div className="flex items-center gap-2 min-w-0">
                                     <div
-                                      className={`h-3.5 w-3.5 rounded-md border flex items-center justify-center shrink-0 ${
-                                        isChecked ? "bg-[#1f7a8c] border-[#1f7a8c] text-white" : "border-slate-300 dark:border-zinc-600"
+                                      className={`h-4 w-4 rounded-md border flex items-center justify-center shrink-0 ${
+                                        isChecked ? "bg-[#164E3D] border-[#164E3D] text-white" : "border-stone-300 dark:border-stone-600"
                                       }`}
                                     >
-                                      {isChecked && <Check size={8} />}
+                                      {isChecked && <Check size={10} />}
                                     </div>
-                                    <span className="font-semibold truncate">{displayText}</span>
+                                    <span className="font-medium truncate">{displayText}</span>
                                   </div>
 
-                                  <span className="font-black text-teal-800 dark:text-teal-300 bg-teal-50 dark:bg-teal-950/80 px-1.5 py-0.2 rounded-md shrink-0 text-[10px]">
+                                  <span className="font-semibold text-emerald-800 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/80 px-2 py-0.5 rounded-md shrink-0 text-xs">
                                     {scaledAmount} {ing.unit}
                                   </span>
                                 </div>
@@ -2920,7 +2920,7 @@ export default function Recipe() {
                             })}
                           </div>
 
-                          {/* 🛒 10X Smart Grocery Routing Button */}
+                          {/* 🛒 Smart Grocery Routing Button */}
                           <button
                             type="button"
                             onClick={() => {
@@ -2928,13 +2928,13 @@ export default function Recipe() {
                               try { triggerHaptic("medium"); } catch {}
                               setIsSmartGroceryOpen(true);
                             }}
-                            className="w-full py-2 px-3 bg-gradient-to-r from-amber-400 via-amber-500 to-amber-600 hover:opacity-95 text-slate-950 font-black text-xs rounded-xl shadow-xs cursor-pointer flex items-center justify-between active:scale-95 transition-all mt-2"
+                            className="w-full py-2 px-3 bg-[#D97706] hover:bg-[#B45309] text-white font-semibold text-xs rounded-xl shadow-xs cursor-pointer flex items-center justify-between active:scale-95 transition-all mt-2"
                           >
                             <div className="flex items-center gap-1.5">
-                              <ShoppingCart size={13} />
-                              <span>Smart Grocery Fulfillment (Supermarket vs African Store)</span>
+                              <ShoppingCart size={14} />
+                              <span>Order Ingredients for Delivery</span>
                             </div>
-                            <span className="text-[10px] bg-slate-950/20 px-1.5 py-0.5 rounded-md font-bold">
+                            <span className="text-xs bg-black/20 px-2 py-0.5 rounded-md font-bold">
                               Order Cart →
                             </span>
                           </button>
@@ -2943,7 +2943,7 @@ export default function Recipe() {
                     </div>
 
                     {/* BENTO POD 2: 📊 METABOLIC MACRO MATRIX */}
-                    <div className="rounded-2xl border border-slate-200 dark:border-zinc-800 bg-slate-50/70 dark:bg-zinc-900/60 overflow-hidden transition-all shadow-xs">
+                    <div className="rounded-2xl border border-stone-200/80 dark:border-stone-800 bg-stone-50/70 dark:bg-[#121715]/70 overflow-hidden transition-all shadow-xs">
                       <button
                         type="button"
                         onClick={() => {
@@ -2951,63 +2951,63 @@ export default function Recipe() {
                           try { triggerHaptic("light"); } catch {}
                           setActiveBentoSection(activeBentoSection === "macros" ? null : "macros");
                         }}
-                        className="w-full p-3 flex items-center justify-between text-left cursor-pointer hover:bg-slate-100/70 dark:hover:bg-zinc-800/50 transition-colors"
+                        className="w-full p-3 flex items-center justify-between text-left cursor-pointer hover:bg-stone-100/70 dark:hover:bg-stone-800/50 transition-colors"
                       >
                         <div className="flex items-center gap-2">
                           <span className="text-base">📊</span>
                           <div>
-                            <span className="text-xs font-black text-slate-900 dark:text-white block">
+                            <span className="text-xs font-bold text-stone-900 dark:text-white block">
                               Nutrition Breakdown &amp; Energy 📊
                             </span>
-                            <span className="text-[10px] text-slate-500 block">
+                            <span className="text-xs text-stone-500 block">
                               {Math.round((selectedRecipe.baseCalories / selectedRecipe.baseServings) * portionMultiplier)} kcal • {Math.round((selectedRecipe.baseProtein / selectedRecipe.baseServings) * portionMultiplier)}g Protein
                             </span>
                           </div>
                         </div>
-                        <span className="text-slate-400 font-bold text-xs">
+                        <span className="text-stone-400 font-bold text-xs">
                           {activeBentoSection === "macros" ? "▲" : "▼"}
                         </span>
                       </button>
 
                       {/* Exploded Macro Strip */}
                       {activeBentoSection === "macros" && (
-                        <div className="p-3 pt-0 border-t border-slate-200/60 dark:border-zinc-800 space-y-2 animate-fade-in">
+                        <div className="p-3 pt-0 border-t border-stone-200/60 dark:border-stone-800 space-y-2 animate-fade-in">
                           <div className="grid grid-cols-4 gap-1.5 pt-2 text-center">
-                            <div className="bg-orange-50/80 dark:bg-orange-950/40 p-1.5 rounded-xl border border-orange-200/80 dark:border-orange-800/60">
-                              <span className="text-[8.5px] text-slate-500 block font-bold">Calories</span>
-                              <span className="text-xs font-black text-orange-700 dark:text-orange-400">
+                            <div className="bg-orange-50/80 dark:bg-orange-950/40 p-2 rounded-xl border border-orange-200/80 dark:border-orange-800/60">
+                              <span className="text-xs text-stone-500 block font-medium">Calories</span>
+                              <span className="text-xs font-bold text-orange-700 dark:text-orange-400">
                                 {Math.round((selectedRecipe.baseCalories / selectedRecipe.baseServings) * portionMultiplier)}
                               </span>
-                              <span className="text-[7.5px] text-slate-400 block">kcal</span>
+                              <span className="text-xs text-stone-400 block">kcal</span>
                             </div>
-                            <div className="bg-blue-50/80 dark:bg-blue-950/40 p-1.5 rounded-xl border border-blue-200/80 dark:border-blue-800/60">
-                              <span className="text-[8.5px] text-slate-500 block font-bold">Protein</span>
-                              <span className="text-xs font-black text-blue-700 dark:text-blue-400">
+                            <div className="bg-blue-50/80 dark:bg-blue-950/40 p-2 rounded-xl border border-blue-200/80 dark:border-blue-800/60">
+                              <span className="text-xs text-stone-500 block font-medium">Protein</span>
+                              <span className="text-xs font-bold text-blue-700 dark:text-blue-400">
                                 {Math.round((selectedRecipe.baseProtein / selectedRecipe.baseServings) * portionMultiplier)}g
                               </span>
-                              <span className="text-[7.5px] text-slate-400 block">Muscle</span>
+                              <span className="text-xs text-stone-400 block">Muscle</span>
                             </div>
-                            <div className="bg-emerald-50/80 dark:bg-emerald-950/40 p-1.5 rounded-xl border border-emerald-200/80 dark:border-emerald-800/60">
-                              <span className="text-[8.5px] text-slate-500 block font-bold">Carbs</span>
-                              <span className="text-xs font-black text-emerald-700 dark:text-emerald-400">
+                            <div className="bg-emerald-50/80 dark:bg-emerald-950/40 p-2 rounded-xl border border-emerald-200/80 dark:border-emerald-800/60">
+                              <span className="text-xs text-stone-500 block font-medium">Carbs</span>
+                              <span className="text-xs font-bold text-emerald-700 dark:text-emerald-400">
                                 {Math.round((selectedRecipe.baseCarbs / selectedRecipe.baseServings) * portionMultiplier)}g
                               </span>
-                              <span className="text-[7.5px] text-slate-400 block">Energy</span>
+                              <span className="text-xs text-stone-400 block">Energy</span>
                             </div>
-                            <div className="bg-purple-50/80 dark:bg-purple-950/40 p-1.5 rounded-xl border border-purple-200/80 dark:border-purple-800/60">
-                              <span className="text-[8.5px] text-slate-500 block font-bold">Fats</span>
-                              <span className="text-xs font-black text-purple-700 dark:text-purple-400">
+                            <div className="bg-purple-50/80 dark:bg-purple-950/40 p-2 rounded-xl border border-purple-200/80 dark:border-purple-800/60">
+                              <span className="text-xs text-stone-500 block font-medium">Fats</span>
+                              <span className="text-xs font-bold text-purple-700 dark:text-purple-400">
                                 {Math.round((selectedRecipe.baseFats / selectedRecipe.baseServings) * portionMultiplier)}g
                               </span>
-                              <span className="text-[7.5px] text-slate-400 block">Healthy</span>
+                              <span className="text-xs text-stone-400 block">Healthy</span>
                             </div>
                           </div>
 
-                          <div className="p-2 bg-emerald-50 dark:bg-emerald-950/40 rounded-xl border border-emerald-200/80 dark:border-emerald-800/50 text-[10.5px] text-emerald-900 dark:text-emerald-300 font-medium leading-relaxed">
+                          <div className="p-2.5 bg-emerald-50 dark:bg-emerald-950/40 rounded-xl border border-emerald-200/80 dark:border-emerald-800/50 text-xs text-emerald-900 dark:text-emerald-300 font-medium leading-relaxed">
                             🌿 <strong>Why This Meal Is Great For You:</strong> {selectedRecipe.healthBenefits}
                           </div>
 
-                          {/* 📈 10X Upgrade: Simulate 3-Hour CGM Curve for this Recipe */}
+                          {/* Simulate Blood Sugar Curve for this Recipe */}
                           <button
                             type="button"
                             onClick={() => {
@@ -3025,16 +3025,16 @@ export default function Recipe() {
                               });
                               setIsGlycemicModalOpen(true);
                             }}
-                            className="w-full py-2.5 px-3 bg-gradient-to-r from-teal-600 via-emerald-600 to-[#1f7a8c] hover:opacity-95 text-white font-black text-xs rounded-xl shadow-md cursor-pointer flex items-center justify-between active:scale-95 transition-all"
+                            className="w-full py-2.5 px-3 bg-[#164E3D] hover:bg-[#113E30] text-white font-semibold text-xs rounded-xl shadow-xs cursor-pointer flex items-center justify-between active:scale-95 transition-all"
                           >
                             <div className="flex items-center gap-2">
                               <span className="text-sm">📈</span>
                               <div className="text-left">
-                                <span className="block leading-tight font-black">Simulate Postprandial CGM Curve</span>
-                                <span className="block text-[9.5px] text-teal-100 font-medium">See how 50% fiber blunts glucose spike &amp; log bio-feedback</span>
+                                <span className="block leading-tight font-semibold">Simulate Blood Sugar Response</span>
+                                <span className="block text-xs text-emerald-200 font-normal">See how 50% fiber blunts glucose spike</span>
                               </div>
                             </div>
-                            <span className="text-[10px] bg-white/20 px-2 py-1 rounded-lg font-black shrink-0">
+                            <span className="text-xs bg-white/20 px-2 py-1 rounded-lg font-bold shrink-0">
                               Simulate →
                             </span>
                           </button>
@@ -3043,7 +3043,7 @@ export default function Recipe() {
                     </div>
 
                     {/* BENTO POD 3: 🥑 AVO'S CLINICAL SECRET */}
-                    <div className="rounded-2xl border border-slate-200 dark:border-zinc-800 bg-slate-50/70 dark:bg-zinc-900/60 overflow-hidden transition-all shadow-xs">
+                    <div className="rounded-2xl border border-stone-200/80 dark:border-stone-800 bg-stone-50/70 dark:bg-[#121715]/70 overflow-hidden transition-all shadow-xs">
                       <button
                         type="button"
                         onClick={() => {
@@ -3051,28 +3051,28 @@ export default function Recipe() {
                           try { triggerHaptic("light"); } catch {}
                           setActiveBentoSection(activeBentoSection === "wisdom" ? null : "wisdom");
                         }}
-                        className="w-full p-3 flex items-center justify-between text-left cursor-pointer hover:bg-slate-100/70 dark:hover:bg-zinc-800/50 transition-colors"
+                        className="w-full p-3 flex items-center justify-between text-left cursor-pointer hover:bg-stone-100/70 dark:hover:bg-stone-800/50 transition-colors"
                       >
                         <div className="flex items-center gap-2">
                           <Mascot gesture="thumbsup" size={24} className="shrink-0" />
                           <div>
-                            <span className="text-xs font-black text-[#126778] dark:text-teal-300 block">
-                              Avo's Kitchen & Cooking Tip 🥑
+                            <span className="text-xs font-bold text-[#164E3D] dark:text-emerald-400 block">
+                              Avo's Cooking Tip 🥑
                             </span>
-                            <span className="text-[10px] text-slate-500 block truncate max-w-[200px]">
+                            <span className="text-xs text-stone-500 block truncate max-w-[200px]">
                               {selectedRecipe.clinicalNote}
                             </span>
                           </div>
                         </div>
-                        <span className="text-slate-400 font-bold text-xs">
+                        <span className="text-stone-400 font-bold text-xs">
                           {activeBentoSection === "wisdom" ? "▲" : "▼"}
                         </span>
                       </button>
 
                       {/* Exploded Speech Bubble */}
                       {activeBentoSection === "wisdom" && (
-                        <div className="p-3 pt-0 border-t border-slate-200/60 dark:border-zinc-800 animate-fade-in">
-                          <div className="p-3 bg-teal-50/80 dark:bg-teal-950/40 rounded-xl border border-teal-200/70 dark:border-teal-800/50 text-xs text-slate-700 dark:text-slate-300 leading-relaxed font-medium mt-2">
+                        <div className="p-3 pt-0 border-t border-stone-200/60 dark:border-stone-800 animate-fade-in">
+                          <div className="p-3 bg-emerald-50/80 dark:bg-emerald-950/40 rounded-xl border border-emerald-200/70 dark:border-emerald-800/50 text-xs text-stone-700 dark:text-stone-300 leading-relaxed font-medium mt-2">
                             "{selectedRecipe.clinicalNote}"
                           </div>
                         </div>
@@ -3081,7 +3081,7 @@ export default function Recipe() {
 
                     {/* BENTO POD 4: 🍊 STEP 4: AVO'S FRUIT & DESSERT PAIRING */}
                     {fruitPairing && (
-                      <div className="rounded-2xl border border-slate-200 dark:border-zinc-800 bg-slate-50/70 dark:bg-zinc-900/60 overflow-hidden transition-all shadow-xs">
+                      <div className="rounded-2xl border border-stone-200/80 dark:border-stone-800 bg-stone-50/70 dark:bg-[#121715]/70 overflow-hidden transition-all shadow-xs">
                         <button
                           type="button"
                           onClick={() => {
@@ -3089,41 +3089,41 @@ export default function Recipe() {
                             try { triggerHaptic("light"); } catch {}
                             setActiveBentoSection(activeBentoSection === "fruit" ? null : "fruit");
                           }}
-                          className="w-full p-3 flex items-center justify-between text-left cursor-pointer hover:bg-slate-100/70 dark:hover:bg-zinc-800/50 transition-colors"
+                          className="w-full p-3 flex items-center justify-between text-left cursor-pointer hover:bg-stone-100/70 dark:hover:bg-stone-800/50 transition-colors"
                         >
                           <div className="flex items-center gap-2">
                             <span className="text-base">{fruitPairing.emoji}</span>
                             <div>
-                              <span className="text-xs font-black text-emerald-800 dark:text-emerald-300 block">
-                                Step 4: Fruit &amp; Dessert Pairing 🍊
+                              <span className="text-xs font-bold text-emerald-800 dark:text-emerald-300 block">
+                                Recommended Fruit Pairing 🍊
                               </span>
-                              <span className="text-[10px] text-slate-500 block truncate max-w-[200px]">
+                              <span className="text-xs text-stone-500 block truncate max-w-[200px]">
                                 {fruitPairing.name} (+{fruitPairing.calories} kcal)
                               </span>
                             </div>
                           </div>
-                          <span className="text-slate-400 font-bold text-xs">
+                          <span className="text-stone-400 font-bold text-xs">
                             {activeBentoSection === "fruit" ? "▲" : "▼"}
                           </span>
                         </button>
 
                         {/* Exploded Fruit Synergy Card */}
                         {activeBentoSection === "fruit" && (
-                          <div className="p-3 pt-0 border-t border-slate-200/60 dark:border-zinc-800 space-y-2 animate-fade-in">
-                            <div className="p-3 bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-emerald-950/40 dark:to-teal-950/40 rounded-xl border border-emerald-200 dark:border-emerald-800 text-xs text-slate-700 dark:text-slate-300 space-y-1.5 mt-2">
+                          <div className="p-3 pt-0 border-t border-stone-200/60 dark:border-stone-800 space-y-2 animate-fade-in">
+                            <div className="p-3 bg-gradient-to-br from-emerald-50 to-stone-50 dark:from-emerald-950/40 dark:to-stone-900/40 rounded-xl border border-emerald-200 dark:border-emerald-800 text-xs text-stone-700 dark:text-stone-300 space-y-1.5 mt-2">
                               <div className="flex items-center justify-between">
-                                <span className="font-black text-emerald-950 dark:text-emerald-100 text-xs">
+                                <span className="font-bold text-emerald-950 dark:text-emerald-100 text-xs">
                                   {fruitPairing.emoji} {fruitPairing.name}
                                 </span>
-                                <span className="text-[10px] font-bold bg-emerald-200 dark:bg-emerald-900 text-emerald-900 dark:text-emerald-200 px-2 py-0.5 rounded-full">
+                                <span className="text-xs font-semibold bg-emerald-200 dark:bg-emerald-900 text-emerald-900 dark:text-emerald-200 px-2 py-0.5 rounded-full">
                                   +{fruitPairing.calories} kcal
                                 </span>
                               </div>
-                              <p className="text-[11px] leading-relaxed text-slate-600 dark:text-slate-300">
-                                <strong>Why pair with this meal:</strong> {fruitPairing.reason}
+                              <p className="text-xs leading-relaxed text-stone-600 dark:text-stone-300">
+                                <strong>Why pair:</strong> {fruitPairing.reason}
                               </p>
-                              <div className="text-[10px] font-bold text-teal-800 dark:text-teal-300 bg-white/80 dark:bg-zinc-900/80 p-1.5 rounded-lg border border-teal-100 dark:border-zinc-700 flex items-center gap-1">
-                                <span>⏱️ <strong>How to time it:</strong> {fruitPairing.timing}</span>
+                              <div className="text-xs font-medium text-emerald-800 dark:text-emerald-300 bg-white/80 dark:bg-stone-900/80 p-1.5 rounded-lg border border-emerald-100 dark:border-stone-700 flex items-center gap-1">
+                                <span>⏱️ <strong>Timing:</strong> {fruitPairing.timing}</span>
                               </div>
                             </div>
 
@@ -3134,7 +3134,7 @@ export default function Recipe() {
                                 try { triggerHaptic("medium"); } catch {}
                                 toast.success(`Added ${fruitPairing.name} buffer to plate! 🥑`);
                               }}
-                              className="w-full py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs flex items-center justify-center gap-1.5 cursor-pointer shadow-2xs active:scale-95 transition-all"
+                              className="w-full py-2 bg-[#164E3D] hover:bg-[#113E30] text-white font-semibold rounded-xl text-xs flex items-center justify-center gap-1.5 cursor-pointer shadow-xs active:scale-95 transition-all"
                             >
                               <span>+ Add This Fruit Buffer to Plate 🍽️</span>
                             </button>
@@ -3152,8 +3152,8 @@ export default function Recipe() {
                   <div className="space-y-3 animate-fade-in">
                     {/* Live Cooking Timer Pill */}
                     {timerSeconds > 0 && (
-                      <div className="p-3 bg-orange-50 dark:bg-orange-950/50 border border-orange-200 dark:border-orange-800 rounded-2xl flex items-center justify-between gap-3 text-orange-950 dark:text-orange-200 shadow-2xs">
-                        <div className="flex items-center gap-2 font-mono text-base font-black">
+                      <div className="p-3 bg-orange-50/90 dark:bg-orange-950/50 border border-orange-200 dark:border-orange-800 rounded-2xl flex items-center justify-between gap-3 text-orange-950 dark:text-orange-200 shadow-xs">
+                        <div className="flex items-center gap-2 font-mono text-base font-bold">
                           <Clock className="h-4 w-4 text-orange-600 animate-spin" />
                           <span>
                             {Math.floor(timerSeconds / 60)}:
@@ -3163,7 +3163,7 @@ export default function Recipe() {
                         <div className="flex items-center gap-1.5">
                           <button
                             onClick={() => setTimerRunning(!timerRunning)}
-                            className="px-2.5 py-1 bg-orange-600 text-white rounded-lg font-bold text-xs cursor-pointer"
+                            className="px-2.5 py-1 bg-orange-600 text-white rounded-lg font-semibold text-xs cursor-pointer"
                           >
                             {timerRunning ? "Pause" : "Resume"}
                           </button>
@@ -3172,7 +3172,7 @@ export default function Recipe() {
                               setTimerRunning(false);
                               setTimerSeconds(0);
                             }}
-                            className="p-1 text-slate-500 hover:text-slate-900 cursor-pointer"
+                            className="p-1 text-stone-500 hover:text-stone-900 cursor-pointer"
                           >
                             <RotateCcw size={14} />
                           </button>
@@ -3180,8 +3180,8 @@ export default function Recipe() {
                       </div>
                     )}
 
-                    {/* 🎙️ 10X Upgrade: Avo Voice Hands-Free Cooking Assistant */}
-                    <div className="p-3 bg-gradient-to-r from-teal-900/90 to-emerald-950/90 border border-teal-400/40 rounded-2xl flex items-center justify-between gap-2 text-white shadow-md">
+                    {/* 🎙️ Avo Voice Hands-Free Cooking Assistant */}
+                    <div className="p-3 bg-gradient-to-r from-[#164E3D] to-[#1B5E4A] border border-emerald-800/40 rounded-2xl flex items-center justify-between gap-2 text-white shadow-xs">
                       <div className="flex items-center gap-2">
                         <button
                           type="button"
@@ -3207,15 +3207,15 @@ export default function Recipe() {
                               toast.info("Avo Voice Chef Paused.");
                             }
                           }}
-                          className={`p-2 rounded-xl border flex items-center gap-1.5 text-xs font-black transition-all cursor-pointer ${
+                          className={`p-2 rounded-xl border flex items-center gap-1.5 text-xs font-semibold transition-all cursor-pointer ${
                             isVoiceCoachActive
-                              ? "bg-emerald-500 text-slate-950 border-emerald-300 shadow-md ring-2 ring-emerald-400/50"
-                              : "bg-white/10 text-slate-300 border-white/20 hover:bg-white/20"
+                              ? "bg-emerald-400 text-stone-950 border-emerald-300 shadow-xs"
+                              : "bg-white/10 text-stone-200 border-white/20 hover:bg-white/20"
                           }`}
                         >
                           {isVoiceCoachActive ? (
                             <>
-                              <Mic size={14} className={isAvoListening ? "animate-pulse text-slate-950" : ""} />
+                              <Mic size={14} className={isAvoListening ? "animate-pulse text-stone-950" : ""} />
                               <span>Avo Voice: ON</span>
                             </>
                           ) : (
@@ -3227,20 +3227,20 @@ export default function Recipe() {
                         </button>
 
                         {/* Dialect selector */}
-                        <div className="flex items-center bg-white/10 p-0.5 rounded-xl text-[10px] font-bold">
+                        <div className="flex items-center bg-white/10 p-0.5 rounded-xl text-xs font-semibold">
                           <button
                             type="button"
                             onClick={() => {
                               try { triggerHaptic("light"); } catch {}
                               setAvoDialect("en");
                               avoVoiceCoach.setDialect("en");
-                              toast.info("Avo dialect: Clinical English 🇺🇸");
+                              toast.info("Avo dialect: Standard English 🇺🇸");
                             }}
                             className={`px-2 py-0.5 rounded-lg transition-all cursor-pointer ${
-                              avoDialect === "en" ? "bg-teal-400 text-slate-950 font-black" : "text-slate-300 hover:text-white"
+                              avoDialect === "en" ? "bg-white text-stone-900 font-bold" : "text-stone-200 hover:text-white"
                             }`}
                           >
-                            Clinical
+                            Standard
                           </button>
                           <button
                             type="button"
@@ -3251,7 +3251,7 @@ export default function Recipe() {
                               toast.info("Avo dialect: Nigerian Pidgin 🇳🇬");
                             }}
                             className={`px-2 py-0.5 rounded-lg transition-all cursor-pointer ${
-                              avoDialect === "pcm" ? "bg-amber-400 text-slate-950 font-black" : "text-slate-300 hover:text-white"
+                              avoDialect === "pcm" ? "bg-amber-400 text-stone-950 font-bold" : "text-stone-200 hover:text-white"
                             }`}
                           >
                             Pidgin
@@ -3274,8 +3274,8 @@ export default function Recipe() {
                             );
                           }
                         }}
-                        className={`p-2 rounded-xl bg-white/10 hover:bg-white/20 text-teal-200 transition-all cursor-pointer ${
-                          isAvoSpeaking ? "ring-2 ring-teal-400 animate-pulse" : ""
+                        className={`p-2 rounded-xl bg-white/10 hover:bg-white/20 text-emerald-200 transition-all cursor-pointer ${
+                          isAvoSpeaking ? "ring-2 ring-emerald-400 animate-pulse" : ""
                         }`}
                         title="Read step aloud"
                       >
@@ -3284,7 +3284,7 @@ export default function Recipe() {
                     </div>
 
                     {/* Step Card Navigation */}
-                    <div className="flex items-center justify-between text-xs font-bold text-slate-500">
+                    <div className="flex items-center justify-between text-xs font-semibold text-stone-500">
                       <span>Step {currentStepIdx + 1} of {selectedRecipe.steps.length}</span>
                       <div className="flex items-center gap-1">
                         {selectedRecipe.steps.map((_, i) => (
@@ -3292,10 +3292,10 @@ export default function Recipe() {
                             key={i}
                             className={`h-1.5 rounded-full transition-all ${
                               i === currentStepIdx
-                                ? "w-6 bg-[#1f7a8c]"
+                                ? "w-6 bg-[#164E3D]"
                                 : i < currentStepIdx
-                                ? "w-2 bg-teal-400"
-                                : "w-2 bg-slate-200 dark:bg-zinc-700"
+                                ? "w-2 bg-emerald-400"
+                                : "w-2 bg-stone-200 dark:bg-stone-700"
                             }`}
                           />
                         ))}
@@ -3303,9 +3303,9 @@ export default function Recipe() {
                     </div>
 
                     {/* Active Step Hero Card */}
-                    <div className="p-4 bg-gradient-to-br from-teal-50/80 to-emerald-50/60 dark:from-zinc-800 dark:to-zinc-850 rounded-2xl border border-teal-200 dark:border-zinc-700 space-y-3">
+                    <div className="p-4 bg-stone-50 dark:bg-stone-850 rounded-2xl border border-stone-200/80 dark:border-stone-700 space-y-3">
                       <div className="flex items-center justify-between">
-                        <span className="text-[10px] font-black uppercase tracking-wider text-teal-800 dark:text-teal-300 bg-teal-100 dark:bg-teal-950 px-2 py-0.5 rounded-md">
+                        <span className="text-xs font-semibold uppercase tracking-wider text-emerald-800 dark:text-emerald-300 bg-emerald-100 dark:bg-emerald-950 px-2 py-0.5 rounded-md">
                           Flame: {selectedRecipe.steps[currentStepIdx].flameLevel || "Medium"}
                         </span>
                         {selectedRecipe.steps[currentStepIdx].timerMinutes && (
@@ -3313,23 +3313,23 @@ export default function Recipe() {
                             onClick={() =>
                               startStepTimer(selectedRecipe.steps[currentStepIdx].timerMinutes!)
                             }
-                            className="px-2.5 py-1 bg-orange-500 hover:bg-orange-600 text-white rounded-xl text-[11px] font-bold flex items-center gap-1 shadow-2xs cursor-pointer active:scale-95 transition-all"
+                            className="px-2.5 py-1 bg-orange-500 hover:bg-orange-600 text-white rounded-xl text-xs font-semibold flex items-center gap-1 shadow-xs cursor-pointer active:scale-95 transition-all"
                           >
-                            <Play size={11} className="fill-current" />
+                            <Play size={12} className="fill-current" />
                             <span>Start {selectedRecipe.steps[currentStepIdx].timerMinutes}m Timer</span>
                           </button>
                         )}
                       </div>
 
-                      <p className="text-xs sm:text-sm font-semibold text-slate-900 dark:text-white leading-relaxed">
+                      <p className="text-xs sm:text-sm font-semibold text-stone-900 dark:text-white leading-relaxed">
                         {selectedRecipe.steps[currentStepIdx].instruction}
                       </p>
 
                       {selectedRecipe.steps[currentStepIdx].avoTip && (
-                        <div className="p-2.5 bg-white dark:bg-zinc-900 rounded-xl border border-teal-100 dark:border-zinc-700 text-[11px] text-teal-950 dark:text-teal-200 flex items-start gap-2 shadow-2xs">
+                        <div className="p-2.5 bg-white dark:bg-stone-900 rounded-xl border border-stone-200/80 dark:border-stone-700 text-xs text-stone-800 dark:text-stone-200 flex items-start gap-2 shadow-xs">
                           <Mascot gesture="wave" size={28} className="shrink-0" />
                           <span className="leading-snug">
-                            <strong>Avo's Chef Tip:</strong> {selectedRecipe.steps[currentStepIdx].avoTip}
+                            <strong>Chef Tip:</strong> {selectedRecipe.steps[currentStepIdx].avoTip}
                           </span>
                         </div>
                       )}
@@ -3340,7 +3340,7 @@ export default function Recipe() {
                       <button
                         disabled={currentStepIdx === 0}
                         onClick={() => setCurrentStepIdx((prev) => Math.max(0, prev - 1))}
-                        className="px-3 py-2 bg-slate-100 hover:bg-slate-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 disabled:opacity-40 text-slate-700 dark:text-slate-300 font-bold rounded-xl text-xs cursor-pointer"
+                        className="px-3 py-2 bg-stone-100 hover:bg-stone-200 dark:bg-stone-800 dark:hover:bg-stone-700 disabled:opacity-40 text-stone-700 dark:text-stone-300 font-semibold rounded-xl text-xs cursor-pointer"
                       >
                         Previous
                       </button>
@@ -3354,7 +3354,7 @@ export default function Recipe() {
                             handleLogToDiary(selectedRecipe);
                           }
                         }}
-                        className="flex-1 py-2 bg-gradient-to-r from-[#1f7a8c] to-[#4ecdc4] text-white font-bold rounded-xl text-xs flex items-center justify-center gap-1.5 cursor-pointer shadow-2xs active:scale-95 transition-all"
+                        className="flex-1 py-2 bg-[#164E3D] hover:bg-[#113E30] text-white font-semibold rounded-xl text-xs flex items-center justify-center gap-1.5 cursor-pointer shadow-xs active:scale-95 transition-all"
                       >
                         <span>
                           {currentStepIdx === selectedRecipe.steps.length - 1
@@ -3369,10 +3369,10 @@ export default function Recipe() {
               </div>
 
               {/* Sticky Action Footer */}
-              <div className="pt-2.5 border-t border-slate-100 dark:border-zinc-800 flex gap-2 mt-auto shrink-0">
+              <div className="pt-2.5 border-t border-stone-100 dark:border-stone-800 flex gap-2 mt-auto shrink-0">
                 <button
                   onClick={() => handleLogToDiary(selectedRecipe)}
-                  className="flex-1 bg-gradient-to-r from-emerald-600 to-teal-600 hover:opacity-95 text-white font-black text-xs py-2.5 rounded-xl shadow-md cursor-pointer flex items-center justify-center gap-1.5 active:scale-95 transition-all"
+                  className="flex-1 bg-[#164E3D] hover:bg-[#113E30] text-white font-semibold text-xs py-2.5 rounded-xl shadow-xs cursor-pointer flex items-center justify-center gap-1.5 active:scale-95 transition-all"
                 >
                   <Check size={14} />
                   <span>Log to Diary Now 🍽️</span>
@@ -3385,16 +3385,16 @@ export default function Recipe() {
                     try { triggerHaptic("medium"); } catch {}
                     setIsDoctorExportOpen(true);
                   }}
-                  className="px-3 py-2.5 bg-slate-100 dark:bg-zinc-800 hover:bg-slate-200 dark:hover:bg-zinc-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-zinc-700 rounded-xl text-xs font-black cursor-pointer flex items-center justify-center gap-1 active:scale-95 transition-all"
+                  className="px-3 py-2.5 bg-stone-100 dark:bg-stone-800 hover:bg-stone-200 dark:hover:bg-stone-700 text-stone-700 dark:text-stone-200 border border-stone-200 dark:border-stone-700 rounded-xl text-xs font-semibold cursor-pointer flex items-center justify-center gap-1 active:scale-95 transition-all"
                   title="Certified Doctor Nutrition Summary Report"
                 >
-                  <Stethoscope size={14} className="text-teal-600" />
+                  <Stethoscope size={14} className="text-[#164E3D] dark:text-emerald-400" />
                   <span className="hidden sm:inline">Doctor PDF</span>
                 </button>
 
                 <button
                   onClick={() => setSelectedRecipe(null)}
-                  className="px-4 py-2.5 border border-slate-200 dark:border-zinc-700 rounded-xl text-xs font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-zinc-800 cursor-pointer"
+                  className="px-4 py-2.5 border border-stone-200 dark:border-stone-700 rounded-xl text-xs font-semibold text-stone-700 dark:text-stone-300 hover:bg-stone-50 dark:hover:bg-stone-800 cursor-pointer"
                 >
                   Close
                 </button>

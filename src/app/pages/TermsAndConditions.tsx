@@ -7,7 +7,7 @@ export default function TermsAndConditions() {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#B8E5E5] to-[#E8F5F5] pb-28">
+    <div className="min-h-screen bg-canvas-organic dark:bg-[#0F1412] pb-28">
       {/* Header */}
       <PageHeader
         title="Terms & Conditions"

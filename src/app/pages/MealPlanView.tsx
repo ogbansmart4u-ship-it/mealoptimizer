@@ -208,7 +208,7 @@ TIMING: ${mealPlan.plan_json.circadianAnchor}
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-[#B8E5E5] to-[#E8F5F5] flex items-center justify-center">
+      <div className="min-h-screen bg-canvas-organic dark:bg-[#0F1412] flex items-center justify-center">
         <MascotLoader label={t("mealview.loading")} size={96} />
       </div>
     );
@@ -216,7 +216,7 @@ TIMING: ${mealPlan.plan_json.circadianAnchor}
 
   if (error || !mealPlan) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-[#B8E5E5] to-[#E8F5F5]">
+      <div className="min-h-screen bg-canvas-organic dark:bg-[#0F1412]">
         <div className="bg-gradient-to-r from-[#1f7a8c] to-[#4ecdc4] px-6 pt-12 pb-6">
           <div className="flex items-center">
             <button
@@ -248,7 +248,7 @@ TIMING: ${mealPlan.plan_json.circadianAnchor}
   const { Icon: MealIcon, color: mealColor, bgColor: mealBgColor } = getMealIcon(mealPlan.mealType);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#B8E5E5] to-[#E8F5F5] pb-24">
+    <div className="min-h-screen bg-canvas-organic dark:bg-[#0F1412] pb-24">
       {/* Header */}
       <PageHeader
         title={t("mealview.title")}

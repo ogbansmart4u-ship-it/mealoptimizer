@@ -97,8 +97,8 @@ export default function ProfilePictureUpload() {
           }}
           className={`relative rounded-full shadow-md hover:shadow-lg transition-all group cursor-pointer select-none bg-white p-0.5 ${
             isPro
-              ? "ring-2 ring-amber-400 ring-offset-2 ring-offset-[#B8E5E5] shadow-[0_0_12px_rgba(245,158,11,0.5)]"
-              : "ring-2 ring-[#1f7a8c]/50 ring-offset-1 ring-offset-[#B8E5E5] hover:ring-[#1f7a8c]"
+              ? "ring-2 ring-amber-400 ring-offset-2 ring-offset-stone-100 dark:ring-offset-[#171E1B] shadow-[0_0_12px_rgba(245,158,11,0.5)]"
+              : "ring-2 ring-[#164E3D]/50 ring-offset-1 ring-offset-stone-100 dark:ring-offset-[#171E1B] hover:ring-[#164E3D]"
           }`}
           title={isPro ? "MealOptimiza PRO Member" : "Free Plan - Tap to manage photo or upgrade"}
         >
@@ -245,7 +245,7 @@ export default function ProfilePictureUpload() {
 
                 <button
                   onClick={() => fileInputRef.current?.click()}
-                  className="w-full border-2 border-[#1f7a8c] text-[#1f7a8c] rounded-2xl py-3 hover:bg-[#B8E5E5]/40 transition-all flex items-center justify-center gap-2 font-bold text-xs cursor-pointer"
+                  className="w-full border-2 border-[#164E3D] dark:border-emerald-500 text-[#164E3D] dark:text-emerald-400 rounded-2xl py-3 hover:bg-emerald-50 dark:hover:bg-emerald-950/40 transition-all flex items-center justify-center gap-2 font-bold text-xs cursor-pointer"
                 >
                   <Upload className="h-4 w-4" />
                   <span>Choose from Gallery</span>

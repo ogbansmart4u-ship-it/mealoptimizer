@@ -265,38 +265,38 @@ Generated via MealOptimiza Certified Clinical Platform.`;
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#B8E5E5] via-[#E8F5F5] to-[#F8FBFB] dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 pb-28 relative">
+    <div className="min-h-screen bg-canvas-organic dark:bg-[#0F1412] pb-28 relative">
       <AmbientBackground />
 
       {/* Top Header */}
-      <div className="relative z-10 bg-gradient-to-b from-[#A5DBDB] to-[#B8E5E5] dark:from-slate-900 dark:to-slate-950 px-4 sm:px-6 pt-9 pb-5 border-b border-teal-500/15">
+      <div className="relative z-10 bg-white/80 dark:bg-[#171E1B]/80 backdrop-blur-xl px-4 sm:px-6 pt-9 pb-5 border-b border-stone-200/60 dark:border-stone-800/60 shadow-xs">
         <div className="max-w-2xl mx-auto flex items-center justify-between">
           <div>
-            <span className="text-[10px] uppercase tracking-wider font-extrabold text-[#1f7a8c] dark:text-teal-400 block">
+            <span className="text-xs uppercase tracking-wider font-semibold text-[#164E3D] dark:text-emerald-400 block">
               {t('logs.title')}
             </span>
-            <h1 className="text-xl sm:text-2xl font-black text-gray-900 dark:text-white leading-tight">
-              {t('logs.title')} 🍽️
+            <h1 className="text-xl sm:text-2xl font-bold text-stone-900 dark:text-stone-100 leading-tight">
+              Food Diary &amp; Meals
             </h1>
           </div>
           <div className="flex items-center gap-2">
             <button
               onClick={() => setShowVoiceLogger(true)}
-              className="p-2 bg-rose-500 hover:bg-rose-600 text-white rounded-2xl shadow-xs transition-transform active:scale-95 cursor-pointer"
+              className="p-2 bg-rose-500 hover:bg-rose-600 text-white rounded-xl shadow-xs transition-transform active:scale-95 cursor-pointer"
               title="Voice Log"
             >
-              <Mic size={16} className="animate-pulse" />
+              <Mic size={16} />
             </button>
             <button
               onClick={() => navigate("/scan")}
-              className="p-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-2xl shadow-xs transition-transform active:scale-95 cursor-pointer"
+              className="p-2 bg-[#164E3D] hover:bg-[#113E30] text-white rounded-xl shadow-xs transition-transform active:scale-95 cursor-pointer"
               title="Scan Food with AI"
             >
               <Camera size={16} />
             </button>
             <button
               onClick={() => setShowAddMeal(true)}
-              className="p-2 bg-[#1f7a8c] text-white hover:bg-teal-800 rounded-2xl shadow-xs transition-transform active:scale-95 cursor-pointer flex items-center gap-1 text-xs font-bold"
+              className="px-3 py-2 bg-[#164E3D] text-white hover:bg-[#113E30] rounded-xl shadow-xs transition-transform active:scale-95 cursor-pointer flex items-center gap-1.5 text-xs font-semibold"
             >
               <Plus size={16} />
               <span className="hidden sm:inline">{t('logs.addMeal')}</span>

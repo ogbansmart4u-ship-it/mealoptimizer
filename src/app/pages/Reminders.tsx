@@ -178,7 +178,7 @@ export default function Reminders() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#B8E5E5] to-[#E8F5F5] pb-20">
+    <div className="min-h-screen bg-canvas-organic dark:bg-[#0F1412] pb-20">
       {/* Header */}
       <div className="bg-gradient-to-r from-[#1f7a8c] to-[#4ecdc4] px-6 pt-12 pb-8 rounded-b-3xl shadow-lg">
         <div className="flex items-center gap-4 mb-4">

@@ -229,7 +229,7 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#B8E5E5] via-[#E8F5F5] to-[#F7F9F8] flex flex-col justify-between selection:bg-teal-200">
+    <div className="min-h-screen bg-canvas-organic dark:bg-[#0F1412] text-stone-900 dark:text-stone-100 flex flex-col justify-between selection:bg-emerald-200">
       {/* Top Header Bar */}
       <div className="px-5 pt-7 sm:pt-8 flex items-center justify-between max-w-md mx-auto w-full">
         <div className="flex items-center">

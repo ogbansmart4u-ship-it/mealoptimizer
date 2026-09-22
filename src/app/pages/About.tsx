@@ -6,7 +6,7 @@ export default function About() {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#B8E5E5] to-[#E8F5F5]">
+    <div className="min-h-screen bg-canvas-organic dark:bg-[#0F1412] pb-12">
       {/* Header */}
       <div className="bg-gradient-to-r from-[#1f7a8c] to-[#4ecdc4] px-6 pt-12 pb-8">
         <div className="flex items-center gap-4 mb-4">
@@ -18,7 +18,7 @@ export default function About() {
           </button>
           <h1 className="text-2xl text-white">About MealOptimiza</h1>
         </div>
-        <p className="text-[#B8E5E5] text-sm">Your personalized health companion</p>
+        <p className="text-teal-100 text-sm">Your personalized health companion</p>
       </div>
 
       <div className="px-6 py-8 space-y-6">
@@ -210,7 +210,7 @@ export default function About() {
         {/* Contact */}
         <div className="bg-gradient-to-r from-[#1f7a8c] to-[#4ecdc4] rounded-3xl shadow-lg p-6 text-white">
           <h2 className="text-xl font-bold mb-3">Get In Touch</h2>
-          <p className="text-[#B8E5E5] mb-4">
+          <p className="text-teal-100 mb-4">
             Have questions, feedback, or suggestions? We'd love to hear from you!
           </p>
           <div className="space-y-2 text-sm">

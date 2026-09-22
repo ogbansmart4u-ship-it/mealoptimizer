@@ -241,9 +241,9 @@ export default function Medications() {
   }, [medications]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#B8E5E5] via-[#E8F5F5] to-[#F8FBFB] pb-12">
+    <div className="min-h-screen bg-canvas-organic dark:bg-[#0F1412] pb-12 text-stone-900 dark:text-stone-100">
       {/* Header */}
-      <div className="bg-gradient-to-b from-[#A5DBDB] to-[#B8E5E5] px-4 sm:px-6 pt-9 pb-5 border-b border-teal-500/15">
+      <div className="bg-white/80 dark:bg-[#171E1B]/80 backdrop-blur-xl px-4 sm:px-6 pt-9 pb-5 border-b border-stone-200/60 dark:border-stone-800/60 shadow-xs">
         <div className="max-w-2xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-3">
             <button

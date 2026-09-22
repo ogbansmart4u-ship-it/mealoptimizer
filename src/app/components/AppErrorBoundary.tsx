@@ -22,15 +22,15 @@ export default class AppErrorBoundary extends Component<Props, State> {
   render() {
     if (this.state.hasError) {
       return (
-        <div className="min-h-screen bg-gradient-to-b from-[#B8E5E5] to-[#E8F5F5] flex flex-col items-center justify-center px-6 text-center">
-          <div className="bg-white rounded-3xl shadow-xl p-8 max-w-sm w-full">
-            <h1 className="text-2xl font-semibold text-gray-800 mb-2">Something went wrong</h1>
-            <p className="text-sm text-gray-600 mb-6">
+        <div className="min-h-screen bg-canvas-organic dark:bg-[#0F1412] flex flex-col items-center justify-center px-6 text-center">
+          <div className="bg-white dark:bg-[#171E1B] rounded-3xl shadow-xl p-8 max-w-sm w-full border border-stone-200/80 dark:border-stone-800">
+            <h1 className="text-2xl font-bold text-stone-900 dark:text-stone-100 mb-2">Something went wrong</h1>
+            <p className="text-sm text-stone-600 dark:text-stone-400 mb-6">
               The app hit an unexpected problem. Reloading usually fixes it.
             </p>
             <button
               onClick={() => window.location.reload()}
-              className="w-full bg-gradient-to-r from-[#1f7a8c] to-[#4ecdc4] text-white rounded-2xl py-3.5 font-semibold active:scale-[0.98] transition-transform"
+              className="w-full bg-[#164E3D] hover:bg-[#113E30] text-white rounded-2xl py-3.5 font-semibold active:scale-[0.98] transition-transform cursor-pointer shadow-xs"
             >
               Reload the app
             </button>

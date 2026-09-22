@@ -265,7 +265,7 @@ export default function Onboarding() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#B8E5E5] via-[#E8F5F5] to-white flex items-center justify-center p-4 sm:p-6 font-sans">
+    <div className="min-h-screen bg-canvas-organic dark:bg-[#0F1412] flex items-center justify-center p-4 sm:p-6 font-sans">
       <div className="max-w-md w-full my-auto">
         
         {/* ============================================================ */}

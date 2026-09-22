@@ -138,7 +138,7 @@ export default function BiometricDashboard() {
   const subText = darkMode ? "text-gray-400" : "text-gray-600";
 
   return (
-    <div className={`min-h-screen ${darkMode ? "bg-gray-900" : "bg-gradient-to-b from-[#B8E5E5] to-[#E8F5F5]"} pb-24 transition-colors`}>
+    <div className={`min-h-screen ${darkMode ? "bg-[#0F1412] text-stone-100" : "bg-canvas-organic text-stone-900"} pb-24 transition-colors`}>
       <PageHeader
         title="Bio-Digital Twin"
         showHome

@@ -50,7 +50,7 @@ export default function DirectSignup() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#B8E5E5] to-[#E8F5F5] flex items-center justify-center p-6">
+    <div className="min-h-screen bg-canvas-organic dark:bg-[#0F1412] flex items-center justify-center p-6">
       <div className="bg-white rounded-3xl shadow-xl p-8 max-w-md w-full">
         <h1 className="text-2xl text-center mb-2 text-gray-800">Direct Signup Test</h1>
         <p className="text-sm text-center text-gray-600 mb-6">

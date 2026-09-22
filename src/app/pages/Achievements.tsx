@@ -75,7 +75,7 @@ export default function Achievements() {
       : locked;
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#B8E5E5] via-[#E8F5F5] to-[#F8FBFB] pb-28 text-slate-800 relative select-none">
+    <div className="min-h-screen bg-canvas-organic dark:bg-[#0F1412] pb-28 text-slate-800 dark:text-stone-100 relative select-none">
       <AmbientBackground />
 
       {/* Header */}

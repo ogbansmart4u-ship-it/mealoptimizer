@@ -130,7 +130,7 @@ export default function ResetPassword() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#B8E5E5] via-[#E8F5F5] to-[#F8FBFB] flex flex-col justify-between relative overflow-hidden">
+    <div className="min-h-screen bg-canvas-organic dark:bg-[#0F1412] flex flex-col justify-between relative overflow-hidden">
       {/* Ambient Background */}
       <AmbientBackground />
 

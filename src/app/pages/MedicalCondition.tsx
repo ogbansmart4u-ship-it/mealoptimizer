@@ -162,7 +162,7 @@ export default function MedicalCondition() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#B8E5E5] to-[#E8F5F5] pb-8">
+    <div className="min-h-screen bg-canvas-organic dark:bg-[#0F1412] pb-8">
       {/* Header */}
       <div className="bg-gradient-to-r from-[#1f7a8c] to-[#4ecdc4] px-6 pt-12 pb-6">
         <div className="flex items-center justify-between mb-6">

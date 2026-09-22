@@ -102,7 +102,7 @@ export default function GlucoseInsights() {
     .sort((a, b) => b.avg - a.avg);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#B8E5E5] via-[#E8F5F5] to-[#F8FBFB] pb-28 relative">
+    <div className="min-h-screen bg-canvas-organic dark:bg-[#0F1412] pb-28 relative">
       <AmbientBackground />
       <div className="relative z-10">
         <PageHeader title="Meal & Glucose Insights" showHome actions={<TrendingUp className="h-6 w-6 text-white" />} />

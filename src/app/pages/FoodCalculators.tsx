@@ -127,7 +127,7 @@ export default function FoodCalculators() {
   const [eatingSequence, setEatingSequence] = useState<"standard" | "optimized">("optimized");
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#B8E5E5] via-[#E8F5F5] to-slate-50 text-slate-900 font-sans pb-24 selection:bg-teal-200">
+    <div className="min-h-screen bg-canvas-organic dark:bg-[#0F1412] text-stone-900 dark:text-stone-100 font-sans pb-24 selection:bg-emerald-200">
       
       {/* 1. TOP HEADER */}
       <div className="bg-white/80 backdrop-blur-md border-b border-teal-100 sticky top-0 z-30 px-4 sm:px-6 py-3.5 flex items-center justify-between shadow-2xs">
