@@ -1531,8 +1531,8 @@ export default function AvoAcademy() {
       {/* =================================================================== */}
       {/* 1. DUOLINGO-STYLE "TODAY'S 90-SECOND METABOLIC DROP" HERO BANNER     */}
       {/* =================================================================== */}
-      <div className="relative overflow-hidden glass-card-teal rounded-3xl p-4 sm:p-5 text-white shadow-xl border border-white/30">
-        <div className="absolute -top-10 -right-10 w-40 h-40 rounded-full bg-purple-500/20 blur-2xl pointer-events-none" />
+      <div className="relative overflow-hidden bg-gradient-to-r from-[#164E3D] via-[#1E604D] to-[#124233] rounded-3xl p-4 sm:p-5 text-white shadow-xl border border-white/20">
+        <div className="absolute -top-10 -right-10 w-40 h-40 rounded-full bg-emerald-400/20 blur-2xl pointer-events-none" />
 
         <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div className="flex items-center gap-3">
@@ -1545,17 +1545,17 @@ export default function AvoAcademy() {
 
             <div>
               <div className="flex items-center gap-2 flex-wrap">
-                <span className="text-[9.5px] font-black uppercase tracking-wider bg-amber-400 text-slate-950 px-2 py-0.5 rounded-full shadow-2xs">
+                <span className="text-xs font-bold uppercase tracking-wider bg-amber-400 text-stone-950 px-2.5 py-0.5 rounded-full shadow-2xs">
                   🔥 7-DAY STUDY STREAK
                 </span>
-                <span className="text-[10px] font-bold text-purple-200">
-                  Total XP: <strong className="text-amber-300 font-black">{totalAcademyXp} XP</strong>
+                <span className="text-xs font-semibold text-stone-200">
+                  Total XP: <strong className="text-amber-300 font-bold">{totalAcademyXp} XP</strong>
                 </span>
               </div>
-              <h3 className="text-sm sm:text-base font-black text-white leading-tight mt-1">
+              <h3 className="text-sm sm:text-base font-bold text-white leading-tight mt-1">
                 Today's 90s Drop: {todayLesson.title}
               </h3>
-              <p className="text-[11px] text-purple-200/90 font-medium line-clamp-1 mt-0.5">
+              <p className="text-xs text-stone-200 font-medium line-clamp-1 mt-0.5">
                 {todayLesson.headline}
               </p>
             </div>
@@ -1565,10 +1565,10 @@ export default function AvoAcademy() {
             <button
               type="button"
               onClick={(e) => handleToggleAudio(e, todayLesson)}
-              className={`px-3 py-2 rounded-2xl text-xs font-black flex items-center gap-1.5 transition-all cursor-pointer ${
+              className={`btn-liquid-glass px-3.5 py-2 rounded-2xl text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer border ${
                 playingAudioLessonId === todayLesson.id && isAudioPlaying
-                  ? "bg-amber-400 text-slate-950 shadow-md animate-pulse"
-                  : "bg-white/20 hover:bg-white/30 text-white border border-white/20"
+                  ? "bg-amber-400 text-stone-950 shadow-md animate-pulse border-amber-300"
+                  : "btn-glass-frosted text-white border-white/30"
               }`}
             >
               {playingAudioLessonId === todayLesson.id && isAudioPlaying ? (
@@ -1587,7 +1587,7 @@ export default function AvoAcademy() {
             <button
               type="button"
               onClick={() => handleStartLesson(todayLesson)}
-              className="px-4 py-2 bg-gradient-to-r from-emerald-400 to-teal-400 hover:from-emerald-300 hover:to-teal-300 text-slate-950 text-xs font-black rounded-2xl shadow-md flex items-center gap-1.5 cursor-pointer active:scale-95"
+              className="btn-liquid-glass btn-liquid-amber px-4 py-2 text-stone-950 text-xs font-bold rounded-2xl shadow-md flex items-center gap-1.5 cursor-pointer active:scale-95 border border-amber-300/40"
             >
               <span>Start Quiz (+50 XP)</span>
               <ChevronRight size={14} />
@@ -1596,18 +1596,18 @@ export default function AvoAcademy() {
         </div>
       </div>
 
-            {/* =================================================================== */}
+      {/* =================================================================== */}
       {/* 🌟 INTERACTIVE CULTURAL "MYTH VS FACT" 3D FLIP CARDS               */}
       {/* =================================================================== */}
       <div className="space-y-2.5">
         <div className="flex items-center justify-between px-1">
           <div className="flex items-center gap-2">
             <Sparkles className="h-4 w-4 text-amber-500" />
-            <h3 className="text-xs sm:text-sm font-black text-gray-900 dark:text-white uppercase tracking-wider">
+            <h3 className="text-xs sm:text-sm font-bold text-stone-900 dark:text-white uppercase tracking-wider">
               Tap to Flip: African Kitchen Myths vs. Facts 🔄
             </h3>
           </div>
-          <span className="text-[10px] font-bold text-teal-700 dark:text-teal-400">
+          <span className="text-xs font-semibold text-[#164E3D] dark:text-emerald-400">
             4 Interactive Cards
           </span>
         </div>
@@ -1625,22 +1625,22 @@ export default function AvoAcademy() {
                 className="cursor-pointer group relative h-36 rounded-3xl [perspective:1000px]"
               >
                 <div
-                  className={`relative w-full h-full rounded-3xl transition-transform duration-500 [transform-style:preserve-3d] shadow-md hover:shadow-lg ${
+                  className={`relative w-full h-full rounded-3xl transition-transform duration-500 [transform-style:preserve-3d] shadow-xs hover:shadow-md ${
                     isFlipped ? "[transform:rotateY(180deg)]" : ""
                   }`}
                 >
                   {/* FRONT: THE MYTH */}
-                  <div className="absolute inset-0 w-full h-full rounded-3xl bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 p-4 flex flex-col justify-between [backface-visibility:hidden]">
+                  <div className="absolute inset-0 w-full h-full rounded-3xl bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 p-4 flex flex-col justify-between [backface-visibility:hidden]">
                     <div className="flex items-center justify-between">
-                      <span className="text-xl p-1.5 bg-slate-50 dark:bg-zinc-800 rounded-xl">{item.icon}</span>
-                      <span className="text-[9.5px] font-black uppercase px-2 py-0.5 rounded-full bg-rose-100 text-rose-800 dark:bg-rose-950 dark:text-rose-300">
+                      <span className="text-xl p-1.5 bg-stone-50 dark:bg-stone-800 rounded-xl">{item.icon}</span>
+                      <span className="text-xs font-bold uppercase px-2 py-0.5 rounded-full bg-rose-100 text-rose-800 dark:bg-rose-950 dark:text-rose-300">
                         {item.tag}
                       </span>
                     </div>
-                    <p className="text-xs font-bold text-slate-800 dark:text-slate-200 line-clamp-2">
+                    <p className="text-xs font-bold text-stone-800 dark:text-stone-200 line-clamp-2">
                       {item.myth}
                     </p>
-                    <div className="flex items-center justify-between text-[10px] font-black text-[#126778] dark:text-teal-400">
+                    <div className="flex items-center justify-between text-xs font-bold text-[#164E3D] dark:text-emerald-400">
                       <span>Tap to reveal the truth 💡</span>
                       <span>🔄 Flip</span>
                     </div>
@@ -1649,15 +1649,15 @@ export default function AvoAcademy() {
                   {/* BACK: THE FACT */}
                   <div className={`absolute inset-0 w-full h-full rounded-3xl bg-gradient-to-br ${item.bgGradient} text-white p-4 flex flex-col justify-between [transform:rotateY(180deg)] [backface-visibility:hidden] shadow-xl`}>
                     <div className="flex items-center justify-between">
-                      <span className="text-[10px] font-black uppercase bg-white/20 px-2 py-0.5 rounded-full">
+                      <span className="text-xs font-bold uppercase bg-white/20 px-2.5 py-0.5 rounded-full">
                         ✨ Kitchen Secret
                       </span>
-                      <span className="text-[10px] font-bold text-white/80">Tap to flip back</span>
+                      <span className="text-xs font-semibold text-white/80">Tap to flip back</span>
                     </div>
                     <p className="text-xs font-semibold text-white/95 leading-relaxed">
                       {item.fact}
                     </p>
-                    <div className="text-[9.5px] font-black text-amber-200 flex items-center gap-1">
+                    <div className="text-xs font-bold text-amber-200 flex items-center gap-1">
                       <span>✓ Science Backed</span>
                     </div>
                   </div>
@@ -1671,33 +1671,33 @@ export default function AvoAcademy() {
       {/* =================================================================== */}
       {/* 🥣 LIVE "FIX MY PLATE" SUGAR SPIKE INTERACTIVE SIMULATOR             */}
       {/* =================================================================== */}
-      <div className="bg-gradient-to-br from-slate-900 via-teal-950 to-slate-900 rounded-3xl p-4 sm:p-5 text-white shadow-xl border border-teal-500/30 space-y-4">
+      <div className="bg-gradient-to-br from-[#164E3D] via-[#123E31] to-[#0F1412] rounded-3xl p-4 sm:p-5 text-white shadow-xl border border-emerald-500/30 space-y-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2.5">
-            <div className="p-2 bg-teal-400/20 rounded-2xl text-teal-300 text-lg">
+            <div className="p-2 bg-amber-400/20 rounded-2xl text-amber-300 text-lg">
               🥣
             </div>
             <div>
-              <h3 className="text-xs sm:text-sm font-black text-white leading-tight">
+              <h3 className="text-xs sm:text-sm font-bold text-white leading-tight">
                 Live "Fix My Plate" Simulator 🎮
               </h3>
-              <span className="text-[10.5px] text-teal-200/90 font-medium">
+              <span className="text-xs text-stone-200 font-medium">
                 Tap food buffers below to see how they protect your blood sugar in real-time
               </span>
             </div>
           </div>
 
           <div className="text-right">
-            <span className={`text-sm sm:text-base font-black font-mono px-2.5 py-1 rounded-xl ${
+            <span className={`text-sm sm:text-base font-bold font-mono px-2.5 py-1 rounded-xl ${
               simulatedGlucose <= 125
-                ? "bg-emerald-500 text-slate-950"
+                ? "bg-emerald-500 text-stone-950"
                 : simulatedGlucose <= 150
-                ? "bg-amber-400 text-slate-950"
+                ? "bg-amber-400 text-stone-950"
                 : "bg-rose-500 text-white"
             }`}>
               {simulatedGlucose} mg/dL
             </span>
-            <span className="text-[9.5px] font-bold text-teal-200 block mt-0.5">
+            <span className="text-xs font-bold text-amber-200 block mt-0.5">
               {simulatedGlucose <= 125 ? "🟢 Steady Energy" : simulatedGlucose <= 150 ? "🟡 Mild Spike" : "🔴 Sugar Crash"}
             </span>
           </div>
@@ -1705,7 +1705,7 @@ export default function AvoAcademy() {
 
         {/* Step 1: Pick a Carb */}
         <div className="space-y-1.5">
-          <span className="text-[10px] font-black uppercase tracking-wider text-teal-300">
+          <span className="text-xs font-bold uppercase tracking-wider text-amber-300">
             Step 1: Choose Your Main Dish
           </span>
           <div className="grid grid-cols-3 gap-2">
@@ -1723,7 +1723,7 @@ export default function AvoAcademy() {
                 }}
                 className={`py-2 px-2 rounded-2xl text-xs font-bold transition-all cursor-pointer truncate ${
                   simulatorCarb === c.id
-                    ? "bg-teal-400 text-slate-950 font-black shadow-md scale-102"
+                    ? "btn-liquid-glass btn-liquid-amber text-stone-950 font-bold shadow-md scale-[1.02] border border-amber-300/40"
                     : "bg-white/10 text-white hover:bg-white/20 border border-white/15"
                 }`}
               >
@@ -1735,7 +1735,7 @@ export default function AvoAcademy() {
 
         {/* Step 2: Toggle Buffers */}
         <div className="space-y-1.5">
-          <span className="text-[10px] font-black uppercase tracking-wider text-teal-300">
+          <span className="text-xs font-bold uppercase tracking-wider text-amber-300">
             Step 2: Add Natural Food Buffers (Tap to add/remove)
           </span>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
@@ -1747,12 +1747,12 @@ export default function AvoAcademy() {
               }}
               className={`p-2.5 rounded-2xl text-xs font-bold transition-all cursor-pointer flex items-center justify-between border ${
                 hasOkraBuffer
-                  ? "bg-emerald-500 text-slate-950 border-emerald-300 shadow-md scale-102"
+                  ? "btn-liquid-glass btn-liquid-forest text-white border-emerald-400/50 shadow-md scale-[1.02]"
                   : "bg-white/10 text-white hover:bg-white/15 border-white/15"
               }`}
             >
               <span>🥣 + Okra/Ewedu Soup</span>
-              <span className="text-[10px] font-black">{hasOkraBuffer ? "✓ -35mg" : "+ Add"}</span>
+              <span className="text-xs font-bold">{hasOkraBuffer ? "✓ -35mg" : "+ Add"}</span>
             </button>
 
             <button
@@ -1763,12 +1763,12 @@ export default function AvoAcademy() {
               }}
               className={`p-2.5 rounded-2xl text-xs font-bold transition-all cursor-pointer flex items-center justify-between border ${
                 hasProteinBuffer
-                  ? "bg-emerald-500 text-slate-950 border-emerald-300 shadow-md scale-102"
+                  ? "btn-liquid-glass btn-liquid-forest text-white border-emerald-400/50 shadow-md scale-[1.02]"
                   : "bg-white/10 text-white hover:bg-white/15 border-white/15"
               }`}
             >
               <span>🐟 + Grilled Fish/Egg</span>
-              <span className="text-[10px] font-black">{hasProteinBuffer ? "✓ -25mg" : "+ Add"}</span>
+              <span className="text-xs font-bold">{hasProteinBuffer ? "✓ -25mg" : "+ Add"}</span>
             </button>
 
             <button
@@ -1779,12 +1779,12 @@ export default function AvoAcademy() {
               }}
               className={`p-2.5 rounded-2xl text-xs font-bold transition-all cursor-pointer flex items-center justify-between border ${
                 hasVegFirstBuffer
-                  ? "bg-emerald-500 text-slate-950 border-emerald-300 shadow-md scale-102"
+                  ? "btn-liquid-glass btn-liquid-forest text-white border-emerald-400/50 shadow-md scale-[1.02]"
                   : "bg-white/10 text-white hover:bg-white/15 border-white/15"
               }`}
             >
               <span>🥗 Eat Veggies First</span>
-              <span className="text-[10px] font-black">{hasVegFirstBuffer ? "✓ -20mg" : "+ Add"}</span>
+              <span className="text-xs font-bold">{hasVegFirstBuffer ? "✓ -20mg" : "+ Add"}</span>
             </button>
           </div>
         </div>
@@ -1794,7 +1794,7 @@ export default function AvoAcademy() {
           <span className="text-2xl">
             {simulatedGlucose <= 125 ? "🥑" : simulatedGlucose <= 150 ? "🤔" : "⚠️"}
           </span>
-          <p className="text-xs text-teal-100/95 font-medium leading-relaxed">
+          <p className="text-xs text-stone-100 font-medium leading-relaxed">
             {simulatedGlucose <= 125
               ? "🎉 Excellent plate balance! The natural soluble fiber & protein buffer keeps your glucose steady so you feel energized all afternoon."
               : simulatedGlucose <= 150
@@ -1804,34 +1804,34 @@ export default function AvoAcademy() {
         </div>
       </div>
 
-            {/* =================================================================== */}
+      {/* =================================================================== */}
       {/* 🥳 REAL-WORLD CULTURAL PARTY & EVENT SURVIVAL GUIDES                */}
       {/* =================================================================== */}
-      <div className="bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 rounded-3xl p-4 sm:p-5 text-white shadow-xl border border-indigo-500/30 space-y-3.5">
+      <div className="bg-gradient-to-br from-stone-900 via-[#164E3D]/40 to-stone-950 rounded-3xl p-4 sm:p-5 text-white shadow-xl border border-emerald-500/30 space-y-3.5">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2.5">
-            <div className="p-2 bg-indigo-500/20 text-indigo-300 rounded-2xl text-xl shadow-inner">
+            <div className="p-2 bg-amber-400/20 text-amber-300 rounded-2xl text-xl shadow-inner">
               🎉
             </div>
             <div>
               <div className="flex items-center gap-1.5">
-                <span className="text-[9.5px] font-black uppercase px-2 py-0.5 rounded-full bg-indigo-500 text-white shadow-2xs">
+                <span className="text-xs font-bold uppercase px-2.5 py-0.5 rounded-full bg-amber-400 text-stone-950 shadow-2xs">
                   Party Cheat-Sheets
                 </span>
-                <span className="text-[10px] text-indigo-300 font-bold">Wedding &amp; Buffet Protocols</span>
+                <span className="text-xs text-stone-300 font-semibold">Wedding &amp; Buffet Protocols</span>
               </div>
-              <h3 className="text-sm sm:text-base font-black text-white leading-tight mt-0.5">
+              <h3 className="text-sm sm:text-base font-bold text-white leading-tight mt-0.5">
                 Cultural Party &amp; Event Survival Guides 🍲
               </h3>
             </div>
           </div>
 
-          <span className="text-[10.5px] font-black text-amber-300 bg-amber-400/20 border border-amber-300/30 px-2.5 py-1 rounded-xl">
+          <span className="text-xs font-bold text-amber-300 bg-amber-400/20 border border-amber-300/30 px-2.5 py-1 rounded-xl">
             4 Guides
           </span>
         </div>
 
-        <p className="text-xs text-indigo-200/90 font-medium leading-relaxed">
+        <p className="text-xs text-stone-200 font-medium leading-relaxed">
           Going to a wedding, family Sunday dinner, or festive party? Learn how to eat delicious cultural food without energy crashes or blood sugar spikes!
         </p>
 
@@ -1841,7 +1841,7 @@ export default function AvoAcademy() {
             <div
               key={guide.id}
               onClick={() => handleOpenPartyGuide(guide)}
-              className="p-3.5 rounded-2xl bg-white/10 hover:bg-white/15 border border-white/15 cursor-pointer transition-all active:scale-98 flex items-center justify-between gap-3 group"
+              className="p-3.5 rounded-2xl bg-white/10 hover:bg-white/15 border border-white/15 cursor-pointer transition-all active:scale-[0.99] flex items-center justify-between gap-3 group"
             >
               <div className="flex items-center gap-3 min-w-0">
                 <span className="text-2xl p-2 bg-white/10 rounded-xl shrink-0 group-hover:scale-110 transition-transform">
@@ -1849,29 +1849,29 @@ export default function AvoAcademy() {
                 </span>
                 <div className="min-w-0">
                   <div className="flex items-center gap-1.5 flex-wrap">
-                    <span className="text-[9px] font-bold text-indigo-300 uppercase">
+                    <span className="text-xs font-semibold text-stone-300 uppercase">
                       {guide.region}
                     </span>
                     {guide.isFree ? (
-                      <span className="text-[8.5px] font-black px-1.5 py-0.2 rounded-full bg-emerald-400 text-slate-950">
+                      <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-emerald-400 text-stone-950">
                         FREE PREVIEW
                       </span>
                     ) : (
-                      <span className="text-[8.5px] font-black px-1.5 py-0.2 rounded-full bg-amber-400 text-slate-950">
+                      <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-amber-400 text-stone-950">
                         PRO 🔒
                       </span>
                     )}
                   </div>
-                  <h4 className="text-xs font-black text-white leading-tight mt-0.5 truncate">
+                  <h4 className="text-xs font-bold text-white leading-tight mt-0.5 truncate">
                     {guide.title}
                   </h4>
-                  <p className="text-[10px] text-indigo-200/80 truncate mt-0.5">
+                  <p className="text-xs text-stone-300 truncate mt-0.5">
                     {guide.tagline}
                   </p>
                 </div>
               </div>
 
-              <ChevronRight size={14} className="text-indigo-300 group-hover:translate-x-1 transition-transform shrink-0" />
+              <ChevronRight size={14} className="text-stone-300 group-hover:translate-x-1 transition-transform shrink-0" />
             </div>
           ))}
         </div>
@@ -1880,30 +1880,30 @@ export default function AvoAcademy() {
       {/* =================================================================== */}
       {/* 2. CONTAINERIZED DAILY AFRICAN FOOD MASTERCLASS WITH EMERGING TIERS */}
       {/* =================================================================== */}
-      <div className="bg-white dark:bg-zinc-900 rounded-3xl p-4 sm:p-5 shadow-lg border border-teal-100/90 dark:border-zinc-800 space-y-4">
+      <div className="bg-white dark:bg-stone-900 rounded-3xl p-4 sm:p-5 shadow-lg border border-stone-200/80 dark:border-stone-800 space-y-4">
         {/* Masterclass Header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 px-1">
           <div className="flex items-center gap-2.5">
-            <div className="p-2.5 bg-teal-50 dark:bg-teal-950/70 rounded-2xl text-[#1f7a8c] dark:text-teal-300 border border-teal-100 dark:border-teal-900/50 shadow-2xs">
+            <div className="p-2.5 bg-emerald-50 dark:bg-emerald-950/70 rounded-2xl text-[#164E3D] dark:text-emerald-300 border border-emerald-100 dark:border-emerald-900/50 shadow-2xs">
               <GraduationCap className="h-5 w-5" />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <span className="text-xs sm:text-sm font-black text-gray-900 dark:text-white uppercase tracking-wider">
+                <span className="text-xs sm:text-sm font-bold text-stone-900 dark:text-white uppercase tracking-wider">
                   Daily African Food Masterclass 🥑
                 </span>
-                <span className="text-[9.5px] font-bold px-2 py-0.5 rounded-full bg-amber-100 text-amber-900 dark:bg-amber-950 dark:text-amber-300">
+                <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-amber-100 text-amber-900 dark:bg-amber-950 dark:text-amber-300">
                   4 Tiers
                 </span>
               </div>
-              <p className="text-[10.5px] text-gray-500 dark:text-gray-400 font-medium mt-0.5">
+              <p className="text-xs text-stone-500 dark:text-stone-400 font-medium mt-0.5">
                 Master 36 evidence-based cultural meal lessons & clinical shields
               </p>
             </div>
           </div>
 
           <div className="flex items-center gap-2 self-start sm:self-auto">
-            <span className="text-[10px] sm:text-xs font-bold px-2.5 py-1 rounded-full bg-teal-50 text-teal-800 dark:bg-teal-950 dark:text-teal-300 border border-teal-200/60 font-mono">
+            <span className="text-xs font-bold px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 border border-emerald-200/60 font-mono">
               {completedLessonIds.length}/{LESSONS.length} Lessons ({Math.round((completedLessonIds.length / LESSONS.length) * 100)}%)
             </span>
           </div>
@@ -1911,9 +1911,9 @@ export default function AvoAcademy() {
 
         {/* Masterclass Global Shimmer Progress Bar */}
         <div className="space-y-1">
-          <div className="w-full bg-slate-100 dark:bg-zinc-800 h-2 rounded-full overflow-hidden relative shadow-inner">
+          <div className="w-full bg-stone-100 dark:bg-stone-800 h-2 rounded-full overflow-hidden relative shadow-inner">
             <motion.div
-              className="h-full bg-gradient-to-r from-teal-500 via-emerald-400 to-amber-400 rounded-full"
+              className="h-full bg-gradient-to-r from-[#164E3D] via-emerald-500 to-amber-400 rounded-full"
               initial={{ width: "25%" }}
               animate={{
                 width: `${Math.max(5, (completedLessonIds.length / LESSONS.length) * 100)}%`,
@@ -1926,10 +1926,10 @@ export default function AvoAcademy() {
         {/* 4-Tier Progression Switcher Cards */}
         <div className="space-y-2">
           <div className="flex items-center justify-between px-1">
-            <span className="text-[10.5px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400">
+            <span className="text-xs font-bold uppercase tracking-wider text-stone-500 dark:text-stone-400">
               Select Progression Tier
             </span>
-            <span className="text-[10px] font-semibold text-teal-600 dark:text-teal-400 flex items-center gap-1">
+            <span className="text-xs font-semibold text-[#164E3D] dark:text-emerald-400 flex items-center gap-1">
               <Sparkles size={11} /> Tap tier to emerge lessons
             </span>
           </div>
@@ -1960,15 +1960,15 @@ export default function AvoAcademy() {
                   }}
                   className={`p-3 rounded-2xl border text-left transition-all cursor-pointer flex flex-col justify-between h-22 relative overflow-hidden group ${
                     isSelected
-                      ? "bg-slate-900 text-white border-slate-900 shadow-lg scale-[1.02] ring-2 ring-teal-400/60"
-                      : "bg-slate-50 dark:bg-zinc-800/60 hover:bg-teal-50/50 border-slate-200/80 dark:border-zinc-700 text-slate-800 dark:text-slate-200"
+                      ? "btn-liquid-glass btn-liquid-forest text-white border-white/20 shadow-md scale-[1.02]"
+                      : "bg-stone-50 dark:bg-stone-800/60 hover:bg-emerald-50/50 border-stone-200/80 dark:border-stone-700 text-stone-800 dark:text-stone-200"
                   }`}
                 >
                   {/* Active Slide Highlight Indicator */}
                   {isSelected && (
                     <motion.div
                       layoutId="activeTierIndicator"
-                      className="absolute inset-0 bg-gradient-to-br from-slate-900 via-teal-950 to-slate-900 border border-teal-400/40 rounded-2xl -z-0"
+                      className="absolute inset-0 bg-gradient-to-br from-[#164E3D] via-[#123E31] to-[#0F1412] border border-emerald-400/40 rounded-2xl -z-0"
                       transition={{ type: "spring", stiffness: 350, damping: 30 }}
                     />
                   )}
@@ -1976,13 +1976,13 @@ export default function AvoAcademy() {
                   <div className="flex items-center justify-between relative z-10">
                     <span className="text-xl">{t.icon}</span>
                     {isCompleted ? (
-                      <span className="text-[9px] font-black px-1.5 py-0.5 rounded-full bg-emerald-500 text-white flex items-center gap-0.5 shadow-2xs">
+                      <span className="text-xs font-bold px-1.5 py-0.5 rounded-full bg-emerald-500 text-white flex items-center gap-0.5 shadow-2xs">
                         <Check size={10} /> Done
                       </span>
                     ) : (
                       <span
-                        className={`text-[9.5px] font-mono font-bold ${
-                          isSelected ? "text-amber-300" : "text-slate-500"
+                        className={`text-xs font-mono font-bold ${
+                          isSelected ? "text-amber-300" : "text-stone-500"
                         }`}
                       >
                         {stat.completed}/{stat.total}
@@ -1991,8 +1991,8 @@ export default function AvoAcademy() {
                   </div>
 
                   <div className="relative z-10 mt-1">
-                    <div className="text-[11px] font-black leading-tight truncate">{t.label}</div>
-                    <div className={`text-[9px] truncate ${isSelected ? "text-teal-200/90" : "text-slate-500 dark:text-slate-400"}`}>
+                    <div className="text-xs font-bold leading-tight truncate">{t.label}</div>
+                    <div className={`text-xs truncate ${isSelected ? "text-emerald-200/90" : "text-stone-500 dark:text-stone-400"}`}>
                       {t.subtitle}
                     </div>
                     <div className="w-full bg-black/30 h-1 rounded-full overflow-hidden mt-1.5">
@@ -2009,11 +2009,11 @@ export default function AvoAcademy() {
         </div>
 
         {/* EMERGING TIER LESSONS PANEL WITH MINIMIZED DECK / EXPANDED GRID VIEW */}
-        <div className="pt-2 border-t border-slate-100 dark:border-zinc-800">
+        <div className="pt-2 border-t border-stone-100 dark:border-stone-800">
           {/* Tier Control Bar */}
           <div className="flex items-center justify-between gap-2 px-1 mb-3">
             <div className="flex items-center gap-1.5 min-w-0">
-              <span className="text-xs font-black uppercase tracking-wider text-slate-800 dark:text-slate-200 truncate">
+              <span className="text-xs font-bold uppercase tracking-wider text-stone-800 dark:text-stone-200 truncate">
                 {selectedTier === 1 && "Tier 1: Cultural Food Foundations (9 Lessons)"}
                 {selectedTier === 2 && "Tier 2: Organ Metabolic Shields (9 Lessons)"}
                 {selectedTier === 3 && "Tier 3: Culinary Biochemistry (9 Lessons)"}
@@ -2029,7 +2029,7 @@ export default function AvoAcademy() {
                     setCertificateTier(selectedTier);
                     setShowCertificateModal(true);
                   }}
-                  className="text-[10px] sm:text-[11px] font-black text-emerald-600 hover:text-emerald-700 dark:text-emerald-400 flex items-center gap-1 px-2 py-1 bg-emerald-50 dark:bg-emerald-950/60 rounded-xl border border-emerald-200/60 cursor-pointer"
+                  className="text-xs font-bold text-emerald-700 dark:text-emerald-400 flex items-center gap-1 px-2.5 py-1 bg-emerald-50 dark:bg-emerald-950/60 rounded-xl border border-emerald-200/60 cursor-pointer"
                 >
                   <Award size={12} />
                   <span>Credential 📜</span>
@@ -2037,7 +2037,7 @@ export default function AvoAcademy() {
               )}
 
               {/* Toggle Deck / Grid View Switcher */}
-              <div className="flex items-center bg-slate-100 dark:bg-zinc-800 p-0.5 rounded-xl border border-slate-200/80 dark:border-zinc-700 text-[10.5px]">
+              <div className="flex items-center bg-stone-100 dark:bg-stone-800 p-0.5 rounded-xl border border-stone-200/80 dark:border-stone-700 text-xs">
                 <button
                   type="button"
                   onClick={() => {
@@ -2047,8 +2047,8 @@ export default function AvoAcademy() {
                   }}
                   className={`px-2 py-1 rounded-lg font-bold flex items-center gap-1 cursor-pointer transition-all ${
                     tierViewMode === "deck"
-                      ? "bg-white dark:bg-zinc-900 text-teal-800 dark:text-teal-300 shadow-2xs"
-                      : "text-slate-500 hover:text-slate-900 dark:hover:text-white"
+                      ? "bg-white dark:bg-stone-900 text-emerald-800 dark:text-emerald-300 shadow-2xs"
+                      : "text-stone-500 hover:text-stone-900 dark:hover:text-white"
                   }`}
                   title="Slide Deck Mode"
                 >
@@ -2063,8 +2063,8 @@ export default function AvoAcademy() {
                   }}
                   className={`px-2 py-1 rounded-lg font-bold flex items-center gap-1 cursor-pointer transition-all ${
                     tierViewMode === "grid"
-                      ? "bg-white dark:bg-zinc-900 text-teal-800 dark:text-teal-300 shadow-2xs"
-                      : "text-slate-500 hover:text-slate-900 dark:hover:text-white"
+                      ? "bg-white dark:bg-stone-900 text-emerald-800 dark:text-emerald-300 shadow-2xs"
+                      : "text-stone-500 hover:text-stone-900 dark:hover:text-white"
                   }`}
                   title="All 9 Lessons Grid"
                 >
@@ -2080,7 +2080,7 @@ export default function AvoAcademy() {
                   triggerHaptic("light");
                   setIsTierExpanded(!isTierExpanded);
                 }}
-                className="p-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-slate-600 dark:text-slate-300 cursor-pointer transition-all"
+                className="p-1.5 rounded-xl bg-stone-100 hover:bg-stone-200 dark:bg-stone-800 dark:hover:bg-stone-700 text-stone-600 dark:text-stone-300 cursor-pointer transition-all"
                 title={isTierExpanded ? "Minimize tier lessons" : "Expand tier lessons"}
               >
                 {isTierExpanded ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
@@ -2110,7 +2110,7 @@ export default function AvoAcademy() {
                       const isAudioActive = playingAudioLessonId === lesson.id && isAudioPlaying;
 
                       return (
-                        <div className="bg-gradient-to-br from-slate-900 via-teal-950 to-slate-900 rounded-3xl p-4 sm:p-5 text-white border border-teal-500/30 shadow-xl relative overflow-hidden">
+                        <div className="bg-gradient-to-br from-[#164E3D] via-[#123E31] to-[#0F1412] rounded-3xl p-4 sm:p-5 text-white border border-emerald-500/30 shadow-xl relative overflow-hidden">
                           {/* Top Tag & Badges */}
                           <div className="flex items-center justify-between mb-3 relative z-10">
                             <div className="flex items-center gap-2">
@@ -2118,10 +2118,10 @@ export default function AvoAcademy() {
                                 {lesson.icon}
                               </span>
                               <div>
-                                <span className="text-[10px] font-black uppercase tracking-wider text-teal-300 block">
+                                <span className="text-xs font-bold uppercase tracking-wider text-emerald-300 block">
                                   Lesson {activeDeckIndex + 1} of {tierLessons.length} · {lesson.category}
                                 </span>
-                                <span className="text-[10px] text-teal-100/70 font-medium">
+                                <span className="text-xs text-stone-200 font-medium">
                                   {lesson.readTime} read
                                 </span>
                               </div>
@@ -2129,11 +2129,11 @@ export default function AvoAcademy() {
 
                             <div className="flex items-center gap-1.5">
                               {isCompleted ? (
-                                <span className="text-[10px] font-black px-2.5 py-1 rounded-full bg-emerald-500 text-white flex items-center gap-1 shadow-2xs">
+                                <span className="text-xs font-bold px-2.5 py-1 rounded-full bg-emerald-500 text-white flex items-center gap-1 shadow-2xs">
                                   <CheckCircle2 size={12} /> Done
                                 </span>
                               ) : (
-                                <span className="text-[10px] font-bold px-2.5 py-1 rounded-full bg-amber-400 text-slate-950 shadow-2xs">
+                                <span className="text-xs font-bold px-2.5 py-1 rounded-full bg-amber-400 text-stone-950 shadow-2xs">
                                   +25 XP
                                 </span>
                               )}
@@ -2143,10 +2143,10 @@ export default function AvoAcademy() {
                                 type="button"
                                 onClick={(e) => handleToggleAudio(e, lesson)}
                                 title="Listen to Sarah AI voice tip"
-                                className={`px-2.5 py-1 rounded-xl text-[10px] font-black transition-all cursor-pointer flex items-center gap-1 ${
+                                className={`btn-liquid-glass px-2.5 py-1 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1 border ${
                                   isAudioActive
-                                    ? "bg-amber-400 text-slate-950 animate-bounce"
-                                    : "bg-white/15 hover:bg-white/25 text-white border border-white/20"
+                                    ? "bg-amber-400 text-stone-950 animate-bounce border-amber-300"
+                                    : "btn-glass-frosted text-white border-white/20"
                                 }`}
                               >
                                 {isAudioActive ? <VolumeX size={12} /> : <Volume2 size={12} />}
@@ -2157,10 +2157,10 @@ export default function AvoAcademy() {
 
                           {/* Lesson Title & Headline */}
                           <div className="space-y-1.5 mb-4 relative z-10">
-                            <h4 className="text-base sm:text-lg font-black text-white leading-snug">
+                            <h4 className="text-base sm:text-lg font-bold text-white leading-snug">
                               {lesson.title}
                             </h4>
-                            <p className="text-xs text-teal-100/90 leading-relaxed font-medium">
+                            <p className="text-xs text-stone-200 leading-relaxed font-medium">
                               {lesson.headline}
                             </p>
                           </div>
@@ -2169,7 +2169,7 @@ export default function AvoAcademy() {
                           <div className="flex items-center gap-2 mb-4 relative z-10">
                             <Button
                               onClick={() => handleStartLesson(lesson)}
-                              className="flex-1 bg-gradient-to-r from-teal-400 to-emerald-400 hover:from-teal-300 hover:to-emerald-300 text-slate-950 h-11 rounded-2xl font-black text-xs shadow-md flex items-center justify-center gap-2 cursor-pointer active:scale-98"
+                              className="btn-liquid-glass btn-liquid-amber flex-1 text-stone-950 h-11 rounded-2xl font-bold text-xs shadow-md flex items-center justify-center gap-2 cursor-pointer active:scale-98 border border-amber-300/40"
                             >
                               <span>{isCompleted ? "Review Lesson Again 🔄" : "Start This Lesson (+25 XP) 🚀"}</span>
                             </Button>
@@ -2184,10 +2184,10 @@ export default function AvoAcademy() {
                                 setActiveDeckIndex((prev) => Math.max(0, prev - 1));
                               }}
                               disabled={activeDeckIndex === 0}
-                              className={`text-xs font-black flex items-center gap-1 px-3 py-1.5 rounded-xl cursor-pointer transition-all ${
+                              className={`btn-liquid-glass text-xs font-bold flex items-center gap-1 px-3 py-1.5 rounded-xl cursor-pointer transition-all border ${
                                 activeDeckIndex === 0
-                                  ? "opacity-30 cursor-not-allowed text-white/50"
-                                  : "bg-white/10 hover:bg-white/20 text-white"
+                                  ? "opacity-30 cursor-not-allowed text-white/50 border-transparent"
+                                  : "btn-glass-frosted text-white border-white/20"
                               }`}
                             >
                               <ChevronLeft size={14} />
@@ -2210,7 +2210,7 @@ export default function AvoAcademy() {
                                     }}
                                     className={`transition-all rounded-full cursor-pointer flex items-center justify-center ${
                                       isDotActive
-                                        ? "w-6 h-2.5 bg-teal-300 ring-2 ring-teal-400/50"
+                                        ? "w-6 h-2.5 bg-amber-300 ring-2 ring-amber-400/50"
                                         : isDotDone
                                         ? "w-2.5 h-2.5 bg-emerald-400 hover:bg-emerald-300"
                                         : "w-2.5 h-2.5 bg-white/25 hover:bg-white/50"
@@ -2228,10 +2228,10 @@ export default function AvoAcademy() {
                                 setActiveDeckIndex((prev) => Math.min(tierLessons.length - 1, prev + 1));
                               }}
                               disabled={activeDeckIndex === tierLessons.length - 1}
-                              className={`text-xs font-black flex items-center gap-1 px-3 py-1.5 rounded-xl cursor-pointer transition-all ${
+                              className={`btn-liquid-glass text-xs font-bold flex items-center gap-1 px-3 py-1.5 rounded-xl cursor-pointer transition-all border ${
                                 activeDeckIndex === tierLessons.length - 1
-                                  ? "opacity-30 cursor-not-allowed text-white/50"
-                                  : "bg-white/10 hover:bg-white/20 text-white"
+                                  ? "opacity-30 cursor-not-allowed text-white/50 border-transparent"
+                                  : "btn-glass-frosted text-white border-white/20"
                               }`}
                             >
                               <span>Next</span>
@@ -2260,8 +2260,8 @@ export default function AvoAcademy() {
                           onClick={() => handleStartLesson(lesson)}
                           className={`p-3.5 rounded-2xl border transition-all cursor-pointer flex flex-col justify-between min-h-[135px] group hover:shadow-md hover:scale-[1.01] active:scale-[0.99] ${
                             isCompleted
-                              ? "bg-slate-50/80 dark:bg-zinc-800/80 border-teal-200/80 dark:border-zinc-700"
-                              : "bg-white dark:bg-zinc-900 border-slate-200 dark:border-zinc-800"
+                              ? "bg-stone-50/80 dark:bg-stone-800/80 border-emerald-200/80 dark:border-stone-700"
+                              : "bg-white dark:bg-stone-900 border-stone-200 dark:border-stone-800"
                           }`}
                         >
                           <div>
@@ -2269,11 +2269,11 @@ export default function AvoAcademy() {
                               <span className="text-xl">{lesson.icon}</span>
                               <div className="flex items-center gap-1">
                                 {isCompleted ? (
-                                  <span className="text-[9px] font-black px-1.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 flex items-center gap-0.5">
-                                    <CheckCircle2 size={10} /> Done
+                                  <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 flex items-center gap-0.5">
+                                    <CheckCircle2 size={12} /> Done
                                   </span>
                                 ) : (
-                                  <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-amber-50 text-amber-800 dark:bg-zinc-800 dark:text-zinc-300">
+                                  <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-amber-50 text-amber-800 dark:bg-stone-800 dark:text-stone-300">
                                     +25 XP
                                   </span>
                                 )}
@@ -2283,26 +2283,26 @@ export default function AvoAcademy() {
                                   type="button"
                                   onClick={(e) => handleToggleAudio(e, lesson)}
                                   title="Listen to Sarah AI voice tip"
-                                  className={`p-1.5 rounded-xl transition-all cursor-pointer ${
+                                  className={`btn-liquid-glass p-2 rounded-xl transition-all cursor-pointer border ${
                                     isAudioActive
-                                      ? "bg-amber-400 text-slate-950 animate-bounce"
-                                      : "bg-teal-50 hover:bg-teal-100 text-[#1f7a8c] dark:bg-zinc-800 dark:text-teal-300"
+                                      ? "bg-amber-400 text-stone-950 animate-bounce border-amber-300"
+                                      : "bg-emerald-50 hover:bg-emerald-100 text-[#164E3D] dark:bg-stone-800 dark:text-emerald-300 border border-emerald-200/40"
                                   }`}
                                 >
-                                  {isAudioActive ? <VolumeX size={12} /> : <Volume2 size={12} />}
+                                  {isAudioActive ? <VolumeX size={13} /> : <Volume2 size={13} />}
                                 </button>
                               </div>
                             </div>
 
-                            <span className="text-[9.5px] font-bold text-[#1f7a8c] dark:text-teal-400 block leading-tight">
+                            <span className="text-xs font-bold text-[#164E3D] dark:text-emerald-400 block leading-tight">
                               Lesson {idx + 1} · {lesson.category}
                             </span>
-                            <h4 className="text-[11.5px] font-black text-slate-900 dark:text-white leading-snug mt-0.5 group-hover:text-teal-700 transition-colors line-clamp-2">
+                            <h4 className="text-xs font-bold text-stone-900 dark:text-white leading-snug mt-0.5 group-hover:text-emerald-700 transition-colors line-clamp-2">
                               {lesson.title}
                             </h4>
                           </div>
 
-                          <p className="text-[10px] text-slate-500 dark:text-slate-400 line-clamp-2 mt-1.5 font-medium">
+                          <p className="text-xs text-stone-500 dark:text-stone-400 line-clamp-2 mt-1.5 font-medium">
                             {lesson.headline}
                           </p>
                         </motion.div>
@@ -2324,17 +2324,17 @@ export default function AvoAcademy() {
           <DialogContent className="max-w-md max-h-[90vh] overflow-y-auto rounded-3xl p-5 sm:p-6">
             <DialogHeader className="text-left pb-2">
               <div className="flex items-center justify-between">
-                <span className="text-[10px] font-black uppercase px-2.5 py-0.5 rounded-full bg-teal-100 text-teal-900 dark:bg-teal-950 dark:text-teal-300">
+                <span className="text-xs font-bold uppercase px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-900 dark:bg-emerald-950 dark:text-emerald-300">
                   {activeLesson.tierName} · Lesson
                 </span>
 
                 <button
                   type="button"
                   onClick={(e) => handleToggleAudio(e, activeLesson)}
-                  className={`px-3 py-1.5 rounded-xl text-xs font-black flex items-center gap-1.5 transition-all cursor-pointer ${
+                  className={`btn-liquid-glass px-3.5 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer border ${
                     playingAudioLessonId === activeLesson.id && isAudioPlaying
-                      ? "bg-amber-400 text-slate-950 shadow-xs animate-pulse"
-                      : "bg-teal-50 hover:bg-teal-100 text-[#1f7a8c] border border-teal-200/60"
+                      ? "bg-amber-400 text-stone-950 shadow-xs animate-pulse border-amber-300"
+                      : "bg-emerald-50 hover:bg-emerald-100 text-[#164E3D] border border-emerald-200/60"
                   }`}
                 >
                   <Volume2 size={13} />
@@ -2342,10 +2342,10 @@ export default function AvoAcademy() {
                 </button>
               </div>
 
-              <DialogTitle className="text-base font-black text-gray-900 dark:text-white mt-2">
+              <DialogTitle className="text-base font-bold text-stone-900 dark:text-white mt-2">
                 {activeLesson.title}
               </DialogTitle>
-              <DialogDescription className="text-xs text-gray-600 dark:text-gray-300">
+              <DialogDescription className="text-xs text-stone-600 dark:text-stone-300">
                 {activeLesson.headline}
               </DialogDescription>
             </DialogHeader>
@@ -2353,14 +2353,14 @@ export default function AvoAcademy() {
             {/* SLIDES PHASE */}
             {currentSlideIndex < activeLesson.storySlides.length ? (
               <div className="space-y-4">
-                <div className="bg-gradient-to-br from-teal-50/70 to-emerald-50/50 dark:from-zinc-800 dark:to-zinc-800/80 p-4 sm:p-5 rounded-2xl border border-teal-100 dark:border-zinc-700">
+                <div className="bg-gradient-to-br from-emerald-50/70 to-stone-50 dark:from-stone-900 dark:to-stone-800/80 p-4 sm:p-5 rounded-2xl border border-emerald-100 dark:border-stone-700">
                   <div className="flex items-center justify-between mb-2.5">
-                    <span className="text-[10px] font-black uppercase tracking-wider text-teal-800 dark:text-teal-300">
+                    <span className="text-xs font-bold uppercase tracking-wider text-emerald-800 dark:text-emerald-300">
                       Slide {currentSlideIndex + 1} of {activeLesson.storySlides.length}
                     </span>
                     <Mascot gesture="waving" size={30} />
                   </div>
-                  <p className="text-xs sm:text-sm text-slate-800 dark:text-slate-100 leading-relaxed font-medium">
+                  <p className="text-xs sm:text-sm text-stone-800 dark:text-stone-100 leading-relaxed font-medium">
                     {activeLesson.storySlides[currentSlideIndex]}
                   </p>
                 </div>
@@ -2372,10 +2372,10 @@ export default function AvoAcademy() {
                       key={i}
                       className={`h-1.5 rounded-full transition-all duration-300 ${
                         i === currentSlideIndex
-                          ? "w-6 bg-[#126778]"
+                          ? "w-6 bg-[#164E3D]"
                           : i < currentSlideIndex
-                          ? "w-2 bg-teal-400"
-                          : "w-2 bg-slate-200 dark:bg-zinc-700"
+                          ? "w-2 bg-emerald-500"
+                          : "w-2 bg-stone-200 dark:bg-stone-700"
                       }`}
                     />
                   ))}
@@ -2383,7 +2383,7 @@ export default function AvoAcademy() {
 
                 <Button
                   onClick={handleNextSlide}
-                  className="w-full bg-gradient-to-r from-[#126778] to-[#2a9d8f] text-white h-11 rounded-2xl font-black text-xs shadow-md flex items-center justify-center gap-2 cursor-pointer active:scale-98"
+                  className="btn-liquid-glass btn-liquid-forest w-full text-white h-11 rounded-2xl font-bold text-xs shadow-md flex items-center justify-center gap-2 cursor-pointer active:scale-98 border border-white/20"
                 >
                   <span>
                     {currentSlideIndex === activeLesson.storySlides.length - 1
@@ -2396,11 +2396,11 @@ export default function AvoAcademy() {
               /* QUIZ PHASE */
               <div className="space-y-4">
                 <div className="bg-amber-50 dark:bg-amber-950/40 p-4 rounded-2xl border border-amber-200 dark:border-amber-900">
-                  <div className="flex items-center gap-1.5 text-xs font-black text-amber-800 dark:text-amber-300 mb-1">
+                  <div className="flex items-center gap-1.5 text-xs font-bold text-amber-800 dark:text-amber-300 mb-1">
                     <Sparkles size={13} />
                     <span>10-Second Quick Quiz 🎯</span>
                   </div>
-                  <h4 className="text-xs sm:text-sm font-bold text-slate-900 dark:text-white">
+                  <h4 className="text-xs sm:text-sm font-bold text-stone-900 dark:text-white">
                     {activeLesson.quiz.question}
                   </h4>
                 </div>
@@ -2411,7 +2411,7 @@ export default function AvoAcademy() {
                     const isSelected = selectedAnswer === idx;
                     const isCorrect = idx === activeLesson.quiz.correctIndex;
 
-                    let btnClass = "border-slate-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 hover:border-teal-300";
+                    let btnClass = "border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 hover:border-emerald-300";
                     if (quizSubmitted) {
                       if (isCorrect) {
                         btnClass = "border-emerald-500 bg-emerald-50 dark:bg-emerald-950/60 text-emerald-900 dark:text-emerald-200 font-bold ring-2 ring-emerald-400/40";
@@ -2419,7 +2419,7 @@ export default function AvoAcademy() {
                         btnClass = "border-rose-500 bg-rose-50 dark:bg-rose-950/60 text-rose-900 dark:text-rose-200 ring-2 ring-rose-400/30";
                       }
                     } else if (isSelected) {
-                      btnClass = "border-[#126778] bg-teal-50/90 dark:bg-teal-950/70 text-[#126778] dark:text-teal-300 font-bold ring-2 ring-teal-400/40 shadow-xs";
+                      btnClass = "border-[#164E3D] bg-emerald-50/90 dark:bg-emerald-950/70 text-[#164E3D] dark:text-emerald-300 font-bold ring-2 ring-emerald-400/40 shadow-xs";
                     }
 
                     return (
@@ -2440,7 +2440,7 @@ export default function AvoAcademy() {
                           className={`w-full p-3.5 rounded-2xl border text-left text-xs transition-all flex items-center justify-between cursor-pointer active:scale-98 ${btnClass}`}
                         >
                           <div className="flex items-center gap-2.5 min-w-0">
-                            <span className="w-5 h-5 rounded-full bg-slate-100 dark:bg-zinc-700 text-slate-700 dark:text-slate-300 text-[10px] font-black flex items-center justify-center shrink-0">
+                            <span className="w-5 h-5 rounded-full bg-stone-100 dark:bg-stone-700 text-stone-700 dark:text-stone-300 text-xs font-bold flex items-center justify-center shrink-0">
                               {String.fromCharCode(65 + idx)}
                             </span>
                             <span className="leading-snug">{option}</span>
@@ -2462,25 +2462,25 @@ export default function AvoAcademy() {
                     className="space-y-3"
                   >
                     {selectedAnswer === activeLesson.quiz.correctIndex ? (
-                      <div className="flex flex-col items-center justify-center p-3.5 bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-zinc-800 dark:to-zinc-900 rounded-3xl border-2 border-emerald-400 text-center">
+                      <div className="flex flex-col items-center justify-center p-3.5 bg-gradient-to-br from-emerald-50 to-stone-50 dark:from-stone-800 dark:to-stone-900 rounded-3xl border-2 border-emerald-400 text-center">
                         <Mascot gesture="clapping" size={100} className="drop-shadow-md my-1" />
-                        <div className="bg-emerald-600 text-white px-3 py-1 rounded-full text-xs font-black mt-1">
+                        <div className="bg-emerald-600 text-white px-3 py-1 rounded-full text-xs font-bold mt-1">
                           Avo Claps: 100% Correct! 👏🎉
                         </div>
                       </div>
                     ) : (
-                      <div className="p-3 bg-amber-50 dark:bg-zinc-800 rounded-2xl border border-amber-300 text-center">
-                        <span className="text-xs font-black text-amber-900 dark:text-amber-300">
+                      <div className="p-3 bg-amber-50 dark:bg-stone-800 rounded-2xl border border-amber-300 text-center">
+                        <span className="text-xs font-bold text-amber-900 dark:text-amber-300">
                           Avo's Clinical Review Note 📝
                         </span>
                       </div>
                     )}
 
-                    <div className="p-3 bg-slate-50 dark:bg-zinc-800/80 rounded-2xl border border-slate-200 dark:border-zinc-700 text-xs space-y-2">
-                      <p className="font-bold text-slate-800 dark:text-slate-100 leading-relaxed">
+                    <div className="p-3 bg-stone-50 dark:bg-stone-800/80 rounded-2xl border border-stone-200 dark:border-stone-700 text-xs space-y-2">
+                      <p className="font-bold text-stone-800 dark:text-stone-100 leading-relaxed">
                         {activeLesson.quiz.explanation}
                       </p>
-                      <div className="p-2 bg-teal-50 dark:bg-teal-950/60 rounded-xl text-teal-800 dark:text-teal-300 font-medium text-[11px]">
+                      <div className="p-2 bg-emerald-50 dark:bg-emerald-950/60 rounded-xl text-emerald-900 dark:text-emerald-300 font-medium text-xs">
                         💡 <strong>Clinical Takeaway:</strong> {activeLesson.takeaway}
                       </div>
                     </div>
@@ -2492,14 +2492,14 @@ export default function AvoAcademy() {
                   <Button
                     onClick={handleSubmitQuiz}
                     disabled={selectedAnswer === null}
-                    className="w-full bg-gradient-to-r from-[#126778] to-[#2a9d8f] text-white h-11 rounded-2xl font-black text-xs shadow-md cursor-pointer disabled:opacity-60"
+                    className="btn-liquid-glass btn-liquid-forest w-full text-white h-11 rounded-2xl font-bold text-xs shadow-md cursor-pointer disabled:opacity-60 border border-white/20"
                   >
                     Submit Answer
                   </Button>
                 ) : (
                   <Button
                     onClick={() => setActiveLesson(null)}
-                    className="w-full bg-slate-900 hover:bg-black text-white h-11 rounded-2xl font-black text-xs cursor-pointer"
+                    className="btn-liquid-glass btn-liquid-forest w-full text-white h-11 rounded-2xl font-bold text-xs cursor-pointer shadow-md border border-white/20"
                   >
                     Collect XP &amp; Return
                   </Button>
@@ -2519,25 +2519,25 @@ export default function AvoAcademy() {
             <div className="p-3 bg-amber-100 dark:bg-amber-950 rounded-3xl text-3xl mb-3 shadow-md">
               👑
             </div>
-            <DialogTitle className="text-lg font-black text-slate-900 dark:text-white">
+            <DialogTitle className="text-lg font-bold text-stone-900 dark:text-white">
               Tier {certificateTier} Certification Unlocked!
             </DialogTitle>
-            <DialogDescription className="text-xs text-slate-600 dark:text-slate-300 mt-1">
+            <DialogDescription className="text-xs text-stone-600 dark:text-stone-300 mt-1">
               You have completed all 9 clinical lessons in {getTierBadgeTitle(certificateTier)}.
             </DialogDescription>
 
             {/* Certificate Card Preview */}
-            <div className="w-full my-4 p-5 bg-gradient-to-br from-teal-900 via-slate-900 to-slate-950 text-white rounded-3xl border-2 border-amber-400 shadow-xl space-y-3 text-center relative overflow-hidden">
-              <div className="text-[10px] font-mono tracking-widest text-amber-300 uppercase">
+            <div className="w-full my-4 p-5 bg-gradient-to-br from-[#164E3D] via-[#123E31] to-[#0F1412] text-white rounded-3xl border-2 border-amber-400 shadow-xl space-y-3 text-center relative overflow-hidden">
+              <div className="text-xs font-mono tracking-widest text-amber-300 uppercase">
                 OFFICIAL CERTIFICATE OF METABOLIC MASTERY
               </div>
-              <h3 className="text-base font-black text-white">
+              <h3 className="text-base font-bold text-white">
                 {user?.name || "Metabolic Health Champion"}
               </h3>
-              <p className="text-xs text-teal-200 font-bold">
+              <p className="text-xs text-amber-200 font-bold">
                 {getTierBadgeTitle(certificateTier)}
               </p>
-              <div className="pt-2 border-t border-white/10 flex items-center justify-between text-[9px] text-slate-400">
+              <div className="pt-2 border-t border-white/10 flex items-center justify-between text-xs text-stone-300">
                 <span>MealOptimiza Clinical Academy</span>
                 <span>Verified Credential</span>
               </div>
@@ -2551,7 +2551,7 @@ export default function AvoAcademy() {
                   const shareText = `🎓 I just completed ${getTierBadgeTitle(certificateTier)} on MealOptimiza! Mastering cultural metabolic nutrition, glucose curves, and longevity. Check it out at mealoptimiza.com`;
                   window.open(`https://wa.me/?text=${encodeURIComponent(shareText)}`, "_blank");
                 }}
-                className="w-full py-3 bg-[#25D366] hover:bg-[#20bd5a] text-white font-black text-xs rounded-2xl flex items-center justify-center gap-2 shadow-md cursor-pointer"
+                className="btn-liquid-glass w-full py-3 bg-[#25D366] hover:bg-[#20bd5a] text-white font-bold text-xs rounded-2xl flex items-center justify-center gap-2 shadow-md cursor-pointer border border-white/20"
               >
                 <Share2 size={14} />
                 <span>Share Credential to WhatsApp</span>
@@ -2572,20 +2572,21 @@ export default function AvoAcademy() {
           </div>
         </DialogContent>
       </Dialog>
-            {/* 🎉 PARTY SURVIVAL GUIDE DETAIL MODAL */}
+
+      {/* 🎉 PARTY SURVIVAL GUIDE DETAIL MODAL */}
       <Dialog open={showPartyGuideModal} onOpenChange={setShowPartyGuideModal}>
-        <DialogContent className="sm:max-w-lg rounded-3xl p-5 sm:p-6 bg-gradient-to-b from-slate-950 via-slate-900 to-indigo-950 text-white border border-indigo-500/30 max-h-[90vh] overflow-y-auto">
+        <DialogContent className="sm:max-w-lg rounded-3xl p-5 sm:p-6 bg-gradient-to-b from-stone-950 via-stone-900 to-[#0F1412] text-white border border-emerald-500/30 max-h-[90vh] overflow-y-auto">
           {selectedPartyGuide && (
             <div className="space-y-4">
               <div className="flex items-center gap-3">
-                <span className="text-3xl p-2 bg-indigo-500/20 rounded-2xl border border-indigo-400/30">
+                <span className="text-3xl p-2 bg-amber-400/20 rounded-2xl border border-amber-400/30">
                   {selectedPartyGuide.emoji}
                 </span>
                 <div>
-                  <span className="text-[10px] font-black uppercase tracking-wider text-indigo-300">
+                  <span className="text-xs font-bold uppercase tracking-wider text-amber-300">
                     {selectedPartyGuide.region}
                   </span>
-                  <h3 className="text-base sm:text-lg font-black text-white leading-tight">
+                  <h3 className="text-base sm:text-lg font-bold text-white leading-tight">
                     {selectedPartyGuide.title}
                   </h3>
                 </div>
@@ -2593,11 +2594,11 @@ export default function AvoAcademy() {
 
               {/* 3 Steps */}
               <div className="p-3.5 bg-white/10 rounded-2xl border border-white/15 space-y-2">
-                <span className="text-[10px] font-black uppercase tracking-wider text-amber-300 block">
+                <span className="text-xs font-bold uppercase tracking-wider text-amber-300 block">
                   3 Golden Kitchen Steps
                 </span>
                 {selectedPartyGuide.hackSteps.map((step, idx) => (
-                  <p key={idx} className="text-xs text-indigo-100 font-medium leading-relaxed">
+                  <p key={idx} className="text-xs text-stone-100 font-medium leading-relaxed">
                     {step}
                   </p>
                 ))}
@@ -2605,7 +2606,7 @@ export default function AvoAcademy() {
 
               {/* Safe Order List */}
               <div className="p-3.5 bg-emerald-950/40 rounded-2xl border border-emerald-500/30 space-y-1.5">
-                <span className="text-[10px] font-black uppercase tracking-wider text-emerald-300 block">
+                <span className="text-xs font-bold uppercase tracking-wider text-emerald-300 block">
                   Best Plates to Request
                 </span>
                 {selectedPartyGuide.safeOrderList.map((item, idx) => (
@@ -2617,7 +2618,7 @@ export default function AvoAcademy() {
 
               {/* Drinks Trap */}
               <div className="p-3 bg-rose-950/40 rounded-2xl border border-rose-500/30">
-                <span className="text-[10px] font-black uppercase tracking-wider text-rose-300 block">
+                <span className="text-xs font-bold uppercase tracking-wider text-rose-300 block">
                   ⚠️ The Drinks Trap
                 </span>
                 <p className="text-xs text-rose-100/90 font-medium mt-0.5 leading-relaxed">
@@ -2627,7 +2628,7 @@ export default function AvoAcademy() {
 
               <Button
                 onClick={() => setShowPartyGuideModal(false)}
-                className="w-full py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-black text-xs rounded-2xl cursor-pointer"
+                className="btn-liquid-glass btn-liquid-forest w-full py-3 text-white font-bold text-xs rounded-2xl cursor-pointer border border-white/20 shadow-md"
               >
                 Got It! Ready for the Party 🎉
               </Button>
@@ -2638,36 +2639,36 @@ export default function AvoAcademy() {
 
       {/* 👑 PRO REVERSE-TRIAL UPGRADE MODAL */}
       <Dialog open={showProUpgradeModal} onOpenChange={setShowProUpgradeModal}>
-        <DialogContent className="sm:max-w-md rounded-3xl p-6 bg-gradient-to-b from-slate-950 via-slate-900 to-[#0a232a] text-white border border-teal-500/30">
+        <DialogContent className="sm:max-w-md rounded-3xl p-6 bg-gradient-to-b from-stone-950 via-stone-900 to-[#123E31] text-white border border-emerald-500/30">
           <div className="text-center space-y-3 pt-2">
             <div className="w-16 h-16 rounded-3xl bg-gradient-to-tr from-amber-400 to-amber-600 p-0.5 mx-auto shadow-xl flex items-center justify-center">
-              <div className="w-full h-full bg-slate-950 rounded-[22px] flex items-center justify-center text-3xl">
+              <div className="w-full h-full bg-stone-950 rounded-[22px] flex items-center justify-center text-3xl">
                 👑
               </div>
             </div>
 
             <div className="space-y-1">
-              <span className="text-[10px] font-black uppercase tracking-widest bg-amber-400 text-slate-950 px-2.5 py-0.5 rounded-full shadow-2xs">
+              <span className="text-xs font-bold uppercase tracking-widest bg-amber-400 text-stone-950 px-2.5 py-0.5 rounded-full shadow-2xs">
                 PRO VIP EXCLUSIVE
               </span>
-              <h3 className="text-lg font-black text-white mt-1">
+              <h3 className="text-lg font-bold text-white mt-1">
                 Unlock {lockedItemTitle || "Full Masterclass Hub"}
               </h3>
-              <p className="text-xs text-slate-300 max-w-xs mx-auto leading-relaxed">
+              <p className="text-xs text-stone-300 max-w-xs mx-auto leading-relaxed">
                 Upgrade to MealOptimiza PRO to unlock all 4 Masterclass Tiers, 10 Party Survival Guides, and Certified Nutrition Diplomas!
               </p>
             </div>
 
             <div className="p-3 bg-white/10 rounded-2xl border border-white/15 text-left text-xs space-y-2">
-              <div className="flex items-center gap-2 text-teal-200">
+              <div className="flex items-center gap-2 text-emerald-200">
                 <CheckCircle2 size={14} className="text-emerald-400 shrink-0" />
                 <span>All 4 Curriculum Tiers &amp; Clinical Organ Shields</span>
               </div>
-              <div className="flex items-center gap-2 text-teal-200">
+              <div className="flex items-center gap-2 text-emerald-200">
                 <CheckCircle2 size={14} className="text-emerald-400 shrink-0" />
                 <span>10 Cultural Party &amp; Wedding Survival Guides</span>
               </div>
-              <div className="flex items-center gap-2 text-teal-200">
+              <div className="flex items-center gap-2 text-emerald-200">
                 <CheckCircle2 size={14} className="text-emerald-400 shrink-0" />
                 <span>Official Certified African Heritage Nutrition Diploma</span>
               </div>
@@ -2679,7 +2680,7 @@ export default function AvoAcademy() {
                 setShowProUpgradeModal(false);
                 toast.success("Redirecting to PRO Checkout...");
               }}
-              className="w-full py-3.5 bg-gradient-to-r from-amber-400 via-amber-300 to-yellow-400 text-slate-950 font-black text-xs rounded-2xl shadow-xl hover:scale-102 active:scale-98 transition-all cursor-pointer flex items-center justify-center gap-2"
+              className="btn-liquid-glass btn-liquid-amber w-full py-3.5 text-stone-950 font-bold text-xs rounded-2xl shadow-xl hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer flex items-center justify-center gap-2 border border-amber-300/40"
             >
               <span>Claim 7 Days PRO Free ($9.99/mo)</span>
               <ChevronRight size={15} />
@@ -2688,7 +2689,7 @@ export default function AvoAcademy() {
             <button
               type="button"
               onClick={() => setShowProUpgradeModal(false)}
-              className="text-xs text-slate-400 hover:text-white font-semibold cursor-pointer pt-1 block mx-auto"
+              className="text-xs text-stone-400 hover:text-white font-semibold cursor-pointer pt-1 block mx-auto"
             >
               Maybe later
             </button>

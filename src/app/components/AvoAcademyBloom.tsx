@@ -123,35 +123,35 @@ export default function AvoAcademyBloom() {
       {!isOpen ? (
         <div
           onClick={handleOpenCapsule}
-          className="group relative rounded-3xl p-4 bg-gradient-to-r from-amber-500/15 via-emerald-500/15 to-teal-500/15 dark:from-amber-950/40 dark:via-emerald-950/40 dark:to-teal-950/40 border-2 border-amber-400/50 dark:border-amber-500/40 shadow-md hover:shadow-xl transition-all cursor-pointer select-none active:scale-98 overflow-hidden"
+          className="group relative rounded-3xl p-4 bg-gradient-to-r from-amber-500/10 via-emerald-600/10 to-stone-50 dark:from-[#164E3D]/30 dark:via-stone-900/60 dark:to-[#0F1412] border border-amber-400/40 dark:border-emerald-600/40 shadow-xs hover:shadow-md transition-all cursor-pointer select-none active:scale-[0.99] overflow-hidden"
         >
           {/* Subtle Ambient Pulse Background */}
-          <div className="absolute -right-6 -bottom-6 w-24 h-24 bg-amber-400/20 rounded-full blur-xl group-hover:scale-125 transition-transform duration-500 pointer-events-none" />
+          <div className="absolute -right-6 -bottom-6 w-24 h-24 bg-amber-400/15 rounded-full blur-xl group-hover:scale-125 transition-transform duration-500 pointer-events-none" />
 
           <div className="flex items-center justify-between gap-3 relative z-10">
             <div className="flex items-center gap-3">
-              <div className="p-2.5 bg-gradient-to-br from-amber-400 to-amber-500 text-slate-950 rounded-2xl shadow-sm animate-bounce">
+              <div className="p-2.5 bg-gradient-to-br from-amber-400 to-amber-500 text-stone-950 rounded-2xl shadow-xs animate-bounce">
                 <Sparkles size={20} />
               </div>
 
               <div>
                 <div className="flex items-center gap-2">
-                  <span className="text-xs font-black text-slate-900 dark:text-white">
+                  <span className="text-xs font-bold text-stone-900 dark:text-stone-100">
                     Today's 60s Food Secret 🥑
                   </span>
-                  <span className="text-[9px] font-black px-2 py-0.5 rounded-full bg-amber-400 text-slate-950 uppercase tracking-wide">
+                  <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-amber-400 text-stone-950 uppercase tracking-wide">
                     Day {streakDays}/7 🔥
                   </span>
                 </div>
-                <p className="text-[11px] text-slate-600 dark:text-slate-300 font-medium mt-0.5 flex items-center gap-1">
+                <p className="text-xs text-stone-600 dark:text-stone-300 font-medium mt-0.5 flex items-center gap-1">
                   <span>Today's Food Secret:</span>
-                  <strong className="text-amber-700 dark:text-amber-300 font-bold">The Soup Shield</strong>
+                  <strong className="text-amber-700 dark:text-amber-400 font-bold">The Soup Shield</strong>
                 </p>
               </div>
             </div>
 
             {/* Tap to Burst Call-to-Action Pill */}
-            <div className="flex items-center gap-1.5 bg-amber-400 hover:bg-amber-300 text-slate-950 font-black text-xs px-3.5 py-2 rounded-2xl shadow-sm group-hover:scale-105 transition-all shrink-0">
+            <div className="btn-liquid-glass btn-liquid-amber flex items-center gap-1.5 font-bold text-xs px-3.5 py-2 rounded-2xl shadow-xs group-hover:scale-105 transition-all shrink-0 border border-amber-300/40">
               <span>Tap to Reveal 💡</span>
               <ChevronRight size={14} />
             </div>
@@ -161,7 +161,7 @@ export default function AvoAcademyBloom() {
         /* ------------------------------------------------------------- */
         /* STATE B: EXPLODED STORY VIEWER (Snackable, High Energy)       */
         /* ------------------------------------------------------------- */
-        <div className="rounded-3xl p-5 bg-gradient-to-br from-slate-900 via-zinc-900 to-slate-950 text-white border-2 border-amber-400 shadow-2xl relative overflow-hidden animate-fade-in">
+        <div className="rounded-3xl p-5 bg-gradient-to-br from-[#164E3D] via-[#123E31] to-[#0F1412] text-white border-2 border-emerald-500/40 shadow-xl relative overflow-hidden animate-fade-in">
           {/* Top Progress Bars (Instagram Stories Style) */}
           <div className="flex items-center gap-1.5 mb-4">
             {[0, 1, 2, 3].map((idx) => (
@@ -185,17 +185,17 @@ export default function AvoAcademyBloom() {
           {/* Header Row */}
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-2">
-              <span className="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full bg-amber-400/20 text-amber-300 border border-amber-400/40">
+              <span className="text-xs font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-amber-400/20 text-amber-300 border border-amber-400/40">
                 {currentSlide < 3 ? DAILY_STORIES[currentSlide].badge : "Quick Check"}
               </span>
-              <span className="text-xs text-white/60 font-bold">
+              <span className="text-xs text-stone-300 font-semibold">
                 {currentSlide + 1} of 4
               </span>
             </div>
 
             <button
               onClick={handleReset}
-              className="p-1.5 text-white/70 hover:text-white rounded-full bg-white/10 hover:bg-white/20 transition-all cursor-pointer"
+              className="p-1.5 text-stone-200 hover:text-white rounded-full bg-white/10 hover:bg-white/20 transition-all cursor-pointer"
               title="Close story"
             >
               <X size={15} />
@@ -210,10 +210,10 @@ export default function AvoAcademyBloom() {
                   {DAILY_STORIES[currentSlide].emoji}
                 </span>
                 <div>
-                  <h4 className="text-base font-black text-amber-300 leading-tight">
+                  <h4 className="text-base font-bold text-amber-300 leading-tight">
                     {DAILY_STORIES[currentSlide].title}
                   </h4>
-                  <p className="text-xs text-white/80 mt-0.5 leading-snug">
+                  <p className="text-xs text-stone-200 mt-0.5 leading-snug">
                     {DAILY_STORIES[currentSlide].summary}
                   </p>
                 </div>
@@ -229,7 +229,7 @@ export default function AvoAcademyBloom() {
                 <button
                   onClick={handlePrevSlide}
                   disabled={currentSlide === 0}
-                  className="px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 disabled:opacity-30 text-xs font-bold transition-all cursor-pointer flex items-center gap-1"
+                  className="px-3.5 py-2 rounded-xl bg-white/10 hover:bg-white/20 disabled:opacity-30 text-xs font-semibold transition-all cursor-pointer flex items-center gap-1 border border-white/10"
                 >
                   <ChevronLeft size={14} />
                   <span>Back</span>
@@ -237,7 +237,7 @@ export default function AvoAcademyBloom() {
 
                 <button
                   onClick={handleNextSlide}
-                  className="px-4 py-2 rounded-xl bg-gradient-to-r from-amber-400 to-amber-500 text-slate-950 font-black text-xs transition-all hover:brightness-110 active:scale-95 cursor-pointer flex items-center gap-1.5 shadow-md"
+                  className="btn-liquid-glass btn-liquid-amber px-4 py-2 rounded-xl font-bold text-xs transition-all active:scale-95 cursor-pointer flex items-center gap-1.5 shadow-md border border-amber-300/40"
                 >
                   <span>{currentSlide === 2 ? "Take 1-Tap Quiz ⚡" : "Next Bite"}</span>
                   <ArrowRight size={14} />
@@ -249,7 +249,7 @@ export default function AvoAcademyBloom() {
             <div className="space-y-3 py-1">
               <div className="flex items-center gap-2">
                 <Mascot gesture="wave" size={36} className="shrink-0" />
-                <h4 className="text-xs sm:text-sm font-black text-amber-300">
+                <h4 className="text-xs sm:text-sm font-bold text-amber-300">
                   Quick Check: What is the golden order for swallow meals?
                 </h4>
               </div>
@@ -259,7 +259,7 @@ export default function AvoAcademyBloom() {
                   type="button"
                   disabled={answered !== null}
                   onClick={() => handleAnswer(0)}
-                  className={`p-3 rounded-2xl text-left text-xs font-bold transition-all border cursor-pointer ${
+                  className={`p-3 rounded-2xl text-left text-xs font-semibold transition-all border cursor-pointer ${
                     answered === 0
                       ? "bg-rose-500/20 text-rose-300 border-rose-500"
                       : "bg-white/10 text-white/90 border-white/15 hover:bg-white/20"
@@ -272,7 +272,7 @@ export default function AvoAcademyBloom() {
                   type="button"
                   disabled={answered !== null}
                   onClick={() => handleAnswer(1)}
-                  className={`p-3 rounded-2xl text-left text-xs font-bold transition-all border cursor-pointer ${
+                  className={`p-3 rounded-2xl text-left text-xs font-semibold transition-all border cursor-pointer ${
                     answered === 1
                       ? "bg-emerald-500/30 text-emerald-200 border-emerald-400 ring-2 ring-emerald-400/50"
                       : "bg-white/10 text-white/90 border-white/15 hover:bg-white/20"
@@ -283,14 +283,14 @@ export default function AvoAcademyBloom() {
               </div>
 
               {answered !== null && (
-                <div className="p-3 rounded-2xl bg-emerald-950/60 border border-emerald-500/50 text-xs font-bold text-emerald-300 flex items-center justify-between gap-2 animate-fade-in">
+                <div className="p-3 rounded-2xl bg-emerald-950/80 border border-emerald-500/50 text-xs font-bold text-emerald-300 flex items-center justify-between gap-2 animate-fade-in backdrop-blur-md">
                   <div className="flex items-center gap-2">
                     <CheckCircle2 size={18} className="text-emerald-400 shrink-0" />
                     <span>{isCorrect ? "Spot on! +50 XP Earned 🎉" : "Soup/fiber first is the secret!"}</span>
                   </div>
                   <button
                     onClick={handleReset}
-                    className="px-3 py-1 bg-amber-400 text-slate-950 font-black text-[11px] rounded-xl hover:bg-amber-300 cursor-pointer shrink-0"
+                    className="btn-liquid-glass btn-liquid-amber px-3.5 py-1.5 text-stone-950 font-bold text-xs rounded-xl cursor-pointer shrink-0 border border-amber-300/40"
                   >
                     Done & Close 🥑
                   </button>

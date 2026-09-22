@@ -510,3 +510,114 @@ html, * {
   background: #34D399 !important;
 }
 
+/* ========================================================================= */
+/* 💧 LIQUID & GLASSMORPHIC BUTTON ANIMATIONS                               */
+/* ========================================================================= */
+
+@keyframes liquid-shimmer {
+  0% {
+    transform: translateX(-150%) skewX(-20deg);
+  }
+  50%, 100% {
+    transform: translateX(250%) skewX(-20deg);
+  }
+}
+
+@keyframes liquid-pulse {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 4px 14px 0 rgba(22, 78, 61, 0.25), inset 0 1px 1px 0 rgba(255, 255, 255, 0.4);
+  }
+  50% {
+    transform: scale(1.02);
+    box-shadow: 0 6px 20px 0 rgba(22, 78, 61, 0.35), inset 0 1px 2px 0 rgba(255, 255, 255, 0.6);
+  }
+}
+
+/* Glassmorphic Liquid Action Button */
+.btn-liquid-glass {
+  position: relative;
+  overflow: hidden;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn-liquid-glass::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.35) 50%,
+    transparent 100%
+  );
+  transform: translateX(-150%) skewX(-20deg);
+  pointer-events: none;
+}
+
+.btn-liquid-glass:hover::before {
+  animation: liquid-shimmer 1.6s infinite ease-in-out;
+}
+
+.btn-liquid-glass:active {
+  transform: scale(0.96);
+}
+
+/* Botanical Forest Green Liquid Glass Button */
+.btn-liquid-forest {
+  background: linear-gradient(135deg, #164E3D 0%, #1E6B54 50%, #124233 100%);
+  background-size: 200% 200%;
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  box-shadow: 0 4px 14px 0 rgba(22, 78, 61, 0.25), inset 0 1px 1px 0 rgba(255, 255, 255, 0.35);
+}
+
+.btn-liquid-forest:hover {
+  background-position: 100% 50%;
+  box-shadow: 0 6px 20px 0 rgba(22, 78, 61, 0.35), inset 0 1px 2px 0 rgba(255, 255, 255, 0.5);
+}
+
+/* Warm Amber Liquid Glass Button */
+.btn-liquid-amber {
+  background: linear-gradient(135deg, #F59E0B 0%, #D97706 50%, #B45309 100%);
+  background-size: 200% 200%;
+  color: #09090b;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  box-shadow: 0 4px 14px 0 rgba(217, 119, 6, 0.25), inset 0 1px 1px 0 rgba(255, 255, 255, 0.5);
+}
+
+.btn-liquid-amber:hover {
+  background-position: 100% 50%;
+  box-shadow: 0 6px 20px 0 rgba(217, 119, 6, 0.4), inset 0 1px 2px 0 rgba(255, 255, 255, 0.6);
+}
+
+/* Frosted Glass Pill Button */
+.btn-glass-frosted {
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  box-shadow: 0 2px 10px 0 rgba(0, 0, 0, 0.06), inset 0 1px 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+.btn-glass-frosted:hover {
+  background: rgba(255, 255, 255, 0.25);
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+.dark .btn-glass-frosted {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 2px 10px 0 rgba(0, 0, 0, 0.2), inset 0 1px 1px 0 rgba(255, 255, 255, 0.15);
+}
+
+.dark .btn-glass-frosted:hover {
+  background: rgba(255, 255, 255, 0.14);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+

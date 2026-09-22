@@ -676,17 +676,17 @@ export default function Home() {
                   <Sparkles size={18} className="text-amber-300" />
                 </div>
                 <div className="min-w-0">
-                  <span className="text-xs font-black block truncate">
+                  <span className="text-xs font-bold block truncate">
                     Complete Your Health Blueprint 🥑
                   </span>
-                  <span className="text-[10px] text-teal-100 block truncate">
+                  <span className="text-xs text-emerald-100/90 block truncate font-normal">
                     6 Quick Questions to customize your meals &amp; blood sugar plan
                   </span>
                 </div>
               </div>
-              <div className="flex items-center gap-1 text-[11px] font-black px-3 py-1.5 rounded-xl bg-white text-slate-900 shrink-0 shadow-xs">
+              <div className="btn-liquid-glass flex items-center gap-1 text-xs font-semibold px-3.5 py-1.5 rounded-xl bg-white text-stone-900 shrink-0 shadow-xs hover:bg-stone-50 cursor-pointer">
                 <span>Start Survey</span>
-                <ChevronRight size={12} />
+                <ChevronRight size={14} />
               </div>
             </div>
           </div>
@@ -1201,7 +1201,7 @@ export default function Home() {
                     triggerHaptic("medium");
                     setShowFoodWrapped(true);
                   }}
-                  className="w-full sm:w-auto px-4 py-2.5 bg-white hover:bg-stone-50 text-[#164E3D] font-semibold text-xs rounded-xl shadow-xs active:scale-95 transition-all cursor-pointer flex items-center justify-center gap-1.5 text-center"
+                  className="btn-liquid-glass btn-glass-frosted w-full sm:w-auto px-4 py-2.5 font-bold text-xs rounded-xl shadow-md active:scale-95 transition-all cursor-pointer flex items-center justify-center gap-1.5 text-center border border-white/40"
                 >
                   <span>View Story</span>
                   <ChevronRight size={13} className="shrink-0" />
@@ -1210,17 +1210,17 @@ export default function Home() {
             </div>
 
             {/* Sub-Category Switcher: Daily Food Secret vs African Nutrition Guides */}
-            <div className="flex bg-white/70 dark:bg-zinc-800/70 p-1 rounded-2xl gap-1 border border-teal-100 dark:border-zinc-700 shadow-2xs">
+            <div className="flex bg-stone-100/90 dark:bg-stone-900/80 p-1.5 rounded-2xl gap-1.5 border border-stone-200/80 dark:border-stone-800 shadow-2xs backdrop-blur-md">
               <button
                 type="button"
                 onClick={() => {
                   triggerHaptic("light");
                   setAcademyCategory("daily");
                 }}
-                className={`flex-1 py-2 px-3 rounded-xl font-black text-xs transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
+                className={`flex-1 py-2 px-3 rounded-xl text-xs transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
                   academyCategory === "daily"
-                    ? "bg-[#126778] text-white shadow-sm"
-                    : "text-slate-600 dark:text-slate-400 hover:text-slate-900"
+                    ? "btn-liquid-glass btn-liquid-forest text-white font-bold shadow-xs border border-white/20"
+                    : "text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100 font-semibold hover:bg-stone-200/50 dark:hover:bg-stone-800/50"
                 }`}
               >
                 <span>🥑 Today's 60s Food Secret</span>
@@ -1231,10 +1231,10 @@ export default function Home() {
                   triggerHaptic("light");
                   setAcademyCategory("masterclasses");
                 }}
-                className={`flex-1 py-2 px-3 rounded-xl font-black text-xs transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
+                className={`flex-1 py-2 px-3 rounded-xl text-xs transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
                   academyCategory === "masterclasses"
-                    ? "bg-[#126778] text-white shadow-sm"
-                    : "text-slate-600 dark:text-slate-400 hover:text-slate-900"
+                    ? "btn-liquid-glass btn-liquid-forest text-white font-bold shadow-xs border border-white/20"
+                    : "text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100 font-semibold hover:bg-stone-200/50 dark:hover:bg-stone-800/50"
                 }`}
               >
                 <span>🍲 African Food Guides</span>
