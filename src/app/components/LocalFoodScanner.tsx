@@ -948,26 +948,20 @@ export default function LocalFoodScanner({ isOpen, onClose }: LocalFoodScannerPr
         <div className="absolute -top-20 -right-20 w-64 h-64 rounded-full bg-teal-400/20 blur-3xl pointer-events-none" />
         <div className="absolute -bottom-20 -left-20 w-64 h-64 rounded-full bg-emerald-500/15 blur-3xl pointer-events-none" />
 
-        {/* 🌟 Glassmorphic Sticky Header with Laser Sweep */}
-        <div className="sticky top-0 bg-gradient-to-r from-[#126778]/95 via-[#0d9488]/95 to-[#14b8a6]/90 backdrop-blur-xl px-5 sm:px-6 py-4 flex items-center justify-between z-20 shadow-lg border-b border-white/20 relative overflow-hidden">
-          {/* Animated Laser Sweep across Header Top */}
-          <div className="absolute left-0 right-0 top-0 h-0.5 bg-gradient-to-r from-transparent via-emerald-300 to-transparent shadow-[0_0_15px_#4ade80] pointer-events-none animate-laser-sweep opacity-90 z-30" />
-
+        {/* 🌟 Botanical Sticky Header */}
+        <div className="sticky top-0 bg-[#164E3D] dark:bg-[#12382C] px-5 sm:px-6 py-4 flex items-center justify-between z-20 shadow-md border-b border-emerald-800/40 relative">
           <div className="flex items-center gap-3 relative z-10">
-            <div className="relative">
-              <span className="absolute -inset-1 rounded-2xl bg-teal-300/40 animate-pulse-radar pointer-events-none" />
-              <div className="relative bg-white/20 backdrop-blur-md rounded-2xl p-2.5 shadow-md border border-white/30 text-white">
-                <Sparkles className="h-5 w-5 animate-pulse" />
-              </div>
+            <div className="p-2.5 bg-white/15 rounded-2xl text-white">
+              <Camera className="h-5 w-5" />
             </div>
             <div>
-              <h2 className="text-lg sm:text-xl font-black text-white leading-tight flex items-center gap-2">
+              <h2 className="text-lg sm:text-xl font-bold text-white leading-tight flex items-center gap-2">
                 <span>Snap &amp; Know</span>
-                <span className="text-[9px] font-black uppercase tracking-wider bg-emerald-400/30 text-emerald-200 px-2 py-0.5 rounded-full border border-emerald-300/30">
-                  AI VISION
+                <span className="text-xs font-bold uppercase tracking-wider bg-white/20 text-emerald-100 px-2.5 py-0.5 rounded-full border border-white/20">
+                  AI Vision
                 </span>
               </h2>
-              <div className="flex items-center gap-1.5 text-teal-100/90 text-xs font-semibold mt-0.5">
+              <div className="flex items-center gap-1.5 text-emerald-100/90 text-xs font-medium mt-0.5">
                 <MapPin className="h-3.5 w-3.5 text-amber-300" />
                 <span>{selectedLocation.displayName}</span>
               </div>
@@ -994,29 +988,29 @@ export default function LocalFoodScanner({ isOpen, onClose }: LocalFoodScannerPr
           /* Step 2 — preview + Interactive Modifiers + Analyze button */
           <div className="p-5 sm:p-6 flex flex-col items-center gap-4">
             <div className="w-full flex items-center justify-between">
-              <span className="text-xs font-bold text-gray-700 dark:text-zinc-300">Plate Photo Ready</span>
-              <span className="text-[10px] font-black uppercase text-teal-700 bg-teal-50 dark:bg-teal-950/50 px-2 py-0.5 rounded-full border border-teal-200 dark:border-teal-800">
+              <span className="text-xs font-bold text-stone-700 dark:text-stone-300">Plate Photo Ready</span>
+              <span className="text-xs font-bold uppercase text-emerald-800 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/50 px-2.5 py-0.5 rounded-full border border-emerald-200 dark:border-emerald-800">
                 AI Vision Ready
               </span>
             </div>
 
-            <div className="relative w-full rounded-3xl overflow-hidden shadow-lg border-2 border-teal-200 dark:border-zinc-700">
+            <div className="relative w-full rounded-3xl overflow-hidden shadow-md border border-stone-200 dark:border-stone-800">
               <img
                 src={capturedImage}
                 alt="Food to analyse"
                 className="w-full max-h-64 object-cover"
               />
-              <div className="absolute top-2.5 right-2.5 px-3 py-1 bg-black/75 backdrop-blur-md rounded-full text-white text-[10px] font-black tracking-wider flex items-center gap-1.5 shadow-md">
+              <div className="absolute top-2.5 right-2.5 px-3 py-1 bg-black/75 backdrop-blur-md rounded-full text-white text-xs font-bold tracking-wider flex items-center gap-1.5 shadow-md">
                 <Sparkles size={12} className="text-amber-400" />
                 <span>Ready to Scan</span>
               </div>
             </div>
 
             {/* Interactive Portion Multiplier */}
-            <div className="w-full bg-slate-50 dark:bg-zinc-800/80 rounded-2xl p-3 border border-slate-200/80 dark:border-zinc-700 flex items-center justify-between">
+            <div className="w-full bg-stone-50 dark:bg-stone-800/80 rounded-2xl p-3.5 border border-stone-200 dark:border-stone-700 flex items-center justify-between">
               <div>
-                <span className="text-xs font-bold text-slate-800 dark:text-slate-200 block leading-tight">Portion Size:</span>
-                <span className="text-[10px] text-slate-500 font-medium">Estimated meal volume</span>
+                <span className="text-xs font-bold text-stone-800 dark:text-stone-200 block leading-tight">Portion Size:</span>
+                <span className="text-xs text-stone-500 font-medium">Estimated meal volume</span>
               </div>
               <div className="flex items-center gap-1">
                 {[
@@ -1032,10 +1026,10 @@ export default function LocalFoodScanner({ isOpen, onClose }: LocalFoodScannerPr
                       safeHaptic("light");
                       setPortionMultiplier(item.val);
                     }}
-                    className={`text-xs font-black px-2.5 py-1 rounded-xl cursor-pointer transition-all ${
+                    className={`text-xs font-bold px-3 py-1.5 rounded-xl cursor-pointer transition-all ${
                       portionMultiplier === item.val
-                        ? "bg-[#1f7a8c] text-white shadow-xs"
-                        : "bg-white dark:bg-zinc-700 hover:bg-slate-100 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-zinc-600"
+                        ? "bg-[#164E3D] text-white shadow-xs"
+                        : "bg-white dark:bg-stone-700 hover:bg-stone-100 text-stone-700 dark:text-stone-300 border border-stone-200 dark:border-stone-600"
                     }`}
                   >
                     {item.label}
@@ -1045,22 +1039,22 @@ export default function LocalFoodScanner({ isOpen, onClose }: LocalFoodScannerPr
             </div>
 
             {/* 🎙️ HYBRID GEMINI-VISION + AUDIO INPUT (Meal Similarity Disambiguation) */}
-            <div className="w-full bg-gradient-to-br from-teal-50/90 via-emerald-50/60 to-white dark:from-zinc-800 dark:to-zinc-900 p-3.5 rounded-2xl border border-teal-200 dark:border-zinc-700 space-y-2.5">
+            <div className="w-full bg-stone-50 dark:bg-stone-900 p-4 rounded-2xl border border-stone-200 dark:border-stone-800 space-y-2.5">
               <div className="flex items-center justify-between">
-                <div className="flex items-center gap-1.5">
-                  <div className="p-1 rounded-lg bg-teal-600 text-white">
-                    <Mic size={13} />
+                <div className="flex items-center gap-2">
+                  <div className="p-1.5 rounded-lg bg-[#164E3D] text-white">
+                    <Mic size={14} />
                   </div>
-                  <span className="text-xs font-black text-slate-900 dark:text-white">
-                    Hybrid Audio Clarification (Optional)
+                  <span className="text-xs font-bold text-stone-900 dark:text-white">
+                    Audio Clarification (Optional)
                   </span>
                 </div>
-                <span className="text-[9.5px] font-bold px-2 py-0.5 rounded-full bg-teal-100 text-teal-800 dark:bg-teal-900 dark:text-teal-200">
-                  Vision + Voice AI
+                <span className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800">
+                  Vision + Voice
                 </span>
               </div>
 
-              <p className="text-[11px] text-slate-600 dark:text-slate-300 leading-snug">
+              <p className="text-xs text-stone-600 dark:text-stone-300 leading-snug">
                 Disambiguate lookalike dishes (e.g. <em>Pounded Yam vs Semo</em>, <em>Egusi vs Banga</em>, <em>Fried Rice vs Jollof</em>):
               </p>
 
@@ -1069,10 +1063,10 @@ export default function LocalFoodScanner({ isOpen, onClose }: LocalFoodScannerPr
                 <button
                   type="button"
                   onClick={toggleVoiceClarification}
-                  className={`p-2.5 rounded-xl flex items-center gap-1.5 text-xs font-black transition-all cursor-pointer ${
+                  className={`p-2.5 rounded-xl flex items-center gap-1.5 text-xs font-bold transition-all cursor-pointer ${
                     isRecordingVoice
-                      ? "bg-red-600 text-white animate-pulse shadow-md"
-                      : "bg-teal-600 hover:bg-teal-700 text-white shadow-xs active:scale-95"
+                      ? "bg-rose-600 text-white animate-pulse shadow-md"
+                      : "bg-[#164E3D] hover:bg-[#113E30] text-white shadow-xs active:scale-95"
                   }`}
                   title="Speak dish details (Speech-to-Text)"
                 >
@@ -1085,13 +1079,13 @@ export default function LocalFoodScanner({ isOpen, onClose }: LocalFoodScannerPr
                   value={voiceNote}
                   onChange={(e) => setVoiceNote(e.target.value)}
                   placeholder="e.g. 'Pounded Yam with Goat Meat Egusi, light palm oil'..."
-                  className="flex-1 bg-white dark:bg-zinc-800 border border-slate-200 dark:border-zinc-700 rounded-xl px-3 py-2 text-xs font-medium text-slate-900 dark:text-white outline-none focus:border-teal-500"
+                  className="flex-1 bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700 rounded-xl px-3 py-2 text-xs font-medium text-stone-900 dark:text-white outline-none focus:border-[#164E3D]"
                 />
               </div>
 
               {/* 1-Tap Quick Tags for Common African Swallow & Soup Similarities */}
               <div className="flex items-center gap-1.5 flex-wrap pt-0.5">
-                <span className="text-[10px] text-slate-400 font-bold">Quick tags:</span>
+                <span className="text-xs text-stone-400 font-semibold">Quick tags:</span>
                 {[
                   "Pounded Yam",
                   "Semovita",
@@ -1109,7 +1103,7 @@ export default function LocalFoodScanner({ isOpen, onClose }: LocalFoodScannerPr
                       safeHaptic("light");
                       setVoiceNote((prev) => (prev ? `${prev}, ${tag}` : tag));
                     }}
-                    className="text-[9.5px] font-bold px-2 py-0.5 bg-white dark:bg-zinc-800 border border-slate-200 dark:border-zinc-700 hover:border-teal-400 rounded-lg text-slate-700 dark:text-slate-300 active:scale-95 cursor-pointer"
+                    className="text-xs font-semibold px-2.5 py-1 bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700 hover:border-emerald-500 rounded-lg text-stone-700 dark:text-stone-300 active:scale-95 cursor-pointer"
                   >
                     + {tag}
                   </button>
@@ -1118,28 +1112,28 @@ export default function LocalFoodScanner({ isOpen, onClose }: LocalFoodScannerPr
             </div>
 
             {/* Avo Scribe Active Note Badge */}
-            <div className="w-full p-2.5 bg-teal-50/70 dark:bg-teal-950/40 border border-teal-200/80 dark:border-teal-800/60 rounded-2xl text-[11px] text-teal-900 dark:text-teal-200 flex items-center gap-2">
-              <span className="text-sm">🥑</span>
+            <div className="w-full p-3 bg-emerald-50/80 dark:bg-emerald-950/40 border border-emerald-200/80 dark:border-emerald-800/60 rounded-2xl text-xs text-emerald-950 dark:text-emerald-200 flex items-center gap-2.5">
+              <span className="text-base">🥑</span>
               <span className="leading-tight font-medium">
-                <strong>Avo AI:</strong> "I'll combine your photo with audio notes to detect regional carbs, saturated palm oil ratios, and compute your personalized Glycemic Spike Shield!"
+                <strong>Avo AI:</strong> "I'll analyze your photo with any audio notes to calculate macros and healthy food swaps."
               </span>
             </div>
 
             {analyzeError && (
-              <p className="text-red-600 text-xs text-center bg-red-50 dark:bg-red-950/40 rounded-xl px-4 py-2.5 w-full border border-red-200 dark:border-red-900">{analyzeError}</p>
+              <p className="text-rose-600 text-xs text-center bg-rose-50 dark:bg-rose-950/40 rounded-xl px-4 py-2.5 w-full border border-rose-200 dark:border-rose-900">{analyzeError}</p>
             )}
 
             <button
               onClick={handleAnalyze}
-              className="w-full bg-gradient-to-r from-[#1f7a8c] via-[#2a9d8f] to-[#4ecdc4] text-white py-4 rounded-2xl text-base font-extrabold shadow-lg hover:shadow-xl hover:scale-[1.01] active:scale-[0.98] transition-all flex items-center justify-center gap-2 cursor-pointer"
+              className="w-full bg-[#164E3D] hover:bg-[#113E30] text-white py-3.5 rounded-2xl text-sm font-bold shadow-md hover:shadow-lg active:scale-[0.98] transition-all flex items-center justify-center gap-2 cursor-pointer"
             >
-              <Sparkles className="h-5 w-5 animate-pulse" />
-              <span>Scan Plate &amp; Compute Spike Shield</span>
+              <Sparkles className="h-5 w-5" />
+              <span>Scan Plate &amp; Analyze Nutrition</span>
             </button>
 
             <button
               onClick={() => { setCapturedImage(null); setAnalyzeError(null); }}
-              className="w-full bg-gray-100 dark:bg-zinc-800 text-gray-700 dark:text-zinc-300 py-2.5 rounded-2xl font-bold text-xs hover:bg-gray-200 dark:hover:bg-zinc-700 transition-colors cursor-pointer"
+              className="w-full bg-stone-100 dark:bg-stone-800 text-stone-700 dark:text-stone-300 py-2.5 rounded-2xl font-bold text-xs hover:bg-stone-200 dark:hover:bg-stone-700 transition-colors cursor-pointer"
             >
               Take Different Photo
             </button>
@@ -1150,43 +1144,40 @@ export default function LocalFoodScanner({ isOpen, onClose }: LocalFoodScannerPr
             {/* LIVE IN-FRAME CAMERA VIEWPORT */}
             {isLiveCameraActive ? (
               <div className="space-y-3 animate-fade-in">
-                <div className="relative aspect-square w-full rounded-3xl overflow-hidden bg-slate-950 border-2 border-teal-500 shadow-2xl flex items-center justify-center">
+                <div className="relative aspect-square w-full rounded-3xl overflow-hidden bg-stone-950 border border-stone-800 shadow-2xl flex items-center justify-center">
                   <video ref={setVideoRef} autoPlay playsInline muted className="w-full h-full object-cover" />
                   
-                  {/* Laser Sweeper Line */}
-                  <div className="absolute inset-x-8 h-1 bg-gradient-to-r from-transparent via-red-500 to-transparent shadow-[0_0_15px_rgba(239,68,68,0.8)] animate-laser-sweep" />
-                  
                   {/* Viewfinder Target Reticle */}
-                  <div className="absolute inset-10 border-2 border-white/40 rounded-2xl pointer-events-none flex flex-col justify-between p-2">
+                  <div className="absolute inset-10 border border-white/30 rounded-2xl pointer-events-none flex flex-col justify-between p-3">
                     <div className="flex justify-between">
-                      <div className="w-5 h-5 border-t-4 border-l-4 border-teal-400" />
-                      <div className="w-5 h-5 border-t-4 border-r-4 border-teal-400" />
+                      <div className="w-6 h-6 border-t-2 border-l-2 border-emerald-400" />
+                      <div className="w-6 h-6 border-t-2 border-r-2 border-emerald-400" />
                     </div>
                     <div className="flex justify-between">
-                      <div className="w-5 h-5 border-b-4 border-l-4 border-teal-400" />
-                      <div className="w-5 h-5 border-b-4 border-r-4 border-teal-400" />
+                      <div className="w-6 h-6 border-b-2 border-l-2 border-emerald-400" />
+                      <div className="w-6 h-6 border-b-2 border-r-2 border-emerald-400" />
                     </div>
                   </div>
 
                   {/* Top Live Badge */}
-                  <div className="absolute top-3 left-3 bg-black/70 backdrop-blur-md px-3 py-1 rounded-full text-white text-[10px] font-black flex items-center gap-1.5 border border-white/10">
-                    <span className="w-2 h-2 rounded-full bg-red-500 animate-ping" />
-                    <span>Live AI Viewport</span>
+                  <div className="absolute top-3 left-3 bg-stone-950/80 backdrop-blur-md px-3 py-1.5 rounded-full text-white text-xs font-semibold flex items-center gap-2 border border-white/20">
+                    <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
+                    <span>Live Camera View</span>
                   </div>
 
                   {/* 📸 3 Golden Rules Viewport Reminder */}
-                  <div className="absolute bottom-3 inset-x-3 bg-slate-950/85 backdrop-blur-md px-2.5 py-1.5 rounded-2xl border border-white/20 text-[10px] font-bold text-white shadow-xl flex items-center justify-around pointer-events-none z-10">
-                    <div className="flex items-center gap-1">
+                  <div className="absolute bottom-3 inset-x-3 bg-stone-950/85 backdrop-blur-md px-3 py-2 rounded-2xl border border-white/20 text-xs font-semibold text-white shadow-xl flex items-center justify-around pointer-events-none z-10">
+                    <div className="flex items-center gap-1.5">
                       <span className="text-emerald-400">🎯</span>
-                      <span>Inside Frame</span>
+                      <span>Food In Frame</span>
                     </div>
                     <span className="text-white/30">•</span>
-                    <div className="flex items-center gap-1">
-                      <span className="text-cyan-300">👁️</span>
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-cyan-300">🥗</span>
                       <span>Visible Ingredients</span>
                     </div>
                     <span className="text-white/30">•</span>
-                    <div className="flex items-center gap-1">
+                    <div className="flex items-center gap-1.5">
                       <span className="text-amber-300">💡</span>
                       <span>Good Lighting</span>
                     </div>
@@ -1197,17 +1188,16 @@ export default function LocalFoodScanner({ isOpen, onClose }: LocalFoodScannerPr
                 <div className="flex items-center gap-3">
                   <button
                     onClick={stopLiveCamera}
-                    className="flex-1 bg-white/80 dark:bg-zinc-800/80 backdrop-blur-md hover:bg-gray-200 dark:hover:bg-zinc-700 text-gray-800 dark:text-zinc-200 py-3.5 rounded-2xl font-bold text-xs cursor-pointer transition-all border border-slate-200 dark:border-zinc-700"
+                    className="flex-1 bg-white/90 dark:bg-stone-800/90 hover:bg-stone-100 dark:hover:bg-stone-700 text-stone-800 dark:text-stone-200 py-3.5 rounded-2xl font-bold text-xs cursor-pointer transition-all border border-stone-200 dark:border-stone-700"
                   >
                     Cancel
                   </button>
 
                   <button
                     onClick={takeLiveSnapshot}
-                    className="flex-[2] relative overflow-hidden bg-gradient-to-r from-[#126778] via-[#0d9488] to-[#14b8a6] text-white py-3.5 px-4 rounded-2xl font-black text-sm shadow-xl hover:shadow-2xl active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer group"
+                    className="flex-[2] bg-[#164E3D] hover:bg-[#113E30] text-white py-3.5 px-4 rounded-2xl font-bold text-sm shadow-md hover:shadow-lg active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer group"
                   >
-                    <div className="absolute left-0 right-0 top-0 h-0.5 bg-gradient-to-r from-transparent via-white to-transparent shadow-[0_0_10px_#ffffff] pointer-events-none animate-laser-sweep opacity-90" />
-                    <Camera size={18} className="group-hover:scale-110 transition-transform" />
+                    <Camera size={18} className="group-hover:scale-105 transition-transform" />
                     <span>Capture Plate 📸</span>
                   </button>
                 </div>
@@ -1215,118 +1205,102 @@ export default function LocalFoodScanner({ isOpen, onClose }: LocalFoodScannerPr
             ) : (
               <>
                 <div className="text-center space-y-1">
-                  <h3 className="text-base sm:text-lg font-black text-slate-900 dark:text-white flex items-center justify-center gap-1.5">
+                  <h3 className="text-base sm:text-lg font-bold text-stone-900 dark:text-white flex items-center justify-center gap-1.5">
                     <span>Snap or Upload Any Cultural Dish</span>
-                    <span className="text-xl animate-float-bob">🍲</span>
+                    <span className="text-xl">🍲</span>
                   </h3>
-                  <p className="text-xs text-gray-600 dark:text-gray-400 max-w-sm mx-auto leading-relaxed font-medium">
-                    Instant biochemical macro analysis, glycemic load ranking, and authentic West African ingredient swaps!
+                  <p className="text-xs text-stone-600 dark:text-stone-400 max-w-sm mx-auto leading-relaxed">
+                    Instant macro analysis, glycemic impact scoring, and authentic healthy ingredient swaps.
                   </p>
                 </div>
 
                 {/* 📸 3 Golden Rules for Accurate AI Recognition */}
-                <div className="p-3 bg-gradient-to-r from-teal-500/10 via-emerald-500/10 to-amber-500/10 dark:from-teal-950/40 dark:via-emerald-950/40 dark:to-zinc-900/40 rounded-2xl border border-teal-500/20 text-xs">
-                  <div className="flex items-center gap-1.5 font-black text-slate-800 dark:text-zinc-200 text-[11px] mb-1.5">
-                    <Sparkles size={13} className="text-amber-500" />
-                    <span>Camera Quick Tips for Best AI Recognition:</span>
+                <div className="p-3.5 bg-stone-100/80 dark:bg-stone-800/80 rounded-2xl border border-stone-200/80 dark:border-stone-700 text-xs">
+                  <div className="flex items-center gap-1.5 font-bold text-stone-800 dark:text-stone-200 text-xs mb-2">
+                    <Sparkles size={14} className="text-[#D97706]" />
+                    <span>3 Golden Rules for Best AI Recognition:</span>
                   </div>
-                  <div className="grid grid-cols-3 gap-1.5 text-center text-[10px] font-bold text-slate-700 dark:text-zinc-300">
-                    <div className="bg-white/80 dark:bg-zinc-800/80 p-1.5 rounded-xl border border-teal-200/50 dark:border-zinc-700/50 flex flex-col items-center gap-0.5 shadow-2xs">
+                  <div className="grid grid-cols-3 gap-2 text-center text-xs font-semibold text-stone-700 dark:text-stone-300">
+                    <div className="bg-white dark:bg-stone-900/90 p-2 rounded-xl border border-stone-200/60 dark:border-stone-700/60 flex flex-col items-center gap-1 shadow-xs">
                       <span className="text-base">🎯</span>
-                      <span>Food Inside Frame</span>
+                      <span className="leading-tight">Food Inside Frame</span>
                     </div>
-                    <div className="bg-white/80 dark:bg-zinc-800/80 p-1.5 rounded-xl border border-teal-200/50 dark:border-zinc-700/50 flex flex-col items-center gap-0.5 shadow-2xs">
-                      <span className="text-base">👁️</span>
-                      <span>Ingredients Visible</span>
+                    <div className="bg-white dark:bg-stone-900/90 p-2 rounded-xl border border-stone-200/60 dark:border-stone-700/60 flex flex-col items-center gap-1 shadow-xs">
+                      <span className="text-base">🥗</span>
+                      <span className="leading-tight">Visible Ingredients</span>
                     </div>
-                    <div className="bg-white/80 dark:bg-zinc-800/80 p-1.5 rounded-xl border border-teal-200/50 dark:border-zinc-700/50 flex flex-col items-center gap-0.5 shadow-2xs">
+                    <div className="bg-white dark:bg-stone-900/90 p-2 rounded-xl border border-stone-200/60 dark:border-stone-700/60 flex flex-col items-center gap-1 shadow-xs">
                       <span className="text-base">💡</span>
-                      <span>Ensure Good Lighting</span>
+                      <span className="leading-tight">Good Lighting</span>
                     </div>
                   </div>
                 </div>
 
-                {/* Direct Action Launch Grid (Ultra-Premium Glassmorphic Cards) */}
+                {/* Direct Action Launch Grid */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  {/* Option 1: Live Viewport Camera with Laser Sweep & Radar Pulse */}
+                  {/* Option 1: Live Viewport Camera */}
                   <button
                     onClick={startLiveCamera}
-                    className="relative overflow-hidden bg-gradient-to-br from-[#126778]/95 via-[#0f766e]/90 to-[#0d9488]/85 backdrop-blur-xl border border-white/30 text-white rounded-3xl p-5 text-left shadow-xl hover:shadow-2xl hover:scale-[1.03] active:scale-[0.97] transition-all duration-300 cursor-pointer flex items-center justify-between group"
+                    className="bg-[#164E3D] hover:bg-[#113E30] text-white rounded-3xl p-4.5 text-left shadow-md hover:shadow-lg active:scale-[0.98] transition-all cursor-pointer flex items-center justify-between group"
                   >
-                    {/* Glowing Laser Sweep Line */}
-                    <div className="absolute left-0 right-0 top-0 h-1 bg-gradient-to-r from-transparent via-emerald-300 to-transparent shadow-[0_0_15px_#4ade80] pointer-events-none animate-laser-sweep opacity-90 z-10" />
-
-                    <div className="flex items-center gap-3.5 relative z-10">
-                      <div className="relative">
-                        <span className="absolute -inset-1 rounded-2xl bg-teal-300/40 animate-pulse-radar pointer-events-none" />
-                        <div className="relative p-3 bg-white/20 backdrop-blur-md rounded-2xl border border-white/30 shadow-md group-hover:scale-110 group-hover:rotate-6 transition-transform">
-                          <Camera className="h-6 w-6 text-white" />
-                        </div>
+                    <div className="flex items-center gap-3.5">
+                      <div className="p-3 bg-white/15 rounded-2xl text-white group-hover:scale-105 transition-transform">
+                        <Camera className="h-6 w-6" />
                       </div>
                       <div>
-                        <div className="font-black text-sm text-white leading-tight flex items-center gap-1.5">
+                        <div className="font-bold text-sm text-white leading-tight flex items-center gap-1.5">
                           <span>Take Photo 📸</span>
-                          <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping inline-block" />
                         </div>
-                        <div className="text-[11px] text-teal-100/90 mt-0.5 font-medium">Live camera viewfinder</div>
+                        <div className="text-xs text-emerald-100/90 mt-0.5 font-medium">Live camera viewfinder</div>
                       </div>
                     </div>
-                    <ChevronRight size={18} className="text-white/80 group-hover:translate-x-1.5 transition-transform shrink-0 relative z-10" />
+                    <ChevronRight size={18} className="text-white/70 group-hover:translate-x-1 transition-transform shrink-0" />
                   </button>
 
-                  {/* Option 2: Gallery Upload with Frosted Shimmer */}
+                  {/* Option 2: Gallery Upload */}
                   <button
                     onClick={() => document.getElementById("local-food-gallery-upload")?.click()}
-                    className="relative overflow-hidden bg-gradient-to-br from-[#0d9488]/95 via-[#14b8a6]/90 to-[#2dd4bf]/85 backdrop-blur-xl border border-white/30 text-white rounded-3xl p-5 text-left shadow-xl hover:shadow-2xl hover:scale-[1.03] active:scale-[0.97] transition-all duration-300 cursor-pointer flex items-center justify-between group"
+                    className="bg-white dark:bg-stone-800/90 border border-stone-200 dark:border-stone-700 hover:border-emerald-500 rounded-3xl p-4.5 text-left shadow-xs hover:shadow-md active:scale-[0.98] transition-all cursor-pointer flex items-center justify-between group"
                   >
-                    {/* Glowing Laser Sweep Line */}
-                    <div className="absolute left-0 right-0 top-0 h-1 bg-gradient-to-r from-transparent via-teal-200 to-transparent shadow-[0_0_15px_#2dd4bf] pointer-events-none animate-laser-sweep opacity-90 z-10" />
-
-                    <div className="flex items-center gap-3.5 relative z-10">
-                      <div className="relative">
-                        <span className="absolute -inset-1 rounded-2xl bg-cyan-300/40 animate-pulse-radar pointer-events-none" />
-                        <div className="relative p-3 bg-white/20 backdrop-blur-md rounded-2xl border border-white/30 shadow-md group-hover:scale-110 group-hover:-rotate-6 transition-transform">
-                          <Upload className="h-6 w-6 text-white" />
-                        </div>
+                    <div className="flex items-center gap-3.5">
+                      <div className="p-3 bg-stone-100 dark:bg-stone-700 rounded-2xl text-stone-700 dark:text-stone-300 group-hover:scale-105 transition-transform">
+                        <Upload className="h-6 w-6" />
                       </div>
                       <div>
-                        <div className="font-black text-sm text-white leading-tight">Photo Gallery 🖼️</div>
-                        <div className="text-[11px] text-teal-100/90 mt-0.5 font-medium">Upload existing plate</div>
+                        <div className="font-bold text-sm text-stone-900 dark:text-white leading-tight">Photo Gallery 🖼️</div>
+                        <div className="text-xs text-stone-500 dark:text-stone-400 mt-0.5 font-medium">Upload existing plate</div>
                       </div>
                     </div>
-                    <ChevronRight size={18} className="text-white/80 group-hover:translate-x-1.5 transition-transform shrink-0 relative z-10" />
+                    <ChevronRight size={18} className="text-stone-400 group-hover:translate-x-1 transition-transform shrink-0" />
                   </button>
                 </div>
 
-                {/* Option 3: Fix My Plate 1-Tap Visual Bio-Transformer (Amber-Rose Glowing Aura) */}
+                {/* Option 3: Fix My Plate Visual Bio-Transformer */}
                 <button
                   type="button"
                   onClick={() => {
                     safeHaptic("medium");
                     setShowFixModal(true);
                   }}
-                  className="relative overflow-hidden w-full bg-gradient-to-r from-amber-500/95 via-orange-500/95 to-rose-500/90 backdrop-blur-xl text-white rounded-2xl p-4 flex items-center justify-between transition-all duration-300 cursor-pointer group shadow-xl hover:shadow-2xl hover:scale-[1.02] active:scale-[0.98] border border-amber-200/50"
+                  className="w-full bg-[#D97706] hover:bg-[#B45309] text-white rounded-2xl p-4 flex items-center justify-between transition-all cursor-pointer group shadow-md hover:shadow-lg active:scale-[0.98]"
                 >
-                  {/* Glowing Laser Sweep Shimmer */}
-                  <div className="absolute left-0 right-0 top-0 h-1 bg-gradient-to-r from-transparent via-yellow-200 to-transparent shadow-[0_0_15px_#fbbf24] pointer-events-none animate-laser-sweep opacity-90 z-10" />
-
-                  <div className="flex items-center gap-3.5 relative z-10">
-                    <div className="p-2.5 bg-white/25 backdrop-blur-md rounded-xl border border-white/30 shadow-sm group-hover:rotate-12 group-hover:scale-110 transition-transform">
-                      <Sparkles className="h-5 w-5 text-amber-200 animate-pulse" />
+                  <div className="flex items-center gap-3.5">
+                    <div className="p-2.5 bg-white/20 rounded-xl">
+                      <Sparkles className="h-5 w-5 text-amber-200" />
                     </div>
                     <div className="text-left">
-                      <div className="text-xs font-black text-white flex items-center gap-1.5">
+                      <div className="text-xs font-bold text-white flex items-center gap-1.5">
                         <span>Fix My Plate with Avo 🪄</span>
-                        <span className="text-[8.5px] font-black uppercase bg-white text-orange-600 px-2 py-0.5 rounded-full shadow-md">
-                          BIO-TRANSFORMER
+                        <span className="text-xs font-bold uppercase bg-white/25 text-white px-2 py-0.5 rounded-full">
+                          Bio-Transformer
                         </span>
                       </div>
-                      <div className="text-[10.5px] text-amber-100/95 font-medium mt-0.5">
-                        Interactive visual plate re-balancing &amp; 38% glycemic spike drop
+                      <div className="text-xs text-amber-100/90 font-medium mt-0.5">
+                        Interactive plate re-balancing &amp; glycemic spike drop
                       </div>
                     </div>
                   </div>
-                  <ChevronRight size={18} className="text-white/80 group-hover:translate-x-1.5 transition-transform shrink-0 relative z-10" />
+                  <ChevronRight size={18} className="text-white/80 group-hover:translate-x-1 transition-transform shrink-0" />
                 </button>
 
                 {/* Option 4: Barcode Scanner Switcher Button */}
@@ -1336,23 +1310,23 @@ export default function LocalFoodScanner({ isOpen, onClose }: LocalFoodScannerPr
                     onClose();
                     navigate("/scan-barcode");
                   }}
-                  className="w-full bg-white/70 dark:bg-zinc-800/70 backdrop-blur-xl hover:bg-teal-50/80 dark:hover:bg-zinc-800/90 border-2 border-dashed border-teal-300/80 dark:border-teal-700/60 hover:border-teal-500 rounded-2xl p-3.5 flex items-center justify-between transition-all duration-300 cursor-pointer group shadow-xs hover:shadow-md hover:scale-[1.01] active:scale-[0.98]"
+                  className="w-full bg-white dark:bg-stone-800/80 hover:bg-stone-50 dark:hover:bg-stone-800 border border-stone-200 dark:border-stone-700 hover:border-emerald-500 rounded-2xl p-3.5 flex items-center justify-between transition-all cursor-pointer group shadow-xs"
                 >
                   <div className="flex items-center gap-3">
-                    <div className="p-2.5 bg-teal-100/80 dark:bg-teal-950/80 text-teal-800 dark:text-teal-300 rounded-xl border border-teal-200/60 group-hover:scale-110 group-hover:rotate-6 transition-transform">
+                    <div className="p-2.5 bg-stone-100 dark:bg-stone-700 text-stone-700 dark:text-stone-300 rounded-xl group-hover:scale-105 transition-transform">
                       <ScanBarcode className="h-5 w-5" />
                     </div>
                     <div className="text-left">
-                      <div className="text-xs font-black text-slate-900 dark:text-white">Scan Packaged Food Barcode 🏷️</div>
-                      <div className="text-[10.5px] text-slate-500 dark:text-slate-400 font-medium">Noodles, canned fish, milk, cereals &amp; beverages</div>
+                      <div className="text-xs font-bold text-stone-900 dark:text-white">Scan Packaged Food Barcode 🏷️</div>
+                      <div className="text-xs text-stone-500 dark:text-stone-400 font-medium">Noodles, canned fish, milk, cereals &amp; beverages</div>
                     </div>
                   </div>
-                  <ChevronRight size={16} className="text-slate-400 group-hover:text-teal-600 group-hover:translate-x-1 transition-all" />
+                  <ChevronRight size={16} className="text-stone-400 group-hover:translate-x-1 transition-all" />
                 </button>
 
                 {/* Popular Cultural Test Plates Shelf */}
-                <div className="pt-2 space-y-2.5">
-                  <span className="text-[11px] uppercase font-black tracking-wider text-slate-600 dark:text-slate-400 block px-1">
+                <div className="pt-2 space-y-2">
+                  <span className="text-xs uppercase font-bold tracking-wider text-stone-500 dark:text-stone-400 block px-1">
                     ⚡ Or Select a Popular Regional Dish:
                   </span>
                   <div className="grid grid-cols-2 gap-2.5">
@@ -1372,20 +1346,20 @@ export default function LocalFoodScanner({ isOpen, onClose }: LocalFoodScannerPr
                               loadSuggestedDish(dish);
                             }
                           }}
-                          className="p-3.5 bg-white/80 dark:bg-zinc-800/80 backdrop-blur-md hover:bg-teal-50/90 dark:hover:bg-zinc-700/90 border border-slate-200/80 dark:border-white/10 hover:border-teal-300 rounded-2xl text-left transition-all duration-300 flex flex-col justify-between min-h-[100px] cursor-pointer shadow-xs hover:shadow-md hover:scale-[1.03] active:scale-95 group"
+                          className="p-3 bg-white dark:bg-stone-800/90 hover:bg-stone-50 dark:hover:bg-stone-700/90 border border-stone-200 dark:border-stone-700 hover:border-emerald-500 rounded-2xl text-left transition-all duration-200 flex flex-col justify-between min-h-[96px] cursor-pointer shadow-xs active:scale-95 group"
                         >
                           <div className="flex items-center justify-between w-full">
-                            <span className="text-2xl group-hover:scale-125 transition-transform">{item.emoji}</span>
-                            <span className={`text-[9.5px] font-black px-2 py-0.5 rounded-full shrink-0 shadow-2xs ${item.gi === "Low" ? "bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 border border-emerald-300/40" : "bg-red-100 text-red-800 dark:bg-red-950 dark:text-red-300 border border-red-300/40"}`}>
+                            <span className="text-2xl group-hover:scale-110 transition-transform">{item.emoji}</span>
+                            <span className={`text-xs font-bold px-2 py-0.5 rounded-full shrink-0 ${item.gi === "Low" ? "bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 border border-emerald-300/40" : "bg-rose-100 text-rose-800 dark:bg-rose-950 dark:text-rose-300 border border-rose-300/40"}`}>
                               {item.gi} GI
                             </span>
                           </div>
                           <div className="my-1.5 flex-1 flex items-center">
-                            <div className="text-[12px] font-extrabold text-slate-900 dark:text-white leading-tight break-words line-clamp-2 group-hover:text-teal-700 dark:group-hover:text-teal-300 transition-colors">
+                            <div className="text-xs font-bold text-stone-900 dark:text-white leading-tight line-clamp-2">
                               {item.name}
                             </div>
                           </div>
-                          <div className="text-[10.5px] text-slate-500 dark:text-slate-400 font-bold">
+                          <div className="text-xs text-stone-500 dark:text-stone-400 font-semibold">
                             ~{item.calories} kcal
                           </div>
                         </button>
@@ -1434,7 +1408,7 @@ export default function LocalFoodScanner({ isOpen, onClose }: LocalFoodScannerPr
             {/* Top Back to Scanner Navigation Button */}
             <button
               onClick={handleBackToScanner}
-              className="w-full mb-4 py-2.5 px-4 bg-teal-50 dark:bg-teal-950/50 hover:bg-teal-100 dark:hover:bg-teal-900 text-[#1f7a8c] dark:text-teal-300 rounded-2xl font-black text-xs border border-teal-200 dark:border-teal-800 flex items-center justify-center gap-2 cursor-pointer transition-all active:scale-98 shadow-xs"
+              className="w-full mb-4 py-2.5 px-4 bg-stone-100 hover:bg-stone-200 dark:bg-stone-800 dark:hover:bg-stone-700 text-stone-700 dark:text-stone-300 rounded-2xl font-bold text-xs border border-stone-200 dark:border-stone-700 flex items-center justify-center gap-2 cursor-pointer transition-all active:scale-98 shadow-xs"
             >
               <ArrowLeft size={15} />
               <span>← Back to Camera Scanner</span>
@@ -1448,18 +1422,18 @@ export default function LocalFoodScanner({ isOpen, onClose }: LocalFoodScannerPr
                   <div className="flex items-start gap-3">
                     <VIcon className={`h-9 w-9 shrink-0 ${V.icon}`} strokeWidth={2.2} />
                     <div className="flex-1 min-w-0">
-                      <div className="text-[11px] uppercase tracking-wide font-bold text-gray-500">
+                      <div className="text-xs uppercase tracking-wide font-bold text-stone-500">
                         Is this good for me?
                       </div>
                       <h3 className={`text-xl font-bold leading-tight ${V.title}`}>{verdict.title}</h3>
-                      <p className="text-sm text-gray-600 mt-0.5">{verdict.subtitle}</p>
+                      <p className="text-sm text-stone-600 dark:text-stone-400 mt-0.5">{verdict.subtitle}</p>
                     </div>
                   </div>
 
                   {verdict.reasons.length > 0 && (
                     <ul className="mt-3 space-y-1.5">
                       {verdict.reasons.map((reason, i) => (
-                        <li key={i} className="text-sm text-gray-700 flex gap-2">
+                        <li key={i} className="text-sm text-stone-700 dark:text-stone-300 flex gap-2">
                           <span className={`${V.dot} font-bold`}>•</span>
                           <span>{reason}</span>
                         </li>
@@ -1481,9 +1455,9 @@ export default function LocalFoodScanner({ isOpen, onClose }: LocalFoodScannerPr
                   )}
 
                   {verdict.tip && (
-                    <div className="mt-3 flex gap-2 items-start bg-white/70 rounded-xl p-3">
+                    <div className="mt-3 flex gap-2 items-start bg-white/70 dark:bg-stone-800/70 rounded-xl p-3">
                       <Lightbulb className="h-4 w-4 text-amber-500 shrink-0 mt-0.5" />
-                      <p className="text-sm text-gray-700">
+                      <p className="text-sm text-stone-700 dark:text-stone-300">
                         <span className="font-semibold">Make it better: </span>
                         {verdict.tip}
                       </p>
@@ -1493,7 +1467,7 @@ export default function LocalFoodScanner({ isOpen, onClose }: LocalFoodScannerPr
                   {!verdict.hasConditions && (
                     <button
                       onClick={() => { onClose(); navigate("/medical-condition"); }}
-                      className="mt-3 text-sm font-semibold text-[#1f7a8c] hover:underline"
+                      className="mt-3 text-sm font-semibold text-[#164E3D] dark:text-emerald-400 hover:underline"
                     >
                       Add your health conditions for a verdict made for you →
                     </button>
@@ -1503,16 +1477,16 @@ export default function LocalFoodScanner({ isOpen, onClose }: LocalFoodScannerPr
             })()}
 
             {/* Dish Info */}
-            <div className="bg-gradient-to-br from-[#B8E5E5] to-[#E8F5F5] rounded-2xl p-5 mb-4">
-              <h3 className="text-2xl font-bold text-gray-800 mb-2">{foodData.dishName}</h3>
-              <p className="text-sm text-gray-700 mb-3">{foodData.description}</p>
-              <div className="flex items-center gap-2 text-sm text-gray-600">
-                <MapPin className="h-4 w-4" />
+            <div className="bg-stone-50 dark:bg-stone-800/90 border border-stone-200 dark:border-stone-700 rounded-2xl p-5 mb-4">
+              <h3 className="text-xl font-bold text-stone-900 dark:text-stone-100 mb-2">{foodData.dishName}</h3>
+              <p className="text-sm text-stone-600 dark:text-stone-300 mb-3">{foodData.description}</p>
+              <div className="flex items-center gap-2 text-xs font-semibold text-stone-500 dark:text-stone-400">
+                <MapPin className="h-4 w-4 text-[#D97706]" />
                 <span>{foodData.region}</span>
               </div>
             </div>
 
-            {/* 🌟 9-INCH AFRICAN PLATE MATCH TELEMETRY (Bridge to 9-Inch Studio) */}
+            {/* 🌟 9-INCH AFRICAN PLATE MATCH TELEMETRY */}
             {(() => {
               const fiber = foodData.macroBreakdown.fiber || 0;
               const protein = foodData.macroBreakdown.protein || 0;
@@ -1528,42 +1502,42 @@ export default function LocalFoodScanner({ isOpen, onClose }: LocalFoodScannerPr
               matchScore = Math.min(98, Math.max(65, matchScore));
 
               return (
-                <div className="bg-gradient-to-br from-emerald-50 via-teal-50 to-white dark:from-zinc-800 dark:to-zinc-900 rounded-2xl p-4 mb-5 border border-emerald-200 dark:border-emerald-800/60 shadow-xs">
+                <div className="bg-emerald-50/60 dark:bg-emerald-950/20 rounded-2xl p-4 mb-5 border border-emerald-200/80 dark:border-emerald-800/60 shadow-xs">
                   <div className="flex items-center justify-between mb-2">
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2.5">
                       <span className="text-xl">🍲</span>
                       <div>
-                        <span className="text-[10px] font-black uppercase tracking-wider text-[#126778] dark:text-teal-300 block">
-                          ADA 9-Inch Diabetes Plate Match
+                        <span className="text-xs font-bold uppercase tracking-wider text-[#164E3D] dark:text-emerald-400 block">
+                          9-Inch Plate Rebalancing
                         </span>
-                        <h4 className="text-xs sm:text-sm font-black text-slate-900 dark:text-white leading-tight">
-                          {matchScore}% Golden African Plate Match! 🌿
+                        <h4 className="text-sm font-bold text-stone-900 dark:text-stone-100 leading-tight">
+                          {matchScore}% Balanced African Plate Match 🌿
                         </h4>
                       </div>
                     </div>
-                    <span className="text-xs font-black px-2.5 py-1 rounded-xl bg-emerald-600 text-white shadow-2xs">
+                    <span className="text-xs font-bold px-2.5 py-1 rounded-xl bg-[#164E3D] text-white">
                       {matchScore >= 85 ? "Optimal Balance" : "Rebalance Ready"}
                     </span>
                   </div>
 
-                  <p className="text-[11px] text-slate-600 dark:text-slate-300 leading-relaxed mt-1">
+                  <p className="text-xs text-stone-600 dark:text-stone-300 leading-relaxed mt-1">
                     {fiber >= 4
                       ? `Your meal provides ~${fiber}g of fiber to buffer glucose absorption, closely following the 50% Leafy Soups & Veggies rule.`
-                      : `Pair with 1–2 extra ladles of Okra, Ewedu, or Ugwu to achieve a 100% flat glycemic curve.`}
+                      : `Pair with 1–2 extra ladles of Okra, Ewedu, or Ugwu to achieve a 100% steady metabolic curve.`}
                   </p>
 
-                  <div className="grid grid-cols-3 gap-1.5 mt-3 text-center text-[10px]">
-                    <div className="p-1.5 rounded-xl bg-white dark:bg-zinc-800 border border-emerald-200/60 dark:border-zinc-700">
-                      <span className="text-emerald-700 dark:text-emerald-400 font-bold block">🥬 50% Veggies</span>
-                      <span className="font-extrabold text-slate-800 dark:text-slate-200">{fiber >= 3 ? "✓ Buffered" : "+1 Ladle"}</span>
+                  <div className="grid grid-cols-3 gap-2 mt-3 text-center text-xs font-semibold">
+                    <div className="p-2 rounded-xl bg-white dark:bg-stone-800 border border-emerald-200/60 dark:border-stone-700">
+                      <span className="text-emerald-700 dark:text-emerald-400 font-bold block mb-0.5">🥬 50% Veggies</span>
+                      <span className="text-stone-800 dark:text-stone-200">{fiber >= 3 ? "✓ Buffered" : "+1 Ladle"}</span>
                     </div>
-                    <div className="p-1.5 rounded-xl bg-white dark:bg-zinc-800 border border-amber-200/60 dark:border-zinc-700">
-                      <span className="text-amber-700 dark:text-amber-400 font-bold block">🥩 25% Protein</span>
-                      <span className="font-extrabold text-slate-800 dark:text-slate-200">{protein}g (~1 Palm)</span>
+                    <div className="p-2 rounded-xl bg-white dark:bg-stone-800 border border-amber-200/60 dark:border-stone-700">
+                      <span className="text-amber-700 dark:text-amber-400 font-bold block mb-0.5">🥩 25% Protein</span>
+                      <span className="text-stone-800 dark:text-stone-200">{protein}g (~1 Palm)</span>
                     </div>
-                    <div className="p-1.5 rounded-xl bg-white dark:bg-zinc-800 border border-cyan-200/60 dark:border-zinc-700">
-                      <span className="text-cyan-700 dark:text-cyan-400 font-bold block">🍠 25% Swallow</span>
-                      <span className="font-extrabold text-slate-800 dark:text-slate-200">{carbs}g (~1 Fist)</span>
+                    <div className="p-2 rounded-xl bg-white dark:bg-stone-800 border border-cyan-200/60 dark:border-stone-700">
+                      <span className="text-cyan-700 dark:text-cyan-400 font-bold block mb-0.5">🍠 25% Swallow</span>
+                      <span className="text-stone-800 dark:text-stone-200">{carbs}g (~1 Fist)</span>
                     </div>
                   </div>
                 </div>
@@ -1572,14 +1546,14 @@ export default function LocalFoodScanner({ isOpen, onClose }: LocalFoodScannerPr
 
             {/* Tabs */}
             <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-              <TabsList className="grid w-full grid-cols-3 mb-5 p-1 bg-slate-100 dark:bg-zinc-800/80 rounded-2xl h-auto gap-1">
-                <TabsTrigger value="traditional" className="py-2 text-[11px] sm:text-xs font-bold rounded-xl truncate">
+              <TabsList className="grid w-full grid-cols-3 mb-5 p-1 bg-stone-100 dark:bg-stone-800 rounded-2xl h-auto gap-1">
+                <TabsTrigger value="traditional" className="py-2 text-xs font-bold rounded-xl truncate">
                   Traditional
                 </TabsTrigger>
-                <TabsTrigger value="engineer" className="py-2 text-[11px] sm:text-xs font-bold rounded-xl truncate">
+                <TabsTrigger value="engineer" className="py-2 text-xs font-bold rounded-xl truncate">
                   Smart Swaps
                 </TabsTrigger>
-                <TabsTrigger value="macros" className="py-2 text-[11px] sm:text-xs font-bold rounded-xl truncate">
+                <TabsTrigger value="macros" className="py-2 text-xs font-bold rounded-xl truncate">
                   Macros &amp; GI
                 </TabsTrigger>
               </TabsList>

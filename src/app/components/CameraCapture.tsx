@@ -253,7 +253,7 @@ export default function CameraCapture({
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent className="max-w-lg p-0 overflow-hidden rounded-3xl border-teal-500/30">
+      <DialogContent className="max-w-lg p-0 overflow-hidden rounded-3xl border border-stone-200 dark:border-stone-800 bg-[#FAF8F5] dark:bg-[#171E1B]">
         <DialogHeader className="sr-only">
           <DialogTitle>{title ?? "Capture Food Photo"}</DialogTitle>
           <DialogDescription>Take a photo or upload an image</DialogDescription>
@@ -265,31 +265,31 @@ export default function CameraCapture({
         {view === 'options' && (
           <div className="p-6">
             <div className="flex items-center justify-between mb-5">
-              <div className="flex items-center gap-2.5">
-                <div className="p-2.5 bg-teal-50 dark:bg-teal-950/60 rounded-2xl text-[#1f7a8c] dark:text-teal-400">
+              <div className="flex items-center gap-3">
+                <div className="p-2.5 bg-[#164E3D]/10 dark:bg-emerald-500/15 rounded-2xl text-[#164E3D] dark:text-emerald-400">
                   <Camera className="h-6 w-6" />
                 </div>
                 <div>
-                  <h2 className="text-xl font-black text-gray-900 dark:text-zinc-100">
+                  <h2 className="text-lg font-bold text-stone-900 dark:text-stone-100">
                     {title || (mode === 'barcode' ? 'Scan Barcode' : 'Capture Food Photo')}
                   </h2>
-                  <p className="text-xs text-gray-500">
-                    Live camera, phone gallery, or instant upload
+                  <p className="text-xs text-stone-500 dark:text-stone-400">
+                    Live camera, phone camera, or instant upload
                   </p>
                 </div>
               </div>
               <button
                 onClick={handleClose}
-                className="p-2 hover:bg-gray-100 dark:hover:bg-zinc-800 rounded-full transition-colors cursor-pointer"
+                className="p-2 hover:bg-stone-200/60 dark:hover:bg-stone-800 rounded-full transition-colors cursor-pointer text-stone-500"
                 aria-label="Close"
               >
-                <X className="h-5 w-5 text-gray-500" />
+                <X className="h-5 w-5" />
               </button>
             </div>
 
             {error && (
-              <div className="mb-4 p-3.5 bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-900/60 rounded-2xl text-red-700 dark:text-red-300 text-xs flex items-start gap-2.5">
-                <AlertCircle size={16} className="flex-shrink-0 mt-0.5" />
+              <div className="mb-4 p-3.5 bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900/60 rounded-2xl text-rose-700 dark:text-rose-300 text-xs flex items-start gap-2.5">
+                <AlertCircle size={16} className="shrink-0 mt-0.5" />
                 <div>
                   <span className="font-bold block">Camera Notice:</span>
                   <span>{error}</span>
@@ -298,61 +298,61 @@ export default function CameraCapture({
             )}
 
             {/* 📸 3 Golden Rules Quick Tips */}
-            <div className="mb-4 p-3 bg-gradient-to-r from-teal-500/10 via-emerald-500/10 to-amber-500/10 dark:from-teal-950/40 dark:via-emerald-950/40 dark:to-zinc-900/40 rounded-2xl border border-teal-500/20 text-xs">
-              <div className="flex items-center gap-1.5 font-black text-slate-800 dark:text-zinc-200 text-[11px] mb-1.5">
-                <Sparkles size={13} className="text-amber-500" />
-                <span>Quick Photo Tips for Best Accuracy:</span>
+            <div className="mb-5 p-3.5 bg-stone-100/80 dark:bg-stone-900/80 rounded-2xl border border-stone-200/80 dark:border-stone-800">
+              <div className="flex items-center gap-1.5 font-bold text-stone-800 dark:text-stone-200 text-xs mb-2">
+                <Sparkles size={14} className="text-[#D97706]" />
+                <span>3 Keys for Instant Food Recognition:</span>
               </div>
-              <div className="grid grid-cols-3 gap-1.5 text-center text-[10px] font-bold text-slate-700 dark:text-zinc-300">
-                <div className="bg-white/80 dark:bg-zinc-800/80 p-1.5 rounded-xl border border-teal-200/50 dark:border-zinc-700/50 flex flex-col items-center gap-0.5 shadow-2xs">
+              <div className="grid grid-cols-3 gap-2 text-center text-xs font-semibold text-stone-700 dark:text-stone-300">
+                <div className="bg-white dark:bg-stone-800/90 p-2 rounded-xl border border-stone-200/60 dark:border-stone-700/60 flex flex-col items-center gap-1 shadow-xs">
                   <span className="text-base">🎯</span>
-                  <span>Food In Frame</span>
+                  <span className="leading-tight">Food Inside Frame</span>
                 </div>
-                <div className="bg-white/80 dark:bg-zinc-800/80 p-1.5 rounded-xl border border-teal-200/50 dark:border-zinc-700/50 flex flex-col items-center gap-0.5 shadow-2xs">
-                  <span className="text-base">👁️</span>
-                  <span>Ingredients Visible</span>
+                <div className="bg-white dark:bg-stone-800/90 p-2 rounded-xl border border-stone-200/60 dark:border-stone-700/60 flex flex-col items-center gap-1 shadow-xs">
+                  <span className="text-base">🥗</span>
+                  <span className="leading-tight">Visible Ingredients</span>
                 </div>
-                <div className="bg-white/80 dark:bg-zinc-800/80 p-1.5 rounded-xl border border-teal-200/50 dark:border-zinc-700/50 flex flex-col items-center gap-0.5 shadow-2xs">
+                <div className="bg-white dark:bg-stone-800/90 p-2 rounded-xl border border-stone-200/60 dark:border-stone-700/60 flex flex-col items-center gap-1 shadow-xs">
                   <span className="text-base">💡</span>
-                  <span>Good Lighting</span>
+                  <span className="leading-tight">Good Lighting</span>
                 </div>
               </div>
             </div>
 
-            <div className="space-y-3">
+            <div className="space-y-2.5">
               {/* Take Live Photo with In-App Camera */}
               <button
                 onClick={() => startCamera()}
                 disabled={isStarting}
-                className="w-full flex items-center gap-3.5 p-4 bg-gradient-to-r from-[#1f7a8c] to-[#4ecdc4] hover:from-[#176270] hover:to-[#3eb5a7] text-white rounded-2xl transition-all shadow-md active:scale-[0.99] cursor-pointer"
+                className="w-full flex items-center gap-3.5 p-4 bg-[#164E3D] hover:bg-[#113E30] text-white rounded-2xl transition-all shadow-md active:scale-[0.99] cursor-pointer"
               >
-                <div className="bg-white/20 rounded-2xl p-2.5 flex-shrink-0">
-                  {isStarting ? <RefreshCw className="h-6 w-6 animate-spin" /> : <Camera className="h-6 w-6" />}
+                <div className="bg-white/15 rounded-xl p-2.5 shrink-0">
+                  {isStarting ? <RefreshCw className="h-5 w-5 animate-spin" /> : <Camera className="h-5 w-5" />}
                 </div>
                 <div className="text-left flex-1 min-w-0">
-                  <div className="font-extrabold text-sm">
+                  <div className="font-bold text-sm">
                     {isStarting ? "Starting Camera..." : "Open Live Camera View"}
                   </div>
-                  <div className="text-xs text-white/90">
+                  <div className="text-xs text-emerald-100/80">
                     {mode === 'barcode' ? 'Scan product barcode live' : 'Real-time camera scanner'}
                   </div>
                 </div>
               </button>
 
-              {/* Native Phone Camera / File Capture (100% Reliable Mobile Fallback) */}
+              {/* Native Phone Camera / File Capture */}
               <button
                 onClick={() => nativeCameraInputRef.current?.click()}
-                className="w-full flex items-center gap-3.5 p-4 bg-white dark:bg-zinc-900 border-2 border-teal-200 dark:border-zinc-700 hover:border-[#1f7a8c] rounded-2xl transition-all shadow-xs active:scale-[0.99] cursor-pointer"
+                className="w-full flex items-center gap-3.5 p-3.5 bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 hover:border-[#164E3D] rounded-2xl transition-all shadow-xs active:scale-[0.99] cursor-pointer"
               >
-                <div className="bg-emerald-50 dark:bg-emerald-950/60 rounded-2xl p-2.5 flex-shrink-0 text-emerald-600 dark:text-emerald-400">
-                  <Smartphone className="h-6 w-6" />
+                <div className="bg-stone-100 dark:bg-stone-800 rounded-xl p-2.5 shrink-0 text-stone-700 dark:text-stone-300">
+                  <Smartphone className="h-5 w-5" />
                 </div>
                 <div className="text-left flex-1 min-w-0">
-                  <div className="font-extrabold text-sm text-gray-900 dark:text-zinc-100">
-                    Take Photo with Phone Camera 📱
+                  <div className="font-bold text-sm text-stone-900 dark:text-stone-100">
+                    Phone Camera App 📱
                   </div>
-                  <div className="text-xs text-gray-500">
-                    Opens your device's native high-res camera app
+                  <div className="text-xs text-stone-500 dark:text-stone-400">
+                    Opens device native high-res camera
                   </div>
                 </div>
               </button>
@@ -360,16 +360,16 @@ export default function CameraCapture({
               {/* Upload from Gallery */}
               <button
                 onClick={() => fileInputRef.current?.click()}
-                className="w-full flex items-center gap-3.5 p-4 bg-white dark:bg-zinc-900 border-2 border-gray-200 dark:border-zinc-800 hover:border-[#1f7a8c] rounded-2xl transition-all shadow-xs active:scale-[0.99] cursor-pointer"
+                className="w-full flex items-center gap-3.5 p-3.5 bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 hover:border-[#164E3D] rounded-2xl transition-all shadow-xs active:scale-[0.99] cursor-pointer"
               >
-                <div className="bg-cyan-50 dark:bg-cyan-950/60 rounded-2xl p-2.5 flex-shrink-0 text-cyan-700 dark:text-cyan-400">
-                  <Upload className="h-6 w-6" />
+                <div className="bg-stone-100 dark:bg-stone-800 rounded-xl p-2.5 shrink-0 text-stone-700 dark:text-stone-300">
+                  <Upload className="h-5 w-5" />
                 </div>
                 <div className="text-left flex-1 min-w-0">
-                  <div className="font-extrabold text-sm text-gray-900 dark:text-zinc-100">
+                  <div className="font-bold text-sm text-stone-900 dark:text-stone-100">
                     Upload from Photo Gallery
                   </div>
-                  <div className="text-xs text-gray-500">
+                  <div className="text-xs text-stone-500 dark:text-stone-400">
                     Select an existing food picture
                   </div>
                 </div>
@@ -379,16 +379,16 @@ export default function CameraCapture({
               {mode === 'barcode' && (
                 <button
                   onClick={() => setView('manual')}
-                  className="w-full flex items-center gap-3.5 p-4 bg-white dark:bg-zinc-900 border-2 border-gray-200 dark:border-zinc-800 hover:border-[#1f7a8c] rounded-2xl transition-all cursor-pointer"
+                  className="w-full flex items-center gap-3.5 p-3.5 bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 hover:border-[#164E3D] rounded-2xl transition-all cursor-pointer"
                 >
-                  <div className="bg-amber-50 dark:bg-amber-950/60 rounded-2xl p-2.5 flex-shrink-0 text-amber-600">
-                    <Keyboard className="h-6 w-6" />
+                  <div className="bg-amber-50 dark:bg-amber-950/60 rounded-xl p-2.5 shrink-0 text-amber-600">
+                    <Keyboard className="h-5 w-5" />
                   </div>
                   <div className="text-left flex-1 min-w-0">
-                    <div className="font-extrabold text-sm text-gray-900 dark:text-zinc-100">
+                    <div className="font-bold text-sm text-stone-900 dark:text-stone-100">
                       Enter Barcode Manually
                     </div>
-                    <div className="text-xs text-gray-500">Type product EAN/UPC code</div>
+                    <div className="text-xs text-stone-500 dark:text-stone-400">Type product EAN/UPC code</div>
                   </div>
                 </button>
               )}
@@ -445,7 +445,7 @@ export default function CameraCapture({
                   <X className="h-5 w-5" />
                 </button>
 
-                <div className="px-3 py-1 bg-black/60 backdrop-blur-md rounded-full text-white text-[11px] font-bold">
+                <div className="px-3 py-1 bg-black/60 backdrop-blur-md rounded-full text-white text-xs font-semibold">
                   {facingMode === 'environment' ? 'Rear Camera' : 'Front Camera'}
                 </div>
 
@@ -471,18 +471,18 @@ export default function CameraCapture({
               )}
 
               {/* 📸 3 Golden Rules Bar */}
-              <div className="mb-2 bg-black/75 backdrop-blur-md px-3 py-1.5 rounded-2xl border border-white/20 text-white text-[10px] font-bold flex items-center justify-around gap-2 shadow-xl mx-auto max-w-sm pointer-events-none">
-                <div className="flex items-center gap-1">
+              <div className="mb-3 bg-black/75 backdrop-blur-md px-3.5 py-2 rounded-2xl border border-white/20 text-white text-xs font-semibold flex items-center justify-around gap-2 shadow-xl mx-auto w-full max-w-sm pointer-events-none">
+                <div className="flex items-center gap-1.5">
                   <span className="text-emerald-400">🎯</span>
-                  <span>Inside Frame</span>
+                  <span>Food In Frame</span>
                 </div>
                 <span className="text-white/30">•</span>
-                <div className="flex items-center gap-1">
-                  <span className="text-cyan-300">👁️</span>
-                  <span>Ingredients Visible</span>
+                <div className="flex items-center gap-1.5">
+                  <span className="text-cyan-300">🥗</span>
+                  <span>Visible Ingredients</span>
                 </div>
                 <span className="text-white/30">•</span>
-                <div className="flex items-center gap-1">
+                <div className="flex items-center gap-1.5">
                   <span className="text-amber-300">💡</span>
                   <span>Good Lighting</span>
                 </div>
@@ -495,8 +495,8 @@ export default function CameraCapture({
                   className="p-1 rounded-full border-4 border-white hover:scale-105 active:scale-95 transition-all shadow-2xl cursor-pointer"
                   aria-label="Take Photo"
                 >
-                  <div className="w-16 h-16 rounded-full bg-white hover:bg-teal-100 transition-colors flex items-center justify-center">
-                    <div className="w-13 h-13 rounded-full border-2 border-slate-300" />
+                  <div className="w-16 h-16 rounded-full bg-white hover:bg-stone-100 transition-colors flex items-center justify-center">
+                    <div className="w-13 h-13 rounded-full border-2 border-stone-300" />
                   </div>
                 </button>
                 <span className="text-white text-xs font-bold mt-2 drop-shadow-md">
@@ -513,18 +513,18 @@ export default function CameraCapture({
         {view === 'manual' && (
           <div className="p-6">
             <div className="flex items-center justify-between mb-5">
-              <h2 className="text-xl font-black text-gray-900 dark:text-zinc-100">Enter Barcode</h2>
+              <h2 className="text-lg font-bold text-stone-900 dark:text-stone-100">Enter Barcode</h2>
               <button
                 onClick={() => setView('options')}
-                className="p-2 hover:bg-gray-100 rounded-full transition-colors cursor-pointer"
+                className="p-2 hover:bg-stone-200/60 dark:hover:bg-stone-800 rounded-full transition-colors cursor-pointer text-stone-500"
               >
-                <X className="h-5 w-5 text-gray-500" />
+                <X className="h-5 w-5" />
               </button>
             </div>
 
             <div className="space-y-4">
               <div>
-                <label className="block text-xs font-bold text-gray-700 dark:text-zinc-300 mb-1.5">
+                <label className="block text-xs font-bold text-stone-700 dark:text-stone-300 mb-1.5">
                   Barcode Number (EAN / UPC)
                 </label>
                 <Input
@@ -532,10 +532,10 @@ export default function CameraCapture({
                   placeholder="e.g. 5000112576009"
                   value={manualInput}
                   onChange={(e) => setManualInput(e.target.value)}
-                  className="h-12 text-base rounded-2xl"
+                  className="h-11 text-sm rounded-2xl bg-white dark:bg-stone-900 border-stone-200 dark:border-stone-800"
                   autoFocus
                 />
-                <p className="text-[11px] text-gray-400 mt-1.5">
+                <p className="text-xs text-stone-400 mt-1.5">
                   Enter the numeric digits underneath the barcode on product packaging.
                 </p>
               </div>
@@ -544,14 +544,14 @@ export default function CameraCapture({
                 <Button
                   onClick={() => setView('options')}
                   variant="outline"
-                  className="flex-1 rounded-2xl h-10 font-bold text-xs cursor-pointer"
+                  className="flex-1 rounded-2xl h-11 font-bold text-xs cursor-pointer border-stone-200 dark:border-stone-800"
                 >
                   Back
                 </Button>
                 <Button
                   onClick={handleManualSubmit}
                   disabled={!manualInput.trim()}
-                  className="flex-1 bg-[#1f7a8c] hover:bg-[#165a67] text-white rounded-2xl h-10 font-bold text-xs cursor-pointer"
+                  className="flex-1 bg-[#164E3D] hover:bg-[#113E30] text-white rounded-2xl h-11 font-bold text-xs cursor-pointer"
                 >
                   Submit Barcode
                 </Button>

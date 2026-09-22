@@ -395,28 +395,28 @@ export const PlateScannerModal: React.FC<PlateScannerModalProps> = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="max-w-md w-[95vw] sm:w-full max-h-[92vh] flex flex-col p-0 rounded-3xl bg-slate-950 border-2 border-teal-500/40 text-white overflow-hidden shadow-2xl">
+      <DialogContent className="max-w-md w-[95vw] sm:w-full max-h-[92vh] flex flex-col p-0 rounded-3xl bg-stone-950 border border-stone-800 text-white overflow-hidden shadow-2xl">
         {/* Header Bar */}
-        <DialogHeader className="p-4 bg-slate-900 border-b border-white/10 flex flex-row items-center justify-between shrink-0">
-          <div className="flex items-center gap-2">
-            <div className="p-2 rounded-xl bg-teal-500/20 text-teal-300 border border-teal-400/30">
+        <DialogHeader className="p-4 bg-stone-900/95 border-b border-stone-800 flex flex-row items-center justify-between shrink-0">
+          <div className="flex items-center gap-3">
+            <div className="p-2 rounded-xl bg-[#164E3D]/30 text-emerald-400 border border-emerald-500/30">
               <Camera size={18} />
             </div>
             <div>
-              <DialogTitle className="text-sm font-black text-white flex items-center gap-1.5">
+              <DialogTitle className="text-sm font-bold text-white flex items-center gap-2">
                 <span>9-Inch AR Plate Calibrator</span>
-                <span className="text-[9px] px-2 py-0.5 rounded-full bg-emerald-400 text-slate-950 font-black">
+                <span className="text-xs px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 font-bold border border-emerald-500/30">
                   AI Calibrator
                 </span>
               </DialogTitle>
-              <DialogDescription className="text-[11px] text-teal-200/80">
+              <DialogDescription className="text-xs text-stone-400">
                 Align meal within the 50% Veggies / 25% Protein / 25% Swallow grid
               </DialogDescription>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="p-1.5 rounded-full text-slate-400 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
+            className="p-1.5 rounded-full text-stone-400 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
           >
             <X size={18} />
           </button>
@@ -453,59 +453,59 @@ export const PlateScannerModal: React.FC<PlateScannerModalProps> = ({
           {!scanResult && !cameraError && (
             <div className="absolute inset-0 pointer-events-none flex items-center justify-center p-4">
               {/* 📸 3 Golden Rules Viewport Reminder */}
-              <div className="absolute top-3 inset-x-4 bg-slate-950/85 backdrop-blur-md rounded-2xl py-1.5 px-3 border border-white/20 flex items-center justify-around text-[9.5px] font-bold text-white shadow-xl pointer-events-none z-10">
-                <div className="flex items-center gap-1">
+              <div className="absolute top-3 inset-x-4 bg-stone-950/80 backdrop-blur-md rounded-2xl py-2 px-3.5 border border-white/20 flex items-center justify-around text-xs font-semibold text-white shadow-xl pointer-events-none z-10">
+                <div className="flex items-center gap-1.5">
                   <span className="text-emerald-400">🎯</span>
-                  <span>Inside Frame</span>
+                  <span>Food In Frame</span>
                 </div>
                 <span className="text-white/30">•</span>
-                <div className="flex items-center gap-1">
-                  <span className="text-cyan-300">👁️</span>
+                <div className="flex items-center gap-1.5">
+                  <span className="text-cyan-300">🥗</span>
                   <span>Visible Ingredients</span>
                 </div>
                 <span className="text-white/30">•</span>
-                <div className="flex items-center gap-1">
+                <div className="flex items-center gap-1.5">
                   <span className="text-amber-300">💡</span>
                   <span>Good Lighting</span>
                 </div>
               </div>
 
-              <div className="relative w-72 h-72 sm:w-80 sm:h-80 rounded-full border-4 border-dashed border-teal-400/90 shadow-[0_0_60px_rgba(20,184,166,0.35)] grid grid-cols-2 grid-rows-2 overflow-hidden backdrop-blur-[0.5px]">
+              <div className="relative w-72 h-72 sm:w-80 sm:h-80 rounded-full border-2 border-dashed border-emerald-400/80 shadow-[0_0_50px_rgba(16,185,129,0.25)] grid grid-cols-2 grid-rows-2 overflow-hidden backdrop-blur-[0.5px]">
                 {/* Left Half: 50% Veggies */}
                 <div className="row-span-2 col-span-1 bg-emerald-500/20 border-r-2 border-emerald-400/80 flex flex-col items-center justify-center text-center p-2">
-                  <span className="text-[10px] font-black px-2 py-0.5 rounded-full bg-emerald-600 text-white shadow-md">
-                    🥬 50% VEGGIES
+                  <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-emerald-600 text-white shadow-md">
+                    🥬 50% Veggies
                   </span>
-                  <span className="text-[8.5px] text-emerald-200 mt-1 font-bold">
+                  <span className="text-xs text-emerald-200 mt-1 font-medium">
                     Leafy Greens &amp; Soups
                   </span>
                 </div>
 
                 {/* Top-Right: 25% Protein */}
                 <div className="col-span-1 row-span-1 bg-cyan-500/20 border-b-2 border-cyan-400/80 flex flex-col items-center justify-center text-center p-1">
-                  <span className="text-[9px] font-black px-1.5 py-0.2 rounded-full bg-cyan-600 text-white shadow-md">
-                    🥩 25% PROTEIN
+                  <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-cyan-600 text-white shadow-md">
+                    🥩 25% Protein
                   </span>
-                  <span className="text-[8px] text-cyan-200 mt-0.5 font-bold">
+                  <span className="text-xs text-cyan-200 mt-0.5 font-medium">
                     Fish / Lean Meat
                   </span>
                 </div>
 
                 {/* Bottom-Right: 25% Carb */}
                 <div className="col-span-1 row-span-1 bg-amber-500/20 flex flex-col items-center justify-center text-center p-1">
-                  <span className="text-[9px] font-black px-1.5 py-0.2 rounded-full bg-amber-500 text-slate-950 font-black shadow-md">
-                    🍠 25% SWALLOW
+                  <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-amber-500 text-stone-950 shadow-md">
+                    🍠 25% Swallow
                   </span>
-                  <span className="text-[8px] text-amber-200 mt-0.5 font-bold">
+                  <span className="text-xs text-amber-200 mt-0.5 font-medium">
                     Portion Controlled
                   </span>
                 </div>
               </div>
 
               {/* 9-Inch Clinical Ruler Footer */}
-              <div className="absolute bottom-2 inset-x-4 bg-slate-950/80 backdrop-blur-md rounded-xl py-1 px-3 border border-white/20 flex items-center justify-between text-[8.5px] font-mono text-cyan-200 pointer-events-none">
+              <div className="absolute bottom-2 inset-x-4 bg-stone-950/80 backdrop-blur-md rounded-xl py-1.5 px-3 border border-white/20 flex items-center justify-between text-xs font-mono text-stone-300 pointer-events-none">
                 <span>├─ 0 in</span>
-                <span className="font-sans font-black text-[9.5px] text-white">
+                <span className="font-sans font-bold text-xs text-white">
                   ⟵ Standard 9-Inch Plate Geometry ⟶
                 </span>
                 <span>9 in ─┤</span>
@@ -515,9 +515,9 @@ export const PlateScannerModal: React.FC<PlateScannerModalProps> = ({
 
           {/* Camera Starting Spinner */}
           {isStartingCamera && !scanResult && (
-            <div className="absolute inset-0 bg-slate-950/80 backdrop-blur-sm z-20 flex flex-col items-center justify-center text-center p-4">
+            <div className="absolute inset-0 bg-stone-950/80 backdrop-blur-sm z-20 flex flex-col items-center justify-center text-center p-4">
               <div className="animate-spin text-3xl mb-2">🥑</div>
-              <span className="text-xs font-bold text-teal-300">Activating 9-Inch Camera...</span>
+              <span className="text-xs font-bold text-emerald-300">Activating 9-Inch Camera...</span>
             </div>
           )}
 
@@ -527,11 +527,11 @@ export const PlateScannerModal: React.FC<PlateScannerModalProps> = ({
               <div className="w-12 h-12 rounded-full bg-amber-500/20 text-amber-400 flex items-center justify-center mx-auto">
                 <AlertTriangle size={24} />
               </div>
-              <p className="text-xs text-slate-300 leading-relaxed">{cameraError}</p>
+              <p className="text-xs text-stone-300 leading-relaxed">{cameraError}</p>
 
               <div className="flex flex-col gap-2 pt-2">
                 {/* 1-Tap Direct Camera Trigger for Mobile */}
-                <label className="w-full py-3 px-4 rounded-2xl bg-gradient-to-r from-teal-400 to-emerald-400 text-slate-950 font-black text-xs cursor-pointer hover:brightness-110 active:scale-95 transition-all shadow-lg flex items-center justify-center gap-2">
+                <label className="w-full py-3 px-4 rounded-2xl bg-[#164E3D] hover:bg-[#113E30] text-white font-bold text-xs cursor-pointer active:scale-95 transition-all shadow-md flex items-center justify-center gap-2">
                   <Camera size={16} />
                   <span>Take Photo with Camera</span>
                   <input
@@ -544,7 +544,7 @@ export const PlateScannerModal: React.FC<PlateScannerModalProps> = ({
                 </label>
 
                 {/* Gallery Upload */}
-                <label className="w-full py-2.5 px-4 rounded-2xl bg-white/10 hover:bg-white/20 text-white font-bold text-xs cursor-pointer active:scale-95 transition-all flex items-center justify-center gap-2 border border-white/20">
+                <label className="w-full py-2.5 px-4 rounded-2xl bg-stone-800 hover:bg-stone-700 text-stone-200 font-semibold text-xs cursor-pointer active:scale-95 transition-all flex items-center justify-center gap-2 border border-stone-700">
                   <Upload size={14} />
                   <span>Upload from Photo Gallery</span>
                   <input
@@ -557,7 +557,7 @@ export const PlateScannerModal: React.FC<PlateScannerModalProps> = ({
 
                 <button
                   onClick={() => startCamera()}
-                  className="text-[11px] text-teal-400 hover:text-teal-300 font-bold underline mt-1 cursor-pointer"
+                  className="text-xs text-emerald-400 hover:text-emerald-300 font-bold underline mt-1 cursor-pointer"
                 >
                   Retry Camera
                 </button>
@@ -567,13 +567,13 @@ export const PlateScannerModal: React.FC<PlateScannerModalProps> = ({
 
           {/* Analyzing Loading Overlay */}
           {isAnalyzing && (
-            <div className="absolute inset-0 bg-slate-950/90 backdrop-blur-md z-30 flex flex-col items-center justify-center p-6 text-center">
+            <div className="absolute inset-0 bg-stone-950/90 backdrop-blur-md z-30 flex flex-col items-center justify-center p-6 text-center">
               <Mascot gesture="writing" size={80} />
-              <div className="mt-3 flex items-center gap-2 text-teal-300 font-black text-sm">
+              <div className="mt-3 flex items-center gap-2 text-emerald-300 font-bold text-sm">
                 <Sparkles size={16} className="animate-spin" />
                 <span>Avo Scribe is Calibrating Plate Portions...</span>
               </div>
-              <p className="text-xs text-slate-400 mt-1 max-w-xs">
+              <p className="text-xs text-stone-400 mt-1 max-w-xs">
                 Analyzing non-starchy vegetable surface area against swallow starch density
               </p>
             </div>
@@ -583,7 +583,7 @@ export const PlateScannerModal: React.FC<PlateScannerModalProps> = ({
           {scanResult && (
             <div className="w-full flex flex-col p-4 space-y-3 overflow-y-auto max-h-[460px]">
               {/* Photo Preview Thumbnail with Score Badge */}
-              <div className="relative w-full h-44 rounded-2xl overflow-hidden border border-white/20 bg-slate-900 shadow-inner">
+              <div className="relative w-full h-44 rounded-2xl overflow-hidden border border-stone-800 bg-stone-900 shadow-inner">
                 <img
                   src={scanResult.capturedImage}
                   alt="Scanned Plate"
@@ -591,11 +591,11 @@ export const PlateScannerModal: React.FC<PlateScannerModalProps> = ({
                 />
                 <div className="absolute top-2 right-2">
                   <div
-                    className={`px-3 py-1 rounded-full text-xs font-black shadow-lg flex items-center gap-1.5 ${
+                    className={`px-3 py-1 rounded-full text-xs font-bold shadow-lg flex items-center gap-1.5 ${
                       scanResult.status === "perfect"
                         ? "bg-emerald-500 text-slate-950"
                         : scanResult.status === "acceptable"
-                        ? "bg-teal-400 text-slate-950"
+                        ? "bg-emerald-400 text-slate-950"
                         : "bg-amber-400 text-slate-950"
                     }`}
                   >
@@ -610,39 +610,39 @@ export const PlateScannerModal: React.FC<PlateScannerModalProps> = ({
               </div>
 
               {/* 3 Calibrated Quadrants Breakdown */}
-              <div className="grid grid-cols-3 gap-2 text-center text-xs font-black">
-                <div className="p-2 rounded-2xl bg-emerald-500/20 border border-emerald-400/40 text-emerald-200">
-                  <span className="block text-[9px] opacity-75">🥬 Veggies (Goal 50%)</span>
-                  <span className="text-base font-black text-emerald-400">
+              <div className="grid grid-cols-3 gap-2 text-center text-xs font-bold">
+                <div className="p-2.5 rounded-2xl bg-emerald-500/15 border border-emerald-400/30 text-emerald-200">
+                  <span className="block text-xs opacity-80 font-semibold mb-0.5">🥬 Veggies (50%)</span>
+                  <span className="text-base font-bold text-emerald-400">
                     {scanResult.greensPct}%
                   </span>
                 </div>
-                <div className="p-2 rounded-2xl bg-cyan-500/20 border border-cyan-400/40 text-cyan-200">
-                  <span className="block text-[9px] opacity-75">🥩 Protein (Goal 25%)</span>
-                  <span className="text-base font-black text-cyan-400">
+                <div className="p-2.5 rounded-2xl bg-cyan-500/15 border border-cyan-400/30 text-cyan-200">
+                  <span className="block text-xs opacity-80 font-semibold mb-0.5">🥩 Protein (25%)</span>
+                  <span className="text-base font-bold text-cyan-400">
                     {scanResult.proteinPct}%
                   </span>
                 </div>
-                <div className="p-2 rounded-2xl bg-amber-500/20 border border-amber-400/40 text-amber-200">
-                  <span className="block text-[9px] opacity-75">🍠 Swallow (Goal 25%)</span>
-                  <span className="text-base font-black text-amber-400">
+                <div className="p-2.5 rounded-2xl bg-amber-500/15 border border-amber-400/30 text-amber-200">
+                  <span className="block text-xs opacity-80 font-semibold mb-0.5">🍠 Swallow (25%)</span>
+                  <span className="text-base font-bold text-amber-400">
                     {scanResult.carbPct}%
                   </span>
                 </div>
               </div>
 
               {/* Avo Feedback Dialogue */}
-              <div className="p-3.5 rounded-2xl bg-slate-900 border border-teal-500/30 flex items-start gap-3 shadow-inner">
+              <div className="p-3.5 rounded-2xl bg-stone-900 border border-stone-800 flex items-start gap-3 shadow-inner">
                 <Mascot
                   gesture={scanResult.status === "perfect" ? "thumbsup" : "pointing"}
                   size={52}
                   className="shrink-0 mt-0.5"
                 />
                 <div className="flex-1">
-                  <div className="flex items-center gap-1.5 text-amber-300 text-[10.5px] font-black uppercase tracking-wider">
-                    <Sparkles size={11} /> Avo Scribe Clinical Assessment
+                  <div className="flex items-center gap-1.5 text-amber-300 text-xs font-bold uppercase tracking-wider">
+                    <Sparkles size={12} /> Avo Scribe Clinical Assessment
                   </div>
-                  <p className="text-xs text-slate-200 mt-1 leading-relaxed font-medium">
+                  <p className="text-xs text-stone-200 mt-1 leading-relaxed font-normal">
                     {scanResult.feedback}
                   </p>
                 </div>
@@ -652,13 +652,13 @@ export const PlateScannerModal: React.FC<PlateScannerModalProps> = ({
         </div>
 
         {/* FOOTER ACTIONS */}
-        <div className="p-4 bg-slate-900 border-t border-white/10 flex items-center justify-between gap-2 shrink-0">
+        <div className="p-4 bg-stone-900/95 border-t border-stone-800 flex items-center justify-between gap-2 shrink-0">
           {!scanResult ? (
             <>
               {/* Flip camera */}
               <button
                 onClick={toggleCameraFacing}
-                className="p-3 rounded-2xl bg-white/10 text-white hover:bg-white/20 transition-all flex items-center gap-1 text-xs font-black cursor-pointer"
+                className="p-3 rounded-2xl bg-stone-800 text-white hover:bg-stone-700 transition-all flex items-center gap-1 text-xs font-semibold cursor-pointer border border-stone-700"
                 title="Flip Camera (Front/Back)"
               >
                 <FlipHorizontal size={16} />
@@ -667,7 +667,7 @@ export const PlateScannerModal: React.FC<PlateScannerModalProps> = ({
               {/* Snap Plate Button */}
               <button
                 onClick={handleCapture}
-                className="flex-1 py-3 px-4 rounded-2xl bg-gradient-to-r from-teal-400 to-emerald-400 text-slate-950 font-black text-sm hover:brightness-110 active:scale-95 transition-all shadow-lg flex items-center justify-center gap-2 cursor-pointer"
+                className="flex-1 py-3 px-4 rounded-2xl bg-[#164E3D] hover:bg-[#113E30] text-white font-bold text-sm active:scale-95 transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer"
               >
                 <Camera size={18} />
                 <span>Snap Plate &amp; Calibrate</span>
@@ -675,7 +675,7 @@ export const PlateScannerModal: React.FC<PlateScannerModalProps> = ({
 
               {/* Direct Photo Upload / Mobile Camera */}
               <label
-                className="p-3 rounded-2xl bg-white/10 text-white hover:bg-white/20 transition-all flex items-center gap-1 text-xs font-black cursor-pointer"
+                className="p-3 rounded-2xl bg-stone-800 text-white hover:bg-stone-700 transition-all flex items-center gap-1 text-xs font-semibold cursor-pointer border border-stone-700"
                 title="Take Photo or Upload Image"
               >
                 <Upload size={16} />
@@ -693,7 +693,7 @@ export const PlateScannerModal: React.FC<PlateScannerModalProps> = ({
               {/* Retake */}
               <button
                 onClick={handleRetake}
-                className="py-3 px-4 rounded-2xl bg-white/10 text-white hover:bg-white/20 transition-all text-xs font-black flex items-center gap-1.5 cursor-pointer"
+                className="py-3 px-4 rounded-2xl bg-stone-800 text-white hover:bg-stone-700 transition-all text-xs font-semibold flex items-center gap-1.5 cursor-pointer border border-stone-700"
               >
                 <RotateCcw size={14} />
                 <span>Retake</span>
@@ -702,7 +702,7 @@ export const PlateScannerModal: React.FC<PlateScannerModalProps> = ({
               {/* Save to Food Journal */}
               <button
                 onClick={handleSaveAndClose}
-                className="flex-1 py-3 px-4 rounded-2xl bg-gradient-to-r from-teal-400 to-emerald-400 text-slate-950 font-black text-sm hover:brightness-110 active:scale-95 transition-all shadow-lg flex items-center justify-center gap-2 cursor-pointer"
+                className="flex-1 py-3 px-4 rounded-2xl bg-[#164E3D] hover:bg-[#113E30] text-white font-bold text-sm active:scale-95 transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer"
               >
                 <span>Save to Food Journal</span>
                 <ArrowRight size={16} />

@@ -41,17 +41,17 @@ export default function QuickActionsFAB() {
                 setIsOpen(false);
                 setShowSarahConcierge(true);
               }}
-              className="group bg-gradient-to-r from-slate-900 via-[#126778] to-slate-900 text-white rounded-2xl pl-4 pr-3 py-2.5 shadow-2xl border border-teal-400/40 hover:scale-103 active:scale-97 transition-all flex items-center gap-3 cursor-pointer"
+              className="group bg-stone-900/95 dark:bg-stone-900/95 text-white rounded-2xl pl-4 pr-3 py-2.5 shadow-2xl border border-stone-700/80 hover:scale-[1.02] active:scale-98 transition-all flex items-center gap-3 cursor-pointer"
             >
               <div className="text-right">
-                <span className="text-xs font-black block leading-tight text-white group-hover:text-amber-300 transition-colors">
+                <span className="text-xs font-bold block leading-tight text-white group-hover:text-amber-300 transition-colors">
                   Ask Sarah AI Voice
                 </span>
-                <span className="text-[9.5px] text-teal-200 font-bold block">
+                <span className="text-xs text-stone-400 font-medium block">
                   Food advice &amp; meal tips
                 </span>
               </div>
-              <div className="w-9 h-9 rounded-xl bg-teal-400/20 border border-teal-300/40 flex items-center justify-center text-lg shadow-inner group-hover:scale-110 transition-transform shrink-0">
+              <div className="w-10 h-10 rounded-xl bg-white/10 border border-white/20 flex items-center justify-center text-lg shadow-inner group-hover:scale-110 transition-transform shrink-0">
                 👩🏾‍💼
               </div>
             </button>
@@ -64,17 +64,17 @@ export default function QuickActionsFAB() {
                 setIsOpen(false);
                 setShowARPlateScanner(true);
               }}
-              className="group bg-gradient-to-r from-[#126778] via-[#0d9488] to-[#14b8a6] text-white rounded-2xl pl-4 pr-3 py-2.5 shadow-2xl border border-white/20 hover:scale-103 active:scale-97 transition-all flex items-center gap-3 cursor-pointer"
+              className="group bg-[#164E3D] hover:bg-[#113E30] text-white rounded-2xl pl-4 pr-3 py-2.5 shadow-2xl border border-emerald-400/30 hover:scale-[1.02] active:scale-98 transition-all flex items-center gap-3 cursor-pointer"
             >
               <div className="text-right">
-                <span className="text-xs font-black block leading-tight text-white group-hover:text-emerald-200 transition-colors">
+                <span className="text-xs font-bold block leading-tight text-white group-hover:text-emerald-200 transition-colors">
                   Snap Plate (AR)
                 </span>
-                <span className="text-[9.5px] text-teal-100 font-bold block">
+                <span className="text-xs text-emerald-200/90 font-medium block">
                   9-Inch Plate Calibrator
                 </span>
               </div>
-              <div className="w-9 h-9 rounded-xl bg-white/20 border border-white/30 flex items-center justify-center shadow-inner group-hover:scale-110 transition-transform shrink-0">
+              <div className="w-10 h-10 rounded-xl bg-white/20 border border-white/30 flex items-center justify-center shadow-inner group-hover:scale-110 transition-transform shrink-0">
                 <Camera size={18} className="text-white" />
               </div>
             </button>
@@ -87,18 +87,18 @@ export default function QuickActionsFAB() {
                 setIsOpen(false);
                 setShowWhatsAppModal(true);
               }}
-              className="group bg-gradient-to-r from-emerald-600 to-teal-700 text-white rounded-2xl pl-4 pr-3 py-2.5 shadow-2xl border border-emerald-400/40 hover:scale-103 active:scale-97 transition-all flex items-center gap-3 cursor-pointer"
+              className="group bg-[#25D366] hover:bg-[#1EBE5D] text-slate-950 rounded-2xl pl-4 pr-3 py-2.5 shadow-2xl border border-white/30 hover:scale-[1.02] active:scale-98 transition-all flex items-center gap-3 cursor-pointer"
             >
               <div className="text-right">
-                <span className="text-xs font-black block leading-tight text-white group-hover:text-emerald-200 transition-colors">
+                <span className="text-xs font-bold block leading-tight text-slate-950 transition-colors">
                   WhatsApp AI Bot
                 </span>
-                <span className="text-[9.5px] text-emerald-100 font-bold block">
+                <span className="text-xs text-slate-900/80 font-medium block">
                   Snap &amp; text meals in chat
                 </span>
               </div>
-              <div className="w-9 h-9 rounded-xl bg-white/20 border border-white/30 flex items-center justify-center shadow-inner group-hover:scale-110 transition-transform shrink-0">
-                <MessageSquare size={18} className="text-white" />
+              <div className="w-10 h-10 rounded-xl bg-black/10 border border-black/10 flex items-center justify-center shadow-inner group-hover:scale-110 transition-transform shrink-0">
+                <MessageSquare size={18} className="text-slate-950" />
               </div>
             </button>
           </div>
@@ -110,8 +110,8 @@ export default function QuickActionsFAB() {
           onClick={toggleMenu}
           className={`w-13 h-13 sm:w-14 sm:h-14 rounded-full shadow-2xl flex items-center justify-center transition-all duration-300 hover:scale-105 active:scale-95 cursor-pointer border-2 border-white/90 ring-4 relative ${
             isOpen
-              ? "bg-slate-900 rotate-90 ring-teal-400/40 text-white"
-              : "bg-gradient-to-tr from-[#126778] via-[#0d9488] to-[#14b8a6] ring-teal-500/30 text-white shadow-teal-900/40"
+              ? "bg-stone-900 rotate-90 ring-stone-700/50 text-white"
+              : "bg-[#164E3D] hover:bg-[#113E30] ring-[#164E3D]/30 text-white shadow-[#164E3D]/30"
           }`}
           aria-label={isOpen ? "Close quick actions" : "Open Sarah AI Quick Actions"}
         >
@@ -120,8 +120,8 @@ export default function QuickActionsFAB() {
           ) : (
             <div className="relative flex items-center justify-center">
               <span className="text-2xl leading-none select-none">👩🏾‍💼</span>
-              <span className="absolute -top-1 -right-1.5 w-3 h-3 bg-emerald-400 rounded-full border-2 border-slate-900 animate-ping" />
-              <span className="absolute -top-1 -right-1.5 w-3 h-3 bg-emerald-400 rounded-full border-2 border-slate-900" />
+              <span className="absolute -top-1 -right-1.5 w-3 h-3 bg-emerald-400 rounded-full border-2 border-[#164E3D] animate-ping" />
+              <span className="absolute -top-1 -right-1.5 w-3 h-3 bg-emerald-400 rounded-full border-2 border-[#164E3D]" />
             </div>
           )}
         </button>

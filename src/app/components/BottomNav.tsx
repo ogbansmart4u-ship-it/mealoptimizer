@@ -73,54 +73,60 @@ function BottomNavBar() {
 
   return (
     <nav
-      className="fixed bottom-2 sm:bottom-3 left-1/2 -translate-x-1/2 w-[calc(100%-1.25rem)] max-w-md bg-[#126778]/95 dark:bg-zinc-950/95 backdrop-blur-2xl text-white pt-2.5 pb-2.5 px-2 rounded-3xl shadow-[0_12px_40px_rgba(0,0,0,0.28)] border border-white/25 dark:border-white/10 z-40 transition-all"
-      style={{ paddingBottom: "max(0.65rem, env(safe-area-inset-bottom))" }}
+      className="fixed bottom-2 sm:bottom-3 left-1/2 -translate-x-1/2 w-[calc(100%-1.25rem)] max-w-md bg-[#FAF8F5]/92 dark:bg-[#171E1B]/92 backdrop-blur-2xl text-stone-700 dark:text-stone-200 pt-2 pb-2 px-2 rounded-3xl shadow-[0_12px_36px_rgba(0,0,0,0.10)] border border-stone-200/80 dark:border-stone-800/80 z-40 transition-all"
+      style={{ paddingBottom: "max(0.6rem, env(safe-area-inset-bottom))" }}
     >
-      <div className="max-w-md mx-auto grid grid-cols-4 items-center px-2">
+      <div className="max-w-md mx-auto grid grid-cols-4 items-center px-1.5">
         {navItems.map(({ path, icon: Icon, label }) => {
           const isActive = location.pathname === path;
           const badge = badges[path];
           const isHealth = path === "/health";
-          const isGoals = path === "/goals";
 
           return (
             <Link
               key={path}
               to={path}
               className={`flex flex-col items-center justify-center py-1 gap-1 transition-all duration-300 w-full relative group ${
-                isActive ? "text-white" : "text-white/70 hover:text-white"
+                isActive
+                  ? "text-[#164E3D] dark:text-emerald-400 font-bold"
+                  : "text-stone-500 dark:text-stone-400 hover:text-stone-800 dark:hover:text-stone-100 font-medium"
               }`}
             >
-              <div className={`relative p-1 rounded-2xl transition-all duration-300 ${
-                isActive
-                  ? "animate-nav-pop bg-white/15 shadow-inner"
-                  : "group-hover:scale-105"
-              }`}>
+              <div
+                className={`relative px-3 py-1 rounded-2xl transition-all duration-300 ${
+                  isActive
+                    ? "animate-nav-pop bg-[#164E3D]/10 dark:bg-emerald-400/15 shadow-xs"
+                    : "group-hover:scale-105"
+                }`}
+              >
                 <Icon
-                  className={`h-5.5 w-5.5 transition-transform duration-300 ${
-                    isActive ? "fill-white/20" : ""
+                  className={`h-5 w-5 transition-transform duration-300 ${
+                    isActive ? "stroke-[2.5]" : "stroke-[1.8]"
                   } ${
-                    isHealth && isActive
-                      ? "animate-heartbeat text-emerald-300"
-                      : isGoals && isActive
-                      ? "animate-pulse-radar text-amber-300"
-                      : ""
+                    isHealth && isActive ? "animate-heartbeat" : ""
                   }`}
-                  strokeWidth={isActive ? 2.6 : 2}
                 />
                 {badge && badge.count > 0 && (
-                  <div className={`absolute -top-1.5 -right-2 ${badge.color || 'bg-rose-500'} animate-badge-bounce text-white text-[10px] font-black rounded-full min-w-[17px] h-[17px] flex items-center justify-center px-1 shadow-md border border-white/40`}>
-                    {badge.count > 9 ? '9+' : badge.count}
+                  <div
+                    className={`absolute -top-1.5 -right-1.5 ${
+                      badge.color || "bg-rose-500"
+                    } animate-badge-bounce text-white text-xs font-bold rounded-full min-w-[18px] h-[18px] flex items-center justify-center px-1 shadow-sm border border-white dark:border-stone-900`}
+                  >
+                    {badge.count > 9 ? "9+" : badge.count}
                   </div>
                 )}
               </div>
-              <span className={`text-[11px] font-bold tracking-tight transition-all ${
-                isActive ? "text-white scale-105" : "text-white/75 group-hover:text-white"
-              }`}>
+              <span
+                className={`text-xs tracking-tight transition-all ${
+                  isActive
+                    ? "text-[#164E3D] dark:text-emerald-400 font-bold scale-105"
+                    : "text-stone-500 dark:text-stone-400 group-hover:text-stone-800 dark:group-hover:text-stone-200"
+                }`}
+              >
                 {label}
               </span>
               {isActive && (
-                <span className="w-1.5 h-1.5 rounded-full bg-amber-300 shadow-xs animate-fade-in -mt-0.5" />
+                <span className="w-1.5 h-1.5 rounded-full bg-[#164E3D] dark:bg-emerald-400 shadow-xs animate-fade-in -mt-0.5" />
               )}
             </Link>
           );
