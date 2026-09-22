@@ -1173,6 +1173,24 @@ export default function LocalFoodScanner({ isOpen, onClose }: LocalFoodScannerPr
                     <span className="w-2 h-2 rounded-full bg-red-500 animate-ping" />
                     <span>Live AI Viewport</span>
                   </div>
+
+                  {/* 📸 3 Golden Rules Viewport Reminder */}
+                  <div className="absolute bottom-3 inset-x-3 bg-slate-950/85 backdrop-blur-md px-2.5 py-1.5 rounded-2xl border border-white/20 text-[10px] font-bold text-white shadow-xl flex items-center justify-around pointer-events-none z-10">
+                    <div className="flex items-center gap-1">
+                      <span className="text-emerald-400">🎯</span>
+                      <span>Inside Frame</span>
+                    </div>
+                    <span className="text-white/30">•</span>
+                    <div className="flex items-center gap-1">
+                      <span className="text-cyan-300">👁️</span>
+                      <span>Visible Ingredients</span>
+                    </div>
+                    <span className="text-white/30">•</span>
+                    <div className="flex items-center gap-1">
+                      <span className="text-amber-300">💡</span>
+                      <span>Good Lighting</span>
+                    </div>
+                  </div>
                 </div>
 
                 {/* Camera Shutter & Action Controls */}
@@ -1204,6 +1222,28 @@ export default function LocalFoodScanner({ isOpen, onClose }: LocalFoodScannerPr
                   <p className="text-xs text-gray-600 dark:text-gray-400 max-w-sm mx-auto leading-relaxed font-medium">
                     Instant biochemical macro analysis, glycemic load ranking, and authentic West African ingredient swaps!
                   </p>
+                </div>
+
+                {/* 📸 3 Golden Rules for Accurate AI Recognition */}
+                <div className="p-3 bg-gradient-to-r from-teal-500/10 via-emerald-500/10 to-amber-500/10 dark:from-teal-950/40 dark:via-emerald-950/40 dark:to-zinc-900/40 rounded-2xl border border-teal-500/20 text-xs">
+                  <div className="flex items-center gap-1.5 font-black text-slate-800 dark:text-zinc-200 text-[11px] mb-1.5">
+                    <Sparkles size={13} className="text-amber-500" />
+                    <span>Camera Quick Tips for Best AI Recognition:</span>
+                  </div>
+                  <div className="grid grid-cols-3 gap-1.5 text-center text-[10px] font-bold text-slate-700 dark:text-zinc-300">
+                    <div className="bg-white/80 dark:bg-zinc-800/80 p-1.5 rounded-xl border border-teal-200/50 dark:border-zinc-700/50 flex flex-col items-center gap-0.5 shadow-2xs">
+                      <span className="text-base">🎯</span>
+                      <span>Food Inside Frame</span>
+                    </div>
+                    <div className="bg-white/80 dark:bg-zinc-800/80 p-1.5 rounded-xl border border-teal-200/50 dark:border-zinc-700/50 flex flex-col items-center gap-0.5 shadow-2xs">
+                      <span className="text-base">👁️</span>
+                      <span>Ingredients Visible</span>
+                    </div>
+                    <div className="bg-white/80 dark:bg-zinc-800/80 p-1.5 rounded-xl border border-teal-200/50 dark:border-zinc-700/50 flex flex-col items-center gap-0.5 shadow-2xs">
+                      <span className="text-base">💡</span>
+                      <span>Ensure Good Lighting</span>
+                    </div>
+                  </div>
                 </div>
 
                 {/* Direct Action Launch Grid (Ultra-Premium Glassmorphic Cards) */}

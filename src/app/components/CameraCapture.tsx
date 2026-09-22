@@ -297,6 +297,28 @@ export default function CameraCapture({
               </div>
             )}
 
+            {/* 📸 3 Golden Rules Quick Tips */}
+            <div className="mb-4 p-3 bg-gradient-to-r from-teal-500/10 via-emerald-500/10 to-amber-500/10 dark:from-teal-950/40 dark:via-emerald-950/40 dark:to-zinc-900/40 rounded-2xl border border-teal-500/20 text-xs">
+              <div className="flex items-center gap-1.5 font-black text-slate-800 dark:text-zinc-200 text-[11px] mb-1.5">
+                <Sparkles size={13} className="text-amber-500" />
+                <span>Quick Photo Tips for Best Accuracy:</span>
+              </div>
+              <div className="grid grid-cols-3 gap-1.5 text-center text-[10px] font-bold text-slate-700 dark:text-zinc-300">
+                <div className="bg-white/80 dark:bg-zinc-800/80 p-1.5 rounded-xl border border-teal-200/50 dark:border-zinc-700/50 flex flex-col items-center gap-0.5 shadow-2xs">
+                  <span className="text-base">🎯</span>
+                  <span>Food In Frame</span>
+                </div>
+                <div className="bg-white/80 dark:bg-zinc-800/80 p-1.5 rounded-xl border border-teal-200/50 dark:border-zinc-700/50 flex flex-col items-center gap-0.5 shadow-2xs">
+                  <span className="text-base">👁️</span>
+                  <span>Ingredients Visible</span>
+                </div>
+                <div className="bg-white/80 dark:bg-zinc-800/80 p-1.5 rounded-xl border border-teal-200/50 dark:border-zinc-700/50 flex flex-col items-center gap-0.5 shadow-2xs">
+                  <span className="text-base">💡</span>
+                  <span>Good Lighting</span>
+                </div>
+              </div>
+            </div>
+
             <div className="space-y-3">
               {/* Take Live Photo with In-App Camera */}
               <button
@@ -447,6 +469,24 @@ export default function CameraCapture({
                   </div>
                 </div>
               )}
+
+              {/* 📸 3 Golden Rules Bar */}
+              <div className="mb-2 bg-black/75 backdrop-blur-md px-3 py-1.5 rounded-2xl border border-white/20 text-white text-[10px] font-bold flex items-center justify-around gap-2 shadow-xl mx-auto max-w-sm pointer-events-none">
+                <div className="flex items-center gap-1">
+                  <span className="text-emerald-400">🎯</span>
+                  <span>Inside Frame</span>
+                </div>
+                <span className="text-white/30">•</span>
+                <div className="flex items-center gap-1">
+                  <span className="text-cyan-300">👁️</span>
+                  <span>Ingredients Visible</span>
+                </div>
+                <span className="text-white/30">•</span>
+                <div className="flex items-center gap-1">
+                  <span className="text-amber-300">💡</span>
+                  <span>Good Lighting</span>
+                </div>
+              </div>
 
               {/* Bottom Snap Button */}
               <div className="flex flex-col items-center justify-center pb-3 pointer-events-auto">

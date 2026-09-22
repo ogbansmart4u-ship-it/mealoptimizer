@@ -452,6 +452,24 @@ export const PlateScannerModal: React.FC<PlateScannerModalProps> = ({
           {/* AR 9-INCH PARTITIONED RETICLE OVERLAY */}
           {!scanResult && !cameraError && (
             <div className="absolute inset-0 pointer-events-none flex items-center justify-center p-4">
+              {/* 📸 3 Golden Rules Viewport Reminder */}
+              <div className="absolute top-3 inset-x-4 bg-slate-950/85 backdrop-blur-md rounded-2xl py-1.5 px-3 border border-white/20 flex items-center justify-around text-[9.5px] font-bold text-white shadow-xl pointer-events-none z-10">
+                <div className="flex items-center gap-1">
+                  <span className="text-emerald-400">🎯</span>
+                  <span>Inside Frame</span>
+                </div>
+                <span className="text-white/30">•</span>
+                <div className="flex items-center gap-1">
+                  <span className="text-cyan-300">👁️</span>
+                  <span>Visible Ingredients</span>
+                </div>
+                <span className="text-white/30">•</span>
+                <div className="flex items-center gap-1">
+                  <span className="text-amber-300">💡</span>
+                  <span>Good Lighting</span>
+                </div>
+              </div>
+
               <div className="relative w-72 h-72 sm:w-80 sm:h-80 rounded-full border-4 border-dashed border-teal-400/90 shadow-[0_0_60px_rgba(20,184,166,0.35)] grid grid-cols-2 grid-rows-2 overflow-hidden backdrop-blur-[0.5px]">
                 {/* Left Half: 50% Veggies */}
                 <div className="row-span-2 col-span-1 bg-emerald-500/20 border-r-2 border-emerald-400/80 flex flex-col items-center justify-center text-center p-2">
