@@ -262,6 +262,7 @@ export default function Home() {
   const isWeightLossGoal = userConditionOrGoal.includes("lose") || userConditionOrGoal.includes("belly fat") || targetW < currentW;
 
   const caloriesTarget = isWeightGainGoal ? 2450 : isWeightLossGoal ? 1800 : 2000;
+  const caloriesRemaining = Math.max(0, caloriesTarget - caloriesConsumed);
   const proteinConsumed = sumField("protein");
   const proteinTarget = isWeightGainGoal ? 130 : isWeightLossGoal ? 110 : 100;
   const carbsConsumed = sumField("carbs");
@@ -360,6 +361,7 @@ export default function Home() {
     setLockedProFeature(featureName);
     setShowProLockModal(true);
   };
+  const [showClinicalAccordion, setShowClinicalAccordion] = useState(false);
   // Water sync is automatically handled live by useHydrationSync and event bus
 
   const [selectedMeal, setSelectedMeal] = useState<MealMetadata | null>(null);
@@ -578,22 +580,22 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#b8e5e5] via-[#e2f1f1] to-[#f4f9f9] dark:from-[#0a1518] dark:via-[#0f1d21] dark:to-[#080d0e] pb-32 relative overflow-hidden">
-      {/* 🔮 Multi-Layer Ambient Light Orbs for Rich Glassmorphism Refraction */}
-      <div className="absolute top-0 -left-20 w-96 h-96 rounded-full bg-teal-400/25 dark:bg-teal-500/15 blur-3xl pointer-events-none animate-ambient-drift-1" />
-      <div className="absolute top-48 -right-20 w-96 h-96 rounded-full bg-cyan-300/20 dark:bg-cyan-500/10 blur-3xl pointer-events-none animate-ambient-drift-2" />
-      <div className="absolute top-[800px] left-1/4 w-80 h-80 rounded-full bg-emerald-400/15 dark:bg-emerald-500/10 blur-3xl pointer-events-none animate-pulse-glow-soft" />
-      <div className="absolute top-[1400px] -right-10 w-96 h-96 rounded-full bg-amber-300/15 dark:bg-amber-500/10 blur-3xl pointer-events-none" />
+    <div className="min-h-screen bg-canvas-organic dark:bg-[#0F1412] pb-32 relative overflow-hidden">
+      {/* 🌿 Gentle Ambient Light Accents for Natural Depth */}
+      <div className="absolute top-0 -left-20 w-96 h-96 rounded-full bg-emerald-600/5 dark:bg-emerald-500/5 blur-3xl pointer-events-none" />
+      <div className="absolute top-48 -right-20 w-96 h-96 rounded-full bg-amber-500/5 dark:bg-amber-500/5 blur-3xl pointer-events-none" />
+      <div className="absolute top-[800px] left-1/4 w-80 h-80 rounded-full bg-emerald-600/5 dark:bg-emerald-500/5 blur-3xl pointer-events-none" />
+      
       {/* Header */}
-      <div className="bg-white/40 dark:bg-zinc-900/40 backdrop-blur-2xl px-4 sm:px-6 pt-9 pb-4 border-b border-white/60 dark:border-white/10 shadow-[0_4px_30px_rgba(0,0,0,0.03)] relative z-20">
-        {/* Top Brand & Profile Avatar Bar (Option 2: Minimalist & Spacious) */}
-        <div className="flex items-center justify-between gap-3 mb-4">
+      <div className="bg-white/80 dark:bg-[#171E1B]/80 backdrop-blur-xl px-4 sm:px-6 pt-9 pb-4 border-b border-stone-200/60 dark:border-stone-800/60 shadow-[0_2px_12px_rgba(0,0,0,0.02)] relative z-20">
+        {/* Top Brand & Profile Avatar Bar */}
+        <div className="flex items-center justify-between gap-3 mb-3.5">
           {/* Top Left: Clean Brand Anchor */}
           <div className="flex items-center">
             <AppLogo size="sm" />
           </div>
 
-          {/* Top Right: Prominent Profile Avatar Only */}
+          {/* Top Right: Ask Sarah & Avatar */}
           <div className="flex items-center gap-2">
             <button
               type="button"
@@ -601,9 +603,9 @@ export default function Home() {
                 triggerHaptic("medium");
                 setShowConciergeModal(true);
               }}
-              className="inline-flex items-center gap-1.5 text-xs font-black px-3 py-1.5 bg-gradient-to-r from-[#126778] to-[#0d9488] text-white rounded-2xl shadow-md hover:scale-105 active:scale-95 transition-all cursor-pointer border border-white/30"
+              className="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 bg-[#164E3D] hover:bg-[#113E30] text-white rounded-full shadow-xs transition-all cursor-pointer border border-[#164E3D]/30"
             >
-              <span>👩🏾‍💼 Ask Sarah</span>
+              <span>Ask Sarah</span>
             </button>
             <ProfilePictureUpload />
           </div>
@@ -612,42 +614,43 @@ export default function Home() {
         {/* Hero Greeting & Privacy-Protected Status Bar */}
         <div className="flex items-center justify-between gap-3 pt-0.5">
           <div className="flex items-center gap-3">
-            <Mascot gesture="wave" size={48} className="shrink-0 drop-shadow-sm" />
+            <Mascot gesture="wave" size={48} className="shrink-0 drop-shadow-xs" />
             <div>
-              <h2 className="text-lg sm:text-xl font-black text-gray-900 leading-tight">
+              <h2 className="text-lg sm:text-xl font-bold text-stone-900 dark:text-stone-100 leading-tight">
                 {getTimeBasedGreeting()}, {userName || "Friend"}
               </h2>
-              {/* Privacy-Preserved Subtitle: Date & Quick Chips (No Medical Condition) */}
-              <div className="flex items-center gap-1.5 flex-wrap mt-1 text-xs font-semibold">
-                <span className="text-[11px] text-gray-600 font-medium whitespace-nowrap">{currentDate}</span>
-                <span className="text-gray-400">•</span>
+              {/* Privacy-Preserved Subtitle: Date & Quick Chips */}
+              <div className="flex items-center gap-2 flex-wrap mt-1 text-xs">
+                <span className="text-xs text-stone-500 dark:text-stone-400 font-medium whitespace-nowrap">{currentDate}</span>
+                <span className="text-stone-300 dark:text-stone-700">•</span>
+                
                 {/* Interactive Streak Chip */}
                 <button
                   onClick={() => navigate("/achievements")}
-                  className="inline-flex items-center gap-1 text-[10.5px] font-black px-2 py-0.5 bg-orange-100/90 hover:bg-orange-200 text-orange-900 rounded-full border border-orange-300/60 shadow-2xs cursor-pointer active:scale-95 transition-all"
+                  className="inline-flex items-center gap-1 text-xs font-semibold px-2.5 py-0.5 bg-amber-50 hover:bg-amber-100 text-amber-900 dark:bg-amber-950/50 dark:text-amber-300 rounded-full border border-amber-200 dark:border-amber-800/60 shadow-2xs cursor-pointer active:scale-95 transition-all"
                   title="View streaks and achievements"
                 >
-                  <Flame className="h-3 w-3 text-orange-500 fill-orange-500 animate-pulse shrink-0" />
-                  <span>{trackingStreak}d</span>
+                  <Flame className="h-3 w-3 text-amber-500 fill-amber-500 shrink-0" />
+                  <span>{trackingStreak}d streak</span>
                 </button>
 
                 {/* Quick Search */}
                 <button
                   onClick={() => setShowGlobalSearch(true)}
-                  className="inline-flex items-center gap-1 text-[10.5px] font-bold px-2 py-0.5 bg-white/70 hover:bg-white text-gray-700 rounded-full border border-teal-600/15 shadow-2xs cursor-pointer active:scale-95 transition-all"
+                  className="inline-flex items-center gap-1 text-xs font-medium px-2.5 py-0.5 bg-stone-50 hover:bg-stone-100 text-stone-700 dark:bg-zinc-800 dark:text-stone-300 rounded-full border border-stone-200/80 dark:border-zinc-700 shadow-2xs cursor-pointer active:scale-95 transition-all"
                   title="Search meals, recipes, and guides"
                 >
-                  <Search className="h-3 w-3 text-teal-700 shrink-0" />
+                  <Search className="h-3 w-3 text-stone-500 shrink-0" />
                   <span>Search</span>
                 </button>
 
                 {/* Quick Alerts */}
                 <button
                   onClick={() => setShowNotificationSettings(true)}
-                  className="inline-flex items-center gap-1 text-[10.5px] font-bold px-2 py-0.5 bg-white/70 hover:bg-white text-gray-700 rounded-full border border-teal-600/15 shadow-2xs cursor-pointer active:scale-95 transition-all"
+                  className="inline-flex items-center gap-1 text-xs font-medium px-2.5 py-0.5 bg-stone-50 hover:bg-stone-100 text-stone-700 dark:bg-zinc-800 dark:text-stone-300 rounded-full border border-stone-200/80 dark:border-zinc-700 shadow-2xs cursor-pointer active:scale-95 transition-all"
                   title="Notification & WhatsApp settings"
                 >
-                  <Bell className="h-3 w-3 text-teal-700 shrink-0" />
+                  <Bell className="h-3 w-3 text-stone-500 shrink-0" />
                   <span>Alerts</span>
                 </button>
               </div>
@@ -692,13 +695,13 @@ export default function Home() {
       {/* Main Content Area with Tabbed Architecture */}
       <div className="px-3.5 sm:px-6 mt-2 max-w-2xl mx-auto w-full min-w-0">
         {/* Segmented Tab Navigation Control */}
-        <div className="sticky top-3 z-30 bg-white/70 dark:bg-zinc-900/70 backdrop-blur-2xl p-1.5 rounded-3xl shadow-[0_8px_32px_rgba(31,122,140,0.12)] border border-white/80 dark:border-white/10 flex gap-1.5 mb-4 sm:mb-5 transition-all">
+        <div className="sticky top-3 z-30 bg-white/90 dark:bg-[#171E1B]/90 backdrop-blur-xl p-1 rounded-2xl shadow-xs border border-stone-200/80 dark:border-stone-800/80 flex gap-1 mb-4 transition-all">
           <button
             onClick={() => setActiveHomeTab("today")}
-            className={`flex-1 py-2 sm:py-2.5 px-1.5 sm:px-3 rounded-xl font-bold text-xs sm:text-sm flex items-center justify-center gap-1 sm:gap-1.5 transition-all cursor-pointer truncate ${
+            className={`flex-1 py-2 sm:py-2.5 px-2 sm:px-3 rounded-xl font-semibold text-xs sm:text-sm flex items-center justify-center gap-1.5 transition-all cursor-pointer truncate ${
               activeHomeTab === "today"
-                ? "bg-gradient-to-r from-[#126778] via-[#1f7a8c] to-[#0d9488] text-white shadow-[inset_0_1px_1px_rgba(255,255,255,0.4),0_4px_12px_rgba(18,103,120,0.25)] ring-1 ring-white/30 rounded-2xl"
-                : "text-gray-600 dark:text-gray-400 hover:text-gray-900 hover:bg-gray-100/60"
+                ? "bg-[#164E3D] text-white shadow-xs"
+                : "text-stone-600 dark:text-stone-400 hover:text-stone-900 hover:bg-stone-100/60 dark:hover:bg-zinc-800/60"
             }`}
           >
             <Sparkles size={14} className="shrink-0" />
@@ -707,10 +710,10 @@ export default function Home() {
 
           <button
             onClick={() => setActiveHomeTab("academy")}
-            className={`flex-1 py-2 sm:py-2.5 px-1.5 sm:px-3 rounded-xl font-bold text-xs sm:text-sm flex items-center justify-center gap-1 sm:gap-1.5 transition-all cursor-pointer truncate ${
+            className={`flex-1 py-2 sm:py-2.5 px-2 sm:px-3 rounded-xl font-semibold text-xs sm:text-sm flex items-center justify-center gap-1.5 transition-all cursor-pointer truncate ${
               activeHomeTab === "academy"
-                ? "bg-gradient-to-r from-[#126778] via-[#1f7a8c] to-[#0d9488] text-white shadow-[inset_0_1px_1px_rgba(255,255,255,0.4),0_4px_12px_rgba(18,103,120,0.25)] ring-1 ring-white/30 rounded-2xl"
-                : "text-gray-600 dark:text-gray-400 hover:text-gray-900 hover:bg-gray-100/60"
+                ? "bg-[#164E3D] text-white shadow-xs"
+                : "text-stone-600 dark:text-stone-400 hover:text-stone-900 hover:bg-stone-100/60 dark:hover:bg-zinc-800/60"
             }`}
           >
             <BookOpen size={14} className="shrink-0" />
@@ -719,10 +722,10 @@ export default function Home() {
 
           <button
             onClick={() => setActiveHomeTab("clinical")}
-            className={`flex-1 py-2 sm:py-2.5 px-1.5 sm:px-3 rounded-xl font-bold text-xs sm:text-sm flex items-center justify-center gap-1 sm:gap-1.5 transition-all cursor-pointer truncate ${
+            className={`flex-1 py-2 sm:py-2.5 px-2 sm:px-3 rounded-xl font-semibold text-xs sm:text-sm flex items-center justify-center gap-1.5 transition-all cursor-pointer truncate ${
               activeHomeTab === "clinical"
-                ? "bg-gradient-to-r from-[#126778] via-[#1f7a8c] to-[#0d9488] text-white shadow-[inset_0_1px_1px_rgba(255,255,255,0.4),0_4px_12px_rgba(18,103,120,0.25)] ring-1 ring-white/30 rounded-2xl"
-                : "text-gray-600 dark:text-gray-400 hover:text-gray-900 hover:bg-gray-100/60"
+                ? "bg-[#164E3D] text-white shadow-xs"
+                : "text-stone-600 dark:text-stone-400 hover:text-stone-900 hover:bg-stone-100/60 dark:hover:bg-zinc-800/60"
             }`}
           >
             <Heart size={14} className="shrink-0" />
@@ -750,7 +753,7 @@ export default function Home() {
               waterScore={Math.min(Math.round((waterGlasses / 8) * 100), 100) || 75}
             />
 
-            {/* 🌟 3 BIG 1-TAP ACTION BUTTONS (Scan Plate, Quick Log, +1 Cup Water) */}
+            {/* 🌟 3 CLEAN QUICK-ACTION TILES (Scan Plate, Quick Log, +1 Cup Water) */}
             <div className="grid grid-cols-3 gap-2.5">
               {/* Button 1: Scan Food Plate */}
               <button
@@ -760,17 +763,13 @@ export default function Home() {
                   soundEffects.playCameraShutter();
                   setShowLocalFoodScanner(true);
                 }}
-                className="glass-card-teal rounded-3xl p-3.5 sm:p-4 text-white shadow-xl flex flex-col items-center justify-center gap-1.5 hover:scale-[1.04] active:scale-[0.96] transition-all cursor-pointer group relative overflow-hidden ring-2 ring-teal-300/60 shadow-teal-500/20"
+                className="bg-white dark:bg-[#171E1B] rounded-3xl p-3 sm:p-3.5 text-stone-900 dark:text-stone-100 shadow-xs border border-stone-200/80 dark:border-stone-800 flex flex-col items-center justify-center gap-1.5 hover:border-emerald-600/40 active:scale-95 transition-all cursor-pointer group"
               >
-                <div className="w-10 h-10 rounded-2xl bg-white/25 backdrop-blur-md flex items-center justify-center shadow-inner group-hover:scale-110 transition-transform relative">
-                  <span className="absolute -inset-0.5 rounded-2xl bg-teal-200/40 animate-ping opacity-40" />
-                  <span className="text-xl relative z-10 animate-bounce">📸</span>
+                <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-emerald-50 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 flex items-center justify-center text-lg group-hover:scale-105 transition-transform border border-emerald-100 dark:border-emerald-900/40">
+                  <Camera size={20} />
                 </div>
-                <span className="text-xs font-black leading-tight text-center">Scan Plate</span>
-                <span className="text-[9.5px] text-teal-100 font-bold flex items-center gap-1">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                  Camera AI
-                </span>
+                <span className="text-xs font-semibold leading-tight text-center">Scan Plate</span>
+                <span className="text-xs text-stone-500 dark:text-stone-400 font-normal">Camera AI</span>
               </button>
 
               {/* Button 2: Quick Log Meals */}
@@ -781,27 +780,27 @@ export default function Home() {
                   const el = document.getElementById("today-quick-shelf");
                   if (el) el.scrollIntoView({ behavior: "smooth" });
                 }}
-                className="neu-raised rounded-3xl p-3.5 sm:p-4 text-slate-900 dark:text-white shadow-md flex flex-col items-center justify-center gap-1.5 hover:scale-[1.03] active:scale-[0.97] transition-all cursor-pointer group border border-white/80 dark:border-white/5"
+                className="bg-white dark:bg-[#171E1B] rounded-3xl p-3 sm:p-3.5 text-stone-900 dark:text-stone-100 shadow-xs border border-stone-200/80 dark:border-stone-800 flex flex-col items-center justify-center gap-1.5 hover:border-amber-500/40 active:scale-95 transition-all cursor-pointer group"
               >
-                <div className="w-10 h-10 rounded-2xl bg-amber-50 dark:bg-amber-950 text-amber-600 flex items-center justify-center text-xl shadow-2xs group-hover:scale-110 transition-transform">
-                  ⚡
+                <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 flex items-center justify-center text-lg group-hover:scale-105 transition-transform border border-amber-100 dark:border-amber-900/40">
+                  <Zap size={20} />
                 </div>
-                <span className="text-xs font-black leading-tight text-center">Quick Log</span>
-                <span className="text-[9.5px] text-slate-500 font-bold">Common Food</span>
+                <span className="text-xs font-semibold leading-tight text-center">Quick Log</span>
+                <span className="text-xs text-stone-500 dark:text-stone-400 font-normal">Common food</span>
               </button>
 
-              {/* Button 3: +1 Cup Water with Drinking Mascot */}
-              <div className="neu-raised rounded-3xl p-3 sm:p-3.5 text-cyan-900 dark:text-cyan-200 shadow-md flex flex-col items-center justify-between gap-1 border border-white/80 dark:border-white/5 relative overflow-hidden group">
+              {/* Button 3: +1 Cup Water */}
+              <div className="bg-white dark:bg-[#171E1B] rounded-3xl p-2.5 sm:p-3 text-stone-900 dark:text-stone-100 shadow-xs border border-stone-200/80 dark:border-stone-800 flex flex-col items-center justify-between gap-1 group">
                 <div
                   onClick={handleWaterIncrease}
                   className="w-full flex flex-col items-center justify-center gap-1 cursor-pointer active:scale-95 transition-transform"
                   title="Tap to drink +1 cup of water"
                 >
-                  <div className="w-11 h-11 rounded-2xl bg-cyan-50 dark:bg-cyan-950 text-cyan-600 flex items-center justify-center shadow-inner group-hover:scale-105 transition-transform overflow-hidden relative">
-                    <Mascot gesture="drink" size={40} className={isDrinkingWater ? "animate-bounce" : ""} />
+                  <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-sky-50 dark:bg-sky-950/60 text-sky-600 dark:text-sky-300 flex items-center justify-center group-hover:scale-105 transition-transform overflow-hidden relative border border-sky-100 dark:border-sky-900/40">
+                    <Mascot gesture="drink" size={38} className={isDrinkingWater ? "animate-pulse" : ""} />
                   </div>
-                  <span className="text-xs font-black leading-tight text-center">+1 Cup Water</span>
-                  <span className="text-[9.5px] text-cyan-600 font-bold">{waterGlasses} of 8 drank</span>
+                  <span className="text-xs font-semibold leading-tight text-center">+1 Water</span>
+                  <span className="text-xs text-stone-500 dark:text-stone-400 font-normal">{waterGlasses} of {waterGoal || 8} cups</span>
                 </div>
 
                 {waterGlasses > 0 && (
@@ -811,11 +810,11 @@ export default function Home() {
                       e.stopPropagation();
                       handleWaterDecrease();
                     }}
-                    className="mt-0.5 px-2 py-0.5 rounded-full bg-cyan-100/80 hover:bg-rose-100 text-cyan-800 hover:text-rose-700 text-[9px] font-black transition-all cursor-pointer flex items-center gap-1 border border-cyan-200/60 active:scale-95"
+                    className="mt-0.5 px-2 py-0.5 rounded-full bg-stone-100 hover:bg-rose-50 text-stone-600 hover:text-rose-700 text-xs font-medium transition-all cursor-pointer flex items-center gap-1 border border-stone-200/60 active:scale-95"
                     title="Undo last glass (-1 cup)"
                   >
-                    <RotateCcw size={9} />
-                    <span>Undo (-1)</span>
+                    <RotateCcw size={10} />
+                    <span>Undo</span>
                   </button>
                 )}
               </div>
@@ -826,58 +825,76 @@ export default function Home() {
 
             <AfricanPlateSilhouette />
 
-            {/* 🌟 ZONE 1: THE HERO DAILY ENERGY & SATIETY GAUGE */}
+            {/* 🌟 ZONE 1: YAZIO-GRADE GLANCEABLE DAILY ENERGY GAUGE */}
             {dashboardPrefs.showEnergy && (
-              <div className="neu-raised rounded-3xl p-4 sm:p-5 space-y-3.5 border border-white/60 dark:border-white/5 relative overflow-hidden">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2.5">
-                    <div className="p-2 bg-teal-50 dark:bg-teal-950/60 rounded-2xl text-[#126778] dark:text-teal-300">
-                      <Flame size={18} className="animate-pulse" />
-                    </div>
-                    <div>
-                      <h3 className="text-xs sm:text-sm font-black text-gray-900 dark:text-white leading-tight">
-                        Today's Food &amp; Energy ⚡
-                      </h3>
-                      <span className="text-[10.5px] text-gray-500 font-medium">
-                        {animatedPercentage}% of your daily goal
+              <div className="bg-white dark:bg-[#171E1B] rounded-3xl p-4 sm:p-5 space-y-4 border border-stone-200/70 dark:border-stone-800/60 shadow-xs relative overflow-hidden">
+                {/* Remaining Energy Readout (YAZIO Metric Hierarchy) */}
+                <div className="flex items-end justify-between">
+                  <div>
+                    <span className="text-xs font-medium uppercase tracking-wider text-stone-500 dark:text-stone-400">
+                      Daily Energy Budget
+                    </span>
+                    <div className="flex items-baseline gap-2 mt-0.5">
+                      <span className="text-3xl sm:text-4xl font-extrabold tracking-tight text-stone-900 dark:text-stone-100">
+                        {caloriesRemaining.toLocaleString()}
+                      </span>
+                      <span className="text-sm font-semibold text-stone-500 dark:text-stone-400">
+                        kcal left
                       </span>
                     </div>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-xs sm:text-sm font-black text-teal-800 dark:text-teal-300 font-mono">
-                      {caloriesConsumed} <span className="text-xs font-normal text-gray-400">/ {caloriesTarget} kcal</span>
+                  <div className="text-right">
+                    <span className="text-xs font-semibold text-emerald-800 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/60 px-2.5 py-1 rounded-full border border-emerald-200 dark:border-emerald-800/60">
+                      {dailyProgress >= 100 ? "Goal Met 🎉" : `${dailyProgress}% Consumed`}
                     </span>
-                    <button
-                      type="button"
-                      onClick={() => setShowGaugeDetails(true)}
-                      className="px-2.5 py-1 bg-teal-50 hover:bg-teal-100 text-[#126778] dark:bg-teal-950 dark:text-teal-300 rounded-xl text-[10.5px] font-bold border border-teal-200/60 transition-all cursor-pointer active:scale-95"
-                    >
-                      Details 📊
-                    </button>
+                    <div className="text-xs text-stone-500 dark:text-stone-400 mt-1">
+                      {caloriesConsumed.toLocaleString()} / {caloriesTarget.toLocaleString()} kcal
+                    </div>
                   </div>
                 </div>
 
-                {/* Progress Bar */}
-                <div className="w-full bg-slate-100 dark:bg-zinc-800 h-2.5 rounded-full overflow-hidden p-0.5 shadow-inner">
-                  <div
-                    className="h-full bg-gradient-to-r from-teal-500 via-emerald-400 to-amber-400 rounded-full transition-all duration-1000 ease-out shadow-xs"
-                    style={{ width: `${Math.min(100, (caloriesConsumed / caloriesTarget) * 100)}%` }}
-                  />
+                {/* Segmented 50-25-25 Golden Plate Balance Bar */}
+                <div className="space-y-1.5">
+                  <div className="w-full bg-stone-100 dark:bg-zinc-800 h-3 rounded-full overflow-hidden flex gap-1 p-0.5">
+                    <div 
+                      className="h-full bg-emerald-600 rounded-full transition-all duration-700" 
+                      style={{ width: "50%" }}
+                      title="50% Vegetables, Soups & Fiber" 
+                    />
+                    <div 
+                      className="h-full bg-amber-500 rounded-full transition-all duration-700" 
+                      style={{ width: "25%" }}
+                      title="25% Lean Protein" 
+                    />
+                    <div 
+                      className="h-full bg-orange-500 rounded-full transition-all duration-700" 
+                      style={{ width: "25%" }}
+                      title="25% Complex Swallow & Carbs" 
+                    />
+                  </div>
+                  <div className="flex items-center justify-between text-xs text-stone-500 dark:text-stone-400 px-0.5">
+                    <span className="flex items-center gap-1 font-medium"><span className="w-2 h-2 rounded-full bg-emerald-600 inline-block" /> 50% Greens &amp; Fiber</span>
+                    <span className="flex items-center gap-1 font-medium"><span className="w-2 h-2 rounded-full bg-amber-500 inline-block" /> 25% Protein</span>
+                    <span className="flex items-center gap-1 font-medium"><span className="w-2 h-2 rounded-full bg-orange-500 inline-block" /> 25% Complex Carbs</span>
+                  </div>
                 </div>
 
-                {/* 4 Macro & Water Gauges */}
+                {/* 4 Clean Macro Tiles */}
                 <div className="grid grid-cols-4 gap-2 text-center text-xs">
-                  <div className="neu-inset p-2 rounded-2xl flex flex-col justify-between">
-                    <span className="text-[9.5px] font-bold text-blue-700 dark:text-blue-400">🍗 Protein</span>
-                    <strong className="text-xs font-black text-slate-900 dark:text-white mt-0.5">{proteinConsumed}g</strong>
+                  <div className="bg-stone-50 dark:bg-zinc-800/60 p-2.5 rounded-2xl border border-stone-100 dark:border-zinc-800 flex flex-col justify-between">
+                    <span className="text-xs font-semibold text-blue-700 dark:text-blue-400">Protein</span>
+                    <strong className="text-sm font-bold text-stone-900 dark:text-stone-100 mt-0.5">{proteinConsumed}g</strong>
+                    <span className="text-xs text-stone-400">/ {proteinTarget}g</span>
                   </div>
-                  <div className="neu-inset p-2 rounded-2xl flex flex-col justify-between">
-                    <span className="text-[9.5px] font-bold text-emerald-700 dark:text-emerald-400">🌾 Carbs</span>
-                    <strong className="text-xs font-black text-slate-900 dark:text-white mt-0.5">{carbsConsumed}g</strong>
+                  <div className="bg-stone-50 dark:bg-zinc-800/60 p-2.5 rounded-2xl border border-stone-100 dark:border-zinc-800 flex flex-col justify-between">
+                    <span className="text-xs font-semibold text-emerald-700 dark:text-emerald-400">Carbs</span>
+                    <strong className="text-sm font-bold text-stone-900 dark:text-stone-100 mt-0.5">{carbsConsumed}g</strong>
+                    <span className="text-xs text-stone-400">/ {carbsTarget}g</span>
                   </div>
-                  <div className="neu-inset p-2 rounded-2xl flex flex-col justify-between">
-                    <span className="text-[9.5px] font-bold text-purple-700 dark:text-purple-400">🥑 Fats</span>
-                    <strong className="text-xs font-black text-slate-900 dark:text-white mt-0.5">{fatsConsumed}g</strong>
+                  <div className="bg-stone-50 dark:bg-zinc-800/60 p-2.5 rounded-2xl border border-stone-100 dark:border-zinc-800 flex flex-col justify-between">
+                    <span className="text-xs font-semibold text-amber-700 dark:text-amber-400">Fats</span>
+                    <strong className="text-sm font-bold text-stone-900 dark:text-stone-100 mt-0.5">{fatsConsumed}g</strong>
+                    <span className="text-xs text-stone-400">/ {fatsTarget}g</span>
                   </div>
                   <div 
                     id="tour-water-tracker"
@@ -885,35 +902,70 @@ export default function Home() {
                       triggerHaptic("medium");
                       setShowWaterReminderModal(true);
                     }}
-                    className="neu-inset p-1.5 rounded-2xl flex flex-col justify-between items-center text-center cursor-pointer hover:ring-2 hover:ring-cyan-400/50 transition-all group"
-                    title="Tap to open Avo Water Station 💧"
+                    className="bg-sky-50/70 dark:bg-sky-950/40 p-2.5 rounded-2xl border border-sky-100 dark:border-sky-900/40 flex flex-col justify-between items-center text-center cursor-pointer hover:ring-2 hover:ring-sky-400/50 transition-all group"
+                    title="Tap to open Water Station"
                   >
-                    <div className="flex items-center gap-1">
-                      <Mascot gesture="drink" size={16} />
-                      <span className="text-[9.5px] font-bold text-cyan-700 dark:text-cyan-400 group-hover:text-cyan-800">Water 💧</span>
-                    </div>
-                    <strong className="text-xs font-black text-cyan-900 dark:text-cyan-200">{waterGlasses}/{waterGoal} cups</strong>
-                    <div className="flex items-center gap-1 mt-0.5" onClick={(e) => e.stopPropagation()}>
-                      <button
-                        type="button"
-                        onClick={handleWaterIncrease}
-                        className="px-1.5 py-0.5 bg-cyan-100 dark:bg-cyan-950 text-cyan-800 dark:text-cyan-300 rounded-lg text-[9.5px] font-black hover:scale-105 active:scale-95 transition-all cursor-pointer"
-                        title="Add +1 cup"
-                      >
-                        +1
-                      </button>
-                      {waterGlasses > 0 && (
+                    <span className="text-xs font-semibold text-sky-700 dark:text-sky-300">Water</span>
+                    <strong className="text-sm font-bold text-sky-900 dark:text-sky-100 mt-0.5">{waterGlasses}/{waterGoal || 8}</strong>
+                    <span className="text-xs text-sky-600 dark:text-sky-400 font-medium">+1 Cup</span>
+                  </div>
+                </div>
+
+                {/* Progressive Disclosure: Clinical & Doctor Breakdown Accordion */}
+                <div className="pt-2 border-t border-stone-100 dark:border-stone-800">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      triggerHaptic("light");
+                      setShowClinicalAccordion(!showClinicalAccordion);
+                    }}
+                    className="w-full py-2 px-3 rounded-xl bg-stone-50 hover:bg-stone-100 dark:bg-zinc-800/50 dark:hover:bg-zinc-800 text-stone-600 dark:text-stone-300 text-xs font-semibold flex items-center justify-between transition-all cursor-pointer"
+                  >
+                    <span className="flex items-center gap-1.5">
+                      <Stethoscope size={14} className="text-[#164E3D] dark:text-emerald-400" />
+                      <span>Clinical Breakdown &amp; Doctor Notes</span>
+                    </span>
+                    <ChevronDown size={14} className={`transition-transform duration-200 ${showClinicalAccordion ? "rotate-180" : ""}`} />
+                  </button>
+
+                  {showClinicalAccordion && (
+                    <div className="mt-2.5 p-3.5 rounded-2xl bg-stone-50/80 dark:bg-zinc-800/40 border border-stone-200/60 dark:border-zinc-700/60 space-y-2.5 text-xs">
+                      <div className="flex items-center justify-between">
+                        <span className="text-stone-600 dark:text-stone-400 font-medium">KDIGO Potassium Status:</span>
+                        <span className="font-semibold text-emerald-800 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/60 px-2 py-0.5 rounded-md">
+                          Safe (&lt; 2,000 mg)
+                        </span>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-stone-600 dark:text-stone-400 font-medium">Sodium Intake Ceiling:</span>
+                        <span className="font-semibold text-stone-800 dark:text-stone-200">
+                          {todayLogs.reduce((s, l) => s + (Number(l?.sodium) || 0), 0)} / 1,800 mg
+                        </span>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-stone-600 dark:text-stone-400 font-medium">Glycemic Load Category:</span>
+                        <span className="font-semibold text-teal-700 dark:text-teal-400">
+                          Low-to-Moderate (Steady)
+                        </span>
+                      </div>
+                      <div className="pt-2 flex gap-2">
                         <button
                           type="button"
-                          onClick={handleWaterDecrease}
-                          className="px-1 py-0.5 bg-slate-100 dark:bg-zinc-800 text-slate-500 hover:text-rose-600 rounded-lg text-[9.5px] font-black hover:scale-105 active:scale-95 transition-all cursor-pointer"
-                          title="Undo (-1 cup)"
+                          onClick={() => navigate("/glucose-insights")}
+                          className="flex-1 py-1.5 px-2.5 rounded-lg bg-white dark:bg-zinc-700 text-stone-800 dark:text-stone-200 font-medium text-xs border border-stone-200 dark:border-zinc-600 hover:bg-stone-50 text-center cursor-pointer"
                         >
-                          ↩️
+                          Virtual CGM Curve →
                         </button>
-                      )}
+                        <button
+                          type="button"
+                          onClick={() => navigate("/clinical")}
+                          className="flex-1 py-1.5 px-2.5 rounded-lg bg-[#164E3D] text-white font-medium text-xs hover:bg-[#113E30] text-center cursor-pointer"
+                        >
+                          Export Doctor PDF 📄
+                        </button>
+                      </div>
                     </div>
-                  </div>
+                  )}
                 </div>
               </div>
             )}
@@ -944,27 +996,27 @@ export default function Home() {
                   triggerHaptic("medium");
                   navigate("/plan-meal");
                 }}
-                className="glass-card-teal rounded-3xl p-3.5 sm:p-4 text-white shadow-md cursor-pointer hover:scale-[1.02] active:scale-[0.98] transition-all flex flex-col justify-between group"
+                className="bg-white dark:bg-[#171E1B] rounded-3xl p-3.5 sm:p-4 text-stone-900 dark:text-stone-100 shadow-xs border border-stone-200/80 dark:border-stone-800 cursor-pointer hover:border-emerald-600/40 active:scale-[0.98] transition-all flex flex-col justify-between group"
               >
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-2xl p-2 bg-white/20 rounded-2xl shrink-0 group-hover:scale-110 transition-transform shadow-inner">
-                    📅
+                  <span className="text-xl p-2 bg-emerald-50 dark:bg-emerald-950/60 rounded-2xl shrink-0 group-hover:scale-105 transition-transform text-emerald-800 dark:text-emerald-300">
+                    <Calendar size={18} />
                   </span>
-                  <span className="text-[9px] font-black uppercase tracking-wider bg-amber-400 text-slate-950 px-2 py-0.5 rounded-full shadow-2xs">
+                  <span className="text-xs font-semibold uppercase tracking-wider bg-emerald-100 dark:bg-emerald-950/80 text-emerald-900 dark:text-emerald-300 px-2 py-0.5 rounded-full">
                     7-Day Plan
                   </span>
                 </div>
                 <div>
-                  <h4 className="text-xs sm:text-sm font-black text-white leading-tight">
-                    7-Day Meal Planner
+                  <h4 className="text-sm font-semibold text-stone-900 dark:text-stone-100 leading-tight">
+                    Meal Planner
                   </h4>
-                  <p className="text-[10px] text-teal-100/90 font-medium line-clamp-1 mt-0.5">
+                  <p className="text-xs text-stone-500 dark:text-stone-400 font-normal line-clamp-1 mt-0.5">
                     Personalized cultural plates
                   </p>
                 </div>
-                <div className="flex items-center text-[10px] font-black text-amber-300 mt-2 gap-0.5">
+                <div className="flex items-center text-xs font-semibold text-[#164E3D] dark:text-emerald-400 mt-2 gap-0.5">
                   <span>Plan 7 Days</span>
-                  <ChevronRight size={12} className="group-hover:translate-x-0.5 transition-transform" />
+                  <ChevronRight size={13} className="group-hover:translate-x-0.5 transition-transform" />
                 </div>
               </div>
 
@@ -974,27 +1026,27 @@ export default function Home() {
                   triggerHaptic("medium");
                   navigate("/grocery");
                 }}
-                className="neu-raised rounded-3xl p-3.5 sm:p-4 text-slate-900 dark:text-white shadow-md cursor-pointer hover:scale-[1.02] active:scale-[0.98] transition-all flex flex-col justify-between border border-white/80 dark:border-white/5 group"
+                className="bg-white dark:bg-[#171E1B] rounded-3xl p-3.5 sm:p-4 text-stone-900 dark:text-stone-100 shadow-xs border border-stone-200/80 dark:border-stone-800 cursor-pointer hover:border-amber-500/40 active:scale-[0.98] transition-all flex flex-col justify-between group"
               >
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-2xl p-2 bg-emerald-50 dark:bg-emerald-950 text-emerald-600 rounded-2xl shrink-0 group-hover:scale-110 transition-transform shadow-2xs">
-                    🛒
+                  <span className="text-xl p-2 bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 rounded-2xl shrink-0 group-hover:scale-105 transition-transform">
+                    <ShoppingCart size={18} />
                   </span>
-                  <span className="text-[9px] font-black uppercase tracking-wider bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 px-2 py-0.5 rounded-full">
-                    Stores
+                  <span className="text-xs font-semibold uppercase tracking-wider bg-amber-100 dark:bg-amber-950/80 text-amber-900 dark:text-amber-300 px-2 py-0.5 rounded-full">
+                    Aisles
                   </span>
                 </div>
                 <div>
-                  <h4 className="text-xs sm:text-sm font-black text-slate-900 dark:text-white leading-tight">
+                  <h4 className="text-sm font-semibold text-stone-900 dark:text-stone-100 leading-tight">
                     Grocery &amp; Stores
                   </h4>
-                  <p className="text-[10px] text-slate-500 font-medium line-clamp-1 mt-0.5">
-                    Chowdeck, Instacart &amp; Aisles
+                  <p className="text-xs text-stone-500 dark:text-stone-400 font-normal line-clamp-1 mt-0.5">
+                    African staples &amp; ingredients
                   </p>
                 </div>
-                <div className="flex items-center text-[10px] font-black text-[#126778] dark:text-teal-400 mt-2 gap-0.5">
+                <div className="flex items-center text-xs font-semibold text-amber-700 dark:text-amber-400 mt-2 gap-0.5">
                   <span>Open Grocery</span>
-                  <ChevronRight size={12} className="group-hover:translate-x-0.5 transition-transform" />
+                  <ChevronRight size={13} className="group-hover:translate-x-0.5 transition-transform" />
                 </div>
               </div>
             </div>
@@ -1013,20 +1065,20 @@ export default function Home() {
 
             {/* 🌟 ZONE 5: COMMUNITY CHALLENGE & STORIES CAROUSEL CARD */}
             {dashboardPrefs.showChallenge && (
-              <div className="glass-card-amber rounded-3xl p-4 sm:p-5 text-white shadow-xl flex items-center justify-between gap-3 relative overflow-hidden">
+              <div className="bg-gradient-to-r from-amber-600 via-orange-600 to-amber-700 rounded-3xl p-4 sm:p-5 text-white shadow-xs flex items-center justify-between gap-3 relative overflow-hidden">
                 <div className="flex items-center gap-3 min-w-0">
-                  <div className="p-2.5 bg-white/20 backdrop-blur-md rounded-2xl text-2xl shrink-0 shadow-inner">
+                  <div className="p-2.5 bg-white/20 backdrop-blur-md rounded-2xl text-xl shrink-0">
                     🔥
                   </div>
                   <div className="min-w-0">
-                    <span className="text-[9.5px] font-black uppercase tracking-wider bg-yellow-300 text-slate-950 px-2 py-0.5 rounded-full shadow-2xs">
+                    <span className="text-xs font-semibold uppercase tracking-wider bg-amber-300 text-stone-950 px-2 py-0.5 rounded-full">
                       Community Challenge
                     </span>
-                    <h3 className="text-sm font-black text-white mt-1 leading-tight truncate">
-                      Avo 21-Day Blood Sugar Reset
+                    <h3 className="text-sm sm:text-base font-bold text-white mt-1 leading-tight truncate">
+                      21-Day Blood Sugar Reset
                     </h3>
-                    <p className="text-[11px] text-yellow-100 font-medium truncate">
-                      1,420 Active members • Tap to join
+                    <p className="text-xs text-amber-100 font-normal truncate">
+                      1,420 members • Tap to join
                     </p>
                   </div>
                 </div>
@@ -1035,17 +1087,17 @@ export default function Home() {
                   <button
                     type="button"
                     onClick={() => navigate("/challenge")}
-                    className="px-3 py-2 bg-white text-slate-950 font-black text-xs rounded-xl shadow-md hover:scale-105 active:scale-95 transition-all cursor-pointer"
+                    className="px-3.5 py-2 bg-white text-stone-900 font-semibold text-xs rounded-xl shadow-xs hover:bg-amber-50 active:scale-95 transition-all cursor-pointer"
                   >
-                    Join 🔥
+                    Join
                   </button>
                   <button
                     type="button"
                     onClick={() => setShowFoodWrapped(true)}
-                    className="p-2 bg-white/20 hover:bg-white/30 text-white rounded-xl border border-white/25 transition-all cursor-pointer"
+                    className="p-2 bg-white/20 hover:bg-white/30 text-white rounded-xl border border-white/20 transition-all cursor-pointer"
                     title="Food Wrapped Story"
                   >
-                    🥑
+                    🏆
                   </button>
                 </div>
               </div>
@@ -1089,17 +1141,17 @@ export default function Home() {
                         title={logged ? `${day.count} meals · ${day.calories} kcal` : 'No meals logged'}
                         className={`flex flex-col items-center py-2.5 px-1 rounded-2xl transition-all cursor-pointer ${
                           day.isToday
-                            ? "bg-[#126778] text-white shadow-sm scale-105"
+                            ? "bg-[#164E3D] text-white shadow-xs scale-105"
                             : logged
-                            ? "bg-teal-50 border border-teal-200 text-teal-900 dark:bg-teal-950/40 dark:text-teal-200"
-                            : "bg-gray-50 text-gray-600 dark:bg-zinc-800 dark:text-gray-400 hover:bg-gray-100"
+                            ? "bg-emerald-50 border border-emerald-200 text-emerald-900 dark:bg-emerald-950/40 dark:text-emerald-200"
+                            : "bg-stone-50 text-stone-600 dark:bg-zinc-800 dark:text-stone-400 hover:bg-stone-100"
                         }`}
                       >
-                        <span className={`text-[10px] font-bold mb-1 ${day.isToday ? "text-white" : "text-gray-500"}`}>
+                        <span className={`text-xs font-medium mb-1 ${day.isToday ? "text-white font-semibold" : "text-stone-500"}`}>
                           {day.label}
                         </span>
                         <span className="text-base mb-0.5 leading-none">{logged ? "🍲" : "·"}</span>
-                        <span className={`text-[9px] font-semibold ${day.isToday ? "text-white/90" : "text-gray-400"}`}>
+                        <span className={`text-xs ${day.isToday ? "text-white/90 font-semibold" : "text-stone-400"}`}>
                           {logged ? `${day.count}m` : day.dateNum}
                         </span>
                       </button>
@@ -1123,21 +1175,21 @@ export default function Home() {
             transition={{ duration: 0.25 }}
             className="space-y-4"
           >
-            {/* 🥑 FOOD WRAPPED 10X STORY HIGHLIGHT BANNER (Unified Brand Teal + 3D Mascot) */}
-            <div className="bg-gradient-to-r from-[#126778] via-[#1f7a8c] to-[#0d9488] rounded-3xl p-4 sm:p-5 text-white shadow-lg border border-teal-400/30 flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 relative overflow-hidden">
+            {/* 🥑 FOOD WRAPPED STORY HIGHLIGHT BANNER */}
+            <div className="bg-gradient-to-r from-[#164E3D] via-[#1E604D] to-[#124233] rounded-3xl p-4 sm:p-5 text-white shadow-xs border border-[#164E3D]/30 flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 relative overflow-hidden">
               <div className="flex items-center gap-3 min-w-0 flex-1">
-                <div className="relative shrink-0 p-1 bg-white/15 backdrop-blur-md rounded-2xl border border-white/20 shadow-md">
-                  <Mascot gesture="clapping" size={44} className="filter drop-shadow-md" />
+                <div className="relative shrink-0 p-1.5 bg-white/15 backdrop-blur-md rounded-2xl border border-white/20 shadow-xs">
+                  <Mascot gesture="clapping" size={44} className="filter drop-shadow-xs" />
                 </div>
                 <div className="min-w-0 flex-1">
-                  <div className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-400 text-slate-950 text-[9.5px] font-black uppercase tracking-wider shadow-2xs">
-                    <Sparkles size={10} className="shrink-0" /> {new Date().toLocaleString("default", { month: "long" })} Food Wrapped
+                  <div className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-amber-400 text-stone-950 text-xs font-semibold uppercase tracking-wider shadow-2xs">
+                    <Sparkles size={11} className="shrink-0" /> {new Date().toLocaleString("default", { month: "long" })} Food Wrapped
                   </div>
-                  <h3 className="text-sm sm:text-base font-black leading-tight mt-1 truncate">
-                    Your Monthly Food &amp; Energy Story 🏆
+                  <h3 className="text-sm sm:text-base font-bold leading-tight mt-1 truncate">
+                    Monthly Food &amp; Energy Story
                   </h3>
-                  <p className="text-[11px] text-teal-50/90 leading-snug line-clamp-1">
-                    See how your meals supported your body this month!
+                  <p className="text-xs text-stone-200 leading-snug line-clamp-1">
+                    See how your meals supported your body this month
                   </p>
                 </div>
               </div>
@@ -1149,7 +1201,7 @@ export default function Home() {
                     triggerHaptic("medium");
                     setShowFoodWrapped(true);
                   }}
-                  className="w-full sm:w-auto px-4 py-2.5 bg-white hover:bg-teal-50 text-[#126778] font-black text-xs rounded-2xl shadow-md hover:scale-105 active:scale-95 transition-all cursor-pointer flex items-center justify-center gap-1.5 text-center"
+                  className="w-full sm:w-auto px-4 py-2.5 bg-white hover:bg-stone-50 text-[#164E3D] font-semibold text-xs rounded-xl shadow-xs active:scale-95 transition-all cursor-pointer flex items-center justify-center gap-1.5 text-center"
                 >
                   <span>View Story</span>
                   <ChevronRight size={13} className="shrink-0" />
@@ -1211,22 +1263,22 @@ export default function Home() {
             className="w-full min-w-0 space-y-4 sm:space-y-5 overflow-hidden"
           >
             {/* 1. Active Conditions Safeguards Card */}
-            <div className="w-full min-w-0 glass-card rounded-3xl p-4 sm:p-5 shadow-lg overflow-hidden">
+            <div className="w-full min-w-0 bg-white dark:bg-[#171E1B] rounded-3xl p-4 sm:p-5 shadow-xs border border-stone-200/80 dark:border-stone-800 overflow-hidden">
               <div className="flex items-center justify-between gap-2 mb-3 min-w-0">
                 <div className="flex items-center gap-2 min-w-0 flex-1">
-                  <div className="p-2 rounded-2xl bg-teal-50 dark:bg-teal-950/50 text-[#1f7a8c] dark:text-teal-400 shrink-0">
+                  <div className="p-2 rounded-2xl bg-emerald-50 dark:bg-emerald-950/50 text-[#164E3D] dark:text-emerald-400 shrink-0">
                     <ShieldCheck className="h-5 w-5" />
                   </div>
                   <div className="min-w-0">
-                    <h3 className="text-xs sm:text-sm font-extrabold text-gray-900 dark:text-zinc-100 leading-tight truncate">
-                      Your Personal Health Shields 🛡️
+                    <h3 className="text-sm font-bold text-stone-900 dark:text-stone-100 leading-tight truncate">
+                      Personal Health Safeguards
                     </h3>
-                    <p className="text-[10px] sm:text-[11px] text-gray-500 truncate">Helpful daily food tips tailored to your body</p>
+                    <p className="text-xs text-stone-500 truncate">Daily food tips tailored to your metabolic profile</p>
                   </div>
                 </div>
                 <button
                   onClick={() => navigate("/medical-condition")}
-                  className="text-xs font-bold text-[#1f7a8c] dark:text-teal-400 hover:underline shrink-0 cursor-pointer"
+                  className="text-xs font-semibold text-[#164E3D] dark:text-emerald-400 hover:underline shrink-0 cursor-pointer"
                 >
                   Edit
                 </button>
@@ -1237,7 +1289,7 @@ export default function Home() {
                 {activeConditions.map((cond, idx) => (
                   <span
                     key={idx}
-                    className="px-2.5 py-1 bg-teal-50 dark:bg-teal-950/40 text-[#1f7a8c] dark:text-teal-300 border border-teal-200 dark:border-teal-800 rounded-full text-[11px] font-extrabold flex items-center gap-1.5 shrink-0"
+                    className="px-2.5 py-1 bg-emerald-50 dark:bg-emerald-950/40 text-[#164E3D] dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 rounded-full text-xs font-semibold flex items-center gap-1.5 shrink-0"
                   >
                     <Activity size={12} className="shrink-0" />
                     <span className="truncate max-w-[200px]">{cond}</span>
@@ -1246,37 +1298,37 @@ export default function Home() {
               </div>
 
               {/* Safeguards Bullet List */}
-              <div className="space-y-2 p-3 sm:p-3.5 rounded-2xl bg-gray-50/80 dark:bg-zinc-800/60 border border-gray-100 dark:border-zinc-800 text-[11px] sm:text-xs">
-                <div className="flex items-start gap-2 text-gray-700 dark:text-zinc-300">
-                  <span className="text-emerald-500 font-bold shrink-0">✓</span>
+              <div className="space-y-2 p-3 sm:p-3.5 rounded-2xl bg-stone-50/80 dark:bg-zinc-800/60 border border-stone-100 dark:border-zinc-800 text-xs">
+                <div className="flex items-start gap-2 text-stone-700 dark:text-zinc-300">
+                  <span className="text-emerald-600 font-bold shrink-0">✓</span>
                   <span className="break-words"><strong>Blood Sugar Shield:</strong> Suggests gentle swaps for swallow and rice to keep you energized.</span>
                 </div>
-                <div className="flex items-start gap-2 text-gray-700 dark:text-zinc-300">
-                  <span className="text-teal-500 font-bold shrink-0">✓</span>
+                <div className="flex items-start gap-2 text-stone-700 dark:text-zinc-300">
+                  <span className="text-emerald-700 font-bold shrink-0">✓</span>
                   <span className="break-words"><strong>Heart &amp; Blood Pressure:</strong> Helps balance salt and seasoning in stews to protect your arteries.</span>
                 </div>
-                <div className="flex items-start gap-2 text-gray-700 dark:text-zinc-300">
-                  <span className="text-blue-500 font-bold shrink-0">✓</span>
+                <div className="flex items-start gap-2 text-stone-700 dark:text-zinc-300">
+                  <span className="text-blue-600 font-bold shrink-0">✓</span>
                   <span className="break-words"><strong>Strength &amp; Recovery:</strong> Ensures enough daily protein from fish, eggs, and beans.</span>
                 </div>
               </div>
             </div>
 
             {/* 🩸 HARDWARE WEARABLE & CGM TELEMETRY STATION */}
-            <div className="bg-gradient-to-r from-[#0a232a] via-[#126778] to-[#0d9488] rounded-3xl p-4 sm:p-5 text-white shadow-lg border border-teal-400/30 flex items-center justify-between gap-3 relative overflow-hidden">
+            <div className="bg-gradient-to-r from-[#164E3D] via-[#1E604D] to-[#124233] rounded-3xl p-4 sm:p-5 text-white shadow-xs border border-[#164E3D]/30 flex items-center justify-between gap-3 relative overflow-hidden">
               <div className="flex items-center gap-3.5 min-w-0">
                 <div className="w-11 h-11 rounded-2xl bg-white/15 backdrop-blur-md border border-white/20 flex items-center justify-center text-xl shrink-0">
                   🩸
                 </div>
                 <div className="min-w-0">
-                  <div className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-400 text-slate-950 text-[9.5px] font-black uppercase tracking-wider shadow-2xs">
-                    Live Sensor Telemetry
+                  <div className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-emerald-400 text-stone-950 text-xs font-semibold uppercase tracking-wider shadow-2xs">
+                    Live Sensor Stream
                   </div>
-                  <h3 className="text-sm font-black leading-tight mt-1 truncate">
+                  <h3 className="text-sm sm:text-base font-bold leading-tight mt-1 truncate">
                     Dexcom / Libre / Apple Watch Sync
                   </h3>
-                  <p className="text-[10.5px] text-teal-100/90 truncate">
-                    Streaming continuous interstitial glucose &amp; sleep metrics
+                  <p className="text-xs text-stone-200 truncate">
+                    Continuous glucose &amp; sleep telemetry
                   </p>
                 </div>
               </div>
@@ -1284,9 +1336,10 @@ export default function Home() {
               <button
                 type="button"
                 onClick={() => setShowWearableSyncModal(true)}
-                className="px-3.5 py-2 bg-white hover:bg-teal-50 text-[#126778] font-black text-xs rounded-2xl shadow-md transition-all cursor-pointer shrink-0 flex items-center gap-1"
+                className="px-3.5 py-2 bg-white hover:bg-stone-50 text-[#164E3D] font-semibold text-xs rounded-xl shadow-xs transition-all cursor-pointer shrink-0 flex items-center gap-1"
               >
-                <span>Pair ➔</span>
+                <span>Pair</span>
+                <ChevronRight size={13} />
               </button>
             </div>
 
@@ -1301,19 +1354,19 @@ export default function Home() {
               {/* Glucose & Projected eA1c */}
               <button
                 onClick={() => navigate("/glucose-insights")}
-                className="w-full min-w-0 bg-white dark:bg-zinc-900 rounded-3xl p-3.5 sm:p-4 shadow-md border border-rose-100 dark:border-zinc-800 hover:shadow-lg transition-all text-left cursor-pointer overflow-hidden"
+                className="w-full min-w-0 bg-white dark:bg-[#171E1B] rounded-3xl p-3.5 sm:p-4 shadow-xs border border-stone-200/80 dark:border-stone-800 hover:border-rose-300 transition-all text-left cursor-pointer overflow-hidden"
               >
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-[10px] uppercase font-bold text-rose-600 truncate">Blood Glucose &amp; eA1c</span>
+                  <span className="text-xs uppercase font-semibold text-rose-600 truncate">Blood Glucose &amp; eA1c</span>
                   <Droplet className="h-4 w-4 text-rose-500 shrink-0" />
                 </div>
-                <div className="text-lg sm:text-xl font-black text-gray-900 dark:text-zinc-100">
-                  118 <span className="text-xs font-normal text-gray-500">mg/dL</span>
+                <div className="text-lg sm:text-xl font-bold text-stone-900 dark:text-stone-100">
+                  118 <span className="text-xs font-normal text-stone-500">mg/dL</span>
                 </div>
-                <p className="text-[10px] text-gray-500 mt-1 truncate">
-                  Projected eA1c: <strong className="text-rose-700 dark:text-rose-400 font-bold">5.7%</strong> (Optimal)
+                <p className="text-xs text-stone-500 mt-1 truncate">
+                  Projected eA1c: <strong className="text-rose-700 dark:text-rose-400 font-semibold">5.7%</strong> (Optimal)
                 </p>
-                <span className="mt-2 text-[10px] font-bold text-[#1f7a8c] dark:text-teal-400 block">
+                <span className="mt-2 text-xs font-semibold text-[#164E3D] dark:text-emerald-400 block">
                   View Insights →
                 </span>
               </button>
@@ -1321,19 +1374,19 @@ export default function Home() {
               {/* Blood Pressure */}
               <button
                 onClick={() => navigate("/biometrics")}
-                className="w-full min-w-0 bg-white dark:bg-zinc-900 rounded-3xl p-3.5 sm:p-4 shadow-md border border-purple-100 dark:border-zinc-800 hover:shadow-lg transition-all text-left cursor-pointer overflow-hidden"
+                className="w-full min-w-0 bg-white dark:bg-[#171E1B] rounded-3xl p-3.5 sm:p-4 shadow-xs border border-stone-200/80 dark:border-stone-800 hover:border-purple-300 transition-all text-left cursor-pointer overflow-hidden"
               >
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-[10px] uppercase font-bold text-purple-600 truncate">Blood Pressure</span>
+                  <span className="text-xs uppercase font-semibold text-purple-600 truncate">Blood Pressure</span>
                   <Activity className="h-4 w-4 text-purple-500 shrink-0" />
                 </div>
-                <div className="text-lg sm:text-xl font-black text-gray-900 dark:text-zinc-100">
-                  118/78 <span className="text-xs font-normal text-gray-500">mmHg</span>
+                <div className="text-lg sm:text-xl font-bold text-stone-900 dark:text-stone-100">
+                  118/78 <span className="text-xs font-normal text-stone-500">mmHg</span>
                 </div>
-                <p className="text-[10px] text-emerald-600 dark:text-emerald-400 font-bold mt-1 truncate">
+                <p className="text-xs text-emerald-700 dark:text-emerald-400 font-semibold mt-1 truncate">
                   Normal Range (AHA Standard)
                 </p>
-                <span className="mt-2 text-[10px] font-bold text-[#1f7a8c] dark:text-teal-400 block">
+                <span className="mt-2 text-xs font-semibold text-[#164E3D] dark:text-emerald-400 block">
                   Log Vitals →
                 </span>
               </button>
@@ -1341,43 +1394,43 @@ export default function Home() {
               {/* Weight & BMI */}
               <button
                 onClick={() => navigate("/weight")}
-                className="w-full min-w-0 bg-white dark:bg-zinc-900 rounded-3xl p-3.5 sm:p-4 shadow-md border border-teal-100 dark:border-zinc-800 hover:shadow-lg transition-all text-left cursor-pointer overflow-hidden"
+                className="w-full min-w-0 bg-white dark:bg-[#171E1B] rounded-3xl p-3.5 sm:p-4 shadow-xs border border-stone-200/80 dark:border-stone-800 hover:border-emerald-300 transition-all text-left cursor-pointer overflow-hidden"
               >
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-[10px] uppercase font-bold text-teal-600 truncate">Weight &amp; BMI</span>
-                  <TrendingUp className="h-4 w-4 text-teal-500 shrink-0" />
+                  <span className="text-xs uppercase font-semibold text-emerald-700 dark:text-emerald-400 truncate">Weight &amp; BMI</span>
+                  <TrendingUp className="h-4 w-4 text-emerald-600 shrink-0" />
                 </div>
-                <div className="text-lg sm:text-xl font-black text-gray-900 dark:text-zinc-100">
+                <div className="text-lg sm:text-xl font-bold text-stone-900 dark:text-stone-100">
                   {profile?.weight ? `${profile.weight} kg` : "72.4 kg"}
                 </div>
-                <p className="text-[10px] text-gray-500 mt-1 truncate">
+                <p className="text-xs text-stone-500 mt-1 truncate">
                   BMI: <strong>23.4</strong> (Healthy)
                 </p>
-                <span className="mt-2 text-[10px] font-bold text-[#1f7a8c] dark:text-teal-400 block">
+                <span className="mt-2 text-xs font-semibold text-[#164E3D] dark:text-emerald-400 block">
                   Track Weight →
                 </span>
               </button>
             </div>
 
             {/* 3. 1-Tap Clinical Doctor PDF Export Banner */}
-            <div className="w-full min-w-0 bg-gradient-to-br from-[#1f7a8c] to-[#0e4d5c] rounded-3xl p-4 sm:p-5 text-white shadow-xl overflow-hidden">
+            <div className="w-full min-w-0 bg-gradient-to-r from-[#164E3D] via-[#1E604D] to-[#124233] rounded-3xl p-4 sm:p-5 text-white shadow-xs overflow-hidden border border-[#164E3D]/30">
               <div className="flex items-start justify-between gap-2.5 mb-3">
-                <div className="p-2.5 bg-white/20 rounded-2xl backdrop-blur-sm shrink-0">
+                <div className="p-2.5 bg-white/15 rounded-2xl backdrop-blur-sm shrink-0">
                   <FileSpreadsheet className="h-6 w-6 text-white" />
                 </div>
-                <span className="px-2.5 py-0.5 rounded-full bg-teal-400 text-teal-950 font-extrabold text-[10px] shrink-0">
+                <span className="px-2.5 py-0.5 rounded-full bg-emerald-400 text-stone-950 font-semibold text-xs shrink-0">
                   Clinical Ready
                 </span>
               </div>
               <h3 className="text-sm sm:text-base font-bold leading-snug mb-1">
                 Doctor &amp; Dietitian 30-Day Clinical Report
               </h3>
-              <p className="text-[11px] sm:text-xs text-teal-50/90 leading-relaxed mb-4 break-words">
+              <p className="text-xs text-stone-200 leading-relaxed mb-4 break-words">
                 Export your glycemic logs, blood pressure trends, estimated A1c, and dietary compliance into a certified 1-page PDF summary for your physician.
               </p>
               <button
                 onClick={() => navigate("/health-report")}
-                className="w-full py-3 bg-white text-[#1f7a8c] hover:bg-teal-50 font-extrabold text-xs rounded-2xl shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer"
+                className="w-full py-3 bg-white text-[#164E3D] hover:bg-stone-50 font-semibold text-xs rounded-xl shadow-xs transition-all flex items-center justify-center gap-2 cursor-pointer"
               >
                 <FileText size={15} />
                 <span>Open Clinical Doctor Report</span>
@@ -1388,24 +1441,24 @@ export default function Home() {
             <div className="grid grid-cols-2 gap-2.5 sm:gap-3">
               <button
                 onClick={() => navigate("/medical-vault")}
-                className="w-full min-w-0 bg-white dark:bg-zinc-900 rounded-3xl p-3 sm:p-4 border border-teal-100 dark:border-zinc-800 shadow-md text-left hover:shadow-lg transition-all cursor-pointer overflow-hidden"
+                className="w-full min-w-0 bg-white dark:bg-[#171E1B] rounded-3xl p-3 sm:p-4 border border-stone-200/80 dark:border-stone-800 shadow-xs text-left hover:border-indigo-300 transition-all cursor-pointer overflow-hidden"
               >
                 <div className="p-2 rounded-2xl bg-indigo-50 dark:bg-indigo-950/50 text-indigo-700 dark:text-indigo-400 w-fit mb-2">
                   <Shield size={18} />
                 </div>
-                <span className="text-xs font-extrabold text-gray-900 dark:text-zinc-100 block truncate">Medical Vault</span>
-                <span className="text-[9.5px] sm:text-[10px] text-gray-500 block mt-0.5 truncate">Lab results &amp; files</span>
+                <span className="text-xs font-bold text-stone-900 dark:text-stone-100 block truncate">Medical Vault</span>
+                <span className="text-xs text-stone-500 block mt-0.5 truncate">Lab results &amp; files</span>
               </button>
 
               <button
                 onClick={() => navigate("/medication-tracker")}
-                className="w-full min-w-0 bg-white dark:bg-zinc-900 rounded-3xl p-3 sm:p-4 border border-teal-100 dark:border-zinc-800 shadow-md text-left hover:shadow-lg transition-all cursor-pointer overflow-hidden"
+                className="w-full min-w-0 bg-white dark:bg-[#171E1B] rounded-3xl p-3 sm:p-4 border border-stone-200/80 dark:border-stone-800 shadow-xs text-left hover:border-rose-300 transition-all cursor-pointer overflow-hidden"
               >
                 <div className="p-2 rounded-2xl bg-rose-50 dark:bg-rose-950/50 text-rose-700 dark:text-rose-400 w-fit mb-2">
                   <Pill size={18} />
                 </div>
-                <span className="text-xs font-extrabold text-gray-900 dark:text-zinc-100 block truncate">Med Tracker</span>
-                <span className="text-[9.5px] sm:text-[10px] text-gray-500 block mt-0.5 truncate">Dose adherence</span>
+                <span className="text-xs font-bold text-stone-900 dark:text-stone-100 block truncate">Med Tracker</span>
+                <span className="text-xs text-stone-500 block mt-0.5 truncate">Dose adherence</span>
               </button>
             </div>
           </motion.div>
@@ -1492,26 +1545,26 @@ export default function Home() {
                 <span className={`font-bold block ${getGaugeStatus().textColor}`}>
                   {getGaugeStatus().status}
                 </span>
-                <span className="text-[11px] text-gray-600 leading-tight block">
+                <span className="text-xs text-stone-600 leading-tight block">
                   {getGaugeStatus().message}
                 </span>
               </div>
             </div>
 
             {/* Compact Calorie Progress Card */}
-            <div className="bg-gradient-to-r from-teal-50/80 via-emerald-50/50 to-amber-50/60 rounded-2xl p-3.5 border border-teal-100">
+            <div className="bg-stone-50 dark:bg-zinc-800/80 rounded-2xl p-3.5 border border-stone-200/80 dark:border-zinc-700">
               <div className="flex items-center justify-between mb-1.5">
                 <div className="flex items-center gap-1.5">
                   <Flame className="h-4 w-4 text-orange-500" />
-                  <span className="text-xs font-bold text-gray-800">Calories</span>
+                  <span className="text-xs font-semibold text-stone-800 dark:text-stone-200">Calories</span>
                 </div>
                 <div className="text-right">
-                  <span className="text-sm font-black text-[#1f7a8c]">{caloriesConsumed}</span>
-                  <span className="text-xs text-gray-500 font-medium"> / {caloriesTarget} kcal</span>
+                  <span className="text-sm font-bold text-[#164E3D] dark:text-emerald-400">{caloriesConsumed}</span>
+                  <span className="text-xs text-stone-500 font-medium"> / {caloriesTarget} kcal</span>
                 </div>
               </div>
               <Progress value={Math.min(100, (caloriesConsumed / caloriesTarget) * 100)} className="h-2 rounded-full" />
-              <div className="flex justify-between items-center mt-1.5 text-[10px] text-gray-500 font-semibold">
+              <div className="flex justify-between items-center mt-1.5 text-xs text-stone-500 font-medium">
                 <span>{animatedPercentage}% completed</span>
                 <span>{Math.max(0, caloriesTarget - caloriesConsumed)} kcal remaining</span>
               </div>
@@ -1519,16 +1572,16 @@ export default function Home() {
 
             {/* 3-Column Macro Grid Matrix */}
             <div>
-              <span className="text-[11px] font-extrabold text-gray-700 uppercase tracking-wider block mb-2">
+              <span className="text-xs font-semibold text-stone-700 dark:text-stone-300 uppercase tracking-wider block mb-2">
                 Macronutrient Pillars
               </span>
               <div className="grid grid-cols-3 gap-2">
                 {/* Protein */}
-                <div className="bg-slate-50 border border-slate-200/80 rounded-2xl p-2.5 flex flex-col justify-between">
+                <div className="bg-white dark:bg-zinc-800 border border-stone-200/80 dark:border-zinc-700 rounded-2xl p-2.5 flex flex-col justify-between shadow-xs">
                   <div>
-                    <span className="text-[10px] font-bold text-blue-700 block">Protein</span>
-                    <span className="text-sm font-black text-slate-900">{proteinConsumed}g</span>
-                    <span className="text-[10px] text-slate-400 block font-medium">/ {proteinTarget}g</span>
+                    <span className="text-xs font-semibold text-blue-700 dark:text-blue-400 block">Protein</span>
+                    <span className="text-sm font-bold text-stone-900 dark:text-stone-100">{proteinConsumed}g</span>
+                    <span className="text-xs text-stone-400 block font-normal">/ {proteinTarget}g</span>
                   </div>
                   <div className="w-full bg-blue-100 h-1.5 rounded-full overflow-hidden mt-2">
                     <div
@@ -1539,11 +1592,11 @@ export default function Home() {
                 </div>
 
                 {/* Carbs */}
-                <div className="bg-slate-50 border border-slate-200/80 rounded-2xl p-2.5 flex flex-col justify-between">
+                <div className="bg-white dark:bg-zinc-800 border border-stone-200/80 dark:border-zinc-700 rounded-2xl p-2.5 flex flex-col justify-between shadow-xs">
                   <div>
-                    <span className="text-[10px] font-bold text-emerald-700 block">Carbs</span>
-                    <span className="text-sm font-black text-slate-900">{carbsConsumed}g</span>
-                    <span className="text-[10px] text-slate-400 block font-medium">/ {carbsTarget}g</span>
+                    <span className="text-xs font-semibold text-emerald-700 dark:text-emerald-400 block">Carbs</span>
+                    <span className="text-sm font-bold text-stone-900 dark:text-stone-100">{carbsConsumed}g</span>
+                    <span className="text-xs text-stone-400 block font-normal">/ {carbsTarget}g</span>
                   </div>
                   <div className="w-full bg-emerald-100 h-1.5 rounded-full overflow-hidden mt-2">
                     <div
@@ -1554,15 +1607,15 @@ export default function Home() {
                 </div>
 
                 {/* Fats */}
-                <div className="bg-slate-50 border border-slate-200/80 rounded-2xl p-2.5 flex flex-col justify-between">
+                <div className="bg-white dark:bg-zinc-800 border border-stone-200/80 dark:border-zinc-700 rounded-2xl p-2.5 flex flex-col justify-between shadow-xs">
                   <div>
-                    <span className="text-[10px] font-bold text-purple-700 block">Fats</span>
-                    <span className="text-sm font-black text-slate-900">{fatsConsumed}g</span>
-                    <span className="text-[10px] text-slate-400 block font-medium">/ {fatsTarget}g</span>
+                    <span className="text-xs font-semibold text-amber-700 dark:text-amber-400 block">Fats</span>
+                    <span className="text-sm font-bold text-stone-900 dark:text-stone-100">{fatsConsumed}g</span>
+                    <span className="text-xs text-stone-400 block font-normal">/ {fatsTarget}g</span>
                   </div>
-                  <div className="w-full bg-purple-100 h-1.5 rounded-full overflow-hidden mt-2">
+                  <div className="w-full bg-amber-100 h-1.5 rounded-full overflow-hidden mt-2">
                     <div
-                      className="bg-purple-600 h-full rounded-full transition-all duration-500"
+                      className="bg-amber-600 h-full rounded-full transition-all duration-500"
                       style={{ width: `${Math.min(100, (fatsConsumed / fatsTarget) * 100)}%` }}
                     />
                   </div>
@@ -1571,7 +1624,7 @@ export default function Home() {
             </div>
 
             {/* Smart Clinical Glycemic Context Tip */}
-            <div className="p-3 bg-teal-50/60 border border-teal-100 rounded-2xl text-[11px] text-teal-900 flex items-start gap-2">
+            <div className="p-3 bg-emerald-50/60 dark:bg-emerald-950/40 border border-emerald-100 dark:border-emerald-800/60 rounded-2xl text-xs text-emerald-950 dark:text-emerald-200 flex items-start gap-2">
               <span className="text-sm">💡</span>
               <span className="leading-snug">
                 <strong>Metabolic Tip:</strong> Pairing protein (eggs, fish, beans) with cultural carbohydrates delays gastric emptying and flattens post-meal glucose spikes by up to 35%.
@@ -1579,42 +1632,33 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Sticky In-Frame Action Footer */}
-          <div className="pt-3 border-t border-gray-100 flex gap-2.5 mt-auto shrink-0">
+          <div className="pt-3 border-t border-stone-100 dark:border-zinc-800 mt-auto shrink-0">
             <Button
               onClick={() => setShowGaugeDetails(false)}
-              variant="outline"
-              className="flex-1 rounded-xl text-xs font-bold py-2.5"
+              className="w-full bg-[#164E3D] hover:bg-[#113E30] text-white rounded-xl text-xs font-semibold py-2.5 cursor-pointer shadow-xs"
             >
-              Close
-            </Button>
-            <Button
-              onClick={() => {
-                setShowGaugeDetails(false);
-                navigate("/logs");
-              }}
-              className="flex-1 bg-[#1f7a8c] hover:bg-[#1a6273] text-white rounded-xl text-xs font-bold py-2.5"
-            >
-              View Full Log 📝
+              Close Details
             </Button>
           </div>
         </DialogContent>
       </Dialog>
 
-      {/* Quick Meal Log Dialog */}
+      {/* ⚡ Quick Meal Log Popup (Bottom Drawer) */}
       <Dialog open={showQuickMealLog} onOpenChange={setShowQuickMealLog}>
-        <DialogContent className="max-w-md max-h-[85vh] p-5 sm:p-6 flex flex-col rounded-3xl">
-          <DialogHeader className="pb-1 text-left">
-            <DialogTitle className="text-lg font-black text-[#1f7a8c] flex items-center gap-2">
-              <span>🍽️</span>
-              <span>Log {selectedQuickMeal && selectedQuickMeal.charAt(0).toUpperCase() + selectedQuickMeal.slice(1)}</span>
+        <DialogContent className="max-w-md mx-auto p-4 sm:p-5 rounded-3xl bg-white dark:bg-zinc-900 border border-stone-200 dark:border-zinc-800 shadow-2xl flex flex-col max-h-[85vh]">
+          <DialogHeader className="shrink-0 pb-2 border-b border-stone-100 dark:border-zinc-800">
+            <DialogTitle className="flex items-center gap-2 text-base font-bold capitalize text-stone-900 dark:text-stone-100">
+              <span>Quick Log {selectedQuickMeal}</span>
+              <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-emerald-50 text-[#164E3D] border border-emerald-200/60">
+                1-Tap
+              </span>
             </DialogTitle>
-            <DialogDescription className="text-xs text-gray-500">
-              Quick log your meal with common cultural options
+            <DialogDescription className="text-xs text-stone-500">
+              Pick a common meal below to log instantly, or enter custom details.
             </DialogDescription>
           </DialogHeader>
 
-          <div className="flex-1 overflow-y-auto overscroll-contain space-y-2.5 py-2 pr-1">
+          <div className="flex-1 overflow-y-auto overscroll-contain py-3 space-y-3 pr-1">
             {selectedQuickMeal && (
               <div className="space-y-2">
                 {quickMealOptions[selectedQuickMeal].map((meal) => (
@@ -1622,14 +1666,14 @@ export default function Home() {
                     key={meal.name}
                     onClick={() => handleQuickLog(meal)}
                     disabled={quickLogging}
-                    className="w-full bg-slate-50 hover:bg-teal-50/50 border border-slate-200/80 hover:border-[#1f7a8c] rounded-2xl p-3 text-left transition-all disabled:opacity-60 flex items-center gap-3 cursor-pointer shadow-2xs active:scale-[0.99]"
+                    className="w-full bg-white hover:bg-stone-50 border border-stone-200/80 hover:border-[#164E3D] rounded-2xl p-3 text-left transition-all disabled:opacity-60 flex items-center gap-3 cursor-pointer shadow-xs active:scale-[0.99]"
                   >
-                    <span className="text-2xl shrink-0 p-1 bg-white rounded-xl shadow-2xs">{meal.emoji}</span>
+                    <span className="text-2xl shrink-0 p-1 bg-stone-50 rounded-xl">{meal.emoji}</span>
                     <div className="flex-1 min-w-0">
-                      <div className="font-bold text-xs text-gray-900 truncate">{meal.name}</div>
-                      <div className="text-[10px] text-gray-500 font-medium">~{meal.calories} kcal • {meal.label}</div>
+                      <div className="font-semibold text-xs text-stone-900 dark:text-stone-100 truncate">{meal.name}</div>
+                      <div className="text-xs text-stone-500 font-normal mt-0.5">~{meal.calories} kcal • {meal.label}</div>
                     </div>
-                    <Plus className="h-4 w-4 text-[#1f7a8c] shrink-0" />
+                    <Plus className="h-4 w-4 text-[#164E3D] shrink-0" />
                   </button>
                 ))}
               </div>
@@ -1638,20 +1682,20 @@ export default function Home() {
             <button
               onClick={handleCustomEntry}
               disabled={quickLogging}
-              className="w-full bg-white border border-dashed border-[#1f7a8c]/40 hover:border-[#1f7a8c] rounded-2xl p-2.5 text-center hover:bg-[#E8F5F5] transition-colors disabled:opacity-60 cursor-pointer"
+              className="w-full bg-white border border-dashed border-[#164E3D]/40 hover:border-[#164E3D] rounded-2xl p-2.5 text-center hover:bg-stone-50 transition-colors disabled:opacity-60 cursor-pointer"
             >
-              <div className="flex items-center justify-center gap-1.5 text-[#1f7a8c] font-bold text-xs">
+              <div className="flex items-center justify-center gap-1.5 text-[#164E3D] font-semibold text-xs">
                 <Plus className="h-4 w-4" />
                 Custom Entry
               </div>
             </button>
           </div>
 
-          <div className="flex gap-2.5 pt-3 border-t border-gray-100 mt-auto shrink-0">
+          <div className="flex gap-2.5 pt-3 border-t border-stone-100 mt-auto shrink-0">
             <Button
               onClick={() => setShowQuickMealLog(false)}
               variant="outline"
-              className="flex-1 rounded-xl text-xs font-bold py-2"
+              className="flex-1 rounded-xl text-xs font-semibold py-2"
             >
               Cancel
             </Button>
@@ -1660,7 +1704,7 @@ export default function Home() {
                 setShowQuickMealLog(false);
                 navigate("/logs");
               }}
-              className="flex-1 bg-[#1f7a8c] hover:bg-[#1a6273] text-white rounded-xl text-xs font-bold py-2"
+              className="flex-1 bg-[#164E3D] hover:bg-[#113E30] text-white rounded-xl text-xs font-semibold py-2"
             >
               Full Logs 📋
             </Button>

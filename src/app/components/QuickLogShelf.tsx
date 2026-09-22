@@ -302,7 +302,7 @@ export default function QuickLogShelf({
       {/* ============================================================ */}
       {/* 1. TOP 2-BUTTON UNIFIED ROW (Merged Mode Controller)         */}
       {/* ============================================================ */}
-      <div className="neu-inset p-1 rounded-2xl flex gap-1 mb-3.5">
+      <div className="bg-stone-100 dark:bg-zinc-800/80 p-1 rounded-2xl flex gap-1 mb-3.5">
         {/* Button 1: 1-Tap Quick Log */}
         <button
           type="button"
@@ -310,13 +310,13 @@ export default function QuickLogShelf({
             triggerHaptic("light");
             setHubMode("quick_log");
           }}
-          className={`flex-1 py-2 px-2 sm:px-3 rounded-xl text-[11px] sm:text-xs font-black transition-all flex items-center justify-center gap-1 sm:gap-1.5 cursor-pointer truncate ${
+          className={`flex-1 py-2 px-2 sm:px-3 rounded-xl text-xs font-semibold transition-all flex items-center justify-center gap-1.5 cursor-pointer truncate ${
             hubMode === "quick_log"
-              ? "bg-white dark:bg-zinc-800 text-[#126778] dark:text-teal-300 shadow-md border border-white/80 dark:border-white/10"
-              : "text-slate-500 hover:text-slate-800 dark:text-zinc-400"
+              ? "bg-white dark:bg-zinc-700 text-[#164E3D] dark:text-emerald-300 shadow-xs border border-stone-200/80 dark:border-white/10"
+              : "text-stone-500 hover:text-stone-800 dark:text-zinc-400"
           }`}
         >
-          <Zap size={13} className={hubMode === "quick_log" ? "text-amber-500 fill-amber-500 shrink-0" : "shrink-0"} />
+          <Zap size={14} className={hubMode === "quick_log" ? "text-amber-500 fill-amber-500 shrink-0" : "shrink-0"} />
           <span className="truncate">1-Tap Quick Log</span>
         </button>
 
@@ -327,17 +327,14 @@ export default function QuickLogShelf({
             triggerHaptic("light");
             setHubMode("calculator");
           }}
-          className={`flex-1 py-2 px-2 sm:px-3 rounded-xl text-[11px] sm:text-xs font-black transition-all flex items-center justify-center gap-1 sm:gap-1.5 cursor-pointer truncate ${
+          className={`flex-1 py-2 px-2 sm:px-3 rounded-xl text-xs font-semibold transition-all flex items-center justify-center gap-1.5 cursor-pointer truncate ${
             hubMode === "calculator"
-              ? "bg-white dark:bg-zinc-800 text-[#126778] dark:text-teal-300 shadow-md border border-white/80 dark:border-white/10"
-              : "text-slate-500 hover:text-slate-800 dark:text-zinc-400"
+              ? "bg-white dark:bg-zinc-700 text-[#164E3D] dark:text-emerald-300 shadow-xs border border-stone-200/80 dark:border-white/10"
+              : "text-stone-500 hover:text-stone-800 dark:text-zinc-400"
           }`}
         >
-          <span className="text-xs sm:text-sm leading-none shrink-0">🥣</span>
+          <span className="text-sm leading-none shrink-0">🥣</span>
           <span className="truncate">Calculators</span>
-          <span className="text-[8.5px] font-black px-1.5 py-0.2 bg-teal-500 text-white rounded-full hidden sm:inline shrink-0">
-            New
-          </span>
         </button>
       </div>
 
@@ -349,8 +346,8 @@ export default function QuickLogShelf({
           {/* Subheader with Action Shortcuts */}
           <div className="flex items-center justify-between gap-2 mb-2.5 min-w-0">
             <div className="min-w-0">
-              <span className="text-[11px] font-bold text-slate-500 dark:text-zinc-400 truncate block">
-                Tap any African meal to log calories &amp; macros in 1s:
+              <span className="text-xs font-medium text-stone-500 dark:text-zinc-400 truncate block">
+                Tap any meal to log in 1 second:
               </span>
             </div>
 
@@ -359,10 +356,10 @@ export default function QuickLogShelf({
               <button
                 onClick={onOpenCustom || (() => navigate("/logs", { state: { openAdd: true } }))}
                 title="Add custom food entry"
-                className="px-2 py-1 rounded-xl bg-teal-50 hover:bg-teal-100 text-[#126778] dark:bg-teal-950/60 dark:text-teal-300 font-bold text-xs transition-all flex items-center gap-1 cursor-pointer active:scale-95 shadow-2xs border border-teal-200/60 dark:border-teal-800"
+                className="px-2.5 py-1 rounded-xl bg-stone-50 hover:bg-stone-100 text-[#164E3D] dark:bg-zinc-800 dark:text-emerald-300 font-medium text-xs transition-all flex items-center gap-1 cursor-pointer active:scale-95 shadow-2xs border border-stone-200 dark:border-zinc-700"
               >
                 <Plus size={12} />
-                <span>+ Custom</span>
+                <span>Custom</span>
               </button>
               {onOpenVoice && (
                 <button
@@ -370,7 +367,7 @@ export default function QuickLogShelf({
                   title="Talk to Sarah (Voice AI)"
                   className="p-1.5 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-600 dark:bg-rose-950/60 dark:text-rose-300 transition-all flex items-center gap-1 cursor-pointer active:scale-95 shadow-2xs"
                 >
-                  <Mic size={13} className="animate-pulse" />
+                  <Mic size={14} />
                 </button>
               )}
               {onOpenWhatsApp && (
@@ -379,16 +376,16 @@ export default function QuickLogShelf({
                   title="Log via WhatsApp"
                   className="p-1.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-600 dark:bg-emerald-950/60 dark:text-emerald-300 transition-all flex items-center gap-1 cursor-pointer active:scale-95 shadow-2xs"
                 >
-                  <MessageSquare size={13} />
+                  <MessageSquare size={14} />
                 </button>
               )}
               {onOpenScanner && (
                 <button
                   onClick={onOpenScanner}
-                  title="AI Camera Plate Scanner"
-                  className="p-1.5 rounded-xl bg-blue-50 hover:bg-blue-100 text-blue-600 dark:bg-blue-950/60 dark:text-blue-300 transition-all flex items-center gap-1 cursor-pointer active:scale-95 shadow-2xs"
+                  title="Camera Plate Scanner"
+                  className="p-1.5 rounded-xl bg-sky-50 hover:bg-sky-100 text-sky-600 dark:bg-sky-950/60 dark:text-sky-300 transition-all flex items-center gap-1 cursor-pointer active:scale-95 shadow-2xs"
                 >
-                  <Camera size={13} />
+                  <Camera size={14} />
                 </button>
               )}
             </div>
@@ -403,10 +400,10 @@ export default function QuickLogShelf({
                   triggerHaptic("light");
                   setActiveTab(tab);
                 }}
-                className={`px-3 py-1 rounded-xl text-xs font-black capitalize transition-all shrink-0 cursor-pointer ${
+                className={`px-3 py-1 rounded-full text-xs font-semibold capitalize transition-all shrink-0 cursor-pointer ${
                   activeTab === tab
-                    ? "bg-[#1f7a8c] text-white shadow-2xs"
-                    : "bg-slate-100 dark:bg-zinc-800 text-slate-600 dark:text-zinc-400 hover:bg-slate-200"
+                    ? "bg-[#164E3D] text-white shadow-xs"
+                    : "bg-stone-100 dark:bg-zinc-800 text-stone-600 dark:text-zinc-400 hover:bg-stone-200"
                 }`}
               >
                 {tab}
@@ -423,30 +420,30 @@ export default function QuickLogShelf({
                   key={item.id}
                   onClick={() => handleTap(item)}
                   disabled={isLogging || Boolean(loggingId)}
-                  className={`p-2.5 rounded-2xl border transition-all text-left bg-slate-50/80 dark:bg-zinc-800/70 hover:bg-teal-50/50 hover:border-teal-300 active:scale-95 cursor-pointer relative overflow-hidden flex flex-col justify-between ${
-                    isItemLogging ? "border-emerald-500 bg-emerald-50" : "border-slate-200/80 dark:border-zinc-700"
+                  className={`p-3 rounded-2xl border transition-all text-left bg-white dark:bg-zinc-800/80 hover:border-emerald-600/40 active:scale-95 cursor-pointer relative overflow-hidden flex flex-col justify-between shadow-xs ${
+                    isItemLogging ? "border-emerald-500 bg-emerald-50/50" : "border-stone-200/80 dark:border-zinc-700"
                   }`}
                 >
                   <div>
-                    <div className="flex items-center justify-between gap-1 mb-1">
+                    <div className="flex items-center justify-between gap-1 mb-1.5">
                       <span className="text-xl">{item.emoji}</span>
-                      <span className={`text-[9px] font-black px-1.5 py-0.2 rounded-full border ${TAG_CLASSES[item.glycemicColor]}`}>
+                      <span className={`text-xs font-medium px-2 py-0.5 rounded-full border ${TAG_CLASSES[item.glycemicColor]}`}>
                         {item.glycemicTag}
                       </span>
                     </div>
-                    <span className="text-[11.5px] font-black text-slate-900 dark:text-white line-clamp-1 block">
+                    <span className="text-xs font-semibold text-stone-900 dark:text-white line-clamp-1 block">
                       {item.name}
                     </span>
-                    <span className="text-[10px] text-slate-500 font-bold block mt-0.5">
+                    <span className="text-xs text-stone-500 dark:text-stone-400 font-medium block mt-0.5">
                       {item.calories} kcal
                     </span>
                   </div>
 
-                  <div className="flex items-center justify-between pt-2 mt-1.5 border-t border-slate-200/60 dark:border-zinc-700 text-[9px] text-slate-500 font-bold">
-                    <span>P:{item.protein}g</span>
-                    <span>C:{item.carbs}g</span>
-                    <span className="text-[#1f7a8c] dark:text-teal-400 font-black flex items-center">
-                      {isItemLogging ? <Check size={10} className="text-emerald-600 animate-scale" /> : "+ Log"}
+                  <div className="flex items-center justify-between pt-2 mt-2 border-t border-stone-100 dark:border-zinc-700 text-xs text-stone-500 font-medium">
+                    <span>P: {item.protein}g</span>
+                    <span>C: {item.carbs}g</span>
+                    <span className="text-[#164E3D] dark:text-emerald-400 font-semibold flex items-center">
+                      {isItemLogging ? <Check size={12} className="text-emerald-600 animate-scale" /> : "+ Log"}
                     </span>
                   </div>
                 </button>

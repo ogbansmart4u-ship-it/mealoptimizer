@@ -61,8 +61,8 @@ const ClinicianPortal = lazy(() => import("./pages/ClinicianPortal"));
 // Lightweight fallback shown while a page chunk loads.
 function PageLoader() {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-[#B8E5E5] to-[#E8F5F5]">
-      <div className="h-10 w-10 rounded-full border-4 border-[#1f7a8c]/30 border-t-[#1f7a8c] animate-spin" />
+    <div className="min-h-screen flex items-center justify-center bg-canvas-organic dark:bg-[#0F1412]">
+      <div className="h-10 w-10 rounded-full border-4 border-[#164E3D]/20 border-t-[#164E3D] dark:border-[#34D399]/20 dark:border-t-[#34D399] animate-spin" />
     </div>
   );
 }

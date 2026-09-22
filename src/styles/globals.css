@@ -15,20 +15,20 @@ html, body, #root { max-width: 100%; overflow-x: hidden; }
 
 @keyframes laserSweep {
   0% { top: -20%; opacity: 0; }
-  30% { opacity: 0.9; }
-  70% { opacity: 0.9; }
+  30% { opacity: 0.4; }
+  70% { opacity: 0.4; }
   100% { top: 120%; opacity: 0; }
 }
 
 @keyframes pulseRadar {
-  0% { transform: scale(0.92); opacity: 0.7; }
-  50% { transform: scale(1.18); opacity: 0.2; }
-  100% { transform: scale(0.92); opacity: 0.7; }
+  0% { transform: scale(0.96); opacity: 0.4; }
+  50% { transform: scale(1.06); opacity: 0.1; }
+  100% { transform: scale(0.96); opacity: 0.4; }
 }
 
 @keyframes floatBob {
-  0%, 100% { transform: translateY(0px) rotate(0deg); }
-  50% { transform: translateY(-4px) rotate(3deg); }
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-3px); }
 }
 
 @keyframes gradientShift {
@@ -39,23 +39,23 @@ html, body, #root { max-width: 100%; overflow-x: hidden; }
 
 .animate-fade-in { animation: fade-in 0.3s ease-in-out; }
 .animate-slide-up { animation: slide-up 0.3s ease-out; }
-.animate-laser-sweep { animation: laserSweep 2.2s cubic-bezier(0.4, 0, 0.2, 1) infinite; }
-.animate-pulse-radar { animation: pulseRadar 2s ease-in-out infinite; }
-.animate-float-bob { animation: floatBob 3s ease-in-out infinite; }
+.animate-laser-sweep { animation: laserSweep 3s cubic-bezier(0.4, 0, 0.2, 1) infinite; }
+.animate-pulse-radar { animation: pulseRadar 3s ease-in-out infinite; }
+.animate-float-bob { animation: floatBob 4s ease-in-out infinite; }
 .animate-gradient-shift {
   background-size: 200% 200%;
-  animation: gradientShift 4s ease infinite;
+  animation: gradientShift 6s ease infinite;
 }
 
 /* Subtle Ambient Page Background Motion */
 @keyframes ambientDrift1 {
-  0%, 100% { transform: translate3d(0, 0, 0) scale(1); opacity: 0.45; }
-  50% { transform: translate3d(25px, -20px, 0) scale(1.08); opacity: 0.7; }
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); opacity: 0.3; }
+  50% { transform: translate3d(20px, -15px, 0) scale(1.05); opacity: 0.5; }
 }
 
 @keyframes ambientDrift2 {
-  0%, 100% { transform: translate3d(0, 0, 0) scale(1.05); opacity: 0.35; }
-  50% { transform: translate3d(-25px, 25px, 0) scale(0.95); opacity: 0.65; }
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1.03); opacity: 0.25; }
+  50% { transform: translate3d(-20px, 20px, 0) scale(0.97); opacity: 0.45; }
 }
 
 @keyframes subtleWave {
@@ -65,8 +65,8 @@ html, body, #root { max-width: 100%; overflow-x: hidden; }
 }
 
 @keyframes pulseGlowSoft {
-  0%, 100% { opacity: 0.35; transform: scale(1); }
-  50% { opacity: 0.65; transform: scale(1.08); }
+  0%, 100% { opacity: 0.25; transform: scale(1); }
+  50% { opacity: 0.45; transform: scale(1.05); }
 }
 
 .animate-ambient-drift-1 {
@@ -89,60 +89,69 @@ html, body, #root { max-width: 100%; overflow-x: hidden; }
   animation: subtleWave 20s ease infinite;
 }
 
+/* Organic Canvas Background Utility */
+.bg-canvas-organic {
+  background: linear-gradient(180deg, #F5F1EA 0%, #FAF8F5 35%, #FFFFFF 100%);
+}
+
+.dark .bg-canvas-organic {
+  background: linear-gradient(180deg, #0D1210 0%, #111715 50%, #0A0E0D 100%) !important;
+}
+
 /* Dark mode overrides for page backgrounds */
 .dark body {
-  background: #0f172a;
-  color: #f1f5f9;
+  background: #0F1412;
+  color: #F3F6F4;
 }
 
 /* Dark mode for gradient backgrounds - override all gradients */
 .dark [class*="bg-gradient-to-b"] {
-  background: linear-gradient(to bottom, #1e293b, #0f172a) !important;
+  background: linear-gradient(to bottom, #171E1B, #0F1412) !important;
 }
 
 .dark [class*="bg-gradient-to-br"] {
-  background: linear-gradient(to bottom right, #1e293b, #0f172a) !important;
+  background: linear-gradient(to bottom right, #171E1B, #0F1412) !important;
 }
 
 .dark [class*="bg-gradient-to-r"] {
-  background: linear-gradient(to right, #1e293b, #334155) !important;
+  background: linear-gradient(to right, #171E1B, #202B27) !important;
 }
 
 .dark [class*="bg-gradient-to-t"] {
-  background: linear-gradient(to top, #1e293b, #0f172a) !important;
+  background: linear-gradient(to top, #171E1B, #0F1412) !important;
 }
 
 .dark [class*="bg-gradient-to-l"] {
-  background: linear-gradient(to left, #1e293b, #334155) !important;
+  background: linear-gradient(to left, #171E1B, #202B27) !important;
 }
 
 /* Dark mode for white backgrounds */
 .dark .bg-white {
-  background-color: #1e293b !important;
-  color: #f1f5f9 !important;
+  background-color: #171E1B !important;
+  color: #F3F6F4 !important;
 }
 
 /* Dark mode for text colors */
 .dark .text-gray-800 {
-  color: #f1f5f9 !important;
+  color: #F3F6F4 !important;
 }
 
 .dark .text-gray-700 {
-  color: #e2e8f0 !important;
+  color: #E2E8F0 !important;
 }
 
 .dark .text-gray-600 {
-  color: #cbd5e1 !important;
+  color: #CBD5E1 !important;
 }
 
 .dark .text-gray-500 {
-  color: #94a3b8 !important;
+  color: #94A3B8 !important;
 }
 
 /* Dark mode for borders */
 .dark .border-gray-200,
 .dark .border-gray-300 {
-  border-color: rgba(255, 255, 255, 0.1) !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
 }
 
 /* Dark mode for inputs */
@@ -269,42 +278,42 @@ button:not([disabled]):active,
 
 /* 1. Glassmorphism Panels & Cards */
 .glass-card {
-  background: rgba(255, 255, 255, 0.78);
+  background: rgba(255, 255, 255, 0.85);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.85);
-  box-shadow: 0 10px 32px 0 rgba(31, 122, 140, 0.08), 0 2px 6px 0 rgba(0, 0, 0, 0.02);
+  border: 1px solid rgba(232, 226, 217, 0.8);
+  box-shadow: 0 10px 30px 0 rgba(22, 78, 61, 0.04), 0 2px 6px 0 rgba(0, 0, 0, 0.02);
 }
 
 .glass-card-subtle {
-  background: rgba(255, 255, 255, 0.6);
+  background: rgba(255, 255, 255, 0.7);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.7);
-  box-shadow: 0 4px 20px 0 rgba(0, 0, 0, 0.03);
+  border: 1px solid rgba(232, 226, 217, 0.6);
+  box-shadow: 0 4px 16px 0 rgba(0, 0, 0, 0.02);
 }
 
 .glass-card-teal {
-  background: linear-gradient(135deg, rgba(18, 103, 120, 0.9), rgba(31, 122, 140, 0.82), rgba(13, 148, 136, 0.9));
+  background: linear-gradient(135deg, rgba(22, 78, 61, 0.95), rgba(18, 64, 50, 0.92), rgba(27, 94, 74, 0.95));
   backdrop-filter: blur(18px);
   -webkit-backdrop-filter: blur(18px);
-  border: 1px solid rgba(255, 255, 255, 0.25);
-  box-shadow: 0 12px 36px 0 rgba(18, 103, 120, 0.28);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 12px 36px 0 rgba(22, 78, 61, 0.22);
 }
 
 .glass-card-amber {
-  background: linear-gradient(135deg, rgba(245, 158, 11, 0.9), rgba(234, 88, 12, 0.85), rgba(220, 38, 38, 0.9));
+  background: linear-gradient(135deg, rgba(224, 109, 83, 0.95), rgba(217, 119, 6, 0.9), rgba(180, 83, 9, 0.95));
   backdrop-filter: blur(18px);
   -webkit-backdrop-filter: blur(18px);
-  border: 1px solid rgba(255, 255, 255, 0.28);
-  box-shadow: 0 12px 36px 0 rgba(245, 158, 11, 0.28);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  box-shadow: 0 12px 36px 0 rgba(224, 109, 83, 0.22);
 }
 
 .glass-pill {
-  background: rgba(255, 255, 255, 0.7);
+  background: rgba(255, 255, 255, 0.8);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
-  border: 1px solid rgba(255, 255, 255, 0.75);
+  border: 1px solid rgba(232, 226, 217, 0.7);
 }
 
 /* 2. Neumorphism Tactile Surfaces (Soft UI) */
@@ -408,29 +417,29 @@ button:not([disabled]):active,
 }
 
 ::-webkit-scrollbar-track {
-  background: rgba(18, 103, 120, 0.08);
+  background: rgba(22, 78, 61, 0.05);
   border-radius: 9999px;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #1f7a8c;
+  background: #164E3D;
   border-radius: 9999px;
   border: 1px solid transparent;
   background-clip: content-box;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #126778;
+  background: #103B2E;
 }
 
 /* Firefox standard scrollbars */
 html, * {
   scrollbar-width: thin;
-  scrollbar-color: #1f7a8c rgba(18, 103, 120, 0.08);
+  scrollbar-color: #164E3D rgba(22, 78, 61, 0.05);
 }
 
 .dark html, .dark * {
-  scrollbar-color: #4ecdc4 rgba(255, 255, 255, 0.08);
+  scrollbar-color: #34D399 rgba(255, 255, 255, 0.08);
 }
 
 .dark ::-webkit-scrollbar-track {
@@ -438,11 +447,11 @@ html, * {
 }
 
 .dark ::-webkit-scrollbar-thumb {
-  background: #4ecdc4;
+  background: #34D399;
 }
 
 .dark ::-webkit-scrollbar-thumb:hover {
-  background: #2dd4bf;
+  background: #10B981;
 }
 
 /* Explicit high-visibility horizontal and vertical scrollbar utility classes */
@@ -450,7 +459,7 @@ html, * {
   overflow-x: auto !important;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: thin !important;
-  scrollbar-color: #1f7a8c rgba(18, 103, 120, 0.12) !important;
+  scrollbar-color: #164E3D rgba(22, 78, 61, 0.08) !important;
   padding-bottom: 6px;
 }
 
@@ -460,12 +469,12 @@ html, * {
 }
 
 .visible-scrollbar-x::-webkit-scrollbar-track {
-  background: rgba(18, 103, 120, 0.1) !important;
+  background: rgba(22, 78, 61, 0.06) !important;
   border-radius: 9999px !important;
 }
 
 .visible-scrollbar-x::-webkit-scrollbar-thumb {
-  background: #1f7a8c !important;
+  background: #164E3D !important;
   border-radius: 9999px !important;
 }
 
@@ -473,7 +482,7 @@ html, * {
   overflow-y: auto !important;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: thin !important;
-  scrollbar-color: #1f7a8c rgba(18, 103, 120, 0.12) !important;
+  scrollbar-color: #164E3D rgba(22, 78, 61, 0.08) !important;
 }
 
 .visible-scrollbar-y::-webkit-scrollbar {
@@ -482,22 +491,22 @@ html, * {
 }
 
 .visible-scrollbar-y::-webkit-scrollbar-track {
-  background: rgba(18, 103, 120, 0.08) !important;
+  background: rgba(22, 78, 61, 0.05) !important;
   border-radius: 9999px !important;
 }
 
 .visible-scrollbar-y::-webkit-scrollbar-thumb {
-  background: #1f7a8c !important;
+  background: #164E3D !important;
   border-radius: 9999px !important;
 }
 
 .dark .visible-scrollbar-x,
 .dark .visible-scrollbar-y {
-  scrollbar-color: #4ecdc4 rgba(255, 255, 255, 0.08) !important;
+  scrollbar-color: #34D399 rgba(255, 255, 255, 0.08) !important;
 }
 
 .dark .visible-scrollbar-x::-webkit-scrollbar-thumb,
 .dark .visible-scrollbar-y::-webkit-scrollbar-thumb {
-  background: #4ecdc4 !important;
+  background: #34D399 !important;
 }
 
