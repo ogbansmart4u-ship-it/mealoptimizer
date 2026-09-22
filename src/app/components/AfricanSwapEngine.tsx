@@ -242,18 +242,18 @@ export default function AfricanSwapEngine() {
   };
 
   return (
-    <div className="bg-white dark:bg-zinc-900/90 rounded-3xl p-5 sm:p-6 border border-teal-100 dark:border-zinc-800 shadow-xl transition-all">
+    <div className="bg-white dark:bg-stone-900/90 rounded-3xl p-5 sm:p-6 border border-stone-200/80 dark:border-stone-800 shadow-xl transition-all">
       {/* Header */}
       <div className="flex items-center justify-between gap-3 mb-4">
         <div>
-          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-teal-50 dark:bg-teal-950/70 border border-teal-200 text-teal-800 dark:text-teal-300 text-[10px] font-black uppercase tracking-wider mb-1">
-            <Sparkles size={11} className="text-teal-600 animate-pulse" />
+          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/70 border border-emerald-200 text-emerald-800 dark:text-emerald-300 text-xs font-bold uppercase tracking-wider mb-1">
+            <Sparkles size={12} className="text-emerald-600 animate-pulse" />
             <span>Clinical African Metabolic Engine</span>
           </div>
-          <h2 className="text-base sm:text-lg font-black text-gray-900 dark:text-zinc-100 flex items-center gap-2">
+          <h2 className="text-base sm:text-lg font-bold text-stone-900 dark:text-stone-100 flex items-center gap-2">
             <span>African Glycemic &amp; Diaspora Swap Engine</span>
           </h2>
-          <p className="text-xs text-gray-500 dark:text-zinc-400 mt-0.5">
+          <p className="text-xs text-stone-500 dark:text-stone-400 mt-0.5 font-medium">
             Turn your favorite high-spike cultural foods into blood-sugar safe, low-sodium power meals.
           </p>
         </div>
@@ -270,8 +270,8 @@ export default function AfricanSwapEngine() {
             }}
             className={`px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all cursor-pointer ${
               selectedCategory === cat.id
-                ? "bg-[#1f7a8c] text-white shadow-sm"
-                : "bg-gray-100 dark:bg-zinc-800 text-gray-600 dark:text-zinc-400 hover:bg-gray-200"
+                ? "btn-liquid-glass btn-liquid-forest text-white shadow-xs border border-white/20"
+                : "bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-200 font-semibold border border-stone-200/60 dark:border-stone-700/60"
             }`}
           >
             {cat.label}
@@ -289,21 +289,21 @@ export default function AfricanSwapEngine() {
               onClick={() => handleSelectSwap(item)}
               className={`p-3 rounded-2xl text-left border transition-all cursor-pointer flex flex-col justify-between ${
                 isSelected
-                  ? "bg-teal-50/90 dark:bg-teal-950/50 border-[#1f7a8c] ring-2 ring-[#1f7a8c]/20 shadow-md scale-[1.02]"
-                  : "bg-white dark:bg-zinc-800/60 border-gray-100 dark:border-zinc-700/80 hover:border-teal-200"
+                  ? "bg-emerald-50/90 dark:bg-emerald-950/50 border-[#164E3D] ring-2 ring-[#164E3D]/30 shadow-md scale-[1.02]"
+                  : "bg-white dark:bg-stone-800/60 border-stone-200/80 dark:border-stone-700/80 hover:border-emerald-200"
               }`}
             >
               <div className="flex items-center justify-between mb-1.5">
                 <span className="text-xl">{item.originalEmoji}</span>
-                <span className="text-[10px] font-black text-rose-700 dark:text-rose-400 bg-rose-50 dark:bg-rose-950/60 px-1.5 py-0.5 rounded-md">
+                <span className="text-xs font-bold text-rose-700 dark:text-rose-400 bg-rose-50 dark:bg-rose-950/60 px-2 py-0.5 rounded-md">
                   GI {item.originalGI}
                 </span>
               </div>
-              <h4 className="text-xs font-bold text-gray-900 dark:text-zinc-100 line-clamp-1">
+              <h4 className="text-xs font-bold text-stone-900 dark:text-stone-100 line-clamp-1">
                 {item.originalFood}
               </h4>
-              <div className="flex items-center gap-1 text-[10px] text-teal-700 dark:text-teal-300 font-extrabold mt-1">
-                <TrendingDown size={11} />
+              <div className="flex items-center gap-1 text-xs text-emerald-700 dark:text-emerald-300 font-bold mt-1">
+                <TrendingDown size={12} />
                 <span>-{item.giReductionPct}% Spike</span>
               </div>
             </button>
@@ -319,13 +319,13 @@ export default function AfricanSwapEngine() {
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -8 }}
           transition={{ duration: 0.25 }}
-          className="bg-gradient-to-br from-teal-900 via-[#17525f] to-slate-900 text-white rounded-3xl p-5 sm:p-6 shadow-2xl relative overflow-hidden"
+          className="bg-gradient-to-br from-[#164E3D] via-[#123E31] to-[#0F1412] text-white rounded-3xl p-5 sm:p-6 shadow-xl border border-emerald-500/30 relative overflow-hidden"
         >
           {/* Subtle Background Glow */}
-          <div className="absolute -top-12 -right-12 w-48 h-48 rounded-full bg-teal-400/10 blur-2xl pointer-events-none" />
+          <div className="absolute -top-12 -right-12 w-48 h-48 rounded-full bg-emerald-400/10 blur-2xl pointer-events-none" />
 
           {/* Top Comparison Header */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 items-center pb-5 border-b border-teal-800/80">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 items-center pb-5 border-b border-emerald-700/80">
             {/* Left: Original Classic */}
             <div className="bg-white/10 backdrop-blur-md rounded-2xl p-3.5 border border-white/10">
               <div className="flex items-center justify-between text-xs text-rose-300 font-bold mb-1">
@@ -335,42 +335,42 @@ export default function AfricanSwapEngine() {
               <div className="flex items-center gap-2.5">
                 <span className="text-2xl">{selectedSwap.originalEmoji}</span>
                 <div>
-                  <h3 className="text-sm font-black text-white">{selectedSwap.originalFood}</h3>
-                  <p className="text-[11px] text-teal-200/80 mt-0.5 leading-tight">{selectedSwap.originalIssue}</p>
+                  <h3 className="text-sm font-bold text-white">{selectedSwap.originalFood}</h3>
+                  <p className="text-xs text-stone-200 mt-0.5 leading-snug">{selectedSwap.originalIssue}</p>
                 </div>
               </div>
-              <div className="flex items-center gap-3 mt-3 pt-2 border-t border-white/10 text-[10px] text-teal-100">
-                <span>GI: <strong className="text-white">{selectedSwap.originalGI}</strong></span>
+              <div className="flex items-center gap-3 mt-3 pt-2 border-t border-white/10 text-xs text-stone-200 font-medium">
+                <span>GI: <strong className="text-white font-bold">{selectedSwap.originalGI}</strong></span>
                 <span>•</span>
-                <span>Sodium: <strong className="text-white">{selectedSwap.originalSodiumMg}mg</strong></span>
+                <span>Sodium: <strong className="text-white font-bold">{selectedSwap.originalSodiumMg}mg</strong></span>
                 <span>•</span>
-                <span>Cals: <strong className="text-white">{selectedSwap.originalCalories}</strong></span>
+                <span>Cals: <strong className="text-white font-bold">{selectedSwap.originalCalories}</strong></span>
               </div>
             </div>
 
             {/* Right: Healthy Super Swap */}
-            <div className="bg-gradient-to-br from-emerald-500/20 to-teal-500/20 backdrop-blur-md rounded-2xl p-3.5 border border-emerald-400/30">
+            <div className="bg-gradient-to-br from-emerald-500/20 to-stone-500/10 backdrop-blur-md rounded-2xl p-3.5 border border-emerald-400/30">
               <div className="flex items-center justify-between text-xs text-emerald-300 font-bold mb-1">
                 <span>MealOptimiza Super Swap</span>
-                <span className="bg-emerald-400 text-slate-950 font-black px-2 py-0.5 rounded-md text-[10px]">
+                <span className="bg-amber-400 text-stone-950 font-bold px-2 py-0.5 rounded-md text-xs shadow-2xs">
                   GLYCEMIC SAFE ✨
                 </span>
               </div>
               <div className="flex items-center gap-2.5">
                 <span className="text-2xl">{selectedSwap.swapEmoji}</span>
                 <div>
-                  <h3 className="text-sm font-black text-emerald-300">{selectedSwap.recommendedSwap}</h3>
-                  <p className="text-[11px] text-emerald-100/90 mt-0.5 leading-tight">
+                  <h3 className="text-sm font-bold text-emerald-300">{selectedSwap.recommendedSwap}</h3>
+                  <p className="text-xs text-stone-200 mt-0.5 leading-snug">
                     {selectedSwap.clinicalImpact}
                   </p>
                 </div>
               </div>
-              <div className="flex items-center gap-3 mt-3 pt-2 border-t border-emerald-400/20 text-[10px] text-emerald-200">
-                <span>GI: <strong className="text-white">{selectedSwap.swapGI} (-{selectedSwap.giReductionPct}%)</strong></span>
+              <div className="flex items-center gap-3 mt-3 pt-2 border-t border-emerald-400/20 text-xs text-emerald-200 font-medium">
+                <span>GI: <strong className="text-white font-bold">{selectedSwap.swapGI} (-{selectedSwap.giReductionPct}%)</strong></span>
                 <span>•</span>
-                <span>Sodium: <strong className="text-white">{selectedSwap.swapSodiumMg}mg</strong></span>
+                <span>Sodium: <strong className="text-white font-bold">{selectedSwap.swapSodiumMg}mg</strong></span>
                 <span>•</span>
-                <span>Fiber: <strong className="text-white">+{selectedSwap.fiberGainGrams}g</strong></span>
+                <span>Fiber: <strong className="text-white font-bold">+{selectedSwap.fiberGainGrams}g</strong></span>
               </div>
             </div>
           </div>
@@ -378,32 +378,32 @@ export default function AfricanSwapEngine() {
           {/* 3 Impact Pill Metrics */}
           <div className="grid grid-cols-3 gap-2 my-4">
             <div className="bg-white/10 rounded-2xl p-2.5 text-center border border-white/5">
-              <span className="text-[10px] text-teal-200 block uppercase font-bold">Glucose Surge</span>
-              <span className="text-sm sm:text-base font-black text-emerald-400">
+              <span className="text-xs text-emerald-200 block uppercase font-bold">Glucose Surge</span>
+              <span className="text-sm sm:text-base font-bold text-emerald-300">
                 -{selectedSwap.giReductionPct}% Spike
               </span>
             </div>
             <div className="bg-white/10 rounded-2xl p-2.5 text-center border border-white/5">
-              <span className="text-[10px] text-teal-200 block uppercase font-bold">Sodium Load</span>
-              <span className="text-sm sm:text-base font-black text-emerald-400">
+              <span className="text-xs text-emerald-200 block uppercase font-bold">Sodium Load</span>
+              <span className="text-sm sm:text-base font-bold text-emerald-300">
                 -{selectedSwap.sodiumReductionPct}% Sodium
               </span>
             </div>
             <div className="bg-white/10 rounded-2xl p-2.5 text-center border border-white/5">
-              <span className="text-[10px] text-teal-200 block uppercase font-bold">Digestive Fiber</span>
-              <span className="text-sm sm:text-base font-black text-amber-300">
+              <span className="text-xs text-emerald-200 block uppercase font-bold">Digestive Fiber</span>
+              <span className="text-sm sm:text-base font-bold text-amber-300">
                 +{selectedSwap.fiberGainGrams}g Fiber
               </span>
             </div>
           </div>
 
           {/* Cooking Hack & Preparation Guide */}
-          <div className="bg-slate-950/60 rounded-2xl p-4 border border-teal-500/20 mb-4">
+          <div className="bg-black/30 rounded-2xl p-4 border border-emerald-500/20 mb-4">
             <div className="flex items-center gap-2 text-amber-300 text-xs font-bold mb-1.5">
               <Utensils size={14} />
               <span>Avo's Kitchen Preparation Protocol:</span>
             </div>
-            <p className="text-xs text-teal-50 leading-relaxed">
+            <p className="text-xs text-stone-100 leading-relaxed font-medium">
               {selectedSwap.preparationHack}
             </p>
           </div>
@@ -411,17 +411,17 @@ export default function AfricanSwapEngine() {
           {/* Diaspora Sourcing Card */}
           <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-3.5 border border-white/10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
             <div className="flex items-start gap-2.5">
-              <div className="p-2 bg-teal-500/30 rounded-xl text-teal-200 shrink-0">
+              <div className="p-2 bg-emerald-500/30 rounded-xl text-emerald-200 shrink-0">
                 <Globe size={16} />
               </div>
               <div>
-                <span className="text-[10px] text-teal-200 uppercase font-extrabold block">
+                <span className="text-xs text-amber-300 uppercase font-bold block">
                   Diaspora Grocery Sourcing (UK, US, Canada, Europe)
                 </span>
                 <p className="text-xs font-bold text-white mt-0.5">
                   Available at: {selectedSwap.diasporaStore}
                 </p>
-                <p className="text-[11px] text-teal-100/80">
+                <p className="text-xs text-stone-200">
                   Find in: {selectedSwap.diasporaAisle}
                 </p>
               </div>
@@ -429,7 +429,7 @@ export default function AfricanSwapEngine() {
 
             <button
               onClick={handleCopyStore}
-              className="w-full sm:w-auto px-3.5 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-black text-xs transition-all flex items-center justify-center gap-1.5 cursor-pointer active:scale-95 shadow-md shrink-0"
+              className="btn-liquid-glass btn-liquid-forest w-full sm:w-auto px-4 py-2.5 rounded-xl text-white font-bold text-xs transition-all flex items-center justify-center gap-1.5 cursor-pointer active:scale-95 shadow-md shrink-0 border border-white/20"
             >
               {copiedStore ? (
                 <>

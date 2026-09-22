@@ -2321,9 +2321,27 @@ export default function Recipe() {
 
       <div className="px-4 sm:px-6 max-w-2xl mx-auto mt-4 space-y-4">
         {activeView === "swaps" ? (
-          <AfricanSwapEngine />
+          <Suspense
+            fallback={
+              <div className="p-8 text-center bg-white dark:bg-stone-900 rounded-3xl border border-stone-200/80 dark:border-stone-800 shadow-xs">
+                <div className="animate-spin text-2xl mb-2">🥑</div>
+                <span className="text-xs font-bold text-stone-500">Loading African Swap Engine...</span>
+              </div>
+            }
+          >
+            <AfricanSwapEngine />
+          </Suspense>
         ) : activeView === "fruits_veggies" ? (
-          <FruitVegetableGuide />
+          <Suspense
+            fallback={
+              <div className="p-8 text-center bg-white dark:bg-stone-900 rounded-3xl border border-stone-200/80 dark:border-stone-800 shadow-xs">
+                <div className="animate-spin text-2xl mb-2">🥗</div>
+                <span className="text-xs font-bold text-stone-500">Loading Fruit &amp; Vegetable Guide...</span>
+              </div>
+            }
+          >
+            <FruitVegetableGuide />
+          </Suspense>
         ) : (
           <>
         {/* ============================================================ */}
@@ -2610,38 +2628,6 @@ export default function Recipe() {
           )}
         </div>
           </>
-        )}
-
-        {/* ⚡ Lazy-loaded Swap Engine Sub-View */}
-        {activeView === "swaps" && (
-          <div className="max-w-2xl mx-auto mt-4">
-            <Suspense
-              fallback={
-                <div className="p-8 text-center bg-white dark:bg-zinc-900 rounded-3xl border border-slate-200 dark:border-zinc-800 shadow-sm">
-                  <div className="animate-spin text-2xl mb-2">🥑</div>
-                  <span className="text-xs font-bold text-slate-500">Loading African Swap Engine...</span>
-                </div>
-              }
-            >
-              <AfricanSwapEngine />
-            </Suspense>
-          </div>
-        )}
-
-        {/* ⚡ Lazy-loaded Fruit & Vegetable Guide Sub-View */}
-        {activeView === "fruits_veggies" && (
-          <div className="max-w-2xl mx-auto mt-4">
-            <Suspense
-              fallback={
-                <div className="p-8 text-center bg-white dark:bg-zinc-900 rounded-3xl border border-slate-200 dark:border-zinc-800 shadow-sm">
-                  <div className="animate-spin text-2xl mb-2">🥗</div>
-                  <span className="text-xs font-bold text-slate-500">Loading Fruit & Vegetable Guide...</span>
-                </div>
-              }
-            >
-              <FruitVegetableGuide />
-            </Suspense>
-          </div>
         )}
       </div>
 

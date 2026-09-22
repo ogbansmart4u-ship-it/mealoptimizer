@@ -521,55 +521,55 @@ export default function FruitVegetableGuide() {
   };
 
   return (
-    <div className="bg-white dark:bg-zinc-900/90 rounded-3xl p-5 sm:p-6 border border-emerald-100 dark:border-zinc-800 shadow-xl transition-all">
+    <div className="bg-white dark:bg-stone-900/90 rounded-3xl p-5 sm:p-6 border border-stone-200/80 dark:border-stone-800 shadow-xl transition-all">
       {/* Top Banner Header */}
       <div className="flex items-center justify-between gap-3 mb-3">
         <div>
-          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/70 border border-emerald-200 text-emerald-800 dark:text-emerald-300 text-[10px] font-black uppercase tracking-wider mb-1">
-            <Leaf size={11} className="text-emerald-600 animate-pulse" />
+          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/70 border border-emerald-200 text-emerald-800 dark:text-emerald-300 text-xs font-bold uppercase tracking-wider mb-1">
+            <Leaf size={12} className="text-emerald-600 animate-pulse" />
             <span>African Botanical Produce &amp; Meal Sequencing</span>
           </div>
-          <h2 className="text-base sm:text-lg font-black text-gray-900 dark:text-zinc-100 flex items-center gap-2">
+          <h2 className="text-base sm:text-lg font-bold text-stone-900 dark:text-stone-100 flex items-center gap-2">
             <span>African Fruits &amp; Healing Greens 🍏🥬</span>
           </h2>
-          <p className="text-xs text-gray-500 dark:text-zinc-400 mt-0.5">
+          <p className="text-xs text-stone-500 dark:text-stone-400 mt-0.5 font-medium">
             How to pair whole low-GI fruits with your 9-inch African plate to double mineral absorption and stop sugar spikes.
           </p>
         </div>
       </div>
 
       {/* 🌟 4-STEP MEAL SEQUENCING & 9-INCH PLATE COMBINATION GUIDE */}
-      <div className="p-3.5 bg-gradient-to-r from-teal-50/90 via-emerald-50/80 to-amber-50/70 dark:from-teal-950/40 dark:via-emerald-950/40 dark:to-zinc-900/60 rounded-2xl border border-teal-200/80 dark:border-teal-800/60 mb-4 space-y-2">
+      <div className="p-4 bg-stone-100/90 dark:bg-stone-900/80 rounded-2xl border border-stone-200/80 dark:border-stone-800 mb-4 space-y-2.5 backdrop-blur-md">
         <div className="flex items-center justify-between">
-          <span className="text-[10px] uppercase font-black tracking-wider text-teal-800 dark:text-teal-300 flex items-center gap-1">
-            <Sparkles size={12} className="text-amber-500" />
+          <span className="text-xs uppercase font-bold tracking-wider text-emerald-800 dark:text-emerald-300 flex items-center gap-1">
+            <Sparkles size={13} className="text-amber-500" />
             <span>Golden Rule: How to Combine Fruit with African Meals</span>
           </span>
-          <span className="text-[9.5px] font-bold text-emerald-700 dark:text-emerald-300 bg-white/90 dark:bg-zinc-900 px-2 py-0.5 rounded-full border border-emerald-200">
+          <span className="text-xs font-bold text-emerald-800 dark:text-emerald-300 bg-white/90 dark:bg-stone-800 px-2.5 py-0.5 rounded-full border border-emerald-200/60 shadow-2xs">
             Step 4 Sequence
           </span>
         </div>
 
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5 text-center text-xs">
-          <div className="bg-white/90 dark:bg-zinc-800/80 p-2 rounded-xl border border-emerald-200/60">
-            <span className="text-[9px] font-black text-emerald-700 block uppercase">1. Fiber Soups (0-5m)</span>
-            <span className="text-[10.5px] font-bold text-slate-800 dark:text-slate-200">Okra / Ewedu</span>
+          <div className="bg-white/95 dark:bg-stone-800/80 p-2.5 rounded-xl border border-emerald-200/60 shadow-2xs">
+            <span className="text-xs font-bold text-emerald-700 dark:text-emerald-400 block uppercase">1. Fiber Soups (0-5m)</span>
+            <span className="text-xs font-semibold text-stone-800 dark:text-stone-200 mt-0.5 block">Okra / Ewedu</span>
           </div>
-          <div className="bg-white/90 dark:bg-zinc-800/80 p-2 rounded-xl border border-amber-200/60">
-            <span className="text-[9px] font-black text-amber-700 block uppercase">2. Protein (5-15m)</span>
-            <span className="text-[10.5px] font-bold text-slate-800 dark:text-slate-200">Fish / Eggs / Meat</span>
+          <div className="bg-white/95 dark:bg-stone-800/80 p-2.5 rounded-xl border border-amber-200/60 shadow-2xs">
+            <span className="text-xs font-bold text-amber-700 dark:text-amber-400 block uppercase">2. Protein (5-15m)</span>
+            <span className="text-xs font-semibold text-stone-800 dark:text-stone-200 mt-0.5 block">Fish / Eggs / Meat</span>
           </div>
-          <div className="bg-white/90 dark:bg-zinc-800/80 p-2 rounded-xl border border-cyan-200/60">
-            <span className="text-[9px] font-black text-cyan-700 block uppercase">3. Swallow Carbs</span>
-            <span className="text-[10.5px] font-bold text-slate-800 dark:text-slate-200">Amala / Plantain</span>
+          <div className="bg-white/95 dark:bg-stone-800/80 p-2.5 rounded-xl border border-stone-200 dark:border-stone-700 shadow-2xs">
+            <span className="text-xs font-bold text-[#164E3D] dark:text-emerald-300 block uppercase">3. Swallow Carbs</span>
+            <span className="text-xs font-semibold text-stone-800 dark:text-stone-200 mt-0.5 block">Amala / Plantain</span>
           </div>
-          <div className="bg-white/90 dark:bg-zinc-800/80 p-2 rounded-xl border border-orange-200/60 ring-1 ring-orange-400/40">
-            <span className="text-[9px] font-black text-orange-700 block uppercase">4. Fruit Buffer</span>
-            <span className="text-[10.5px] font-bold text-slate-800 dark:text-slate-200">Garden Egg / Guava</span>
+          <div className="bg-white/95 dark:bg-stone-800/80 p-2.5 rounded-xl border border-amber-300/80 ring-1 ring-amber-400/40 shadow-2xs">
+            <span className="text-xs font-bold text-amber-700 dark:text-amber-400 block uppercase">4. Fruit Buffer</span>
+            <span className="text-xs font-semibold text-stone-800 dark:text-stone-200 mt-0.5 block">Garden Egg / Guava</span>
           </div>
         </div>
 
-        <p className="text-[10.5px] text-slate-600 dark:text-slate-300 leading-snug">
+        <p className="text-xs text-stone-600 dark:text-stone-300 leading-relaxed font-medium">
           💡 <strong>Why this works:</strong> Eating whole fruit <em>after</em> fiber and protein slows fructose absorption by <strong>40%</strong>, keeping your blood sugar calm and giving you steady all-day vitality.
         </p>
       </div>
@@ -587,11 +587,11 @@ export default function FruitVegetableGuide() {
               triggerHaptic("light");
               setFilterType(tab.id as any);
             }}
-            className={"px-3 py-1.5 rounded-xl text-xs font-black transition-all cursor-pointer " + (
+            className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
               filterType === tab.id
-                ? "bg-[#1f7a8c] text-white shadow-sm"
-                : "bg-gray-100 dark:bg-zinc-800 text-gray-600 dark:text-zinc-400 hover:bg-gray-200"
-            )}
+                ? "btn-liquid-glass btn-liquid-forest text-white shadow-xs border border-white/20"
+                : "bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-200 font-semibold border border-stone-200/60 dark:border-stone-700/60"
+            }`}
           >
             {tab.label}
           </button>
@@ -606,25 +606,25 @@ export default function FruitVegetableGuide() {
             <button
               key={item.id}
               onClick={() => handleSelect(item)}
-              className={"p-3 rounded-2xl text-left border transition-all cursor-pointer flex flex-col justify-between " + (
+              className={`p-3 rounded-2xl text-left border transition-all cursor-pointer flex flex-col justify-between ${
                 isSelected
-                  ? "bg-emerald-50/90 dark:bg-emerald-950/50 border-[#1f7a8c] ring-2 ring-[#1f7a8c]/20 shadow-md scale-[1.02]"
-                  : "bg-white dark:bg-zinc-800/60 border-gray-100 dark:border-zinc-700/80 hover:border-emerald-200"
-              )}
+                  ? "bg-emerald-50/90 dark:bg-emerald-950/50 border-[#164E3D] ring-2 ring-[#164E3D]/30 shadow-md scale-[1.02]"
+                  : "bg-white dark:bg-stone-800/60 border-stone-200/80 dark:border-stone-700/80 hover:border-emerald-200"
+              }`}
             >
               <div className="flex items-center justify-between mb-1.5">
                 <span className="text-2xl">{item.emoji}</span>
-                <span className="text-[9.5px] font-black text-emerald-800 dark:text-emerald-300 bg-emerald-100/80 dark:bg-emerald-900/50 px-1.5 py-0.5 rounded-md">
+                <span className="text-xs font-bold text-emerald-800 dark:text-emerald-300 bg-emerald-100/80 dark:bg-emerald-900/50 px-2 py-0.5 rounded-md">
                   GI {item.giScore}
                 </span>
               </div>
-              <h4 className="text-xs font-bold text-gray-900 dark:text-zinc-100 line-clamp-1">
+              <h4 className="text-xs font-bold text-stone-900 dark:text-stone-100 line-clamp-1">
                 {item.name}
               </h4>
-              <span className="text-[10px] text-gray-500 dark:text-zinc-400 block truncate mt-0.5">
+              <span className="text-xs text-stone-500 dark:text-stone-400 block truncate mt-0.5 font-medium">
                 {item.localNames[0] || item.type}
               </span>
-              <div className="flex items-center gap-1 text-[9.5px] text-emerald-700 dark:text-emerald-300 font-extrabold mt-1">
+              <div className="flex items-center gap-1 text-xs text-emerald-700 dark:text-emerald-300 font-bold mt-1">
                 <span>{item.fiberPer100g}g Fiber</span>
                 <span>•</span>
                 <span>{item.caloriesPer100g} kcal</span>
@@ -642,7 +642,7 @@ export default function FruitVegetableGuide() {
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -8 }}
           transition={{ duration: 0.25 }}
-          className="bg-gradient-to-br from-[#064e3b] via-[#0f766e] to-[#042f2e] text-white rounded-3xl p-5 sm:p-6 shadow-2xl relative overflow-hidden"
+          className="bg-gradient-to-br from-[#164E3D] via-[#123E31] to-[#0F1412] text-white rounded-3xl p-5 sm:p-6 shadow-xl border border-emerald-500/30 relative overflow-hidden"
         >
           {/* Top Detail Card */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-emerald-700/80">
@@ -652,15 +652,15 @@ export default function FruitVegetableGuide() {
               </span>
               <div>
                 <div className="flex items-center gap-2 flex-wrap">
-                  <h3 className="text-base sm:text-lg font-black text-white">{selectedItem.name}</h3>
-                  <span className="bg-emerald-400 text-slate-950 font-black text-[9.5px] px-2 py-0.5 rounded-md">
+                  <h3 className="text-base sm:text-lg font-bold text-white">{selectedItem.name}</h3>
+                  <span className="bg-amber-400 text-stone-950 font-bold text-xs px-2.5 py-0.5 rounded-md shadow-2xs">
                     LOW GLYCEMIC (GI {selectedItem.giScore})
                   </span>
                 </div>
-                <p className="text-xs text-emerald-200 mt-0.5">
+                <p className="text-xs text-stone-200 mt-0.5">
                   Native Names: <strong className="text-white">{selectedItem.localNames.join(", ")}</strong>
                 </p>
-                <p className="text-[11px] text-emerald-100/90 mt-1.5 leading-relaxed font-medium">
+                <p className="text-xs text-stone-200 mt-1.5 leading-relaxed font-medium">
                   {selectedItem.clinicalBenefit}
                 </p>
               </div>
@@ -668,10 +668,10 @@ export default function FruitVegetableGuide() {
 
             {/* Season Badge */}
             <div className="bg-white/10 backdrop-blur-md rounded-2xl p-3 border border-white/10 text-right shrink-0">
-              <span className="text-[10px] text-emerald-200 font-bold uppercase flex items-center justify-end gap-1">
-                <Calendar size={11} /> Harvest Season
+              <span className="text-xs text-amber-300 font-bold uppercase flex items-center justify-end gap-1">
+                <Calendar size={12} /> Harvest Season
               </span>
-              <span className="text-xs font-black text-white mt-0.5 block">
+              <span className="text-xs font-bold text-white mt-0.5 block">
                 {selectedItem.seasonality}
               </span>
             </div>
@@ -679,36 +679,36 @@ export default function FruitVegetableGuide() {
 
           {/* 3 Metric Badges */}
           <div className="grid grid-cols-3 gap-2 my-4">
-            <div className="bg-white/10 rounded-2xl p-2.5 text-center border border-white/5">
-              <span className="text-[10px] text-emerald-200 block uppercase font-bold">Digestive Fiber</span>
-              <span className="text-sm sm:text-base font-black text-amber-300">
+            <div className="bg-white/10 rounded-2xl p-2.5 text-center border border-white/10">
+              <span className="text-xs text-emerald-200 block uppercase font-bold">Digestive Fiber</span>
+              <span className="text-sm sm:text-base font-bold text-amber-300">
                 {selectedItem.fiberPer100g}g / 100g
               </span>
             </div>
-            <div className="bg-white/10 rounded-2xl p-2.5 text-center border border-white/5">
-              <span className="text-[10px] text-emerald-200 block uppercase font-bold">Energy Load</span>
-              <span className="text-sm sm:text-base font-black text-white">
+            <div className="bg-white/10 rounded-2xl p-2.5 text-center border border-white/10">
+              <span className="text-xs text-emerald-200 block uppercase font-bold">Energy Load</span>
+              <span className="text-sm sm:text-base font-bold text-white">
                 {selectedItem.caloriesPer100g} kcal
               </span>
             </div>
-            <div className="bg-white/10 rounded-2xl p-2.5 text-center border border-white/5">
-              <span className="text-[10px] text-emerald-200 block uppercase font-bold">Metabolic Shield</span>
-              <span className="text-xs sm:text-sm font-black text-emerald-300 truncate">
+            <div className="bg-white/10 rounded-2xl p-2.5 text-center border border-white/10">
+              <span className="text-xs text-emerald-200 block uppercase font-bold">Metabolic Shield</span>
+              <span className="text-xs sm:text-sm font-bold text-emerald-300 truncate">
                 {selectedItem.targetConditions[0]}
               </span>
             </div>
           </div>
 
           {/* Key Bioactive Phytochemicals */}
-          <div className="bg-slate-950/50 rounded-2xl p-3.5 border border-emerald-500/20 mb-4">
-            <span className="text-[10px] text-emerald-300 font-extrabold uppercase tracking-wider block mb-1.5">
+          <div className="bg-black/30 rounded-2xl p-3.5 border border-emerald-500/20 mb-4">
+            <span className="text-xs text-amber-300 font-bold uppercase tracking-wider block mb-1.5">
               ⚡ Key Bioactive Phytochemicals:
             </span>
             <div className="flex flex-wrap gap-1.5">
               {selectedItem.keyNutrients.map((nut, idx) => (
                 <span
                   key={idx}
-                  className="px-2 py-0.5 rounded-lg bg-emerald-900/60 border border-emerald-600/40 text-emerald-100 text-[10.5px] font-bold"
+                  className="px-2.5 py-0.5 rounded-lg bg-emerald-900/60 border border-emerald-600/40 text-emerald-100 text-xs font-semibold"
                 >
                   {nut}
                 </span>
@@ -721,23 +721,23 @@ export default function FruitVegetableGuide() {
             <span className="text-amber-300 font-bold block mb-1">
               🍽️ Optimal Bioavailability Preparation:
             </span>
-            <p className="text-emerald-50 leading-relaxed">
+            <p className="text-stone-100 leading-relaxed font-medium">
               {selectedItem.bestWayToEat}
             </p>
           </div>
 
           {/* Diaspora Grocery Substitutes */}
-          <div className="flex items-center justify-between gap-2 text-[11px] text-emerald-200 mb-4 px-1">
+          <div className="flex items-center justify-between gap-2 text-xs text-stone-200 mb-4 px-1">
             <span>🌍 Diaspora Equivalents (Tesco / Walmart / Asda):</span>
             <strong className="text-white truncate">{selectedItem.diasporaSubstitutes.join(", ")}</strong>
           </div>
 
-          {/* Dual Action Buttons */}
+          {/* Dual Action Buttons with Liquid Glass Styling */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-2 border-t border-emerald-700/80">
             <button
               onClick={() => handleLogServing(selectedItem)}
               disabled={isLogging}
-              className="py-3 px-4 rounded-2xl bg-emerald-400 hover:bg-emerald-300 text-slate-950 font-black text-xs transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-95 shadow-md"
+              className="btn-liquid-glass btn-liquid-forest py-3 px-4 rounded-2xl text-white font-bold text-xs transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-95 shadow-md border border-white/20"
             >
               <Plus size={14} />
               <span>Log 100g to Daily Food Diary 🍽️</span>
@@ -745,7 +745,7 @@ export default function FruitVegetableGuide() {
 
             <button
               onClick={() => handleExportGrocery(selectedItem)}
-              className="py-3 px-4 rounded-2xl bg-white/20 hover:bg-white/30 text-white font-black text-xs transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-95 border border-white/20 shadow-md"
+              className="btn-liquid-glass btn-glass-frosted py-3 px-4 rounded-2xl text-white font-bold text-xs transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-95 border border-white/30 shadow-md"
             >
               <ShoppingBag size={14} />
               <span>Add to Market Shopping List 🛒</span>
