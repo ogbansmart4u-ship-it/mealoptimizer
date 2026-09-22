@@ -61,7 +61,8 @@ import { useUser, UserProfile } from "../contexts/UserContext";
 import { useLocation, availableRegions } from "../contexts/LocationContext";
 import { updateUserProfile } from "../../lib/api";
 import { uploadUserAvatar } from "../../lib/avatarStorage";
-import { getSubscriptionStatus } from "../../lib/payment";
+import { getSubscriptionStatus, setSubscriptionStatus } from "../../lib/payment";
+import { triggerHaptic } from "../utils/celebration";
 import { toast } from "sonner";
 import WhatsAppConnectDialog from "../components/WhatsAppConnectDialog";
 import GoogleTranslateWidget from "../components/GoogleTranslateWidget";
@@ -151,6 +152,12 @@ export default function Profile() {
   });
 
   const [showProUpgradeModal, setShowProUpgradeModal] = useState(false);
+  const [subStatus, setSubStatus] = useState(() => getSubscriptionStatus(safeProfile.id));
+
+  useEffect(() => {
+    setSubStatus(getSubscriptionStatus(safeProfile.id));
+  }, [safeProfile.id]);
+
   // 🌟 STRIPE & PAYMENT RETURN HANDLER
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -392,30 +399,28 @@ export default function Profile() {
     return { label: "Clinical Obesity", color: "text-rose-700 bg-rose-50 border-rose-200", percent: 95 };
   }, [safeProfile.bmi]);
 
-  const subStatus = getSubscriptionStatus(safeProfile.id);
-
   return (
-    <div className="min-h-screen bg-[#F3F8F8] pb-28 text-slate-800 antialiased selection:bg-teal-500 selection:text-white relative">
+    <div className="min-h-screen bg-canvas-organic dark:bg-[#0F1412] pb-28 text-stone-800 dark:text-stone-100 antialiased selection:bg-[#164E3D] selection:text-white relative">
       {/* High-Visibility Ambient Background Animation */}
       <AmbientBackground />
 
       {/* 1. 10X Hero Header Section */}
-      <div className="relative z-10 bg-gradient-to-br from-[#0b3c47] via-[#125e6d] to-[#1f7a8c] text-white pt-12 pb-10 px-6 rounded-b-[3rem] shadow-2xl overflow-hidden">
+      <div className="relative z-10 bg-[#164E3D] dark:bg-[#12382C] text-white pt-12 pb-10 px-6 rounded-b-[2.5rem] shadow-sm overflow-hidden">
         {/* Ambient Glow Orbs */}
-        <div className="absolute top-0 right-0 w-80 h-80 bg-teal-400/20 rounded-full blur-3xl -mr-20 -mt-20 pointer-events-none animate-ambient-drift-1" />
-        <div className="absolute bottom-0 left-0 w-64 h-64 bg-emerald-400/15 rounded-full blur-3xl -ml-20 -mb-20 pointer-events-none animate-ambient-drift-2" />
+        <div className="absolute top-0 right-0 w-80 h-80 bg-emerald-400/20 rounded-full blur-3xl -mr-20 -mt-20 pointer-events-none animate-ambient-drift-1" />
+        <div className="absolute bottom-0 left-0 w-64 h-64 bg-amber-400/10 rounded-full blur-3xl -ml-20 -mb-20 pointer-events-none animate-ambient-drift-2" />
 
         {/* Top Navbar */}
         <div className="flex items-center justify-between mb-6 relative z-10">
           <div className="flex items-center gap-2">
             <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
-            <span className="text-[11px] font-black tracking-widest uppercase text-teal-200/90">
+            <span className="text-xs font-semibold tracking-wider uppercase text-emerald-200/90">
               Clinical Metabolic Profile
             </span>
           </div>
           <button
             onClick={handleLogout}
-            className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-white/10 hover:bg-white/20 text-white text-xs font-bold backdrop-blur-md transition-all active:scale-95 cursor-pointer border border-white/15 shadow-sm"
+            className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-white/10 hover:bg-white/20 text-white text-xs font-semibold backdrop-blur-md transition-all active:scale-95 cursor-pointer border border-white/20 shadow-xs"
           >
             <LogOut className="h-3.5 w-3.5" />
             <span>Sign Out</span>
@@ -425,9 +430,9 @@ export default function Profile() {
         {/* Avatar & User Details */}
         <div className="flex items-center gap-4 relative z-10">
           <div className="relative group">
-            <Avatar className="h-20 w-20 border-3 border-white/90 shadow-2xl ring-4 ring-white/20 transition-transform group-hover:scale-105">
+            <Avatar className="h-20 w-20 border-3 border-white/90 shadow-lg ring-4 ring-white/20 transition-transform group-hover:scale-105">
               <AvatarImage src={safeProfile.profilePicture} alt={safeProfile.name} className="object-cover" />
-              <AvatarFallback className="bg-gradient-to-br from-[#126778] to-[#1f7a8c] text-white font-black text-2xl tracking-tight">
+              <AvatarFallback className="bg-[#113E30] text-white font-bold text-2xl tracking-tight">
                 {safeProfile.name
                   .split(" ")
                   .filter(Boolean)
@@ -438,7 +443,7 @@ export default function Profile() {
             </Avatar>
             <label
               htmlFor="profile-avatar-upload"
-              className="absolute -bottom-1 -right-1 p-2 bg-white text-[#126778] rounded-full shadow-lg cursor-pointer hover:bg-teal-50 transition-transform active:scale-90 border border-slate-100"
+              className="absolute -bottom-1 -right-1 p-2 bg-white dark:bg-stone-800 text-[#164E3D] dark:text-emerald-400 rounded-full shadow-md cursor-pointer hover:bg-stone-50 dark:hover:bg-stone-700 transition-transform active:scale-90 border border-stone-200/60 dark:border-stone-700"
               title="Change Photo"
             >
               {uploadingAvatar ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Camera className="h-3.5 w-3.5" />}
@@ -454,82 +459,82 @@ export default function Profile() {
 
           <div className="min-w-0 flex-1">
             <div className="flex items-center gap-2 flex-wrap">
-              <h2 className="text-xl font-black text-white tracking-tight truncate">{safeProfile.name}</h2>
-              <span className="inline-flex items-center gap-1 text-[10px] font-black px-2.5 py-0.5 rounded-full bg-gradient-to-r from-amber-400 to-amber-300 text-slate-950 shadow-md uppercase tracking-wider">
-                <Crown className="h-3 w-3 fill-slate-950" />
+              <h2 className="text-xl font-bold text-white tracking-tight truncate">{safeProfile.name}</h2>
+              <span className="inline-flex items-center gap-1 text-xs font-bold px-2.5 py-0.5 rounded-full bg-amber-400 text-stone-950 shadow-xs uppercase tracking-wider">
+                <Crown className="h-3 w-3 fill-stone-950" />
                 {subStatus.isPro ? "PRO VIP" : "MEMBER"}
               </span>
             </div>
-            <p className="text-xs text-teal-100/85 truncate mt-0.5">{safeProfile.email}</p>
-            <div className="flex items-center gap-1.5 text-[11px] text-teal-200 font-semibold mt-1.5">
-              <MapPin className="h-3 w-3 text-teal-300" />
+            <p className="text-xs text-emerald-100/90 truncate mt-0.5 font-normal">{safeProfile.email}</p>
+            <div className="flex items-center gap-1.5 text-xs text-emerald-100 font-medium mt-1.5">
+              <MapPin className="h-3.5 w-3.5 text-emerald-300" />
               <span>{safeProfile.location}</span>
-              <span className="text-teal-300/40">•</span>
-              <span className="text-teal-200/90">Consistency Index: 98%</span>
+              <span className="text-emerald-300/60">•</span>
+              <span className="text-emerald-100">Consistency: 98%</span>
             </div>
           </div>
         </div>
       </div>
 
       <div className="px-5 -mt-5 space-y-4 relative z-20">
-        {/* 2. 10X PRO Membership Status Card */}
+        {/* 2. PRO Membership Status Card */}
         <div
           onClick={() => navigate("/upgrade")}
-          className="relative bg-gradient-to-r from-[#182a30] via-[#1b3b44] to-[#0f4c5c] text-white rounded-3xl p-5 shadow-xl flex items-center justify-between cursor-pointer hover:opacity-98 transition-all active:scale-[0.99] border border-teal-500/30 overflow-hidden"
+          className="relative bg-stone-900 dark:bg-stone-950 text-white rounded-3xl p-5 shadow-sm flex items-center justify-between cursor-pointer hover:bg-stone-850 transition-all active:scale-[0.99] border border-stone-800 overflow-hidden"
         >
           <div className="absolute right-0 top-0 w-48 h-48 bg-amber-400/10 rounded-full blur-2xl -mr-16 -mt-16 pointer-events-none" />
           
           <div className="flex items-center gap-3.5 relative z-10 min-w-0">
-            <div className="p-3 bg-gradient-to-br from-amber-400 to-amber-600 rounded-2xl shadow-lg flex-shrink-0">
-              <Crown className="h-5 w-5 text-slate-950 fill-slate-950" />
+            <div className="p-3 bg-amber-500 rounded-2xl shadow-xs flex-shrink-0 text-stone-950">
+              <Crown className="h-5 w-5 fill-stone-950" />
             </div>
             <div className="min-w-0">
               <div className="flex items-center gap-2">
-                <h3 className="font-black text-sm text-white">MealOptimiza PRO Status</h3>
-                <span className="text-[9px] font-black px-2 py-0.5 rounded-full bg-emerald-400 text-slate-950 uppercase tracking-wider">
+                <h3 className="font-bold text-sm text-white">MealOptimiza PRO Status</h3>
+                <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-emerald-500 text-white uppercase tracking-wider">
                   {subStatus.isPro ? "ACTIVE 👑" : "UPGRADE"}
                 </span>
               </div>
-              <p className="text-[11px] text-teal-200/90 mt-0.5 truncate">
+              <p className="text-xs text-stone-300 mt-0.5 truncate">
                 Unlimited AI Vision, WhatsApp Food Bot, Physician PDF & Spike Shield
               </p>
             </div>
           </div>
-          <ChevronRight className="h-5 w-5 text-teal-300/70 flex-shrink-0 relative z-10" />
+          <ChevronRight className="h-5 w-5 text-stone-400 flex-shrink-0 relative z-10" />
         </div>
 
-                {/* 🎛️ 10X HOME DASHBOARD CUSTOMIZER (BASED ON SUBSCRIPTION LEVEL) */}
-        <div className="bg-white rounded-3xl p-5 shadow-sm border border-slate-100/90 space-y-4">
+        {/* 🎛️ HOME DASHBOARD CUSTOMIZER */}
+        <div className="bg-white dark:bg-stone-900 rounded-3xl p-5 shadow-sm border border-stone-200/80 dark:border-stone-800 space-y-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2.5">
-              <div className="p-2.5 bg-gradient-to-tr from-[#126778] to-teal-500 text-white rounded-2xl shadow-sm">
+              <div className="p-2.5 bg-stone-100 dark:bg-stone-800 text-[#164E3D] dark:text-emerald-400 rounded-2xl shadow-xs">
                 <Sliders className="h-5 w-5" />
               </div>
               <div>
-                <h3 className="font-black text-sm text-slate-900">Customize Home Dashboard</h3>
-                <p className="text-[11px] text-slate-500">Toggle daily widgets to match your routine</p>
+                <h3 className="font-bold text-sm text-stone-900 dark:text-white">Customize Home Dashboard</h3>
+                <p className="text-xs text-stone-500 dark:text-stone-400 font-medium">Toggle daily widgets to match your routine</p>
               </div>
             </div>
 
-            <span className="text-[10px] font-black uppercase px-2.5 py-1 rounded-full bg-teal-50 text-[#126778] border border-teal-200">
+            <span className="text-xs font-semibold uppercase px-2.5 py-1 rounded-full bg-stone-100 dark:bg-stone-800 text-[#164E3D] dark:text-emerald-400 border border-stone-200 dark:border-stone-700">
               {subStatus.isPro ? "PRO CUSTOMIZER 👑" : "FREE PLAN"}
             </span>
           </div>
 
-          <div className="divide-y divide-slate-100 text-xs">
-                        {/* 🧬 THORNE CERTIFIED DIASPORA MICRONUTRIENT SHIELD */}
-            <div className="mt-3 p-3.5 bg-gradient-to-r from-teal-50 to-emerald-50 dark:from-zinc-800 dark:to-zinc-800/80 rounded-2xl border border-teal-200 dark:border-zinc-700 flex items-center justify-between gap-3">
+          <div className="divide-y divide-stone-100 dark:divide-stone-800 text-xs">
+            {/* 🧬 THORNE CERTIFIED DIASPORA MICRONUTRIENT SHIELD */}
+            <div className="mt-3 p-3.5 bg-stone-50 dark:bg-stone-800/60 rounded-2xl border border-stone-200/80 dark:border-stone-700 flex items-center justify-between gap-3">
               <div className="flex items-center gap-2.5 min-w-0">
-                <span className="text-xl p-1 bg-white dark:bg-zinc-700 rounded-xl shadow-2xs">☀️</span>
+                <span className="text-xl p-1 bg-white dark:bg-stone-700 rounded-xl shadow-2xs">☀️</span>
                 <div className="min-w-0">
-                  <span className="text-[9px] font-black uppercase text-teal-800 dark:text-teal-300">Diaspora Micronutrient Shield</span>
-                  <p className="text-xs font-black text-slate-900 dark:text-white truncate">Thorne Clinical D3+K2 &amp; Methyl-B12</p>
+                  <span className="text-xs font-bold uppercase text-[#164E3D] dark:text-emerald-400 tracking-wider">Diaspora Micronutrient Shield</span>
+                  <p className="text-xs font-bold text-stone-900 dark:text-white truncate">Thorne Clinical D3+K2 &amp; Methyl-B12</p>
                 </div>
               </div>
               <button
                 type="button"
                 onClick={() => openAffiliateProduct("thorne-vitamin-d3")}
-                className="px-3 py-1.5 bg-[#126778] text-white text-[11px] font-black rounded-xl shadow-sm hover:scale-105 active:scale-95 transition-all shrink-0 cursor-pointer"
+                className="px-3 py-1.5 bg-[#164E3D] hover:bg-[#113E30] text-white text-xs font-bold rounded-xl shadow-xs hover:scale-105 active:scale-95 transition-all shrink-0 cursor-pointer"
               >
                 View Kit 🧬
               </button>
@@ -540,8 +545,8 @@ export default function Profile() {
               <div className="flex items-center gap-2.5">
                 <span className="text-base">⚡</span>
                 <div>
-                  <p className="font-bold text-slate-800">Daily Food &amp; Energy Gauge</p>
-                  <p className="text-[10px] text-slate-400">Calories, protein, carbs &amp; fat targets</p>
+                  <p className="font-semibold text-xs text-stone-800 dark:text-stone-200">Daily Food &amp; Energy Gauge</p>
+                  <p className="text-xs text-stone-500 dark:text-stone-400 font-medium">Calories, protein, carbs &amp; fat targets</p>
                 </div>
               </div>
               <Switch
@@ -554,8 +559,8 @@ export default function Profile() {
               <div className="flex items-center gap-2.5">
                 <span className="text-base">📸</span>
                 <div>
-                  <p className="font-bold text-slate-800">3-Button Quick Actions</p>
-                  <p className="text-[10px] text-slate-400">1-tap plate scan, quick log &amp; +1 cup water</p>
+                  <p className="font-semibold text-xs text-stone-800 dark:text-stone-200">3-Button Quick Actions</p>
+                  <p className="text-xs text-stone-500 dark:text-stone-400 font-medium">1-tap plate scan, quick log &amp; +1 cup water</p>
                 </div>
               </div>
               <Switch
@@ -568,8 +573,8 @@ export default function Profile() {
               <div className="flex items-center gap-2.5">
                 <span className="text-base">💡</span>
                 <div>
-                  <p className="font-bold text-slate-800">Today's Timely Gentle Tip</p>
-                  <p className="text-[10px] text-slate-400">Smart contextual advice that shifts through the day</p>
+                  <p className="font-semibold text-xs text-stone-800 dark:text-stone-200">Today's Timely Gentle Tip</p>
+                  <p className="text-xs text-stone-500 dark:text-stone-400 font-medium">Smart contextual advice that shifts through the day</p>
                 </div>
               </div>
               <Switch
@@ -582,8 +587,8 @@ export default function Profile() {
               <div className="flex items-center gap-2.5">
                 <span className="text-base">🍲</span>
                 <div>
-                  <p className="font-bold text-slate-800">Today's Meal Timeline</p>
-                  <p className="text-[10px] text-slate-400">Visual breakfast, lunch, and dinner logs</p>
+                  <p className="font-semibold text-xs text-stone-800 dark:text-stone-200">Today's Meal Timeline</p>
+                  <p className="text-xs text-stone-500 dark:text-stone-400 font-medium">Visual breakfast, lunch, and dinner logs</p>
                 </div>
               </div>
               <Switch
@@ -596,8 +601,8 @@ export default function Profile() {
               <div className="flex items-center gap-2.5">
                 <span className="text-base">🔥</span>
                 <div>
-                  <p className="font-bold text-slate-800">21-Day Challenge &amp; Food Wrapped</p>
-                  <p className="text-[10px] text-slate-400">Community streaks and monthly recaps</p>
+                  <p className="font-semibold text-xs text-stone-800 dark:text-stone-200">21-Day Challenge &amp; Food Wrapped</p>
+                  <p className="text-xs text-stone-500 dark:text-stone-400 font-medium">Community streaks and monthly recaps</p>
                 </div>
               </div>
               <Switch
@@ -607,17 +612,17 @@ export default function Profile() {
             </div>
 
             {/* PRO VIP LOCKED WIDGETS (VISIBLE BUT TEASED & LOCKED) */}
-            <div className="flex items-center justify-between py-3 bg-gradient-to-r from-teal-50/50 to-transparent -mx-2 px-2 rounded-2xl">
+            <div className="flex items-center justify-between py-3 bg-stone-50/70 dark:bg-stone-800/40 -mx-2 px-2 rounded-2xl">
               <div className="flex items-center gap-2.5">
                 <span className="text-base">🩸</span>
                 <div>
                   <div className="flex items-center gap-1.5">
-                    <p className="font-black text-slate-900">Live Continuous Glucose (CGM) Curve</p>
-                    <span className="text-[9px] font-black uppercase px-1.5 py-0.5 rounded-full bg-amber-400 text-slate-950">
+                    <p className="font-bold text-xs text-stone-900 dark:text-white">Live Continuous Glucose (CGM) Curve</p>
+                    <span className="text-xs font-bold uppercase px-2 py-0.5 rounded-full bg-amber-400 text-stone-950 shadow-2xs">
                       PRO 🔒
                     </span>
                   </div>
-                  <p className="text-[10px] text-slate-500">Live Dexcom &amp; Libre sensor stream on home</p>
+                  <p className="text-xs text-stone-500 dark:text-stone-400 font-medium">Live Dexcom &amp; Libre sensor stream on home</p>
                 </div>
               </div>
               <Switch
@@ -626,17 +631,17 @@ export default function Profile() {
               />
             </div>
 
-            <div className="flex items-center justify-between py-3 bg-gradient-to-r from-teal-50/50 to-transparent -mx-2 px-2 rounded-2xl">
+            <div className="flex items-center justify-between py-3 bg-stone-50/70 dark:bg-stone-800/40 -mx-2 px-2 rounded-2xl">
               <div className="flex items-center gap-2.5">
                 <span className="text-base">🧬</span>
                 <div>
                   <div className="flex items-center gap-1.5">
-                    <p className="font-black text-slate-900">Diaspora Vitamin D3 &amp; B12 Shield</p>
-                    <span className="text-[9px] font-black uppercase px-1.5 py-0.5 rounded-full bg-amber-400 text-slate-950">
+                    <p className="font-bold text-xs text-stone-900 dark:text-white">Diaspora Vitamin D3 &amp; B12 Shield</p>
+                    <span className="text-xs font-bold uppercase px-2 py-0.5 rounded-full bg-amber-400 text-stone-950 shadow-2xs">
                       PRO 🔒
                     </span>
                   </div>
-                  <p className="text-[10px] text-slate-500">UK/US/Canada sunlight deficiency alerts</p>
+                  <p className="text-xs text-stone-500 dark:text-stone-400 font-medium">UK/US/Canada sunlight deficiency alerts</p>
                 </div>
               </div>
               <Switch
@@ -645,17 +650,17 @@ export default function Profile() {
               />
             </div>
 
-            <div className="flex items-center justify-between py-3 bg-gradient-to-r from-teal-50/50 to-transparent -mx-2 px-2 rounded-2xl">
+            <div className="flex items-center justify-between py-3 bg-stone-50/70 dark:bg-stone-800/40 -mx-2 px-2 rounded-2xl">
               <div className="flex items-center gap-2.5">
                 <span className="text-base">👨‍👩‍👧‍👦</span>
                 <div>
                   <div className="flex items-center gap-1.5">
-                    <p className="font-black text-slate-900">Family Health Circle Widget</p>
-                    <span className="text-[9px] font-black uppercase px-1.5 py-0.5 rounded-full bg-amber-400 text-slate-950">
+                    <p className="font-bold text-xs text-stone-900 dark:text-white">Family Health Circle Widget</p>
+                    <span className="text-xs font-bold uppercase px-2 py-0.5 rounded-full bg-amber-400 text-stone-950 shadow-2xs">
                       PRO 🔒
                     </span>
                   </div>
-                  <p className="text-[10px] text-slate-500">Track parents' meal safety from London or Lagos</p>
+                  <p className="text-xs text-stone-500 dark:text-stone-400 font-medium">Track parents' meal safety from London or Lagos</p>
                 </div>
               </div>
               <Switch
@@ -667,15 +672,15 @@ export default function Profile() {
         </div>
 
         {/* 3. Clinical Metabolic Passport (4 Vitals + Live BMI Gauge) */}
-        <div className="bg-white rounded-3xl p-5 shadow-sm border border-slate-100/80">
+        <div className="bg-white dark:bg-stone-900 rounded-3xl p-5 shadow-sm border border-stone-200/80 dark:border-stone-800">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2.5">
-              <div className="p-2.5 bg-teal-50 text-[#126778] rounded-2xl">
+              <div className="p-2.5 bg-stone-100 dark:bg-stone-800 text-[#164E3D] dark:text-emerald-400 rounded-2xl">
                 <HeartPulse className="h-5 w-5" />
               </div>
               <div>
-                <h3 className="font-black text-sm text-slate-900">Metabolic Passport</h3>
-                <p className="text-[11px] text-slate-400">Cardiovascular vitals & biometric markers</p>
+                <h3 className="font-bold text-sm text-stone-900 dark:text-white">Metabolic Passport</h3>
+                <p className="text-xs text-stone-500 dark:text-stone-400 font-medium">Cardiovascular vitals &amp; biometric markers</p>
               </div>
             </div>
 
@@ -685,22 +690,22 @@ export default function Profile() {
                 <Button
                   variant="outline"
                   size="sm"
-                  className="rounded-full text-xs font-bold border-teal-200 text-[#126778] hover:bg-teal-50 h-8 px-3.5"
+                  className="rounded-full text-xs font-semibold border-stone-200 dark:border-stone-700 text-[#164E3D] dark:text-emerald-400 hover:bg-stone-50 dark:hover:bg-stone-800 h-8 px-3.5"
                 >
-                  <Edit2 className="h-3 w-3 mr-1" />
+                  <Edit2 className="h-3.5 w-3.5 mr-1" />
                   Edit Vitals
                 </Button>
               </DialogTrigger>
-              <DialogContent className="sm:max-w-md rounded-3xl">
+              <DialogContent className="sm:max-w-md rounded-3xl bg-white dark:bg-stone-900 text-stone-900 dark:text-white border border-stone-200 dark:border-stone-800">
                 <DialogHeader>
-                  <DialogTitle className="text-lg font-black text-[#126778]">Edit Health Passport</DialogTitle>
-                  <DialogDescription className="text-xs text-slate-500">
+                  <DialogTitle className="text-lg font-bold text-[#164E3D] dark:text-emerald-400">Edit Health Passport</DialogTitle>
+                  <DialogDescription className="text-xs text-stone-500 dark:text-stone-400">
                     Adjust biometric parameters for personalized glycemic algorithms.
                   </DialogDescription>
                 </DialogHeader>
                 <div className="space-y-3.5 py-2">
                   <div>
-                    <Label className="text-xs font-bold text-slate-700">Full Name</Label>
+                    <Label className="text-xs font-bold text-stone-700 dark:text-stone-300">Full Name</Label>
                     <Input
                       value={healthForm.name}
                       onChange={(e) => setHealthForm({ ...healthForm, name: e.target.value })}
@@ -709,7 +714,7 @@ export default function Profile() {
                   </div>
                   <div className="grid grid-cols-2 gap-3">
                     <div>
-                      <Label className="text-xs font-bold text-slate-700">Age (Years)</Label>
+                      <Label className="text-xs font-bold text-stone-700 dark:text-stone-300">Age (Years)</Label>
                       <Input
                         type="number"
                         value={healthForm.age}
@@ -718,11 +723,11 @@ export default function Profile() {
                       />
                     </div>
                     <div>
-                      <Label className="text-xs font-bold text-slate-700">Region / Location</Label>
+                      <Label className="text-xs font-bold text-stone-700 dark:text-stone-300">Region / Location</Label>
                       <select
                         value={healthForm.location}
                         onChange={(e) => setHealthForm({ ...healthForm, location: e.target.value })}
-                        className="mt-1 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-teal-500"
+                        className="mt-1 w-full rounded-xl border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 px-3 py-2 text-sm text-stone-800 dark:text-stone-100 focus:outline-none focus:ring-2 focus:ring-[#164E3D]"
                       >
                         {availableRegions.map((r) => (
                           <option key={r.id} value={r.displayName}>
@@ -734,7 +739,7 @@ export default function Profile() {
                   </div>
                   <div className="grid grid-cols-2 gap-3">
                     <div>
-                      <Label className="text-xs font-bold text-slate-700">Weight (kg)</Label>
+                      <Label className="text-xs font-bold text-stone-700 dark:text-stone-300">Weight (kg)</Label>
                       <Input
                         type="number"
                         value={healthForm.weight}
@@ -743,7 +748,7 @@ export default function Profile() {
                       />
                     </div>
                     <div>
-                      <Label className="text-xs font-bold text-slate-700">Height (cm)</Label>
+                      <Label className="text-xs font-bold text-stone-700 dark:text-stone-300">Height (cm)</Label>
                       <Input
                         type="number"
                         value={healthForm.height}
@@ -753,7 +758,7 @@ export default function Profile() {
                     </div>
                   </div>
                   <div>
-                    <Label className="text-xs font-bold text-slate-700">Resting Blood Pressure (mmHg)</Label>
+                    <Label className="text-xs font-bold text-stone-700 dark:text-stone-300">Resting Blood Pressure (mmHg)</Label>
                     <Input
                       placeholder="e.g. 120/80"
                       value={healthForm.bloodPressure}
@@ -762,7 +767,7 @@ export default function Profile() {
                     />
                   </div>
                   <div>
-                    <Label className="text-xs font-bold text-slate-700">Metabolic Focus / Health Goal</Label>
+                    <Label className="text-xs font-bold text-stone-700 dark:text-stone-300">Metabolic Focus / Health Goal</Label>
                     <Input
                       value={healthForm.medicalCondition}
                       onChange={(e) => setHealthForm({ ...healthForm, medicalCondition: e.target.value })}
@@ -777,7 +782,7 @@ export default function Profile() {
                   <Button
                     onClick={handleSaveHealth}
                     disabled={saving}
-                    className="flex-1 bg-[#126778] hover:bg-[#0e5260] text-white rounded-xl font-bold"
+                    className="flex-1 bg-[#164E3D] hover:bg-[#113E30] text-white rounded-xl font-bold"
                   >
                     {saving ? "Saving..." : "Save Changes"}
                   </Button>
@@ -788,66 +793,66 @@ export default function Profile() {
 
           {/* 4 Metric Cards */}
           <div className="grid grid-cols-2 gap-2.5 mb-3.5">
-            <div className="p-3.5 bg-slate-50/90 rounded-2xl border border-slate-100 flex items-center gap-3">
-              <div className="p-2.5 bg-white rounded-xl shadow-xs text-teal-600">
+            <div className="p-3.5 bg-stone-50 dark:bg-stone-800/60 rounded-2xl border border-stone-200/70 dark:border-stone-700 flex items-center gap-3">
+              <div className="p-2.5 bg-white dark:bg-stone-800 rounded-xl shadow-xs text-[#164E3D] dark:text-emerald-400">
                 <Calendar className="h-4 w-4" />
               </div>
               <div>
-                <p className="text-[10px] uppercase font-bold text-slate-400">Age</p>
-                <p className="text-xs font-black text-slate-800">{safeProfile.age} yrs</p>
+                <p className="text-xs uppercase font-bold text-stone-400 dark:text-stone-500">Age</p>
+                <p className="text-xs font-bold text-stone-900 dark:text-white">{safeProfile.age} yrs</p>
               </div>
             </div>
 
-            <div className="p-3.5 bg-slate-50/90 rounded-2xl border border-slate-100 flex items-center gap-3">
-              <div className="p-2.5 bg-white rounded-xl shadow-xs text-teal-600">
+            <div className="p-3.5 bg-stone-50 dark:bg-stone-800/60 rounded-2xl border border-stone-200/70 dark:border-stone-700 flex items-center gap-3">
+              <div className="p-2.5 bg-white dark:bg-stone-800 rounded-xl shadow-xs text-[#164E3D] dark:text-emerald-400">
                 <Scale className="h-4 w-4" />
               </div>
               <div>
-                <p className="text-[10px] uppercase font-bold text-slate-400">Weight</p>
-                <p className="text-xs font-black text-slate-800">{safeProfile.weight} kg</p>
+                <p className="text-xs uppercase font-bold text-stone-400 dark:text-stone-500">Weight</p>
+                <p className="text-xs font-bold text-stone-900 dark:text-white">{safeProfile.weight} kg</p>
               </div>
             </div>
 
-            <div className="p-3.5 bg-slate-50/90 rounded-2xl border border-slate-100 flex items-center gap-3">
-              <div className="p-2.5 bg-white rounded-xl shadow-xs text-teal-600">
+            <div className="p-3.5 bg-stone-50 dark:bg-stone-800/60 rounded-2xl border border-stone-200/70 dark:border-stone-700 flex items-center gap-3">
+              <div className="p-2.5 bg-white dark:bg-stone-800 rounded-xl shadow-xs text-[#164E3D] dark:text-emerald-400">
                 <Ruler className="h-4 w-4" />
               </div>
               <div>
-                <p className="text-[10px] uppercase font-bold text-slate-400">Height</p>
-                <p className="text-xs font-black text-slate-800">{safeProfile.height} cm</p>
+                <p className="text-xs uppercase font-bold text-stone-400 dark:text-stone-500">Height</p>
+                <p className="text-xs font-bold text-stone-900 dark:text-white">{safeProfile.height} cm</p>
               </div>
             </div>
 
-            <div className="p-3.5 bg-slate-50/90 rounded-2xl border border-slate-100 flex items-center gap-3">
-              <div className="p-2.5 bg-white rounded-xl shadow-xs text-rose-500">
+            <div className="p-3.5 bg-stone-50 dark:bg-stone-800/60 rounded-2xl border border-stone-200/70 dark:border-stone-700 flex items-center gap-3">
+              <div className="p-2.5 bg-white dark:bg-stone-800 rounded-xl shadow-xs text-rose-500">
                 <HeartPulse className="h-4 w-4" />
               </div>
               <div>
-                <p className="text-[10px] uppercase font-bold text-slate-400">Resting BP</p>
-                <p className="text-xs font-black text-slate-800">{safeProfile.bloodPressure}</p>
+                <p className="text-xs uppercase font-bold text-stone-400 dark:text-stone-500">Resting BP</p>
+                <p className="text-xs font-bold text-stone-900 dark:text-white">{safeProfile.bloodPressure}</p>
               </div>
             </div>
           </div>
 
           {/* Dynamic BMI Card & Visual Indicator */}
-          <div className="p-4 bg-teal-50/40 rounded-2xl border border-teal-100 space-y-2.5 mb-3">
+          <div className="p-4 bg-stone-50 dark:bg-stone-800/60 rounded-2xl border border-stone-200/80 dark:border-stone-700 space-y-2.5 mb-3">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <Scale className="h-4 w-4 text-teal-700" />
-                <span className="text-xs font-bold text-slate-700">Body Mass Index (BMI)</span>
+                <Scale className="h-4 w-4 text-[#164E3D] dark:text-emerald-400" />
+                <span className="text-xs font-bold text-stone-700 dark:text-stone-300">Body Mass Index (BMI)</span>
               </div>
-              <span className={`text-[10px] font-black px-2.5 py-0.5 rounded-full border ${bmiInfo.color}`}>
+              <span className={`text-xs font-bold px-2.5 py-0.5 rounded-full border ${bmiInfo.color}`}>
                 {bmiInfo.label}
               </span>
             </div>
             
             <div className="flex items-baseline gap-2">
-              <span className="text-2xl font-black text-slate-900">{safeProfile.bmi}</span>
-              <span className="text-xs text-slate-500 font-semibold">kg/m²</span>
+              <span className="text-2xl font-bold text-stone-900 dark:text-white">{safeProfile.bmi}</span>
+              <span className="text-xs text-stone-500 dark:text-stone-400 font-medium">kg/m²</span>
             </div>
 
             {/* Visual Gauge Bar */}
-            <div className="h-2 w-full bg-slate-200 rounded-full overflow-hidden flex">
+            <div className="h-2 w-full bg-stone-200 dark:bg-stone-700 rounded-full overflow-hidden flex">
               <div className="h-full bg-amber-400 w-[18.5%]" title="Underweight" />
               <div className="h-full bg-emerald-500 w-[31.5%]" title="Optimal" />
               <div className="h-full bg-orange-400 w-[25%]" title="Overweight" />
@@ -856,13 +861,13 @@ export default function Profile() {
           </div>
 
           {/* Medical Focus Goal */}
-          <div className="p-3.5 bg-slate-50/90 rounded-2xl border border-slate-100 flex items-center gap-3">
-            <div className="p-2 bg-white rounded-xl shadow-xs text-[#126778]">
+          <div className="p-3.5 bg-stone-50 dark:bg-stone-800/60 rounded-2xl border border-stone-200/70 dark:border-stone-700 flex items-center gap-3">
+            <div className="p-2 bg-white dark:bg-stone-800 rounded-xl shadow-xs text-[#164E3D] dark:text-emerald-400">
               <Stethoscope className="h-4 w-4" />
             </div>
             <div className="min-w-0 flex-1">
-              <p className="text-[10px] uppercase font-bold text-slate-400">Primary Health Focus</p>
-              <p className="text-xs font-bold text-slate-800 truncate">{safeProfile.medicalCondition}</p>
+              <p className="text-xs uppercase font-bold text-stone-400 dark:text-stone-500">Primary Health Focus</p>
+              <p className="text-xs font-semibold text-stone-800 dark:text-stone-200 truncate">{safeProfile.medicalCondition}</p>
             </div>
           </div>
 
@@ -870,143 +875,142 @@ export default function Profile() {
           <button
             type="button"
             onClick={() => navigate("/onboarding")}
-            className="w-full mt-3 p-3 bg-gradient-to-r from-teal-500 via-teal-600 to-[#126778] text-white rounded-2xl text-xs font-black shadow-sm hover:shadow-md transition-all flex items-center justify-between cursor-pointer active:scale-98"
+            className="w-full mt-3 p-3 bg-[#164E3D] hover:bg-[#113E30] text-white rounded-2xl text-xs font-bold shadow-xs transition-all flex items-center justify-between cursor-pointer active:scale-98"
           >
             <div className="flex items-center gap-2">
               <span className="text-base p-1 bg-white/20 rounded-xl">📋</span>
               <div className="text-left">
-                <span className="block leading-tight">Retake 6-Question Metabolic Diagnostic</span>
-                <span className="text-[10px] text-teal-100 font-medium">Re-calibrate your cultural glycemic blueprint</span>
+                <span className="block leading-tight font-bold text-xs">Retake 6-Question Metabolic Diagnostic</span>
+                <span className="text-xs text-emerald-200/90 font-medium">Re-calibrate your cultural glycemic blueprint</span>
               </div>
             </div>
             <ChevronRight size={16} className="text-white/80" />
           </button>
         </div>
 
-        
         {/* 🏥 B2B CLINICIAN & DIETITIAN ENTERPRISE PORTAL BANNER */}
         <div
           onClick={() => navigate("/clinician-portal")}
-          className="bg-gradient-to-r from-[#0a232a] via-[#126778] to-[#0f4c5c] rounded-3xl p-4 sm:p-5 text-white shadow-xl border border-teal-400/30 flex items-center justify-between gap-3.5 cursor-pointer hover:opacity-95 active:scale-[0.99] transition-all relative overflow-hidden"
+          className="bg-stone-900 dark:bg-stone-950 rounded-3xl p-4 sm:p-5 text-white shadow-sm border border-stone-800 flex items-center justify-between gap-3.5 cursor-pointer hover:bg-stone-850 active:scale-[0.99] transition-all relative overflow-hidden"
         >
-          <div className="absolute right-0 top-0 w-36 h-36 bg-teal-400/10 rounded-full blur-xl pointer-events-none" />
+          <div className="absolute right-0 top-0 w-36 h-36 bg-emerald-500/10 rounded-full blur-xl pointer-events-none" />
           <div className="flex items-center gap-3.5 relative z-10 min-w-0">
-            <div className="p-3 bg-white/15 backdrop-blur-md rounded-2xl border border-white/20 text-2xl shrink-0">
+            <div className="p-3 bg-white/10 backdrop-blur-md rounded-2xl border border-white/15 text-2xl shrink-0">
               🩺
             </div>
             <div className="min-w-0">
               <div className="flex items-center gap-2">
-                <h3 className="font-black text-sm text-white">B2B Clinician &amp; Provider Hub</h3>
-                <span className="text-[9px] font-black px-2 py-0.5 rounded-full bg-teal-400 text-slate-950 uppercase tracking-wider">
+                <h3 className="font-bold text-sm text-white">B2B Clinician &amp; Provider Hub</h3>
+                <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-emerald-500 text-white uppercase tracking-wider">
                   ENTERPRISE
                 </span>
               </div>
-              <p className="text-[11px] text-teal-100/90 mt-0.5 truncate">
+              <p className="text-xs text-stone-300 mt-0.5 truncate">
                 Multi-patient glycemic telemetry, HMO integration &amp; clinical dietetics
               </p>
             </div>
           </div>
-          <ChevronRight className="h-5 w-5 text-teal-300 shrink-0 relative z-10" />
+          <ChevronRight className="h-5 w-5 text-stone-400 shrink-0 relative z-10" />
         </div>
-
 
         {/* 4. Quick AI Tools Hub (WhatsApp Logger + Doctor Report + Family Care + Partner Store) */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
           {/* Partner Store & Bio-Hacking Gear */}
           <div
             onClick={() => setShowPartnerStoreModal(true)}
-            className="p-4 bg-gradient-to-br from-amber-50 to-orange-50 dark:from-zinc-800 dark:to-zinc-800/90 rounded-3xl border border-amber-200/80 dark:border-zinc-700 cursor-pointer transition-all active:scale-95 shadow-xs"
+            className="p-4 bg-white dark:bg-stone-900 hover:bg-stone-50 dark:hover:bg-stone-800/80 rounded-3xl border border-stone-200/80 dark:border-stone-800 cursor-pointer transition-all active:scale-95 shadow-xs"
           >
             <div className="flex items-center justify-between mb-2">
-              <div className="p-2 bg-amber-500 text-slate-950 rounded-xl shadow-xs text-base">
+              <div className="p-2 bg-amber-500 text-stone-950 rounded-xl shadow-xs text-base">
                 🛍️
               </div>
-              <span className="text-[9px] font-black px-1.5 py-0.5 rounded-full bg-amber-200 text-amber-900 uppercase">
+              <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 uppercase">
                 PARTNERS
               </span>
             </div>
-            <h4 className="font-black text-xs text-slate-900 dark:text-white">Partner Health Store</h4>
-            <p className="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5">CGMs, Thorne D3/B12 &amp; Air Fryers</p>
+            <h4 className="font-bold text-xs text-stone-900 dark:text-white">Partner Health Store</h4>
+            <p className="text-xs text-stone-500 dark:text-stone-400 mt-0.5">CGMs, Thorne D3/B12 &amp; Air Fryers</p>
           </div>
+
           {/* WhatsApp AI Hub */}
           <div
             onClick={() => setShowWhatsAppDialog(true)}
-            className="p-4 bg-emerald-50/90 hover:bg-emerald-100/80 rounded-3xl border border-emerald-200/80 cursor-pointer transition-all active:scale-95 shadow-xs"
+            className="p-4 bg-white dark:bg-stone-900 hover:bg-stone-50 dark:hover:bg-stone-800/80 rounded-3xl border border-stone-200/80 dark:border-stone-800 cursor-pointer transition-all active:scale-95 shadow-xs"
           >
             <div className="flex items-center justify-between mb-2">
               <div className="p-2 bg-emerald-600 text-white rounded-xl shadow-xs">
                 <MessageSquare className="h-4 w-4" />
               </div>
-              <span className="text-[9px] font-black px-1.5 py-0.5 rounded-full bg-emerald-200 text-emerald-900 uppercase">
+              <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 uppercase">
                 ACTIVE
               </span>
             </div>
-            <h4 className="font-black text-xs text-emerald-950">WhatsApp AI Hub</h4>
-            <p className="text-[10px] text-emerald-800/90 mt-0.5">Snap food photos directly on WhatsApp</p>
+            <h4 className="font-bold text-xs text-stone-900 dark:text-white">WhatsApp AI Hub</h4>
+            <p className="text-xs text-stone-500 dark:text-stone-400 mt-0.5">Snap food photos directly on WhatsApp</p>
           </div>
 
           {/* Doctor Clinical PDF Report */}
           <div
             onClick={() => navigate("/health-report")}
-            className="p-4 bg-teal-50/90 hover:bg-teal-100/80 rounded-3xl border border-teal-200/80 cursor-pointer transition-all active:scale-95 shadow-xs"
+            className="p-4 bg-white dark:bg-stone-900 hover:bg-stone-50 dark:hover:bg-stone-800/80 rounded-3xl border border-stone-200/80 dark:border-stone-800 cursor-pointer transition-all active:scale-95 shadow-xs"
           >
             <div className="flex items-center justify-between mb-2">
-              <div className="p-2 bg-[#126778] text-white rounded-xl shadow-xs">
+              <div className="p-2 bg-[#164E3D] text-white rounded-xl shadow-xs">
                 <FileText className="h-4 w-4" />
               </div>
-              <span className="text-[9px] font-black px-1.5 py-0.5 rounded-full bg-teal-200 text-teal-900 uppercase">
+              <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-stone-100 dark:bg-stone-800 text-stone-800 dark:text-stone-200 uppercase">
                 PDF
               </span>
             </div>
-            <h4 className="font-black text-xs text-slate-900">Doctor Report</h4>
-            <p className="text-[10px] text-slate-600 mt-0.5">Export 30-day vitals summary for physician</p>
+            <h4 className="font-bold text-xs text-stone-900 dark:text-white">Doctor Report</h4>
+            <p className="text-xs text-stone-500 dark:text-stone-400 mt-0.5">Export 30-day vitals summary for physician</p>
           </div>
 
           {/* Diaspora Family Health Circle */}
           <div
             onClick={() => setShowFamilyCircleDialog(true)}
-            className="p-4 bg-gradient-to-br from-slate-900 via-[#126778] to-teal-950 text-white rounded-3xl border border-teal-400/40 cursor-pointer transition-all active:scale-95 shadow-xs"
+            className="p-4 bg-stone-900 dark:bg-stone-950 hover:bg-stone-850 rounded-3xl border border-stone-800 text-white cursor-pointer transition-all active:scale-95 shadow-xs"
           >
             <div className="flex items-center justify-between mb-2">
-              <div className="p-2 bg-white/15 rounded-xl shadow-xs text-base">
+              <div className="p-2 bg-white/10 rounded-xl shadow-xs text-base">
                 👨‍👩‍👧‍👦
               </div>
-              <span className="text-[9px] font-black px-1.5 py-0.5 rounded-full bg-amber-400 text-slate-950 uppercase shadow-2xs">
+              <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-amber-400 text-stone-950 uppercase shadow-2xs">
                 DIASPORA
               </span>
             </div>
-            <h4 className="font-black text-xs text-white">Family Health Circle</h4>
-            <p className="text-[10px] text-teal-200 mt-0.5">Monitor loved ones in Lagos, London &amp; CA</p>
+            <h4 className="font-bold text-xs text-white">Family Health Circle</h4>
+            <p className="text-xs text-stone-300 mt-0.5">Monitor loved ones in Lagos, London &amp; CA</p>
           </div>
         </div>
 
         {/* 5. Account Settings & Customization */}
-        <div className="bg-white rounded-3xl p-5 shadow-sm border border-slate-100 divide-y divide-slate-100">
-          <h3 className="font-black text-sm text-slate-900 pb-3">Account & Preferences</h3>
+        <div className="bg-white dark:bg-stone-900 rounded-3xl p-5 shadow-sm border border-stone-200/80 dark:border-stone-800 divide-y divide-stone-100 dark:divide-stone-800">
+          <h3 className="font-bold text-sm text-stone-900 dark:text-white pb-3">Account &amp; Preferences</h3>
 
           {/* Personal Info */}
           <Dialog open={editingPersonal} onOpenChange={setEditingPersonal}>
             <DialogTrigger asChild>
-              <button className="w-full flex items-center justify-between py-3.5 hover:bg-slate-50/80 px-2 rounded-2xl transition-colors cursor-pointer">
+              <button className="w-full flex items-center justify-between py-3.5 hover:bg-stone-50/80 dark:hover:bg-stone-800/80 px-2 rounded-2xl transition-colors cursor-pointer">
                 <div className="flex items-center gap-3">
-                  <div className="p-2 bg-slate-100 text-slate-600 rounded-xl">
+                  <div className="p-2 bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-300 rounded-xl">
                     <User className="h-4 w-4" />
                   </div>
                   <div className="text-left">
-                    <p className="text-xs font-bold text-slate-800">Personal Information</p>
-                    <p className="text-[10px] text-slate-400">Name and verified email address</p>
+                    <p className="text-xs font-bold text-stone-800 dark:text-stone-200">Personal Information</p>
+                    <p className="text-xs text-stone-500 dark:text-stone-400 font-medium">Name and verified email address</p>
                   </div>
                 </div>
-                <ChevronRight className="h-4 w-4 text-slate-400" />
+                <ChevronRight className="h-4 w-4 text-stone-400 dark:text-stone-500" />
               </button>
             </DialogTrigger>
-            <DialogContent className="sm:max-w-md rounded-3xl">
+            <DialogContent className="sm:max-w-md rounded-3xl bg-white dark:bg-stone-900 text-stone-900 dark:text-white border border-stone-200 dark:border-stone-800">
               <DialogHeader>
-                <DialogTitle className="text-lg font-black text-[#126778]">Personal Information</DialogTitle>
+                <DialogTitle className="text-lg font-bold text-[#164E3D] dark:text-emerald-400">Personal Information</DialogTitle>
               </DialogHeader>
               <div className="space-y-3.5 py-2">
                 <div>
-                  <Label className="text-xs font-bold text-slate-700">Full Name</Label>
+                  <Label className="text-xs font-bold text-stone-700 dark:text-stone-300">Full Name</Label>
                   <Input
                     value={personalForm.name}
                     onChange={(e) => setPersonalForm({ ...personalForm, name: e.target.value })}
@@ -1014,15 +1018,15 @@ export default function Profile() {
                   />
                 </div>
                 <div>
-                  <Label className="text-xs font-bold text-slate-700">Email Address</Label>
-                  <Input value={personalForm.email} disabled className="mt-1 rounded-xl text-sm bg-slate-100 text-slate-500" />
+                  <Label className="text-xs font-bold text-stone-700 dark:text-stone-300">Email Address</Label>
+                  <Input value={personalForm.email} disabled className="mt-1 rounded-xl text-sm bg-stone-100 dark:bg-stone-800 text-stone-500" />
                 </div>
               </div>
               <div className="flex gap-2 pt-2">
                 <Button variant="outline" onClick={() => setEditingPersonal(false)} className="flex-1 rounded-xl">
                   Cancel
                 </Button>
-                <Button onClick={handleSavePersonal} className="flex-1 bg-[#126778] hover:bg-[#0e5260] text-white rounded-xl font-bold">
+                <Button onClick={handleSavePersonal} className="flex-1 bg-[#164E3D] hover:bg-[#113E30] text-white rounded-xl font-bold">
                   Save Changes
                 </Button>
               </div>
@@ -1032,26 +1036,26 @@ export default function Profile() {
           {/* Change Password */}
           <Dialog open={editingPassword} onOpenChange={setEditingPassword}>
             <DialogTrigger asChild>
-              <button className="w-full flex items-center justify-between py-3.5 hover:bg-slate-50/80 px-2 rounded-2xl transition-colors cursor-pointer">
+              <button className="w-full flex items-center justify-between py-3.5 hover:bg-stone-50/80 dark:hover:bg-stone-800/80 px-2 rounded-2xl transition-colors cursor-pointer">
                 <div className="flex items-center gap-3">
-                  <div className="p-2 bg-slate-100 text-slate-600 rounded-xl">
+                  <div className="p-2 bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-300 rounded-xl">
                     <Lock className="h-4 w-4" />
                   </div>
                   <div className="text-left">
-                    <p className="text-xs font-bold text-slate-800">Security & Password</p>
-                    <p className="text-[10px] text-slate-400">Update account password</p>
+                    <p className="text-xs font-bold text-stone-800 dark:text-stone-200">Security &amp; Password</p>
+                    <p className="text-xs text-stone-500 dark:text-stone-400 font-medium">Update account password</p>
                   </div>
                 </div>
-                <ChevronRight className="h-4 w-4 text-slate-400" />
+                <ChevronRight className="h-4 w-4 text-stone-400 dark:text-stone-500" />
               </button>
             </DialogTrigger>
-            <DialogContent className="sm:max-w-md rounded-3xl">
+            <DialogContent className="sm:max-w-md rounded-3xl bg-white dark:bg-stone-900 text-stone-900 dark:text-white border border-stone-200 dark:border-stone-800">
               <DialogHeader>
-                <DialogTitle className="text-lg font-black text-[#126778]">Change Password</DialogTitle>
+                <DialogTitle className="text-lg font-bold text-[#164E3D] dark:text-emerald-400">Change Password</DialogTitle>
               </DialogHeader>
               <div className="space-y-3.5 py-2">
                 <div>
-                  <Label className="text-xs font-bold text-slate-700">New Password (Min 8 characters)</Label>
+                  <Label className="text-xs font-bold text-stone-700 dark:text-stone-300">New Password (Min 8 characters)</Label>
                   <Input
                     type="password"
                     value={passwordForm.newPassword}
@@ -1060,7 +1064,7 @@ export default function Profile() {
                   />
                 </div>
                 <div>
-                  <Label className="text-xs font-bold text-slate-700">Confirm New Password</Label>
+                  <Label className="text-xs font-bold text-stone-700 dark:text-stone-300">Confirm New Password</Label>
                   <Input
                     type="password"
                     value={passwordForm.confirmPassword}
@@ -1073,7 +1077,7 @@ export default function Profile() {
                 <Button variant="outline" onClick={() => setEditingPassword(false)} className="flex-1 rounded-xl">
                   Cancel
                 </Button>
-                <Button onClick={handleSavePassword} className="flex-1 bg-[#126778] hover:bg-[#0e5260] text-white rounded-xl font-bold">
+                <Button onClick={handleSavePassword} className="flex-1 bg-[#164E3D] hover:bg-[#113E30] text-white rounded-xl font-bold">
                   Update Password
                 </Button>
               </div>
@@ -1083,31 +1087,31 @@ export default function Profile() {
           {/* Language Selector Dialog Trigger */}
           <Dialog open={showLanguageDialog} onOpenChange={setShowLanguageDialog}>
             <DialogTrigger asChild>
-              <button className="w-full flex items-center justify-between py-3.5 hover:bg-slate-50/80 px-2 rounded-2xl transition-colors cursor-pointer">
+              <button className="w-full flex items-center justify-between py-3.5 hover:bg-stone-50/80 dark:hover:bg-stone-800/80 px-2 rounded-2xl transition-colors cursor-pointer">
                 <div className="flex items-center gap-3">
-                  <div className="p-2 bg-teal-50 text-[#126778] rounded-xl">
+                  <div className="p-2 bg-stone-100 dark:bg-stone-800 text-[#164E3D] dark:text-emerald-400 rounded-xl">
                     <Globe className="h-4 w-4" />
                   </div>
                   <div className="text-left">
                     <div className="flex items-center gap-2">
-                      <p className="text-xs font-bold text-slate-800">Language</p>
-                      <span className="text-[10px] font-black px-2 py-0.5 rounded-full bg-teal-100 text-teal-800 border border-teal-200">
+                      <p className="text-xs font-bold text-stone-800 dark:text-stone-200">Language</p>
+                      <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/60 text-[#164E3D] dark:text-emerald-300 border border-emerald-200/80 dark:border-emerald-800/60">
                         {currentLang.flag} {currentLang.name}
                       </span>
                     </div>
-                    <p className="text-[10px] text-slate-400">English, Yorùbá, Igbo, Hausa, Pidgin, Français, Español</p>
+                    <p className="text-xs text-stone-500 dark:text-stone-400 font-medium">English, Yorùbá, Igbo, Hausa, Pidgin, Français, Español</p>
                   </div>
                 </div>
-                <ChevronRight className="h-4 w-4 text-slate-400" />
+                <ChevronRight className="h-4 w-4 text-stone-400 dark:text-stone-500" />
               </button>
             </DialogTrigger>
-            <DialogContent className="sm:max-w-md rounded-3xl z-[110]">
+            <DialogContent className="sm:max-w-md rounded-3xl z-[110] bg-white dark:bg-stone-900 text-stone-900 dark:text-white border border-stone-200 dark:border-stone-800">
               <DialogHeader>
-                <DialogTitle className="text-lg font-black text-[#126778] flex items-center gap-2">
+                <DialogTitle className="text-lg font-bold text-[#164E3D] dark:text-emerald-400 flex items-center gap-2">
                   <Globe className="h-5 w-5" />
                   <span>Select App Language</span>
                 </DialogTitle>
-                <DialogDescription className="text-xs text-slate-500">
+                <DialogDescription className="text-xs text-stone-500 dark:text-stone-400 font-medium">
                   Choose your preferred cultural and regional language.
                 </DialogDescription>
               </DialogHeader>
@@ -1124,25 +1128,25 @@ export default function Profile() {
                       }}
                       className={`w-full flex items-center justify-between p-3 rounded-2xl border transition-all cursor-pointer ${
                         isSelected
-                          ? "bg-teal-50 border-teal-300 text-teal-900 font-extrabold shadow-xs"
-                          : "bg-slate-50 hover:bg-slate-100 border-slate-200/80 text-slate-700 font-medium"
+                          ? "bg-emerald-50 dark:bg-emerald-950/50 border-[#164E3D] dark:border-emerald-500 text-[#164E3D] dark:text-emerald-300 font-bold shadow-xs"
+                          : "bg-stone-50 dark:bg-stone-800/80 hover:bg-stone-100 dark:hover:bg-stone-750 border-stone-200/80 dark:border-stone-700 text-stone-700 dark:text-stone-300 font-medium"
                       }`}
                     >
                       <div className="flex items-center gap-3">
                         <span className="text-xl">{lang.flag}</span>
                         <div className="text-left">
                           <p className="text-xs font-bold">{lang.name}</p>
-                          <p className="text-[10px] text-slate-400 uppercase">{lang.code}</p>
+                          <p className="text-xs text-stone-400 dark:text-stone-500 uppercase font-medium">{lang.code}</p>
                         </div>
                       </div>
-                      {isSelected && <Check className="h-4 w-4 text-teal-700 stroke-[3]" />}
+                      {isSelected && <Check className="h-4 w-4 text-[#164E3D] dark:text-emerald-400 stroke-[3]" />}
                     </button>
                   );
                 })}
               </div>
 
               {/* Google Universal Translate Element */}
-              <div className="pt-2 border-t border-slate-100">
+              <div className="pt-2 border-t border-stone-150 dark:border-stone-800">
                 <GoogleTranslateWidget />
               </div>
             </DialogContent>
@@ -1151,135 +1155,135 @@ export default function Profile() {
           {/* App Personalization Suite */}
           <button
             onClick={() => navigate("/personalization")}
-            className="w-full flex items-center justify-between py-3.5 hover:bg-slate-50/80 px-2 rounded-2xl transition-colors cursor-pointer"
+            className="w-full flex items-center justify-between py-3.5 hover:bg-stone-50/80 dark:hover:bg-stone-800/80 px-2 rounded-2xl transition-colors cursor-pointer"
           >
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-indigo-50 text-indigo-600 rounded-xl">
+              <div className="p-2 bg-stone-100 dark:bg-stone-800 text-stone-700 dark:text-stone-300 rounded-xl">
                 <Sliders className="h-4 w-4" />
               </div>
               <div className="text-left">
                 <div className="flex items-center gap-2">
-                  <p className="text-xs font-bold text-slate-800">Personalization & Theme</p>
-                  <span className="text-[9px] font-black px-1.5 py-0.5 rounded-md bg-indigo-50 text-indigo-700 border border-indigo-200">
+                  <p className="text-xs font-bold text-stone-800 dark:text-stone-200">Personalization &amp; Theme</p>
+                  <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-stone-100 dark:bg-stone-800 text-stone-700 dark:text-stone-300 border border-stone-200 dark:border-stone-700">
                     DASHBOARD
                   </span>
                 </div>
-                <p className="text-[10px] text-slate-400">Dark/Light theme, metric/imperial units, widget layout</p>
+                <p className="text-xs text-stone-500 dark:text-stone-400 font-medium">Dark/Light theme, metric/imperial units, widget layout</p>
               </div>
             </div>
-            <ChevronRight className="h-4 w-4 text-slate-400" />
+            <ChevronRight className="h-4 w-4 text-stone-400 dark:text-stone-500" />
           </button>
 
           {/* Dietary Preferences & Cultural Swaps */}
           <button
             onClick={() => navigate("/personalization")}
-            className="w-full flex items-center justify-between py-3.5 hover:bg-slate-50/80 px-2 rounded-2xl transition-colors cursor-pointer"
+            className="w-full flex items-center justify-between py-3.5 hover:bg-stone-50/80 dark:hover:bg-stone-800/80 px-2 rounded-2xl transition-colors cursor-pointer"
           >
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-emerald-50 text-emerald-600 rounded-xl">
+              <div className="p-2 bg-stone-100 dark:bg-stone-800 text-[#164E3D] dark:text-emerald-400 rounded-xl">
                 <Palette className="h-4 w-4" />
               </div>
               <div className="text-left">
-                <p className="text-xs font-bold text-slate-800">Dietary Preferences & Swaps</p>
-                <p className="text-[10px] text-slate-400">Allergies, swallow carbs & spice tolerance</p>
+                <p className="text-xs font-bold text-stone-800 dark:text-stone-200">Dietary Preferences &amp; Swaps</p>
+                <p className="text-xs text-stone-500 dark:text-stone-400 font-medium">Allergies, swallow carbs &amp; spice tolerance</p>
               </div>
             </div>
-            <ChevronRight className="h-4 w-4 text-slate-400" />
+            <ChevronRight className="h-4 w-4 text-stone-400 dark:text-stone-500" />
           </button>
 
           {/* Achievements */}
           <button
             onClick={() => navigate("/achievements")}
-            className="w-full flex items-center justify-between py-3.5 hover:bg-slate-50/80 px-2 rounded-2xl transition-colors cursor-pointer"
+            className="w-full flex items-center justify-between py-3.5 hover:bg-stone-50/80 dark:hover:bg-stone-800/80 px-2 rounded-2xl transition-colors cursor-pointer"
           >
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-amber-50 text-amber-600 rounded-xl">
+              <div className="p-2 bg-amber-50 dark:bg-amber-950/40 text-amber-600 dark:text-amber-400 rounded-xl">
                 <Trophy className="h-4 w-4" />
               </div>
               <div className="text-left">
-                <p className="text-xs font-bold text-slate-800">Health Badges & Streaks</p>
-                <p className="text-[10px] text-slate-400">Metabolic milestones and consistency score</p>
+                <p className="text-xs font-bold text-stone-800 dark:text-stone-200">Health Badges &amp; Streaks</p>
+                <p className="text-xs text-stone-500 dark:text-stone-400 font-medium">Metabolic milestones and consistency score</p>
               </div>
             </div>
-            <ChevronRight className="h-4 w-4 text-slate-400" />
+            <ChevronRight className="h-4 w-4 text-stone-400 dark:text-stone-500" />
           </button>
         </div>
 
         {/* 6. Clinical Notifications Switcher */}
-        <div className="bg-white rounded-3xl p-5 shadow-sm border border-slate-100 space-y-3">
-          <h3 className="font-black text-sm text-slate-900">Clinical Health Notifications</h3>
+        <div className="bg-white dark:bg-stone-900 rounded-3xl p-5 shadow-sm border border-stone-200/80 dark:border-stone-800 space-y-3">
+          <h3 className="font-bold text-sm text-stone-900 dark:text-white">Clinical Health Notifications</h3>
 
           <div className="flex items-center justify-between py-1">
             <div className="pr-4">
-              <p className="text-xs font-bold text-slate-800">Post-Meal Glucose Walk Reminders</p>
-              <p className="text-[10px] text-slate-400">Prompts 20-mins after heavy carb meals</p>
+              <p className="text-xs font-semibold text-stone-800 dark:text-stone-200">Post-Meal Glucose Walk Reminders</p>
+              <p className="text-xs text-stone-500 dark:text-stone-400 font-medium">Prompts 20-mins after heavy carb meals</p>
             </div>
             <Switch checked={postMealWalks} onCheckedChange={setPostMealWalks} />
           </div>
 
           <div className="flex items-center justify-between py-1">
             <div className="pr-4">
-              <p className="text-xs font-bold text-slate-800">Spike Shield Alerts</p>
-              <p className="text-[10px] text-slate-400">Immediate warnings on high glycemic loads</p>
+              <p className="text-xs font-semibold text-stone-800 dark:text-stone-200">Spike Shield Alerts</p>
+              <p className="text-xs text-stone-500 dark:text-stone-400 font-medium">Immediate warnings on high glycemic loads</p>
             </div>
             <Switch checked={spikeShieldAlerts} onCheckedChange={setSpikeShieldAlerts} />
           </div>
 
           <div className="flex items-center justify-between py-1">
             <div className="pr-4">
-              <p className="text-xs font-bold text-slate-800">Weekly Clinical Metabolic Digest</p>
-              <p className="text-[10px] text-slate-400">Comprehensive Sunday vitals & macro recap</p>
+              <p className="text-xs font-semibold text-stone-800 dark:text-stone-200">Weekly Clinical Metabolic Digest</p>
+              <p className="text-xs text-stone-500 dark:text-stone-400 font-medium">Comprehensive Sunday vitals &amp; macro recap</p>
             </div>
             <Switch checked={weeklyDigest} onCheckedChange={setWeeklyDigest} />
           </div>
         </div>
 
         {/* 7. Legal & Privacy Governance */}
-        <div className="bg-white rounded-3xl p-5 shadow-sm border border-slate-100 divide-y divide-slate-100">
-          <h3 className="font-black text-sm text-slate-900 pb-3">Legal & Clinical Governance</h3>
+        <div className="bg-white dark:bg-stone-900 rounded-3xl p-5 shadow-sm border border-stone-200/80 dark:border-stone-800 divide-y divide-stone-100 dark:divide-stone-800">
+          <h3 className="font-bold text-sm text-stone-900 dark:text-white pb-3">Legal &amp; Clinical Governance</h3>
 
           {/* Privacy Policy */}
           <button
             onClick={() => navigate("/privacy-policy")}
-            className="w-full flex items-center justify-between py-3.5 hover:bg-slate-50/80 px-2 rounded-2xl transition-colors cursor-pointer"
+            className="w-full flex items-center justify-between py-3.5 hover:bg-stone-50/80 dark:hover:bg-stone-800/80 px-2 rounded-2xl transition-colors cursor-pointer"
           >
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-teal-50 text-teal-700 rounded-xl">
+              <div className="p-2 bg-stone-100 dark:bg-stone-800 text-[#164E3D] dark:text-emerald-400 rounded-xl">
                 <ShieldCheck className="h-4 w-4" />
               </div>
               <div className="text-left">
-                <p className="text-xs font-bold text-slate-800">Privacy Policy</p>
-                <p className="text-[10px] text-slate-400">HIPAA & GDPR health data protection terms</p>
+                <p className="text-xs font-bold text-stone-800 dark:text-stone-200">Privacy Policy</p>
+                <p className="text-xs text-stone-500 dark:text-stone-400 font-medium">HIPAA &amp; GDPR health data protection terms</p>
               </div>
             </div>
-            <ChevronRight className="h-4 w-4 text-slate-400" />
+            <ChevronRight className="h-4 w-4 text-stone-400 dark:text-stone-500" />
           </button>
 
           {/* Terms & Conditions */}
           <button
             onClick={() => navigate("/terms-and-conditions")}
-            className="w-full flex items-center justify-between py-3.5 hover:bg-slate-50/80 px-2 rounded-2xl transition-colors cursor-pointer"
+            className="w-full flex items-center justify-between py-3.5 hover:bg-stone-50/80 dark:hover:bg-stone-800/80 px-2 rounded-2xl transition-colors cursor-pointer"
           >
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-slate-100 text-slate-700 rounded-xl">
+              <div className="p-2 bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-300 rounded-xl">
                 <FileText className="h-4 w-4" />
               </div>
               <div className="text-left">
-                <p className="text-xs font-bold text-slate-800">Terms & Conditions</p>
-                <p className="text-[10px] text-slate-400">Medical disclaimer and terms of service</p>
+                <p className="text-xs font-bold text-stone-800 dark:text-stone-200">Terms &amp; Conditions</p>
+                <p className="text-xs text-stone-500 dark:text-stone-400 font-medium">Medical disclaimer and terms of service</p>
               </div>
             </div>
-            <ChevronRight className="h-4 w-4 text-slate-400" />
+            <ChevronRight className="h-4 w-4 text-stone-400 dark:text-stone-500" />
           </button>
         </div>
 
         {/* 8. Account & Health Data Deletion (Apple Guideline 5.1.1(v) Compliance) */}
-        <div className="bg-red-50/70 rounded-3xl p-5 border border-red-200 space-y-3">
-          <div className="flex items-center gap-2.5 text-red-700">
+        <div className="bg-rose-50/80 dark:bg-rose-950/30 rounded-3xl p-5 border border-rose-200 dark:border-rose-900/50 space-y-3">
+          <div className="flex items-center gap-2.5 text-rose-700 dark:text-rose-400">
             <Trash2 className="h-5 w-5 shrink-0" />
             <div>
-              <h3 className="font-black text-xs uppercase tracking-wider">Account &amp; Health Data Deletion</h3>
-              <p className="text-[10.5px] text-red-600/80">Permanently erase your account, meal logs, and medical records</p>
+              <h3 className="font-bold text-xs uppercase tracking-wider">Account &amp; Health Data Deletion</h3>
+              <p className="text-xs text-rose-600/90 dark:text-rose-400/90 font-medium">Permanently erase your account, meal logs, and medical records</p>
             </div>
           </div>
 
@@ -1287,19 +1291,19 @@ export default function Profile() {
             <DialogTrigger asChild>
               <button
                 type="button"
-                className="w-full py-2.5 bg-red-600 hover:bg-red-700 text-white font-bold text-xs rounded-xl shadow-xs cursor-pointer transition-all active:scale-98 flex items-center justify-center gap-2"
+                className="w-full py-2.5 bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs rounded-xl shadow-xs cursor-pointer transition-all active:scale-98 flex items-center justify-center gap-2"
               >
                 <Trash2 size={14} />
                 <span>Delete Account &amp; Wipe Data</span>
               </button>
             </DialogTrigger>
-            <DialogContent className="max-w-md p-6 rounded-3xl bg-slate-950 text-white border border-red-500/40 z-[120]">
+            <DialogContent className="max-w-md p-6 rounded-3xl bg-stone-950 text-white border border-rose-500/40 z-[120]">
               <DialogHeader>
-                <DialogTitle className="text-base font-black text-red-400 flex items-center gap-2">
+                <DialogTitle className="text-base font-bold text-rose-400 flex items-center gap-2">
                   <AlertTriangle size={18} />
                   <span>Permanently Delete Account?</span>
                 </DialogTitle>
-                <DialogDescription className="text-xs text-slate-300">
+                <DialogDescription className="text-xs text-stone-300">
                   This action is irreversible. All your meal history, biomarker records, doctor health reports, and uploaded medical documents will be permanently erased from MealOptimiza.
                 </DialogDescription>
               </DialogHeader>
@@ -1308,14 +1312,14 @@ export default function Profile() {
                 <Button
                   onClick={() => setShowDeleteConfirm(false)}
                   variant="outline"
-                  className="flex-1 rounded-xl text-xs font-bold"
+                  className="flex-1 rounded-xl text-xs font-bold border-stone-700 text-stone-300 hover:bg-stone-800"
                 >
                   Cancel
                 </Button>
                 <Button
                   onClick={handleDeleteAccount}
                   disabled={isDeletingAccount}
-                  className="flex-1 bg-red-600 hover:bg-red-700 text-white rounded-xl text-xs font-bold"
+                  className="flex-1 bg-rose-600 hover:bg-rose-700 text-white rounded-xl text-xs font-bold"
                 >
                   {isDeletingAccount ? "Erasing Data..." : "Confirm & Delete"}
                 </Button>
@@ -1325,22 +1329,22 @@ export default function Profile() {
         </div>
 
         
-      {/* 🛍️ 10X PARTNER HEALTH STORE & BIO-HACKING VAULT MODAL */}
+      {/* 🛍️ PARTNER HEALTH STORE & BIO-HACKING VAULT MODAL */}
       <Dialog open={showPartnerStoreModal} onOpenChange={setShowPartnerStoreModal}>
-        <DialogContent className="sm:max-w-2xl rounded-3xl p-5 sm:p-6 bg-slate-950 text-white border border-teal-500/30 max-h-[90vh] flex flex-col">
+        <DialogContent className="sm:max-w-2xl rounded-3xl p-5 sm:p-6 bg-stone-900 dark:bg-stone-950 text-white border border-stone-800 max-h-[90vh] flex flex-col">
           <DialogHeader className="text-left space-y-1 shrink-0">
             <div className="flex items-center gap-2.5">
-              <div className="p-2.5 bg-gradient-to-tr from-amber-400 to-amber-600 text-slate-950 rounded-2xl text-xl shadow-lg">
+              <div className="p-2.5 bg-amber-500 text-stone-950 rounded-2xl text-xl shadow-xs">
                 🛍️
               </div>
               <div>
-                <DialogTitle className="text-lg sm:text-xl font-black text-white flex items-center gap-2">
+                <DialogTitle className="text-lg sm:text-xl font-bold text-white flex items-center gap-2">
                   <span>Partner Health Store</span>
-                  <span className="text-[9.5px] font-black px-2 py-0.5 rounded-full bg-emerald-400 text-slate-950 uppercase">
+                  <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-emerald-500 text-white uppercase tracking-wider">
                     Vetted Clinical Gear
                   </span>
                 </DialogTitle>
-                <DialogDescription className="text-xs text-teal-200">
+                <DialogDescription className="text-xs text-stone-300 font-medium">
                   Doctor &amp; dietitian-approved tools, CGMs, at-home lab kits &amp; kitchen gear
                 </DialogDescription>
               </div>
@@ -1365,8 +1369,8 @@ export default function Profile() {
                 }}
                 className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all shrink-0 cursor-pointer ${
                   partnerFilter === cat.id
-                    ? "bg-gradient-to-r from-teal-500 to-emerald-500 text-slate-950 font-black shadow-sm"
-                    : "bg-white/10 hover:bg-white/15 text-slate-300"
+                    ? "bg-[#164E3D] text-white shadow-xs"
+                    : "bg-stone-800 hover:bg-stone-750 text-stone-300"
                 }`}
               >
                 {cat.label}
@@ -1381,41 +1385,41 @@ export default function Profile() {
               .map((product) => (
                 <div
                   key={product.id}
-                  className="p-4 rounded-2xl bg-white/10 border border-white/10 hover:border-teal-400/40 transition-all space-y-2.5"
+                  className="p-4 rounded-2xl bg-stone-850 border border-stone-800 hover:border-emerald-500/40 transition-all space-y-2.5"
                 >
                   <div className="flex items-start justify-between gap-3">
                     <div className="flex items-center gap-3">
-                      <span className="text-2xl p-2 bg-white/10 rounded-2xl shadow-inner shrink-0">
+                      <span className="text-2xl p-2 bg-stone-800 rounded-2xl shadow-inner shrink-0">
                         {product.emoji}
                       </span>
                       <div>
-                        <span className="text-[9.5px] font-black uppercase text-teal-300 tracking-wider">
+                        <span className="text-xs font-bold uppercase text-emerald-400 tracking-wider">
                           {product.brand}
                         </span>
-                        <h4 className="text-sm font-black text-white leading-tight">
+                        <h4 className="text-sm font-bold text-white leading-tight">
                           {product.name}
                         </h4>
-                        <p className="text-[11px] text-slate-300 mt-0.5">
+                        <p className="text-xs text-stone-300 mt-0.5 font-medium">
                           {product.tagline}
                         </p>
                       </div>
                     </div>
                     {product.discountOffer && (
-                      <span className="text-[9.5px] font-black px-2 py-0.5 rounded-full bg-amber-400/20 text-amber-300 border border-amber-400/30 shrink-0">
+                      <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-amber-400/20 text-amber-300 border border-amber-400/30 shrink-0">
                         {product.discountOffer}
                       </span>
                     )}
                   </div>
 
                   {/* Clinical Reason */}
-                  <div className="p-2.5 bg-slate-900/80 rounded-xl text-[11px] text-teal-100 flex items-start gap-2">
+                  <div className="p-2.5 bg-stone-900 rounded-xl text-xs text-stone-200 flex items-start gap-2">
                     <span className="text-amber-400 font-bold shrink-0">💡 Clinical Note:</span>
                     <span>{product.clinicalReason}</span>
                   </div>
 
                   {/* CTA Button */}
                   <div className="flex items-center justify-between pt-1">
-                    <span className="text-xs font-bold text-slate-400">
+                    <span className="text-xs font-semibold text-stone-400">
                       {product.priceEstimate ? `Est. ${product.priceEstimate}` : "Exclusive Member Offer"}
                     </span>
                     <button
@@ -1424,7 +1428,7 @@ export default function Profile() {
                         triggerHaptic("medium");
                         openAffiliateProduct(product.id);
                       }}
-                      className="px-4 py-2 bg-gradient-to-r from-teal-500 via-teal-400 to-emerald-400 hover:opacity-95 text-slate-950 font-black text-xs rounded-xl shadow-md transition-all active:scale-95 cursor-pointer flex items-center gap-1.5"
+                      className="px-4 py-2 bg-[#164E3D] hover:bg-[#113E30] text-white font-bold text-xs rounded-xl shadow-xs transition-all active:scale-95 cursor-pointer flex items-center gap-1.5"
                     >
                       <span>Get Partner Offer</span>
                       <span>➔</span>
@@ -1436,58 +1440,57 @@ export default function Profile() {
         </DialogContent>
       </Dialog>
 
-        {/* 8. WhatsApp Connect Dialog Modal */}
-        <WhatsAppConnectDialog isOpen={showWhatsAppDialog} onClose={() => setShowWhatsAppDialog(false)} />
+      {/* 8. WhatsApp Connect Dialog Modal */}
+      <WhatsAppConnectDialog isOpen={showWhatsAppDialog} onClose={() => setShowWhatsAppDialog(false)} />
 
-        {/* 9. Diaspora Family Health Circle Modal */}
-        <FamilyHealthCircleModal isOpen={showFamilyCircleDialog} onClose={() => setShowFamilyCircleDialog(false)} />
+      {/* 9. Diaspora Family Health Circle Modal */}
+      <FamilyHealthCircleModal isOpen={showFamilyCircleDialog} onClose={() => setShowFamilyCircleDialog(false)} />
 
-        {/* Encrypted Clinical Badge */}
-        <div className="text-center pt-2 text-[11px] text-slate-400 space-y-1">
-          <div className="flex items-center justify-center gap-1.5 text-teal-800/80 font-bold">
-            <ShieldCheck className="h-3.5 w-3.5 text-teal-600" />
-            <span>MealOptimiza v3.0 • Clinical African Metabolic AI</span>
-          </div>
+      {/* Encrypted Clinical Badge */}
+      <div className="text-center pt-2 text-xs text-stone-500 dark:text-stone-400 space-y-1">
+        <div className="flex items-center justify-center gap-1.5 text-stone-700 dark:text-stone-300 font-semibold">
+          <ShieldCheck className="h-4 w-4 text-[#164E3D] dark:text-emerald-400" />
+          <span>MealOptimiza v3.0 • Clinical African Metabolic AI</span>
         </div>
+      </div>
 
-        {/* Medical Governance & Disclaimer Footer */}
-              {/* 👑 PRO FEATURE UPGRADE MODAL */}
+      {/* 👑 PRO FEATURE UPGRADE MODAL */}
       <Dialog open={showProUpgradeModal} onOpenChange={setShowProUpgradeModal}>
-        <DialogContent className="sm:max-w-md rounded-3xl p-6 bg-gradient-to-b from-slate-950 via-slate-900 to-[#0a232a] text-white border border-teal-500/30">
+        <DialogContent className="sm:max-w-md rounded-3xl p-6 bg-stone-900 dark:bg-stone-950 text-white border border-stone-800">
           <div className="text-center space-y-3 pt-2">
-            <div className="w-16 h-16 rounded-3xl bg-gradient-to-tr from-amber-400 to-amber-600 p-0.5 mx-auto shadow-xl flex items-center justify-center">
-              <div className="w-full h-full bg-slate-950 rounded-[22px] flex items-center justify-center text-3xl">
+            <div className="w-16 h-16 rounded-3xl bg-amber-500 p-0.5 mx-auto shadow-sm flex items-center justify-center">
+              <div className="w-full h-full bg-stone-950 rounded-[22px] flex items-center justify-center text-3xl">
                 👑
               </div>
             </div>
 
             <div className="space-y-1">
-              <span className="text-[10px] font-black uppercase tracking-widest bg-amber-400 text-slate-950 px-2.5 py-0.5 rounded-full shadow-2xs">
+              <span className="text-xs font-bold uppercase tracking-wider bg-amber-400 text-stone-950 px-2.5 py-0.5 rounded-full shadow-2xs">
                 PRO VIP EXCLUSIVE
               </span>
-              <h3 className="text-lg font-black text-white mt-1">
+              <h3 className="text-lg font-bold text-white mt-1">
                 Unlock {lockedFeatureName || "Pro Feature"}
               </h3>
-              <p className="text-xs text-slate-300 max-w-xs mx-auto leading-relaxed">
+              <p className="text-xs text-stone-300 max-w-xs mx-auto leading-relaxed font-medium">
                 Upgrade to MealOptimiza PRO to activate continuous glucose sync, diaspora micronutrient shields, and unlimited AI voice coaching.
               </p>
             </div>
 
-            <div className="p-3 bg-white/10 rounded-2xl border border-white/15 text-left text-xs space-y-2">
-              <div className="flex items-center gap-2 text-teal-200">
-                <CheckCircle2 size={14} className="text-emerald-400 shrink-0" />
+            <div className="p-3 bg-stone-850 rounded-2xl border border-stone-800 text-left text-xs space-y-2">
+              <div className="flex items-center gap-2 text-stone-200">
+                <CheckCircle2 size={15} className="text-emerald-400 shrink-0" />
                 <span>Live Continuous Glucose (Dexcom / Libre) Streaming</span>
               </div>
-              <div className="flex items-center gap-2 text-teal-200">
-                <CheckCircle2 size={14} className="text-emerald-400 shrink-0" />
+              <div className="flex items-center gap-2 text-stone-200">
+                <CheckCircle2 size={15} className="text-emerald-400 shrink-0" />
                 <span>Diaspora Vitamin D3 &amp; Metformin B12 Depletion Alerts</span>
               </div>
-              <div className="flex items-center gap-2 text-teal-200">
-                <CheckCircle2 size={14} className="text-emerald-400 shrink-0" />
+              <div className="flex items-center gap-2 text-stone-200">
+                <CheckCircle2 size={15} className="text-emerald-400 shrink-0" />
                 <span>14-Day Certified Doctor PDF Clinical Dossier</span>
               </div>
-              <div className="flex items-center gap-2 text-teal-200">
-                <CheckCircle2 size={14} className="text-emerald-400 shrink-0" />
+              <div className="flex items-center gap-2 text-stone-200">
+                <CheckCircle2 size={15} className="text-emerald-400 shrink-0" />
                 <span>Family Health Circle Multi-City Sync</span>
               </div>
             </div>
@@ -1498,7 +1501,7 @@ export default function Profile() {
                 setShowProUpgradeModal(false);
                 navigate("/upgrade");
               }}
-              className="w-full py-3.5 bg-gradient-to-r from-amber-400 via-amber-300 to-yellow-400 text-slate-950 font-black text-xs rounded-2xl shadow-xl hover:scale-102 active:scale-98 transition-all cursor-pointer flex items-center justify-center gap-2"
+              className="w-full py-3.5 bg-amber-400 hover:bg-amber-300 text-stone-950 font-bold text-xs rounded-2xl shadow-sm hover:scale-102 active:scale-98 transition-all cursor-pointer flex items-center justify-center gap-2"
             >
               <span>Unlock MealOptimiza PRO ($9.99/mo)</span>
               <ChevronRight size={15} />
@@ -1507,7 +1510,7 @@ export default function Profile() {
             <button
               type="button"
               onClick={() => setShowProUpgradeModal(false)}
-              className="text-xs text-slate-400 hover:text-white font-semibold cursor-pointer pt-1 block mx-auto"
+              className="text-xs text-stone-400 hover:text-white font-semibold cursor-pointer pt-1 block mx-auto"
             >
               Maybe later
             </button>
