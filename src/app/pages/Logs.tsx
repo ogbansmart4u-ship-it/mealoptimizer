@@ -208,8 +208,8 @@ export default function Logs() {
 
   const calendarDays = useMemo(() => {
     const result = [];
-    const base = new Date(selectedDate);
-    for (let i = -3; i <= 3; i++) {
+    const base = new Date();
+    for (let i = -7; i <= 6; i++) {
       const d = new Date(base);
       d.setDate(base.getDate() + i);
       const iso = getLocalDateString(d);
@@ -221,7 +221,7 @@ export default function Logs() {
       });
     }
     return result;
-  }, [selectedDate, selectedIso, logs]);
+  }, [selectedIso, logs]);
 
   const doctorReportText = `🏥 CLINICAL DIETARY METABOLIC REPORT
 Date: ${selectedDate.toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric" })}
@@ -305,17 +305,19 @@ Generated via MealOptimiza Certified Clinical Platform.`;
           </div>
         </div>
 
-        {/* 1. INTERACTIVE 7-DAY CALENDAR STRIP */}
-        <div className="max-w-2xl mx-auto mt-3.5 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md rounded-3xl p-3 shadow-xs border border-teal-100 dark:border-slate-800">
-          <div className="flex items-center justify-between mb-2 px-1 text-xs font-black text-gray-800 dark:text-slate-200">
-            <div className="flex items-center gap-1">
+        {/* 1. INTERACTIVE 14-DAY CIRCADIAN CALENDAR STRIP */}
+        <div className="max-w-2xl mx-auto mt-3.5 bg-white/80 dark:bg-stone-900/80 backdrop-blur-xl rounded-3xl p-3 shadow-xs border border-stone-200/80 dark:border-stone-800">
+          <div className="flex items-center justify-between mb-2.5 px-2 text-xs font-bold text-stone-800 dark:text-stone-200">
+            <div className="flex items-center gap-1.5">
               <button
+                type="button"
                 onClick={() => changeDate(-1)}
-                className="p-1 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg cursor-pointer text-slate-600 dark:text-slate-400"
+                className="p-1.5 hover:bg-stone-100 dark:hover:bg-stone-800 rounded-xl cursor-pointer text-stone-600 dark:text-stone-400 transition-colors"
+                title="Previous Day"
               >
                 <ChevronLeft size={16} />
               </button>
-              <span>
+              <span className="font-extrabold text-stone-900 dark:text-white">
                 {selectedDate.toLocaleDateString("en-US", {
                   weekday: "short",
                   month: "short",
@@ -323,8 +325,10 @@ Generated via MealOptimiza Certified Clinical Platform.`;
                 })}
               </span>
               <button
+                type="button"
                 onClick={() => changeDate(1)}
-                className="p-1 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg cursor-pointer text-slate-600 dark:text-slate-400"
+                className="p-1.5 hover:bg-stone-100 dark:hover:bg-stone-800 rounded-xl cursor-pointer text-stone-600 dark:text-stone-400 transition-colors"
+                title="Next Day"
               >
                 <ChevronRight size={16} />
               </button>
@@ -332,36 +336,41 @@ Generated via MealOptimiza Certified Clinical Platform.`;
 
             {!isToday && (
               <button
-                onClick={() => setSelectedDate(new Date())}
-                className="text-[10px] font-extrabold text-[#1f7a8c] dark:text-teal-400 bg-teal-50 dark:bg-teal-950/60 px-2 py-0.5 rounded-full hover:bg-teal-100 transition-colors cursor-pointer"
+                type="button"
+                onClick={() => {
+                  triggerHaptic("light");
+                  setSelectedDate(new Date());
+                }}
+                className="text-xs font-bold text-emerald-800 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/70 border border-emerald-200 dark:border-emerald-800/80 px-2.5 py-0.5 rounded-full hover:bg-emerald-100 transition-colors cursor-pointer"
               >
-                Jump to Today
+                Today
               </button>
             )}
           </div>
 
-          <div className="grid grid-cols-7 gap-1 text-center">
+          <div className="flex gap-1.5 overflow-x-auto snap-x snap-mandatory pb-1 pt-0.5 px-0.5 custom-scrollbar-x select-none scroll-smooth">
             {calendarDays.map((item, idx) => (
               <button
                 key={idx}
+                type="button"
                 onClick={() => {
                   setSelectedDate(item.date);
                   triggerHaptic("light");
                 }}
-                className={`py-1.5 rounded-2xl transition-all cursor-pointer flex flex-col items-center justify-center relative ${
+                className={`snap-start min-w-[46px] sm:min-w-[54px] py-2 rounded-2xl transition-all cursor-pointer flex flex-col items-center justify-center relative shrink-0 ${
                   item.isSelected
-                    ? "bg-[#1f7a8c] text-white shadow-2xs font-bold"
-                    : "hover:bg-slate-100 dark:hover:bg-slate-800 text-gray-700 dark:text-slate-300"
+                    ? "bg-[#164E3D] text-white shadow-md font-bold scale-102"
+                    : "hover:bg-stone-100 dark:hover:bg-stone-800 text-stone-700 dark:text-stone-300 border border-transparent hover:border-stone-200 dark:hover:border-stone-700"
                 }`}
               >
-                <span className="text-[10px] uppercase font-bold opacity-80">
-                  {item.date.toLocaleDateString("en-US", { weekday: "narrow" })}
+                <span className="text-xs uppercase font-bold opacity-80">
+                  {item.date.toLocaleDateString("en-US", { weekday: "short" }).slice(0, 3)}
                 </span>
-                <span className="text-xs font-black">{item.date.getDate()}</span>
+                <span className="text-xs font-black mt-0.5">{item.date.getDate()}</span>
                 {item.hasLogs && (
                   <span
-                    className={`h-1 w-1 rounded-full mt-0.5 ${
-                      item.isSelected ? "bg-amber-300" : "bg-[#1f7a8c] dark:bg-teal-400"
+                    className={`h-1.5 w-1.5 rounded-full mt-1 ${
+                      item.isSelected ? "bg-amber-300" : "bg-emerald-600 dark:bg-emerald-400"
                     }`}
                   />
                 )}
@@ -373,20 +382,20 @@ Generated via MealOptimiza Certified Clinical Platform.`;
 
       <div className="px-4 sm:px-6 max-w-2xl mx-auto mt-4 space-y-4">
         {/* 2. DAILY METABOLIC SCORECARD & GLYCEMIC SHIELD */}
-        <div className="bg-white dark:bg-slate-900 rounded-3xl p-5 shadow-xs border border-teal-100 dark:border-slate-800">
+        <div className="bg-white dark:bg-stone-900 rounded-3xl p-5 shadow-xs border border-stone-200/80 dark:border-stone-800">
           <div className="flex items-center justify-between mb-3">
             <div>
-              <span className="text-[10px] uppercase font-black tracking-wider text-[#1f7a8c] dark:text-teal-400 block">
+              <span className="text-xs uppercase font-black tracking-wider text-[#164E3D] dark:text-emerald-400 block">
                 Daily Macro Matrix
               </span>
-              <h3 className="text-sm font-black text-gray-900 dark:text-white">
-                {totalCalories} <span className="text-xs font-medium text-slate-500">/ {calorieTarget} kcal Energy ({calPercent}%)</span>
+              <h3 className="text-sm sm:text-base font-black text-stone-900 dark:text-white">
+                {totalCalories} <span className="text-xs font-medium text-stone-500">/ {calorieTarget} kcal Energy ({calPercent}%)</span>
               </h3>
             </div>
 
             <div className="flex items-center gap-1.5">
               <span
-                className={`text-[10px] font-black px-2.5 py-0.5 rounded-full border ${
+                className={`text-xs font-black px-2.5 py-0.5 rounded-full border ${
                   glycemicSafetyPct >= 80
                     ? "bg-emerald-50 text-emerald-800 border-emerald-200 dark:bg-emerald-950/60 dark:text-emerald-300 dark:border-emerald-800"
                     : "bg-amber-50 text-amber-800 border-amber-200 dark:bg-amber-950/60 dark:text-amber-300 dark:border-amber-800"
@@ -403,7 +412,7 @@ Generated via MealOptimiza Certified Clinical Platform.`;
               </button>
               <button
                 onClick={() => setShowReportDialog(true)}
-                className="p-1.5 bg-slate-100 dark:bg-slate-800 hover:bg-teal-50 text-gray-600 dark:text-slate-300 hover:text-[#1f7a8c] rounded-xl cursor-pointer transition-colors"
+                className="p-1.5 bg-stone-100 dark:bg-stone-800 hover:bg-emerald-50 text-stone-600 dark:text-stone-300 hover:text-[#164E3D] rounded-xl cursor-pointer transition-colors"
                 title="Export Doctor Report"
               >
                 <Share2 size={14} />
@@ -413,34 +422,34 @@ Generated via MealOptimiza Certified Clinical Platform.`;
 
           <div className="grid grid-cols-3 gap-2 text-center">
             <div className="bg-blue-50/70 dark:bg-blue-950/30 p-2.5 rounded-2xl border border-blue-100 dark:border-blue-900/40">
-              <span className="text-[10px] text-blue-700 dark:text-blue-300 font-bold block">{t('logs.protein')}</span>
+              <span className="text-xs text-blue-700 dark:text-blue-300 font-bold block">{t('logs.protein')}</span>
               <span className="text-base font-black text-blue-900 dark:text-blue-100">{totalProtein}g</span>
-              <span className="text-[9px] text-blue-600 dark:text-blue-400 block">Muscle &amp; Satiety</span>
+              <span className="text-xs text-blue-600 dark:text-blue-400 block font-medium">Muscle &amp; Satiety</span>
             </div>
             <div className="bg-emerald-50/70 dark:bg-emerald-950/30 p-2.5 rounded-2xl border border-emerald-100 dark:border-emerald-900/40">
-              <span className="text-[10px] text-emerald-700 dark:text-emerald-300 font-bold block">{t('logs.carbs')}</span>
+              <span className="text-xs text-emerald-700 dark:text-emerald-300 font-bold block">{t('logs.carbs')}</span>
               <span className="text-base font-black text-emerald-900 dark:text-emerald-100">{totalCarbs}g</span>
-              <span className="text-[9px] text-emerald-600 dark:text-emerald-400 block">Energy Fuel</span>
+              <span className="text-xs text-emerald-600 dark:text-emerald-400 block font-medium">Energy Fuel</span>
             </div>
             <div className="bg-purple-50/70 dark:bg-purple-950/30 p-2.5 rounded-2xl border border-purple-100 dark:border-purple-900/40">
-              <span className="text-[10px] text-purple-700 dark:text-purple-300 font-bold block">{t('logs.fats')}</span>
+              <span className="text-xs text-purple-700 dark:text-purple-300 font-bold block">{t('logs.fats')}</span>
               <span className="text-base font-black text-purple-900 dark:text-purple-100">{totalFats}g</span>
-              <span className="text-[9px] text-purple-600 dark:text-purple-400 block">Essential Lipids</span>
+              <span className="text-xs text-purple-600 dark:text-purple-400 block font-medium">Essential Lipids</span>
             </div>
           </div>
 
           {/* Clinical DII & Sodium DASH Shield Row */}
-          <div className="mt-3 pt-3 border-t border-slate-100 dark:border-slate-800 grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-            <div className="bg-slate-50 dark:bg-slate-800/60 p-2.5 rounded-2xl border border-slate-200/80 dark:border-slate-700">
+          <div className="mt-3 pt-3 border-t border-stone-100 dark:border-stone-800 grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+            <div className="bg-stone-50 dark:bg-stone-800/60 p-2.5 rounded-2xl border border-stone-200/80 dark:border-stone-700">
               <div className="flex items-center justify-between text-xs mb-1">
-                <span className="text-[10px] font-extrabold text-slate-700 dark:text-slate-300 uppercase flex items-center gap-1">
+                <span className="text-xs font-extrabold text-stone-700 dark:text-stone-300 uppercase flex items-center gap-1">
                   <span>🧂 {t('logs.sodium')}</span>
                 </span>
-                <span className={`text-[10px] font-black ${totalSodium > 2300 ? "text-rose-600" : "text-slate-800 dark:text-slate-200"}`}>
+                <span className={`text-xs font-black ${totalSodium > 2300 ? "text-rose-600" : "text-stone-800 dark:text-stone-200"}`}>
                   {totalSodium} / 2,300 mg
                 </span>
               </div>
-              <div className="w-full h-2 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
+              <div className="w-full h-2 bg-stone-200 dark:bg-stone-700 rounded-full overflow-hidden">
                 <div
                   className={`h-full transition-all rounded-full ${
                     totalSodium > 2300
@@ -452,7 +461,7 @@ Generated via MealOptimiza Certified Clinical Platform.`;
                   style={{ width: `${Math.min(100, Math.round((totalSodium / 2300) * 100))}%` }}
                 />
               </div>
-              <span className="text-[9px] text-slate-500 dark:text-slate-400 block mt-1">
+              <span className="text-xs text-stone-500 dark:text-stone-400 block mt-1 font-medium">
                 {totalSodium <= 1500
                   ? "✓ Optimal cardiovascular zone (DASH)"
                   : totalSodium <= 2300
@@ -461,16 +470,16 @@ Generated via MealOptimiza Certified Clinical Platform.`;
               </span>
             </div>
 
-            <div className="bg-slate-50 dark:bg-slate-800/60 p-2.5 rounded-2xl border border-slate-200/80 dark:border-slate-700 flex flex-col justify-between">
+            <div className="bg-stone-50 dark:bg-stone-800/60 p-2.5 rounded-2xl border border-stone-200/80 dark:border-stone-700 flex flex-col justify-between">
               <div className="flex items-center justify-between text-xs mb-1">
-                <span className="text-[10px] font-extrabold text-slate-700 dark:text-slate-300 uppercase">
+                <span className="text-xs font-extrabold text-stone-700 dark:text-stone-300 uppercase">
                   Dietary Inflammatory Score
                 </span>
-                <span className="text-[10px] font-black text-emerald-700 dark:text-emerald-300 bg-emerald-100/80 dark:bg-emerald-950/80 px-2 py-0.5 rounded-md">
+                <span className="text-xs font-black text-emerald-700 dark:text-emerald-300 bg-emerald-100/80 dark:bg-emerald-950/80 px-2 py-0.5 rounded-md">
                   {avgDiiScore <= -1.0 ? "🌿 Anti-Inflammatory" : avgDiiScore <= 1.0 ? "⚖️ Neutral" : "🔥 Pro-Inflammatory"}
                 </span>
               </div>
-              <p className="text-[10px] text-slate-600 dark:text-slate-400 leading-tight">
+              <p className="text-xs text-stone-600 dark:text-stone-400 leading-relaxed font-medium">
                 {avgDiiScore <= -1.0
                   ? "High phytonutrient & omega ratio lowers vascular CRP."
                   : "Add bitterleaf, fluted pumpkin (Ugwu) or Zobo to enhance recovery."}
@@ -480,7 +489,7 @@ Generated via MealOptimiza Certified Clinical Platform.`;
         </div>
 
         {/* Meal Type Filter Chips */}
-        <div className="flex bg-white/90 dark:bg-slate-900/90 p-1 rounded-2xl border border-teal-100 dark:border-slate-800 shadow-2xs gap-1">
+        <div className="flex bg-white/90 dark:bg-stone-900/90 p-1 rounded-2xl border border-stone-200/80 dark:border-stone-800 shadow-2xs gap-1">
           {[
             { id: "all", label: t('logs.allMeals') },
             { id: "breakfast", label: t('logs.breakfast') },
@@ -494,10 +503,10 @@ Generated via MealOptimiza Certified Clinical Platform.`;
                 triggerHaptic("light");
                 setFilterMealType(cat.id as any);
               }}
-              className={`flex-1 py-1.5 rounded-xl text-[11px] sm:text-xs font-bold capitalize transition-all cursor-pointer truncate ${
+              className={`flex-1 py-1.5 rounded-xl text-xs font-bold capitalize transition-all cursor-pointer truncate ${
                 filterMealType === cat.id
-                  ? "bg-[#1f7a8c] text-white shadow-2xs"
-                  : "text-gray-500 hover:text-gray-900 dark:text-slate-400 dark:hover:text-white"
+                  ? "bg-[#164E3D] text-white shadow-2xs"
+                  : "text-stone-500 hover:text-stone-900 dark:text-stone-400 dark:hover:text-white"
               }`}
             >
               {cat.label}
@@ -518,8 +527,8 @@ Generated via MealOptimiza Certified Clinical Platform.`;
             />
 
             {/* Quick 1-Tap African Cultural Presets */}
-            <div className="pt-2 border-t border-slate-100 dark:border-slate-800 text-left space-y-2">
-              <span className="text-[10.5px] font-black uppercase text-teal-700 dark:text-teal-400 tracking-wider">
+            <div className="pt-2 border-t border-stone-100 dark:border-stone-800 text-left space-y-2">
+              <span className="text-xs font-black uppercase text-emerald-800 dark:text-emerald-300 tracking-wider">
                 1-Tap Quick African Presets:
               </span>
               <div className="grid grid-cols-1 gap-2">
@@ -527,18 +536,18 @@ Generated via MealOptimiza Certified Clinical Platform.`;
                   <div
                     key={idx}
                     onClick={() => handleQuickLog(preset)}
-                    className="p-3 bg-slate-50 dark:bg-slate-800/80 hover:bg-teal-50 dark:hover:bg-teal-950/40 border border-slate-200 dark:border-slate-700 hover:border-teal-400 rounded-2xl cursor-pointer transition-all flex items-center justify-between group active:scale-98"
+                    className="p-3 bg-stone-50 dark:bg-stone-800/80 hover:bg-emerald-50 dark:hover:bg-emerald-950/40 border border-stone-200 dark:border-stone-700 hover:border-emerald-500 rounded-2xl cursor-pointer transition-all flex items-center justify-between group active:scale-98"
                   >
                     <div>
-                      <h4 className="text-xs font-extrabold text-slate-900 dark:text-white group-hover:text-[#1f7a8c] transition-colors">
+                      <h4 className="text-xs font-extrabold text-stone-900 dark:text-white group-hover:text-emerald-700 dark:group-hover:text-emerald-400 transition-colors">
                         {preset.name}
                       </h4>
-                      <p className="text-[10px] text-slate-500 dark:text-slate-400">
+                      <p className="text-xs text-stone-500 dark:text-stone-400 font-medium mt-0.5">
                         {preset.cal} kcal • P:{preset.p}g C:{preset.c}g F:{preset.f}g
                       </p>
                     </div>
-                    <span className="text-[10.5px] font-black bg-[#1f7a8c] text-white px-2.5 py-1 rounded-xl shadow-2xs flex items-center gap-1">
-                      <Plus size={12} />
+                    <span className="text-xs font-black bg-[#164E3D] text-white px-2.5 py-1 rounded-xl shadow-2xs flex items-center gap-1">
+                      <Plus size={13} />
                       <span>Log</span>
                     </span>
                   </div>
@@ -564,7 +573,7 @@ Generated via MealOptimiza Certified Clinical Platform.`;
               </Button>
               <Button
                 onClick={() => setShowAddMeal(true)}
-                className="bg-[#1f7a8c] hover:bg-teal-800 text-white font-bold rounded-2xl text-xs px-4 cursor-pointer"
+                className="bg-[#164E3D] hover:bg-[#123E31] text-white font-bold rounded-2xl text-xs px-4 cursor-pointer"
               >
                 + Manual Log
               </Button>
@@ -584,20 +593,20 @@ Generated via MealOptimiza Certified Clinical Platform.`;
                     </span>
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center gap-1.5 mb-0.5">
-                        <span className="text-[10px] uppercase font-black px-2 py-0.5 rounded-md bg-teal-50 dark:bg-teal-950 text-[#1f7a8c] dark:text-teal-300">
+                        <span className="text-xs uppercase font-black px-2 py-0.5 rounded-md bg-emerald-50 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300">
                           {log.mealType}
                         </span>
-                        <span className="text-[10px] text-gray-400 font-semibold flex items-center gap-0.5">
-                          <Clock size={10} /> {log.time}
+                        <span className="text-xs text-stone-400 font-semibold flex items-center gap-0.5">
+                          <Clock size={12} /> {log.time}
                         </span>
                       </div>
 
-                      <h3 className="text-sm sm:text-base font-extrabold text-gray-900 dark:text-white leading-snug">
+                      <h3 className="text-sm sm:text-base font-extrabold text-stone-900 dark:text-white leading-snug">
                         {log.foodName}
                       </h3>
 
                       {log.notes && (
-                        <p className="text-xs text-teal-700 dark:text-teal-300/90 font-medium mt-0.5 line-clamp-2">
+                        <p className="text-xs text-emerald-800 dark:text-emerald-300 font-medium mt-0.5 line-clamp-2">
                           💡 {log.notes}
                         </p>
                       )}
@@ -621,7 +630,7 @@ Generated via MealOptimiza Certified Clinical Platform.`;
                     </button>
                     <button
                       onClick={(e) => handleDeleteMeal(log.id, e)}
-                      className="p-1.5 text-gray-300 hover:text-rose-500 rounded-lg cursor-pointer transition-colors"
+                      className="p-1.5 text-stone-400 hover:text-rose-500 rounded-lg cursor-pointer transition-colors"
                       title="Delete meal"
                     >
                       <Trash2 size={15} />
@@ -630,31 +639,27 @@ Generated via MealOptimiza Certified Clinical Platform.`;
                 </div>
 
                 {/* Macro Strip */}
-                <div className="grid grid-cols-4 gap-1.5 mt-3 pt-3 border-t border-slate-100 dark:border-slate-800 text-center">
-                  <div className="bg-slate-50 dark:bg-slate-800/60 p-1.5 rounded-xl border border-slate-200/60 dark:border-slate-700">
-                    <span className="text-[8px] text-gray-400 font-bold block">Energy</span>
-                    <span className="text-xs font-black text-orange-600 dark:text-orange-400">{log.calories}</span>
-                    <span className="text-[7.5px] text-gray-400 block">kcal</span>
+                <div className="grid grid-cols-4 gap-1.5 mt-3 pt-3 border-t border-stone-100 dark:border-stone-800 text-center">
+                  <div className="bg-stone-50 dark:bg-stone-800/60 p-1.5 rounded-xl border border-stone-200/60 dark:border-stone-700">
+                    <span className="text-xs text-stone-500 font-bold block">Energy</span>
+                    <span className="text-xs font-black text-orange-600 dark:text-orange-400">{log.calories} kcal</span>
                   </div>
-                  <div className="bg-slate-50 dark:bg-slate-800/60 p-1.5 rounded-xl border border-slate-200/60 dark:border-slate-700">
-                    <span className="text-[8px] text-gray-400 font-bold block">Protein</span>
+                  <div className="bg-stone-50 dark:bg-stone-800/60 p-1.5 rounded-xl border border-stone-200/60 dark:border-stone-700">
+                    <span className="text-xs text-stone-500 font-bold block">Protein</span>
                     <span className="text-xs font-black text-blue-600 dark:text-blue-400">{log.protein}g</span>
-                    <span className="text-[7.5px] text-gray-400 block">Muscle</span>
                   </div>
-                  <div className="bg-slate-50 dark:bg-slate-800/60 p-1.5 rounded-xl border border-slate-200/60 dark:border-slate-700">
-                    <span className="text-[8px] text-gray-400 font-bold block">Carbs</span>
+                  <div className="bg-stone-50 dark:bg-stone-800/60 p-1.5 rounded-xl border border-stone-200/60 dark:border-stone-700">
+                    <span className="text-xs text-stone-500 font-bold block">Carbs</span>
                     <span className="text-xs font-black text-emerald-600 dark:text-emerald-400">{log.carbs}g</span>
-                    <span className="text-[7.5px] text-gray-400 block">Energy</span>
                   </div>
-                  <div className="bg-slate-50 dark:bg-slate-800/60 p-1.5 rounded-xl border border-slate-200/60 dark:border-slate-700">
-                    <span className="text-[8px] text-gray-400 font-bold block">Fats</span>
+                  <div className="bg-stone-50 dark:bg-stone-800/60 p-1.5 rounded-xl border border-stone-200/60 dark:border-stone-700">
+                    <span className="text-xs text-stone-500 font-bold block">Fats</span>
                     <span className="text-xs font-black text-purple-600 dark:text-purple-400">{log.fats}g</span>
-                    <span className="text-[7.5px] text-gray-400 block">Lipids</span>
                   </div>
                 </div>
 
                 {/* Glycemic & Energy Badges */}
-                <div className="flex items-center justify-between mt-2.5 pt-2 text-[10px] text-gray-600 dark:text-slate-400 font-semibold">
+                <div className="flex items-center justify-between mt-2.5 pt-2 text-xs text-stone-600 dark:text-stone-400 font-semibold">
                   <span
                     className={`px-2 py-0.5 rounded-full border font-bold ${
                       log.bloodSugarImpact === "low"
@@ -711,18 +716,18 @@ Generated via MealOptimiza Certified Clinical Platform.`;
 
       {/* Doctor / Dietitian Clinical Report Dialog */}
       <Dialog open={showReportDialog} onOpenChange={(open) => !open && setShowReportDialog(false)}>
-        <DialogContent className="max-w-md max-h-[85vh] p-5 sm:p-6 flex flex-col rounded-3xl bg-white dark:bg-slate-900 border border-teal-100 dark:border-slate-800">
+        <DialogContent className="max-w-md max-h-[85vh] p-5 sm:p-6 flex flex-col rounded-3xl bg-white dark:bg-stone-900 border border-stone-200/80 dark:border-stone-800">
           <DialogHeader className="pb-1 text-left">
-            <DialogTitle className="text-lg font-black text-gray-900 dark:text-white flex items-center gap-2">
-              <Share2 className="h-5 w-5 text-[#1f7a8c]" />
+            <DialogTitle className="text-lg font-black text-stone-900 dark:text-white flex items-center gap-2">
+              <Share2 className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
               <span>Clinical Doctor / Dietitian Summary</span>
             </DialogTitle>
-            <DialogDescription className="text-xs text-gray-500 dark:text-slate-400">
+            <DialogDescription className="text-xs text-stone-500 dark:text-stone-400">
               Structured nutrition report ready to copy or send to your physician.
             </DialogDescription>
           </DialogHeader>
 
-          <div className="flex-1 overflow-y-auto overscroll-contain my-2 bg-slate-900 text-emerald-400 p-4 rounded-2xl font-mono text-[11px] leading-relaxed whitespace-pre-wrap select-all border border-slate-800">
+          <div className="flex-1 overflow-y-auto overscroll-contain my-2 bg-stone-950 text-emerald-400 p-4 rounded-2xl font-mono text-xs leading-relaxed whitespace-pre-wrap select-all border border-stone-800">
             {doctorReportText}
           </div>
 

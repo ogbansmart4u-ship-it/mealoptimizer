@@ -416,6 +416,16 @@ const CLINICAL_CONSULT_PROMPTS = [
   },
 ];
 
+const CLINICAL_MARQUEE_ITEMS = [
+  { icon: "🌺", text: "Hibiscus calyces (Zobo) reduce systolic blood pressure by 7.2 mmHg naturally" },
+  { icon: "🥣", text: "Viscous okra mucilage provides up to a 38% blood sugar spike buffer after swallows" },
+  { icon: "🚶", text: "15-minute gentle post-meal walk drops peak glucose absorption by ~22%" },
+  { icon: "🥑", text: "Healthy fats with starches slow carbohydrate absorption & prevent midday crashes" },
+  { icon: "💧", text: "Drinking 2.5L daily hydration prevents false cravings & washes away excess sodium" },
+  { icon: "😴", text: "7.5 hours of restorative sleep increases insulin sensitivity by 30%" },
+  { icon: "🍃", text: "Bitter leaf polyphenols gently cleanse the liver & support digestive bile production" },
+];
+
 export default function Health() {
   const [showWearableSyncModal, setShowWearableSyncModal] = useState(false);
   const navigate = useNavigate();
@@ -560,6 +570,23 @@ export default function Health() {
       </div>
 
       <div className="px-4 sm:px-6 max-w-2xl mx-auto mt-4 space-y-6">
+        {/* 🌟 CONTINUOUS LIVE CLINICAL WISDOM MARQUEE TICKER */}
+        <div className="relative overflow-hidden bg-white/80 dark:bg-stone-900/80 backdrop-blur-xl border border-stone-200/80 dark:border-stone-800 rounded-2xl py-2 px-3 shadow-2xs group select-none">
+          {/* Edge gradient fade masks */}
+          <div className="absolute left-0 top-0 bottom-0 w-8 bg-gradient-to-r from-white dark:from-stone-900 to-transparent z-10 pointer-events-none" />
+          <div className="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-white dark:from-stone-900 to-transparent z-10 pointer-events-none" />
+
+          <div className="flex w-max animate-marquee gap-8 items-center group-hover:[animation-play-state:paused]">
+            {[...CLINICAL_MARQUEE_ITEMS, ...CLINICAL_MARQUEE_ITEMS].map((item, idx) => (
+              <div key={idx} className="flex items-center gap-2 text-xs font-semibold text-stone-700 dark:text-stone-300 shrink-0">
+                <span className="text-base">{item.icon}</span>
+                <span>{item.text}</span>
+                <span className="text-emerald-500 mx-2">•</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
         {/* ============================================================ */}
         {/* 0. METABOLIC FOOD CALCULATORS HERO LAUNCHER                  */}
         {/* ============================================================ */}

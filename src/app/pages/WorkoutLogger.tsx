@@ -589,22 +589,27 @@ export default function WorkoutLogger() {
           </div>
         </div>
 
-        {/* 1-TAP QUICK MOVEMENT PRESETS */}
+        {/* 1-TAP QUICK MOVEMENT PRESETS (Horizontal Sliding Shelf) */}
         <div className="bg-white dark:bg-stone-900/90 border border-stone-200/80 dark:border-stone-800 rounded-3xl p-5 space-y-3.5 shadow-xs">
           <div className="flex items-center justify-between">
-            <h3 className="text-sm font-extrabold text-stone-900 dark:text-white flex items-center gap-2">
-              <Sparkles size={16} className="text-amber-500" />
-              <span>1-Tap African &amp; Everyday Presets</span>
-            </h3>
-            <span className="text-xs text-stone-500 dark:text-stone-400 font-bold">Instant 1-Click Log</span>
+            <div>
+              <h3 className="text-sm font-extrabold text-stone-900 dark:text-white flex items-center gap-2">
+                <Sparkles size={16} className="text-amber-500" />
+                <span>1-Tap African &amp; Everyday Presets</span>
+              </h3>
+              <p className="text-xs text-stone-500 dark:text-stone-400 mt-0.5">Slide sideways • 1-tap logs movement &amp; calorie burn</p>
+            </div>
+            <span className="text-xs text-emerald-700 dark:text-emerald-400 font-bold bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800 px-2 py-0.5 rounded-full shadow-2xs">
+              Slide Shelf
+            </span>
           </div>
 
-          <div className="grid grid-cols-2 gap-2.5">
+          <div className="flex gap-2.5 overflow-x-auto snap-x snap-mandatory pb-2.5 pt-1 px-1 custom-scrollbar-x -mx-1 sm:mx-0 scroll-smooth">
             {QUICK_MOVEMENT_PRESETS.map((preset, idx) => (
               <button
                 key={idx}
                 onClick={() => handleQuickPresetLog(preset)}
-                className="bg-stone-50/80 dark:bg-stone-800/80 hover:bg-amber-50/50 dark:hover:bg-amber-950/30 border border-stone-200/80 dark:border-stone-700/80 hover:border-amber-400/60 rounded-2xl p-3.5 text-left transition-all duration-200 hover:-translate-y-0.5 cursor-pointer shadow-2xs group flex flex-col justify-between min-h-[125px] active:scale-95"
+                className="snap-start min-w-[175px] sm:min-w-[195px] bg-stone-50/80 dark:bg-stone-800/80 hover:bg-amber-50/50 dark:hover:bg-amber-950/30 border border-stone-200/80 dark:border-stone-700/80 hover:border-amber-400/60 rounded-2xl p-3.5 text-left transition-all duration-200 hover:-translate-y-0.5 cursor-pointer shadow-2xs group flex flex-col justify-between min-h-[135px] active:scale-95 shrink-0 select-none"
               >
                 <div>
                   <div className="flex items-center justify-between mb-1.5">

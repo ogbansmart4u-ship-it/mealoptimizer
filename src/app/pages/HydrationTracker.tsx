@@ -347,32 +347,31 @@ export default function HydrationTracker() {
 
         {/* 10X QUICK DRINK LOGGING SHELF (AFRICAN & CLEAN PRESETS) */}
         <div className="bg-white dark:bg-stone-900/90 border border-stone-200/80 dark:border-stone-800 rounded-3xl p-5 space-y-3.5 shadow-xs">
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between mb-3">
             <div>
-              <h3 className="text-sm font-extrabold text-stone-900 dark:text-white flex items-center gap-2">
-                <Sparkles size={16} className="text-emerald-600 dark:text-emerald-400" />
-                <span>1-Tap Healthy Drinks &amp; Water</span>
-              </h3>
-              <p className="text-xs text-stone-500 dark:text-stone-400 mt-0.5">Tap any drink to add it directly to today's log</p>
+              <h3 className="text-sm font-extrabold text-stone-900 dark:text-white">Quick Healthy Beverage Shelf</h3>
+              <p className="text-xs text-stone-500 dark:text-stone-400 mt-0.5">Slide sideways • 1-tap logs milliliters &amp; benefits</p>
             </div>
+
             {hydrationData.logs.length > 0 && (
               <button
+                type="button"
                 onClick={removeLastLog}
                 className="text-xs font-bold text-rose-600 dark:text-rose-400 hover:text-rose-700 bg-rose-50 dark:bg-rose-950/60 border border-rose-200 dark:border-rose-900/60 px-2.5 py-1 rounded-xl cursor-pointer transition-all flex items-center gap-1 active:scale-95"
               >
-                <RotateCcw size={12} />
+                <RotateCcw size={13} />
                 <span>Undo</span>
               </button>
             )}
           </div>
 
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
+          <div className="flex gap-2.5 overflow-x-auto snap-x snap-mandatory pb-2.5 pt-1 px-1 custom-scrollbar-x -mx-1 sm:mx-0 scroll-smooth">
             {HEALTHY_BEVERAGES.map((bev) => (
               <button
                 key={bev.name}
                 type="button"
                 onClick={() => logWater(bev.amount, bev.type, bev.name)}
-                className="p-3.5 bg-stone-50/80 dark:bg-stone-800/80 hover:bg-emerald-50/60 dark:hover:bg-emerald-950/30 border border-stone-200/80 dark:border-stone-700/80 hover:border-emerald-500/60 rounded-2xl text-left transition-all duration-200 hover:-translate-y-0.5 flex flex-col justify-between min-h-[125px] cursor-pointer shadow-2xs group active:scale-95"
+                className="snap-start min-w-[160px] sm:min-w-[185px] p-3.5 bg-stone-50/80 dark:bg-stone-800/80 hover:bg-emerald-50/60 dark:hover:bg-emerald-950/30 border border-stone-200/80 dark:border-stone-700/80 hover:border-emerald-500/60 rounded-2xl text-left transition-all duration-200 hover:-translate-y-0.5 flex flex-col justify-between min-h-[135px] cursor-pointer shadow-2xs group active:scale-95 shrink-0 select-none"
               >
                 <div className="flex items-center justify-between w-full">
                   <span className="text-2xl">{bev.icon}</span>

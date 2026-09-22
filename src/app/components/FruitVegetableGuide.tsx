@@ -473,6 +473,15 @@ export default function FruitVegetableGuide() {
   const [isFlipped, setIsFlipped] = useState<boolean>(true);
   const [servingGrams, setServingGrams] = useState<number>(100);
   const [isLogging, setIsLogging] = useState(false);
+  const carouselRef = React.useRef<HTMLDivElement>(null);
+
+  const scrollCarousel = (direction: "left" | "right") => {
+    triggerHaptic("light");
+    if (carouselRef.current) {
+      const scrollAmount = direction === "left" ? -280 : 280;
+      carouselRef.current.scrollBy({ left: scrollAmount, behavior: "smooth" });
+    }
+  };
 
   const filteredItems = METABOLIC_FRUITS_VEGETABLES.filter(
     (item) => filterType === "all" || item.type === filterType
@@ -632,24 +641,42 @@ export default function FruitVegetableGuide() {
         ))}
       </div>
 
-      {/* Interactive Helper Banner */}
+      {/* Interactive Helper Banner & Carousel Sliding Controls */}
       <div className="flex items-center justify-between text-xs text-stone-500 dark:text-stone-400 font-medium mb-3 px-1">
         <span className="flex items-center gap-1.5 text-emerald-800 dark:text-emerald-300 font-bold">
-          <RotateCw size={12} className="text-emerald-600 shrink-0" />
-          <span>Tap any fruit or healing green to flip into full 3D Clinical Wisdom</span>
+          <RotateCw size={13} className="text-emerald-600 shrink-0" />
+          <span>Slide to explore • Tap to flip into full 3D Clinical Wisdom</span>
         </span>
-        <span className="hidden sm:inline-block text-stone-400 dark:text-stone-500">
-          Unabridged Bioactive Dossier
-        </span>
+        <div className="flex items-center gap-1">
+          <button
+            type="button"
+            onClick={() => scrollCarousel("left")}
+            className="p-1.5 rounded-xl bg-stone-100 dark:bg-stone-800 hover:bg-stone-200 dark:hover:bg-stone-700 text-stone-700 dark:text-stone-300 transition-colors cursor-pointer border border-stone-200/80 dark:border-stone-700 active:scale-95"
+            title="Slide left"
+          >
+            <ChevronLeft size={14} />
+          </button>
+          <button
+            type="button"
+            onClick={() => scrollCarousel("right")}
+            className="p-1.5 rounded-xl bg-stone-100 dark:bg-stone-800 hover:bg-stone-200 dark:hover:bg-stone-700 text-stone-700 dark:text-stone-300 transition-colors cursor-pointer border border-stone-200/80 dark:border-stone-700 active:scale-95"
+            title="Slide right"
+          >
+            <ChevronRight size={14} />
+          </button>
+        </div>
       </div>
 
-      {/* Produce Cards Grid */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-3.5 mb-2">
+      {/* Produce Cards Snap Carousel */}
+      <div
+        ref={carouselRef}
+        className="flex gap-3 sm:gap-3.5 overflow-x-auto snap-x snap-mandatory pb-3 pt-1 px-1 custom-scrollbar-x -mx-1 sm:mx-0 scroll-smooth select-none"
+      >
         {filteredItems.map((item) => (
           <div
             key={item.id}
             onClick={() => handleOpenProduce(item)}
-            className="group cursor-pointer rounded-2xl bg-white dark:bg-stone-800/80 border border-stone-200/80 dark:border-stone-700/80 p-3.5 flex flex-col justify-between hover:border-emerald-500/60 dark:hover:border-emerald-500/60 hover:shadow-lg transition-all duration-300 hover:-translate-y-0.5 select-none"
+            className="snap-start min-w-[210px] sm:min-w-[230px] md:min-w-[245px] flex-shrink-0 group cursor-pointer rounded-2xl bg-white dark:bg-stone-800/80 border border-stone-200/80 dark:border-stone-700/80 p-3.5 flex flex-col justify-between hover:border-emerald-500/60 dark:hover:border-emerald-500/60 hover:shadow-lg transition-all duration-300 hover:-translate-y-0.5 select-none"
           >
             <div>
               {/* Top row */}
@@ -672,7 +699,7 @@ export default function FruitVegetableGuide() {
 
               {/* Condition Tag */}
               <div className="mt-2 flex items-center gap-1.5 px-2 py-1 rounded-lg bg-stone-100/80 dark:bg-stone-700/60 text-stone-700 dark:text-stone-300 text-xs font-medium">
-                <ShieldCheck size={11} className="text-emerald-600 dark:text-emerald-400 shrink-0" />
+                <ShieldCheck size={13} className="text-emerald-600 dark:text-emerald-400 shrink-0" />
                 <span className="truncate">{item.targetConditions[0]}</span>
               </div>
             </div>
@@ -688,7 +715,7 @@ export default function FruitVegetableGuide() {
                 type="button"
                 className="w-full btn-liquid-glass btn-liquid-forest py-2 px-2 rounded-xl text-white font-bold text-xs flex items-center justify-center gap-1.5 shadow-xs border border-white/20 group-hover:shadow-md transition-all active:scale-95 cursor-pointer"
               >
-                <RotateCw size={12} className="group-hover:rotate-180 transition-transform duration-500" />
+                <RotateCw size={13} className="group-hover:rotate-180 transition-transform duration-500" />
                 <span>Flip for Wisdom 💡</span>
               </button>
             </div>

@@ -141,6 +141,14 @@ export default function FastingTimer() {
   const [selectedProtocol, setSelectedProtocol] = useState<FastingProtocol>("16:8");
   const [selectedStageInfo, setSelectedStageInfo] = useState<number | null>(null);
   const [waterCups, setWaterCups] = useState(4);
+  const journeyScrollRef = useRef<HTMLDivElement>(null);
+
+  const scrollJourney = (dir: "left" | "right") => {
+    triggerHaptic("light");
+    if (journeyScrollRef.current) {
+      journeyScrollRef.current.scrollBy({ left: dir === "left" ? -280 : 280, behavior: "smooth" });
+    }
+  };
 
   // Active fast session state
   const [currentSession, setCurrentSession] = useState<FastingSession | null>(() => {
@@ -456,7 +464,7 @@ export default function FastingTimer() {
           </button>
         </div>
 
-        {/* 🧬 Interactive Autophagy & Cellular Stage Map */}
+        {/* 🧬 Interactive Autophagy & Cellular Stage Map (Horizontal Journey Timeline) */}
         <div className="bg-white dark:bg-stone-900/90 rounded-3xl border border-stone-200/80 dark:border-stone-800 p-5 sm:p-6 shadow-xs space-y-4">
           <div className="flex items-center justify-between">
             <div>
@@ -464,11 +472,62 @@ export default function FastingTimer() {
                 <Dna size={18} className="text-purple-600 dark:text-purple-400" />
                 <span>The 5 Stages of Autophagy &amp; Fat Burn</span>
               </h3>
-              <p className="text-xs text-stone-500 dark:text-stone-400 mt-0.5">Tap any stage to reveal its cellular biochemistry</p>
+              <p className="text-xs text-stone-500 dark:text-stone-400 mt-0.5">Slide timeline • Tap to preview cellular transformations</p>
+            </div>
+            <div className="flex items-center gap-1">
+              <button
+                type="button"
+                onClick={() => scrollJourney("left")}
+                className="p-1.5 rounded-xl bg-stone-100 dark:bg-stone-800 hover:bg-stone-200 dark:hover:bg-stone-700 text-stone-700 dark:text-stone-300 transition-colors cursor-pointer border border-stone-200/80 dark:border-stone-700 active:scale-95"
+                title="Slide left"
+              >
+                <ChevronLeft size={14} />
+              </button>
+              <button
+                type="button"
+                onClick={() => scrollJourney("right")}
+                className="p-1.5 rounded-xl bg-stone-100 dark:bg-stone-800 hover:bg-stone-200 dark:hover:bg-stone-700 text-stone-700 dark:text-stone-300 transition-colors cursor-pointer border border-stone-200/80 dark:border-stone-700 active:scale-95"
+                title="Slide right"
+              >
+                <ChevronRight size={14} />
+              </button>
             </div>
           </div>
 
-          <div className="space-y-2.5">
+          {/* Timeline Connector Steps */}
+          <div className="flex items-center justify-between px-2 pt-1 pb-2 overflow-x-auto select-none border-b border-stone-100 dark:border-stone-800/80 text-xs">
+            {AUTOPHAGY_STAGES.map((stg, i) => {
+              const isUnlocked = elapsedHours >= stg.hours;
+              const isCurrent = currentAutophagyStage.hours === stg.hours;
+              return (
+                <div key={i} className="flex items-center gap-1.5 flex-1 min-w-[70px]">
+                  <div className={`h-6 w-6 rounded-full flex items-center justify-center text-xs font-bold shrink-0 ${
+                    isCurrent
+                      ? "bg-purple-600 text-white ring-2 ring-purple-400 ring-offset-2 dark:ring-offset-stone-900 shadow-md animate-pulse"
+                      : isUnlocked
+                      ? "bg-emerald-600 text-white"
+                      : "bg-stone-200 dark:bg-stone-800 text-stone-500"
+                  }`}>
+                    {isUnlocked && !isCurrent ? "✓" : i + 1}
+                  </div>
+                  <span className={`text-xs font-bold truncate ${
+                    isCurrent ? "text-purple-600 dark:text-purple-400" : isUnlocked ? "text-emerald-700 dark:text-emerald-400" : "text-stone-400"
+                  }`}>
+                    {stg.hours}h
+                  </span>
+                  {i < AUTOPHAGY_STAGES.length - 1 && (
+                    <div className={`h-0.5 flex-1 mx-1 ${isUnlocked ? "bg-emerald-500/80" : "bg-stone-200 dark:bg-stone-800"}`} />
+                  )}
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Horizontal Snap Cards */}
+          <div
+            ref={journeyScrollRef}
+            className="flex gap-3 overflow-x-auto snap-x snap-mandatory pb-2.5 pt-1 px-1 custom-scrollbar-x -mx-1 sm:mx-0 scroll-smooth select-none"
+          >
             {AUTOPHAGY_STAGES.map((stage, i) => {
               const isUnlocked = elapsedHours >= stage.hours;
               const isCurrent = currentAutophagyStage.hours === stage.hours;
@@ -479,47 +538,53 @@ export default function FastingTimer() {
                     triggerHaptic("light");
                     setSelectedStageInfo(selectedStageInfo === i ? null : i);
                   }}
-                  className={`p-3.5 rounded-2xl border transition-all cursor-pointer ${
+                  className={`snap-start min-w-[240px] sm:min-w-[270px] flex-shrink-0 p-4 rounded-2xl border transition-all cursor-pointer flex flex-col justify-between ${
                     isCurrent
-                      ? "bg-purple-50 dark:bg-purple-950/40 border-purple-400 dark:border-purple-600 ring-1 ring-purple-400/40 shadow-xs"
+                      ? "bg-purple-50/90 dark:bg-purple-950/40 border-purple-400 dark:border-purple-600 ring-2 ring-purple-500/50 shadow-md"
                       : isUnlocked
                       ? "bg-stone-50 dark:bg-stone-800/80 border-stone-200/80 dark:border-stone-700/80 text-stone-900 dark:text-white"
                       : "bg-stone-50/50 dark:bg-stone-900/50 border-stone-200/50 dark:border-stone-800/60 opacity-60"
                   }`}
                 >
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2.5">
-                      <span className="text-xl">{stage.icon}</span>
-                      <div>
-                        <div className="text-xs font-bold text-stone-900 dark:text-white flex items-center gap-2">
-                          <span>{stage.title}</span>
-                          {isCurrent && (
-                            <span className="text-xs bg-purple-500 text-white font-bold px-2 py-0.5 rounded-full animate-pulse">
-                              YOU ARE HERE
-                            </span>
-                          )}
+                  <div>
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="flex items-center gap-2">
+                        <span className="text-2xl p-1.5 bg-white dark:bg-stone-800 rounded-xl shadow-2xs">{stage.icon}</span>
+                        <div>
+                          <span className="text-xs font-bold text-amber-700 dark:text-amber-400 block">
+                            Milestone {stage.hours}h
+                          </span>
+                          <span className="text-xs font-black text-stone-900 dark:text-white block line-clamp-1">
+                            {stage.title}
+                          </span>
                         </div>
-                        <span className="text-xs font-bold text-amber-700 dark:text-amber-400">
-                          Starts at {stage.hours} Hours
-                        </span>
                       </div>
+                      {isCurrent && (
+                        <span className="text-xs bg-purple-600 text-white font-black px-2 py-0.5 rounded-full animate-pulse shadow-2xs shrink-0">
+                          ACTIVE
+                        </span>
+                      )}
                     </div>
 
-                    <div className="flex items-center gap-2 text-xs font-bold">
-                      {isUnlocked ? (
-                        <span className="text-emerald-600 dark:text-emerald-400 text-xs flex items-center gap-1">
-                          <CheckCircle size={14} /> Unlocked
-                        </span>
-                      ) : (
-                        <span className="text-stone-400 text-xs">Locked</span>
-                      )}
-                      <ChevronRight size={14} className="text-stone-400" />
-                    </div>
+                    <p className="text-xs text-stone-600 dark:text-stone-300 leading-relaxed bg-white/80 dark:bg-stone-950/50 p-2.5 rounded-xl border border-stone-200/80 dark:border-stone-800/80 font-medium">
+                      {stage.desc}
+                    </p>
                   </div>
 
-                  <p className="text-xs text-stone-600 dark:text-stone-300 mt-2 leading-relaxed bg-white dark:bg-stone-950/40 p-2.5 rounded-xl border border-stone-200 dark:border-stone-800/80">
-                    {stage.desc}
-                  </p>
+                  <div className="flex items-center justify-between mt-3 pt-2 border-t border-stone-200/60 dark:border-stone-800/60 text-xs font-bold">
+                    {isUnlocked ? (
+                      <span className="text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
+                        <CheckCircle size={13} /> Unlocked
+                      </span>
+                    ) : (
+                      <span className="text-stone-400 flex items-center gap-1">
+                        Locked (in {Math.max(0, Math.round(stage.hours - elapsedHours))}h)
+                      </span>
+                    )}
+                    <span className="text-purple-600 dark:text-purple-400 flex items-center gap-0.5">
+                      Stage {i + 1} of 5
+                    </span>
+                  </div>
                 </div>
               );
             })}

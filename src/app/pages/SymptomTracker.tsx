@@ -140,6 +140,7 @@ export default function SymptomTracker() {
   const [showAddDialog, setShowAddDialog] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [filterSeverity, setFilterSeverity] = useState<Severity | "all">("all");
+  const [selectedCategoryTab, setSelectedCategoryTab] = useState<string>("all");
 
   const [formData, setFormData] = useState({
     symptom: "",
@@ -350,7 +351,7 @@ export default function SymptomTracker() {
               <h2 className="text-sm sm:text-base font-extrabold text-stone-900 dark:text-white flex items-center gap-2">
                 <span>⚡ 1-Tap Quick Symptom Shelf</span>
               </h2>
-              <p className="text-xs text-stone-500 dark:text-stone-400">Tap to log with auto-matched cultural triggers</p>
+              <p className="text-xs text-stone-500 dark:text-stone-400">Slide categories • 1-tap logs with auto-matched cultural triggers</p>
             </div>
             <button
               onClick={() => setShowAddDialog(true)}
@@ -360,8 +361,45 @@ export default function SymptomTracker() {
             </button>
           </div>
 
-          <div className="space-y-3.5">
+          {/* Horizontal Sliding Category Selector */}
+          <div className="flex gap-2 overflow-x-auto snap-x snap-mandatory pb-2 pt-1 px-1 custom-scrollbar-x -mx-1 sm:mx-0 scroll-smooth select-none">
+            <button
+              type="button"
+              onClick={() => {
+                triggerHaptic("light");
+                setSelectedCategoryTab("all");
+              }}
+              className={`snap-start px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer shrink-0 ${
+                selectedCategoryTab === "all"
+                  ? "bg-[#164E3D] text-white shadow-xs"
+                  : "bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-200 border border-stone-200/80 dark:border-stone-700/80"
+              }`}
+            >
+              All Categories ✨
+            </button>
             {SYMPTOM_CATEGORIES.map((cat, idx) => (
+              <button
+                key={idx}
+                type="button"
+                onClick={() => {
+                  triggerHaptic("light");
+                  setSelectedCategoryTab(cat.category);
+                }}
+                className={`snap-start px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer shrink-0 ${
+                  selectedCategoryTab === cat.category
+                    ? "bg-[#164E3D] text-white shadow-xs"
+                    : "bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-200 border border-stone-200/80 dark:border-stone-700/80"
+                }`}
+              >
+                {cat.category}
+              </button>
+            ))}
+          </div>
+
+          <div className="space-y-3.5">
+            {SYMPTOM_CATEGORIES
+              .filter((c) => selectedCategoryTab === "all" || c.category === selectedCategoryTab)
+              .map((cat, idx) => (
               <div key={idx} className="space-y-2">
                 <span className="text-xs font-extrabold text-stone-600 dark:text-stone-400 block uppercase tracking-wider">
                   {cat.category}

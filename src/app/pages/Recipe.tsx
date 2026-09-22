@@ -2048,6 +2048,10 @@ export default function Recipe() {
     });
   }, [recipes, searchQuery, selectedTag, selectedMealCategory]);
 
+  const featuredRecipes = useMemo(() => {
+    return recipes.filter((r) => r.glycemicIndex === "Low").slice(0, 8);
+  }, [recipes]);
+
   const openRecipeDetails = (recipe: FullRecipe) => {
     setSelectedRecipe(recipe);
     setPortionMultiplier(recipe.baseServings);
@@ -2467,10 +2471,77 @@ export default function Recipe() {
               <button
                 type="button"
                 onClick={handleClearAllCustomRecipes}
-                className="px-3 py-1.5 bg-amber-600 hover:bg-amber-700 active:scale-95 text-white font-black text-[11px] rounded-xl shrink-0 cursor-pointer shadow-xs transition-transform"
+                className="px-3 py-1.5 bg-amber-600 hover:bg-amber-700 active:scale-95 text-white font-black text-xs rounded-xl shrink-0 cursor-pointer shadow-xs transition-transform"
               >
                 Reset Menu
               </button>
+            </div>
+          )}
+
+          {/* 🌟 FEATURED DOCTOR-CERTIFIED PLATES (Horizontal Snap Tray) */}
+          {featuredRecipes.length > 0 && selectedMealCategory === "all" && !searchQuery.trim() && (
+            <div className="space-y-2.5 pb-2">
+              <div className="flex items-center justify-between px-1">
+                <div>
+                  <h3 className="text-sm font-extrabold text-stone-900 dark:text-white flex items-center gap-1.5">
+                    <Sparkles size={15} className="text-amber-500" />
+                    <span>Featured Doctor-Certified Plates</span>
+                  </h3>
+                  <p className="text-xs text-stone-500 dark:text-stone-400">Curated low-GI African staples • Slide horizontally to preview</p>
+                </div>
+                <span className="text-xs font-bold text-emerald-800 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/70 border border-emerald-200 dark:border-emerald-800 px-2.5 py-0.5 rounded-full shadow-2xs">
+                  Low-GI Picks
+                </span>
+              </div>
+
+              <div className="flex gap-3 overflow-x-auto snap-x snap-mandatory pb-2 pt-0.5 px-0.5 custom-scrollbar-x -mx-1 sm:mx-0 scroll-smooth select-none">
+                {featuredRecipes.slice(0, 6).map((recipe) => {
+                  const plateImg = getVersionedImage(recipe.image || getFallbackPlateImage(recipe));
+                  return (
+                    <div
+                      key={`featured-${recipe.id}`}
+                      onClick={() => {
+                        try { soundEffects.playBubblePop(); } catch {}
+                        try { triggerHaptic("medium"); } catch {}
+                        openRecipeDetails(recipe);
+                      }}
+                      className="snap-start min-w-[240px] sm:min-w-[265px] bg-white dark:bg-[#171E1B] rounded-2xl overflow-hidden shadow-xs hover:shadow-md border border-stone-200/80 dark:border-stone-800/80 transition-all cursor-pointer group active:scale-[0.99] flex flex-col shrink-0"
+                    >
+                      <div className="relative w-full h-36 bg-slate-950 overflow-hidden">
+                        <img
+                          src={plateImg}
+                          alt={recipe.name}
+                          loading="lazy"
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                          onError={(e: any) => {
+                            e.currentTarget.src = getFallbackPlateImage(recipe);
+                          }}
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent pointer-events-none" />
+                        <div className="absolute top-2.5 left-2.5 right-2.5 flex items-center justify-between">
+                          <span className={`text-xs font-bold px-2 py-0.5 rounded-full backdrop-blur-md shadow-xs ${
+                            recipe.glycemicIndex === "Low" ? "bg-emerald-500/90 text-white" : "bg-amber-500/90 text-slate-950"
+                          }`}>
+                            GI {recipe.glycemicIndex}
+                          </span>
+                          <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-black/60 text-white backdrop-blur-md">
+                            {recipe.baseCalories} kcal
+                          </span>
+                        </div>
+                        <div className="absolute bottom-2 left-2.5 right-2.5">
+                          <h4 className="text-xs font-black text-white line-clamp-1 leading-snug drop-shadow-sm">
+                            {recipe.name}
+                          </h4>
+                        </div>
+                      </div>
+                      <div className="p-2.5 flex items-center justify-between text-xs text-stone-600 dark:text-stone-300 font-medium">
+                        <span>⏱️ {recipe.prepTime + recipe.cookTime} mins</span>
+                        <span className="text-emerald-700 dark:text-emerald-400 font-bold">P: {recipe.baseProtein}g • C: {recipe.baseCarbs}g</span>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
             </div>
           )}
 
