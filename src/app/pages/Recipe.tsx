@@ -2237,7 +2237,7 @@ export default function Recipe() {
           </div>
 
           {/* Fast-Prompt Chips */}
-          <div className="flex items-center gap-1.5 overflow-x-auto pt-2.5 pb-0.5 scrollbar-none relative z-10 text-[10.5px]">
+          <div className="flex items-center gap-1.5 overflow-x-auto pt-2.5 pb-1 visible-scrollbar-x relative z-10 text-[10.5px]">
             <span className="text-[10px] font-bold text-teal-200 uppercase shrink-0">Try 1-Tap:</span>
             {[
               { label: "KDIGO Yam Porridge 🍲", prompt: "KDIGO Leached Yam Porridge (Renal-Safe)" },
@@ -2331,7 +2331,7 @@ export default function Recipe() {
         {/* ============================================================ */}
         <div className="space-y-2">
           {/* Main Clinical Tags */}
-          <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none -mx-4 px-4 sm:mx-0 sm:px-0">
+          <div className="flex items-center gap-1.5 overflow-x-auto pb-1.5 visible-scrollbar-x -mx-4 px-4 sm:mx-0 sm:px-0">
             {[
               { id: "all", label: t('recipe.tag.all'), icon: "✨" },
               { id: "diabetic-friendly", label: t('recipe.tag.diabetic'), icon: "🩸" },
@@ -2384,7 +2384,7 @@ export default function Recipe() {
           </div>
 
           {/* Secondary Meal Time Filter */}
-          <div className="flex items-center gap-1 overflow-x-auto pb-1 scrollbar-none -mx-4 px-4 sm:mx-0 sm:px-0">
+          <div className="flex items-center gap-1 overflow-x-auto pb-1.5 visible-scrollbar-x -mx-4 px-4 sm:mx-0 sm:px-0">
             {[
               { id: "all", label: "All Types" },
               { id: "breakfast", label: "🍳 Breakfast" },

@@ -395,3 +395,109 @@ button:not([disabled]):active,
 .dark .neu-btn:active {
   box-shadow: inset 2px 2px 6px rgba(0, 0, 0, 0.65), inset -2px -2px 6px rgba(255, 255, 255, 0.03) !important;
 }
+
+/* ========================================================================= */
+/* 📜 ELEGANT & VISIBLE SCROLLBARS (RECIPE PAGES & SITELINKED CONTAINERS)   */
+/* ========================================================================= */
+
+/* Global visible scrollbars for Webkit & standard modern browsers */
+::-webkit-scrollbar {
+  width: 7px;
+  height: 6px;
+  display: block;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(18, 103, 120, 0.08);
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #1f7a8c;
+  border-radius: 9999px;
+  border: 1px solid transparent;
+  background-clip: content-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #126778;
+}
+
+/* Firefox standard scrollbars */
+html, * {
+  scrollbar-width: thin;
+  scrollbar-color: #1f7a8c rgba(18, 103, 120, 0.08);
+}
+
+.dark html, .dark * {
+  scrollbar-color: #4ecdc4 rgba(255, 255, 255, 0.08);
+}
+
+.dark ::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: #4ecdc4;
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: #2dd4bf;
+}
+
+/* Explicit high-visibility horizontal and vertical scrollbar utility classes */
+.visible-scrollbar-x {
+  overflow-x: auto !important;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin !important;
+  scrollbar-color: #1f7a8c rgba(18, 103, 120, 0.12) !important;
+  padding-bottom: 6px;
+}
+
+.visible-scrollbar-x::-webkit-scrollbar {
+  height: 5px !important;
+  display: block !important;
+}
+
+.visible-scrollbar-x::-webkit-scrollbar-track {
+  background: rgba(18, 103, 120, 0.1) !important;
+  border-radius: 9999px !important;
+}
+
+.visible-scrollbar-x::-webkit-scrollbar-thumb {
+  background: #1f7a8c !important;
+  border-radius: 9999px !important;
+}
+
+.visible-scrollbar-y {
+  overflow-y: auto !important;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin !important;
+  scrollbar-color: #1f7a8c rgba(18, 103, 120, 0.12) !important;
+}
+
+.visible-scrollbar-y::-webkit-scrollbar {
+  width: 6px !important;
+  display: block !important;
+}
+
+.visible-scrollbar-y::-webkit-scrollbar-track {
+  background: rgba(18, 103, 120, 0.08) !important;
+  border-radius: 9999px !important;
+}
+
+.visible-scrollbar-y::-webkit-scrollbar-thumb {
+  background: #1f7a8c !important;
+  border-radius: 9999px !important;
+}
+
+.dark .visible-scrollbar-x,
+.dark .visible-scrollbar-y {
+  scrollbar-color: #4ecdc4 rgba(255, 255, 255, 0.08) !important;
+}
+
+.dark .visible-scrollbar-x::-webkit-scrollbar-thumb,
+.dark .visible-scrollbar-y::-webkit-scrollbar-thumb {
+  background: #4ecdc4 !important;
+}
+
