@@ -291,33 +291,34 @@ export default function MedicationTracker() {
   );
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-emerald-50 via-teal-50 to-cyan-50 pb-24">
+    <div className="min-h-screen bg-[#FAF8F5] dark:bg-[#0F1412] text-stone-900 dark:text-stone-100 pb-28 transition-colors">
       <PageHeader
         title={t("medtrack.title")}
         showHome
-        className="bg-gradient-to-r from-emerald-600 to-teal-600"
+        className="bg-[#164E3D]"
         actions={
           <button
             onClick={() => setShowAddDialog(true)}
-            className="p-2 hover:bg-white/10 rounded-full transition-colors"
+            className="p-2 hover:bg-white/10 rounded-full transition-colors cursor-pointer"
+            aria-label="Add medication"
           >
             <Plus className="h-5 w-5 text-white" />
           </button>
         }
       />
 
-      <div className="px-6 mt-6 space-y-6">
+      <div className="px-4 sm:px-6 mt-6 space-y-6 max-w-2xl mx-auto">
         {/* Alerts Section */}
         {(criticalMeds.length > 0 || activeInteractions.length > 0) && (
           <div className="space-y-3">
             {criticalMeds.map(med => (
-              <div key={med.id} className="bg-red-50 border-2 border-red-300 rounded-2xl p-4 flex items-start gap-3">
-                <AlertTriangle className="h-5 w-5 text-red-600 flex-shrink-0 mt-0.5" />
+              <div key={med.id} className="bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-800/60 rounded-2xl p-4 flex items-start gap-3 shadow-2xs">
+                <AlertTriangle className="h-5 w-5 text-red-600 dark:text-red-400 flex-shrink-0 mt-0.5" />
                 <div className="flex-1">
-                  <div className="text-sm font-semibold text-red-900 mb-1">
+                  <div className="text-xs font-bold text-red-900 dark:text-red-200 mb-0.5">
                     {t("medtrack.alertCriticalTitle").replace("{name}", med.name)}
                   </div>
-                  <div className="text-sm text-red-800">
+                  <div className="text-xs text-red-800 dark:text-red-300 leading-relaxed">
                     {t("medtrack.alertCriticalDesc").replace("{n}", String(med.pillsRemaining))}
                   </div>
                 </div>
@@ -325,13 +326,13 @@ export default function MedicationTracker() {
             ))}
 
             {activeInteractions.map((interaction, idx) => (
-              <div key={idx} className="bg-blue-50 border-2 border-blue-300 rounded-2xl p-4 flex items-start gap-3">
-                <Info className="h-5 w-5 text-blue-600 flex-shrink-0 mt-0.5" />
+              <div key={idx} className="bg-blue-50 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-800/60 rounded-2xl p-4 flex items-start gap-3 shadow-2xs">
+                <Info className="h-5 w-5 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5" />
                 <div className="flex-1">
-                  <div className="text-sm font-semibold text-blue-900 mb-1">
+                  <div className="text-xs font-bold text-blue-900 dark:text-blue-200 mb-0.5">
                     {t("medtrack.interactionTitle").replace("{combo}", interaction.combo.join(' + '))}
                   </div>
-                  <div className="text-sm text-blue-800">{t(interaction.warnKey)}</div>
+                  <div className="text-xs text-blue-800 dark:text-blue-300 leading-relaxed">{t(interaction.warnKey)}</div>
                 </div>
               </div>
             ))}
@@ -339,30 +340,30 @@ export default function MedicationTracker() {
         )}
 
         {/* Adherence Score */}
-        <div className="bg-white rounded-3xl shadow-xl p-8">
+        <div className="bg-white dark:bg-stone-900/90 rounded-3xl border border-stone-200/80 dark:border-stone-800 shadow-xs p-6 sm:p-8">
           <div className="text-center mb-6">
-            <div className="inline-flex items-center gap-2 px-4 py-2 bg-teal-100 rounded-full mb-4">
-              <TrendingUp className="h-5 w-5 text-teal-600" />
-              <span className="text-sm font-semibold text-teal-700">{t("medtrack.adherence7Day")}</span>
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 bg-emerald-50 dark:bg-emerald-950/60 text-[#164E3D] dark:text-emerald-400 border border-emerald-200/80 dark:border-emerald-800/80 rounded-full mb-4">
+              <TrendingUp className="h-4 w-4" />
+              <span className="text-xs font-bold">{t("medtrack.adherence7Day")}</span>
             </div>
 
-            <div className={`text-6xl font-bold mb-2 ${
-              adherence >= 90 ? 'text-green-600' :
-              adherence >= 75 ? 'text-blue-600' :
-              adherence >= 60 ? 'text-amber-600' : 'text-red-600'
+            <div className={`text-5xl sm:text-6xl font-black mb-2 ${
+              adherence >= 90 ? 'text-emerald-600 dark:text-emerald-400' :
+              adherence >= 75 ? 'text-blue-600 dark:text-blue-400' :
+              adherence >= 60 ? 'text-amber-600 dark:text-amber-400' : 'text-red-600 dark:text-red-400'
             }`}>
               {adherence}%
             </div>
-            <div className="text-gray-600">
+            <div className="text-xs font-medium text-stone-500 dark:text-stone-400">
               {adherence >= 90 ? t("medtrack.adh.excellent") :
                adherence >= 75 ? t("medtrack.adh.good") :
                adherence >= 60 ? t("medtrack.adh.fair") : t("medtrack.adh.needsImprovement")}
             </div>
 
-            <div className="mt-4 w-full bg-gray-200 rounded-full h-3">
+            <div className="mt-4 w-full bg-stone-100 dark:bg-stone-800 rounded-full h-3">
               <div
                 className={`h-3 rounded-full transition-all duration-500 ${
-                  adherence >= 90 ? 'bg-gradient-to-r from-green-500 to-emerald-500' :
+                  adherence >= 90 ? 'bg-gradient-to-r from-emerald-500 to-teal-500' :
                   adherence >= 75 ? 'bg-gradient-to-r from-blue-500 to-cyan-500' :
                   adherence >= 60 ? 'bg-gradient-to-r from-amber-500 to-orange-500' :
                   'bg-gradient-to-r from-red-500 to-rose-500'
@@ -374,17 +375,17 @@ export default function MedicationTracker() {
         </div>
 
         {/* Today's Schedule */}
-        <div className="bg-white rounded-3xl shadow-xl p-6">
-          <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
-            <Calendar className="h-5 w-5 text-teal-600" />
+        <div className="bg-white dark:bg-stone-900/90 rounded-3xl border border-stone-200/80 dark:border-stone-800 shadow-xs p-6">
+          <h3 className="text-base font-extrabold text-stone-900 dark:text-white mb-4 flex items-center gap-2">
+            <Calendar className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
             {t("medtrack.todaySchedule")}
           </h3>
 
           {loading ? (
             <SkeletonRows count={3} />
           ) : todaySchedule.length === 0 ? (
-            <div className="text-center py-8 text-gray-500">
-              <Pill className="h-12 w-12 mx-auto mb-2 text-gray-300" />
+            <div className="text-center py-8 text-stone-500 dark:text-stone-400 text-xs">
+              <Pill className="h-10 w-10 mx-auto mb-2 text-stone-300 dark:text-stone-600" />
               <p>{t("medtrack.noDoses")}</p>
             </div>
           ) : (
@@ -396,29 +397,29 @@ export default function MedicationTracker() {
                 return (
                   <div
                     key={item.id}
-                    className={`p-4 rounded-xl border-2 transition-all ${
+                    className={`p-3.5 rounded-2xl border transition-all ${
                       item.status === 'taken'
-                        ? 'bg-green-50 border-green-300'
-                        : 'bg-white border-gray-200 hover:border-teal-300'
+                        ? 'bg-emerald-50/60 dark:bg-emerald-950/40 border-emerald-200 dark:border-emerald-800/80'
+                        : 'bg-stone-50 dark:bg-stone-800/80 border-stone-200/80 dark:border-stone-700/80 hover:border-emerald-400/50'
                     }`}
                   >
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-3 flex-1">
-                        <div className={`rounded-full p-2 ${
-                          item.status === 'taken' ? 'bg-green-100' : 'bg-teal-100'
+                        <div className={`rounded-xl p-2.5 ${
+                          item.status === 'taken' ? 'bg-emerald-100 dark:bg-emerald-900/60 text-emerald-800 dark:text-emerald-300' : 'bg-stone-200 dark:bg-stone-700 text-stone-700 dark:text-stone-300'
                         }`}>
                           {item.status === 'taken' ? (
-                            <CheckCircle className="h-5 w-5 text-green-600" />
+                            <CheckCircle className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
                           ) : (
-                            <Pill className="h-5 w-5 text-teal-600" />
+                            <Pill className="h-5 w-5" />
                           )}
                         </div>
-                        <div className="flex-1">
-                          <div className="text-sm font-semibold text-gray-800">{med.name}</div>
-                          <div className="text-xs text-gray-600">{med.dosage}</div>
+                        <div className="flex-1 min-w-0">
+                          <div className="text-xs font-bold text-stone-900 dark:text-white truncate">{med.name}</div>
+                          <div className="text-xs text-stone-500 dark:text-stone-400">{med.dosage}</div>
                         </div>
-                        <div className="flex items-center gap-2 text-sm text-gray-600">
-                          <Clock className="h-4 w-4" />
+                        <div className="flex items-center gap-1.5 text-xs text-stone-500 dark:text-stone-400">
+                          <Clock className="h-3.5 w-3.5" />
                           <span>{item.scheduledTime}</span>
                         </div>
                       </div>
@@ -427,7 +428,7 @@ export default function MedicationTracker() {
                         <Button
                           onClick={() => handleTakeDose(item)}
                           size="sm"
-                          className="ml-3 bg-teal-600 hover:bg-teal-700"
+                          className="ml-3 bg-[#164E3D] hover:bg-[#123E31] text-white text-xs font-bold rounded-xl cursor-pointer active:scale-95 shadow-2xs"
                         >
                           {t("medtrack.take")}
                         </Button>
@@ -441,9 +442,9 @@ export default function MedicationTracker() {
         </div>
 
         {/* Active Medications */}
-        <div className="bg-white rounded-3xl shadow-xl p-6">
-          <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
-            <Package className="h-5 w-5 text-teal-600" />
+        <div className="bg-white dark:bg-stone-900/90 rounded-3xl border border-stone-200/80 dark:border-stone-800 shadow-xs p-6">
+          <h3 className="text-base font-extrabold text-stone-900 dark:text-white mb-4 flex items-center gap-2">
+            <Package className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
             {t("medtrack.activeMeds")} ({medications.length})
           </h3>
 
@@ -456,9 +457,9 @@ export default function MedicationTracker() {
               action={
                 <Button
                   onClick={() => setShowAddDialog(true)}
-                  className="bg-teal-600 hover:bg-teal-700"
+                  className="bg-[#164E3D] hover:bg-[#123E31] text-white text-xs font-bold rounded-xl shadow-xs"
                 >
-                  <Plus className="h-4 w-4 mr-2" />
+                  <Plus className="h-4 w-4 mr-1.5" />
                   {t("medtrack.addFirst")}
                 </Button>
               }
@@ -473,63 +474,65 @@ export default function MedicationTracker() {
                 return (
                   <div
                     key={med.id}
-                    className={`p-4 rounded-xl border-2 transition-all ${
+                    className={`p-4 rounded-2xl border transition-all ${
                       isCritical
-                        ? 'bg-red-50 border-red-300'
+                        ? 'bg-red-50 dark:bg-red-950/30 border-red-200 dark:border-red-800/60'
                         : isLowStock
-                        ? 'bg-amber-50 border-amber-300'
-                        : 'bg-gray-50 border-gray-200'
+                        ? 'bg-amber-50 dark:bg-amber-950/30 border-amber-200 dark:border-amber-800/60'
+                        : 'bg-stone-50 dark:bg-stone-800/80 border-stone-200/80 dark:border-stone-700/80'
                     }`}
                   >
                     <div className="flex items-start justify-between mb-3">
                       <div className="flex-1">
                         <div className="flex items-center gap-2 mb-1">
-                          <h4 className="text-base font-semibold text-gray-800">{med.name}</h4>
-                          <span className="px-2 py-0.5 bg-teal-100 text-teal-700 text-xs rounded-full font-medium">
+                          <h4 className="text-xs font-bold text-stone-900 dark:text-white">{med.name}</h4>
+                          <span className="px-2 py-0.5 bg-emerald-50 dark:bg-emerald-950 text-[#164E3D] dark:text-emerald-300 text-xs rounded-full font-bold border border-emerald-200 dark:border-emerald-800">
                             {typeLabel(med.type)}
                           </span>
                         </div>
-                        <div className="text-sm text-gray-600">{med.dosage}</div>
-                        <div className="text-xs text-gray-500 mt-1">
+                        <div className="text-xs text-stone-600 dark:text-stone-300">{med.dosage}</div>
+                        <div className="text-xs text-stone-500 dark:text-stone-400 mt-1">
                           {freqLabel(med.frequency)} - {med.times.join(', ')}
                         </div>
                       </div>
 
-                      <div className="flex gap-2">
+                      <div className="flex gap-1.5">
                         <button
                           onClick={() => handleEditMed(med)}
-                          className="p-2 hover:bg-gray-200 rounded-lg transition-colors"
+                          className="p-1.5 hover:bg-stone-200 dark:hover:bg-stone-700 rounded-lg transition-colors cursor-pointer text-stone-600 dark:text-stone-300"
+                          aria-label="Edit medication"
                         >
-                          <Edit className="h-4 w-4 text-gray-600" />
+                          <Edit className="h-4 w-4" />
                         </button>
                         <button
                           onClick={() => handleDeleteMed(med.id)}
-                          className="p-2 hover:bg-red-100 rounded-lg transition-colors"
+                          className="p-1.5 hover:bg-red-100 dark:hover:bg-red-900/40 rounded-lg transition-colors cursor-pointer text-red-600 dark:text-red-400"
+                          aria-label="Delete medication"
                         >
-                          <Trash2 className="h-4 w-4 text-red-600" />
+                          <Trash2 className="h-4 w-4" />
                         </button>
                       </div>
                     </div>
 
                     {/* Stock Status */}
-                    <div className="pt-3 border-t border-gray-200">
-                      <div className="flex items-center justify-between mb-2">
-                        <span className="text-xs text-gray-600">{t("medtrack.stockRemaining")}</span>
-                        <span className={`text-sm font-semibold ${
-                          isCritical ? 'text-red-600' : isLowStock ? 'text-amber-600' : 'text-green-600'
+                    <div className="pt-3 border-t border-stone-200 dark:border-stone-700">
+                      <div className="flex items-center justify-between mb-1.5">
+                        <span className="text-xs text-stone-500 dark:text-stone-400">{t("medtrack.stockRemaining")}</span>
+                        <span className={`text-xs font-bold ${
+                          isCritical ? 'text-red-600 dark:text-red-400' : isLowStock ? 'text-amber-600 dark:text-amber-400' : 'text-emerald-700 dark:text-emerald-400'
                         }`}>
                           {t("medtrack.pillsDays").replace("{n}", String(med.pillsRemaining)).replace("{d}", String(daysRemaining))}
                         </span>
                       </div>
 
-                      <div className="w-full bg-gray-200 rounded-full h-2">
+                      <div className="w-full bg-stone-200 dark:bg-stone-700 rounded-full h-2">
                         <div
                           className={`h-2 rounded-full transition-all ${
                             isCritical
                               ? 'bg-red-500'
                               : isLowStock
                               ? 'bg-amber-500'
-                              : 'bg-green-500'
+                              : 'bg-emerald-500'
                           }`}
                           style={{
                             width: `${Math.min(
@@ -541,9 +544,9 @@ export default function MedicationTracker() {
                       </div>
 
                       {isLowStock && (
-                        <div className="mt-2 flex items-center gap-2 text-xs">
-                          <AlertCircle className="h-4 w-4 text-amber-600" />
-                          <span className="text-amber-700">
+                        <div className="mt-2 flex items-center gap-1.5 text-xs">
+                          <AlertCircle className="h-3.5 w-3.5 text-amber-600 dark:text-amber-400" />
+                          <span className="text-amber-800 dark:text-amber-300 font-medium">
                             {isCritical ? t("medtrack.orderNow") : t("medtrack.refillSoon")}
                           </span>
                         </div>
@@ -551,8 +554,8 @@ export default function MedicationTracker() {
                     </div>
 
                     {med.notes && (
-                      <div className="mt-3 pt-3 border-t border-gray-200">
-                        <div className="text-xs text-gray-600 italic">💡 {med.notes}</div>
+                      <div className="mt-3 pt-3 border-t border-stone-200 dark:border-stone-700">
+                        <div className="text-xs text-stone-500 dark:text-stone-400 italic">💡 {med.notes}</div>
                       </div>
                     )}
                   </div>
@@ -563,38 +566,38 @@ export default function MedicationTracker() {
         </div>
 
         {/* Tips */}
-        <div className="bg-gradient-to-br from-teal-50 to-emerald-50 rounded-3xl shadow-xl p-6 border border-teal-200">
-          <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
-            <Bell className="h-5 w-5 text-teal-600" />
+        <div className="bg-white dark:bg-stone-900/90 rounded-3xl border border-stone-200/80 dark:border-stone-800 shadow-xs p-6">
+          <h3 className="text-base font-extrabold text-stone-900 dark:text-white mb-4 flex items-center gap-2">
+            <Bell className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
             {t("medtrack.bestPractices")}
           </h3>
 
           <div className="space-y-3">
-            <div className="flex items-start gap-3 p-3 bg-white rounded-xl">
-              <CheckCircle className="h-5 w-5 text-green-600 flex-shrink-0 mt-0.5" />
+            <div className="flex items-start gap-3 p-3.5 bg-stone-50 dark:bg-stone-800/70 border border-stone-200/70 dark:border-stone-700/70 rounded-2xl">
+              <CheckCircle className="h-5 w-5 text-emerald-600 dark:text-emerald-400 flex-shrink-0 mt-0.5" />
               <div>
-                <div className="text-sm font-semibold text-gray-800 mb-1">{t("medtrack.tip1Title")}</div>
-                <div className="text-sm text-gray-600">
+                <div className="text-xs font-bold text-stone-900 dark:text-white mb-0.5">{t("medtrack.tip1Title")}</div>
+                <div className="text-xs text-stone-600 dark:text-stone-300 leading-relaxed">
                   {t("medtrack.tip1Desc")}
                 </div>
               </div>
             </div>
 
-            <div className="flex items-start gap-3 p-3 bg-white rounded-xl">
-              <Clock className="h-5 w-5 text-blue-600 flex-shrink-0 mt-0.5" />
+            <div className="flex items-start gap-3 p-3.5 bg-stone-50 dark:bg-stone-800/70 border border-stone-200/70 dark:border-stone-700/70 rounded-2xl">
+              <Clock className="h-5 w-5 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5" />
               <div>
-                <div className="text-sm font-semibold text-gray-800 mb-1">{t("medtrack.tip2Title")}</div>
-                <div className="text-sm text-gray-600">
+                <div className="text-xs font-bold text-stone-900 dark:text-white mb-0.5">{t("medtrack.tip2Title")}</div>
+                <div className="text-xs text-stone-600 dark:text-stone-300 leading-relaxed">
                   {t("medtrack.tip2Desc")}
                 </div>
               </div>
             </div>
 
-            <div className="flex items-start gap-3 p-3 bg-white rounded-xl">
-              <AlertCircle className="h-5 w-5 text-amber-600 flex-shrink-0 mt-0.5" />
+            <div className="flex items-start gap-3 p-3.5 bg-stone-50 dark:bg-stone-800/70 border border-stone-200/70 dark:border-stone-700/70 rounded-2xl">
+              <AlertCircle className="h-5 w-5 text-amber-600 dark:text-amber-400 flex-shrink-0 mt-0.5" />
               <div>
-                <div className="text-sm font-semibold text-gray-800 mb-1">{t("medtrack.tip3Title")}</div>
-                <div className="text-sm text-gray-600">
+                <div className="text-xs font-bold text-stone-900 dark:text-white mb-0.5">{t("medtrack.tip3Title")}</div>
+                <div className="text-xs text-stone-600 dark:text-stone-300 leading-relaxed">
                   {t("medtrack.tip3Desc")}
                 </div>
               </div>

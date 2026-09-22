@@ -418,32 +418,33 @@ export default function WorkoutLogger() {
     new Date(iso + 'T12:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 pb-28">
+    <div className="min-h-screen bg-[#FAF8F5] dark:bg-[#0F1412] text-stone-900 dark:text-stone-100 pb-28 transition-colors">
       {/* Top Header */}
-      <div className="sticky top-0 z-30 bg-slate-950/90 backdrop-blur-xl border-b border-orange-900/40 px-4 py-3.5 flex items-center justify-between">
+      <div className="sticky top-0 z-30 bg-[#FAF8F5]/90 dark:bg-[#0F1412]/90 backdrop-blur-xl border-b border-stone-200/80 dark:border-stone-800 px-4 py-3.5 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <button
-            onClick={() => navigate("/home")}
-            className="p-2 rounded-2xl bg-white/10 hover:bg-white/15 text-white transition-colors cursor-pointer"
+            onClick={() => navigate("/health")}
+            className="p-2 rounded-2xl bg-stone-100 dark:bg-stone-800 hover:bg-stone-200 dark:hover:bg-stone-700 text-stone-700 dark:text-stone-200 transition-colors cursor-pointer"
+            aria-label="Back to Health"
           >
             <ArrowLeft size={18} />
           </button>
           <div>
             <div className="flex items-center gap-1.5">
-              <Dumbbell size={16} className="text-orange-400 animate-pulse" />
-              <h1 className="text-base font-black text-white tracking-wide">
+              <Dumbbell size={16} className="text-amber-600 dark:text-amber-400 animate-pulse" />
+              <h1 className="text-base font-black text-stone-900 dark:text-white tracking-tight">
                 Movement &amp; Energy Hub
               </h1>
             </div>
-            <span className="text-[10.5px] text-orange-300 font-bold">
+            <span className="text-xs text-[#164E3D] dark:text-emerald-400 font-semibold">
               Turn Your Muscles into Natural Blood Sugar Sponges
             </span>
           </div>
         </div>
 
         {/* Weekly Minutes Pill */}
-        <div className="flex items-center gap-1.5 bg-orange-500/20 text-orange-300 border border-orange-500/30 px-3 py-1 rounded-xl text-xs font-black">
-          <Flame size={13} className="text-orange-400 fill-orange-400" />
+        <div className="flex items-center gap-1.5 bg-amber-50 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 border border-amber-200/80 dark:border-amber-800/80 px-3 py-1.5 rounded-xl text-xs font-bold shadow-2xs">
+          <Flame size={14} className="text-amber-500 fill-amber-500" />
           <span>{weeklyMinutes} / 150m Target</span>
         </div>
       </div>
@@ -451,91 +452,93 @@ export default function WorkoutLogger() {
       <div className="px-4 pt-4 space-y-4 max-w-xl mx-auto">
         {/* API error banner */}
         {logsError && (
-          <div className="bg-red-950/50 border border-red-500/30 rounded-2xl p-3 flex items-center gap-3 text-red-200 text-xs">
-            <AlertCircle className="h-5 w-5 text-red-400 shrink-0" />
+          <div className="bg-red-50 dark:bg-red-950/50 border border-red-200 dark:border-red-500/30 rounded-2xl p-3 flex items-center gap-3 text-red-700 dark:text-red-200 text-xs shadow-2xs">
+            <AlertCircle className="h-5 w-5 text-red-500 shrink-0" />
             <span>{logsError}</span>
           </div>
         )}
 
         {/* 10X HERO BANNER WITH AVO MASCOT */}
-        <div className="bg-gradient-to-br from-[#2a1306] via-[#3a1d0a] to-slate-950 rounded-3xl p-5 border-2 border-orange-500/40 shadow-2xl relative overflow-hidden">
-          {/* Ambient Glows */}
-          <div className="absolute top-0 right-0 w-48 h-48 bg-orange-500/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="bg-gradient-to-br from-amber-950/90 via-stone-900 to-[#164E3D]/90 rounded-3xl p-5 border border-amber-500/30 shadow-xl relative overflow-hidden text-white">
+          {/* Ambient Glow */}
+          <div className="absolute top-0 right-0 w-48 h-48 bg-amber-400/10 rounded-full blur-3xl pointer-events-none" />
 
           <div className="flex items-center justify-between relative z-10 mb-4">
             <div className="max-w-[70%]">
-              <span className="text-[10px] uppercase font-black tracking-wider text-orange-300 bg-orange-950 px-2.5 py-0.5 rounded-full border border-orange-800">
+              <span className="text-xs uppercase font-extrabold tracking-wider text-amber-200 bg-white/10 px-2.5 py-1 rounded-full border border-white/15">
                 Weekly Milestone: 150 Minutes
               </span>
-              <h2 className="text-xl font-black text-white mt-1.5 leading-tight">
+              <h2 className="text-xl font-black text-white mt-2 leading-tight">
                 {weeklyMinutes >= 150
                   ? "🎉 Weekly Target Achieved! Peak Energy!"
                   : "🚶 15-Minute Walks Buffer Post-Meal Spikes"}
               </h2>
-              <p className="text-xs text-orange-100/90 mt-1 leading-snug">
+              <p className="text-xs text-stone-200/90 mt-1 font-medium leading-relaxed">
                 When you move after eating, your leg muscles absorb meal carbohydrates immediately without needing extra insulin.
               </p>
             </div>
 
             <div className="shrink-0 flex flex-col items-center">
-              <Mascot gesture={weeklyMinutes >= 150 ? "celebrate" : "thumbsup"} size={68} />
-              <span className="text-[10px] font-black text-amber-300 mt-1">
+              <div className="p-1.5 bg-white/10 backdrop-blur-md rounded-2xl border border-white/20 shadow-md">
+                <Mascot gesture={weeklyMinutes >= 150 ? "celebrate" : "thumbsup"} size={64} />
+              </div>
+              <span className="text-xs font-bold text-amber-300 mt-1.5">
                 {weeklyGoalPct}% of Goal
               </span>
             </div>
           </div>
 
           {/* Weekly Target Progress Bar */}
-          <div className="w-full h-3 bg-black/50 rounded-full overflow-hidden p-0.5 border border-orange-500/30">
+          <div className="w-full h-3 bg-black/40 rounded-full overflow-hidden p-0.5 border border-white/20">
             <div
-              className="h-full bg-gradient-to-r from-orange-400 via-amber-400 to-emerald-400 rounded-full transition-all duration-700"
+              className="h-full bg-gradient-to-r from-amber-400 via-emerald-400 to-teal-300 rounded-full transition-all duration-700"
               style={{ width: `${weeklyGoalPct}%` }}
             />
           </div>
         </div>
 
         {/* LIVE POST-MEAL GLUCOSE WALK & WORKOUT STOPWATCH */}
-        <div className="bg-slate-900/90 border border-orange-500/30 rounded-3xl p-5 shadow-xl space-y-3">
+        <div className="bg-white dark:bg-stone-900/90 border border-stone-200/80 dark:border-stone-800 rounded-3xl p-5 shadow-xs space-y-3.5">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <div className="p-2 bg-orange-500/20 text-orange-400 rounded-xl">
+            <div className="flex items-center gap-2.5">
+              <div className="p-2 bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 rounded-xl border border-amber-200/60 dark:border-amber-800/60">
                 <Clock className="h-5 w-5" />
               </div>
               <div>
-                <h3 className="text-sm font-black text-white">
+                <h3 className="text-sm font-extrabold text-stone-900 dark:text-white">
                   Live Post-Meal Movement Timer ⏱️
                 </h3>
-                <p className="text-[11px] text-slate-400">
+                <p className="text-xs text-stone-500 dark:text-stone-400 mt-0.5">
                   Track your walk or Afrobeats dance in real time
                 </p>
               </div>
             </div>
             {timerActive && (
-              <span className="text-[10px] font-black px-2.5 py-1 bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 rounded-full animate-pulse flex items-center gap-1.5">
-                <span className="h-2 w-2 rounded-full bg-emerald-400" /> Active Session
+              <span className="text-xs font-bold px-3 py-1 bg-emerald-50 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 rounded-full animate-pulse flex items-center gap-1.5">
+                <span className="h-2 w-2 rounded-full bg-emerald-500" /> Active Session
               </span>
             )}
           </div>
 
-          <div className="bg-slate-950 border border-orange-950/60 rounded-2xl p-4 text-center">
-            <div className="text-4xl font-black text-white tracking-widest font-mono">
+          <div className="bg-stone-50 dark:bg-stone-950 border border-stone-200/80 dark:border-stone-800 rounded-2xl p-4 text-center">
+            <div className="text-4xl font-black text-stone-900 dark:text-white tracking-widest font-mono">
               {formatTimerTime(timerSeconds)}
             </div>
-            <div className="text-[11px] text-amber-300 mt-1 font-semibold">
+            <div className="text-xs text-amber-800 dark:text-amber-400 mt-1.5 font-bold">
               Estimated Burn: ~{Math.round((timerSeconds / 60) * 6)} kcal • Active Glucose Buffer
             </div>
 
             {/* Quick Type Selector for Timer */}
             {!timerActive && timerSeconds === 0 && (
-              <div className="flex items-center justify-center gap-2 mt-3 flex-wrap">
+              <div className="flex items-center justify-center gap-2 mt-3.5 flex-wrap">
                 {(['walking', 'cardio', 'strength', 'hiit'] as WorkoutType[]).map((t) => (
                   <button
                     key={t}
                     onClick={() => setTimerWorkoutType(t)}
-                    className={`px-3 py-1 rounded-xl text-[11px] font-bold transition-all cursor-pointer ${
+                    className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                       timerWorkoutType === t
-                        ? "bg-orange-500 text-slate-950 shadow-md font-black"
-                        : "bg-white/10 text-slate-300 hover:bg-white/15"
+                        ? "bg-[#164E3D] text-white shadow-xs font-extrabold"
+                        : "bg-stone-200/70 dark:bg-stone-800 text-stone-700 dark:text-stone-300 hover:bg-stone-300 dark:hover:bg-stone-700"
                     }`}
                   >
                     {t === 'walking' ? '🚶 15-Min Walk' : t === 'cardio' ? '💃 Afrobeats' : t === 'strength' ? '💪 Strength' : '⚡ HIIT'}
@@ -549,7 +552,7 @@ export default function WorkoutLogger() {
               {!timerActive ? (
                 <button
                   onClick={() => handleStartTimer(timerWorkoutType)}
-                  className="px-6 py-2.5 bg-gradient-to-r from-orange-500 to-amber-500 text-slate-950 font-black rounded-xl text-xs flex items-center gap-1.5 shadow-lg cursor-pointer active:scale-95 transition-all"
+                  className="px-6 py-2.5 bg-[#164E3D] hover:bg-[#123E31] text-white font-bold rounded-xl text-xs flex items-center gap-2 shadow-md cursor-pointer active:scale-95 transition-all"
                 >
                   <Play size={15} className="fill-current" />
                   <span>{timerSeconds > 0 ? "Resume Session" : "Start Walk / Workout"}</span>
@@ -557,7 +560,7 @@ export default function WorkoutLogger() {
               ) : (
                 <button
                   onClick={handlePauseTimer}
-                  className="px-6 py-2.5 bg-amber-500 text-slate-950 font-black rounded-xl text-xs flex items-center gap-1.5 shadow-md cursor-pointer active:scale-95 transition-all"
+                  className="px-6 py-2.5 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold rounded-xl text-xs flex items-center gap-2 shadow-md cursor-pointer active:scale-95 transition-all"
                 >
                   <Pause size={15} className="fill-current" />
                   <span>Pause Timer</span>
@@ -568,14 +571,14 @@ export default function WorkoutLogger() {
                 <>
                   <button
                     onClick={handleFinishTimer}
-                    className="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-black rounded-xl text-xs flex items-center gap-1.5 shadow-md cursor-pointer active:scale-95 transition-all"
+                    className="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl text-xs flex items-center gap-1.5 shadow-md cursor-pointer active:scale-95 transition-all"
                   >
                     <Check size={15} />
                     <span>Save &amp; Log</span>
                   </button>
                   <button
                     onClick={handleResetTimer}
-                    className="p-2.5 text-slate-400 hover:text-white bg-white/10 rounded-xl cursor-pointer transition-colors"
+                    className="p-2.5 text-stone-400 hover:text-stone-700 dark:hover:text-white bg-stone-200/70 dark:bg-stone-800 rounded-xl cursor-pointer transition-colors"
                     title="Reset timer"
                   >
                     <RotateCcw size={15} />
@@ -587,13 +590,13 @@ export default function WorkoutLogger() {
         </div>
 
         {/* 1-TAP QUICK MOVEMENT PRESETS */}
-        <div className="bg-slate-900/90 border border-orange-500/20 rounded-3xl p-4 space-y-3">
+        <div className="bg-white dark:bg-stone-900/90 border border-stone-200/80 dark:border-stone-800 rounded-3xl p-5 space-y-3.5 shadow-xs">
           <div className="flex items-center justify-between">
-            <h3 className="text-sm font-black text-white flex items-center gap-1.5">
-              <Sparkles size={14} className="text-orange-400" />
+            <h3 className="text-sm font-extrabold text-stone-900 dark:text-white flex items-center gap-2">
+              <Sparkles size={16} className="text-amber-500" />
               <span>1-Tap African &amp; Everyday Presets</span>
             </h3>
-            <span className="text-[10px] text-slate-400 font-bold">Instant 1-Click Log</span>
+            <span className="text-xs text-stone-500 dark:text-stone-400 font-bold">Instant 1-Click Log</span>
           </div>
 
           <div className="grid grid-cols-2 gap-2.5">
@@ -601,22 +604,22 @@ export default function WorkoutLogger() {
               <button
                 key={idx}
                 onClick={() => handleQuickPresetLog(preset)}
-                className="bg-slate-950/80 hover:bg-orange-950/40 border border-orange-900/40 hover:border-orange-400 rounded-2xl p-3 text-left transition-all cursor-pointer shadow-sm group flex flex-col justify-between min-h-[110px] active:scale-95"
+                className="bg-stone-50/80 dark:bg-stone-800/80 hover:bg-amber-50/50 dark:hover:bg-amber-950/30 border border-stone-200/80 dark:border-stone-700/80 hover:border-amber-400/60 rounded-2xl p-3.5 text-left transition-all duration-200 hover:-translate-y-0.5 cursor-pointer shadow-2xs group flex flex-col justify-between min-h-[125px] active:scale-95"
               >
                 <div>
-                  <div className="flex items-center justify-between mb-1">
+                  <div className="flex items-center justify-between mb-1.5">
                     <span className="text-2xl">{preset.emoji}</span>
-                    <span className="text-[9px] font-black px-1.5 py-0.5 bg-orange-950 text-orange-300 border border-orange-800 rounded-md">
+                    <span className="text-xs font-bold px-2 py-0.5 bg-amber-100 dark:bg-amber-950 text-amber-800 dark:text-amber-300 border border-amber-200 dark:border-amber-800 rounded-full">
                       {preset.benefit}
                     </span>
                   </div>
-                  <h4 className="text-xs font-black text-white group-hover:text-orange-200 leading-snug line-clamp-1">
+                  <h4 className="text-xs font-bold text-stone-900 dark:text-stone-100 group-hover:text-amber-700 dark:group-hover:text-amber-300 leading-snug line-clamp-1">
                     {preset.name}
                   </h4>
                 </div>
-                <div className="flex items-center justify-between mt-2 pt-2 border-t border-white/5 text-[10px] text-slate-400 font-semibold">
+                <div className="flex items-center justify-between mt-2 pt-2 border-t border-stone-200 dark:border-stone-700 text-xs text-stone-500 dark:text-stone-400 font-medium">
                   <span>⏱️ {preset.duration} min</span>
-                  <span className="text-amber-300 font-bold">~{preset.calories} kcal</span>
+                  <span className="text-amber-700 dark:text-amber-400 font-bold">~{preset.calories} kcal</span>
                 </div>
               </button>
             ))}
@@ -624,59 +627,61 @@ export default function WorkoutLogger() {
         </div>
 
         {/* 4 REASONS MOVEMENT PROTECTS YOUR METABOLISM */}
-        <div className="bg-slate-900/90 border border-orange-500/20 rounded-3xl p-4 space-y-3">
-          <div className="flex items-center gap-2">
-            <ShieldCheck size={18} className="text-orange-400" />
+        <div className="bg-white dark:bg-stone-900/90 border border-stone-200/80 dark:border-stone-800 rounded-3xl p-5 space-y-3.5 shadow-xs">
+          <div className="flex items-center gap-2.5">
+            <div className="p-2 rounded-xl bg-amber-50 dark:bg-amber-950 text-amber-700 dark:text-amber-300">
+              <ShieldCheck size={18} />
+            </div>
             <div>
-              <h3 className="text-sm font-black text-white">How Movement Protects Your Body</h3>
-              <p className="text-[10.5px] text-slate-400">Simple science for everyday African wellness</p>
+              <h3 className="text-sm font-extrabold text-stone-900 dark:text-white">How Movement Protects Your Body</h3>
+              <p className="text-xs text-stone-500 dark:text-stone-400 mt-0.5">Simple science for everyday African wellness</p>
             </div>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-            <div className="p-3 bg-white/5 border border-white/5 rounded-2xl flex items-start gap-2.5">
-              <span className="p-2 bg-orange-500/20 text-orange-300 rounded-xl shrink-0 text-lg">
+            <div className="p-3.5 bg-stone-50 dark:bg-stone-800/70 border border-stone-200/70 dark:border-stone-700/70 rounded-2xl flex items-start gap-3">
+              <span className="p-2 bg-orange-100 dark:bg-orange-950/80 text-orange-800 dark:text-orange-300 rounded-xl shrink-0 text-lg">
                 🩸
               </span>
               <div>
-                <h4 className="text-xs font-black text-orange-200">Natural Sugar Sponges</h4>
-                <p className="text-[10.5px] text-slate-300 leading-snug mt-0.5">
+                <h4 className="text-xs font-bold text-orange-900 dark:text-orange-200">Natural Sugar Sponges</h4>
+                <p className="text-xs text-stone-600 dark:text-stone-300 leading-relaxed mt-1">
                   Walking for 15 mins after heavy swallows pulls glucose straight from your blood into muscles with zero insulin crash.
                 </p>
               </div>
             </div>
 
-            <div className="p-3 bg-white/5 border border-white/5 rounded-2xl flex items-start gap-2.5">
-              <span className="p-2 bg-emerald-500/20 text-emerald-300 rounded-xl shrink-0 text-lg">
+            <div className="p-3.5 bg-stone-50 dark:bg-stone-800/70 border border-stone-200/70 dark:border-stone-700/70 rounded-2xl flex items-start gap-3">
+              <span className="p-2 bg-emerald-100 dark:bg-emerald-950/80 text-emerald-800 dark:text-emerald-300 rounded-xl shrink-0 text-lg">
                 ❤️
               </span>
               <div>
-                <h4 className="text-xs font-black text-emerald-200">Relaxes Blood Vessels</h4>
-                <p className="text-[10.5px] text-slate-300 leading-snug mt-0.5">
+                <h4 className="text-xs font-bold text-emerald-900 dark:text-emerald-200">Relaxes Blood Vessels</h4>
+                <p className="text-xs text-stone-600 dark:text-stone-300 leading-relaxed mt-1">
                   Rhythmic Afrobeats dancing and brisk walking expand arteries naturally, helping keep your blood pressure smooth.
                 </p>
               </div>
             </div>
 
-            <div className="p-3 bg-white/5 border border-white/5 rounded-2xl flex items-start gap-2.5">
-              <span className="p-2 bg-blue-500/20 text-blue-300 rounded-xl shrink-0 text-lg">
+            <div className="p-3.5 bg-stone-50 dark:bg-stone-800/70 border border-stone-200/70 dark:border-stone-700/70 rounded-2xl flex items-start gap-3">
+              <span className="p-2 bg-blue-100 dark:bg-blue-950/80 text-blue-800 dark:text-blue-300 rounded-xl shrink-0 text-lg">
                 💪
               </span>
               <div>
-                <h4 className="text-xs font-black text-blue-200">Builds Metabolism Base</h4>
-                <p className="text-[10.5px] text-slate-300 leading-snug mt-0.5">
+                <h4 className="text-xs font-bold text-blue-900 dark:text-blue-200">Builds Metabolism Base</h4>
+                <p className="text-xs text-stone-600 dark:text-stone-300 leading-relaxed mt-1">
                   Simple bodyweight squats and pushups build active muscle tissue that burns calories even while you rest.
                 </p>
               </div>
             </div>
 
-            <div className="p-3 bg-white/5 border border-white/5 rounded-2xl flex items-start gap-2.5">
-              <span className="p-2 bg-purple-500/20 text-purple-300 rounded-xl shrink-0 text-lg">
+            <div className="p-3.5 bg-stone-50 dark:bg-stone-800/70 border border-stone-200/70 dark:border-stone-700/70 rounded-2xl flex items-start gap-3">
+              <span className="p-2 bg-purple-100 dark:bg-purple-950/80 text-purple-800 dark:text-purple-300 rounded-xl shrink-0 text-lg">
                 🌿
               </span>
               <div>
-                <h4 className="text-xs font-black text-purple-200">Clears Stress &amp; Bloat</h4>
-                <p className="text-[10.5px] text-slate-300 leading-snug mt-0.5">
+                <h4 className="text-xs font-bold text-purple-900 dark:text-purple-200">Clears Stress &amp; Bloat</h4>
+                <p className="text-xs text-stone-600 dark:text-stone-300 leading-relaxed mt-1">
                   Releases joyful endorphins that wash away workday tension and help food digest with zero heaviness.
                 </p>
               </div>
@@ -686,48 +691,48 @@ export default function WorkoutLogger() {
 
         {/* METRICS SUMMARY TILES */}
         <div className="grid grid-cols-4 gap-2">
-          <div className="bg-slate-900 border border-white/5 rounded-2xl p-3 text-center">
-            <Flame className="h-4 w-4 text-orange-400 mx-auto mb-1" />
-            <div className="text-base font-black text-white">{currentStreak}d</div>
-            <span className="text-[9px] text-slate-400 font-bold block uppercase">Streak</span>
+          <div className="bg-white dark:bg-stone-900/90 border border-stone-200/80 dark:border-stone-800 rounded-2xl p-3 text-center shadow-2xs">
+            <Flame className="h-4 w-4 text-orange-500 mx-auto mb-1" />
+            <div className="text-base font-black text-stone-900 dark:text-white">{currentStreak}d</div>
+            <span className="text-xs text-stone-500 dark:text-stone-400 font-bold block uppercase">Streak</span>
           </div>
 
-          <div className="bg-slate-900 border border-white/5 rounded-2xl p-3 text-center">
-            <Dumbbell className="h-4 w-4 text-amber-400 mx-auto mb-1" />
-            <div className="text-base font-black text-white">{totalWorkouts}</div>
-            <span className="text-[9px] text-slate-400 font-bold block uppercase">Sessions</span>
+          <div className="bg-white dark:bg-stone-900/90 border border-stone-200/80 dark:border-stone-800 rounded-2xl p-3 text-center shadow-2xs">
+            <Dumbbell className="h-4 w-4 text-amber-500 mx-auto mb-1" />
+            <div className="text-base font-black text-stone-900 dark:text-white">{totalWorkouts}</div>
+            <span className="text-xs text-stone-500 dark:text-stone-400 font-bold block uppercase">Sessions</span>
           </div>
 
-          <div className="bg-slate-900 border border-white/5 rounded-2xl p-3 text-center">
-            <Clock className="h-4 w-4 text-cyan-400 mx-auto mb-1" />
-            <div className="text-base font-black text-white">{totalMinutes}m</div>
-            <span className="text-[9px] text-slate-400 font-bold block uppercase">Total Min</span>
+          <div className="bg-white dark:bg-stone-900/90 border border-stone-200/80 dark:border-stone-800 rounded-2xl p-3 text-center shadow-2xs">
+            <Clock className="h-4 w-4 text-emerald-600 dark:text-emerald-400 mx-auto mb-1" />
+            <div className="text-base font-black text-stone-900 dark:text-white">{totalMinutes}m</div>
+            <span className="text-xs text-stone-500 dark:text-stone-400 font-bold block uppercase">Total Min</span>
           </div>
 
-          <div className="bg-slate-900 border border-white/5 rounded-2xl p-3 text-center">
-            <Zap className="h-4 w-4 text-rose-400 mx-auto mb-1" />
-            <div className="text-base font-black text-white">{Math.round(totalCalories / 1000)}k</div>
-            <span className="text-[9px] text-slate-400 font-bold block uppercase">Burned</span>
+          <div className="bg-white dark:bg-stone-900/90 border border-stone-200/80 dark:border-stone-800 rounded-2xl p-3 text-center shadow-2xs">
+            <Zap className="h-4 w-4 text-rose-500 mx-auto mb-1" />
+            <div className="text-base font-black text-stone-900 dark:text-white">{Math.round(totalCalories / 1000)}k</div>
+            <span className="text-xs text-stone-500 dark:text-stone-400 font-bold block uppercase">Burned</span>
           </div>
         </div>
 
         {/* RECENT WORKOUT LOGS */}
-        <div className="bg-slate-900/90 border border-orange-500/20 rounded-3xl p-4 space-y-3">
+        <div className="bg-white dark:bg-stone-900/90 border border-stone-200/80 dark:border-stone-800 rounded-3xl p-5 space-y-3.5 shadow-xs">
           <div className="flex items-center justify-between">
-            <h3 className="text-sm font-black text-white uppercase tracking-wider">
+            <h3 className="text-sm font-extrabold text-stone-900 dark:text-white uppercase tracking-wider">
               Recent Movement Sessions
             </h3>
             <button
               onClick={() => setShowAddDialog(true)}
-              className="text-xs text-orange-400 font-black hover:underline cursor-pointer"
+              className="text-xs text-[#164E3D] dark:text-emerald-400 font-bold hover:underline cursor-pointer"
             >
               + Log Custom
             </button>
           </div>
 
           {workouts.length === 0 && !logsLoading ? (
-            <div className="text-center py-6 text-slate-500 text-xs">
-              <Dumbbell className="h-8 w-8 mx-auto text-slate-600 mb-2" />
+            <div className="text-center py-6 text-stone-500 dark:text-stone-400 text-xs">
+              <Dumbbell className="h-8 w-8 mx-auto text-stone-400 dark:text-stone-600 mb-2" />
               <p>No workouts logged yet. Tap a preset above to log your first session!</p>
             </div>
           ) : (
@@ -737,32 +742,32 @@ export default function WorkoutLogger() {
                 return (
                   <div
                     key={workout.id}
-                    className="p-3 bg-white/5 border border-white/5 rounded-2xl flex items-center justify-between text-xs"
+                    className="p-3.5 bg-stone-50 dark:bg-stone-800/80 border border-stone-200/80 dark:border-stone-700/80 rounded-2xl flex items-center justify-between text-xs shadow-2xs"
                   >
                     <div className="flex items-center gap-2.5">
-                      <span className="text-xl p-1 bg-white/10 rounded-xl">
+                      <span className="text-xl p-1.5 bg-white dark:bg-stone-700 rounded-xl shadow-2xs">
                         {workoutType?.emoji || '💪'}
                       </span>
                       <div>
-                        <div className="font-bold text-white">{workout.name}</div>
-                        <div className="text-[10px] text-slate-400">
+                        <div className="font-bold text-stone-900 dark:text-white">{workout.name}</div>
+                        <div className="text-xs text-stone-500 dark:text-stone-400 mt-0.5">
                           {workout.duration} min • ~{workout.calories} kcal burned
                         </div>
                       </div>
                     </div>
 
-                    <div className="flex items-center gap-1">
+                    <div className="flex items-center gap-1.5">
                       <button
                         onClick={() => handleEditWorkout(workout)}
-                        className="p-1.5 text-slate-400 hover:text-white rounded-lg cursor-pointer"
+                        className="p-1.5 text-stone-500 hover:text-stone-800 dark:hover:text-white hover:bg-stone-200 dark:hover:bg-stone-700 rounded-lg cursor-pointer transition-colors"
                       >
-                        <Edit size={13} />
+                        <Edit size={14} />
                       </button>
                       <button
                         onClick={() => handleDeleteWorkout(workout.id)}
-                        className="p-1.5 text-red-400 hover:text-red-300 rounded-lg cursor-pointer"
+                        className="p-1.5 text-red-500 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-950/40 rounded-lg cursor-pointer transition-colors"
                       >
-                        <Trash2 size={13} />
+                        <Trash2 size={14} />
                       </button>
                     </div>
                   </div>

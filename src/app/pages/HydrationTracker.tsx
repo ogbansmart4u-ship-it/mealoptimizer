@@ -248,32 +248,33 @@ export default function HydrationTracker() {
   const chartData = generateHourlyData(hydrationData.logs);
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 pb-28">
+    <div className="min-h-screen bg-[#FAF8F5] dark:bg-[#0F1412] text-stone-900 dark:text-stone-100 pb-28 transition-colors">
       {/* Top Header */}
-      <div className="sticky top-0 z-30 bg-slate-950/90 backdrop-blur-xl border-b border-cyan-900/40 px-4 py-3.5 flex items-center justify-between">
+      <div className="sticky top-0 z-30 bg-[#FAF8F5]/90 dark:bg-[#0F1412]/90 backdrop-blur-xl border-b border-stone-200/80 dark:border-stone-800 px-4 py-3.5 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <button
-            onClick={() => navigate("/home")}
-            className="p-2 rounded-2xl bg-white/10 hover:bg-white/15 text-white transition-colors cursor-pointer"
+            onClick={() => navigate("/health")}
+            className="p-2 rounded-2xl bg-stone-100 dark:bg-stone-800 hover:bg-stone-200 dark:hover:bg-stone-700 text-stone-700 dark:text-stone-200 transition-colors cursor-pointer"
+            aria-label="Back to Health"
           >
             <ArrowLeft size={18} />
           </button>
           <div>
             <div className="flex items-center gap-1.5">
-              <Droplets size={16} className="text-cyan-400 animate-pulse" />
-              <h1 className="text-base font-black text-white tracking-wide">
+              <Droplets size={16} className="text-emerald-600 dark:text-emerald-400 animate-pulse" />
+              <h1 className="text-base font-extrabold text-stone-900 dark:text-white tracking-tight">
                 Hydration &amp; Body Cleanse
               </h1>
             </div>
-            <span className="text-[10.5px] text-cyan-300 font-bold">
+            <span className="text-xs text-[#164E3D] dark:text-emerald-400 font-semibold">
               Flush Stew Salt • Steady Blood Pressure • Energy
             </span>
           </div>
         </div>
 
         {/* Glasses Count Pill */}
-        <div className="flex items-center gap-1.5 bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 px-3 py-1 rounded-xl text-xs font-black">
-          <Droplets size={13} className="text-cyan-400" />
+        <div className="flex items-center gap-1.5 bg-emerald-50 dark:bg-emerald-950/60 text-[#164E3D] dark:text-emerald-300 border border-emerald-200/80 dark:border-emerald-800/80 px-3 py-1.5 rounded-xl text-xs font-bold shadow-2xs">
+          <Droplets size={14} className="text-emerald-600 dark:text-emerald-400" />
           <span>{glassesCount} / {goalGlasses} Glasses</span>
         </div>
       </div>
@@ -281,44 +282,46 @@ export default function HydrationTracker() {
       <div className="px-4 pt-4 space-y-4 max-w-xl mx-auto">
         {/* API error banner */}
         {logsError && (
-          <div className="bg-red-950/50 border border-red-500/30 rounded-2xl p-3 flex items-center gap-3 text-red-200 text-xs">
-            <AlertCircle className="h-5 w-5 text-red-400 shrink-0" />
+          <div className="bg-red-50 dark:bg-red-950/50 border border-red-200 dark:border-red-500/30 rounded-2xl p-3 flex items-center gap-3 text-red-700 dark:text-red-200 text-xs shadow-2xs">
+            <AlertCircle className="h-5 w-5 text-red-500 shrink-0" />
             <span>{logsError}</span>
           </div>
         )}
 
         {/* 10X HERO PROGRESS CARD WITH AVO MASCOT */}
-        <div className="bg-gradient-to-br from-[#0c2a33] via-[#093540] to-slate-950 rounded-3xl p-5 border-2 border-cyan-400/40 shadow-2xl relative overflow-hidden">
-          {/* Ambient Glows */}
-          <div className="absolute top-0 right-0 w-48 h-48 bg-cyan-400/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="bg-gradient-to-br from-[#164E3D] via-[#103D30] to-stone-900 rounded-3xl p-5 border border-emerald-700/50 shadow-xl relative overflow-hidden text-white">
+          {/* Ambient Glow */}
+          <div className="absolute top-0 right-0 w-48 h-48 bg-emerald-400/10 rounded-full blur-3xl pointer-events-none" />
 
           <div className="flex items-center justify-between relative z-10 mb-4">
             <div>
-              <span className="text-[10px] uppercase font-black tracking-wider text-cyan-300 bg-cyan-950 px-2.5 py-0.5 rounded-full border border-cyan-800">
-                Daily Goal: 2,500ml (~10 Glasses)
+              <span className="text-xs uppercase font-extrabold tracking-wider text-emerald-200 bg-white/10 px-2.5 py-1 rounded-full border border-white/15">
+                Daily Target: 2,500ml (~10 Glasses)
               </span>
-              <h2 className="text-2xl font-black text-white mt-1">
-                {hydrationData.totalIntake} <span className="text-sm font-bold text-cyan-300">ml Logged</span>
+              <h2 className="text-2xl font-black text-white mt-2">
+                {hydrationData.totalIntake} <span className="text-sm font-bold text-emerald-300">ml Logged</span>
               </h2>
-              <p className="text-xs text-slate-300 mt-0.5">
+              <p className="text-xs text-stone-200/90 mt-1 font-medium leading-relaxed">
                 {progressPercentage >= 100
-                  ? "🎉 Amazing! Your body is fully hydrated and kidneys are happy."
+                  ? "🎉 Amazing! Your body is fully hydrated and kidneys are refreshed."
                   : `${Math.round(dailyGoal - hydrationData.totalIntake)}ml remaining to reach today's target`}
               </p>
             </div>
 
             <div className="shrink-0 flex flex-col items-center">
-              <Mascot gesture={progressPercentage >= 100 ? "jump" : "drink"} size={76} />
-              <span className="text-[10px] font-black text-cyan-300 mt-1">
+              <div className="p-1.5 bg-white/10 backdrop-blur-md rounded-2xl border border-white/20 shadow-md">
+                <Mascot gesture={progressPercentage >= 100 ? "jump" : "drink"} size={72} />
+              </div>
+              <span className="text-xs font-bold text-emerald-300 mt-1.5">
                 {Math.round(progressPercentage)}% Cleanse
               </span>
             </div>
           </div>
 
           {/* Liquid Progress Bar */}
-          <div className="w-full h-4 bg-black/50 rounded-full overflow-hidden p-0.5 border border-cyan-500/30">
+          <div className="w-full h-4 bg-black/40 rounded-full overflow-hidden p-0.5 border border-white/20">
             <motion.div
-              className="h-full bg-gradient-to-r from-cyan-400 via-teal-400 to-emerald-400 rounded-full"
+              className="h-full bg-gradient-to-r from-emerald-400 via-teal-300 to-amber-300 rounded-full"
               initial={{ width: 0 }}
               animate={{ width: `${progressPercentage}%` }}
               transition={{ duration: 0.8, ease: "easeOut" }}
@@ -326,38 +329,38 @@ export default function HydrationTracker() {
           </div>
 
           {/* Quick 4-Step Milestone Markers */}
-          <div className="grid grid-cols-4 gap-1 mt-2 text-center text-[10px] font-bold text-slate-400">
-            <span className={hydrationData.totalIntake >= 625 ? "text-cyan-300 font-black" : ""}>Morning Wake (25%)</span>
-            <span className={hydrationData.totalIntake >= 1250 ? "text-cyan-300 font-black" : ""}>Lunch Buffer (50%)</span>
-            <span className={hydrationData.totalIntake >= 1875 ? "text-cyan-300 font-black" : ""}>Afternoon Walk (75%)</span>
-            <span className={hydrationData.totalIntake >= 2500 ? "text-emerald-300 font-black" : ""}>Goal (100% 🏆)</span>
+          <div className="grid grid-cols-4 gap-1 mt-2.5 text-center text-xs font-semibold text-stone-300">
+            <span className={hydrationData.totalIntake >= 625 ? "text-emerald-300 font-extrabold" : ""}>Morning (25%)</span>
+            <span className={hydrationData.totalIntake >= 1250 ? "text-emerald-300 font-extrabold" : ""}>Lunch (50%)</span>
+            <span className={hydrationData.totalIntake >= 1875 ? "text-emerald-300 font-extrabold" : ""}>Afternoon (75%)</span>
+            <span className={hydrationData.totalIntake >= 2500 ? "text-amber-300 font-extrabold" : ""}>Goal (100% 🏆)</span>
           </div>
 
           <button
             onClick={() => shareHydrationNudgeToWhatsApp(Number((hydrationData.totalIntake / 1000).toFixed(1)), Number((dailyGoal / 1000).toFixed(1)))}
-            className="w-full mt-3 py-2 bg-[#25D366]/15 hover:bg-[#25D366]/25 text-[#25D366] border border-[#25D366]/40 font-bold text-xs rounded-2xl flex items-center justify-center gap-2 cursor-pointer transition-all active:scale-98"
+            className="w-full mt-4 py-2.5 bg-[#25D366]/20 hover:bg-[#25D366]/30 text-white border border-[#25D366]/40 font-bold text-xs rounded-2xl flex items-center justify-center gap-2 cursor-pointer transition-all active:scale-98 shadow-sm"
           >
-            <MessageSquare size={14} />
+            <MessageSquare size={15} className="text-[#25D366]" />
             <span>Share Hydration Nudge to Family WhatsApp 💧</span>
           </button>
         </div>
 
         {/* 10X QUICK DRINK LOGGING SHELF (AFRICAN & CLEAN PRESETS) */}
-        <div className="bg-slate-900/90 border border-cyan-500/20 rounded-3xl p-4 space-y-3 shadow-xl">
+        <div className="bg-white dark:bg-stone-900/90 border border-stone-200/80 dark:border-stone-800 rounded-3xl p-5 space-y-3.5 shadow-xs">
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="text-sm font-black text-white flex items-center gap-1.5">
-                <Sparkles size={14} className="text-cyan-400" />
+              <h3 className="text-sm font-extrabold text-stone-900 dark:text-white flex items-center gap-2">
+                <Sparkles size={16} className="text-emerald-600 dark:text-emerald-400" />
                 <span>1-Tap Healthy Drinks &amp; Water</span>
               </h3>
-              <p className="text-[10.5px] text-slate-400">Tap any drink to add it directly to today's log</p>
+              <p className="text-xs text-stone-500 dark:text-stone-400 mt-0.5">Tap any drink to add it directly to today's log</p>
             </div>
             {hydrationData.logs.length > 0 && (
               <button
                 onClick={removeLastLog}
-                className="text-[10px] font-bold text-red-400 hover:text-red-300 bg-red-950/60 border border-red-900/60 px-2 py-1 rounded-lg cursor-pointer transition-all flex items-center gap-1"
+                className="text-xs font-bold text-rose-600 dark:text-rose-400 hover:text-rose-700 bg-rose-50 dark:bg-rose-950/60 border border-rose-200 dark:border-rose-900/60 px-2.5 py-1 rounded-xl cursor-pointer transition-all flex items-center gap-1 active:scale-95"
               >
-                <RotateCcw size={10} />
+                <RotateCcw size={12} />
                 <span>Undo</span>
               </button>
             )}
@@ -369,25 +372,25 @@ export default function HydrationTracker() {
                 key={bev.name}
                 type="button"
                 onClick={() => logWater(bev.amount, bev.type, bev.name)}
-                className="p-3 bg-slate-950/80 hover:bg-cyan-950/50 border border-cyan-900/40 hover:border-cyan-400 rounded-2xl text-left transition-all flex flex-col justify-between min-h-[110px] cursor-pointer shadow-sm group active:scale-95"
+                className="p-3.5 bg-stone-50/80 dark:bg-stone-800/80 hover:bg-emerald-50/60 dark:hover:bg-emerald-950/30 border border-stone-200/80 dark:border-stone-700/80 hover:border-emerald-500/60 rounded-2xl text-left transition-all duration-200 hover:-translate-y-0.5 flex flex-col justify-between min-h-[125px] cursor-pointer shadow-2xs group active:scale-95"
               >
                 <div className="flex items-center justify-between w-full">
                   <span className="text-2xl">{bev.icon}</span>
-                  <span className="text-[9px] font-black px-1.5 py-0.5 rounded-full bg-cyan-950 text-cyan-300 border border-cyan-800">
+                  <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800">
                     +{bev.amount}ml
                   </span>
                 </div>
 
-                <div className="my-1">
-                  <div className="text-xs font-black text-white group-hover:text-cyan-200 leading-tight">
+                <div className="my-1.5">
+                  <div className="text-xs font-bold text-stone-900 dark:text-stone-100 group-hover:text-emerald-700 dark:group-hover:text-emerald-300 leading-tight">
                     {bev.name}
                   </div>
-                  <div className="text-[9.5px] text-slate-400 leading-tight mt-0.5 line-clamp-1">
+                  <div className="text-xs text-stone-500 dark:text-stone-400 leading-tight mt-1 line-clamp-1">
                     {bev.benefit}
                   </div>
                 </div>
 
-                <div className="text-[9px] font-bold text-amber-300 flex items-center gap-1">
+                <div className="text-xs font-bold text-amber-700 dark:text-amber-400 flex items-center gap-1">
                   <span>{bev.badge}</span>
                 </div>
               </button>
@@ -396,63 +399,65 @@ export default function HydrationTracker() {
         </div>
 
         {/* 4 METABOLIC SUPERPOWER CARDS (EXPLAINED IN EASY EVERYDAY LANGUAGE) */}
-        <div className="bg-slate-900/90 border border-teal-500/20 rounded-3xl p-4 space-y-3">
-          <div className="flex items-center gap-2">
-            <ShieldCheck size={18} className="text-emerald-400" />
+        <div className="bg-white dark:bg-stone-900/90 border border-stone-200/80 dark:border-stone-800 rounded-3xl p-5 space-y-3.5 shadow-xs">
+          <div className="flex items-center gap-2.5">
+            <div className="p-2 rounded-xl bg-emerald-50 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300">
+              <ShieldCheck size={18} />
+            </div>
             <div>
-              <h3 className="text-sm font-black text-white">Why Drinking Water Protects Your Health</h3>
-              <p className="text-[10.5px] text-slate-400">Simple facts for your daily meals and energy</p>
+              <h3 className="text-sm font-extrabold text-stone-900 dark:text-white">Why Drinking Water Protects Your Health</h3>
+              <p className="text-xs text-stone-500 dark:text-stone-400 mt-0.5">Simple facts for your daily meals and energy</p>
             </div>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
             {/* Benefit 1 */}
-            <div className="p-3 bg-white/5 border border-white/5 rounded-2xl flex items-start gap-2.5">
-              <span className="p-2 bg-emerald-500/20 text-emerald-300 rounded-xl shrink-0 text-lg">
+            <div className="p-3.5 bg-stone-50 dark:bg-stone-800/70 border border-stone-200/70 dark:border-stone-700/70 rounded-2xl flex items-start gap-3">
+              <span className="p-2 bg-emerald-100 dark:bg-emerald-950/80 text-emerald-800 dark:text-emerald-300 rounded-xl shrink-0 text-lg">
                 🧂
               </span>
               <div>
-                <h4 className="text-xs font-black text-emerald-200">Flushes Stew &amp; Soup Salt</h4>
-                <p className="text-[10.5px] text-slate-300 leading-snug mt-0.5">
+                <h4 className="text-xs font-bold text-emerald-900 dark:text-emerald-200">Flushes Stew &amp; Soup Salt</h4>
+                <p className="text-xs text-stone-600 dark:text-stone-300 leading-relaxed mt-1">
                   Helps your kidneys wash away excess sodium from savory soups, keeping your blood pressure calm and relaxed.
                 </p>
               </div>
             </div>
 
             {/* Benefit 2 */}
-            <div className="p-3 bg-white/5 border border-white/5 rounded-2xl flex items-start gap-2.5">
-              <span className="p-2 bg-amber-500/20 text-amber-300 rounded-xl shrink-0 text-lg">
+            <div className="p-3.5 bg-stone-50 dark:bg-stone-800/70 border border-stone-200/70 dark:border-stone-700/70 rounded-2xl flex items-start gap-3">
+              <span className="p-2 bg-amber-100 dark:bg-amber-950/80 text-amber-800 dark:text-amber-300 rounded-xl shrink-0 text-lg">
                 🍲
               </span>
               <div>
-                <h4 className="text-xs font-black text-amber-200">Smooth Swallow Digestion</h4>
-                <p className="text-[10.5px] text-slate-300 leading-snug mt-0.5">
+                <h4 className="text-xs font-bold text-amber-900 dark:text-amber-200">Smooth Swallow Digestion</h4>
+                <p className="text-xs text-stone-600 dark:text-stone-300 leading-relaxed mt-1">
                   Water softens heavy swallows like pounded yam, eba, and fufu so your stomach digests them without heaviness or bloat.
                 </p>
               </div>
             </div>
 
             {/* Benefit 3 */}
-            <div className="p-3 bg-white/5 border border-white/5 rounded-2xl flex items-start gap-2.5">
-              <span className="p-2 bg-blue-500/20 text-blue-300 rounded-xl shrink-0 text-lg">
+            <div className="p-3.5 bg-stone-50 dark:bg-stone-800/70 border border-stone-200/70 dark:border-stone-700/70 rounded-2xl flex items-start gap-3">
+              <span className="p-2 bg-blue-100 dark:bg-blue-950/80 text-blue-800 dark:text-blue-300 rounded-xl shrink-0 text-lg">
                 🩸
               </span>
               <div>
-                <h4 className="text-xs font-black text-blue-200">Buffers Blood Sugar Spikes</h4>
-                <p className="text-[10.5px] text-slate-300 leading-snug mt-0.5">
+                <h4 className="text-xs font-bold text-blue-900 dark:text-blue-200">Buffers Blood Sugar Spikes</h4>
+                <p className="text-xs text-stone-600 dark:text-stone-300 leading-relaxed mt-1">
                   Drinking water naturally dilutes sugar concentration in your bloodstream after carbohydrate-rich meals.
                 </p>
               </div>
             </div>
 
             {/* Benefit 4 */}
-            <div className="p-3 bg-white/5 border border-white/5 rounded-2xl flex items-start gap-2.5">
-              <span className="p-2 bg-purple-500/20 text-purple-300 rounded-xl shrink-0 text-lg">
+            <div className="p-3.5 bg-stone-50 dark:bg-stone-800/70 border border-stone-200/70 dark:border-stone-700/70 rounded-2xl flex items-start gap-3">
+              <span className="p-2 bg-purple-100 dark:bg-purple-950/80 text-purple-800 dark:text-purple-300 rounded-xl shrink-0 text-lg">
                 ⚡
               </span>
               <div>
-                <h4 className="text-xs font-black text-purple-200">Stops 3 PM Afternoon Fatigue</h4>
-                <p className="text-[10.5px] text-slate-300 leading-snug mt-0.5">
+                <h4 className="text-xs font-bold text-purple-900 dark:text-purple-200">Stops 3 PM Afternoon Fatigue</h4>
+                <p className="text-xs text-stone-600 dark:text-stone-300 leading-relaxed mt-1">
                   Most afternoon headaches and sleepiness in warm weather are mild dehydration. One cool glass brings back instant energy!
                 </p>
               </div>
@@ -461,40 +466,40 @@ export default function HydrationTracker() {
         </div>
 
         {/* TODAY'S INTAKE PATTERN TIMELINE */}
-        <div className="bg-slate-900/90 border border-cyan-500/20 rounded-3xl p-4 space-y-3">
+        <div className="bg-white dark:bg-stone-900/90 border border-stone-200/80 dark:border-stone-800 rounded-3xl p-5 space-y-3.5 shadow-xs">
           <div className="flex items-center justify-between">
-            <h3 className="text-sm font-black text-white flex items-center gap-1.5">
-              <Clock size={15} className="text-cyan-400" />
+            <h3 className="text-sm font-extrabold text-stone-900 dark:text-white flex items-center gap-2">
+              <Clock size={16} className="text-emerald-600 dark:text-emerald-400" />
               <span>Today's Hydration Flow</span>
             </h3>
-            <span className="text-[10px] text-slate-400 font-bold">
+            <span className="text-xs text-stone-500 dark:text-stone-400 font-bold">
               {hydrationData.logs.length} Drink{hydrationData.logs.length === 1 ? "" : "s"} Logged
             </span>
           </div>
 
           {hydrationData.logs.length === 0 ? (
-            <div className="py-6 text-center text-slate-500 text-xs">
+            <div className="py-6 text-center text-stone-500 dark:text-stone-400 text-xs">
               No drinks logged yet today. Tap a drink above to get started! 💧
             </div>
           ) : (
-            <div className="space-y-1.5 max-h-48 overflow-y-auto pr-1">
+            <div className="space-y-2 max-h-48 overflow-y-auto pr-1">
               {[...hydrationData.logs].reverse().map((log) => (
                 <div
                   key={log.id}
-                  className="p-2.5 bg-white/5 rounded-xl flex items-center justify-between text-xs"
+                  className="p-3 bg-stone-50 dark:bg-stone-800/70 border border-stone-200/70 dark:border-stone-700/70 rounded-2xl flex items-center justify-between text-xs"
                 >
-                  <div className="flex items-center gap-2">
-                    <span className="text-sm">
+                  <div className="flex items-center gap-2.5">
+                    <span className="text-base">
                       {log.type === "zobo" ? "🌺" : log.type === "coconut" ? "🥥" : log.type === "ginger_lemon" ? "🍋" : log.type === "tea" ? "🍵" : "💧"}
                     </span>
                     <div>
-                      <span className="font-bold text-white uppercase text-[11px]">{log.type.replace("_", " ")}</span>
-                      <span className="text-slate-400 text-[10px] ml-2">
+                      <span className="font-bold text-stone-900 dark:text-stone-100 uppercase text-xs">{log.type.replace("_", " ")}</span>
+                      <span className="text-stone-500 dark:text-stone-400 text-xs ml-2">
                         {new Date(log.timestamp).toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit", hour12: true })}
                       </span>
                     </div>
                   </div>
-                  <span className="font-black text-cyan-300">+{log.amount}ml</span>
+                  <span className="font-extrabold text-[#164E3D] dark:text-emerald-400 text-xs">+{log.amount}ml</span>
                 </div>
               ))}
             </div>

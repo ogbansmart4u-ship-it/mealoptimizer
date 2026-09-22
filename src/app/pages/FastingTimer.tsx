@@ -263,26 +263,26 @@ export default function FastingTimer() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#090d16] via-[#0f172a] to-[#090d16] text-slate-100 pb-28">
+    <div className="min-h-screen bg-[#FAF8F5] dark:bg-[#0F1412] text-stone-900 dark:text-stone-100 pb-28 transition-colors">
       {/* Top Header */}
-      <div className="bg-slate-900/80 backdrop-blur-md px-4 sm:px-6 pt-9 pb-5 border-b border-amber-500/20 sticky top-0 z-20">
+      <div className="bg-[#FAF8F5]/90 dark:bg-[#0F1412]/90 backdrop-blur-md px-4 sm:px-6 pt-9 pb-5 border-b border-stone-200/80 dark:border-stone-800 sticky top-0 z-20">
         <div className="max-w-2xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-3">
             <button
-              onClick={() => navigate(-1)}
-              className="text-amber-200 hover:bg-white/10 rounded-full p-2 transition-colors cursor-pointer"
-              aria-label="Go back"
+              onClick={() => navigate("/health")}
+              className="text-stone-700 dark:text-stone-200 hover:bg-stone-100 dark:hover:bg-stone-800 rounded-full p-2 transition-colors cursor-pointer"
+              aria-label="Back to Health"
             >
               <ChevronLeft className="h-6 w-6" />
             </button>
             <div>
-              <h1 className="text-xl sm:text-2xl font-black text-white leading-tight flex items-center gap-2">
+              <h1 className="text-xl sm:text-2xl font-black text-stone-900 dark:text-white leading-tight flex items-center gap-2">
                 <span>Fasting &amp; Autophagy</span>
-                <span className="text-xs px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 font-bold border border-amber-500/30">
+                <span className="text-xs px-2.5 py-0.5 rounded-full bg-amber-50 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 font-bold border border-amber-200 dark:border-amber-800/80">
                   {activeProtoConfig.label}
                 </span>
               </h1>
-              <p className="text-xs text-amber-200/80 font-medium">
+              <p className="text-xs text-[#164E3D] dark:text-emerald-400 font-semibold">
                 Metabolic Flexibility, Autophagy, &amp; Insulin Sensitivity Hub
               </p>
             </div>
@@ -290,7 +290,7 @@ export default function FastingTimer() {
 
           <button
             onClick={() => setShowProtocolModal(true)}
-            className="bg-amber-500/20 hover:bg-amber-500/30 border border-amber-500/40 text-amber-300 rounded-full text-xs font-bold px-3 py-1.5 transition-all cursor-pointer"
+            className="bg-amber-50 dark:bg-amber-950/60 hover:bg-amber-100 border border-amber-200 dark:border-amber-800/80 text-amber-800 dark:text-amber-300 rounded-full text-xs font-bold px-3.5 py-1.5 transition-all cursor-pointer shadow-2xs"
           >
             Change Plan ⚙️
           </button>
@@ -300,20 +300,22 @@ export default function FastingTimer() {
       {/* Main Container */}
       <div className="max-w-2xl mx-auto px-4 sm:px-6 mt-5 space-y-5">
         {/* 🥑 10X Animated Avo Fasting Coach */}
-        <div className="bg-gradient-to-r from-amber-950/90 via-slate-900 to-[#1f7a8c]/80 rounded-3xl p-4 sm:p-5 text-white shadow-xl border border-amber-400/30 relative overflow-hidden flex items-center justify-between gap-4">
+        <div className="bg-gradient-to-r from-amber-950/90 via-stone-900 to-[#164E3D]/90 rounded-3xl p-5 text-white shadow-xl border border-amber-400/30 relative overflow-hidden flex items-center justify-between gap-4">
           <div className="relative z-10 flex items-center gap-3.5 min-w-0">
-            <Mascot size={68} className="shrink-0 drop-shadow-lg" />
+            <div className="p-1.5 bg-white/10 backdrop-blur-md rounded-2xl border border-white/20 shrink-0">
+              <Mascot size={64} className="drop-shadow-lg" />
+            </div>
             <div className="min-w-0">
-              <div className="flex items-center gap-1.5 mb-0.5">
-                <span className="text-[9.5px] font-black uppercase tracking-wider bg-amber-400 text-slate-950 px-2 py-0.2 rounded-full shadow-2xs">
+              <div className="flex items-center gap-2 mb-1">
+                <span className="text-xs font-extrabold uppercase tracking-wider bg-amber-400 text-slate-950 px-2.5 py-0.5 rounded-full shadow-2xs">
                   Avo Fasting Coach
                 </span>
-                <span className="text-[10px] text-amber-200 font-bold hidden sm:inline">Active Metabolic Phase</span>
+                <span className="text-xs text-amber-200 font-bold hidden sm:inline">Active Metabolic Phase</span>
               </div>
               <h3 className="text-sm sm:text-base font-black text-white leading-tight">
                 {currentAutophagyStage.icon} {currentAutophagyStage.title}
               </h3>
-              <p className="text-[11px] sm:text-xs text-amber-100/90 line-clamp-2 mt-0.5 font-medium leading-relaxed">
+              <p className="text-xs text-amber-100/90 line-clamp-2 mt-1 font-medium leading-relaxed">
                 "{currentAutophagyStage.desc}"
               </p>
             </div>
@@ -321,14 +323,10 @@ export default function FastingTimer() {
         </div>
 
         {/* ⏳ 10X Live Circular Fasting Clock & Command Center */}
-        <div className="bg-slate-900/90 rounded-3xl border border-amber-500/30 p-6 sm:p-8 shadow-2xl text-center relative overflow-hidden">
-          {/* Radial Gradient Glow */}
-          <div className="absolute -top-24 -left-24 w-48 h-48 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
-          <div className="absolute -bottom-24 -right-24 w-48 h-48 bg-teal-500/10 rounded-full blur-3xl pointer-events-none" />
-
+        <div className="bg-white dark:bg-stone-900/90 rounded-3xl border border-stone-200/80 dark:border-stone-800 p-6 sm:p-8 shadow-xs text-center relative overflow-hidden">
           {/* Current Protocol Badge */}
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/20 text-amber-300 text-xs font-black mb-6 border border-amber-500/30 shadow-2xs">
-            <Flame size={14} className="text-amber-400 animate-pulse" />
+          <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-amber-50 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 text-xs font-extrabold mb-6 border border-amber-200 dark:border-amber-800/80 shadow-2xs">
+            <Flame size={14} className="text-amber-500 animate-pulse" />
             <span>{currentSession ? `Fasting Active • ${activeProtoConfig.label}` : "Fasting Clock Idle"}</span>
           </div>
 
@@ -340,7 +338,8 @@ export default function FastingTimer() {
                 cx="50%"
                 cy="50%"
                 r="105"
-                stroke="#1e293b"
+                stroke="#e7e5e4"
+                dark-stroke="#292524"
                 strokeWidth="16"
                 fill="none"
               />
@@ -367,29 +366,29 @@ export default function FastingTimer() {
 
             {/* Inner Ring Content */}
             <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-              <span className="text-3xl sm:text-4xl font-black text-white tracking-tight font-mono">
+              <span className="text-3xl sm:text-4xl font-black text-stone-900 dark:text-white tracking-tight font-mono">
                 {currentSession ? formattedElapsed : "00:00:00"}
               </span>
-              <span className="text-xs font-bold text-amber-300 uppercase tracking-widest mt-1">
+              <span className="text-xs font-bold text-amber-700 dark:text-amber-400 uppercase tracking-widest mt-1">
                 {currentSession ? `${progressPercent.toFixed(0)}% Completed` : "Target: 16 Hours"}
               </span>
-              <span className="text-[11px] text-slate-400 mt-1">
+              <span className="text-xs text-stone-500 dark:text-stone-400 mt-1">
                 {currentSession ? formattedRemaining : "Ready to rejuvenate"}
               </span>
             </div>
           </div>
 
           {/* Fasting Start & End Schedule Grid */}
-          <div className="grid grid-cols-2 gap-3 max-w-sm mx-auto mb-6 bg-slate-800/80 border border-slate-700/80 rounded-2xl p-3 text-xs text-left">
+          <div className="grid grid-cols-2 gap-3 max-w-sm mx-auto mb-6 bg-stone-50 dark:bg-stone-800/80 border border-stone-200/80 dark:border-stone-700/80 rounded-2xl p-3.5 text-xs text-left">
             <div>
-              <span className="text-slate-400 block text-[10px] uppercase tracking-wider font-bold">Fast Started</span>
-              <span className="text-sm font-black text-white">
+              <span className="text-stone-500 dark:text-stone-400 block text-xs uppercase tracking-wider font-bold">Fast Started</span>
+              <span className="text-sm font-black text-stone-900 dark:text-white">
                 {currentSession ? new Date(currentSession.startTime).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) : "--:--"}
               </span>
             </div>
             <div>
-              <span className="text-slate-400 block text-[10px] uppercase tracking-wider font-bold">Target Finish</span>
-              <span className="text-sm font-black text-emerald-400">{estimatedEndTime}</span>
+              <span className="text-stone-500 dark:text-stone-400 block text-xs uppercase tracking-wider font-bold">Target Finish</span>
+              <span className="text-sm font-black text-emerald-600 dark:text-emerald-400">{estimatedEndTime}</span>
             </div>
           </div>
 
@@ -399,13 +398,13 @@ export default function FastingTimer() {
               <>
                 <button
                   onClick={() => setIsPaused(!isPaused)}
-                  className="p-3.5 rounded-2xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-white font-bold text-xs transition-all cursor-pointer active:scale-95"
+                  className="p-3.5 rounded-2xl bg-stone-100 dark:bg-stone-800 hover:bg-stone-200 dark:hover:bg-stone-700 border border-stone-200 dark:border-stone-700 text-stone-800 dark:text-stone-200 font-bold text-xs transition-all cursor-pointer active:scale-95"
                 >
                   {isPaused ? <Play size={18} /> : <Pause size={18} />}
                 </button>
                 <button
                   onClick={handleEndFast}
-                  className="flex-1 bg-gradient-to-r from-emerald-600 via-teal-600 to-[#1f7a8c] hover:opacity-95 text-white rounded-2xl py-3.5 px-5 font-black text-xs sm:text-sm shadow-lg shadow-emerald-950 transition-all cursor-pointer active:scale-[0.99] flex items-center justify-center gap-2"
+                  className="flex-1 bg-[#164E3D] hover:bg-[#123E31] text-white rounded-2xl py-3.5 px-5 font-bold text-xs sm:text-sm shadow-md transition-all cursor-pointer active:scale-[0.99] flex items-center justify-center gap-2"
                 >
                   <Check size={16} />
                   <span>Break Fast &amp; Log Rejuvenation</span>
@@ -414,7 +413,7 @@ export default function FastingTimer() {
             ) : (
               <button
                 onClick={() => handleStartFast(selectedProtocol)}
-                className="w-full bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 hover:opacity-95 text-slate-950 rounded-2xl py-4 font-black text-sm shadow-xl shadow-amber-950 transition-all cursor-pointer active:scale-[0.99] flex items-center justify-center gap-2"
+                className="w-full bg-[#164E3D] hover:bg-[#123E31] text-white rounded-2xl py-3.5 font-bold text-sm shadow-md transition-all cursor-pointer active:scale-[0.99] flex items-center justify-center gap-2"
               >
                 <Flame size={18} />
                 <span>Start {activeProtoConfig.label} Fast Now</span>
@@ -424,24 +423,24 @@ export default function FastingTimer() {
         </div>
 
         {/* 💧 Fasting Hydration Companion */}
-        <div className="bg-slate-900/90 rounded-3xl border border-sky-500/30 p-5 shadow-xl flex items-center justify-between gap-4">
+        <div className="bg-white dark:bg-stone-900/90 rounded-3xl border border-stone-200/80 dark:border-stone-800 p-5 shadow-xs flex items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <div className="p-3 bg-sky-500/20 text-sky-400 rounded-2xl">
+            <div className="p-3 bg-sky-50 dark:bg-sky-950/60 text-sky-600 dark:text-sky-400 rounded-2xl border border-sky-200 dark:border-sky-800/60">
               <Droplet size={22} />
             </div>
             <div>
-              <h3 className="text-sm font-black text-white">Fasting Hydration Tracker</h3>
-              <p className="text-xs text-slate-400">
+              <h3 className="text-sm font-extrabold text-stone-900 dark:text-white">Fasting Hydration Tracker</h3>
+              <p className="text-xs text-stone-500 dark:text-stone-400">
                 Water &amp; herbal teas accelerate autophagy and blunt hunger pangs.
               </p>
               <div className="flex items-center gap-1 mt-1.5">
                 {Array.from({ length: 8 }).map((_, i) => (
                   <div
                     key={i}
-                    className={`h-2.5 w-5 rounded-full ${i < waterCups ? "bg-sky-400 shadow-xs" : "bg-slate-800"}`}
+                    className={`h-2.5 w-5 rounded-full ${i < waterCups ? "bg-sky-500 shadow-xs" : "bg-stone-200 dark:bg-stone-800"}`}
                   />
                 ))}
-                <span className="text-[11px] font-bold text-sky-300 ml-2">
+                <span className="text-xs font-bold text-sky-700 dark:text-sky-300 ml-2">
                   {waterCups * 250}ml / 2000ml
                 </span>
               </div>
@@ -450,7 +449,7 @@ export default function FastingTimer() {
 
           <button
             onClick={handleAddWater}
-            className="p-2.5 bg-sky-500 hover:bg-sky-400 text-slate-950 rounded-2xl text-xs font-black transition-all cursor-pointer active:scale-95 shrink-0 flex items-center gap-1 shadow-md"
+            className="p-2.5 bg-sky-500 hover:bg-sky-600 text-white rounded-2xl text-xs font-bold transition-all cursor-pointer active:scale-95 shrink-0 flex items-center gap-1 shadow-xs"
           >
             <Plus size={14} />
             <span>+250ml</span>
@@ -458,14 +457,14 @@ export default function FastingTimer() {
         </div>
 
         {/* 🧬 Interactive Autophagy & Cellular Stage Map */}
-        <div className="bg-slate-900/90 rounded-3xl border border-amber-500/30 p-5 sm:p-6 shadow-xl space-y-4">
+        <div className="bg-white dark:bg-stone-900/90 rounded-3xl border border-stone-200/80 dark:border-stone-800 p-5 sm:p-6 shadow-xs space-y-4">
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="text-sm sm:text-base font-black text-white flex items-center gap-2">
-                <Dna size={18} className="text-purple-400" />
+              <h3 className="text-sm sm:text-base font-extrabold text-stone-900 dark:text-white flex items-center gap-2">
+                <Dna size={18} className="text-purple-600 dark:text-purple-400" />
                 <span>The 5 Stages of Autophagy &amp; Fat Burn</span>
               </h3>
-              <p className="text-xs text-slate-400">Tap any stage to reveal its cellular biochemistry</p>
+              <p className="text-xs text-stone-500 dark:text-stone-400 mt-0.5">Tap any stage to reveal its cellular biochemistry</p>
             </div>
           </div>
 
@@ -482,25 +481,25 @@ export default function FastingTimer() {
                   }}
                   className={`p-3.5 rounded-2xl border transition-all cursor-pointer ${
                     isCurrent
-                      ? "bg-purple-950/40 border-purple-500/60 ring-1 ring-purple-500/40 shadow-xs"
+                      ? "bg-purple-50 dark:bg-purple-950/40 border-purple-400 dark:border-purple-600 ring-1 ring-purple-400/40 shadow-xs"
                       : isUnlocked
-                      ? "bg-slate-800/80 border-slate-700/80 text-white"
-                      : "bg-slate-900/50 border-slate-800/60 opacity-60"
+                      ? "bg-stone-50 dark:bg-stone-800/80 border-stone-200/80 dark:border-stone-700/80 text-stone-900 dark:text-white"
+                      : "bg-stone-50/50 dark:bg-stone-900/50 border-stone-200/50 dark:border-stone-800/60 opacity-60"
                   }`}
                 >
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2.5">
                       <span className="text-xl">{stage.icon}</span>
                       <div>
-                        <div className="text-xs font-black text-white flex items-center gap-2">
+                        <div className="text-xs font-bold text-stone-900 dark:text-white flex items-center gap-2">
                           <span>{stage.title}</span>
                           {isCurrent && (
-                            <span className="text-[9px] bg-purple-500 text-white font-bold px-1.5 py-0.2 rounded-full animate-pulse">
+                            <span className="text-xs bg-purple-500 text-white font-bold px-2 py-0.5 rounded-full animate-pulse">
                               YOU ARE HERE
                             </span>
                           )}
                         </div>
-                        <span className="text-[10px] font-bold text-amber-300">
+                        <span className="text-xs font-bold text-amber-700 dark:text-amber-400">
                           Starts at {stage.hours} Hours
                         </span>
                       </div>
@@ -508,17 +507,17 @@ export default function FastingTimer() {
 
                     <div className="flex items-center gap-2 text-xs font-bold">
                       {isUnlocked ? (
-                        <span className="text-emerald-400 text-xs flex items-center gap-1">
+                        <span className="text-emerald-600 dark:text-emerald-400 text-xs flex items-center gap-1">
                           <CheckCircle size={14} /> Unlocked
                         </span>
                       ) : (
-                        <span className="text-slate-500 text-xs">Locked</span>
+                        <span className="text-stone-400 text-xs">Locked</span>
                       )}
-                      <ChevronRight size={14} className="text-slate-400" />
+                      <ChevronRight size={14} className="text-stone-400" />
                     </div>
                   </div>
 
-                  <p className="text-[11px] text-slate-300 mt-2 leading-relaxed bg-slate-950/40 p-2.5 rounded-xl border border-slate-800/80">
+                  <p className="text-xs text-stone-600 dark:text-stone-300 mt-2 leading-relaxed bg-white dark:bg-stone-950/40 p-2.5 rounded-xl border border-stone-200 dark:border-stone-800/80">
                     {stage.desc}
                   </p>
                 </div>
@@ -527,60 +526,62 @@ export default function FastingTimer() {
           </div>
         </div>
 
-        {/* 🌟 The Core Value of Intermittent Fasting (Why It Changes Lives) */}
-        <div className="bg-slate-900/90 rounded-3xl border border-amber-500/30 p-5 sm:p-6 shadow-xl space-y-4">
-          <div className="flex items-center gap-2 text-amber-300 font-black text-sm">
-            <Sparkles size={18} className="text-amber-400" />
+        {/* 🌟 The Core Value of Intermittent Fasting */}
+        <div className="bg-white dark:bg-stone-900/90 rounded-3xl border border-stone-200/80 dark:border-stone-800 p-5 sm:p-6 shadow-xs space-y-4">
+          <div className="flex items-center gap-2 text-stone-900 dark:text-white font-extrabold text-sm">
+            <Sparkles size={18} className="text-amber-500" />
             <span>Why Intermittent Fasting Works (Proven Science)</span>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {FASTING_BENEFITS.map((b, idx) => (
               <div key={idx} className={`p-4 rounded-2xl border ${b.color} space-y-1`}>
-                <div className="flex items-center gap-2 font-black text-xs text-white">
+                <div className="flex items-center gap-2 font-bold text-xs text-stone-900 dark:text-white">
                   <span className="text-lg">{b.icon}</span>
                   <span>{b.title}</span>
                 </div>
-                <p className="text-[11px] text-slate-300 leading-relaxed">{b.desc}</p>
+                <p className="text-xs text-stone-600 dark:text-stone-300 leading-relaxed">{b.desc}</p>
               </div>
             ))}
           </div>
         </div>
 
-        {/* 🍲 African Cultural Fast-Breaking Protocol (Avoid The Glycemic Crash) */}
-        <div className="bg-slate-900/90 rounded-3xl border border-teal-500/30 p-5 sm:p-6 shadow-xl space-y-3.5">
-          <div className="flex items-center gap-2 text-teal-300 font-black text-sm">
-            <ShieldCheck size={18} className="text-teal-400" />
+        {/* 🍲 African Cultural Fast-Breaking Protocol */}
+        <div className="bg-white dark:bg-stone-900/90 rounded-3xl border border-stone-200/80 dark:border-stone-800 p-5 sm:p-6 shadow-xs space-y-3.5">
+          <div className="flex items-center gap-2 text-stone-900 dark:text-white font-extrabold text-sm">
+            <div className="p-1.5 rounded-xl bg-teal-50 dark:bg-teal-950 text-teal-700 dark:text-teal-300">
+              <ShieldCheck size={18} />
+            </div>
             <span>African Fast-Breaking Guide (No Glycemic Shock)</span>
           </div>
 
-          <div className="bg-slate-800/80 border border-slate-700/80 rounded-2xl p-4 space-y-2.5 text-xs">
-            <p className="text-slate-300 leading-relaxed font-medium">
+          <div className="bg-stone-50 dark:bg-stone-800/80 border border-stone-200/80 dark:border-stone-700/80 rounded-2xl p-4 space-y-2.5 text-xs">
+            <p className="text-stone-700 dark:text-stone-300 leading-relaxed font-medium">
               After a 16+ hour fast, insulin sensitivity is ultra-high. Breaking your fast abruptly with <strong>pounded yam, giant eba, or sweetened malt</strong> will cause an acute glucose spike followed by intense fatigue.
             </p>
 
             <div className="space-y-2 pt-1">
               <div className="flex items-start gap-2.5">
-                <span className="p-1 rounded-lg bg-teal-500/20 text-teal-300 font-bold text-[10px]">STEP 1</span>
+                <span className="px-2 py-0.5 rounded-lg bg-teal-100 dark:bg-teal-950 text-teal-800 dark:text-teal-300 font-bold text-xs">STEP 1</span>
                 <div>
-                  <strong className="text-white">Hydrate &amp; Warm Up (0 - 15 Mins):</strong>
-                  <span className="text-slate-400 block text-[11px]">Light goat meat pepper soup, bone broth, or warm lemon water.</span>
+                  <strong className="text-stone-900 dark:text-white">Hydrate &amp; Warm Up (0 - 15 Mins):</strong>
+                  <span className="text-stone-500 dark:text-stone-400 block text-xs mt-0.5">Light goat meat pepper soup, bone broth, or warm lemon water.</span>
                 </div>
               </div>
 
               <div className="flex items-start gap-2.5">
-                <span className="p-1 rounded-lg bg-teal-500/20 text-teal-300 font-bold text-[10px]">STEP 2</span>
+                <span className="px-2 py-0.5 rounded-lg bg-teal-100 dark:bg-teal-950 text-teal-800 dark:text-teal-300 font-bold text-xs">STEP 2</span>
                 <div>
-                  <strong className="text-white">Protein &amp; Fiber Cushion (15 - 30 Mins):</strong>
-                  <span className="text-slate-400 block text-[11px]">Boiled eggs, sliced avocado, or steamed efo riro with mackerel.</span>
+                  <strong className="text-stone-900 dark:text-white">Protein &amp; Fiber Cushion (15 - 30 Mins):</strong>
+                  <span className="text-stone-500 dark:text-stone-400 block text-xs mt-0.5">Boiled eggs, sliced avocado, or steamed efo riro with mackerel.</span>
                 </div>
               </div>
 
               <div className="flex items-start gap-2.5">
-                <span className="p-1 rounded-lg bg-teal-500/20 text-teal-300 font-bold text-[10px]">STEP 3</span>
+                <span className="px-2 py-0.5 rounded-lg bg-teal-100 dark:bg-teal-950 text-teal-800 dark:text-teal-300 font-bold text-xs">STEP 3</span>
                 <div>
-                  <strong className="text-white">Main Cultural Meal:</strong>
-                  <span className="text-slate-400 block text-[11px]">Moderate portions of beans, plantain, or brown rice paired with vegetable soup.</span>
+                  <strong className="text-stone-900 dark:text-white">Main Cultural Meal:</strong>
+                  <span className="text-stone-500 dark:text-stone-400 block text-xs mt-0.5">Moderate portions of beans, plantain, or brown rice paired with vegetable soup.</span>
                 </div>
               </div>
             </div>
@@ -590,13 +591,13 @@ export default function FastingTimer() {
 
       {/* Protocol Selection Modal */}
       <Dialog open={showProtocolModal} onOpenChange={setShowProtocolModal}>
-        <DialogContent className="max-w-md bg-slate-900 border border-amber-500/30 text-white rounded-3xl p-6">
+        <DialogContent className="max-w-md bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 text-stone-900 dark:text-white rounded-3xl p-6">
           <DialogHeader>
-            <DialogTitle className="text-lg font-black text-amber-300 flex items-center gap-2">
-              <Flame size={18} />
+            <DialogTitle className="text-lg font-black text-stone-900 dark:text-white flex items-center gap-2">
+              <Flame size={18} className="text-amber-500" />
               <span>Choose Fasting Protocol</span>
             </DialogTitle>
-            <DialogDescription className="text-xs text-slate-400">
+            <DialogDescription className="text-xs text-stone-500 dark:text-stone-400">
               Select the fasting window tailored to your daily lifestyle
             </DialogDescription>
           </DialogHeader>
@@ -611,21 +612,21 @@ export default function FastingTimer() {
                 }}
                 className={`w-full p-3.5 rounded-2xl border text-left transition-all cursor-pointer flex items-center justify-between ${
                   selectedProtocol === proto.value
-                    ? "bg-amber-950/60 border-amber-400 text-white"
-                    : "bg-slate-800/80 border-slate-700/80 hover:bg-slate-800 text-slate-300"
+                    ? "bg-amber-50 dark:bg-amber-950/60 border-amber-400 text-stone-900 dark:text-white shadow-2xs"
+                    : "bg-stone-50 dark:bg-stone-800/80 border-stone-200/80 dark:border-stone-700/80 hover:bg-stone-100 dark:hover:bg-stone-800 text-stone-700 dark:text-stone-300"
                 }`}
               >
                 <div>
                   <div className="flex items-center gap-2">
-                    <span className="text-sm font-black text-white">{proto.label}</span>
-                    <span className="text-[10px] font-bold bg-amber-400/20 text-amber-300 px-2 py-0.2 rounded-full">
+                    <span className="text-sm font-bold text-stone-900 dark:text-white">{proto.label}</span>
+                    <span className="text-xs font-bold bg-amber-100 dark:bg-amber-900/60 text-amber-800 dark:text-amber-300 px-2 py-0.5 rounded-full">
                       {proto.badge}
                     </span>
                   </div>
-                  <div className="text-xs font-bold text-amber-200 mt-0.5">{proto.title}</div>
-                  <p className="text-[10px] text-slate-400 mt-0.5">{proto.desc}</p>
+                  <div className="text-xs font-bold text-amber-800 dark:text-amber-400 mt-0.5">{proto.title}</div>
+                  <p className="text-xs text-stone-500 dark:text-stone-400 mt-0.5">{proto.desc}</p>
                 </div>
-                <ChevronRight size={16} className="text-slate-400 shrink-0" />
+                <ChevronRight size={16} className="text-stone-400 shrink-0" />
               </button>
             ))}
           </div>

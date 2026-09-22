@@ -134,35 +134,35 @@ export default function BiometricDashboard() {
 
   const cardMetrics = ["heart_rate", "blood_pressure", "steps", "calories"];
 
-  const cardClass = darkMode ? "bg-gray-800 border border-gray-700" : "bg-white shadow-lg";
-  const subText = darkMode ? "text-gray-400" : "text-gray-600";
+  const cardClass = darkMode ? "bg-stone-900/90 border border-stone-800" : "bg-white border border-stone-200/80 shadow-xs";
+  const subText = darkMode ? "text-stone-400" : "text-stone-500";
 
   return (
-    <div className={`min-h-screen ${darkMode ? "bg-[#0F1412] text-stone-100" : "bg-canvas-organic text-stone-900"} pb-24 transition-colors`}>
+    <div className={`min-h-screen ${darkMode ? "bg-[#0F1412] text-stone-100" : "bg-[#FAF8F5] text-stone-900"} pb-28 transition-colors`}>
       <PageHeader
         title="Bio-Digital Twin"
         showHome
-        className={darkMode ? "bg-gray-800" : "bg-[#1f7a8c]"}
+        className={darkMode ? "bg-stone-900" : "bg-[#164E3D]"}
         actions={
           <button
             onClick={() => setDarkMode(!darkMode)}
-            className="p-2 hover:bg-white/10 rounded-full transition-colors"
+            className="p-2 hover:bg-white/10 rounded-full transition-colors cursor-pointer"
             aria-label="Toggle dark mode"
           >
-            {darkMode ? <Sun className="h-5 w-5 text-white" /> : <Moon className="h-5 w-5 text-white" />}
+            {darkMode ? <Sun className="h-5 w-5 text-amber-300" /> : <Moon className="h-5 w-5 text-white" />}
           </button>
         }
       />
 
-      <div className="px-6 mt-6 space-y-5">
+      <div className="px-4 sm:px-6 mt-6 space-y-5 max-w-2xl mx-auto">
         {/* View Mode Segmented Control */}
-        <div className="flex bg-white/70 dark:bg-gray-800 p-1 rounded-2xl gap-1 shadow-xs border border-teal-100 dark:border-gray-700">
+        <div className="flex bg-white dark:bg-stone-900/90 p-1.5 rounded-2xl gap-1.5 shadow-xs border border-stone-200/80 dark:border-stone-800">
           <button
             onClick={() => setViewMode("cgm")}
-            className={`flex-1 py-2.5 px-3 rounded-xl font-extrabold text-xs flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
+            className={`flex-1 py-2.5 px-3 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
               viewMode === "cgm"
-                ? "bg-[#1f7a8c] text-white shadow-md"
-                : "text-gray-600 dark:text-gray-400 hover:text-gray-900"
+                ? "bg-[#164E3D] text-white shadow-xs"
+                : "text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-200"
             }`}
           >
             <Radio size={14} />
@@ -170,10 +170,10 @@ export default function BiometricDashboard() {
           </button>
           <button
             onClick={() => setViewMode("manual")}
-            className={`flex-1 py-2.5 px-3 rounded-xl font-extrabold text-xs flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
+            className={`flex-1 py-2.5 px-3 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
               viewMode === "manual"
-                ? "bg-[#1f7a8c] text-white shadow-md"
-                : "text-gray-600 dark:text-gray-400 hover:text-gray-900"
+                ? "bg-[#164E3D] text-white shadow-xs"
+                : "text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-200"
             }`}
           >
             <Activity size={14} />
@@ -186,13 +186,13 @@ export default function BiometricDashboard() {
         ) : (
           <>
             {/* Header row: last updated + add reading */}
-            <div className={`flex items-center justify-between px-4 py-2 rounded-xl ${darkMode ? "bg-gray-800" : "bg-white/50"}`}>
-              <span className={`text-xs ${darkMode ? "text-gray-400" : "text-gray-500"}`}>
+            <div className={`flex items-center justify-between px-4 py-2.5 rounded-2xl border ${darkMode ? "bg-stone-900/80 border-stone-800" : "bg-white/80 border-stone-200/80"}`}>
+              <span className={`text-xs ${darkMode ? "text-stone-400" : "text-stone-500"}`}>
                 {lastUpdated ? `Last reading: ${lastUpdated}` : "No readings yet"}
               </span>
               <button
                 onClick={() => setShowAdd(true)}
-                className="flex items-center gap-1.5 px-3 py-1.5 bg-[#1f7a8c] text-white rounded-lg hover:bg-[#1a6273] transition-colors text-sm font-medium"
+                className="flex items-center gap-1.5 px-3.5 py-1.5 bg-[#164E3D] text-white rounded-xl hover:bg-[#123E31] transition-colors text-xs font-bold cursor-pointer active:scale-95 shadow-2xs"
               >
                 <Plus className="h-4 w-4" /> Add reading
               </button>
@@ -201,41 +201,43 @@ export default function BiometricDashboard() {
             {/* Link to meal ↔ glucose insights */}
             <button
               onClick={() => navigate("/glucose-insights")}
-              className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left transition-colors ${darkMode ? "bg-gray-800 border border-gray-700 hover:bg-gray-700" : "bg-white shadow-sm hover:bg-gray-50"}`}
+              className={`w-full flex items-center gap-3.5 px-4 py-3.5 rounded-2xl text-left transition-all duration-200 hover:-translate-y-0.5 cursor-pointer ${
+                darkMode ? "bg-stone-900/90 border border-stone-800 hover:bg-stone-800" : "bg-white border border-stone-200/80 shadow-xs hover:bg-stone-50"
+              }`}
             >
-              <div className="rounded-lg p-2" style={{ backgroundColor: "#1f7a8c20" }}>
-                <TrendingUp className="h-5 w-5 text-[#1f7a8c]" />
+              <div className="rounded-xl p-2.5 bg-emerald-50 dark:bg-emerald-950/60 text-[#164E3D] dark:text-emerald-400 border border-emerald-200/60 dark:border-emerald-800/60">
+                <TrendingUp className="h-5 w-5" />
               </div>
               <div className="flex-1">
-                <div className={`text-sm font-semibold ${darkMode ? "text-gray-200" : "text-gray-800"}`}>Meal &amp; glucose insights</div>
-                <div className={`text-xs ${subText}`}>See which meals spike your blood sugar</div>
+                <div className={`text-xs font-bold ${darkMode ? "text-stone-200" : "text-stone-900"}`}>Meal &amp; Glucose Correlation</div>
+                <div className={`text-xs ${subText} mt-0.5`}>See which meals spike your blood sugar</div>
               </div>
-              <ChevronRight className={`h-5 w-5 ${darkMode ? "text-gray-500" : "text-gray-400"}`} />
+              <ChevronRight className={`h-5 w-5 ${darkMode ? "text-stone-500" : "text-stone-400"}`} />
             </button>
 
             {loading ? (
               <SkeletonDashboard />
             ) : readings.length === 0 ? (
               <div className={`rounded-3xl p-8 text-center ${cardClass}`}>
-                <Activity className="h-12 w-12 text-gray-300 mx-auto mb-3" />
-                <h3 className={`font-semibold mb-1 ${darkMode ? "text-gray-200" : "text-gray-800"}`}>No biometrics yet</h3>
-                <p className={`text-sm mb-4 ${subText}`}>
-                  Log your first reading — glucose, heart rate, blood pressure and more — to build your dashboard.
+                <Activity className="h-12 w-12 text-stone-300 dark:text-stone-600 mx-auto mb-3" />
+                <h3 className={`font-bold mb-1 ${darkMode ? "text-stone-200" : "text-stone-800"}`}>No biometrics yet</h3>
+                <p className={`text-xs mb-4 ${subText}`}>
+                  Log your first reading — glucose, heart rate, blood pressure and more — to build your telemetry dashboard.
                 </p>
-                <Button onClick={() => setShowAdd(true)} className="bg-[#1f7a8c] hover:bg-[#1a6273]">
+                <Button onClick={() => setShowAdd(true)} className="bg-[#164E3D] hover:bg-[#123E31] text-xs font-bold rounded-xl">
                   <Plus className="h-4 w-4 mr-1" /> Add your first reading
                 </Button>
               </div>
             ) : (
           <>
             {/* Metabolic Status Gauge (glucose) */}
-            <div className={`rounded-3xl shadow-xl p-8 ${darkMode ? "bg-gray-800 border border-gray-700" : "bg-white"}`}>
-              <h3 className={`text-center mb-6 text-xl font-semibold ${darkMode ? "text-gray-200" : "text-gray-800"}`}>
+            <div className={`rounded-3xl p-6 sm:p-8 shadow-xs border ${darkMode ? "bg-stone-900/90 border-stone-800" : "bg-white border-stone-200/80"}`}>
+              <h3 className={`text-center mb-6 text-lg font-black ${darkMode ? "text-stone-200" : "text-stone-800"}`}>
                 Metabolic Status
               </h3>
               <div className="relative w-48 h-48 mx-auto mb-2">
                 <svg className="transform -rotate-90 w-48 h-48">
-                  <circle cx="96" cy="96" r="80" stroke={darkMode ? "#374151" : "#e5e7eb"} strokeWidth="16" fill="none" />
+                  <circle cx="96" cy="96" r="80" stroke={darkMode ? "#292524" : "#f5f5f4"} strokeWidth="16" fill="none" />
                   <circle
                     cx="96" cy="96" r="80"
                     stroke={metabolicStatus.color}
@@ -247,11 +249,11 @@ export default function BiometricDashboard() {
                   />
                 </svg>
                 <div className="absolute inset-0 flex flex-col items-center justify-center">
-                  <div className="text-5xl font-bold" style={{ color: metabolicStatus.color }}>
+                  <div className="text-5xl font-black" style={{ color: metabolicStatus.color }}>
                     {glucose === null ? "—" : glucose}
                   </div>
-                  <div className={`text-sm ${subText}`}>mg/dL</div>
-                  <div className="mt-2 px-3 py-1 rounded-full text-xs font-semibold" style={{ backgroundColor: `${metabolicStatus.color}20`, color: metabolicStatus.color }}>
+                  <div className={`text-xs font-bold ${subText}`}>mg/dL</div>
+                  <div className="mt-2 px-3 py-1 rounded-full text-xs font-bold" style={{ backgroundColor: `${metabolicStatus.color}20`, color: metabolicStatus.color }}>
                     {metabolicStatus.label}
                   </div>
                 </div>
@@ -261,15 +263,15 @@ export default function BiometricDashboard() {
               )}
 
               {glucose !== null && glucose > 125 && (
-                <div className="mt-4 p-4 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-xl">
+                <div className="mt-4 p-4 bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800/80 rounded-2xl">
                   <div className="flex items-start gap-3">
-                    <AlertCircle className="h-5 w-5 text-amber-600 flex-shrink-0 mt-0.5" />
+                    <AlertCircle className="h-5 w-5 text-amber-600 dark:text-amber-400 flex-shrink-0 mt-0.5" />
                     <div>
-                      <div className="text-sm font-semibold text-amber-900 dark:text-amber-200 mb-1">Suggestion</div>
-                      <div className="text-sm text-amber-800 dark:text-amber-300">
+                      <div className="text-xs font-bold text-amber-900 dark:text-amber-200 mb-0.5">Clinical Suggestion</div>
+                      <div className="text-xs text-amber-800 dark:text-amber-300 leading-relaxed">
                         {glucose > 140
                           ? "Your last glucose reading is high. A 10-minute walk and hydration can help; avoid simple carbs for the next couple of hours."
-                          : "Your last glucose reading is slightly elevated. Drink water and consider a light activity."}
+                          : "Your last glucose reading is slightly elevated. Drink water and consider light physical activity."}
                       </div>
                     </div>
                   </div>
@@ -278,23 +280,23 @@ export default function BiometricDashboard() {
             </div>
 
             {/* Vital signs grid — latest logged value per metric */}
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 gap-3.5">
               {cardMetrics.map((key) => {
                 const info = metricInfo(key)!;
                 const Icon = info.icon;
                 const r = latest(key);
                 return (
-                  <div key={key} className={`rounded-2xl p-5 ${cardClass}`}>
-                    <div className="flex items-center gap-3 mb-3">
-                      <div className="rounded-full p-2" style={{ backgroundColor: `${info.color}20` }}>
-                        <Icon className="h-5 w-5" style={{ color: info.color }} />
+                  <div key={key} className={`rounded-2xl p-4 sm:p-5 ${cardClass}`}>
+                    <div className="flex items-center gap-2.5 mb-2.5">
+                      <div className="rounded-xl p-2" style={{ backgroundColor: `${info.color}20` }}>
+                        <Icon className="h-4 w-4" style={{ color: info.color }} />
                       </div>
-                      <span className={`text-sm ${subText}`}>{info.label}</span>
+                      <span className={`text-xs font-bold ${subText}`}>{info.label}</span>
                     </div>
-                    <div className={`text-3xl font-bold ${darkMode ? "text-gray-200" : "text-gray-800"}`}>
+                    <div className={`text-2xl sm:text-3xl font-black ${darkMode ? "text-stone-200" : "text-stone-800"}`}>
                       {r ? r.value : "—"}
                     </div>
-                    <div className={`text-xs ${darkMode ? "text-gray-500" : "text-gray-500"}`}>
+                    <div className={`text-xs font-medium ${darkMode ? "text-stone-400" : "text-stone-500"} mt-0.5`}>
                       {r ? (r.unit || info.unit) : "no reading yet"}
                     </div>
                   </div>
@@ -303,12 +305,12 @@ export default function BiometricDashboard() {
             </div>
 
             {/* Glucose chart */}
-            <div className={`rounded-3xl shadow-xl p-6 ${darkMode ? "bg-gray-800 border border-gray-700" : "bg-white"}`}>
-              <h3 className={`mb-4 text-lg font-semibold ${darkMode ? "text-gray-200" : "text-gray-800"}`}>
-                Glucose trend
+            <div className={`rounded-3xl p-6 shadow-xs border ${darkMode ? "bg-stone-900/90 border-stone-800" : "bg-white border-stone-200/80"}`}>
+              <h3 className={`mb-4 text-base font-extrabold ${darkMode ? "text-stone-200" : "text-stone-800"}`}>
+                Glucose Trend
               </h3>
               {glucoseSeries.length < 2 ? (
-                <p className={`text-sm py-8 text-center ${subText}`}>
+                <p className={`text-xs py-8 text-center ${subText}`}>
                   Log at least two glucose readings to see your trend.
                 </p>
               ) : (
@@ -320,28 +322,29 @@ export default function BiometricDashboard() {
                         <stop offset="95%" stopColor="#ef4444" stopOpacity={0} />
                       </linearGradient>
                     </defs>
-                    <CartesianGrid strokeDasharray="3 3" stroke={darkMode ? "#374151" : "#e5e7eb"} />
-                    <XAxis dataKey="time" stroke={darkMode ? "#9ca3af" : "#6b7280"} style={{ fontSize: "11px" }} />
-                    <YAxis stroke={darkMode ? "#9ca3af" : "#6b7280"} style={{ fontSize: "12px" }} />
+                    <CartesianGrid strokeDasharray="3 3" stroke={darkMode ? "#292524" : "#e5e7eb"} />
+                    <XAxis dataKey="time" stroke={darkMode ? "#a8a29e" : "#78716c"} fontSize={12} />
+                    <YAxis stroke={darkMode ? "#a8a29e" : "#78716c"} fontSize={12} />
                     <Tooltip
                       contentStyle={{
-                        backgroundColor: darkMode ? "#1f2937" : "#ffffff",
-                        border: darkMode ? "1px solid #374151" : "1px solid #e5e7eb",
-                        borderRadius: "8px",
-                        color: darkMode ? "#f3f4f6" : "#1f2937",
+                        backgroundColor: darkMode ? "#1c1917" : "#ffffff",
+                        border: darkMode ? "1px solid #44403c" : "1px solid #e7e5e4",
+                        borderRadius: "1rem",
+                        color: darkMode ? "#f5f5f4" : "#1c1917",
+                        fontSize: "12px",
                       }}
                     />
-                    <Area type="monotone" dataKey="glucose" stroke="#ef4444" strokeWidth={2} fill={`url(#glucoseGradient-${uniqueId})`} name="Glucose (mg/dL)" />
+                    <Area type="monotone" dataKey="glucose" stroke="#ef4444" strokeWidth={2.5} fill={`url(#glucoseGradient-${uniqueId})`} name="Glucose (mg/dL)" />
                   </AreaChart>
                 </ResponsiveContainer>
               )}
             </div>
 
             {/* Recent readings */}
-            <div className={`rounded-3xl shadow-xl p-6 ${darkMode ? "bg-gray-800 border border-gray-700" : "bg-white"}`}>
+            <div className={`rounded-3xl p-6 shadow-xs border ${darkMode ? "bg-stone-900/90 border-stone-800" : "bg-white border-stone-200/80"}`}>
               <div className="flex items-center gap-2 mb-4">
-                <Info className={`h-5 w-5 ${darkMode ? "text-blue-400" : "text-blue-600"}`} />
-                <h3 className={`text-lg font-semibold ${darkMode ? "text-gray-200" : "text-gray-800"}`}>Recent readings</h3>
+                <Info className={`h-5 w-5 ${darkMode ? "text-emerald-400" : "text-[#164E3D]"}`} />
+                <h3 className={`text-base font-extrabold ${darkMode ? "text-stone-200" : "text-stone-800"}`}>Recent Readings</h3>
               </div>
               <div className="space-y-2">
                 {readings
@@ -352,21 +355,21 @@ export default function BiometricDashboard() {
                     const info = metricInfo(r.metric);
                     const Icon = info?.icon ?? Activity;
                     return (
-                      <div key={r.id} className={`flex items-center gap-3 p-3 rounded-xl ${darkMode ? "bg-gray-700" : "bg-gray-50"}`}>
-                        <div className="rounded-lg p-2" style={{ backgroundColor: `${info?.color ?? "#1f7a8c"}20` }}>
-                          <Icon className="h-4 w-4" style={{ color: info?.color ?? "#1f7a8c" }} />
+                      <div key={r.id} className={`flex items-center gap-3 p-3.5 rounded-2xl border ${darkMode ? "bg-stone-800/80 border-stone-700/80" : "bg-stone-50 border-stone-200/80"}`}>
+                        <div className="rounded-xl p-2" style={{ backgroundColor: `${info?.color ?? "#164E3D"}20` }}>
+                          <Icon className="h-4 w-4" style={{ color: info?.color ?? "#164E3D" }} />
                         </div>
                         <div className="flex-1 min-w-0">
-                          <div className={`text-sm font-semibold ${darkMode ? "text-gray-200" : "text-gray-800"}`}>
+                          <div className={`text-xs font-bold ${darkMode ? "text-stone-200" : "text-stone-800"}`}>
                             {info?.label ?? r.metric}: {r.value} {r.unit || info?.unit || ""}
                           </div>
-                          <div className={`text-xs ${darkMode ? "text-gray-400" : "text-gray-500"}`}>
+                          <div className={`text-xs ${darkMode ? "text-stone-400" : "text-stone-500"} mt-0.5`}>
                             {new Date(r.logged_at).toLocaleString()}
                           </div>
                         </div>
                         <button
                           onClick={() => handleDelete(r.id)}
-                          className="p-1 text-gray-400 hover:text-red-600"
+                          className="p-1.5 text-stone-400 hover:text-red-500 rounded-lg transition-colors cursor-pointer"
                           aria-label="Delete reading"
                         >
                           <Trash2 className="h-4 w-4" />
@@ -379,12 +382,12 @@ export default function BiometricDashboard() {
 
             {/* Positive insight when glucose is in range */}
             {glucose !== null && glucose <= 125 && (
-              <div className={`rounded-3xl shadow-xl p-6 ${darkMode ? "bg-gray-800 border border-gray-700" : "bg-white"}`}>
-                <div className={`flex items-start gap-3 p-3 rounded-xl ${darkMode ? "bg-gray-700" : "bg-green-50"}`}>
-                  <CheckCircle className="h-5 w-5 text-green-600 flex-shrink-0 mt-0.5" />
+              <div className={`rounded-3xl p-5 shadow-xs border ${darkMode ? "bg-stone-900/90 border-stone-800" : "bg-white border-stone-200/80"}`}>
+                <div className={`flex items-start gap-3 p-3.5 rounded-2xl border ${darkMode ? "bg-emerald-950/40 border-emerald-800/60" : "bg-emerald-50 border-emerald-200/80"}`}>
+                  <CheckCircle className="h-5 w-5 text-emerald-600 dark:text-emerald-400 flex-shrink-0 mt-0.5" />
                   <div>
-                    <div className={`text-sm font-semibold ${darkMode ? "text-gray-200" : "text-gray-800"}`}>Glucose in range</div>
-                    <div className={`text-sm ${subText}`}>Your latest reading looks good. Keep up the healthy habits.</div>
+                    <div className={`text-xs font-bold ${darkMode ? "text-emerald-200" : "text-emerald-900"}`}>Glucose in optimal range</div>
+                    <div className="text-xs text-emerald-800 dark:text-emerald-300 mt-0.5 leading-relaxed">Your latest reading looks great. Keep up the balanced food and hydration habits!</div>
                   </div>
                 </div>
               </div>
@@ -446,20 +449,20 @@ function AddReadingDialog({
 
   return (
     <Dialog open={isOpen} onOpenChange={(o) => { if (!o && !saving) { reset(); onClose(); } }}>
-      <DialogContent className="max-w-md">
+      <DialogContent className="max-w-md bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 rounded-3xl p-6 text-stone-900 dark:text-white">
         <DialogHeader>
-          <DialogTitle>Add reading</DialogTitle>
-          <DialogDescription>Log a biometric measurement to your dashboard.</DialogDescription>
+          <DialogTitle className="text-base font-extrabold text-stone-900 dark:text-white">Add Biometric Reading</DialogTitle>
+          <DialogDescription className="text-xs text-stone-500 dark:text-stone-400">Log a vital sign measurement to your clinical dashboard.</DialogDescription>
         </DialogHeader>
 
         <div className="space-y-4 py-4">
           <div>
-            <Label htmlFor="bm-metric">Metric</Label>
+            <Label htmlFor="bm-metric" className="text-xs font-bold text-stone-700 dark:text-stone-300 mb-1 block">Metric</Label>
             <select
               id="bm-metric"
               value={metric}
               onChange={(e) => setMetric(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg"
+              className="w-full px-3 py-2.5 border border-stone-200 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 rounded-xl text-xs text-stone-900 dark:text-white font-medium outline-none"
             >
               {METRICS.map((m) => (
                 <option key={m.key} value={m.key}>{m.label}</option>
@@ -468,26 +471,33 @@ function AddReadingDialog({
           </div>
 
           <div>
-            <Label htmlFor="bm-value">Value ({info.unit})</Label>
+            <Label htmlFor="bm-value" className="text-xs font-bold text-stone-700 dark:text-stone-300 mb-1 block">Value ({info.unit})</Label>
             <Input
               id="bm-value"
               value={value}
               onChange={(e) => setValue(e.target.value)}
               inputMode={"text" in info && info.text ? "text" : "decimal"}
               placeholder={metric === "blood_pressure" ? "e.g. 120/80" : "e.g. 105"}
+              className="bg-stone-50 dark:bg-stone-800 border-stone-200 dark:border-stone-700 text-stone-900 dark:text-white text-xs h-10 rounded-xl"
             />
           </div>
 
           <div>
-            <Label htmlFor="bm-when">Date & time</Label>
-            <Input id="bm-when" type="datetime-local" value={when} onChange={(e) => setWhen(e.target.value)} />
+            <Label htmlFor="bm-when" className="text-xs font-bold text-stone-700 dark:text-stone-300 mb-1 block">Date &amp; Time</Label>
+            <Input
+              id="bm-when"
+              type="datetime-local"
+              value={when}
+              onChange={(e) => setWhen(e.target.value)}
+              className="bg-stone-50 dark:bg-stone-800 border-stone-200 dark:border-stone-700 text-stone-900 dark:text-white text-xs h-10 rounded-xl"
+            />
           </div>
 
-          <div className="flex gap-3">
-            <Button onClick={() => { reset(); onClose(); }} variant="outline" className="flex-1" disabled={saving}>
+          <div className="flex gap-2.5 pt-2">
+            <Button onClick={() => { reset(); onClose(); }} variant="outline" className="flex-1 bg-transparent border-stone-300 dark:border-stone-700 text-stone-700 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-800 text-xs rounded-xl" disabled={saving}>
               Cancel
             </Button>
-            <Button onClick={submit} className="flex-1 bg-[#1f7a8c] hover:bg-[#1a6273]" disabled={saving}>
+            <Button onClick={submit} className="flex-1 bg-[#164E3D] hover:bg-[#123E31] text-white text-xs font-bold rounded-xl shadow-md cursor-pointer" disabled={saving}>
               {saving ? (
                 <span className="flex items-center gap-2"><Loader2 className="h-4 w-4 animate-spin" /> Saving…</span>
               ) : "Save reading"}

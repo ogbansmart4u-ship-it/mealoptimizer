@@ -533,16 +533,16 @@ export default function Health() {
         </div>
 
         {/* Personalized Health Greeting Card */}
-        <div className="max-w-2xl mx-auto mt-3.5 bg-white/85 backdrop-blur-md rounded-2xl p-3.5 border border-teal-100/80 shadow-xs flex items-center justify-between gap-3">
+        <div className="max-w-2xl mx-auto mt-3.5 bg-white/90 dark:bg-stone-800/90 backdrop-blur-md rounded-2xl p-3.5 border border-stone-200/80 dark:border-stone-700/80 shadow-xs flex items-center justify-between gap-3">
           <div className="flex items-center gap-2.5 min-w-0">
-            <div className="p-2 bg-teal-50 text-[#1f7a8c] rounded-xl shrink-0">
+            <div className="p-2 bg-emerald-50 dark:bg-emerald-950/60 text-[#164E3D] dark:text-emerald-400 rounded-xl shrink-0">
               <Zap className="h-4 w-4 fill-current text-amber-500" />
             </div>
             <div className="min-w-0">
-              <div className="text-xs font-black text-gray-900 truncate">
-                {profile?.name ? `Personalized for ${profile.name}` : "African Health &amp; Food Wisdom 🥑"}
+              <div className="text-xs font-bold text-stone-900 dark:text-stone-100 truncate">
+                {profile?.name ? `Personalized for ${profile.name}` : "African Health & Food Wisdom 🥑"}
               </div>
-              <div className="text-[11px] text-gray-600 truncate">
+              <div className="text-xs text-stone-500 dark:text-stone-400 truncate font-medium">
                 {profile?.bloodPressure
                   ? `BP: ${profile.bloodPressure} mmHg • BMI: ${profile.bmi || "23.4"}`
                   : "Simple, practical food tips for healthy African living"}
@@ -552,7 +552,7 @@ export default function Health() {
 
           <button
             onClick={() => navigate("/biometrics")}
-            className="px-3 py-1.5 bg-[#1f7a8c] hover:bg-[#1a6273] text-white rounded-xl text-xs font-bold shrink-0 cursor-pointer shadow-2xs active:scale-95 transition-all"
+            className="btn-liquid-glass btn-liquid-forest px-3 py-1.5 text-white rounded-xl text-xs font-bold shrink-0 cursor-pointer shadow-xs active:scale-95 transition-all border border-white/20"
           >
             Vitals
           </button>
@@ -561,13 +561,13 @@ export default function Health() {
 
       <div className="px-4 sm:px-6 max-w-2xl mx-auto mt-4 space-y-6">
         {/* ============================================================ */}
-        {/* 0. NEW: METABOLIC FOOD CALCULATORS HERO LAUNCHER             */}
+        {/* 0. METABOLIC FOOD CALCULATORS HERO LAUNCHER                  */}
         {/* ============================================================ */}
         <div
           onClick={() => {
             navigate("/calculators");
           }}
-          className="glass-card-teal text-white rounded-3xl p-4 sm:p-5 shadow-lg hover:shadow-xl transition-all cursor-pointer relative overflow-hidden group border border-white/30"
+          className="bg-gradient-to-br from-[#164E3D] via-[#123E31] to-[#0A1A14] text-white rounded-3xl p-4 sm:p-5 shadow-lg hover:shadow-xl transition-all cursor-pointer relative overflow-hidden group border border-emerald-500/30"
         >
           <div className="absolute -right-6 -bottom-6 w-32 h-32 bg-white/10 rounded-full blur-xl pointer-events-none" />
           <div className="flex items-center justify-between relative z-10">
@@ -577,17 +577,17 @@ export default function Health() {
               </div>
               <div className="min-w-0">
                 <div className="flex items-center gap-1.5 flex-wrap">
-                  <span className="text-[10px] font-black uppercase tracking-wider bg-amber-400 text-slate-950 px-2 py-0.5 rounded-full shadow-2xs">
+                  <span className="text-xs font-bold uppercase tracking-wider bg-amber-400 text-stone-950 px-2 py-0.5 rounded-full shadow-2xs">
                     Interactive Tools
                   </span>
-                  <span className="text-[11px] font-black text-teal-100">
+                  <span className="text-xs font-bold text-amber-300">
                     Swallow • Sodium • Sequence
                   </span>
                 </div>
-                <h3 className="text-sm sm:text-base font-black text-white mt-1 leading-tight">
+                <h3 className="text-sm sm:text-base font-bold text-white mt-1 leading-tight">
                   Easy Food Calculators 🧮
                 </h3>
-                <p className="text-[11px] text-teal-100/90 font-medium truncate mt-0.5">
+                <p className="text-xs text-stone-200 font-medium truncate mt-0.5">
                   Check your swallow portions, balance soup salt &amp; plan your plate
                 </p>
               </div>
@@ -602,7 +602,7 @@ export default function Health() {
         {/* 📄 14-DAY DOCTOR CLINICAL PDF REPORT BANNER (FOR PAID CONSUMERS) */}
         <div
           onClick={() => navigate("/health-report")}
-          className="glass-card-teal rounded-3xl p-4 sm:p-5 text-white shadow-lg border border-white/30 relative overflow-hidden cursor-pointer hover:shadow-xl hover:scale-[1.01] active:scale-[0.99] transition-all group"
+          className="bg-gradient-to-br from-[#1E3A34] via-[#162D28] to-[#0F1E1B] rounded-3xl p-4 sm:p-5 text-white shadow-lg border border-emerald-400/25 relative overflow-hidden cursor-pointer hover:shadow-xl hover:scale-[1.01] active:scale-[0.99] transition-all group"
         >
           <div className="flex items-center justify-between relative z-10">
             <div className="flex items-center gap-3.5 min-w-0">
@@ -611,17 +611,17 @@ export default function Health() {
               </div>
               <div className="min-w-0">
                 <div className="flex items-center gap-1.5 flex-wrap">
-                  <span className="text-[10px] font-black uppercase tracking-wider bg-amber-400 text-slate-950 px-2 py-0.5 rounded-full shadow-2xs">
+                  <span className="text-xs font-bold uppercase tracking-wider bg-amber-400 text-stone-950 px-2 py-0.5 rounded-full shadow-2xs">
                     Doctor PDF Report
                   </span>
-                  <span className="text-[11px] font-bold text-teal-100">
+                  <span className="text-xs font-bold text-stone-200">
                     14-Day Clinical Chart
                   </span>
                 </div>
-                <h3 className="text-sm sm:text-base font-black text-white mt-1 leading-tight">
+                <h3 className="text-sm sm:text-base font-bold text-white mt-1 leading-tight">
                   Share Meal Summary with Your Doctor 📄
                 </h3>
-                <p className="text-[11px] text-teal-100/90 font-medium truncate mt-0.5">
+                <p className="text-xs text-stone-200 font-medium truncate mt-0.5">
                   Download an easy-to-read summary of your meals &amp; blood sugar to show your doctor
                 </p>
               </div>
@@ -634,24 +634,24 @@ export default function Health() {
         </div>
 
         {/* 🩸 1-TAP HARDWARE WEARABLE & CGM TELEMETRY STATION */}
-        <div className="bg-gradient-to-r from-[#0a232a] via-[#126778] to-[#0d9488] rounded-3xl p-4 sm:p-5 text-white shadow-lg border border-teal-400/30 flex items-center justify-between gap-3 relative overflow-hidden">
+        <div className="bg-gradient-to-br from-[#102A24] via-[#0E382E] to-[#081C16] rounded-3xl p-4 sm:p-5 text-white shadow-lg border border-emerald-500/30 flex items-center justify-between gap-3 relative overflow-hidden">
           <div className="flex items-center gap-3.5 min-w-0">
             <div className="w-12 h-12 rounded-2xl bg-white/15 backdrop-blur-md border border-white/20 flex items-center justify-center text-2xl shrink-0 shadow-inner">
               🩸
             </div>
             <div className="min-w-0">
               <div className="flex items-center gap-1.5 flex-wrap">
-                <span className="text-[10px] font-black uppercase tracking-wider bg-emerald-400 text-slate-950 px-2 py-0.5 rounded-full shadow-2xs">
+                <span className="text-xs font-bold uppercase tracking-wider bg-emerald-400 text-stone-950 px-2 py-0.5 rounded-full shadow-2xs">
                   Live Sensor Sync
                 </span>
-                <span className="text-[11px] font-bold text-teal-200">
+                <span className="text-xs font-bold text-emerald-200">
                   Dexcom • Libre • HealthKit
                 </span>
               </div>
-              <h3 className="text-sm sm:text-base font-black text-white mt-1 leading-tight">
+              <h3 className="text-sm sm:text-base font-bold text-white mt-1 leading-tight">
                 Connect Smartwatch &amp; Sensors ⌚
               </h3>
-              <p className="text-[11px] text-teal-100/90 font-medium truncate mt-0.5">
+              <p className="text-xs text-stone-200 font-medium truncate mt-0.5">
                 Sync Apple Watch, Dexcom, or Libre for effortless health tracking
               </p>
             </div>
@@ -660,7 +660,7 @@ export default function Health() {
           <button
             type="button"
             onClick={() => setShowWearableSyncModal(true)}
-            className="px-4 py-2.5 bg-white hover:bg-teal-50 text-[#126778] font-black text-xs rounded-2xl shadow-md hover:scale-105 active:scale-95 transition-all cursor-pointer shrink-0 flex items-center gap-1"
+            className="btn-liquid-glass btn-glass-frosted px-4 py-2.5 text-white font-bold text-xs rounded-2xl shadow-md hover:scale-105 active:scale-95 transition-all cursor-pointer shrink-0 flex items-center gap-1 border border-white/30"
           >
             <span>Pair Sensor</span>
             <ChevronRight size={14} />
@@ -677,40 +677,124 @@ export default function Health() {
         />
 
         {/* ============================================================ */}
-        {/* 1. HEALTH TRACKERS (8-Grid Quick Portal)                     */}
+        {/* 1. HEALTH TRACKERS (Clean Clinical Telemetry Cards)          */}
         {/* ============================================================ */}
         <div>
-          <div className="flex items-center justify-between mb-2.5">
-            <h2 className="text-sm font-extrabold text-gray-900 uppercase tracking-wider">
-              {t("health.trackers")}
-            </h2>
-            <span className="text-[11px] text-teal-800 font-bold bg-teal-50 px-2 py-0.5 rounded-full border border-teal-100">
-              8 Active Portals
+          <div className="flex items-center justify-between mb-3 px-1">
+            <div>
+              <h2 className="text-sm font-bold text-stone-900 dark:text-stone-100 uppercase tracking-wider flex items-center gap-1.5">
+                <Activity size={15} className="text-[#164E3D] dark:text-emerald-400" />
+                <span>{t("health.trackers")}</span>
+              </h2>
+              <p className="text-xs text-stone-500 dark:text-stone-400 font-medium">
+                Live vitals, hydration, recovery &amp; clinical logs
+              </p>
+            </div>
+            <span className="text-xs text-emerald-800 dark:text-emerald-300 font-bold bg-emerald-50 dark:bg-emerald-950/70 px-2.5 py-0.5 rounded-full border border-emerald-200 dark:border-emerald-800/60 shadow-2xs">
+              8 Live Trackers
             </span>
           </div>
 
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3">
             {[
-              { tKey: "health.tracker.vault", icon: Shield, gradient: "from-purple-500 to-indigo-600", route: "/medical-vault", label: "Medical Vault" },
-              { tKey: "health.tracker.hydration", icon: Droplet, gradient: "from-blue-500 to-cyan-600", route: "/hydration", label: "Hydration" },
-              { tKey: "health.tracker.sleep", icon: Moon, gradient: "from-indigo-600 to-purple-700", route: "/sleep", label: "Sleep" },
-              { tKey: "health.tracker.medication", icon: Pill, gradient: "from-emerald-500 to-teal-600", route: "/medications", label: "Medications" },
-              { tKey: "health.tracker.workout", icon: Dumbbell, gradient: "from-orange-500 to-amber-600", route: "/workout", label: "Workouts" },
-              { tKey: "health.tracker.fasting", icon: Clock, gradient: "from-purple-600 to-pink-600", route: "/fasting", label: "Fasting" },
-              { tKey: "health.tracker.symptoms", icon: AlertCircle, gradient: "from-rose-500 to-red-600", route: "/symptoms", label: "Symptoms" },
-              { tKey: "health.tracker.report", icon: FileText, gradient: "from-teal-500 to-cyan-600", route: "/health-report", label: "Clinical Report" },
-            ].map(({ icon: Icon, gradient, route, label }) => (
+              {
+                icon: Droplet,
+                iconBg: "bg-blue-500/15 text-blue-600 dark:text-blue-400 border-blue-200 dark:border-blue-900/60",
+                route: "/hydration",
+                label: "Hydration",
+                status: "2,500ml Goal",
+                subtext: "Water & Herbal Teas",
+                action: "Log Water ➔",
+              },
+              {
+                icon: Moon,
+                iconBg: "bg-indigo-500/15 text-indigo-600 dark:text-indigo-400 border-indigo-200 dark:border-indigo-900/60",
+                route: "/sleep",
+                label: "Sleep Recovery",
+                status: "Circadian Window",
+                subtext: "Quality Score & REM",
+                action: "Log Sleep ➔",
+              },
+              {
+                icon: Activity,
+                iconBg: "bg-rose-500/15 text-rose-600 dark:text-rose-400 border-rose-200 dark:border-rose-900/60",
+                route: "/biometrics",
+                label: "Vitals & CGM",
+                status: "BP & Glucose",
+                subtext: "Continuous Sensors",
+                action: "View Vitals ➔",
+              },
+              {
+                icon: Pill,
+                iconBg: "bg-emerald-500/15 text-emerald-700 dark:text-emerald-400 border-emerald-200 dark:border-emerald-900/60",
+                route: "/medications",
+                label: "Medications",
+                status: "Dose Reminders",
+                subtext: "Herb Interactions",
+                action: "Review Rx ➔",
+              },
+              {
+                icon: Clock,
+                iconBg: "bg-amber-500/15 text-amber-700 dark:text-amber-400 border-amber-200 dark:border-amber-900/60",
+                route: "/fasting",
+                label: "Fasting Timer",
+                status: "16:8 Protocol",
+                subtext: "Autophagy & Cleansing",
+                action: "Start Fast ➔",
+              },
+              {
+                icon: AlertCircle,
+                iconBg: "bg-orange-500/15 text-orange-600 dark:text-orange-400 border-orange-200 dark:border-orange-900/60",
+                route: "/symptoms",
+                label: "Symptom Log",
+                status: "Food Triggers",
+                subtext: "Energy & Digestion",
+                action: "Log Symptom ➔",
+              },
+              {
+                icon: Shield,
+                iconBg: "bg-purple-500/15 text-purple-600 dark:text-purple-400 border-purple-200 dark:border-purple-900/60",
+                route: "/medical-vault",
+                label: "Medical Vault",
+                status: "Lab Records",
+                subtext: "Doctor Consultation PDF",
+                action: "Open Vault ➔",
+              },
+              {
+                icon: FileText,
+                iconBg: "bg-teal-500/15 text-teal-700 dark:text-teal-400 border-teal-200 dark:border-teal-900/60",
+                route: "/health-report",
+                label: "Clinical Report",
+                status: "14-Day Chart",
+                subtext: "Provider Export",
+                action: "Export PDF ➔",
+              },
+            ].map(({ icon: Icon, iconBg, route, label, status, subtext, action }) => (
               <button
                 key={route}
                 onClick={() => navigate(route)}
-                className="neu-raised-sm rounded-2xl p-3.5 flex flex-col items-center justify-center gap-2 hover:shadow-md hover:scale-[1.03] active:scale-[0.97] transition-all cursor-pointer group border border-white/60 dark:border-white/5"
+                className="bg-white dark:bg-stone-800/80 rounded-2xl p-3.5 flex flex-col justify-between text-left hover:border-emerald-500/60 dark:hover:border-emerald-500/60 hover:shadow-md transition-all cursor-pointer group border border-stone-200/80 dark:border-stone-700/80 hover:-translate-y-0.5 select-none"
               >
-                <div className={`bg-gradient-to-br ${gradient} rounded-xl p-2.5 text-white shadow-2xs group-hover:rotate-3 transition-transform`}>
-                  <Icon className="h-5 w-5" />
+                <div>
+                  <div className="flex items-center justify-between mb-2">
+                    <div className={`p-2 rounded-xl border ${iconBg} shadow-2xs group-hover:scale-105 transition-transform`}>
+                      <Icon className="h-4 w-4" />
+                    </div>
+                    <span className="text-xs font-bold text-stone-600 dark:text-stone-300 bg-stone-100 dark:bg-stone-700/60 px-2 py-0.5 rounded-md truncate max-w-[100px]">
+                      {status}
+                    </span>
+                  </div>
+                  <h3 className="text-xs sm:text-sm font-bold text-stone-900 dark:text-stone-100 line-clamp-1 leading-snug">
+                    {label}
+                  </h3>
+                  <p className="text-xs text-stone-500 dark:text-stone-400 font-medium truncate mt-0.5">
+                    {subtext}
+                  </p>
                 </div>
-                <span className="text-xs font-bold text-gray-800 text-center leading-tight">
-                  {label}
-                </span>
+
+                <div className="pt-2 mt-2 border-t border-stone-100 dark:border-stone-700/60 flex items-center justify-between text-xs font-bold text-[#164E3D] dark:text-emerald-400">
+                  <span className="group-hover:translate-x-0.5 transition-transform">{action}</span>
+                </div>
               </button>
             ))}
           </div>
@@ -719,24 +803,24 @@ export default function Health() {
         {/* ============================================================ */}
         {/* 2. DYNAMIC HEALTH EDUCATION HUB (10X Clinical Upgrade)       */}
         {/* ============================================================ */}
-        <div className="bg-white rounded-3xl p-5 sm:p-6 shadow-md border border-teal-100">
+        <div className="bg-white dark:bg-stone-900/90 rounded-3xl p-5 sm:p-6 shadow-md border border-stone-200/80 dark:border-stone-800">
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-2">
-              <div className="p-2 bg-teal-50 text-[#1f7a8c] rounded-xl">
+              <div className="p-2 bg-emerald-50 dark:bg-emerald-950/60 text-[#164E3D] dark:text-emerald-400 rounded-xl">
                 <BookOpen className="h-5 w-5" />
               </div>
               <div>
-                <h2 className="text-base font-black text-gray-900">
+                <h2 className="text-base font-bold text-stone-900 dark:text-stone-100">
                   Health &amp; Food Wisdom 📚
                 </h2>
-                <p className="text-xs text-gray-500">
+                <p className="text-xs text-stone-500 dark:text-stone-400 font-medium">
                   Simple, everyday guides for healthy African living
                 </p>
               </div>
             </div>
 
             <div className="text-right">
-              <span className="text-[10px] font-bold text-teal-800 bg-teal-50 px-2.5 py-1 rounded-full border border-teal-100">
+              <span className="text-xs font-bold text-emerald-800 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/60 px-2.5 py-1 rounded-full border border-emerald-200 dark:border-emerald-800/60 shadow-2xs">
                 {learnedIds.length}/{EDUCATIONAL_ARTICLES.length} Learned
               </span>
             </div>
@@ -744,13 +828,13 @@ export default function Health() {
 
           {/* Search Bar */}
           <div className="relative my-3">
-            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-stone-400" />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search guides, herbs, biomarkers, food science..."
-              className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200/80 rounded-2xl text-xs text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-[#1f7a8c] transition-colors"
+              className="w-full pl-10 pr-4 py-2.5 bg-stone-50 dark:bg-stone-800/60 border border-stone-200/80 dark:border-stone-700/80 rounded-2xl text-xs text-stone-900 dark:text-stone-100 placeholder:text-stone-400 focus:outline-none focus:border-[#164E3D] dark:focus:border-emerald-500 transition-colors"
             />
           </div>
 
@@ -770,8 +854,8 @@ export default function Health() {
                 onClick={() => setActiveCategory(cat.id as EducationalCategory)}
                 className={`px-3 py-1.5 rounded-xl text-xs font-bold shrink-0 transition-all cursor-pointer ${
                   activeCategory === cat.id
-                    ? "bg-[#1f7a8c] text-white shadow-2xs"
-                    : "bg-slate-100 text-gray-600 hover:bg-slate-200/70"
+                    ? "btn-liquid-glass btn-liquid-forest text-white shadow-xs border border-white/20"
+                    : "bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-200 border border-stone-200/60 dark:border-stone-700/60"
                 }`}
               >
                 {cat.label}
@@ -781,13 +865,13 @@ export default function Health() {
 
           {/* Personalized Recommendation Banner (if user has active conditions) */}
           {personalizedArticles.length > 0 && activeCategory === "all" && !searchQuery && (
-            <div className="my-3 p-3 bg-gradient-to-r from-teal-500/10 via-emerald-500/10 to-cyan-500/10 border border-teal-200 rounded-2xl flex items-center gap-3">
+            <div className="my-3 p-3 bg-emerald-50/70 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 rounded-2xl flex items-center gap-3">
               <span className="text-xl">🎯</span>
               <div className="flex-1 min-w-0">
-                <span className="text-[10px] uppercase font-bold text-teal-800 block">
+                <span className="text-xs uppercase font-bold text-emerald-800 dark:text-emerald-300 block">
                   Profile Matched
                 </span>
-                <p className="text-xs font-bold text-gray-900 leading-tight">
+                <p className="text-xs font-bold text-stone-900 dark:text-stone-100 leading-tight">
                   {personalizedArticles.length} guides specifically tailored to your health profile
                 </p>
               </div>
@@ -797,15 +881,15 @@ export default function Health() {
           {/* Article List Cards */}
           <div className="space-y-3 mt-3">
             {filteredArticles.length === 0 ? (
-              <div className="text-center py-8 text-gray-500">
-                <Info className="h-8 w-8 mx-auto text-gray-300 mb-2" />
+              <div className="text-center py-8 text-stone-500">
+                <Info className="h-8 w-8 mx-auto text-stone-300 dark:text-stone-600 mb-2" />
                 <p className="text-xs font-bold">No clinical guides match "{searchQuery}"</p>
                 <button
                   onClick={() => {
                     setSearchQuery("");
                     setActiveCategory("all");
                   }}
-                  className="mt-2 text-xs text-[#1f7a8c] font-bold underline cursor-pointer"
+                  className="mt-2 text-xs text-[#164E3D] dark:text-emerald-400 font-bold underline cursor-pointer"
                 >
                   Clear search filters
                 </button>
@@ -819,36 +903,36 @@ export default function Health() {
                   <div
                     key={article.id}
                     onClick={() => handleOpenArticle(article)}
-                    className="p-4 bg-slate-50 hover:bg-teal-50/40 border border-slate-200/80 hover:border-teal-300 rounded-2xl transition-all cursor-pointer group shadow-2xs"
+                    className="p-4 bg-stone-50 dark:bg-stone-800/60 hover:bg-emerald-50/40 dark:hover:bg-emerald-950/30 border border-stone-200/80 dark:border-stone-700/80 hover:border-emerald-300 dark:hover:border-emerald-700/60 rounded-2xl transition-all cursor-pointer group shadow-2xs"
                   >
                     <div className="flex items-start justify-between gap-3">
                       <div className="flex items-start gap-3 min-w-0">
-                        <span className="text-3xl shrink-0 p-1.5 bg-white rounded-2xl shadow-2xs">
+                        <span className="text-3xl shrink-0 p-1.5 bg-white dark:bg-stone-700/60 rounded-2xl shadow-2xs">
                           {article.icon}
                         </span>
                         <div className="min-w-0">
                           <div className="flex items-center gap-2 flex-wrap mb-1">
-                            <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${article.badgeBg} ${article.color}`}>
+                            <span className={`text-xs font-bold px-2 py-0.5 rounded-full border ${article.badgeBg} ${article.color}`}>
                               {article.categoryLabel}
                             </span>
-                            <span className="text-[10px] text-gray-400 font-semibold">
+                            <span className="text-xs text-stone-500 dark:text-stone-400 font-medium">
                               ⏱️ {article.readTime}
                             </span>
                             {isLearned && (
-                              <span className="text-[10px] font-extrabold text-emerald-700 bg-emerald-100 px-1.5 py-0.5 rounded-md flex items-center gap-0.5">
-                                <Check size={10} /> Learned
+                              <span className="text-xs font-bold text-emerald-700 dark:text-emerald-300 bg-emerald-100 dark:bg-emerald-900/60 px-2 py-0.5 rounded-md flex items-center gap-0.5">
+                                <Check size={11} /> Learned
                               </span>
                             )}
                           </div>
 
-                          <h3 className="text-sm font-extrabold text-gray-900 group-hover:text-[#1f7a8c] transition-colors leading-snug">
+                          <h3 className="text-sm font-bold text-stone-900 dark:text-stone-100 group-hover:text-[#164E3D] dark:group-hover:text-emerald-400 transition-colors leading-snug">
                             {article.title}
                           </h3>
-                          <p className="text-xs text-gray-600 mt-1 line-clamp-2 leading-relaxed">
+                          <p className="text-xs text-stone-600 dark:text-stone-300 mt-1 line-clamp-2 leading-relaxed font-medium">
                             {article.headline}
                           </p>
 
-                          <div className="flex items-center gap-1.5 mt-2.5 text-[11px] font-bold text-teal-800 bg-teal-50/80 px-2 py-1 rounded-xl w-fit border border-teal-100">
+                          <div className="flex items-center gap-1.5 mt-2.5 text-xs font-bold text-emerald-800 dark:text-emerald-300 bg-emerald-50/90 dark:bg-emerald-950/60 px-2.5 py-1 rounded-xl w-fit border border-emerald-200/80 dark:border-emerald-800/60">
                             <Sparkles className="h-3 w-3 text-amber-500" />
                             <span>Clinical Impact: {article.clinicalImpact}</span>
                           </div>
@@ -857,11 +941,11 @@ export default function Health() {
 
                       <button
                         onClick={(e) => toggleBookmark(article.id, e)}
-                        className="p-2 text-gray-400 hover:text-[#1f7a8c] shrink-0 cursor-pointer transition-colors"
+                        className="p-2 text-stone-400 hover:text-[#164E3D] dark:hover:text-emerald-400 shrink-0 cursor-pointer transition-colors"
                         title={isBookmarked ? "Remove bookmark" : "Save article"}
                       >
                         {isBookmarked ? (
-                          <BookmarkCheck className="h-5 w-5 text-[#1f7a8c] fill-current" />
+                          <BookmarkCheck className="h-5 w-5 text-[#164E3D] dark:text-emerald-400 fill-current" />
                         ) : (
                           <Bookmark className="h-5 w-5" />
                         )}
@@ -877,14 +961,14 @@ export default function Health() {
         {/* ============================================================ */}
         {/* 3. INTERACTIVE CULTURAL FOOD MYTH BUSTERS                    */}
         {/* ============================================================ */}
-        <div className="bg-gradient-to-br from-amber-50/60 via-orange-50/40 to-yellow-50/50 rounded-3xl p-5 border border-amber-200/80 shadow-sm">
+        <div className="bg-gradient-to-br from-amber-50/70 via-orange-50/40 to-yellow-50/50 dark:from-amber-950/30 dark:via-stone-900 dark:to-stone-900 rounded-3xl p-5 border border-amber-200/80 dark:border-amber-900/50 shadow-xs">
           <div className="flex items-center gap-2.5 mb-3">
             <span className="text-2xl">💡</span>
             <div>
-              <h2 className="text-sm font-black text-amber-950 uppercase tracking-wider">
+              <h2 className="text-sm font-bold text-amber-950 dark:text-amber-200 uppercase tracking-wider">
                 Cultural Food Myth Busters
               </h2>
-              <p className="text-xs text-amber-800">
+              <p className="text-xs text-amber-800 dark:text-amber-300 font-medium">
                 Separating facts from kitchen myths in West African nutrition
               </p>
             </div>
@@ -894,19 +978,19 @@ export default function Health() {
             {CULTURAL_MYTHS.map((myth) => (
               <div
                 key={myth.id}
-                className="bg-white/90 rounded-2xl p-4 border border-amber-200/70 shadow-2xs flex flex-col justify-between"
+                className="bg-white/95 dark:bg-stone-800/90 rounded-2xl p-4 border border-amber-200/70 dark:border-amber-900/50 shadow-2xs flex flex-col justify-between"
               >
                 <div>
                   <div className="flex items-center justify-between mb-2">
                     <span className="text-xl">{myth.icon}</span>
-                    <span className="text-[10px] font-black px-2 py-0.5 bg-rose-100 text-rose-800 rounded-full border border-rose-200">
+                    <span className="text-xs font-bold px-2.5 py-0.5 bg-rose-100 dark:bg-rose-950/70 text-rose-800 dark:text-rose-300 rounded-full border border-rose-200 dark:border-rose-900/60">
                       {myth.verdict}
                     </span>
                   </div>
-                  <h3 className="text-xs font-black text-gray-900 mb-1.5 leading-snug">
+                  <h3 className="text-xs font-bold text-stone-900 dark:text-stone-100 mb-1.5 leading-snug">
                     {myth.title}
                   </h3>
-                  <p className="text-[11px] text-gray-700 leading-relaxed">
+                  <p className="text-xs text-stone-600 dark:text-stone-300 leading-relaxed font-medium">
                     {myth.reality}
                   </p>
                 </div>
@@ -918,16 +1002,16 @@ export default function Health() {
         {/* ============================================================ */}
         {/* 4. ASK AVO: QUICK CLINICAL QUESTIONS                         */}
         {/* ============================================================ */}
-        <div className="bg-white rounded-3xl p-5 border border-teal-100 shadow-sm">
+        <div className="bg-white dark:bg-stone-900/90 rounded-3xl p-5 border border-stone-200/80 dark:border-stone-800 shadow-xs">
           <div className="flex items-center gap-2.5 mb-3">
-            <div className="p-2 bg-teal-50 text-[#1f7a8c] rounded-xl">
+            <div className="p-2 bg-emerald-50 dark:bg-emerald-950/60 text-[#164E3D] dark:text-emerald-400 rounded-xl">
               <HelpCircle className="h-5 w-5" />
             </div>
             <div>
-              <h2 className="text-sm font-black text-gray-900">
+              <h2 className="text-sm font-bold text-stone-900 dark:text-stone-100">
                 Ask Avo: Quick Health &amp; Food Answers 💬
               </h2>
-              <p className="text-xs text-gray-500">
+              <p className="text-xs text-stone-500 dark:text-stone-400 font-medium">
                 Tap common food and health questions for easy answers
               </p>
             </div>
@@ -940,24 +1024,24 @@ export default function Health() {
                 <div
                   key={idx}
                   onClick={() => setExpandedPromptIdx(isExpanded ? null : idx)}
-                  className="p-3 bg-slate-50 hover:bg-teal-50/50 border border-slate-200/70 rounded-2xl transition-all cursor-pointer"
+                  className="p-3 bg-stone-50 dark:bg-stone-800/60 hover:bg-emerald-50/40 dark:hover:bg-emerald-950/30 border border-stone-200/70 dark:border-stone-700/70 rounded-2xl transition-all cursor-pointer"
                 >
                   <div className="flex items-center justify-between gap-2">
                     <div className="flex items-center gap-2 min-w-0">
                       <span className="text-lg shrink-0">{prompt.icon}</span>
-                      <span className="text-xs font-bold text-gray-900 truncate">
+                      <span className="text-xs font-bold text-stone-900 dark:text-stone-100 truncate">
                         {prompt.q}
                       </span>
                     </div>
-                    <span className="text-xs text-gray-400 font-bold">
+                    <span className="text-xs text-stone-400 font-bold">
                       {isExpanded ? "▲" : "▼"}
                     </span>
                   </div>
 
                   {isExpanded && (
-                    <div className="mt-2.5 pt-2.5 border-t border-slate-200/80 text-xs text-gray-700 leading-relaxed space-y-2">
+                    <div className="mt-2.5 pt-2.5 border-t border-stone-200/80 dark:border-stone-700/80 text-xs text-stone-700 dark:text-stone-300 leading-relaxed space-y-2 font-medium">
                       <p>{prompt.a}</p>
-                      <span className="inline-block text-[10px] font-bold text-teal-800 bg-teal-100/70 px-2 py-0.5 rounded-md">
+                      <span className="inline-block text-xs font-bold text-emerald-800 dark:text-emerald-300 bg-emerald-100/70 dark:bg-emerald-950/70 px-2.5 py-0.5 rounded-md border border-emerald-200 dark:border-emerald-800/60">
                         🏷️ {prompt.badge}
                       </span>
                     </div>
@@ -971,8 +1055,8 @@ export default function Health() {
         {/* ============================================================ */}
         {/* 5. MY BIODATA SHORTCUTS (Permanent Sync Links)               */}
         {/* ============================================================ */}
-        <div className="bg-gradient-to-br from-white via-[#F0F9FA] to-[#E0F2F4] rounded-3xl shadow-sm p-5 border border-teal-100">
-          <h2 className="text-center text-xs font-extrabold text-[#1f7a8c] uppercase tracking-wider mb-4">
+        <div className="bg-white dark:bg-stone-900/90 rounded-3xl shadow-xs p-5 border border-stone-200/80 dark:border-stone-800">
+          <h2 className="text-center text-xs font-bold text-[#164E3D] dark:text-emerald-400 uppercase tracking-wider mb-4">
             {t("health.myHealthProfile")}
           </h2>
           <div className="grid grid-cols-5 gap-2">
@@ -988,10 +1072,10 @@ export default function Health() {
                 onClick={() => navigate(route)}
                 className="flex flex-col items-center hover:scale-105 active:scale-95 transition-all cursor-pointer group"
               >
-                <div className="bg-[#1f7a8c] group-hover:bg-[#1a6273] rounded-2xl p-2.5 mb-1.5 shadow-2xs text-white">
+                <div className="bg-emerald-50 dark:bg-emerald-950/60 text-[#164E3D] dark:text-emerald-400 border border-emerald-200/60 dark:border-emerald-800/60 group-hover:bg-[#164E3D] group-hover:text-white rounded-2xl p-2.5 mb-1.5 shadow-2xs transition-colors">
                   <Icon className="h-4 w-4" />
                 </div>
-                <span className="text-[10px] text-gray-700 font-semibold text-center leading-tight truncate w-full">
+                <span className="text-xs text-stone-700 dark:text-stone-300 font-medium text-center leading-tight truncate w-full">
                   {label}
                 </span>
               </button>
@@ -1006,22 +1090,22 @@ export default function Health() {
       {/* 6. CLINICAL ARTICLE DEEP DIVE MODAL (10X IN-FRAME)          */}
       {/* ============================================================ */}
       <Dialog open={showArticleDialog} onOpenChange={setShowArticleDialog}>
-        <DialogContent className="max-w-lg max-h-[85vh] p-5 sm:p-6 flex flex-col rounded-3xl">
+        <DialogContent className="max-w-lg max-h-[85vh] p-5 sm:p-6 flex flex-col rounded-3xl bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800">
           {selectedArticle && (
             <>
               <DialogHeader className="pb-1 text-left">
                 <div className="flex items-center gap-2 mb-1">
-                  <span className={`text-[10px] font-extrabold px-2.5 py-0.5 rounded-full border ${selectedArticle.badgeBg} ${selectedArticle.color}`}>
+                  <span className={`text-xs font-bold px-2.5 py-0.5 rounded-full border ${selectedArticle.badgeBg} ${selectedArticle.color}`}>
                     {selectedArticle.categoryLabel}
                   </span>
-                  <span className="text-[10px] text-gray-400 font-semibold">
+                  <span className="text-xs text-stone-400 font-medium">
                     {selectedArticle.readTime}
                   </span>
                 </div>
-                <DialogTitle className="text-lg font-black text-gray-900 leading-tight">
+                <DialogTitle className="text-lg font-bold text-stone-900 dark:text-stone-100 leading-tight">
                   {selectedArticle.title}
                 </DialogTitle>
-                <DialogDescription className="text-xs text-teal-800 font-bold flex items-center gap-1 mt-0.5">
+                <DialogDescription className="text-xs text-emerald-800 dark:text-emerald-300 font-bold flex items-center gap-1 mt-0.5">
                   <Sparkles size={12} className="text-amber-500" />
                   {selectedArticle.clinicalImpact}
                 </DialogDescription>
@@ -1029,24 +1113,24 @@ export default function Health() {
 
               <div className="flex-1 overflow-y-auto overscroll-contain space-y-4 py-2 pr-1 text-xs">
                 {/* Executive Summary */}
-                <div className="p-3.5 bg-teal-50/60 rounded-2xl border border-teal-100 text-gray-800 leading-relaxed">
+                <div className="p-3.5 bg-emerald-50/70 dark:bg-emerald-950/40 rounded-2xl border border-emerald-200/80 dark:border-emerald-800/60 text-stone-800 dark:text-stone-200 leading-relaxed font-medium">
                   <p>{selectedArticle.summary}</p>
                 </div>
 
                 {/* Key Biomarker Targets */}
                 <div>
-                  <h4 className="text-xs font-black text-gray-900 uppercase tracking-wider mb-2 flex items-center gap-1.5">
-                    <Activity className="h-4 w-4 text-[#1f7a8c]" />
+                  <h4 className="text-xs font-bold text-stone-900 dark:text-stone-100 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                    <Activity className="h-4 w-4 text-[#164E3D] dark:text-emerald-400" />
                     Key Health Checks &amp; Targets
                   </h4>
                   <div className="grid grid-cols-1 gap-2">
                     {selectedArticle.keyBiomarkers.map((bio, idx) => (
-                      <div key={idx} className="p-2.5 bg-slate-50 rounded-xl border border-slate-200/80 flex items-center justify-between gap-2">
+                      <div key={idx} className="p-2.5 bg-stone-50 dark:bg-stone-800/60 rounded-xl border border-stone-200/80 dark:border-stone-700/80 flex items-center justify-between gap-2">
                         <div>
-                          <span className="font-bold text-gray-900 block">{bio.name}</span>
-                          <span className="text-[10px] text-gray-500">{bio.note}</span>
+                          <span className="font-bold text-stone-900 dark:text-stone-100 block">{bio.name}</span>
+                          <span className="text-xs text-stone-500 dark:text-stone-400">{bio.note}</span>
                         </div>
-                        <span className="text-[11px] font-black text-teal-800 bg-white px-2 py-1 rounded-lg border border-teal-100 shrink-0">
+                        <span className="text-xs font-bold text-emerald-800 dark:text-emerald-300 bg-white dark:bg-stone-800 px-2.5 py-1 rounded-lg border border-emerald-200 dark:border-emerald-800 shrink-0 shadow-2xs">
                           {bio.target}
                         </span>
                       </div>
@@ -1056,28 +1140,28 @@ export default function Health() {
 
                 {/* Eat This vs Moderate This Matrix */}
                 <div>
-                  <h4 className="text-xs font-black text-gray-900 uppercase tracking-wider mb-2 flex items-center gap-1.5">
-                    <Scale className="h-4 w-4 text-[#1f7a8c]" />
+                  <h4 className="text-xs font-bold text-stone-900 dark:text-stone-100 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                    <Scale className="h-4 w-4 text-[#164E3D] dark:text-emerald-400" />
                     Easy Food Choices for This Goal
                   </h4>
                   <div className="space-y-2">
                     {selectedArticle.eatThisVsModerate.map((row, idx) => (
-                      <div key={idx} className="p-3 bg-white border border-slate-200 rounded-2xl shadow-2xs space-y-1.5">
-                        <div className="flex items-start gap-2 text-emerald-800">
-                          <CheckCircle2 className="h-4 w-4 text-emerald-600 shrink-0 mt-0.5" />
+                      <div key={idx} className="p-3 bg-white dark:bg-stone-800 border border-stone-200/80 dark:border-stone-700 rounded-2xl shadow-2xs space-y-1.5">
+                        <div className="flex items-start gap-2 text-emerald-800 dark:text-emerald-300">
+                          <CheckCircle2 className="h-4 w-4 text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" />
                           <div>
                             <span className="font-bold">Prioritize: </span>
                             <span>{row.eat}</span>
                           </div>
                         </div>
-                        <div className="flex items-start gap-2 text-rose-800">
+                        <div className="flex items-start gap-2 text-rose-800 dark:text-rose-300">
                           <X className="h-4 w-4 text-rose-500 shrink-0 mt-0.5" />
                           <div>
                             <span className="font-bold">Moderate: </span>
                             <span>{row.moderate}</span>
                           </div>
                         </div>
-                        <p className="text-[11px] text-gray-500 pl-6 italic">
+                        <p className="text-xs text-stone-500 dark:text-stone-400 pl-6 italic">
                           Why: {row.reason}
                         </p>
                       </div>
@@ -1159,15 +1243,15 @@ export default function Health() {
                       Submit Answer 🎯
                     </button>
                   ) : (
-                    <div className="mt-2.5 p-2 bg-white rounded-xl border border-purple-200 text-[11px] text-purple-900 leading-snug">
+                    <div className="mt-2.5 p-2.5 bg-white dark:bg-stone-800 rounded-xl border border-purple-200 dark:border-purple-800 text-xs text-purple-900 dark:text-purple-200 leading-relaxed font-medium">
                       <strong>Scientific Explanation:</strong> {selectedArticle.quiz.explanation}
                     </div>
                   )}
                 </div>
 
                 {/* Scientific Reference */}
-                <div className="text-[10px] text-gray-400 border-t border-slate-200 pt-2 flex items-center gap-1">
-                  <BookOpen size={12} />
+                <div className="text-xs text-stone-500 dark:text-stone-400 border-t border-stone-200 dark:border-stone-800 pt-2.5 flex items-center gap-1.5 font-medium">
+                  <BookOpen size={14} />
                   <span>Clinical Source: {selectedArticle.scientificReference}</span>
                 </div>
               </div>

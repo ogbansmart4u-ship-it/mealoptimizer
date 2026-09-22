@@ -272,26 +272,26 @@ export default function SymptomTracker() {
   }, [activeSymptoms, searchTerm, filterSeverity]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#090d16] via-[#111827] to-[#090d16] text-slate-100 pb-28">
+    <div className="min-h-screen bg-[#FAF8F5] dark:bg-[#0F1412] text-stone-900 dark:text-stone-100 pb-28 transition-colors">
       {/* Top Header */}
-      <div className="bg-slate-900/80 backdrop-blur-md px-4 sm:px-6 pt-9 pb-5 border-b border-rose-500/20 sticky top-0 z-20">
+      <div className="bg-[#FAF8F5]/90 dark:bg-[#0F1412]/90 backdrop-blur-md px-4 sm:px-6 pt-9 pb-5 border-b border-stone-200/80 dark:border-stone-800 sticky top-0 z-20">
         <div className="max-w-2xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-3">
             <button
-              onClick={() => navigate(-1)}
-              className="text-rose-200 hover:bg-white/10 rounded-full p-2 transition-colors cursor-pointer"
-              aria-label="Go back"
+              onClick={() => navigate("/health")}
+              className="text-stone-700 dark:text-stone-200 hover:bg-stone-100 dark:hover:bg-stone-800 rounded-full p-2 transition-colors cursor-pointer"
+              aria-label="Back to Health"
             >
               <ChevronLeft className="h-6 w-6" />
             </button>
             <div>
-              <h1 className="text-xl sm:text-2xl font-black text-white leading-tight flex items-center gap-2">
+              <h1 className="text-xl sm:text-2xl font-black text-stone-900 dark:text-white leading-tight flex items-center gap-2">
                 <span>Symptom Intelligence</span>
-                <span className="text-xs px-2 py-0.5 rounded-full bg-rose-500/20 text-rose-300 font-bold border border-rose-500/30">
+                <span className="text-xs px-2.5 py-0.5 rounded-full bg-rose-50 dark:bg-rose-950/60 text-rose-700 dark:text-rose-300 font-bold border border-rose-200/80 dark:border-rose-800/80">
                   Clinical AI Triage
                 </span>
               </h1>
-              <p className="text-xs text-rose-200/80 font-medium">
+              <p className="text-xs text-[#164E3D] dark:text-emerald-400 font-semibold">
                 Correlate cultural meals, blood sugar, &amp; lifestyle triggers
               </p>
             </div>
@@ -302,10 +302,10 @@ export default function SymptomTracker() {
               triggerHaptic("light");
               setShowAddDialog(true);
             }}
-            className="bg-rose-600 hover:bg-rose-500 text-white rounded-full p-2.5 shadow-md shadow-rose-950/50 transition-all cursor-pointer active:scale-95 flex items-center gap-1 text-xs font-bold px-3.5"
+            className="bg-[#164E3D] hover:bg-[#123E31] text-white rounded-full p-2.5 shadow-md shadow-emerald-950/20 transition-all cursor-pointer active:scale-95 flex items-center gap-1.5 text-xs font-bold px-4"
           >
             <Plus size={15} />
-            <span className="hidden sm:inline">Log Symptom</span>
+            <span>Log Symptom</span>
           </button>
         </div>
       </div>
@@ -314,27 +314,29 @@ export default function SymptomTracker() {
       <div className="max-w-2xl mx-auto px-4 sm:px-6 mt-5 space-y-5">
         {/* API Error Banner */}
         {logsError && (
-          <div className="bg-red-950/80 border border-red-500/50 rounded-2xl p-4 flex items-center gap-3 text-red-200 text-xs shadow-xs">
-            <AlertCircle className="h-5 w-5 text-red-400 shrink-0" />
+          <div className="bg-red-50 dark:bg-red-950/80 border border-red-200 dark:border-red-500/50 rounded-2xl p-4 flex items-center gap-3 text-red-700 dark:text-red-200 text-xs shadow-2xs">
+            <AlertCircle className="h-5 w-5 text-red-500 shrink-0" />
             <span>{logsError}</span>
           </div>
         )}
 
         {/* 🥑 10X Animated Avo Clinical Triage Nurse */}
-        <div className="bg-gradient-to-r from-rose-950/90 via-slate-900 to-[#1f7a8c]/80 rounded-3xl p-4 sm:p-5 text-white shadow-xl border border-rose-400/30 relative overflow-hidden flex items-center justify-between gap-4">
+        <div className="bg-gradient-to-r from-rose-950/90 via-stone-900 to-[#164E3D]/90 rounded-3xl p-5 text-white shadow-xl border border-rose-400/30 relative overflow-hidden flex items-center justify-between gap-4">
           <div className="relative z-10 flex items-center gap-3.5 min-w-0">
-            <Mascot size={68} className="shrink-0 drop-shadow-lg" />
+            <div className="p-1.5 bg-white/10 backdrop-blur-md rounded-2xl border border-white/20 shrink-0">
+              <Mascot size={64} className="drop-shadow-lg" />
+            </div>
             <div className="min-w-0">
-              <div className="flex items-center gap-1.5 mb-0.5">
-                <span className="text-[9.5px] font-black uppercase tracking-wider bg-amber-400 text-slate-950 px-2 py-0.2 rounded-full shadow-2xs">
+              <div className="flex items-center gap-2 mb-1">
+                <span className="text-xs font-extrabold uppercase tracking-wider bg-amber-400 text-slate-950 px-2.5 py-0.5 rounded-full shadow-2xs">
                   Avo Clinical Scribe
                 </span>
-                <span className="text-[10px] text-rose-300 font-bold hidden sm:inline">Food-Symptom Shield</span>
+                <span className="text-xs text-rose-300 font-semibold hidden sm:inline">Food-Symptom Shield</span>
               </div>
               <h3 className="text-sm sm:text-base font-black text-white leading-tight">
                 Metabolic Root-Cause Analysis
               </h3>
-              <p className="text-[11px] sm:text-xs text-rose-100/90 line-clamp-2 mt-0.5 font-medium leading-relaxed">
+              <p className="text-xs text-rose-100/90 line-clamp-2 mt-1 font-medium leading-relaxed">
                 "I cross-reference your energy crashes, reflux, and bloating with your recent meals and hydration to pinpoint exact dietary triggers."
               </p>
             </div>
@@ -342,54 +344,54 @@ export default function SymptomTracker() {
         </div>
 
         {/* ⚡ 1-Tap Rapid Symptom Logger (Grouped by Category) */}
-        <div className="bg-slate-900/90 rounded-3xl border border-rose-500/30 p-5 space-y-3.5 shadow-xl">
+        <div className="bg-white dark:bg-stone-900/90 rounded-3xl border border-stone-200/80 dark:border-stone-800 p-5 space-y-4 shadow-xs">
           <div className="flex items-center justify-between">
             <div>
-              <h2 className="text-sm sm:text-base font-black text-white flex items-center gap-2">
+              <h2 className="text-sm sm:text-base font-extrabold text-stone-900 dark:text-white flex items-center gap-2">
                 <span>⚡ 1-Tap Quick Symptom Shelf</span>
               </h2>
-              <p className="text-xs text-slate-400">Tap to log with auto-matched cultural triggers</p>
+              <p className="text-xs text-stone-500 dark:text-stone-400">Tap to log with auto-matched cultural triggers</p>
             </div>
             <button
               onClick={() => setShowAddDialog(true)}
-              className="text-xs font-bold text-rose-400 hover:text-rose-300 cursor-pointer"
+              className="text-xs font-bold text-[#164E3D] dark:text-emerald-400 hover:underline cursor-pointer"
             >
               Custom +
             </button>
           </div>
 
-          <div className="space-y-3">
+          <div className="space-y-3.5">
             {SYMPTOM_CATEGORIES.map((cat, idx) => (
-              <div key={idx} className="space-y-1.5">
-                <span className="text-[10.5px] font-bold text-slate-400 block uppercase tracking-wider">
+              <div key={idx} className="space-y-2">
+                <span className="text-xs font-extrabold text-stone-600 dark:text-stone-400 block uppercase tracking-wider">
                   {cat.category}
                 </span>
-                <div className="grid grid-cols-2 sm:grid-cols-2 gap-2">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                   {cat.items.map((item, iIdx) => (
                     <div
                       key={iIdx}
-                      className="bg-slate-800/80 hover:bg-rose-950/40 border border-slate-700/80 hover:border-rose-400/50 rounded-2xl p-2.5 transition-all flex items-center justify-between gap-2 shadow-2xs group"
+                      className="bg-stone-50/80 dark:bg-stone-800/80 hover:bg-stone-100/80 dark:hover:bg-stone-800 border border-stone-200/80 dark:border-stone-700/80 hover:border-rose-400/50 rounded-2xl p-3 transition-all duration-200 hover:-translate-y-0.5 flex items-center justify-between gap-2 shadow-2xs group"
                     >
-                      <div className="flex items-center gap-2 min-w-0">
-                        <span className="text-lg shrink-0">{item.icon}</span>
-                        <span className="text-xs font-black text-slate-200 group-hover:text-white truncate">
+                      <div className="flex items-center gap-2.5 min-w-0">
+                        <span className="text-xl shrink-0">{item.icon}</span>
+                        <span className="text-xs font-bold text-stone-900 dark:text-stone-100 group-hover:text-rose-600 dark:group-hover:text-rose-400 truncate">
                           {item.name}
                         </span>
                       </div>
 
                       {/* 1-Tap Severity Chips */}
-                      <div className="flex items-center gap-1 shrink-0">
+                      <div className="flex items-center gap-1.5 shrink-0">
                         <button
                           onClick={() => handleQuickLogSymptom(item, "mild")}
                           title="Log Mild"
-                          className="px-2 py-1 rounded-lg bg-amber-500/20 hover:bg-amber-500/40 text-amber-300 text-[10px] font-black border border-amber-500/30 transition-all cursor-pointer active:scale-95"
+                          className="px-2.5 py-1 rounded-xl bg-amber-50 dark:bg-amber-950/60 hover:bg-amber-100 text-amber-800 dark:text-amber-300 text-xs font-bold border border-amber-200 dark:border-amber-800/80 transition-all cursor-pointer active:scale-95"
                         >
                           Mild
                         </button>
                         <button
                           onClick={() => handleQuickLogSymptom(item, "moderate")}
                           title="Log Moderate"
-                          className="px-2 py-1 rounded-lg bg-rose-500/20 hover:bg-rose-500/40 text-rose-300 text-[10px] font-black border border-rose-500/30 transition-all cursor-pointer active:scale-95"
+                          className="px-2.5 py-1 rounded-xl bg-rose-50 dark:bg-rose-950/60 hover:bg-rose-100 text-rose-800 dark:text-rose-300 text-xs font-bold border border-rose-200 dark:border-rose-800/80 transition-all cursor-pointer active:scale-95"
                         >
                           Mod
                         </button>
@@ -403,16 +405,16 @@ export default function SymptomTracker() {
         </div>
 
         {/* 📊 7-Day Symptom Burden & Severity Trend */}
-        <div className="bg-slate-900/90 rounded-3xl border border-rose-500/30 p-5 space-y-4 shadow-xl">
+        <div className="bg-white dark:bg-stone-900/90 rounded-3xl border border-stone-200/80 dark:border-stone-800 p-5 space-y-4 shadow-xs">
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="text-sm sm:text-base font-black text-white flex items-center gap-2">
-                <TrendingUp className="h-4 w-4 text-rose-400" />
+              <h3 className="text-sm sm:text-base font-extrabold text-stone-900 dark:text-white flex items-center gap-2">
+                <TrendingUp className="h-4 w-4 text-rose-600 dark:text-rose-400" />
                 <span>7-Day Symptom Burden Score</span>
               </h3>
-              <p className="text-xs text-slate-400">Weighted severity index over the week</p>
+              <p className="text-xs text-stone-500 dark:text-stone-400 mt-0.5">Weighted severity index over the week</p>
             </div>
-            <span className="text-xs font-bold text-rose-300 bg-rose-500/20 px-2.5 py-0.5 rounded-full border border-rose-500/30">
+            <span className="text-xs font-bold text-rose-700 dark:text-rose-300 bg-rose-50 dark:bg-rose-950/60 px-3 py-1 rounded-full border border-rose-200/80 dark:border-rose-800/80">
               {activeSymptoms.length} Recorded
             </span>
           </div>
@@ -422,16 +424,16 @@ export default function SymptomTracker() {
               <AreaChart data={severityTrend} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                 <defs>
                   <linearGradient id="symptomAreaGrad" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#f43f5e" stopOpacity={0.6} />
+                    <stop offset="5%" stopColor="#f43f5e" stopOpacity={0.4} />
                     <stop offset="95%" stopColor="#f43f5e" stopOpacity={0} />
                   </linearGradient>
                 </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke="#334155" opacity={0.4} />
-                <XAxis dataKey="day" stroke="#94a3b8" fontSize={11} tickLine={false} />
-                <YAxis stroke="#94a3b8" fontSize={11} tickLine={false} domain={[0, 3]} />
+                <CartesianGrid strokeDasharray="3 3" stroke="#cbd5e1" dark-stroke="#334155" opacity={0.4} />
+                <XAxis dataKey="day" stroke="#64748b" fontSize={12} tickLine={false} />
+                <YAxis stroke="#64748b" fontSize={12} tickLine={false} domain={[0, 3]} />
                 <Tooltip
                   contentStyle={{
-                    backgroundColor: "#0f172a",
+                    backgroundColor: "#1e1b4b",
                     borderColor: "#f43f5e",
                     borderRadius: "1rem",
                     fontSize: "12px",
@@ -445,12 +447,12 @@ export default function SymptomTracker() {
 
           {/* Top Triggers Chips */}
           {topTriggers.length > 0 && (
-            <div className="pt-2 border-t border-slate-800 flex items-center gap-2 flex-wrap text-xs">
-              <span className="text-slate-400 font-bold text-[11px]">Primary Triggers:</span>
+            <div className="pt-2 border-t border-stone-200 dark:border-stone-800 flex items-center gap-2 flex-wrap text-xs">
+              <span className="text-stone-500 dark:text-stone-400 font-bold text-xs">Primary Triggers:</span>
               {topTriggers.map(([trigger, count], idx) => (
                 <span
                   key={idx}
-                  className="px-2.5 py-0.5 rounded-full bg-slate-800 border border-slate-700 text-slate-300 font-medium text-[11px]"
+                  className="px-3 py-1 rounded-full bg-stone-100 dark:bg-stone-800 border border-stone-200 dark:border-stone-700 text-stone-700 dark:text-stone-300 font-semibold text-xs"
                 >
                   ⚡ {trigger} ({count}x)
                 </span>
@@ -460,27 +462,29 @@ export default function SymptomTracker() {
         </div>
 
         {/* 🥗 Clinical Food-Symptom Correlation Shield */}
-        <div className="bg-slate-900/90 rounded-3xl border border-teal-500/30 p-5 space-y-3.5 shadow-xl">
-          <div className="flex items-center gap-2 text-teal-300 font-black text-sm">
-            <ShieldCheck size={18} className="text-teal-400" />
+        <div className="bg-white dark:bg-stone-900/90 rounded-3xl border border-stone-200/80 dark:border-stone-800 p-5 space-y-3.5 shadow-xs">
+          <div className="flex items-center gap-2.5 text-stone-900 dark:text-white font-extrabold text-sm">
+            <div className="p-2 rounded-xl bg-teal-50 dark:bg-teal-950 text-teal-700 dark:text-teal-300">
+              <ShieldCheck size={18} />
+            </div>
             <span>Cultural Meal &amp; Symptom Diagnostic Rules</span>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-            <div className="bg-slate-800/80 border border-slate-700/80 rounded-2xl p-3.5 space-y-1">
-              <span className="font-black text-amber-300 flex items-center gap-1.5">
+            <div className="bg-stone-50 dark:bg-stone-800/80 border border-stone-200/80 dark:border-stone-700/80 rounded-2xl p-3.5 space-y-1.5">
+              <span className="font-extrabold text-amber-800 dark:text-amber-300 flex items-center gap-1.5">
                 🎈 Post-Swallow Bloating Relief
               </span>
-              <p className="text-[11px] text-slate-300 leading-relaxed">
+              <p className="text-xs text-stone-600 dark:text-stone-300 leading-relaxed">
                 High-density starches (Fufu, Pounded Yam) slow gastric emptying. Add <strong>Ewedu or Okra mucilage</strong> and avoid drinking large volumes of water mid-meal.
               </p>
             </div>
 
-            <div className="bg-slate-800/80 border border-slate-700/80 rounded-2xl p-3.5 space-y-1">
-              <span className="font-black text-rose-300 flex items-center gap-1.5">
+            <div className="bg-stone-50 dark:bg-stone-800/80 border border-stone-200/80 dark:border-stone-700/80 rounded-2xl p-3.5 space-y-1.5">
+              <span className="font-extrabold text-rose-800 dark:text-rose-300 flex items-center gap-1.5">
                 🔥 Acid Reflux &amp; Palm Oil
               </span>
-              <p className="text-[11px] text-slate-300 leading-relaxed">
+              <p className="text-xs text-stone-600 dark:text-stone-300 leading-relaxed">
                 Excess bleached palm oil delays esophageal sphincter closure. Eat dinner before <strong>7:30 PM</strong> and finish with warm ginger/chamomile tea.
               </p>
             </div>
@@ -488,27 +492,27 @@ export default function SymptomTracker() {
         </div>
 
         {/* 📋 Logged Symptom History List with Search & Filter */}
-        <div className="bg-slate-900/90 rounded-3xl border border-rose-500/30 p-5 space-y-3.5 shadow-xl">
+        <div className="bg-white dark:bg-stone-900/90 rounded-3xl border border-stone-200/80 dark:border-stone-800 p-5 space-y-3.5 shadow-xs">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-            <h3 className="text-sm sm:text-base font-black text-white">Symptom Log History</h3>
+            <h3 className="text-sm sm:text-base font-extrabold text-stone-900 dark:text-white">Symptom Log History</h3>
             {/* Search & Filter */}
             <div className="flex items-center gap-2">
               <div className="relative">
-                <Search size={13} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-stone-400" />
                 <input
                   type="text"
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   placeholder="Filter logs..."
-                  className="pl-8 pr-3 py-1.5 bg-slate-800 border border-slate-700 rounded-xl text-xs text-white placeholder:text-slate-500 outline-none focus:border-rose-400"
+                  className="pl-8 pr-3 py-2 bg-stone-50 dark:bg-stone-800 border border-stone-200 dark:border-stone-700 rounded-xl text-xs text-stone-900 dark:text-white placeholder:text-stone-400 outline-none focus:border-rose-400"
                 />
               </div>
             </div>
           </div>
 
           {isUsingPreview && (
-            <div className="p-2.5 bg-rose-950/40 border border-rose-500/30 rounded-xl text-xs text-rose-200 flex items-center gap-2">
-              <Info size={14} className="text-rose-400 shrink-0" />
+            <div className="p-3 bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-500/30 rounded-xl text-xs text-rose-800 dark:text-rose-200 flex items-center gap-2">
+              <Info size={14} className="text-rose-600 dark:text-rose-400 shrink-0" />
               <span>Showing sample benchmark history. Tap any quick chip above to record your live symptoms!</span>
             </div>
           )}
@@ -517,33 +521,33 @@ export default function SymptomTracker() {
             {filteredSymptoms.map((s) => (
               <div
                 key={s.id}
-                className="bg-slate-800/80 border border-slate-700/80 rounded-2xl p-3.5 flex items-start justify-between gap-3 text-xs shadow-2xs hover:border-slate-600 transition-all"
+                className="bg-stone-50 dark:bg-stone-800/80 border border-stone-200/80 dark:border-stone-700/80 rounded-2xl p-4 flex items-start justify-between gap-3 text-xs shadow-2xs hover:border-stone-300 dark:hover:border-stone-600 transition-all"
               >
-                <div className="space-y-1 min-w-0">
+                <div className="space-y-1.5 min-w-0">
                   <div className="flex items-center gap-2 flex-wrap">
-                    <span className="font-black text-white text-xs sm:text-sm">{s.symptom}</span>
+                    <span className="font-extrabold text-stone-900 dark:text-white text-xs sm:text-sm">{s.symptom}</span>
                     <span
-                      className={`px-2 py-0.2 rounded-full font-bold text-[10px] ${
+                      className={`px-2.5 py-0.5 rounded-full font-bold text-xs ${
                         s.severity === "severe"
-                          ? "bg-red-500/20 text-red-300 border border-red-500/30"
+                          ? "bg-red-50 dark:bg-red-500/20 text-red-700 dark:text-red-300 border border-red-200 dark:border-red-500/30"
                           : s.severity === "moderate"
-                          ? "bg-orange-500/20 text-orange-300 border border-orange-500/30"
-                          : "bg-amber-500/20 text-amber-300 border border-amber-500/30"
+                          ? "bg-orange-50 dark:bg-orange-500/20 text-orange-700 dark:text-orange-300 border border-orange-200 dark:border-orange-500/30"
+                          : "bg-amber-50 dark:bg-amber-500/20 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-500/30"
                       }`}
                     >
                       {s.severity.toUpperCase()}
                     </span>
                   </div>
 
-                  <p className="text-[11px] text-slate-400">
+                  <p className="text-xs text-stone-500 dark:text-stone-400">
                     Logged: {s.date} at {s.time}
                     {s.relatedFood && (
-                      <span className="text-teal-300 ml-2 font-semibold">• Related Food: {s.relatedFood}</span>
+                      <span className="text-[#164E3D] dark:text-emerald-400 ml-2 font-semibold">• Related Food: {s.relatedFood}</span>
                     )}
                   </p>
 
                   {s.notes && (
-                    <p className="text-[11px] text-slate-300 bg-slate-900/60 p-2 rounded-xl border border-slate-800/80 mt-1">
+                    <p className="text-xs text-stone-700 dark:text-stone-300 bg-white dark:bg-stone-900/60 p-2.5 rounded-xl border border-stone-200/80 dark:border-stone-800/80 mt-1 leading-relaxed">
                       "{s.notes}"
                     </p>
                   )}
@@ -553,7 +557,7 @@ export default function SymptomTracker() {
                       {s.triggers.map((trig, idx) => (
                         <span
                           key={idx}
-                          className="bg-slate-900 text-slate-400 px-2 py-0.5 rounded-md text-[10px] font-medium border border-slate-800"
+                          className="bg-white dark:bg-stone-900 text-stone-600 dark:text-stone-400 px-2.5 py-0.5 rounded-md text-xs font-medium border border-stone-200 dark:border-stone-800"
                         >
                           ⚡ {trig}
                         </span>
@@ -565,7 +569,7 @@ export default function SymptomTracker() {
                 {!isUsingPreview && (
                   <button
                     onClick={() => handleDeleteSymptom(s.id)}
-                    className="p-1.5 text-slate-400 hover:text-red-400 hover:bg-slate-700/50 rounded-lg transition-colors cursor-pointer"
+                    className="p-1.5 text-stone-400 hover:text-red-500 hover:bg-stone-200 dark:hover:bg-stone-700 rounded-lg transition-colors cursor-pointer"
                     title="Delete log"
                   >
                     <X size={15} />
@@ -579,20 +583,20 @@ export default function SymptomTracker() {
 
       {/* Custom Symptom Log Modal */}
       <Dialog open={showAddDialog} onOpenChange={setShowAddDialog}>
-        <DialogContent className="max-w-md bg-slate-900 border border-rose-500/30 text-white rounded-3xl p-6">
+        <DialogContent className="max-w-md bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 text-stone-900 dark:text-white rounded-3xl p-6">
           <DialogHeader>
-            <DialogTitle className="text-lg font-black text-rose-300 flex items-center gap-2">
-              <Stethoscope size={18} />
+            <DialogTitle className="text-lg font-black text-stone-900 dark:text-white flex items-center gap-2">
+              <Stethoscope size={18} className="text-rose-600 dark:text-rose-400" />
               <span>Record Detailed Symptom</span>
             </DialogTitle>
-            <DialogDescription className="text-xs text-slate-400">
+            <DialogDescription className="text-xs text-stone-500 dark:text-stone-400">
               Log details to help identify meal &amp; lifestyle correlations
             </DialogDescription>
           </DialogHeader>
 
           <div className="space-y-3.5 mt-3">
             <div>
-              <Label className="text-xs font-bold text-slate-300 mb-1 block">Symptom Name *</Label>
+              <Label className="text-xs font-bold text-stone-700 dark:text-stone-300 mb-1 block">Symptom Name *</Label>
               <Input
                 type="text"
                 value={formData.symptom}
@@ -601,12 +605,12 @@ export default function SymptomTracker() {
                   mascot.write();
                 }}
                 placeholder="e.g. Migraine, Post-Eba Bloating, Palpitations..."
-                className="bg-slate-800 border-slate-700 text-white text-xs h-10 rounded-xl"
+                className="bg-stone-50 dark:bg-stone-800 border-stone-200 dark:border-stone-700 text-stone-900 dark:text-white text-xs h-10 rounded-xl"
               />
             </div>
 
             <div>
-              <Label className="text-xs font-bold text-slate-300 mb-1.5 block">Severity Level</Label>
+              <Label className="text-xs font-bold text-stone-700 dark:text-stone-300 mb-1.5 block">Severity Level</Label>
               <div className="grid grid-cols-3 gap-2">
                 {(["mild", "moderate", "severe"] as const).map((sev) => (
                   <button
@@ -616,11 +620,11 @@ export default function SymptomTracker() {
                     className={`p-2.5 rounded-xl border text-xs font-bold capitalize transition-all cursor-pointer ${
                       formData.severity === sev
                         ? sev === "severe"
-                          ? "bg-red-500/30 border-red-400 text-red-200"
+                          ? "bg-red-50 dark:bg-red-500/30 border-red-400 text-red-700 dark:text-red-200"
                           : sev === "moderate"
-                          ? "bg-orange-500/30 border-orange-400 text-orange-200"
-                          : "bg-amber-500/30 border-amber-400 text-amber-200"
-                        : "bg-slate-800/60 border-slate-700 text-slate-400"
+                          ? "bg-orange-50 dark:bg-orange-500/30 border-orange-400 text-orange-700 dark:text-orange-200"
+                          : "bg-amber-50 dark:bg-amber-500/30 border-amber-400 text-amber-700 dark:text-amber-200"
+                        : "bg-stone-50 dark:bg-stone-800/60 border-stone-200 dark:border-stone-700 text-stone-600 dark:text-stone-400"
                     }`}
                   >
                     {sev}
@@ -630,24 +634,24 @@ export default function SymptomTracker() {
             </div>
 
             <div>
-              <Label className="text-xs font-bold text-slate-300 mb-1 block">Related Food Eaten Recently</Label>
+              <Label className="text-xs font-bold text-stone-700 dark:text-stone-300 mb-1 block">Related Food Eaten Recently</Label>
               <Input
                 type="text"
                 value={formData.relatedFood}
                 onChange={(e) => setFormData({ ...formData, relatedFood: e.target.value })}
                 placeholder="e.g. Fried plantain, Pounded Yam, Sweetened Zobo..."
-                className="bg-slate-800 border-slate-700 text-white text-xs h-10 rounded-xl"
+                className="bg-stone-50 dark:bg-stone-800 border-stone-200 dark:border-stone-700 text-stone-900 dark:text-white text-xs h-10 rounded-xl"
               />
             </div>
 
             <div>
-              <Label className="text-xs font-bold text-slate-300 mb-1 block">Clinical Notes &amp; Context</Label>
+              <Label className="text-xs font-bold text-stone-700 dark:text-stone-300 mb-1 block">Clinical Notes &amp; Context</Label>
               <textarea
                 value={formData.notes}
                 onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
                 rows={2}
                 placeholder="Describe how soon after eating it occurred, duration, or relief steps taken..."
-                className="w-full bg-slate-800 border border-slate-700 text-white text-xs p-3 rounded-xl outline-none focus:border-rose-400"
+                className="w-full bg-stone-50 dark:bg-stone-800 border border-stone-200 dark:border-stone-700 text-stone-900 dark:text-white text-xs p-3 rounded-xl outline-none focus:border-rose-400"
               />
             </div>
 
@@ -656,7 +660,7 @@ export default function SymptomTracker() {
                 type="button"
                 onClick={() => setShowAddDialog(false)}
                 variant="outline"
-                className="flex-1 bg-transparent border-slate-700 text-slate-300 hover:bg-slate-800 text-xs rounded-xl"
+                className="flex-1 bg-transparent border-stone-300 dark:border-stone-700 text-stone-700 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-800 text-xs rounded-xl"
               >
                 Cancel
               </Button>
@@ -664,7 +668,7 @@ export default function SymptomTracker() {
                 type="button"
                 onClick={handleCustomSubmit}
                 disabled={saving}
-                className="flex-1 bg-rose-600 hover:bg-rose-500 text-white text-xs font-black rounded-xl shadow-md cursor-pointer"
+                className="flex-1 bg-[#164E3D] hover:bg-[#123E31] text-white text-xs font-black rounded-xl shadow-md cursor-pointer"
               >
                 {saving ? "Saving..." : "Save Symptom"}
               </Button>

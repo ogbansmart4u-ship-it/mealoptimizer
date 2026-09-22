@@ -266,26 +266,26 @@ export default function SleepTracker() {
   }));
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#0f172a] via-[#1e1b4b] to-[#0f172a] text-slate-100 pb-28">
+    <div className="min-h-screen bg-[#FAF8F5] dark:bg-[#0F1412] text-stone-900 dark:text-stone-100 pb-28 transition-colors">
       {/* Top Header */}
-      <div className="bg-slate-900/80 backdrop-blur-md px-4 sm:px-6 pt-9 pb-5 border-b border-indigo-500/20 sticky top-0 z-20">
+      <div className="bg-[#FAF8F5]/90 dark:bg-[#0F1412]/90 backdrop-blur-md px-4 sm:px-6 pt-9 pb-5 border-b border-stone-200/80 dark:border-stone-800 sticky top-0 z-20">
         <div className="max-w-2xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-3">
             <button
-              onClick={() => navigate(-1)}
-              className="text-indigo-200 hover:bg-white/10 rounded-full p-2 transition-colors cursor-pointer"
-              aria-label="Go back"
+              onClick={() => navigate("/health")}
+              className="text-stone-700 dark:text-stone-200 hover:bg-stone-100 dark:hover:bg-stone-800 rounded-full p-2 transition-colors cursor-pointer"
+              aria-label="Back to Health"
             >
               <ChevronLeft className="h-6 w-6" />
             </button>
             <div>
-              <h1 className="text-xl sm:text-2xl font-black text-white leading-tight flex items-center gap-2">
+              <h1 className="text-xl sm:text-2xl font-black text-stone-900 dark:text-white leading-tight flex items-center gap-2">
                 <span>{t("sleep.title")}</span>
-                <span className="text-xs px-2 py-0.5 rounded-full bg-indigo-500/20 text-indigo-300 font-bold border border-indigo-500/30">
+                <span className="text-xs px-2.5 py-0.5 rounded-full bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 font-bold border border-indigo-200/80 dark:border-indigo-800/80">
                   Circadian Hub
                 </span>
               </h1>
-              <p className="text-xs text-indigo-200/80 font-medium">
+              <p className="text-xs text-[#164E3D] dark:text-emerald-400 font-semibold">
                 Metabolic Recovery &amp; Overnight Glucose Optimization
               </p>
             </div>
@@ -295,10 +295,10 @@ export default function SleepTracker() {
               triggerHaptic("light");
               setShowAddDialog(true);
             }}
-            className="bg-indigo-600 hover:bg-indigo-500 text-white rounded-full p-2.5 shadow-md shadow-indigo-900/50 transition-all cursor-pointer active:scale-95 flex items-center gap-1 text-xs font-bold px-3.5"
+            className="bg-[#164E3D] hover:bg-[#123E31] text-white rounded-full p-2.5 shadow-md shadow-emerald-950/20 transition-all cursor-pointer active:scale-95 flex items-center gap-1.5 text-xs font-bold px-4"
           >
             <Plus size={15} />
-            <span className="hidden sm:inline">Log Sleep</span>
+            <span>Log Sleep</span>
           </button>
         </div>
       </div>
@@ -307,29 +307,29 @@ export default function SleepTracker() {
       <div className="max-w-2xl mx-auto px-4 sm:px-6 mt-5 space-y-5">
         {/* API error banner */}
         {logsError && (
-          <div className="bg-red-950/80 border border-red-500/50 rounded-2xl p-4 flex items-center gap-3 text-red-200 text-xs shadow-xs">
-            <AlertCircle className="h-5 w-5 text-red-400 shrink-0" />
+          <div className="bg-red-50 dark:bg-red-950/80 border border-red-200 dark:border-red-500/50 rounded-2xl p-4 flex items-center gap-3 text-red-700 dark:text-red-200 text-xs shadow-2xs">
+            <AlertCircle className="h-5 w-5 text-red-500 shrink-0" />
             <span>{logsError}</span>
           </div>
         )}
 
         {/* 🥑 10X Animated Avo Sleep Scientist Card */}
-        <div className="bg-gradient-to-r from-indigo-900/90 via-purple-900/80 to-slate-900 rounded-3xl p-4 sm:p-5 text-white shadow-xl border border-indigo-400/30 relative overflow-hidden flex items-center justify-between gap-4">
+        <div className="bg-gradient-to-r from-indigo-950 via-[#1e1b4b] to-purple-950 rounded-3xl p-5 text-white shadow-xl border border-indigo-400/30 relative overflow-hidden flex items-center justify-between gap-4">
           <div className="relative z-10 flex items-center gap-3.5 min-w-0">
-            <div className="relative shrink-0 p-1 bg-white/10 backdrop-blur-md rounded-2xl border border-indigo-400/30 shadow-md">
-              <Mascot gesture="sleeping" size={76} className="shrink-0 drop-shadow-xl" />
+            <div className="relative shrink-0 p-1.5 bg-white/10 backdrop-blur-md rounded-2xl border border-indigo-400/30 shadow-md">
+              <Mascot gesture="sleeping" size={72} className="shrink-0 drop-shadow-xl" />
             </div>
             <div className="min-w-0">
-              <div className="flex items-center gap-1.5 mb-0.5">
-                <span className="text-[9.5px] font-black uppercase tracking-wider bg-indigo-400 text-slate-950 px-2 py-0.2 rounded-full shadow-2xs">
+              <div className="flex items-center gap-2 mb-1">
+                <span className="text-xs font-extrabold uppercase tracking-wider bg-indigo-400 text-slate-950 px-2.5 py-0.5 rounded-full shadow-2xs">
                   Avo Sleep &amp; Glucose Lab
                 </span>
-                <span className="text-[10px] text-indigo-300 font-bold hidden sm:inline">Circadian Health</span>
+                <span className="text-xs text-indigo-300 font-semibold hidden sm:inline">Circadian Health</span>
               </div>
               <h3 className="text-sm sm:text-base font-black text-white leading-tight">
                 Overnight Insulin &amp; Deep REM Recovery
               </h3>
-              <p className="text-[11px] sm:text-xs text-indigo-100/90 line-clamp-2 mt-0.5 font-medium leading-relaxed">
+              <p className="text-xs text-indigo-100/90 line-clamp-2 mt-1 font-medium leading-relaxed">
                 "Getting 7.5+ hours lowers morning cortisol and prevents post-breakfast glucose spikes by up to 28%."
               </p>
             </div>
@@ -337,70 +337,70 @@ export default function SleepTracker() {
         </div>
 
         {/* 🌙 10X Hero Sleep Recovery Gauge & Score Card */}
-        <div className="bg-slate-900/90 rounded-3xl border border-indigo-500/30 p-5 sm:p-6 shadow-xl relative overflow-hidden">
+        <div className="bg-white dark:bg-stone-900/90 rounded-3xl border border-stone-200/80 dark:border-stone-800 p-5 sm:p-6 shadow-xs relative overflow-hidden">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-5 text-center sm:text-left">
             {/* Left: Score Gauge */}
             <div className="flex items-center gap-4">
-              <div className="relative flex items-center justify-center h-24 w-24 rounded-full bg-gradient-to-tr from-indigo-600 to-purple-500 p-1 shadow-lg shadow-indigo-950">
-                <div className="h-full w-full bg-slate-950 rounded-full flex flex-col items-center justify-center">
-                  <span className="text-3xl font-black text-white leading-none">
+              <div className="relative flex items-center justify-center h-24 w-24 rounded-full bg-gradient-to-tr from-indigo-600 to-purple-500 p-1 shadow-md shadow-indigo-950/20">
+                <div className="h-full w-full bg-white dark:bg-stone-900 rounded-full flex flex-col items-center justify-center">
+                  <span className="text-3xl font-black text-stone-900 dark:text-white leading-none">
                     {Math.round(avgQuality)}
                   </span>
-                  <span className="text-[10px] font-bold text-indigo-300 uppercase tracking-wider mt-0.5">
+                  <span className="text-xs font-bold text-indigo-600 dark:text-indigo-300 uppercase tracking-wider mt-0.5">
                     Score
                   </span>
                 </div>
               </div>
 
               <div>
-                <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-indigo-500/20 text-indigo-300 text-xs font-bold mb-1 border border-indigo-500/30">
-                  <Moon size={13} />
+                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-50 dark:bg-indigo-950/50 text-indigo-700 dark:text-indigo-300 text-xs font-bold mb-1.5 border border-indigo-200/80 dark:border-indigo-800/80">
+                  <Moon size={14} />
                   <span>7-Day Quality Index</span>
                 </div>
-                <h3 className="text-base sm:text-lg font-black text-white">
+                <h3 className="text-base sm:text-lg font-black text-stone-900 dark:text-white">
                   {avgQuality >= 80 ? "Optimal Metabolic Recovery 🌟" : avgQuality >= 65 ? "Good Sleep Rhythm 🛌" : "Needs Optimization 😴"}
                 </h3>
-                <p className="text-xs text-slate-400 mt-0.5">
-                  Avg Duration: <strong className="text-white">{avgDurationHours} hrs / night</strong>
+                <p className="text-xs text-stone-500 dark:text-stone-400 mt-0.5">
+                  Avg Duration: <strong className="text-stone-900 dark:text-white">{avgDurationHours} hrs / night</strong>
                 </p>
               </div>
             </div>
 
             {/* Right: Quick Recommendation Pill */}
-            <div className="bg-slate-800/80 border border-slate-700/80 rounded-2xl p-3.5 text-xs text-slate-300 space-y-1 max-w-xs">
-              <div className="flex items-center gap-1.5 text-indigo-300 font-bold text-[11px]">
-                <Sparkles size={13} />
+            <div className="bg-stone-50 dark:bg-stone-800/80 border border-stone-200/80 dark:border-stone-700/80 rounded-2xl p-4 text-xs text-stone-600 dark:text-stone-300 space-y-1.5 max-w-xs text-left w-full sm:w-auto">
+              <div className="flex items-center gap-1.5 text-indigo-700 dark:text-indigo-300 font-bold text-xs">
+                <Sparkles size={14} />
                 <span>Tonight's Circadian Window</span>
               </div>
-              <div className="text-sm font-black text-white flex items-center gap-2">
+              <div className="text-sm font-black text-stone-900 dark:text-white flex items-center gap-2">
                 <span>🌙 10:30 PM</span>
                 <span>→</span>
                 <span>☀️ 06:30 AM</span>
               </div>
-              <p className="text-[10px] text-slate-400">Target: 8.0 Hours for optimal deep REM repair</p>
+              <p className="text-xs text-stone-500 dark:text-stone-400">Target: 8.0 Hours for optimal deep REM repair</p>
             </div>
           </div>
 
           {isUsingPreview && (
-            <div className="mt-4 p-2.5 bg-indigo-950/70 border border-indigo-500/40 rounded-xl text-center text-xs text-indigo-200 flex items-center justify-center gap-2">
-              <Info size={14} className="text-indigo-400 shrink-0" />
+            <div className="mt-4 p-3 bg-indigo-50 dark:bg-indigo-950/70 border border-indigo-200 dark:border-indigo-500/40 rounded-xl text-center text-xs text-indigo-800 dark:text-indigo-200 flex items-center justify-center gap-2">
+              <Info size={14} className="text-indigo-600 dark:text-indigo-400 shrink-0" />
               <span>Showing sample recovery benchmark. Tap below to log last night's real sleep!</span>
             </div>
           )}
         </div>
 
         {/* ⚡ 1-Tap Quick Sleep Presets */}
-        <div className="bg-slate-900/90 rounded-3xl border border-indigo-500/30 p-5 space-y-3 shadow-xl">
+        <div className="bg-white dark:bg-stone-900/90 rounded-3xl border border-stone-200/80 dark:border-stone-800 p-5 space-y-3.5 shadow-xs">
           <div className="flex items-center justify-between">
             <div>
-              <h2 className="text-sm sm:text-base font-black text-white flex items-center gap-2">
+              <h2 className="text-sm sm:text-base font-extrabold text-stone-900 dark:text-white flex items-center gap-2">
                 <span>⚡ 1-Tap Quick Sleep Logger</span>
               </h2>
-              <p className="text-xs text-slate-400">Log last night with one touch</p>
+              <p className="text-xs text-stone-500 dark:text-stone-400">Log last night with one touch</p>
             </div>
             <button
               onClick={() => setShowAddDialog(true)}
-              className="text-xs font-bold text-indigo-400 hover:text-indigo-300 cursor-pointer"
+              className="text-xs font-bold text-[#164E3D] dark:text-emerald-400 hover:underline cursor-pointer"
             >
               Custom Time ⏱️
             </button>
@@ -409,58 +409,58 @@ export default function SleepTracker() {
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
             <button
               onClick={() => handleQuickLogPreset({ bedtime: "23:00", wakeTime: "07:00", hours: 8.0, mood: "excellent" })}
-              className="bg-slate-800/90 hover:bg-indigo-900/60 border border-indigo-500/30 hover:border-indigo-400 rounded-2xl p-3 text-left transition-all cursor-pointer group shadow-2xs"
+              className="bg-stone-50/80 dark:bg-stone-800/80 hover:bg-indigo-50/50 dark:hover:bg-indigo-950/30 border border-stone-200/80 dark:border-stone-700 hover:border-indigo-400/60 rounded-2xl p-3.5 text-left transition-all duration-200 hover:-translate-y-0.5 cursor-pointer group shadow-2xs active:scale-95"
             >
-              <div className="text-xs font-black text-white flex items-center justify-between">
+              <div className="text-xs font-black text-stone-900 dark:text-white flex items-center justify-between">
                 <span>🌙 11:00 PM → 07:00 AM</span>
                 <span className="text-base group-hover:scale-110 transition-transform">🤩</span>
               </div>
-              <div className="text-[11px] text-indigo-300 font-bold mt-1">8.0 hrs • Fully Rested</div>
+              <div className="text-xs text-indigo-700 dark:text-indigo-300 font-bold mt-1.5">8.0 hrs • Fully Rested</div>
             </button>
 
             <button
               onClick={() => handleQuickLogPreset({ bedtime: "23:30", wakeTime: "07:00", hours: 7.5, mood: "good" })}
-              className="bg-slate-800/90 hover:bg-indigo-900/60 border border-indigo-500/30 hover:border-indigo-400 rounded-2xl p-3 text-left transition-all cursor-pointer group shadow-2xs"
+              className="bg-stone-50/80 dark:bg-stone-800/80 hover:bg-indigo-50/50 dark:hover:bg-indigo-950/30 border border-stone-200/80 dark:border-stone-700 hover:border-indigo-400/60 rounded-2xl p-3.5 text-left transition-all duration-200 hover:-translate-y-0.5 cursor-pointer group shadow-2xs active:scale-95"
             >
-              <div className="text-xs font-black text-white flex items-center justify-between">
+              <div className="text-xs font-black text-stone-900 dark:text-white flex items-center justify-between">
                 <span>🌙 11:30 PM → 07:00 AM</span>
                 <span className="text-base group-hover:scale-110 transition-transform">😊</span>
               </div>
-              <div className="text-[11px] text-indigo-300 font-bold mt-1">7.5 hrs • Good Rhythm</div>
+              <div className="text-xs text-indigo-700 dark:text-indigo-300 font-bold mt-1.5">7.5 hrs • Good Rhythm</div>
             </button>
 
             <button
               onClick={() => handleQuickLogPreset({ bedtime: "00:00", wakeTime: "06:30", hours: 6.5, mood: "fair" })}
-              className="bg-slate-800/90 hover:bg-indigo-900/60 border border-indigo-500/30 hover:border-indigo-400 rounded-2xl p-3 text-left transition-all cursor-pointer group shadow-2xs"
+              className="bg-stone-50/80 dark:bg-stone-800/80 hover:bg-indigo-50/50 dark:hover:bg-indigo-950/30 border border-stone-200/80 dark:border-stone-700 hover:border-indigo-400/60 rounded-2xl p-3.5 text-left transition-all duration-200 hover:-translate-y-0.5 cursor-pointer group shadow-2xs active:scale-95"
             >
-              <div className="text-xs font-black text-white flex items-center justify-between">
+              <div className="text-xs font-black text-stone-900 dark:text-white flex items-center justify-between">
                 <span>🌙 12:00 AM → 06:30 AM</span>
                 <span className="text-base group-hover:scale-110 transition-transform">🥱</span>
               </div>
-              <div className="text-[11px] text-indigo-300 font-bold mt-1">6.5 hrs • Slight Fatigue</div>
+              <div className="text-xs text-amber-700 dark:text-amber-400 font-bold mt-1.5">6.5 hrs • Slight Fatigue</div>
             </button>
           </div>
         </div>
 
         {/* 📊 7-Day Sleep Duration & Stage Breakdown Chart */}
-        <div className="bg-slate-900/90 rounded-3xl border border-indigo-500/30 p-5 space-y-4 shadow-xl">
+        <div className="bg-white dark:bg-stone-900/90 rounded-3xl border border-stone-200/80 dark:border-stone-800 p-5 space-y-4 shadow-xs">
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="text-sm sm:text-base font-black text-white flex items-center gap-2">
-                <BarChart className="h-4 w-4 text-indigo-400" />
+              <h3 className="text-sm sm:text-base font-extrabold text-stone-900 dark:text-white flex items-center gap-2">
+                <BarChart className="h-4 w-4 text-indigo-600 dark:text-indigo-400" />
                 <span>7-Day Sleep Duration &amp; Rhythm</span>
               </h3>
-              <p className="text-xs text-slate-400">Total hours logged per night</p>
+              <p className="text-xs text-stone-500 dark:text-stone-400 mt-0.5">Total hours logged per night</p>
             </div>
-            <div className="flex items-center gap-3 text-[11px] font-bold text-slate-400">
-              <span className="flex items-center gap-1">
-                <span className="h-2 w-2 rounded-full bg-indigo-500" /> Deep
+            <div className="flex items-center gap-3 text-xs font-bold text-stone-600 dark:text-stone-400">
+              <span className="flex items-center gap-1.5">
+                <span className="h-2.5 w-2.5 rounded-full bg-indigo-500" /> Deep
               </span>
-              <span className="flex items-center gap-1">
-                <span className="h-2 w-2 rounded-full bg-purple-400" /> REM
+              <span className="flex items-center gap-1.5">
+                <span className="h-2.5 w-2.5 rounded-full bg-purple-400" /> REM
               </span>
-              <span className="flex items-center gap-1">
-                <span className="h-2 w-2 rounded-full bg-blue-400" /> Light
+              <span className="flex items-center gap-1.5">
+                <span className="h-2.5 w-2.5 rounded-full bg-blue-400" /> Light
               </span>
             </div>
           </div>
@@ -468,12 +468,12 @@ export default function SleepTracker() {
           <div className="h-56 w-full pt-2">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#334155" opacity={0.4} />
-                <XAxis dataKey="day" stroke="#94a3b8" fontSize={11} tickLine={false} />
-                <YAxis stroke="#94a3b8" fontSize={11} tickLine={false} domain={[0, 10]} />
+                <CartesianGrid strokeDasharray="3 3" stroke="#cbd5e1" dark-stroke="#334155" opacity={0.4} />
+                <XAxis dataKey="day" stroke="#64748b" fontSize={12} tickLine={false} />
+                <YAxis stroke="#64748b" fontSize={12} tickLine={false} domain={[0, 10]} />
                 <Tooltip
                   contentStyle={{
-                    backgroundColor: "#0f172a",
+                    backgroundColor: "#1e1b4b",
                     borderColor: "#6366f1",
                     borderRadius: "1rem",
                     fontSize: "12px",
@@ -489,27 +489,29 @@ export default function SleepTracker() {
         </div>
 
         {/* 🍲 African Meal & Metabolic Sleep Advisory */}
-        <div className="bg-slate-900/90 rounded-3xl border border-indigo-500/30 p-5 space-y-3.5 shadow-xl">
-          <div className="flex items-center gap-2 text-indigo-300 font-black text-sm">
-            <ShieldCheck className="h-5 w-5 text-indigo-400" />
+        <div className="bg-white dark:bg-stone-900/90 rounded-3xl border border-stone-200/80 dark:border-stone-800 p-5 space-y-3.5 shadow-xs">
+          <div className="flex items-center gap-2.5 text-stone-900 dark:text-white font-extrabold text-sm">
+            <div className="p-2 rounded-xl bg-indigo-50 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300">
+              <ShieldCheck className="h-5 w-5" />
+            </div>
             <span>Cultural Metabolic Sleep Advisory</span>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <div className="bg-slate-800/70 border border-slate-700 rounded-2xl p-3.5 text-xs space-y-1">
-              <div className="font-black text-amber-300 flex items-center gap-1.5">
+            <div className="bg-stone-50 dark:bg-stone-800/70 border border-stone-200/70 dark:border-stone-700/70 rounded-2xl p-3.5 text-xs space-y-1.5">
+              <div className="font-extrabold text-amber-800 dark:text-amber-300 flex items-center gap-1.5">
                 <span>🍲 Late Heavy Starch Rule</span>
               </div>
-              <p className="text-[11px] text-slate-300 leading-relaxed">
+              <p className="text-xs text-stone-600 dark:text-stone-300 leading-relaxed">
                 Avoid heavy yam, eba, or oily stew past <strong>8:30 PM</strong>. High nocturnal digestive demand delays deep restorative stage 3 sleep.
               </p>
             </div>
 
-            <div className="bg-slate-800/70 border border-slate-700 rounded-2xl p-3.5 text-xs space-y-1">
-              <div className="font-black text-emerald-300 flex items-center gap-1.5">
+            <div className="bg-stone-50 dark:bg-stone-800/70 border border-stone-200/70 dark:border-stone-700/70 rounded-2xl p-3.5 text-xs space-y-1.5">
+              <div className="font-extrabold text-emerald-800 dark:text-emerald-300 flex items-center gap-1.5">
                 <span>🍵 Calming Herbal Infusions</span>
               </div>
-              <p className="text-[11px] text-slate-300 leading-relaxed">
+              <p className="text-xs text-stone-600 dark:text-stone-300 leading-relaxed">
                 Unsweetened Lemongrass, Chamomile, or warm Zobo tea 45 mins before bedtime relaxes vascular tension and supports melatonin release.
               </p>
             </div>
@@ -517,46 +519,46 @@ export default function SleepTracker() {
         </div>
 
         {/* Recent Sleep Sessions List */}
-        <div className="bg-slate-900/90 rounded-3xl border border-indigo-500/30 p-5 shadow-xl">
+        <div className="bg-white dark:bg-stone-900/90 rounded-3xl border border-stone-200/80 dark:border-stone-800 p-5 shadow-xs">
           <div className="flex items-center justify-between mb-3.5">
-            <h3 className="text-sm sm:text-base font-black text-white">Recent Sleep Logs</h3>
-            <span className="text-xs font-bold text-indigo-300 bg-indigo-500/20 px-2 py-0.5 rounded-full border border-indigo-500/30">
+            <h3 className="text-sm sm:text-base font-extrabold text-stone-900 dark:text-white">Recent Sleep Logs</h3>
+            <span className="text-xs font-bold text-indigo-700 dark:text-indigo-300 bg-indigo-50 dark:bg-indigo-950/60 px-2.5 py-1 rounded-full border border-indigo-200/80 dark:border-indigo-800/80">
               {sleepSessions.length} Logged
             </span>
           </div>
 
           {sleepSessions.length === 0 ? (
-            <div className="text-center py-6 text-slate-400 space-y-2">
+            <div className="text-center py-6 text-stone-400 space-y-2">
               <Moon className="h-8 w-8 mx-auto text-indigo-400/50" />
-              <p className="text-xs font-bold text-slate-300">No real logs recorded yet</p>
-              <p className="text-[11px] text-slate-500">Tap "Log Sleep" above to start your personalized recovery tracker!</p>
+              <p className="text-xs font-bold text-stone-600 dark:text-stone-300">No real logs recorded yet</p>
+              <p className="text-xs text-stone-500">Tap "Log Sleep" above to start your personalized recovery tracker!</p>
             </div>
           ) : (
             <div className="space-y-2.5">
               {sleepSessions.slice().reverse().map((session) => (
                 <div
                   key={session.id}
-                  className="p-3.5 bg-slate-800/80 border border-slate-700/80 rounded-2xl flex items-center justify-between gap-3 text-xs shadow-2xs"
+                  className="p-3.5 bg-stone-50 dark:bg-stone-800/80 border border-stone-200/80 dark:border-stone-700/80 rounded-2xl flex items-center justify-between gap-3 text-xs shadow-2xs"
                 >
                   <div className="flex items-center gap-3">
-                    <div className="p-2 bg-indigo-500/20 text-indigo-300 rounded-xl">
+                    <div className="p-2.5 bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 rounded-xl">
                       <BedDouble size={16} />
                     </div>
                     <div>
-                      <div className="font-black text-white">
+                      <div className="font-extrabold text-stone-900 dark:text-white">
                         {new Date(session.date + "T12:00:00").toLocaleDateString("en-US", { month: "short", day: "numeric", weekday: "short" })}
                       </div>
-                      <div className="text-[11px] text-slate-400 flex items-center gap-2 mt-0.5">
+                      <div className="text-xs text-stone-500 dark:text-stone-400 flex items-center gap-2 mt-0.5">
                         <span>{session.bedtime} → {session.wakeTime}</span>
                         <span>•</span>
-                        <span className="text-indigo-300 font-bold">{(session.totalMinutes / 60).toFixed(1)} hrs</span>
+                        <span className="text-indigo-700 dark:text-indigo-300 font-bold">{(session.totalMinutes / 60).toFixed(1)} hrs</span>
                       </div>
                     </div>
                   </div>
 
                   <div className="text-right">
-                    <span className={`px-2 py-0.5 rounded-full font-black text-[10px] ${
-                      session.quality >= 80 ? "bg-emerald-500/20 text-emerald-300 border border-emerald-500/30" : "bg-indigo-500/20 text-indigo-300 border border-indigo-500/30"
+                    <span className={`px-2.5 py-1 rounded-full font-bold text-xs ${
+                      session.quality >= 80 ? "bg-emerald-50 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800" : "bg-indigo-50 dark:bg-indigo-950/60 text-indigo-800 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800"
                     }`}>
                       {session.quality} Score
                     </span>
@@ -570,31 +572,31 @@ export default function SleepTracker() {
 
       {/* Add Sleep Custom Modal */}
       <Dialog open={showAddDialog} onOpenChange={setShowAddDialog}>
-        <DialogContent className="max-w-md bg-slate-900 border border-indigo-500/30 text-white rounded-3xl p-6">
+        <DialogContent className="max-w-md bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 text-stone-900 dark:text-white rounded-3xl p-6">
           <DialogHeader>
-            <DialogTitle className="text-lg font-black text-indigo-300 flex items-center gap-2">
-              <Moon size={18} />
+            <DialogTitle className="text-lg font-black text-stone-900 dark:text-white flex items-center gap-2">
+              <Moon size={18} className="text-indigo-600 dark:text-indigo-400" />
               <span>Log Sleep Session</span>
             </DialogTitle>
-            <DialogDescription className="text-xs text-slate-400">
+            <DialogDescription className="text-xs text-stone-500 dark:text-stone-400">
               Record bedtime and wake time to analyze your metabolic sleep quality
             </DialogDescription>
           </DialogHeader>
 
           {/* Sleeping Avo Mascot Mini Card */}
-          <div className="flex items-center gap-3 p-3 bg-indigo-950/70 rounded-2xl border border-indigo-500/30">
-            <div className="p-1 bg-white/10 rounded-xl shrink-0">
-              <Mascot gesture="sleeping" size={50} />
+          <div className="flex items-center gap-3 p-3.5 bg-indigo-50 dark:bg-indigo-950/70 rounded-2xl border border-indigo-200 dark:border-indigo-500/30">
+            <div className="p-1.5 bg-white/80 dark:bg-white/10 rounded-xl shrink-0">
+              <Mascot gesture="sleeping" size={48} />
             </div>
             <div className="min-w-0">
-              <p className="text-xs font-black text-indigo-200">Avo Sleep &amp; Cortisol Shield</p>
-              <p className="text-[11px] text-indigo-300/80 line-clamp-1">Every hour of restorative sleep protects morning insulin sensitivity.</p>
+              <p className="text-xs font-black text-indigo-950 dark:text-indigo-200">Avo Sleep &amp; Cortisol Shield</p>
+              <p className="text-xs text-indigo-800/80 dark:text-indigo-300/80 line-clamp-1 mt-0.5">Every hour of restorative sleep protects morning insulin sensitivity.</p>
             </div>
           </div>
 
           <div className="space-y-4 mt-3">
             <div>
-              <Label htmlFor="date" className="text-xs font-bold text-slate-300 mb-1 block">
+              <Label htmlFor="date" className="text-xs font-bold text-stone-700 dark:text-stone-300 mb-1 block">
                 Date
               </Label>
               <Input
@@ -602,13 +604,13 @@ export default function SleepTracker() {
                 type="date"
                 value={formData.date}
                 onChange={(e) => setFormData({ ...formData, date: e.target.value })}
-                className="bg-slate-800 border-slate-700 text-white text-xs h-10 rounded-xl"
+                className="bg-stone-50 dark:bg-stone-800 border-stone-200 dark:border-stone-700 text-stone-900 dark:text-white text-xs h-10 rounded-xl"
               />
             </div>
 
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <Label htmlFor="bedtime" className="text-xs font-bold text-slate-300 mb-1 block">
+                <Label htmlFor="bedtime" className="text-xs font-bold text-stone-700 dark:text-stone-300 mb-1 block">
                   Bedtime 🌙
                 </Label>
                 <Input
@@ -616,12 +618,12 @@ export default function SleepTracker() {
                   type="time"
                   value={formData.bedtime}
                   onChange={(e) => setFormData({ ...formData, bedtime: e.target.value })}
-                  className="bg-slate-800 border-slate-700 text-white text-xs h-10 rounded-xl"
+                  className="bg-stone-50 dark:bg-stone-800 border-stone-200 dark:border-stone-700 text-stone-900 dark:text-white text-xs h-10 rounded-xl"
                 />
               </div>
 
               <div>
-                <Label htmlFor="wakeTime" className="text-xs font-bold text-slate-300 mb-1 block">
+                <Label htmlFor="wakeTime" className="text-xs font-bold text-stone-700 dark:text-stone-300 mb-1 block">
                   Wake Time ☀️
                 </Label>
                 <Input
@@ -629,13 +631,13 @@ export default function SleepTracker() {
                   type="time"
                   value={formData.wakeTime}
                   onChange={(e) => setFormData({ ...formData, wakeTime: e.target.value })}
-                  className="bg-slate-800 border-slate-700 text-white text-xs h-10 rounded-xl"
+                  className="bg-stone-50 dark:bg-stone-800 border-stone-200 dark:border-stone-700 text-stone-900 dark:text-white text-xs h-10 rounded-xl"
                 />
               </div>
             </div>
 
             <div>
-              <Label className="text-xs font-bold text-slate-300 mb-1.5 block">
+              <Label className="text-xs font-bold text-stone-700 dark:text-stone-300 mb-1.5 block">
                 How rested do you feel?
               </Label>
               <div className="grid grid-cols-4 gap-2">
@@ -646,12 +648,12 @@ export default function SleepTracker() {
                     onClick={() => setFormData({ ...formData, mood })}
                     className={`p-2.5 rounded-xl border text-xs font-bold transition-all cursor-pointer ${
                       formData.mood === mood
-                        ? "border-indigo-400 bg-indigo-600/40 text-white shadow-xs"
-                        : "border-slate-700 bg-slate-800/60 hover:bg-slate-800 text-slate-400"
+                        ? "border-indigo-500 bg-indigo-50 dark:bg-indigo-600/40 text-indigo-900 dark:text-white shadow-2xs"
+                        : "border-stone-200 dark:border-stone-700 bg-stone-50 dark:bg-stone-800/60 hover:bg-stone-100 dark:hover:bg-stone-800 text-stone-600 dark:text-stone-400"
                     }`}
                   >
                     <div className="text-lg">{mood === "excellent" ? "😄" : mood === "good" ? "🙂" : mood === "fair" ? "😐" : "😴"}</div>
-                    <div className="capitalize mt-0.5 text-[10px]">{mood}</div>
+                    <div className="capitalize mt-0.5 text-xs">{mood}</div>
                   </button>
                 ))}
               </div>
@@ -662,7 +664,7 @@ export default function SleepTracker() {
                 type="button"
                 onClick={() => setShowAddDialog(false)}
                 variant="outline"
-                className="flex-1 bg-transparent border-slate-700 text-slate-300 hover:bg-slate-800 text-xs rounded-xl"
+                className="flex-1 bg-transparent border-stone-300 dark:border-stone-700 text-stone-700 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-800 text-xs rounded-xl"
               >
                 Cancel
               </Button>
@@ -670,7 +672,7 @@ export default function SleepTracker() {
                 type="button"
                 onClick={handleAddSleep}
                 disabled={saving}
-                className="flex-1 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-black rounded-xl shadow-md cursor-pointer"
+                className="flex-1 bg-[#164E3D] hover:bg-[#123E31] text-white text-xs font-black rounded-xl shadow-md cursor-pointer"
               >
                 {saving ? "Saving..." : "Save Sleep Log"}
               </Button>
