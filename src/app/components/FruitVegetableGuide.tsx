@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { motion, AnimatePresence } from "motion/react";
 import {
   Apple,
   Leaf,
@@ -13,6 +12,7 @@ import {
   Calendar,
   Zap,
   ShoppingBag,
+  RotateCw,
 } from "lucide-react";
 import { createMealLog } from "../../lib/api";
 import { toast } from "sonner";
@@ -464,17 +464,12 @@ export const METABOLIC_FRUITS_VEGETABLES: FruitVegItem[] = [
 
 export default function FruitVegetableGuide() {
   const [filterType, setFilterType] = useState<"all" | "fruit" | "vegetable">("all");
-  const [selectedItem, setSelectedItem] = useState<FruitVegItem>(METABOLIC_FRUITS_VEGETABLES[0]);
+  const [flippedCardId, setFlippedCardId] = useState<string | null>(null);
   const [isLogging, setIsLogging] = useState(false);
 
   const filteredItems = METABOLIC_FRUITS_VEGETABLES.filter(
     (item) => filterType === "all" || item.type === filterType
   );
-
-  const handleSelect = (item: FruitVegItem) => {
-    triggerHaptic("light");
-    setSelectedItem(item);
-  };
 
   const handleLogServing = async (item: FruitVegItem) => {
     triggerHaptic("medium");
@@ -586,6 +581,7 @@ export default function FruitVegetableGuide() {
             onClick={() => {
               triggerHaptic("light");
               setFilterType(tab.id as any);
+              setFlippedCardId(null);
             }}
             className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
               filterType === tab.id
@@ -598,161 +594,178 @@ export default function FruitVegetableGuide() {
         ))}
       </div>
 
-      {/* Horizontal Carousel of Produce Cards */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 mb-5">
+      {/* Interactive Helper Hint */}
+      <div className="flex items-center justify-between text-xs text-stone-500 dark:text-stone-400 font-medium mb-3 px-1">
+        <span className="flex items-center gap-1.5 text-emerald-800 dark:text-emerald-300 font-bold">
+          <RotateCw size={12} className="text-emerald-600 shrink-0" />
+          <span>Interactive 3D Cards: Tap any fruit or green to flip &amp; reveal clinical benefits</span>
+        </span>
+        <span className="hidden sm:inline-block text-stone-400 dark:text-stone-500">
+          Double-sided produce wisdom
+        </span>
+      </div>
+
+      {/* Interactive 3D Flip Card Grid */}
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-3.5 mb-2">
         {filteredItems.map((item) => {
-          const isSelected = selectedItem.id === item.id;
+          const isFlipped = flippedCardId === item.id;
           return (
-            <button
+            <div
               key={item.id}
-              onClick={() => handleSelect(item)}
-              className={`p-3 rounded-2xl text-left border transition-all cursor-pointer flex flex-col justify-between ${
-                isSelected
-                  ? "bg-emerald-50/90 dark:bg-emerald-950/50 border-[#164E3D] ring-2 ring-[#164E3D]/30 shadow-md scale-[1.02]"
-                  : "bg-white dark:bg-stone-800/60 border-stone-200/80 dark:border-stone-700/80 hover:border-emerald-200"
-              }`}
+              onClick={() => {
+                triggerHaptic("light");
+                setFlippedCardId(isFlipped ? null : item.id);
+              }}
+              className="cursor-pointer group relative h-[340px] sm:h-[350px] rounded-3xl perspective-1000 [perspective:1000px] select-none"
             >
-              <div className="flex items-center justify-between mb-1.5">
-                <span className="text-2xl">{item.emoji}</span>
-                <span className="text-xs font-bold text-emerald-800 dark:text-emerald-300 bg-emerald-100/80 dark:bg-emerald-900/50 px-2 py-0.5 rounded-md">
-                  GI {item.giScore}
-                </span>
+              <div
+                className={`relative w-full h-full rounded-3xl transition-transform duration-500 preserve-3d [transform-style:preserve-3d] ${
+                  isFlipped ? "rotate-y-180 [transform:rotateY(180deg)] shadow-xl" : "shadow-xs hover:shadow-md"
+                }`}
+              >
+                {/* FRONT FACE */}
+                <div className="absolute inset-0 w-full h-full rounded-3xl bg-white dark:bg-stone-900 border border-stone-200/90 dark:border-stone-800 p-3.5 flex flex-col justify-between backface-hidden [backface-visibility:hidden]">
+                  <div>
+                    {/* Top Row: Emoji & GI Badge */}
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-3xl p-1.5 bg-emerald-50 dark:bg-emerald-950/50 rounded-2xl border border-emerald-100 dark:border-emerald-900/50 shadow-2xs leading-none">
+                        {item.emoji}
+                      </span>
+                      <span className="text-xs font-bold text-emerald-800 dark:text-emerald-300 bg-emerald-100/90 dark:bg-emerald-900/60 border border-emerald-300/60 dark:border-emerald-700/60 px-2.5 py-0.5 rounded-full shadow-2xs">
+                        GI {item.giScore}
+                      </span>
+                    </div>
+
+                    {/* Produce Name */}
+                    <h3 className="text-sm font-bold text-stone-900 dark:text-stone-100 line-clamp-1 leading-snug">
+                      {item.name}
+                    </h3>
+
+                    {/* Local Names */}
+                    <p className="text-xs text-stone-500 dark:text-stone-400 font-medium truncate mt-0.5">
+                      {item.localNames[0] || item.type}
+                    </p>
+
+                    {/* Target Condition Pill */}
+                    <div className="mt-2 flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-stone-100/80 dark:bg-stone-800/80 border border-stone-200/60 dark:border-stone-700/60 text-stone-700 dark:text-stone-300 text-xs font-medium">
+                      <ShieldCheck size={12} className="text-emerald-600 dark:text-emerald-400 shrink-0" />
+                      <span className="truncate">{item.targetConditions[0]}</span>
+                    </div>
+                  </div>
+
+                  {/* Middle: Fiber & Calories */}
+                  <div className="my-2 bg-emerald-50/60 dark:bg-emerald-950/30 rounded-2xl p-2.5 border border-emerald-100 dark:border-emerald-900/40">
+                    <div className="flex items-center justify-between text-xs text-stone-700 dark:text-stone-300 font-semibold">
+                      <span>Digestive Fiber:</span>
+                      <strong className="text-emerald-700 dark:text-emerald-400 font-bold">{item.fiberPer100g}g</strong>
+                    </div>
+                    <div className="flex items-center justify-between text-xs text-stone-700 dark:text-stone-300 font-semibold mt-1">
+                      <span>Energy Load:</span>
+                      <span className="font-bold text-stone-900 dark:text-stone-100">{item.caloriesPer100g} kcal</span>
+                    </div>
+                  </div>
+
+                  {/* Bottom: Tap to Flip Prompt */}
+                  <div className="flex items-center justify-between text-xs font-bold text-[#164E3D] dark:text-emerald-400 pt-2 border-t border-stone-100 dark:border-stone-800">
+                    <span className="flex items-center gap-1">Tap for wisdom 💡</span>
+                    <span className="flex items-center gap-1 group-hover:scale-105 transition-transform bg-emerald-100/80 dark:bg-emerald-900/50 px-2 py-0.5 rounded-lg border border-emerald-200 dark:border-emerald-800">
+                      <RotateCw size={11} /> Flip
+                    </span>
+                  </div>
+                </div>
+
+                {/* BACK FACE */}
+                <div className="absolute inset-0 w-full h-full rounded-3xl bg-gradient-to-br from-[#164E3D] via-[#123E31] to-[#0A1A14] text-white p-3.5 flex flex-col justify-between rotate-y-180 [transform:rotateY(180deg)] backface-hidden [backface-visibility:hidden] shadow-2xl border border-emerald-500/40 overflow-y-auto custom-scrollbar">
+                  <div>
+                    {/* Top Header */}
+                    <div className="flex items-center justify-between gap-1.5 pb-2 border-b border-white/15">
+                      <div className="flex items-center gap-1.5 min-w-0">
+                        <span className="text-lg leading-none shrink-0">{item.emoji}</span>
+                        <span className="text-xs font-bold text-white truncate">{item.name}</span>
+                      </div>
+                      <span className="text-xs font-bold text-amber-300 flex items-center gap-1 shrink-0 bg-white/10 px-2 py-0.5 rounded-full border border-white/15 hover:bg-white/20 transition-colors">
+                        <RotateCw size={11} className="rotate-180" /> Flip back
+                      </span>
+                    </div>
+
+                    {/* Native Names & Season */}
+                    <div className="mt-1.5 space-y-0.5 text-xs">
+                      <div className="flex items-center gap-1 text-stone-200">
+                        <span className="text-amber-300 font-bold shrink-0">Native:</span>
+                        <span className="text-white truncate font-medium">{item.localNames.join(", ")}</span>
+                      </div>
+                      <div className="flex items-center gap-1 text-stone-300">
+                        <Calendar size={11} className="text-amber-300 shrink-0" />
+                        <span className="truncate">{item.seasonality}</span>
+                      </div>
+                    </div>
+
+                    {/* Clinical Benefit */}
+                    <div className="bg-black/35 rounded-2xl p-2.5 border border-emerald-500/30 my-2 text-xs">
+                      <span className="text-amber-300 font-bold block mb-0.5">🌿 Clinical Benefit:</span>
+                      <p className="text-stone-100 leading-snug line-clamp-3 font-medium">
+                        {item.clinicalBenefit}
+                      </p>
+                    </div>
+
+                    {/* Key Nutrients Chips */}
+                    <div className="mb-2">
+                      <span className="text-xs text-amber-300/90 font-bold uppercase tracking-wider block mb-1">
+                        ⚡ Phytochemicals:
+                      </span>
+                      <div className="flex flex-wrap gap-1">
+                        {item.keyNutrients.slice(0, 3).map((nut, idx) => (
+                          <span
+                            key={idx}
+                            className="px-2 py-0.5 rounded-md bg-emerald-900/80 border border-emerald-500/40 text-emerald-100 text-xs font-semibold truncate max-w-full"
+                          >
+                            {nut}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Culinary Prep Hack */}
+                    <div className="text-xs text-stone-200 line-clamp-2 mb-2 font-medium">
+                      <span className="text-amber-300 font-bold">🍽️ Prep: </span>
+                      {item.bestWayToEat}
+                    </div>
+                  </div>
+
+                  {/* Action Buttons: Log and Shopping List */}
+                  <div className="grid grid-cols-2 gap-1.5 pt-2 mt-auto border-t border-emerald-600/50">
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleLogServing(item);
+                      }}
+                      disabled={isLogging}
+                      className="btn-liquid-glass btn-liquid-forest py-2 px-1 rounded-xl text-white font-bold text-xs flex items-center justify-center gap-1 shadow-xs border border-white/20 active:scale-95 cursor-pointer disabled:opacity-50"
+                      title="Log 100g serving"
+                    >
+                      <Plus size={12} className="shrink-0" />
+                      <span className="truncate">Log 100g 🥗</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleExportGrocery(item);
+                      }}
+                      className="btn-liquid-glass btn-glass-frosted py-2 px-1 rounded-xl text-white font-bold text-xs flex items-center justify-center gap-1 shadow-xs border border-white/30 active:scale-95 cursor-pointer"
+                      title="Add to grocery shopping list"
+                    >
+                      <ShoppingBag size={12} className="shrink-0" />
+                      <span className="truncate">Market 🛒</span>
+                    </button>
+                  </div>
+                </div>
               </div>
-              <h4 className="text-xs font-bold text-stone-900 dark:text-stone-100 line-clamp-1">
-                {item.name}
-              </h4>
-              <span className="text-xs text-stone-500 dark:text-stone-400 block truncate mt-0.5 font-medium">
-                {item.localNames[0] || item.type}
-              </span>
-              <div className="flex items-center gap-1 text-xs text-emerald-700 dark:text-emerald-300 font-bold mt-1">
-                <span>{item.fiberPer100g}g Fiber</span>
-                <span>•</span>
-                <span>{item.caloriesPer100g} kcal</span>
-              </div>
-            </button>
+            </div>
           );
         })}
       </div>
-
-      {/* Highlighted Produce Detail Showcase */}
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={selectedItem.id}
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -8 }}
-          transition={{ duration: 0.25 }}
-          className="bg-gradient-to-br from-[#164E3D] via-[#123E31] to-[#0F1412] text-white rounded-3xl p-5 sm:p-6 shadow-xl border border-emerald-500/30 relative overflow-hidden"
-        >
-          {/* Top Detail Card */}
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-emerald-700/80">
-            <div className="flex items-start gap-3.5">
-              <span className="text-4xl p-2 bg-white/10 rounded-2xl backdrop-blur-md shrink-0">
-                {selectedItem.emoji}
-              </span>
-              <div>
-                <div className="flex items-center gap-2 flex-wrap">
-                  <h3 className="text-base sm:text-lg font-bold text-white">{selectedItem.name}</h3>
-                  <span className="bg-amber-400 text-stone-950 font-bold text-xs px-2.5 py-0.5 rounded-md shadow-2xs">
-                    LOW GLYCEMIC (GI {selectedItem.giScore})
-                  </span>
-                </div>
-                <p className="text-xs text-stone-200 mt-0.5">
-                  Native Names: <strong className="text-white">{selectedItem.localNames.join(", ")}</strong>
-                </p>
-                <p className="text-xs text-stone-200 mt-1.5 leading-relaxed font-medium">
-                  {selectedItem.clinicalBenefit}
-                </p>
-              </div>
-            </div>
-
-            {/* Season Badge */}
-            <div className="bg-white/10 backdrop-blur-md rounded-2xl p-3 border border-white/10 text-right shrink-0">
-              <span className="text-xs text-amber-300 font-bold uppercase flex items-center justify-end gap-1">
-                <Calendar size={12} /> Harvest Season
-              </span>
-              <span className="text-xs font-bold text-white mt-0.5 block">
-                {selectedItem.seasonality}
-              </span>
-            </div>
-          </div>
-
-          {/* 3 Metric Badges */}
-          <div className="grid grid-cols-3 gap-2 my-4">
-            <div className="bg-white/10 rounded-2xl p-2.5 text-center border border-white/10">
-              <span className="text-xs text-emerald-200 block uppercase font-bold">Digestive Fiber</span>
-              <span className="text-sm sm:text-base font-bold text-amber-300">
-                {selectedItem.fiberPer100g}g / 100g
-              </span>
-            </div>
-            <div className="bg-white/10 rounded-2xl p-2.5 text-center border border-white/10">
-              <span className="text-xs text-emerald-200 block uppercase font-bold">Energy Load</span>
-              <span className="text-sm sm:text-base font-bold text-white">
-                {selectedItem.caloriesPer100g} kcal
-              </span>
-            </div>
-            <div className="bg-white/10 rounded-2xl p-2.5 text-center border border-white/10">
-              <span className="text-xs text-emerald-200 block uppercase font-bold">Metabolic Shield</span>
-              <span className="text-xs sm:text-sm font-bold text-emerald-300 truncate">
-                {selectedItem.targetConditions[0]}
-              </span>
-            </div>
-          </div>
-
-          {/* Key Bioactive Phytochemicals */}
-          <div className="bg-black/30 rounded-2xl p-3.5 border border-emerald-500/20 mb-4">
-            <span className="text-xs text-amber-300 font-bold uppercase tracking-wider block mb-1.5">
-              ⚡ Key Bioactive Phytochemicals:
-            </span>
-            <div className="flex flex-wrap gap-1.5">
-              {selectedItem.keyNutrients.map((nut, idx) => (
-                <span
-                  key={idx}
-                  className="px-2.5 py-0.5 rounded-lg bg-emerald-900/60 border border-emerald-600/40 text-emerald-100 text-xs font-semibold"
-                >
-                  {nut}
-                </span>
-              ))}
-            </div>
-          </div>
-
-          {/* Culinary Prep Hack */}
-          <div className="bg-white/10 backdrop-blur-md rounded-2xl p-3.5 border border-white/10 mb-4 text-xs">
-            <span className="text-amber-300 font-bold block mb-1">
-              🍽️ Optimal Bioavailability Preparation:
-            </span>
-            <p className="text-stone-100 leading-relaxed font-medium">
-              {selectedItem.bestWayToEat}
-            </p>
-          </div>
-
-          {/* Diaspora Grocery Substitutes */}
-          <div className="flex items-center justify-between gap-2 text-xs text-stone-200 mb-4 px-1">
-            <span>🌍 Diaspora Equivalents (Tesco / Walmart / Asda):</span>
-            <strong className="text-white truncate">{selectedItem.diasporaSubstitutes.join(", ")}</strong>
-          </div>
-
-          {/* Dual Action Buttons with Liquid Glass Styling */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-2 border-t border-emerald-700/80">
-            <button
-              onClick={() => handleLogServing(selectedItem)}
-              disabled={isLogging}
-              className="btn-liquid-glass btn-liquid-forest py-3 px-4 rounded-2xl text-white font-bold text-xs transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-95 shadow-md border border-white/20"
-            >
-              <Plus size={14} />
-              <span>Log 100g to Daily Food Diary 🍽️</span>
-            </button>
-
-            <button
-              onClick={() => handleExportGrocery(selectedItem)}
-              className="btn-liquid-glass btn-glass-frosted py-3 px-4 rounded-2xl text-white font-bold text-xs transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-95 border border-white/30 shadow-md"
-            >
-              <ShoppingBag size={14} />
-              <span>Add to Market Shopping List 🛒</span>
-            </button>
-          </div>
-        </motion.div>
-      </AnimatePresence>
     </div>
   );
 }
