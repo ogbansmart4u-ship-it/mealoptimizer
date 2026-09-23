@@ -62,11 +62,8 @@ export async function executePurchase(options: PurchaseOptions): Promise<void> {
         }
       }
 
-      // Fallback: If native IAP plugin is not yet loaded in sandbox, activate sandbox entitlement
-      console.log(`[IAP Native Sandbox] Processing native purchase for product: ${productId}`);
-      setSubscriptionStatus(plan, cycle === 'annual' ? 12 : 1, userId);
-      onSuccess?.();
-      return;
+      // If native IAP plugin is not detected
+      throw new Error("App Store billing service is not available on this device.");
     } catch (err: any) {
       console.error('[IAP Native Error]:', err);
       onError?.(err instanceof Error ? err : new Error(err.message || 'Purchase cancelled'));
@@ -85,6 +82,9 @@ export async function executePurchase(options: PurchaseOptions): Promise<void> {
       onSuccess: () => {
         setSubscriptionStatus(plan, cycle === 'annual' ? 12 : 1, userId);
         onSuccess?.();
+      },
+      onError: (err) => {
+        onError?.(err);
       },
     });
   } catch (err: any) {
@@ -115,9 +115,9 @@ export async function restorePurchases(userId?: string): Promise<{ success: bool
     } catch (err) {
       console.error('[IAP Restore Error]:', err);
     }
+    return { success: false, plan: 'free' };
   }
 
-  // Web / local restoration fallback
-  setSubscriptionStatus('pro', 12, userId);
-  return { success: true, plan: 'pro' };
+  // Web restoration: accounts are authenticated and verified via backend login
+  return { success: false, plan: 'free' };
 }

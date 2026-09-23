@@ -248,6 +248,7 @@ export async function processPayment({
   userId,
   onSuccess,
   onCancel,
+  onError,
 }: {
   plan: PlanTier;
   currency: CurrencyCode;
@@ -256,6 +257,7 @@ export async function processPayment({
   userId?: string;
   onSuccess: () => void;
   onCancel?: () => void;
+  onError?: (err: Error) => void;
 }): Promise<void> {
   const targetPlan = SUBSCRIPTION_PLANS.find((p) => p.id === plan);
   if (!targetPlan || plan === "free") return;
@@ -325,12 +327,9 @@ export async function processPayment({
     }
   }
 
-  // Seamless fallback sandbox simulation when live keys are pending
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      setSubscriptionStatus(plan, cycle === "annual" ? 12 : 1, userId);
-      onSuccess();
-      resolve();
-    }, 1000);
-  });
+  // Secure payment failure handling - eliminate client-side bypass
+  const gatewayErrMsg = "Payment gateway is currently awaiting live provider activation. Please try again shortly.";
+  console.warn("[Payment Error]", gatewayErrMsg);
+  onError?.(new Error(gatewayErrMsg));
+  throw new Error(gatewayErrMsg);
 }

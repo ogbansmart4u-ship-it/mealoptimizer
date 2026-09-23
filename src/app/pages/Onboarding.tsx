@@ -245,9 +245,10 @@ export default function Onboarding() {
           setIsProcessingPay(false);
         },
       });
-    } catch {
-      // If purchase dialog bypassed in dev, proceed to activate
-      finalizeAccount(true);
+    } catch (err: any) {
+      console.warn("[Onboarding Paywall]", err);
+      toast.error("Payment could not be completed. You can start on the Free Basic plan anytime.");
+      setIsProcessingPay(false);
     }
   };
 

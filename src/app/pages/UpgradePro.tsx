@@ -104,17 +104,20 @@ export default function UpgradePro() {
     triggerHaptic("medium");
     try {
       const result = await restorePurchases(profile?.id);
-      await refreshProfile?.();
-      setSubscriptionStatus(result.plan, 12, profile?.id);
-      updateProfile?.({ plan: result.plan, isPro: true });
-      setCurrentSub(getSubscriptionStatus(profile?.id));
-      triggerHaptic("milestone");
-      triggerConfetti("fireworks");
-      toast.success("✅ PRO status synced & activated on this mobile device!");
-    } catch {
-      setSubscriptionStatus("pro", 12, profile?.id);
-      setCurrentSub(getSubscriptionStatus(profile?.id));
-      toast.success("✅ Device activated as PRO Member!");
+      if (result.success && result.plan !== "free") {
+        await refreshProfile?.();
+        setSubscriptionStatus(result.plan, 12, profile?.id);
+        updateProfile?.({ plan: result.plan, isPro: true });
+        setCurrentSub(getSubscriptionStatus(profile?.id));
+        triggerHaptic("milestone");
+        triggerConfetti("fireworks");
+        toast.success("✅ PRO status synced & activated on this mobile device!");
+      } else {
+        await refreshProfile?.();
+        toast.info("No prior active subscription found for this account.");
+      }
+    } catch (err: any) {
+      toast.error(err?.message || "Could not restore subscription. Please verify your login credentials.");
     } finally {
       setIsSyncing(false);
     }

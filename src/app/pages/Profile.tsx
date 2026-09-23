@@ -161,19 +161,17 @@ export default function Profile() {
   // 🌟 STRIPE & PAYMENT RETURN HANDLER
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
-    if (params.get("upgrade") === "success" || params.get("plan") === "pro" || params.get("plan") === "family" || params.get("session_id")) {
-      const plan = params.get("plan") === "family" ? "family" : "pro";
-      const targetUserId = profile?.id || "active-user";
-      setSubscriptionStatus(plan, 12, targetUserId);
-      setSubStatus(getSubscriptionStatus(targetUserId));
+    if (params.get("upgrade") === "success" || params.get("session_id")) {
+      // Secure sync: Refresh confirmed subscription from server/database
+      refreshProfile?.();
       triggerHaptic("success");
-      toast.success("🎉 Welcome to MealOptimiza PRO!", {
-        description: "Your subscription is now active with unlimited AI vision scans and WhatsApp logging.",
+      toast.success("Payment Received! 💳", {
+        description: "Checking subscription status with secure servers...",
       });
-      // Clean up URL query parameters
+      // Clean up URL query parameters so users cannot bookmark or spoof with query params
       window.history.replaceState({}, document.title, window.location.pathname);
     }
-  }, [profile]);
+  }, [profile, refreshProfile]);
   const [lockedFeatureName, setLockedFeatureName] = useState("");
 
   const handleToggleWidget = (key: keyof typeof dashboardPrefs, isProOnly: boolean = false) => {

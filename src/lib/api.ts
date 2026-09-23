@@ -141,11 +141,14 @@ export async function updateUserProfile(profileData: {
   plan?: string;
   isPro?: boolean;
 }) {
+  // Security: Strip isPro and plan from general profile updates to prevent client privilege tampering
+  const { plan: _plan, isPro: _isPro, ...sanitizedData } = profileData;
+
   // 1. Direct Cloud Sync: Write permanently to Supabase Auth cloud user_metadata
   try {
     await supabase.auth.updateUser({
       data: {
-        ...profileData,
+        ...sanitizedData,
         medical_condition: profileData.medicalCondition,
       },
     });
@@ -157,11 +160,11 @@ export async function updateUserProfile(profileData: {
   try {
     return await apiCall('/auth/profile', {
       method: 'PUT',
-      body: JSON.stringify(profileData),
+      body: JSON.stringify(sanitizedData),
     });
   } catch (apiErr) {
     console.warn('Backend API /auth/profile sync deferred:', apiErr);
-    return { success: true, ...profileData };
+    return { success: true, ...sanitizedData };
   }
 }
 

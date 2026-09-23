@@ -193,10 +193,10 @@ export default function ClinicianPortal() {
     toast.info("Logged out of Clinician Provider Workspace");
   };
 
-    // 🌟 STRIPE ENTERPRISE UPGRADE SUCCESS LISTENER
+  // 🌟 STRIPE ENTERPRISE UPGRADE SUCCESS LISTENER
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
-    if (params.get("upgrade") === "success" || params.get("plan") === "enterprise" || params.get("session_id")) {
+    if (params.get("upgrade") === "success" || params.get("session_id")) {
       setSubscriptionStatus("enterprise", 12, "active-user");
       triggerHaptic("milestone");
       triggerConfetti("fireworks");
