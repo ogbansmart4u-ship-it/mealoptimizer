@@ -153,25 +153,25 @@ export default function UpgradePro() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#061411] via-[#091D18] to-[#040C0A] text-stone-100 pb-28 font-sans selection:bg-emerald-500 selection:text-white">
       {/* 🌿 Top Navigation Bar */}
-      <header className="sticky top-0 z-30 bg-[#061411]/90 backdrop-blur-md px-4 sm:px-6 py-3.5 border-b border-emerald-900/40 flex items-center justify-between">
+      <header className="sticky top-0 z-30 bg-[#061411]/90 backdrop-blur-md px-3 sm:px-6 py-3 border-b border-emerald-900/40 flex items-center justify-between gap-2">
         <button
           onClick={() => navigate(-1)}
-          className="p-2 hover:bg-white/10 rounded-full transition-colors cursor-pointer text-stone-300 hover:text-white"
+          className="p-1.5 sm:p-2 hover:bg-white/10 rounded-full transition-colors cursor-pointer text-stone-300 hover:text-white shrink-0"
           aria-label="Back"
         >
           <ChevronLeft className="h-5 w-5" />
         </button>
-        <div className="flex items-center gap-1.5 font-bold text-sm tracking-wide text-emerald-300">
-          <Crown size={16} className="text-amber-400" />
-          <span>MealOptimiza Membership</span>
+        <div className="flex items-center gap-1.5 font-bold text-xs sm:text-sm tracking-wide text-emerald-300 truncate">
+          <Crown size={15} className="text-amber-400 shrink-0" />
+          <span className="truncate">MealOptimiza Plans</span>
         </div>
         <button
           onClick={handleRestoreSubscription}
           disabled={isSyncing}
-          className="text-xs font-bold text-emerald-300 hover:text-emerald-200 flex items-center gap-1.5 bg-emerald-950/60 border border-emerald-500/30 px-3 py-1.5 rounded-full cursor-pointer active:scale-95 transition-all shadow-sm"
+          className="text-[11px] sm:text-xs font-bold text-emerald-300 hover:text-emerald-200 flex items-center gap-1.5 bg-emerald-950/60 border border-emerald-500/30 px-2.5 sm:px-3 py-1.5 rounded-full cursor-pointer active:scale-95 transition-all shadow-sm shrink-0"
           title="Restore / Sync membership across devices"
         >
-          <RotateCw size={12} className={isSyncing ? "animate-spin" : ""} />
+          <RotateCw size={11} className={isSyncing ? "animate-spin" : ""} />
           <span>Sync Device</span>
         </button>
       </header>
@@ -511,12 +511,12 @@ export default function UpgradePro() {
           </div>
 
           {/* Interactive Navigation Pills */}
-          <div className="flex items-center justify-center gap-2 flex-wrap mb-6">
+          <div className="flex items-center justify-center gap-1.5 sm:gap-2 flex-wrap mb-6">
             {[
-              { id: "whatsapp", label: "📱 WhatsApp Parent Care", icon: Smartphone },
-              { id: "doctor", label: "📄 14-Day Doctor PDF", icon: FileText },
-              { id: "fixplate", label: "🪄 'Fix My Plate' Engine", icon: Sparkle },
-              { id: "cgm", label: "⌚ Sensor & CGM Telemetry", icon: Activity },
+              { id: "whatsapp", mobileLabel: "WhatsApp Care", fullLabel: "WhatsApp Parent Care", emoji: "📱", icon: Smartphone },
+              { id: "doctor", mobileLabel: "Doctor PDF", fullLabel: "14-Day Doctor PDF", emoji: "📄", icon: FileText },
+              { id: "fixplate", mobileLabel: "Fix My Plate", fullLabel: "'Fix My Plate' Engine", emoji: "🪄", icon: Sparkle },
+              { id: "cgm", mobileLabel: "Sensor & CGM", fullLabel: "Sensor & CGM Telemetry", emoji: "⌚", icon: Activity },
             ].map((tab) => {
               const Icon = tab.icon;
               const isActive = activePreviewTab === tab.id;
@@ -527,14 +527,15 @@ export default function UpgradePro() {
                     triggerHaptic("light");
                     setActivePreviewTab(tab.id as any);
                   }}
-                  className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
+                  className={`px-2.5 sm:px-3.5 py-1.5 sm:py-2 rounded-xl text-[11px] sm:text-xs font-bold transition-all flex items-center gap-1 sm:gap-1.5 cursor-pointer shadow-2xs ${
                     isActive
                       ? "bg-emerald-500 text-stone-950 shadow-md font-black"
                       : "bg-[#061511] text-stone-300 hover:text-white border border-emerald-900/40"
                   }`}
                 >
-                  <Icon size={14} />
-                  <span>{tab.label}</span>
+                  <Icon size={13} className="shrink-0" />
+                  <span className="sm:hidden">{tab.emoji} {tab.mobileLabel}</span>
+                  <span className="hidden sm:inline">{tab.emoji} {tab.fullLabel}</span>
                 </button>
               );
             })}
@@ -656,14 +657,24 @@ export default function UpgradePro() {
               <p className="text-xs text-stone-300 mb-4 max-w-md mx-auto">
                 Connect your Dexcom G6/G7, Abbott Freestyle Libre, Apple Watch, or Fitbit. See your blood sugar line curve in real-time as you eat Jollof rice or Swallow.
               </p>
-              <div className="flex items-center justify-center gap-3 text-xs font-bold text-emerald-300 bg-emerald-950/80 p-2.5 rounded-xl border border-emerald-800/40">
-                <span>Dexcom</span>
-                <span>•</span>
-                <span>Freestyle Libre</span>
-                <span>•</span>
-                <span>Apple Health</span>
-                <span>•</span>
-                <span>Health Connect</span>
+              {/* Responsive Badge Grid (Guaranteed inside frame on all mobile screens) */}
+              <div className="grid grid-cols-2 sm:flex sm:flex-wrap items-center justify-center gap-2 text-[11px] sm:text-xs font-bold text-emerald-300 max-w-sm sm:max-w-md mx-auto pt-1">
+                <span className="bg-emerald-950/90 border border-emerald-800/60 py-2 px-2.5 sm:px-3 rounded-xl flex items-center justify-center gap-1.5 shadow-xs">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 shrink-0"></span>
+                  <span className="truncate">Dexcom G6 / G7</span>
+                </span>
+                <span className="bg-emerald-950/90 border border-emerald-800/60 py-2 px-2.5 sm:px-3 rounded-xl flex items-center justify-center gap-1.5 shadow-xs">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 shrink-0"></span>
+                  <span className="truncate">Freestyle Libre</span>
+                </span>
+                <span className="bg-emerald-950/90 border border-emerald-800/60 py-2 px-2.5 sm:px-3 rounded-xl flex items-center justify-center gap-1.5 shadow-xs">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 shrink-0"></span>
+                  <span className="truncate">Apple Health</span>
+                </span>
+                <span className="bg-emerald-950/90 border border-emerald-800/60 py-2 px-2.5 sm:px-3 rounded-xl flex items-center justify-center gap-1.5 shadow-xs">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 shrink-0"></span>
+                  <span className="truncate">Health Connect</span>
+                </span>
               </div>
             </div>
           )}
