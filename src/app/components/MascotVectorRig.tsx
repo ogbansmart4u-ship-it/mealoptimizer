@@ -11,6 +11,8 @@ interface MascotVectorRigProps {
   alt?: string;
 }
 
+const MASCOT_VER = "v=transparent-20260925-v1";
+
 export default function MascotVectorRig({
   gesture = "idle",
   lookDirection = "auto",
@@ -28,20 +30,20 @@ export default function MascotVectorRig({
   const isSleeping = g === "sleeping" || g === "sleep" || g === "rest";
 
   let animClass = "animate-bounce";
-  let imgSrc = "/assets/mascot/avo-wave.webp";
+  let imgSrc = `/assets/mascot/avo-wave.webp?${MASCOT_VER}`;
   if (isWriting) {
     animClass = "animate-pulse";
-    imgSrc = "/assets/mascot/avo-write.webp";
+    imgSrc = `/assets/mascot/avo-write.webp?${MASCOT_VER}`;
   } else if (isClapping) {
     animClass = "animate-pulse";
-    imgSrc = "/assets/mascot/avo-clap.apng";
+    imgSrc = `/assets/mascot/avo-clap.apng?${MASCOT_VER}`;
   } else if (isSleeping) {
     animClass = "opacity-90";
-    imgSrc = "/assets/mascot/avo-sleep.apng";
+    imgSrc = `/assets/mascot/avo-sleep.apng?${MASCOT_VER}`;
   } else if (isJumping) {
-    imgSrc = "/assets/mascot/avo-jump.webp";
+    imgSrc = `/assets/mascot/avo-jump.webp?${MASCOT_VER}`;
   } else if (isSad) {
-    imgSrc = "/assets/mascot/avo-sad.webp";
+    imgSrc = `/assets/mascot/avo-sad.webp?${MASCOT_VER}`;
   }
 
   return (

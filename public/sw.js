@@ -3,7 +3,7 @@
  * 100% Guaranteed Offline SPA Shell + Cache-First Static Assets
  */
 
-const CACHE_NAME = 'mealoptimiza-pwa-v10.6-smart-push-20260910';
+const CACHE_NAME = 'mealoptimiza-pwa-v10.7-mascot-transparent-20260925';
 
 const PRECACHE_ASSETS = [
   '/',
@@ -104,6 +104,22 @@ self.addEventListener('fetch', (event) => {
 
   // B. Recipe & Food Visual Assets: Network-First (Guarantees fresh 50% divided plate photography on mobile & tablet)
   if (url.pathname.includes('/assets/recipes/')) {
+    event.respondWith(
+      fetch(request)
+        .then((networkResponse) => {
+          if (networkResponse && networkResponse.status === 200) {
+            const copy = networkResponse.clone();
+            caches.open(CACHE_NAME).then((cache) => cache.put(request, copy));
+          }
+          return networkResponse;
+        })
+        .catch(() => caches.match(request))
+    );
+    return;
+  }
+
+  // B2. Mascot Visual Assets: Network-First (Guarantees fresh transparent WebP animations across devices)
+  if (url.pathname.includes('/assets/mascot/')) {
     event.respondWith(
       fetch(request)
         .then((networkResponse) => {
