@@ -327,16 +327,16 @@ export default function Login() {
             </button>
           </div>
 
-          {/* SSO Google & Apple Buttons */}
-          <div className="grid grid-cols-2 gap-2.5 mb-5">
+          {/* SSO Google Button (Android Store Ready - Apple Sign In can be re-enabled when listing on iOS App Store) */}
+          <div className="mb-5">
             <button
               type="button"
               onClick={handleGoogleSignIn}
               disabled={oauthLoading !== null}
-              className="flex items-center justify-center gap-2 py-2.5 px-3 rounded-2xl border border-slate-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 hover:bg-slate-50 dark:hover:bg-zinc-700/80 transition-all text-xs font-bold text-slate-700 dark:text-slate-200 shadow-2xs active:scale-95 cursor-pointer disabled:opacity-60"
+              className="w-full flex items-center justify-center gap-2.5 py-3 px-4 rounded-2xl border border-slate-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 hover:bg-slate-50 dark:hover:bg-zinc-700/80 transition-all text-xs font-bold text-slate-700 dark:text-slate-200 shadow-2xs active:scale-[0.99] cursor-pointer disabled:opacity-60"
             >
               {oauthLoading === "google" ? (
-                <Loader2 size={15} className="animate-spin text-teal-600" />
+                <Loader2 size={16} className="animate-spin text-teal-600" />
               ) : (
                 <svg className="w-4 h-4" viewBox="0 0 24 24">
                   <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
@@ -345,23 +345,7 @@ export default function Login() {
                   <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" />
                 </svg>
               )}
-              <span>Google</span>
-            </button>
-
-            <button
-              type="button"
-              onClick={handleAppleSignIn}
-              disabled={oauthLoading !== null}
-              className="flex items-center justify-center gap-2 py-2.5 px-3 rounded-2xl border border-slate-900 bg-slate-950 hover:bg-slate-900 transition-all text-xs font-bold text-white shadow-2xs active:scale-95 cursor-pointer disabled:opacity-60"
-            >
-              {oauthLoading === "apple" ? (
-                <Loader2 size={15} className="animate-spin text-white" />
-              ) : (
-                <svg className="w-4 h-4 fill-current" viewBox="0 0 170 170">
-                  <path d="M150.37 130.25c-2.45 5.66-5.35 10.87-8.71 15.66-4.58 6.53-8.33 11.05-11.22 13.56-4.48 4.12-9.28 6.23-14.42 6.35-3.69 0-8.14-1.05-13.32-3.18-5.19-2.12-9.97-3.17-14.34-3.17-4.58 0-9.49 1.05-14.75 3.17-5.26 2.13-9.5 3.24-12.74 3.35-4.35.13-9.16-1.9-14.42-6.08-3.7-3.04-7.7-7.85-12-14.44-6.19-9.47-10.97-20.21-14.34-32.22-3.37-12-5.06-23.47-5.06-34.4 0-14.7 3.59-27.1 10.76-37.21 7.18-10.12 16.32-15.34 27.43-15.66 4.79 0 10.33 1.25 16.63 3.75 6.31 2.5 10.32 3.86 12.04 4.08 2.39-.43 6.64-1.89 12.74-4.38 6.1-2.49 11.42-3.65 15.98-3.48 11.96.65 21.64 4.9 29.04 12.74-10.44 6.31-15.56 15.12-15.34 26.43.22 8.92 3.69 16.31 10.44 22.19 6.74 5.87 14.68 9.14 23.82 9.79-2.18 6.74-4.89 13.27-8.15 19.58zM119.22 31.84c0-7.39 2.61-14.35 7.83-20.88 5.22-6.53 11.85-10.55 19.9-12.07.22 1.09.33 2.18.33 3.26 0 7.39-2.72 14.57-8.15 21.53-5.44 6.96-12.18 10.87-20.23 11.74-.22-1.2-.33-2.4-.33-3.58z" />
-                </svg>
-              )}
-              <span>Apple</span>
+              <span>Continue with Google</span>
             </button>
           </div>
 
