@@ -58,12 +58,12 @@ export default function Mascot({
 }: MascotProps) {
   const { gesture: shared } = useMascot();
   const gesture = (override ?? shared ?? "idle").toLowerCase();
-  const [videoError, setVideoError] = useState(false);
+  const [imgError, setImgError] = useState(false);
 
   const asset = GESTURE_ASSETS[gesture] || GESTURE_ASSETS.idle;
 
-  // If video format fails or is unsupported on very old legacy browser, fallback gracefully to SVG Rig
-  if (videoError) {
+  // If image fails to load, fallback gracefully to SVG Rig
+  if (imgError) {
     return (
       <MascotVectorRig
         gesture={gesture}
@@ -75,33 +75,7 @@ export default function Mascot({
     );
   }
 
-  // For gestures with transparent animated WebP / APNG (writing, clapping, sleeping),
-  // render directly via <img> for true alpha transparency, zero black borders, and 100% reliable playback
-  const isDirectImage =
-    gesture === "writing" ||
-    gesture === "write" ||
-    gesture === "notetaking" ||
-    asset.webp.endsWith(".apng");
-
-  if (isDirectImage) {
-    return (
-      <div
-        className={`inline-block relative select-none pointer-events-none ${className}`}
-        style={{ width: size, height: size * 1.15 }}
-        aria-label={alt}
-        role="img"
-      >
-        <img
-          src={asset.webp}
-          alt={alt}
-          className="w-full h-full object-contain drop-shadow-md transition-opacity duration-200"
-          style={{ filter: "drop-shadow(0 4px 10px rgba(0, 0, 0, 0.12))" }}
-          onError={() => setVideoError(true)}
-        />
-      </div>
-    );
-  }
-
+  // True alpha transparency rendering - zero black borders or dark backgrounds across all platforms
   return (
     <div
       className={`inline-block relative select-none pointer-events-none ${className}`}
@@ -109,23 +83,13 @@ export default function Mascot({
       aria-label={alt}
       role="img"
     >
-      <video
-        key={asset.webm}
-        autoPlay
-        loop
-        muted
-        playsInline
-        onError={() => setVideoError(true)}
-        className="w-full h-full object-contain drop-shadow-md transition-opacity duration-200"
-        style={{ filter: "drop-shadow(0 4px 10px rgba(0, 0, 0, 0.12))" }}
-      >
-        <source src={asset.webm} type="video/webm" />
-        <img
-          src={asset.webp}
-          alt={alt}
-          className="w-full h-full object-contain"
-        />
-      </video>
+      <img
+        src={asset.webp}
+        alt={alt}
+        className="w-full h-full object-contain transition-opacity duration-200"
+        style={{ filter: "drop-shadow(0 4px 10px rgba(0, 0, 0, 0.08))" }}
+        onError={() => setImgError(true)}
+      />
     </div>
   );
 }
