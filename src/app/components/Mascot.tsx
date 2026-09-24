@@ -13,15 +13,6 @@ export interface MascotProps {
   className?: string;
   /** Accessible label. Defaults to decorative (aria-hidden). */
   alt?: string;
-  /**
-   * Background container style:
-   * - "white": Crisp clean white background container (DEFAULT)
-   * - "neutral": Soft warm neutral background container (stone-50)
-   * - "none": Floating directly without a background container
-   */
-  backdrop?: "white" | "neutral" | "none";
-  /** Shape of the background container: "circle" | "rounded" | "none". Default "circle" */
-  shape?: "circle" | "rounded" | "none";
 }
 
 const GESTURE_ASSETS: Record<string, { webm: string; webp: string }> = {
@@ -64,8 +55,6 @@ export default function Mascot({
   size = 96,
   className = "",
   alt = "Avo the Mascot",
-  backdrop = "white",
-  shape = "circle",
 }: MascotProps) {
   const { gesture: shared } = useMascot();
   const gesture = (override ?? shared ?? "idle").toLowerCase();
@@ -82,53 +71,23 @@ export default function Mascot({
         size={size}
         className={className}
         alt={alt}
-        backdrop={backdrop}
-        shape={shape}
       />
     );
   }
 
-  // Floating mascot without dedicated background container
-  if (backdrop === "none") {
-    return (
-      <div
-        className={`inline-block relative select-none pointer-events-none ${className}`}
-        style={{ width: size, height: size * 1.15 }}
-        aria-label={alt}
-        role="img"
-      >
-        <img
-          src={asset.webp}
-          alt={alt}
-          className="w-full h-full object-contain transition-opacity duration-200"
-          style={{ filter: "drop-shadow(0 4px 10px rgba(0, 0, 0, 0.08))" }}
-          onError={() => setImgError(true)}
-        />
-      </div>
-    );
-  }
-
-  // Pure white or neutral background container with subtle border & gentle shadow
-  const bgClasses =
-    backdrop === "neutral"
-      ? "bg-stone-50 dark:bg-zinc-800/90 border border-stone-200/80 dark:border-zinc-700 shadow-xs"
-      : "bg-white dark:bg-zinc-800 border border-stone-200/90 dark:border-zinc-700 shadow-sm";
-
-  const shapeClasses =
-    shape === "rounded" ? "rounded-2xl" : shape === "circle" ? "rounded-full" : "";
-
+  // 100% transparent - assumes the background of its environment or where it is sitting
   return (
     <div
-      className={`inline-flex items-center justify-center relative select-none pointer-events-none p-1 shrink-0 ${bgClasses} ${shapeClasses} ${className}`}
-      style={{ width: size, height: size }}
+      className={`inline-block relative select-none pointer-events-none bg-transparent ${className}`}
+      style={{ width: size, height: size * 1.15 }}
       aria-label={alt}
       role="img"
     >
       <img
         src={asset.webp}
         alt={alt}
-        className="w-[84%] h-[84%] object-contain transition-opacity duration-200"
-        style={{ filter: "drop-shadow(0 2px 6px rgba(0, 0, 0, 0.05))" }}
+        className="w-full h-full object-contain transition-opacity duration-200"
+        style={{ filter: "drop-shadow(0 4px 10px rgba(0, 0, 0, 0.08))" }}
         onError={() => setImgError(true)}
       />
     </div>

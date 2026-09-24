@@ -252,14 +252,12 @@ export default function Login() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.35, ease }}
         >
-          <div className="relative mb-2 flex justify-center">
-            <div className="relative w-20 h-20 rounded-full bg-white dark:bg-zinc-800 border border-stone-200/90 dark:border-zinc-700 shadow-md flex items-center justify-center p-2">
-              <Mascot gesture={mascotGesture} size={64} backdrop="none" />
-              <span className="absolute bottom-0 right-0 flex h-4 w-4">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-4 w-4 bg-emerald-500 border-2 border-white"></span>
-              </span>
-            </div>
+          <div className="relative mb-2">
+            <Mascot gesture={mascotGesture} size={72} className="drop-shadow-md" />
+            <span className="absolute -bottom-1 -right-1 flex h-4 w-4">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-4 w-4 bg-emerald-500 border-2 border-white dark:border-zinc-900"></span>
+            </span>
           </div>
 
           {/* Dynamic Headline Based on Mode */}
