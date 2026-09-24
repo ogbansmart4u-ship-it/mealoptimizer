@@ -289,7 +289,9 @@ export default function Onboarding() {
             </div>
 
             <div className="my-3 flex justify-center">
-              <Mascot gesture="wave" size={88} />
+              <div className="w-24 h-24 rounded-full bg-white dark:bg-zinc-800 border border-stone-200/90 dark:border-zinc-700 shadow-md flex items-center justify-center p-2">
+                <Mascot gesture="wave" size={78} backdrop="none" />
+              </div>
             </div>
 
             <span className="text-[10px] font-black uppercase tracking-wider bg-teal-50 text-[#1f7a8c] px-3 py-1 rounded-full border border-teal-200/60 shadow-2xs">
@@ -347,8 +349,8 @@ export default function Onboarding() {
           <div className="bg-white rounded-3xl shadow-2xl p-6 sm:p-8 animate-in fade-in zoom-in-95 duration-300 border border-teal-100 relative">
             {/* Header with Mascot AVO Scribe Taking Notes & Progress Bar */}
             <div className="flex items-center gap-3.5 pb-4 mb-5 border-b border-teal-100/70">
-              <div className="relative shrink-0">
-                <Mascot gesture="writing" size={56} className="drop-shadow-md" alt="Avo Scribe taking clinical notes" />
+              <div className="relative shrink-0 w-14 h-14 rounded-2xl bg-white dark:bg-zinc-800 border border-stone-200/90 dark:border-zinc-700 shadow-sm flex items-center justify-center p-1">
+                <Mascot gesture="writing" size={48} backdrop="none" alt="Avo Scribe taking clinical notes" />
                 <span className="absolute -bottom-1 -right-1 bg-amber-400 text-slate-950 text-[9px] font-black px-1.5 py-0.2 rounded-full shadow-xs border border-white">
                   ✍️ Scribe
                 </span>
@@ -845,7 +847,9 @@ export default function Onboarding() {
           <div className="bg-white rounded-3xl shadow-2xl p-8 text-center animate-in fade-in zoom-in-95 duration-300 border border-teal-100">
             <div className="my-4 flex flex-col items-center justify-center gap-4">
               <div className="relative">
-                <Mascot gesture="writing" size={88} className="drop-shadow-lg" alt="Avo Scribe calculating your plan" />
+                <div className="w-24 h-24 rounded-full bg-white dark:bg-zinc-800 border border-stone-200/90 dark:border-zinc-700 shadow-md flex items-center justify-center p-2 mx-auto">
+                  <Mascot gesture="writing" size={80} backdrop="none" alt="Avo Scribe calculating your plan" />
+                </div>
                 <span className="absolute -bottom-1 -right-1 bg-amber-400 text-slate-950 text-[10px] font-black px-2 py-0.5 rounded-full shadow-xs border border-white">
                   ✍️ Scribe
                 </span>

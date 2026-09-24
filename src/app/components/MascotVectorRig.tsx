@@ -9,6 +9,8 @@ interface MascotVectorRigProps {
   size?: number;
   className?: string;
   alt?: string;
+  backdrop?: "white" | "neutral" | "none";
+  shape?: "circle" | "rounded" | "none";
 }
 
 export default function MascotVectorRig({
@@ -17,6 +19,8 @@ export default function MascotVectorRig({
   size = 96,
   className = "",
   alt = "Avo the Mascot",
+  backdrop = "white",
+  shape = "circle",
 }: MascotVectorRigProps) {
   const g = (gesture || "idle").toLowerCase();
 
@@ -44,19 +48,46 @@ export default function MascotVectorRig({
     imgSrc = "/assets/mascot/avo-sad.webp";
   }
 
+  if (backdrop === "none") {
+    return (
+      <div
+        className={`inline-block relative select-none pointer-events-none ${className}`}
+        style={{ width: size, height: size * 1.15 }}
+        aria-label={alt}
+        role="img"
+      >
+        <img
+          src={imgSrc}
+          alt={alt}
+          className={`w-full h-full object-contain drop-shadow-md ${animClass}`}
+          onError={(e) => {
+            (e.target as HTMLImageElement).src = "/assets/mascot/avo-avatar.jpg";
+          }}
+        />
+      </div>
+    );
+  }
+
+  const bgClasses =
+    backdrop === "neutral"
+      ? "bg-stone-50 dark:bg-zinc-800/90 border border-stone-200/80 dark:border-zinc-700 shadow-xs"
+      : "bg-white dark:bg-zinc-800 border border-stone-200/90 dark:border-zinc-700 shadow-sm";
+
+  const shapeClasses =
+    shape === "rounded" ? "rounded-2xl" : shape === "circle" ? "rounded-full" : "";
+
   return (
     <div
-      className={`inline-block relative select-none pointer-events-none ${className}`}
-      style={{ width: size, height: size * 1.15 }}
+      className={`inline-flex items-center justify-center relative select-none pointer-events-none p-1 shrink-0 ${bgClasses} ${shapeClasses} ${className}`}
+      style={{ width: size, height: size }}
       aria-label={alt}
       role="img"
     >
       <img
         src={imgSrc}
         alt={alt}
-        className={`w-full h-full object-contain drop-shadow-md ${animClass}`}
+        className={`w-[84%] h-[84%] object-contain drop-shadow-md ${animClass}`}
         onError={(e) => {
-          // Fallback to official 3D avatar if webp not present
           (e.target as HTMLImageElement).src = "/assets/mascot/avo-avatar.jpg";
         }}
       />
