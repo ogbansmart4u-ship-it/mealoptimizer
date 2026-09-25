@@ -213,7 +213,8 @@ export const router = createBrowserRouter([
   // ============================================================
   // Public / auth / legal pages — intentionally NO bottom nav
   // ============================================================
-  { path: "/", Component: Login },
+  { path: "/", Component: Landing },
+  { path: "/landing", Component: Landing },
   { path: "/login", Component: Login },
   { path: "/signup", Component: Login },
   { path: "/direct-signup", Component: DirectSignup },
