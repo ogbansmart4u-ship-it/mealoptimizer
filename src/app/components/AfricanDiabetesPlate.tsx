@@ -1022,50 +1022,68 @@ export default function AfricanDiabetesPlate({
             <button
               type="button"
               onClick={() => handleQuadrantClick("protein")}
-              className={`col-span-1 row-span-1 rounded-tr-full pl-1.5 pr-3 min-[380px]:pr-3.5 sm:pr-2.5 pt-2.5 pb-1 bg-gradient-to-br from-amber-50 to-orange-50/90 dark:from-amber-950/70 dark:to-orange-950/50 border-b border-amber-300 dark:border-amber-800 transition-all flex flex-col items-center justify-center text-center cursor-pointer group active:scale-95 ${
+              className={`col-span-1 row-span-1 rounded-tr-full bg-gradient-to-br from-amber-50 to-orange-50/90 dark:from-amber-950/70 dark:to-orange-950/50 border-b border-amber-300 dark:border-amber-800 transition-all flex flex-col items-center justify-center text-center cursor-pointer group active:scale-95 overflow-hidden ${
                 activeCategory === "protein" ? "ring-2 ring-amber-500/80 brightness-105" : "hover:brightness-105"
               }`}
+              style={{ paddingRight: "18px", paddingLeft: "4px", paddingTop: "10px", paddingBottom: "4px" }}
             >
-              <span className="inline-block text-[6.5px] min-[380px]:text-[7px] sm:text-[7.5px] font-black px-1.5 py-0.5 rounded-full bg-amber-700 text-white shadow-xs mb-0.5 tracking-tight -translate-x-2 min-[380px]:-translate-x-1.5 sm:-translate-x-0.5">
-                🥩 25% PROTEIN
-              </span>
+              <div
+                className="flex flex-col items-center justify-center w-full"
+                style={{ transform: "translateX(-8px)" }}
+              >
+                <span
+                  className="inline-block text-[6.5px] min-[380px]:text-[7px] sm:text-[7.5px] font-black px-1.5 py-0.5 rounded-full bg-amber-700 text-white shadow-xs mb-0.5 tracking-tight whitespace-nowrap"
+                  style={{ transform: "translateX(-6px)" }}
+                >
+                  🥩 25% PROTEIN
+                </span>
 
-              <span className="text-xl min-[380px]:text-2xl my-0.5 group-hover:scale-110 transition-transform">
-                {selectedProtein.emoji}
-              </span>
+                <span className="text-xl min-[380px]:text-2xl my-0.5 group-hover:scale-110 transition-transform">
+                  {selectedProtein.emoji}
+                </span>
 
-              <span className="text-[8.5px] min-[380px]:text-[9.5px] font-black text-amber-950 dark:text-amber-100 leading-tight px-0.5 max-w-[90px] truncate">
-                {selectedProtein.name}
-              </span>
+                <span className="text-[8.5px] min-[380px]:text-[9.5px] font-black text-amber-950 dark:text-amber-100 leading-tight px-0.5 max-w-[85px] truncate">
+                  {selectedProtein.name}
+                </span>
 
-              <span className="text-[7px] text-amber-800 dark:text-amber-300 font-bold mt-0.5 bg-white/90 dark:bg-zinc-900/90 px-1 py-0.2 rounded-full border border-amber-200 dark:border-amber-800">
-                ✋ 1 Palm ({selectedProtein.calories} kcal)
-              </span>
+                <span className="text-[6.5px] min-[380px]:text-[7px] text-amber-800 dark:text-amber-300 font-bold mt-0.5 bg-white/90 dark:bg-zinc-900/90 px-1.5 py-0.2 rounded-full border border-amber-200 dark:border-amber-800 max-w-[90px] truncate">
+                  ✋ 1 Palm ({selectedProtein.calories} kcal)
+                </span>
+              </div>
             </button>
 
             {/* 🍠 SECTOR 3: 25% Complex Swallow / Carb (Bottom Right Quarter) */}
             <button
               type="button"
               onClick={() => handleQuadrantClick("carb")}
-              className={`col-span-1 row-span-1 rounded-br-full pl-1.5 pr-2.5 min-[380px]:pr-3 sm:pr-2 pt-1 pb-2.5 bg-gradient-to-br from-cyan-50 to-sky-50/90 dark:from-cyan-950/70 dark:to-sky-950/50 transition-all flex flex-col items-center justify-center text-center cursor-pointer group active:scale-95 ${
+              className={`col-span-1 row-span-1 rounded-br-full bg-gradient-to-br from-cyan-50 to-sky-50/90 dark:from-cyan-950/70 dark:to-sky-950/50 transition-all flex flex-col items-center justify-center text-center cursor-pointer group active:scale-95 overflow-hidden ${
                 activeCategory === "carb" ? "ring-2 ring-cyan-500/80 brightness-105" : "hover:brightness-105"
               }`}
+              style={{ paddingRight: "18px", paddingLeft: "4px", paddingTop: "4px", paddingBottom: "10px" }}
             >
-              <span className="inline-block text-[6.5px] min-[380px]:text-[7px] sm:text-[7.5px] font-black px-1.5 py-0.5 rounded-full bg-cyan-800 text-white shadow-xs mb-0.5 tracking-tight -translate-x-1 sm:translate-x-0">
-                🍠 25% SWALLOW
-              </span>
+              <div
+                className="flex flex-col items-center justify-center w-full"
+                style={{ transform: "translateX(-8px)" }}
+              >
+                <span
+                  className="inline-block text-[6.5px] min-[380px]:text-[7px] sm:text-[7.5px] font-black px-1.5 py-0.5 rounded-full bg-cyan-800 text-white shadow-xs mb-0.5 tracking-tight whitespace-nowrap"
+                  style={{ transform: "translateX(-6px)" }}
+                >
+                  🍠 25% SWALLOW
+                </span>
 
-              <span className="text-xl min-[380px]:text-2xl my-0.5 group-hover:scale-110 transition-transform">
-                {selectedCarb.emoji}
-              </span>
+                <span className="text-xl min-[380px]:text-2xl my-0.5 group-hover:scale-110 transition-transform">
+                  {selectedCarb.emoji}
+                </span>
 
-              <span className="text-[8.5px] min-[380px]:text-[9.5px] font-black text-cyan-950 dark:text-cyan-100 leading-tight px-0.5 max-w-[90px] truncate">
-                {selectedCarb.name}
-              </span>
+                <span className="text-[8.5px] min-[380px]:text-[9.5px] font-black text-cyan-950 dark:text-cyan-100 leading-tight px-0.5 max-w-[85px] truncate">
+                  {selectedCarb.name}
+                </span>
 
-              <span className="text-[7px] text-cyan-800 dark:text-cyan-300 font-bold mt-0.5 bg-white/90 dark:bg-zinc-900/90 px-1 py-0.2 rounded-full border border-cyan-200 dark:border-cyan-800">
-                ✊ 1 Fist ({selectedCarb.calories} kcal)
-              </span>
+                <span className="text-[6.5px] min-[380px]:text-[7px] text-cyan-800 dark:text-cyan-300 font-bold mt-0.5 bg-white/90 dark:bg-zinc-900/90 px-1.5 py-0.2 rounded-full border border-cyan-200 dark:border-cyan-800 max-w-[90px] truncate">
+                  ✊ 1 Fist ({selectedCarb.calories} kcal)
+                </span>
+              </div>
             </button>
           </div>
         </div>
