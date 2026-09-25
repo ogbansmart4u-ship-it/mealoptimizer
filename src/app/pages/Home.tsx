@@ -577,6 +577,21 @@ export default function Home() {
     }
   };
 
+  const handleQuickLogClick = () => {
+    triggerHaptic("medium");
+    try { soundEffects.playTactileTick(); } catch {}
+    const hr = new Date().getHours();
+    const currentMeal: "breakfast" | "lunch" | "dinner" =
+      hr >= 5 && hr < 11 ? "breakfast" : hr >= 11 && hr < 16 ? "lunch" : "dinner";
+    setSelectedQuickMeal(currentMeal);
+    setShowQuickMealLog(true);
+
+    const el = document.getElementById("tour-quick-shelf") || document.getElementById("today-quick-shelf");
+    if (el) {
+      el.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    }
+  };
+
   const handleCustomEntry = () => {
     setShowQuickMealLog(false);
     navigate("/logs", { state: { openAdd: true } });
@@ -779,11 +794,7 @@ export default function Home() {
                 soundEffects.playCameraShutter();
                 setShowLocalFoodScanner(true);
               }}
-              onQuickLog={() => {
-                triggerHaptic("light");
-                const el = document.getElementById("today-quick-shelf");
-                if (el) el.scrollIntoView({ behavior: "smooth" });
-              }}
+              onQuickLog={handleQuickLogClick}
             />
 
             {/* 🌟 3 CLEAN QUICK-ACTION TILES (Scan Plate, Quick Log, +1 Cup Water) */}
@@ -808,11 +819,7 @@ export default function Home() {
               {/* Button 2: Quick Log Meals */}
               <button
                 type="button"
-                onClick={() => {
-                  triggerHaptic("light");
-                  const el = document.getElementById("today-quick-shelf");
-                  if (el) el.scrollIntoView({ behavior: "smooth" });
-                }}
+                onClick={handleQuickLogClick}
                 className="bg-white dark:bg-[#171E1B] rounded-3xl p-3 sm:p-3.5 text-stone-900 dark:text-stone-100 shadow-xs border border-stone-200/80 dark:border-stone-800 flex flex-col items-center justify-center gap-1.5 hover:border-amber-500/40 active:scale-95 transition-all cursor-pointer group"
               >
                 <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 flex items-center justify-center text-lg group-hover:scale-105 transition-transform border border-amber-100 dark:border-amber-900/40">
@@ -1085,7 +1092,8 @@ export default function Home() {
             </div>
 
             {/* 1-Tap Quick-Log Shelf */}
-            <div id="tour-quick-shelf" className="my-1">
+            <div id="tour-quick-shelf" className="my-1 scroll-mt-20">
+              <span id="today-quick-shelf" className="sr-only" />
               <QuickLogShelf
                 onLogItem={handleQuickLogItem}
                 onOpenSwallowSwap={() => setShowSwallowSwapModal(true)}
@@ -1703,6 +1711,27 @@ export default function Home() {
               Pick a common meal below to log instantly, or enter custom details.
             </DialogDescription>
           </DialogHeader>
+
+          {/* Meal Time Selector Tabs */}
+          <div className="flex items-center gap-1.5 p-1 bg-stone-100 dark:bg-zinc-800/80 rounded-2xl shrink-0 mt-2">
+            {(["breakfast", "lunch", "dinner"] as const).map((m) => (
+              <button
+                key={m}
+                type="button"
+                onClick={() => {
+                  triggerHaptic("light");
+                  setSelectedQuickMeal(m);
+                }}
+                className={`flex-1 py-1.5 px-2 rounded-xl text-xs font-semibold capitalize transition-all cursor-pointer ${
+                  selectedQuickMeal === m
+                    ? "bg-white dark:bg-zinc-900 text-[#164E3D] dark:text-emerald-400 shadow-xs"
+                    : "text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-200"
+                }`}
+              >
+                {m === "breakfast" ? "🌅 Breakfast" : m === "lunch" ? "☀️ Lunch" : "🌙 Dinner"}
+              </button>
+            ))}
+          </div>
 
           <div className="flex-1 overflow-y-auto overscroll-contain py-3 space-y-3 pr-1">
             {selectedQuickMeal && (

@@ -146,31 +146,92 @@ export interface FullRecipe {
 
 export const RECIPE_IMG_VERSION = "v=10.5-50veggies-20260910";
 export const getVersionedImage = (url?: string) => {
-  if (!url) return `/assets/recipes/diabetic-oat-swallow-okra.webp?${RECIPE_IMG_VERSION}`;
+  if (!url) return `/assets/recipes/brown-jollof-titus.webp?${RECIPE_IMG_VERSION}`;
   if (url.startsWith("data:")) return url;
   // Strip any existing query parameter (such as ?v=9.5-50veggies) so they don't chain or persist stale cache
   const cleanUrl = url.split("?")[0];
   return `${cleanUrl}?${RECIPE_IMG_VERSION}`;
 };
 
+export const REGIONAL_PLATE_CATALOG: { image: string; keywords: string[] }[] = [
+  {
+    image: "/assets/recipes/ghanaian-waakye-egg.webp",
+    keywords: ["waakye", "beans", "cowpea", "shito", "talia", "spaghetti", "chickpea", "lentil", "ewa", "aganyin", "moi", "moimoi", "ghana", "boiled egg"],
+  },
+  {
+    image: "/assets/recipes/ethiopian-doro-wat.webp",
+    keywords: ["doro", "wat", "injera", "teff", "berbere", "ethiopian", "habesha", "tibs", "shiro", "alicha", "chicken stew", "drumstick"],
+  },
+  {
+    image: "/assets/recipes/cameroonian-ndole.webp",
+    keywords: ["ndole", "ndolé", "bitterleaf", "cameroon", "shrimp", "prawn", "crayfish", "plantain chips", "fried plantain", "peanut stew"],
+  },
+  {
+    image: "/assets/recipes/baobab-kuka-fonio.webp",
+    keywords: ["baobab", "kuka", "miyan", "fonio", "acha", "northern", "tuwo", "shinkafa", "zobo", "sorghum", "millet", "hausa", "kano", "arewa"],
+  },
+  {
+    image: "/assets/recipes/sukuma-wiki-beef.webp",
+    keywords: ["sukuma", "wiki", "collard", "kale", "beef", "steak", "kenya", "ugali", "east african", "meat", "suya", "braised beef"],
+  },
+  {
+    image: "/assets/recipes/ofe-nsala-catfish.webp",
+    keywords: ["nsala", "ofe nsala", "white soup", "utazi", "yam thickener", "ogbono", "ogbonno", "river state"],
+  },
+  {
+    image: "/assets/recipes/afang-waterleaf-pot.webp",
+    keywords: ["afang", "waterleaf", "okazi", "edikang", "ikong", "calabar", "vegetable soup", "edikaikong", "cross river", "pot"],
+  },
+  {
+    image: "/assets/recipes/brown-jollof-titus.webp",
+    keywords: ["rice", "jollof", "ofada", "fried rice", "brown rice", "pilau", "curry rice", "biryani", "stew", "tomato", "grain", "quinoa"],
+  },
+  {
+    image: "/assets/recipes/cauliflower-fufu-efo.webp",
+    keywords: ["efo", "riro", "spinach", "shoko", "cauliflower", "keto swallow", "tatase", "iru", "locust bean", "greens"],
+  },
+  {
+    image: "/assets/recipes/egusi-ugu-soup.webp",
+    keywords: ["egusi", "melon", "agushi", "pumpkin seed", "seed", "ugu"],
+  },
+  {
+    image: "/assets/recipes/green-banana-porridge.webp",
+    keywords: ["banana", "matooke", "unripe plantain", "plantain porridge", "pottage", "ulcer", "papaya", "pawpaw", "oat porridge", "oats", "pancake", "pudding"],
+  },
+  {
+    image: "/assets/recipes/dry-catfish-uziza.webp",
+    keywords: ["catfish", "uziza", "pepper soup", "peppersoup", "scent leaf", "efirin", "tilapia", "broth", "maternal", "fish soup", "seafood broth"],
+  },
+  {
+    image: "/assets/recipes/kdigo-yam-porridge.webp",
+    keywords: ["yam", "asaro", "leached", "kdigo", "renal", "kidney", "sweet potato", "cassava", "root", "tuber"],
+  },
+  {
+    image: "/assets/recipes/diabetic-oat-swallow-okra.webp",
+    keywords: ["okra", "ewedu", "draw soup", "oat swallow", "ila", "lady finger", "swallow", "amala", "eba", "fufu", "semo", "semolina"],
+  },
+];
+
 export const getFallbackPlateImage = (recipe?: Partial<FullRecipe> | string) => {
   const name = (typeof recipe === "string" ? recipe : recipe?.name || "").toLowerCase();
-  if (name.includes("rice") || name.includes("jollof") || name.includes("ofada")) {
-    return getVersionedImage("/assets/recipes/brown-jollof-titus.webp");
+
+  // 1. Precise semantic keyword match against regional authentic plates
+  for (const item of REGIONAL_PLATE_CATALOG) {
+    if (item.keywords.some((kw) => name.includes(kw))) {
+      return getVersionedImage(item.image);
+    }
   }
-  if (name.includes("efo") || name.includes("spinach") || name.includes("shoko")) {
-    return getVersionedImage("/assets/recipes/cauliflower-fufu-efo.webp");
+
+  // 2. Deterministic hash distribution across the 14 real culinary plates
+  // Ensures distinct custom meals NEVER collide on the exact same fallback image
+  const seed = (typeof recipe === "string" ? recipe : recipe?.id || recipe?.name || "african-plate").trim();
+  let hash = 0;
+  for (let i = 0; i < seed.length; i++) {
+    hash = (hash << 5) - hash + seed.charCodeAt(i);
+    hash |= 0;
   }
-  if (name.includes("egusi") || name.includes("melon")) {
-    return getVersionedImage("/assets/recipes/egusi-ugu-soup.webp");
-  }
-  if (name.includes("yam") || name.includes("porridge") || name.includes("renal")) {
-    return getVersionedImage("/assets/recipes/kdigo-yam-porridge.webp");
-  }
-  if (name.includes("catfish") || name.includes("uziza") || name.includes("pepper")) {
-    return getVersionedImage("/assets/recipes/dry-catfish-uziza.webp");
-  }
-  return getVersionedImage("/assets/recipes/diabetic-oat-swallow-okra.webp");
+  const fallbackIndex = Math.abs(hash) % REGIONAL_PLATE_CATALOG.length;
+  return getVersionedImage(REGIONAL_PLATE_CATALOG[fallbackIndex].image);
 };
 
 const MASTER_RECIPES: FullRecipe[] = [
@@ -1587,7 +1648,7 @@ export default function Recipe() {
 
       // Intelligent Clinical African Formulation Engine
       const lower = query.toLowerCase();
-      let matchedImage = "/assets/recipes/kdigo-yam-porridge.webp";
+      let matchedImage = getFallbackPlateImage(query);
       let recipeName = query.charAt(0).toUpperCase() + query.slice(1);
       let cat: "breakfast" | "lunch" | "dinner" | "snack" = "lunch";
       let tags: string[] = ["diabetic-friendly", "heart-healthy"];
@@ -1602,7 +1663,63 @@ export default function Recipe() {
       let cook = 25;
       let gi: "Low" | "Medium" | "High" = "Low";
 
-      if (lower.includes("yam") || lower.includes("porridge") || lower.includes("renal") || lower.includes("kidney")) {
+      if (lower.includes("waakye") || lower.includes("bean") || lower.includes("cowpea") || lower.includes("shito") || lower.includes("ewa") || lower.includes("moi")) {
+        matchedImage = "/assets/recipes/ghanaian-waakye-egg.webp";
+        recipeName = recipeName.includes("Waakye") ? recipeName : `Authentic Ghanaian Waakye with Shito & Egg (${recipeName})`;
+        tags = ["high-fiber", "heart-healthy", "diabetic-friendly"];
+        greens = "Steamed Shito Pepper Greens & Sliced Avocado";
+        protein = "Pasture-Raised Hard-Boiled Egg & Tender Meat";
+        staple = "Sorghum-Infused Waakye Rice & Cowpeas";
+        cals = 360; p = 22; c = 48; fat = 9;
+      } else if (lower.includes("doro") || lower.includes("wat") || lower.includes("injera") || lower.includes("teff") || lower.includes("berbere") || lower.includes("ethiopian")) {
+        matchedImage = "/assets/recipes/ethiopian-doro-wat.webp";
+        recipeName = recipeName.includes("Doro") ? recipeName : `Ethiopian Doro Wat with Teff Injera (${recipeName})`;
+        tags = ["anti-inflammatory", "high-protein", "iron-rich"];
+        greens = "Gomen Stewed Collard Greens with Garlic & Ginger";
+        protein = "Slow-Braised Chicken Cutlet & Scored Boiled Egg";
+        staple = "100% Fermented Whole Teff Grain Injera";
+        cals = 385; p = 32; c = 38; fat = 11;
+      } else if (lower.includes("ndole") || lower.includes("ndolé") || lower.includes("bitterleaf") || lower.includes("cameroon") || lower.includes("shrimp") || lower.includes("prawn")) {
+        matchedImage = "/assets/recipes/cameroonian-ndole.webp";
+        recipeName = recipeName.includes("Ndolé") || recipeName.includes("Ndole") ? recipeName : `Cameroonian Ndolé with Wild Shrimp (${recipeName})`;
+        tags = ["liver-support", "diabetic-friendly", "high-protein"];
+        greens = "Washed Ndolé Bitterleaf Stewed in Peanut Sauce";
+        protein = "Wild Atlantic Tiger Shrimp & Flaked Smoked Fish";
+        staple = "Boiled Unripe Plantain Disks or Bobolo";
+        cals = 370; p = 30; c = 28; fat = 14;
+      } else if (lower.includes("baobab") || lower.includes("kuka") || lower.includes("fonio") || lower.includes("acha") || lower.includes("tuwo") || lower.includes("northern") || lower.includes("hausa")) {
+        matchedImage = "/assets/recipes/baobab-kuka-fonio.webp";
+        recipeName = recipeName.includes("Kuka") ? recipeName : `Northern Baobab Miyan Kuka & Fonio (${recipeName})`;
+        tags = ["gut-health", "low-glycemic", "alkaline"];
+        greens = "Sun-Dried Baobab Leaf Powder (Miyan Kuka)";
+        protein = "Slow-Cooked Tender Lean Beef & Bone Broth";
+        staple = "Steamed Ancient Acha Fonio Swallow Ball";
+        cals = 285; p = 21; c = 35; fat = 6;
+      } else if (lower.includes("sukuma") || lower.includes("wiki") || lower.includes("collard") || lower.includes("kale") || lower.includes("kenya") || lower.includes("ugali") || lower.includes("beef") || lower.includes("steak")) {
+        matchedImage = "/assets/recipes/sukuma-wiki-beef.webp";
+        recipeName = recipeName.includes("Sukuma") ? recipeName : `East African Sukuma Wiki with Braised Beef (${recipeName})`;
+        tags = ["high-protein", "diabetic-friendly", "iron-rich"];
+        greens = "Flash-Sautéed Sukuma Wiki Collard Greens";
+        protein = "Lean Diced Beef Sautéed with Cumin & Sweet Onion";
+        staple = "Portion-Controlled Millet Ugali / Brown Fufu";
+        cals = 330; p = 29; c = 26; fat = 10;
+      } else if (lower.includes("nsala") || lower.includes("white soup") || lower.includes("utazi")) {
+        matchedImage = "/assets/recipes/ofe-nsala-catfish.webp";
+        recipeName = recipeName.includes("Nsala") ? recipeName : `Aromatic Ofe Nsala White Soup & Catfish (${recipeName})`;
+        tags = ["low-oil", "postpartum-safe", "digestive-aid"];
+        greens = "Aromatic Utazi & Uziza Herb Infusion";
+        protein = "Poached Fresh River Catfish Cutlet";
+        staple = "Light Yam-Thickened Clear Broth";
+        cals = 290; p = 27; c = 22; fat = 8;
+      } else if (lower.includes("afang") || lower.includes("waterleaf") || lower.includes("okazi") || lower.includes("edikang") || lower.includes("edikaikong") || lower.includes("calabar")) {
+        matchedImage = "/assets/recipes/afang-waterleaf-pot.webp";
+        recipeName = recipeName.includes("Afang") ? recipeName : `Calabar Afang & Waterleaf Pot (${recipeName})`;
+        tags = ["high-fiber", "diabetic-friendly", "collagen-rich"];
+        greens = "Pounded Okazi Vine & Fresh Waterleaf Medley";
+        protein = "Smoked Dried Fish, Periwinkle & Tender Beef";
+        staple = "Single-Fist Low-GI Swallow Ball";
+        cals = 320; p = 26; c = 16; fat = 12;
+      } else if (lower.includes("yam") || lower.includes("porridge") || lower.includes("renal") || lower.includes("kidney") || lower.includes("asaro")) {
         matchedImage = "/assets/recipes/kdigo-yam-porridge.webp";
         recipeName = recipeName.includes("KDIGO") ? recipeName : `KDIGO Leached ${recipeName} (Renal-Safe)`;
         tags = ["renal-safe", "low-sodium", "heart-healthy"];
@@ -1821,10 +1938,18 @@ export default function Recipe() {
     try {
       const customRecipes: FullRecipe[] = JSON.parse(localStorage.getItem("mealoptimizer_user_custom_recipes") || "[]");
       if (customRecipes.length > 0) {
-        const sanitizedCustom = customRecipes.map((r) => ({
-          ...r,
-          image: r.image ? getVersionedImage(r.image) : r.image,
-        }));
+        const sanitizedCustom = customRecipes.map((r) => {
+          let img = r.image;
+          if (!img || (img.includes("diabetic-oat-swallow-okra") && !r.name.toLowerCase().includes("okra") && !r.name.toLowerCase().includes("oat"))) {
+            img = getFallbackPlateImage(r);
+          } else {
+            img = getVersionedImage(img);
+          }
+          return {
+            ...r,
+            image: img,
+          };
+        });
         setRecipes((prev) => {
           const existingIds = new Set(prev.map((r) => r.id));
           const uniqueCustom = sanitizedCustom.filter((r) => !existingIds.has(r.id));

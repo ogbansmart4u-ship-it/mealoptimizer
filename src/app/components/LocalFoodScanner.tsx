@@ -787,6 +787,7 @@ export default function LocalFoodScanner({ isOpen, onClose }: LocalFoodScannerPr
         id: customItem.id,
         name: customItem.name,
         emoji: "🍲",
+        image: capturedImage || undefined,
         category: "lunch",
         tags: ["custom-snapped", "favorites"],
         prepTime: 20,
