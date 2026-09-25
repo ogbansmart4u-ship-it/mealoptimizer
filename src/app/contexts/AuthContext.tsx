@@ -33,6 +33,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
     }
 
+    // 0. Check if a local demo reviewer session exists
+    try {
+      const storedDemo = localStorage.getItem("mealoptimiza_demo_session");
+      if (storedDemo) {
+        const demoUser = JSON.parse(storedDemo);
+        setUser(demoUser);
+        setLoading(false);
+        return;
+      }
+    } catch {}
+
     // Check active sessions and set the user
     supabase.auth.getSession().then(({ data: { session } }) => {
       console.log('Initial session check:', session ? 'Session found' : 'No session');
@@ -77,9 +88,33 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const signIn = async (email: string, password: string) => {
     userSignedOut.current = false;
+    const cleanEmail = email.trim().toLowerCase();
+    const cleanPass = password.trim();
+
+    // 🛡️ Reviewer & Paystack Demo Bypass (Ensures 100% reliable instant login for app store & payment gateway reviews)
+    if (["reviewer@mealoptimiza.com", "paystack@mealoptimiza.com", "demo@mealoptimiza.com"].includes(cleanEmail)) {
+      const demoUser: any = {
+        id: "reviewer-paystack-demo",
+        email: cleanEmail,
+        aud: "authenticated",
+        role: "authenticated",
+        email_confirmed_at: new Date().toISOString(),
+        user_metadata: { full_name: "Paystack Reviewer", plan: "pro", isPro: true },
+        app_metadata: { provider: "email" },
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+      };
+      try {
+        localStorage.setItem("mealoptimiza_demo_session", JSON.stringify(demoUser));
+        localStorage.setItem("mealoptimiza_has_account", "true");
+      } catch {}
+      setUser(demoUser);
+      return;
+    }
+
     const { data, error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
+      email: cleanEmail,
+      password: cleanPass,
     });
 
     if (error) throw error;
@@ -89,11 +124,35 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const signUp = async (email: string, password: string, metadata?: any) => {
     userSignedOut.current = false;
-    console.log('Attempting signup with:', { email, hasPassword: !!password, metadata });
+    const cleanEmail = email.trim().toLowerCase();
+    const cleanPass = password.trim();
+
+    // 🛡️ Reviewer & Paystack Demo Bypass for Sign Up
+    if (["reviewer@mealoptimiza.com", "paystack@mealoptimiza.com", "demo@mealoptimiza.com"].includes(cleanEmail)) {
+      const demoUser: any = {
+        id: "reviewer-paystack-demo",
+        email: cleanEmail,
+        aud: "authenticated",
+        role: "authenticated",
+        email_confirmed_at: new Date().toISOString(),
+        user_metadata: { full_name: metadata?.name || "Paystack Reviewer", plan: "pro", isPro: true },
+        app_metadata: { provider: "email" },
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+      };
+      try {
+        localStorage.setItem("mealoptimiza_demo_session", JSON.stringify(demoUser));
+        localStorage.setItem("mealoptimiza_has_account", "true");
+      } catch {}
+      setUser(demoUser);
+      return;
+    }
+
+    console.log('Attempting signup with:', { email: cleanEmail, hasPassword: !!cleanPass, metadata });
 
     const { data, error } = await supabase.auth.signUp({
-      email,
-      password,
+      email: cleanEmail,
+      password: cleanPass,
       options: {
         data: metadata || {},
         emailRedirectTo: `${window.location.origin}/home`,
@@ -105,16 +164,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       throw error;
     }
 
-    console.log('Sign up successful:', {
-      email: data.user?.email,
-      id: data.user?.id,
-      confirmed: data.user?.email_confirmed_at,
-      hasSession: !!data.session,
-    });
-
-    // No session means Supabase requires email confirmation before the user
-    // can log in. Don't set the user — throw a sentinel so callers can show
-    // the right message instead of silently appearing to succeed.
     if (!data.session) {
       throw new Error(EMAIL_CONFIRMATION_REQUIRED);
     }
@@ -158,6 +207,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const signOut = async () => {
     userSignedOut.current = true;
+    try {
+      localStorage.removeItem("mealoptimiza_demo_session");
+    } catch {}
     const { error } = await supabase.auth.signOut();
     if (error) throw error;
     setUser(null);

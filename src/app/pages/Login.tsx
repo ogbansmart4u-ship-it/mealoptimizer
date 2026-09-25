@@ -88,7 +88,8 @@ export default function Login() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const email = formData.email.trim().toLowerCase();
-    const password = formData.password;
+    const password = formData.password.trim();
+    const confirmPassword = formData.confirmPassword.trim();
 
     if (!email || !password) {
       toast.error("Please fill in all required fields");
@@ -104,7 +105,7 @@ export default function Login() {
         toast.error("Password must be at least 6 characters");
         return;
       }
-      if (password !== formData.confirmPassword) {
+      if (password !== confirmPassword) {
         toast.error("Passwords do not match");
         return;
       }
