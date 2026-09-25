@@ -46,7 +46,7 @@ interface SmartVideoConciergeProps {
   onOpenHealthSetup?: () => void;
 }
 
-export type SupportedLanguage = "en" | "pcm" | "yo" | "ig" | "ha" | "fr";
+export type SupportedLanguage = "en" | "pcm";
 
 // Preset Multilingual Clinical & African Nutrition Knowledge Base (EN, PCM, YO, IG, HA, FR)
 const MULTILINGUAL_KNOWLEDGE_BASE: Record<SupportedLanguage, Record<string, string>> = {
@@ -523,8 +523,8 @@ export default function SmartVideoConcierge({
   const [selectedLanguage, setSelectedLanguage] = useState<SupportedLanguage>(() => {
     if (typeof window !== "undefined") {
       const saved = localStorage.getItem("mealoptimiza_sarah_lang");
-      if (saved && ["en", "pcm", "yo", "ig", "ha", "fr"].includes(saved)) {
-        return saved as SupportedLanguage;
+      if (saved && (saved === "en" || saved === "pcm")) {
+        return saved;
       }
     }
     return "en";
@@ -845,20 +845,16 @@ export default function SmartVideoConcierge({
 
               {/* Language Switcher & Voice Controls Bar */}
               <div className="flex flex-col items-center gap-2 mt-3 w-full">
-                {/* Language Switcher Bar */}
-                <div className="flex items-center gap-1 flex-wrap justify-center">
+                {/* Language Switcher Bar: English & Pidgin Only */}
+                <div className="flex items-center gap-2 justify-center">
                   {[
-                    { id: "en", label: "EN" },
-                    { id: "pcm", label: "Pidgin" },
-                    { id: "yo", label: "Yorùbá" },
-                    { id: "ig", label: "Igbo" },
-                    { id: "ha", label: "Hausa" },
-                    { id: "fr", label: "Français" },
+                    { id: "en", label: "English 🇬🇧" },
+                    { id: "pcm", label: "Pidgin 🇳🇬" },
                   ].map((lang) => (
                     <button
                       key={lang.id}
                       onClick={() => handleLanguageChange(lang.id as SupportedLanguage)}
-                      className={`text-[10px] font-bold px-2 py-0.8 rounded-lg cursor-pointer transition-all ${
+                      className={`text-xs font-bold px-3 py-1 rounded-xl cursor-pointer transition-all ${
                         selectedLanguage === lang.id
                           ? "bg-amber-400 text-slate-950 font-black shadow-xs scale-105"
                           : "bg-white/15 hover:bg-white/25 text-white"
