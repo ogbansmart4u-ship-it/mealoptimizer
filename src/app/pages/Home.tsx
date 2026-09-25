@@ -1,4 +1,5 @@
 import TriRingMetabolicFlower from "../components/TriRingMetabolicFlower";
+import { calculateDailyRings } from "../utils/dailyRingsCalculator";
 import AfricanPlateSilhouette from "../components/AfricanPlateSilhouette";
 import AvoAcademyBloom from "../components/AvoAcademyBloom";
 import CircadianEnergyWave from "../components/CircadianEnergyWave";
@@ -325,6 +326,14 @@ export default function Home() {
     refresh: refreshWater,
   } = useHydrationSync();
   const [isDrinkingWater, setIsDrinkingWater] = useState(false);
+
+  // Dynamic 10x Daily Health Rings Calculation (Clinical & Cultural Nutrition Progress)
+  const dailyRings = calculateDailyRings({
+    todayLogs,
+    waterGlasses,
+    waterGoal: waterGoal || 8,
+    caloriesTarget,
+  });
   // 🎛️ Dynamic Dashboard Preferences (Configurable in Profile)
   const [dashboardPrefs, setDashboardPrefs] = useState(() => {
     try {
@@ -750,12 +759,31 @@ export default function Home() {
             transition={{ duration: 0.25 }}
             className="space-y-4"
           >
-                        {/* 🌟 1. HERO HEALTH SCORE RINGS */}
+            {/* 🌟 1. HERO HEALTH SCORE RINGS (10X DYNAMIC UPGRADE) */}
             <TriRingMetabolicFlower
-              score={Math.round((caloriesConsumed / caloriesTarget) * 100) > 0 ? 92 : 88}
-              fiberScore={95}
-              portionScore={88}
-              waterScore={Math.min(Math.round((waterGlasses / 8) * 100), 100) || 75}
+              score={dailyRings.healthScore}
+              fiberScore={dailyRings.fiberScore}
+              portionScore={dailyRings.portionScore}
+              waterScore={dailyRings.waterScore}
+              hasActivityToday={dailyRings.hasActivityToday}
+              statusBadge={dailyRings.statusBadge}
+              metrics={{
+                ...dailyRings.metrics,
+                proteinConsumed,
+                carbsConsumed,
+                fatsConsumed,
+              }}
+              onAddWater={handleWaterIncrease}
+              onOpenScanner={() => {
+                triggerHaptic("medium");
+                soundEffects.playCameraShutter();
+                setShowLocalFoodScanner(true);
+              }}
+              onQuickLog={() => {
+                triggerHaptic("light");
+                const el = document.getElementById("today-quick-shelf");
+                if (el) el.scrollIntoView({ behavior: "smooth" });
+              }}
             />
 
             {/* 🌟 3 CLEAN QUICK-ACTION TILES (Scan Plate, Quick Log, +1 Cup Water) */}
