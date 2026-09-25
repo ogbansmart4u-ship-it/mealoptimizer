@@ -261,7 +261,7 @@ export default function Home() {
   const caloriesConsumed = sumField("calories");
   
   // Dynamic Caloric & Macro Targets based on User Health Profile & Weight Goals
-  const userConditionOrGoal = (profile?.medicalCondition || localStorage.getItem("userGoal") || "").toLowerCase();
+  const userConditionOrGoal = (profile?.medicalCondition || localStorage.getItem("userGoal") || localStorage.getItem("userPrimaryGoal") || "").toLowerCase();
   const currentW = parseFloat(profile?.weight || localStorage.getItem("userWeight") || "74") || 74;
   const targetW = parseFloat(profile?.targetWeight || localStorage.getItem("targetWeight") || "68") || 68;
   const isWeightGainGoal = userConditionOrGoal.includes("gain") || userConditionOrGoal.includes("muscle") || targetW > currentW;

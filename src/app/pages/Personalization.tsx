@@ -28,6 +28,7 @@ import {
   Smartphone,
   ShieldAlert,
   Zap,
+  Dumbbell,
 } from "lucide-react";
 import { useTheme } from "../contexts/ThemeContext";
 import { useUnits } from "../contexts/UnitsContext";
@@ -489,6 +490,7 @@ export default function Personalization() {
                     { id: "glucose_control", label: "Glycemic Stability (Type 2 Diabetes / Pre-Diabetes)", icon: ShieldCheck, color: "text-emerald-700 bg-emerald-50" },
                     { id: "blood_pressure", label: "Blood Pressure & Sodium Defense (DASH Protocol)", icon: Heart, color: "text-rose-700 bg-rose-50" },
                     { id: "fat_loss", label: "Metabolic Fat Loss & Caloric Deficit", icon: Flame, color: "text-amber-700 bg-amber-50" },
+                    { id: "weight_gain", label: "Healthy Weight & Muscle Gain (+450 kcal Clean Surplus)", icon: Dumbbell, color: "text-blue-700 bg-blue-50" },
                     { id: "energy_focus", label: "All-Day Energy & Cognitive Clarity", icon: Zap, color: "text-purple-700 bg-purple-50" },
                   ].map((goal) => {
                     const selected = primaryGoal === goal.id;
