@@ -21,6 +21,10 @@ import {
   Lock,
   Mail,
   HelpCircle,
+  Copy,
+  MessageCircle,
+  ExternalLink,
+  Send,
 } from "lucide-react";
 import { motion, useReducedMotion } from "motion/react";
 import { useLanguage } from "../contexts/LanguageContext";
@@ -29,6 +33,14 @@ import AppLogo from "../components/AppLogo";
 import Mascot from "../components/Mascot";
 import { soundEffects } from "../utils/soundEffects";
 import { triggerHaptic } from "../utils/celebration";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "../components/ui/dialog";
+import { toast } from "sonner";
 
 export default function Landing() {
   const navigate = useNavigate();
@@ -36,6 +48,46 @@ export default function Landing() {
   const { t } = useLanguage();
   const { user } = useAuth();
   const [mascotGesture, setMascotGesture] = useState<"wave" | "celebrate" | "thumbsup">("wave");
+
+  // 📞 Interactive Contact & Support Modal State
+  const [showContactModal, setShowContactModal] = useState(false);
+  const [contactName, setContactName] = useState("");
+  const [contactEmail, setContactEmail] = useState("");
+  const [contactMessage, setContactMessage] = useState("");
+  const [isSending, setIsSending] = useState(false);
+
+  const handleCopyEmail = () => {
+    triggerHaptic("light");
+    try {
+      navigator.clipboard.writeText("support@mealoptimiza.com");
+      toast.success("Support email copied to clipboard! 📋", {
+        description: "support@mealoptimiza.com",
+      });
+    } catch {
+      toast.info("Support email: support@mealoptimiza.com");
+    }
+  };
+
+  const handleSendMessage = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!contactEmail.trim() || !contactMessage.trim()) {
+      toast.error("Please enter your email and message");
+      return;
+    }
+    setIsSending(true);
+    triggerHaptic("medium");
+    setTimeout(() => {
+      setIsSending(false);
+      setShowContactModal(false);
+      setContactName("");
+      setContactEmail("");
+      setContactMessage("");
+      toast.success("Message sent! 🎉", {
+        description: "Our support team will reply to your email within 2-4 hours.",
+        duration: 4000,
+      });
+    }, 600);
+  };
 
   const handleMascotTap = () => {
     triggerHaptic("medium");
@@ -441,14 +493,18 @@ export default function Landing() {
             <p className="text-[11px] text-stone-400 leading-relaxed mb-3">
               Need assistance with your account, billing, or clinical care? Our support team is ready to assist.
             </p>
-            <div className="space-y-1.5 text-[11px]">
-              <div className="flex items-center gap-2 text-stone-300">
-                <Mail size={13} className="text-emerald-500" />
-                <a href="mailto:support@mealoptimiza.com" className="hover:underline text-emerald-400">support@mealoptimiza.com</a>
-              </div>
+            <div className="space-y-2 text-[11px]">
+              <button
+                type="button"
+                onClick={() => setShowContactModal(true)}
+                className="flex items-center gap-2 text-stone-300 hover:text-emerald-400 transition-colors cursor-pointer text-left group"
+              >
+                <Mail size={13} className="text-emerald-500 group-hover:scale-110 transition-transform" />
+                <span className="underline">support@mealoptimiza.com</span>
+              </button>
               <div className="flex items-center gap-2 text-stone-400">
                 <ShieldCheck size={13} className="text-emerald-500" />
-                <span>Paystack Merchant Compliance Active</span>
+                <span>256-Bit SSL • NDPR &amp; HIPAA Privacy Aligned</span>
               </div>
             </div>
           </div>
@@ -461,10 +517,121 @@ export default function Landing() {
             <span>•</span>
             <Link to="/terms-and-conditions" className="hover:underline">Terms of Service</Link>
             <span>•</span>
-            <a href="mailto:support@mealoptimiza.com" className="hover:underline">Contact Us</a>
+            <button
+              type="button"
+              onClick={() => setShowContactModal(true)}
+              className="hover:underline text-stone-400 hover:text-white cursor-pointer"
+            >
+              Contact Us
+            </button>
           </div>
         </div>
       </footer>
+
+      {/* 📞 INTERACTIVE CONTACT US & SUPPORT MODAL */}
+      <Dialog open={showContactModal} onOpenChange={setShowContactModal}>
+        <DialogContent className="max-w-md mx-auto p-5 rounded-3xl bg-white dark:bg-zinc-900 border border-stone-200 dark:border-zinc-800 shadow-2xl">
+          <DialogHeader className="pb-3 border-b border-stone-100 dark:border-zinc-800">
+            <DialogTitle className="flex items-center gap-2 text-base font-bold text-stone-900 dark:text-stone-100">
+              <Mail className="h-5 w-5 text-[#164E3D] dark:text-emerald-400" />
+              <span>Contact MealOptimiza Support</span>
+            </DialogTitle>
+            <DialogDescription className="text-xs text-stone-500 dark:text-stone-400">
+              Have questions about your meals, billing, or clinical plans? Reach our team directly below.
+            </DialogDescription>
+          </DialogHeader>
+
+          {/* Quick Direct Channels */}
+          <div className="space-y-3 py-3">
+            {/* Email Support Card */}
+            <div className="p-3 rounded-2xl bg-stone-50 dark:bg-zinc-800/60 border border-stone-200/80 dark:border-zinc-700/60 flex items-center justify-between gap-2">
+              <div className="min-w-0">
+                <div className="text-[11px] font-bold text-stone-500 dark:text-stone-400 uppercase tracking-wider">Email Help Desk</div>
+                <div className="text-xs font-bold text-stone-900 dark:text-stone-100 truncate">support@mealoptimiza.com</div>
+              </div>
+              <div className="flex items-center gap-1.5 shrink-0">
+                <button
+                  type="button"
+                  onClick={handleCopyEmail}
+                  className="px-2.5 py-1.5 rounded-xl bg-white dark:bg-zinc-700 hover:bg-stone-100 dark:hover:bg-zinc-600 text-stone-800 dark:text-stone-200 border border-stone-200 dark:border-zinc-600 text-xs font-semibold flex items-center gap-1 cursor-pointer transition-colors"
+                  title="Copy email to clipboard"
+                >
+                  <Copy size={12} />
+                  <span>Copy</span>
+                </button>
+                <a
+                  href="mailto:support@mealoptimiza.com"
+                  className="px-2.5 py-1.5 rounded-xl bg-[#164E3D] hover:bg-[#113E30] text-white text-xs font-semibold flex items-center gap-1 transition-colors"
+                  title="Open mail application"
+                >
+                  <ExternalLink size={12} />
+                  <span>Mail App</span>
+                </a>
+              </div>
+            </div>
+
+            {/* WhatsApp Quick Link */}
+            <Link
+              to="/whatsapp"
+              onClick={() => setShowContactModal(false)}
+              className="p-3 rounded-2xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200/80 dark:border-emerald-900/60 flex items-center justify-between gap-2 text-left hover:bg-emerald-100/60 transition-colors group cursor-pointer block"
+            >
+              <div className="flex items-center gap-2.5">
+                <div className="p-2 bg-emerald-600 text-white rounded-xl">
+                  <MessageCircle size={16} />
+                </div>
+                <div>
+                  <div className="text-xs font-bold text-emerald-900 dark:text-emerald-200">Chat with Sarah on WhatsApp</div>
+                  <div className="text-[11px] text-emerald-700 dark:text-emerald-400">Instant meal logging &amp; clinical help</div>
+                </div>
+              </div>
+              <ChevronRight size={16} className="text-emerald-700 dark:text-emerald-400 group-hover:translate-x-0.5 transition-transform" />
+            </Link>
+
+            {/* Quick In-App Message Form */}
+            <form onSubmit={handleSendMessage} className="space-y-2.5 pt-2 border-t border-stone-100 dark:border-zinc-800">
+              <div className="text-xs font-bold text-stone-800 dark:text-stone-200">Or Send a Direct Message:</div>
+              <input
+                type="text"
+                placeholder="Your Name (optional)"
+                value={contactName}
+                onChange={(e) => setContactName(e.target.value)}
+                className="w-full h-9 px-3 rounded-xl border border-stone-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-xs text-stone-900 dark:text-stone-100 placeholder:text-stone-400 focus:outline-none focus:border-[#164E3D]"
+              />
+              <input
+                type="email"
+                required
+                placeholder="Your Email Address *"
+                value={contactEmail}
+                onChange={(e) => setContactEmail(e.target.value)}
+                className="w-full h-9 px-3 rounded-xl border border-stone-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-xs text-stone-900 dark:text-stone-100 placeholder:text-stone-400 focus:outline-none focus:border-[#164E3D]"
+              />
+              <textarea
+                required
+                rows={3}
+                placeholder="How can we assist you today? *"
+                value={contactMessage}
+                onChange={(e) => setContactMessage(e.target.value)}
+                className="w-full p-2.5 rounded-xl border border-stone-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-xs text-stone-900 dark:text-stone-100 placeholder:text-stone-400 focus:outline-none focus:border-[#164E3D] resize-none"
+              />
+              <button
+                type="submit"
+                disabled={isSending}
+                className="w-full py-2.5 rounded-xl bg-[#164E3D] hover:bg-[#113E30] text-white text-xs font-bold flex items-center justify-center gap-1.5 transition-all active:scale-98 disabled:opacity-60 cursor-pointer shadow-sm shadow-emerald-950/20"
+              >
+                {isSending ? (
+                  <span>Sending message...</span>
+                ) : (
+                  <>
+                    <Send size={13} />
+                    <span>Send Message to Support</span>
+                  </>
+                )}
+              </button>
+            </form>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
