@@ -54,6 +54,10 @@ import SmartVideoConcierge from "../components/SmartVideoConcierge";
 import MedicalDisclaimerModal from "../components/MedicalDisclaimerModal";
 import FixMyPlateModal from "../components/FixMyPlateModal";
 import FamilyHealthCircleModal from "../components/FamilyHealthCircleModal";
+
+const GlycemicSimulatorModal = React.lazy(() =>
+  import("../components/GlycemicSimulatorModal").then((m) => ({ default: m.GlycemicSimulatorModal }))
+);
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "../components/ui/dialog";
 import { Alert, AlertTitle, AlertDescription } from "../components/ui/alert";
 import { Button } from "../components/ui/button";
@@ -145,6 +149,7 @@ export default function Home() {
   });
   const [showSpotlightTour, setShowSpotlightTour] = useState(false);
   const [showVoiceLogger, setShowVoiceLogger] = useState(false);
+  const [showSwallowSwapModal, setShowSwallowSwapModal] = useState(false);
   const [showGroceryPlanner, setShowGroceryPlanner] = useState(false);
   const [activeHomeTab, setActiveHomeTab] = useState<"today" | "academy" | "clinical">("today");
   const [academyCategory, setAcademyCategory] = useState<"daily" | "masterclasses">("daily");
@@ -1055,6 +1060,7 @@ export default function Home() {
             <div id="tour-quick-shelf" className="my-1">
               <QuickLogShelf
                 onLogItem={handleQuickLogItem}
+                onOpenSwallowSwap={() => setShowSwallowSwapModal(true)}
                 onOpenVoice={() => setShowVoiceLogger(true)}
                 onOpenWhatsApp={() => setShowWhatsAppModal(true)}
                 onOpenScanner={() => setShowLocalFoodScanner(true)}
@@ -1486,6 +1492,18 @@ export default function Home() {
           getMealLogs().then(logs => { if (Array.isArray(logs)) setWeekLogs(logs); }).catch(() => {});
         }}
       />
+      {showSwallowSwapModal && (
+        <React.Suspense fallback={null}>
+          <GlycemicSimulatorModal
+            isOpen={showSwallowSwapModal}
+            onClose={() => setShowSwallowSwapModal(false)}
+            defaultTab="swallow_swap"
+            onLogSaved={() => {
+              getMealLogs().then(logs => { if (Array.isArray(logs)) setWeekLogs(logs); }).catch(() => {});
+            }}
+          />
+        </React.Suspense>
+      )}
       <SmartGroceryPlanner isOpen={showGroceryPlanner} onClose={() => setShowGroceryPlanner(false)} />
       <WearableSyncModal isOpen={showWearableSyncModal} onClose={() => setShowWearableSyncModal(false)} />
 

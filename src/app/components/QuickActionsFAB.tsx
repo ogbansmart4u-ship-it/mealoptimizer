@@ -12,6 +12,10 @@ const PlateScannerModal = lazy(() =>
   import("./PlateScannerModal").then((m) => ({ default: m.PlateScannerModal }))
 );
 
+const GlycemicSimulatorModal = lazy(() =>
+  import("./GlycemicSimulatorModal").then((m) => ({ default: m.GlycemicSimulatorModal }))
+);
+
 export default function QuickActionsFAB() {
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
@@ -19,6 +23,7 @@ export default function QuickActionsFAB() {
   const [showVoiceModal, setShowVoiceModal] = useState(false);
   const [showScannerModal, setShowScannerModal] = useState(false);
   const [showARPlateScanner, setShowARPlateScanner] = useState(false);
+  const [showSwallowSwap, setShowSwallowSwap] = useState(false);
   const [showSarahConcierge, setShowSarahConcierge] = useState(false);
 
   const toggleMenu = () => {
@@ -79,7 +84,30 @@ export default function QuickActionsFAB() {
               </div>
             </button>
 
-            {/* Action 3: WhatsApp 1-Tap Food Logger */}
+            {/* Action 3: Swallow Swap & Spike Simulator */}
+            <button
+              type="button"
+              onClick={() => {
+                triggerHaptic("medium");
+                setIsOpen(false);
+                setShowSwallowSwap(true);
+              }}
+              className="group bg-gradient-to-r from-emerald-950/95 via-slate-900/95 to-teal-950/95 hover:opacity-100 text-white rounded-2xl pl-4 pr-3 py-2.5 shadow-2xl border border-emerald-400/40 hover:scale-[1.02] active:scale-98 transition-all flex items-center gap-3 cursor-pointer"
+            >
+              <div className="text-right">
+                <span className="text-xs font-bold block leading-tight text-white group-hover:text-emerald-300 transition-colors">
+                  Swallow Swap 🥑
+                </span>
+                <span className="text-xs text-emerald-200/90 font-medium block">
+                  Flatten blood sugar spikes
+                </span>
+              </div>
+              <div className="w-10 h-10 rounded-xl bg-white/10 border border-white/20 flex items-center justify-center text-lg shadow-inner group-hover:scale-110 transition-transform shrink-0">
+                🥑
+              </div>
+            </button>
+
+            {/* Action 4: WhatsApp 1-Tap Food Logger */}
             <button
               type="button"
               onClick={() => {
@@ -160,6 +188,20 @@ export default function QuickActionsFAB() {
               try { triggerConfetti(); } catch {}
               try { triggerHaptic("success"); } catch {}
               toast.success(`Avo Plate Score: ${data.score}%! Saved to Food Journal 🥑`);
+            }}
+          />
+        </Suspense>
+      )}
+
+      {showSwallowSwap && (
+        <Suspense fallback={null}>
+          <GlycemicSimulatorModal
+            isOpen={showSwallowSwap}
+            onClose={() => setShowSwallowSwap(false)}
+            defaultTab="swallow_swap"
+            onLogSaved={() => {
+              try { triggerConfetti(); } catch {}
+              try { triggerHaptic("success"); } catch {}
             }}
           />
         </Suspense>

@@ -240,6 +240,7 @@ interface QuickLogShelfProps {
   onOpenWhatsApp?: () => void;
   onOpenVoice?: () => void;
   onOpenCustom?: () => void;
+  onOpenSwallowSwap?: () => void;
   isLogging?: boolean;
 }
 
@@ -256,6 +257,7 @@ export default function QuickLogShelf({
   onOpenWhatsApp,
   onOpenVoice,
   onOpenCustom,
+  onOpenSwallowSwap,
   isLogging = false,
 }: QuickLogShelfProps) {
   const navigate = useNavigate();
@@ -361,10 +363,20 @@ export default function QuickLogShelf({
                 <Plus size={12} />
                 <span>Custom</span>
               </button>
+              {onOpenSwallowSwap && (
+                <button
+                  onClick={onOpenSwallowSwap}
+                  title="What If? Swallow Swap & Spike Simulator"
+                  className="px-2 py-1 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300 font-bold text-xs transition-all flex items-center gap-1 cursor-pointer active:scale-95 shadow-2xs border border-emerald-200 dark:border-emerald-800/60"
+                >
+                  <span>🥑</span>
+                  <span className="hidden sm:inline">Swallow Swap</span>
+                </button>
+              )}
               {onOpenVoice && (
                 <button
                   onClick={onOpenVoice}
-                  title="Talk to Sarah (Voice AI)"
+                  title="Talk to Avo Assistant (Voice AI)"
                   className="p-1.5 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-600 dark:bg-rose-950/60 dark:text-rose-300 transition-all flex items-center gap-1 cursor-pointer active:scale-95 shadow-2xs"
                 >
                   <Mic size={14} />

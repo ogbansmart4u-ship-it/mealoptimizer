@@ -3531,7 +3531,7 @@ export default function Recipe() {
         </Suspense>
       )}
 
-      {/* 📈 Floating CGM Simulator Trigger Button */}
+      {/* 🥑 10X Upgrade: Floating What If? Swallow Swap & Spike Simulator Trigger Button */}
       <button
         onClick={() => {
           try { triggerHaptic("medium"); } catch {}
@@ -3545,11 +3545,11 @@ export default function Recipe() {
           });
           setIsGlycemicModalOpen(true);
         }}
-        className="fixed bottom-24 left-4 z-40 px-3.5 py-3 bg-slate-900/90 hover:bg-slate-900 text-teal-300 font-black text-xs rounded-2xl shadow-2xl border-2 border-teal-500/50 hover:scale-105 active:scale-95 transition-all flex items-center gap-2 cursor-pointer backdrop-blur-md"
-        title="Simulate 3-Hour CGM Glycemic Curve"
+        className="fixed bottom-24 left-4 z-40 px-3.5 py-2.5 bg-gradient-to-r from-emerald-950/95 via-slate-950/95 to-teal-950/95 hover:opacity-100 text-emerald-300 font-black text-xs rounded-2xl shadow-2xl border border-emerald-500/50 hover:scale-105 active:scale-95 transition-all flex items-center gap-2 cursor-pointer backdrop-blur-md"
+        title="Simulate Swallow Swaps & Flatten Blood Sugar Spikes"
       >
-        <TrendingUp size={16} className="text-amber-400" />
-        <span className="tracking-wide text-white">CGM Curve</span>
+        <span className="text-sm">🥑</span>
+        <span className="tracking-wide text-white">Swallow Swap Simulator</span>
       </button>
     </div>
   );
