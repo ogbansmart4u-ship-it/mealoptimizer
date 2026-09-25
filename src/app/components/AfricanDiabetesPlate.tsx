@@ -1022,11 +1022,11 @@ export default function AfricanDiabetesPlate({
             <button
               type="button"
               onClick={() => handleQuadrantClick("protein")}
-              className={`col-span-1 row-span-1 rounded-tr-full px-1.5 pt-3 pb-1 bg-gradient-to-br from-amber-50 to-orange-50/90 dark:from-amber-950/70 dark:to-orange-950/50 border-b border-amber-300 dark:border-amber-800 transition-all flex flex-col items-center justify-center text-center cursor-pointer group active:scale-95 ${
+              className={`col-span-1 row-span-1 rounded-tr-full pl-1.5 pr-3 min-[380px]:pr-3.5 sm:pr-2.5 pt-2.5 pb-1 bg-gradient-to-br from-amber-50 to-orange-50/90 dark:from-amber-950/70 dark:to-orange-950/50 border-b border-amber-300 dark:border-amber-800 transition-all flex flex-col items-center justify-center text-center cursor-pointer group active:scale-95 ${
                 activeCategory === "protein" ? "ring-2 ring-amber-500/80 brightness-105" : "hover:brightness-105"
               }`}
             >
-              <span className="inline-block text-[7px] min-[380px]:text-[7.5px] font-black px-1.5 py-0.2 rounded-full bg-amber-700 text-white shadow-xs mb-0.5">
+              <span className="inline-block text-[6.5px] min-[380px]:text-[7px] sm:text-[7.5px] font-black px-1.5 py-0.5 rounded-full bg-amber-700 text-white shadow-xs mb-0.5 tracking-tight -translate-x-2 min-[380px]:-translate-x-1.5 sm:-translate-x-0.5">
                 🥩 25% PROTEIN
               </span>
 
@@ -1047,11 +1047,11 @@ export default function AfricanDiabetesPlate({
             <button
               type="button"
               onClick={() => handleQuadrantClick("carb")}
-              className={`col-span-1 row-span-1 rounded-br-full px-1.5 pt-1 pb-3 bg-gradient-to-br from-cyan-50 to-sky-50/90 dark:from-cyan-950/70 dark:to-sky-950/50 transition-all flex flex-col items-center justify-center text-center cursor-pointer group active:scale-95 ${
+              className={`col-span-1 row-span-1 rounded-br-full pl-1.5 pr-2.5 min-[380px]:pr-3 sm:pr-2 pt-1 pb-2.5 bg-gradient-to-br from-cyan-50 to-sky-50/90 dark:from-cyan-950/70 dark:to-sky-950/50 transition-all flex flex-col items-center justify-center text-center cursor-pointer group active:scale-95 ${
                 activeCategory === "carb" ? "ring-2 ring-cyan-500/80 brightness-105" : "hover:brightness-105"
               }`}
             >
-              <span className="inline-block text-[7px] min-[380px]:text-[7.5px] font-black px-1.5 py-0.2 rounded-full bg-cyan-800 text-white shadow-xs mb-0.5">
+              <span className="inline-block text-[6.5px] min-[380px]:text-[7px] sm:text-[7.5px] font-black px-1.5 py-0.5 rounded-full bg-cyan-800 text-white shadow-xs mb-0.5 tracking-tight -translate-x-1 sm:translate-x-0">
                 🍠 25% SWALLOW
               </span>
 
