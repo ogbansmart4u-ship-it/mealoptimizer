@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Link, useNavigate } from "react-router";
 import {
   Utensils,
@@ -24,34 +25,31 @@ import {
 import { motion, useReducedMotion } from "motion/react";
 import { useLanguage } from "../contexts/LanguageContext";
 import { useAuth } from "../contexts/AuthContext";
-
-function Wordmark() {
-  return (
-    <Link to="/" className="flex items-center gap-2.5 justify-center group">
-      <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-[#164E3D] to-[#258564] flex items-center justify-center shadow-md shadow-emerald-950/10 group-hover:scale-105 transition-transform">
-        <Leaf className="h-5 w-5 text-white" />
-      </div>
-      <span
-        className="font-black text-2xl text-[#164E3D] tracking-tight"
-        style={{ fontFamily: "Manrope, sans-serif" }}
-      >
-        Meal<span className="text-[#258564]">Optimiza</span>
-      </span>
-    </Link>
-  );
-}
+import AppLogo from "../components/AppLogo";
+import Mascot from "../components/Mascot";
+import { soundEffects } from "../utils/soundEffects";
+import { triggerHaptic } from "../utils/celebration";
 
 export default function Landing() {
   const navigate = useNavigate();
   const reduced = useReducedMotion();
   const { t } = useLanguage();
   const { user } = useAuth();
+  const [mascotGesture, setMascotGesture] = useState<"wave" | "celebrate" | "thumbsup">("wave");
+
+  const handleMascotTap = () => {
+    triggerHaptic("medium");
+    try { soundEffects.playBubblePop(); } catch {}
+    setMascotGesture((prev) => (prev === "wave" ? "thumbsup" : prev === "thumbsup" ? "celebrate" : "wave"));
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#F3F8F8] via-[#FFFFFF] to-[#F3F8F8] flex flex-col text-slate-800 antialiased selection:bg-teal-500 selection:text-white">
       {/* Top Navigation Bar */}
       <nav className="flex items-center justify-between px-6 py-4 max-w-6xl mx-auto w-full">
-        <Wordmark />
+        <Link to="/" className="flex items-center">
+          <AppLogo size="sm" showSubtitle={true} />
+        </Link>
         
         {/* Desktop Quick Nav Links */}
         <div className="hidden md:flex items-center gap-6 text-xs font-semibold text-stone-600">
@@ -90,11 +88,33 @@ export default function Landing() {
       </nav>
 
       {/* Hero Section */}
-      <div className="flex-1 flex flex-col items-center justify-center px-5 pt-8 pb-14 max-w-xl mx-auto w-full text-center">
+      <div className="flex-1 flex flex-col items-center justify-center px-5 pt-6 pb-14 max-w-xl mx-auto w-full text-center">
         {/* Live Pill Badge */}
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200/80 text-[#164E3D] text-[11px] font-black uppercase tracking-wider mb-4 shadow-2xs">
           <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
           <span>Clinical African Metabolic AI</span>
+        </div>
+
+        {/* 🥑 Official Avo Mascot Welcome */}
+        <div
+          onClick={handleMascotTap}
+          className="flex items-center justify-center gap-3 mb-5 cursor-pointer group select-none active:scale-95 transition-transform"
+          title="Tap Avo to say hi!"
+        >
+          <div className="relative">
+            <Mascot gesture={mascotGesture} size={88} className="drop-shadow-md group-hover:scale-105 transition-transform" />
+            <span className="absolute -bottom-0.5 -right-0.5 flex h-3.5 w-3.5">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-3.5 w-3.5 bg-emerald-500 border-2 border-white"></span>
+            </span>
+          </div>
+          <div className="text-left bg-white/95 backdrop-blur-sm border border-emerald-200/80 shadow-xs px-3.5 py-2 rounded-2xl group-hover:border-emerald-500 transition-colors">
+            <div className="text-xs font-black text-[#164E3D] flex items-center gap-1">
+              <span>Meet Avo</span>
+              <Sparkles size={12} className="text-amber-500" />
+            </div>
+            <div className="text-[11px] text-stone-600 font-medium">Your African Nutrition Coach <span className="text-emerald-700 font-semibold">(Tap me!)</span></div>
+          </div>
         </div>
 
         <h1 className="text-3xl sm:text-4xl md:text-5xl font-black text-slate-900 tracking-tight leading-tight mb-3">
@@ -381,12 +401,9 @@ export default function Landing() {
         <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
           {/* Col 1: Brand & Mission */}
           <div className="space-y-3">
-            <div className="flex items-center gap-2 text-white font-black text-lg">
-              <div className="w-8 h-8 rounded-xl bg-emerald-600 flex items-center justify-center text-white">
-                <Leaf size={16} />
-              </div>
-              <span>MealOptimiza</span>
-            </div>
+            <Link to="/" className="flex items-center">
+              <AppLogo size="sm" variant="white" showSubtitle={true} />
+            </Link>
             <p className="text-[11px] text-stone-400 leading-relaxed">
               Clinical African metabolic AI platform. Personalizing swallows, traditional soups, and nutrition for diabetes, hypertension, and longevity.
             </p>
