@@ -577,6 +577,8 @@ const SEVEN_DAY_PLANS: DaySchedule[] = [
       }
     ]
   }
+];
+
 // 🗓️ Helper to sync with real-time day of week (Monday = 1, Tuesday = 2, ..., Sunday = 7)
 function getTodayDayIndex(): number {
   const day = new Date().getDay(); // 0 is Sunday, 1 is Monday, ..., 6 is Saturday
