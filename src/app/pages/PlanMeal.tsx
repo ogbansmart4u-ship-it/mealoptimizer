@@ -577,7 +577,11 @@ const SEVEN_DAY_PLANS: DaySchedule[] = [
       }
     ]
   }
-];
+// 🗓️ Helper to sync with real-time day of week (Monday = 1, Tuesday = 2, ..., Sunday = 7)
+function getTodayDayIndex(): number {
+  const day = new Date().getDay(); // 0 is Sunday, 1 is Monday, ..., 6 is Saturday
+  return day === 0 ? 7 : day;
+}
 
 export default function PlanMeal() {
   const navigate = useNavigate();
@@ -585,7 +589,8 @@ export default function PlanMeal() {
   const { t } = useLanguage();
   const { selectedLocation } = useLocation();
 
-  const [activeDayIndex, setActiveDayIndex] = useState(1);
+  const todayDayIndex = useMemo(() => getTodayDayIndex(), []);
+  const [activeDayIndex, setActiveDayIndex] = useState<number>(() => getTodayDayIndex());
   const [diasporaMode, setDiasporaMode] = useState(true);
   const [isSarahSpeaking, setIsSarahSpeaking] = useState(false);
   const [selectedMealDetail, setSelectedMealDetail] = useState<DayPlanMeal | null>(null);
@@ -750,6 +755,7 @@ export default function PlanMeal() {
         <div className="flex items-center justify-between gap-1.5 overflow-x-auto pb-1 no-scrollbar">
           {SEVEN_DAY_PLANS.map((day) => {
             const isActive = day.dayIndex === activeDayIndex;
+            const isToday = day.dayIndex === todayDayIndex;
             return (
               <button
                 key={day.dayIndex}
@@ -757,12 +763,19 @@ export default function PlanMeal() {
                   triggerHaptic("light");
                   setActiveDayIndex(day.dayIndex);
                 }}
-                className={`flex-1 min-w-[48px] py-2.5 px-1 rounded-2xl text-center transition-all cursor-pointer flex flex-col items-center gap-0.5 ${
+                className={`flex-1 min-w-[48px] py-2 px-1 rounded-2xl text-center transition-all cursor-pointer flex flex-col items-center gap-0.5 relative ${
                   isActive
-                    ? "bg-[#126778] text-white shadow-md scale-105"
+                    ? "bg-[#126778] text-white shadow-md scale-105 ring-2 ring-teal-400/40"
                     : "bg-white dark:bg-zinc-800 text-slate-600 dark:text-zinc-400 border border-slate-200/80 dark:border-zinc-700 hover:bg-teal-50/50"
                 }`}
               >
+                {isToday && (
+                  <span className={`text-[7px] font-black uppercase tracking-wider px-1.5 py-0.2 rounded-full leading-tight shadow-2xs ${
+                    isActive ? "bg-amber-400 text-slate-950 font-black" : "bg-emerald-600 text-white font-bold"
+                  }`}>
+                    Today
+                  </span>
+                )}
                 <span className={`text-[9.5px] font-black uppercase ${isActive ? "text-amber-300" : "text-slate-400"}`}>
                   Day {day.dayIndex}
                 </span>
