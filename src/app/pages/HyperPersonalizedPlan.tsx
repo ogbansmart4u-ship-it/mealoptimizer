@@ -44,7 +44,12 @@ type SourcingMode = "continental" | "diaspora";
 
 export default function HyperPersonalizedPlan() {
   const navigate = useNavigate();
-  const [selectedDay, setSelectedDay] = useState<number>(0);
+  // 🗓️ Initialize to real-time calendar day (Monday = 0, ..., Saturday = 5, Sunday = 6)
+  const getTodayIndex = () => {
+    const d = new Date().getDay();
+    return d === 0 ? 6 : d - 1;
+  };
+  const [selectedDay, setSelectedDay] = useState<number>(() => getTodayIndex());
   const [clinicalFocus, setClinicalFocus] = useState<ClinicalFocus>("glucose");
   const [sourcingMode, setSourcingMode] = useState<SourcingMode>("continental");
   const [loading, setLoading] = useState<boolean>(true);

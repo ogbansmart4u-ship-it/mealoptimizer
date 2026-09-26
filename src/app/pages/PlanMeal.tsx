@@ -602,6 +602,11 @@ export default function PlanMeal() {
     return SEVEN_DAY_PLANS.find((d) => d.dayIndex === activeDayIndex) || SEVEN_DAY_PLANS[0];
   }, [activeDayIndex]);
 
+  // 🗓️ Guaranteed synchronization with real-time calendar day on mount
+  useEffect(() => {
+    setActiveDayIndex(getTodayDayIndex());
+  }, []);
+
   // Clean up audio speech on unmount or day change
   useEffect(() => {
     return () => {
