@@ -8,6 +8,7 @@ import { toast } from "sonner";
 import { triggerConfetti, triggerHaptic } from "../utils/celebration";
 import { speakWithSarah, stopSarahSpeech } from "../services/voiceService";
 import { openAffiliateProduct } from "../../lib/affiliates";
+import { soundEffects } from "../utils/soundEffects";
 import PageHeader from "../components/PageHeader";
 import Mascot from "../components/Mascot";
 import {
@@ -35,6 +36,7 @@ import {
   Coffee,
   Sun,
   Moon,
+  Zap,
 } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "../components/ui/dialog";
 import { Button } from "../components/ui/button";
@@ -579,6 +581,146 @@ const SEVEN_DAY_PLANS: DaySchedule[] = [
   }
 ];
 
+// 🥗 Alternative Swap Options for Interactive Dish Switching
+const MEAL_ALTERNATIVES: Record<string, DayPlanMeal[]> = {
+  breakfast: [
+    {
+      id: "alt-b1",
+      type: "breakfast",
+      time: "7:30 AM - 9:00 AM",
+      name: "Steamed Moi Moi with Boiled Egg & Unsweetened Zobo",
+      emoji: "🫘",
+      calories: 410,
+      protein: 26,
+      carbs: 45,
+      fats: 11,
+      glycemicIndex: "Low",
+      ingredients: ["1 wrap steamed bean pudding (Moi Moi)", "1 boiled egg", "1/2 cup flaked mackerel", "Chilled ginger Zobo tea"],
+      diasporaSwaps: ["Black-eyed peas pudding", "Smoked trout fillet"],
+      clinicalBenefit: "Slow-digesting legume fiber gives 4 hours of steady focus without hunger or insulin spikes.",
+      cookingHack: "Blend crayfish into the bean batter for savory depth without salt.",
+    },
+    {
+      id: "alt-b2",
+      type: "breakfast",
+      time: "8:00 AM - 9:30 AM",
+      name: "Steel-Cut Oat Porridge with Chia Seeds & Cinnamon",
+      emoji: "🥣",
+      calories: 360,
+      protein: 18,
+      carbs: 46,
+      fats: 10,
+      glycemicIndex: "Low",
+      ingredients: ["1 cup steel-cut oats", "1 tbsp organic chia seeds", "1/2 tsp Ceylon cinnamon", "Unsweetened almond milk"],
+      diasporaSwaps: ["Rolled whole oats", "Organic unsweetened soy milk"],
+      clinicalBenefit: "Beta-glucan fiber coats intestinal walls, attenuating post-breakfast glucose rise.",
+      cookingHack: "Simmer with a whole cinnamon stick for natural sweetness without sugar.",
+    },
+  ],
+  lunch: [
+    {
+      id: "alt-l1",
+      type: "lunch",
+      time: "1:00 PM - 2:30 PM",
+      name: "Grilled Tilapia with Viscous Okra Soup & Oat Swallow",
+      emoji: "🍲",
+      calories: 490,
+      protein: 42,
+      carbs: 45,
+      fats: 14,
+      glycemicIndex: "Low",
+      ingredients: ["200g grilled tilapia fillet", "1.5 cups fresh diced okra soup", "1 cup oat swallow", "Locust beans & pepper"],
+      diasporaSwaps: ["Frozen sliced okra", "Milled rolled oats"],
+      clinicalBenefit: "High soluble okra mucilage delays gastric emptying and stabilizes postprandial glucose.",
+      cookingHack: "Slit okra pods coarsely instead of pureeing to maximize slime viscosity!",
+    },
+    {
+      id: "alt-l2",
+      type: "lunch",
+      time: "1:30 PM - 3:00 PM",
+      name: "The Balanced Owambe Plate: Parboiled Rice, Grilled Chicken & Ugu",
+      emoji: "🎉",
+      calories: 540,
+      protein: 46,
+      carbs: 48,
+      fats: 15,
+      glycemicIndex: "Low",
+      ingredients: ["1 cup parboiled smoky Jollof rice", "Double portion grilled chicken breast", "1.5 cups Ugu vegetable stew"],
+      diasporaSwaps: ["Basmati sella rice", "Collard greens stew"],
+      clinicalBenefit: "Eating the chicken and greens FIRST reduces glucose absorption rate by 38%.",
+      cookingHack: "Always start with 3 mouthfuls of vegetable soup before touching the rice.",
+    },
+  ],
+  dinner: [
+    {
+      id: "alt-d1",
+      type: "dinner",
+      time: "6:30 PM - 8:00 PM",
+      name: "Light Snapper Fish Pepper Soup with Scent Leaves",
+      emoji: "🐟",
+      calories: 330,
+      protein: 36,
+      carbs: 12,
+      fats: 8,
+      glycemicIndex: "Low",
+      ingredients: ["200g red snapper fillet", "Fresh scent leaf broth", "Calabash nutmeg and ginger"],
+      diasporaSwaps: ["Fresh cod or sea bass", "Thai holy basil"],
+      clinicalBenefit: "Warm aromatic eugenol relaxes vascular tone and promotes nocturnal cellular repair.",
+      cookingHack: "Add fresh scent leaf at the very end of boiling to retain medicinal terpenes.",
+    },
+    {
+      id: "alt-d2",
+      type: "dinner",
+      time: "7:00 PM - 8:30 PM",
+      name: "Steamed Vegetable Egusi with Grilled Turkey Breast",
+      emoji: "🥬",
+      calories: 380,
+      protein: 38,
+      carbs: 16,
+      fats: 14,
+      glycemicIndex: "Low",
+      ingredients: ["1/4 cup ground melon seeds (Egusi)", "150g grilled turkey breast", "2 cups chopped spinach & Ugu"],
+      diasporaSwaps: ["Ground pumpkin seeds", "Skinless chicken breast"],
+      clinicalBenefit: "Zinc and magnesium in melon seeds improve deep REM restorative sleep.",
+      cookingHack: "Drop egusi paste directly into boiling broth without frying in oil.",
+    },
+  ],
+  snack: [
+    {
+      id: "alt-s1",
+      type: "snack",
+      time: "4:00 PM",
+      name: "Crisp Cucumber Slices with Roasted Peanut Butter Dip",
+      emoji: "🥒",
+      calories: 140,
+      protein: 6,
+      carbs: 7,
+      fats: 10,
+      glycemicIndex: "Low",
+      ingredients: ["1 whole cucumber sliced", "1 tbsp 100% roasted peanut butter"],
+      diasporaSwaps: ["Almond butter"],
+      clinicalBenefit: "Electrolyte hydration with monounsaturated fats blunts afternoon sugar cravings.",
+      cookingHack: "Sprinkle cayenne pepper on cucumber slices to boost thermogenesis.",
+    },
+    {
+      id: "alt-s2",
+      type: "snack",
+      time: "4:30 PM",
+      name: "Warm Golden Turmeric & Ginger Coconut Milk",
+      emoji: "🥥",
+      calories: 130,
+      protein: 2,
+      carbs: 5,
+      fats: 11,
+      glycemicIndex: "Low",
+      ingredients: ["1 cup light coconut milk", "1/2 tsp organic turmeric & black pepper", "Grated ginger"],
+      diasporaSwaps: ["Unsweetened almond milk"],
+      clinicalBenefit: "Curcumin calms whole-body inflammation and prepares the liver for overnight fasting.",
+      cookingHack: "Add a pinch of black pepper to boost curcumin absorption by 2,000%.",
+    },
+  ],
+};
+
 // 🗓️ Helper to sync with real-time day of week (Monday = 1, Tuesday = 2, ..., Sunday = 7)
 function getTodayDayIndex(): number {
   const day = new Date().getDay(); // 0 is Sunday, 1 is Monday, ..., 6 is Saturday
@@ -597,10 +739,41 @@ export default function PlanMeal() {
   const [isSarahSpeaking, setIsSarahSpeaking] = useState(false);
   const [selectedMealDetail, setSelectedMealDetail] = useState<DayPlanMeal | null>(null);
   const [showMealModal, setShowMealModal] = useState(false);
+  const [checkedIngredients, setCheckedIngredients] = useState<Record<string, boolean>>({});
+  const [swappedMeals, setSwappedMeals] = useState<Record<string, DayPlanMeal>>({});
+
+  // Track logged meals for today so users can see immediate visual progress
+  const [loggedMealIds, setLoggedMealIds] = useState<string[]>(() => {
+    try {
+      const todayDate = new Date().toISOString().split("T")[0];
+      const saved = JSON.parse(localStorage.getItem(`mo_logged_meals_${todayDate}`) || "[]");
+      return Array.isArray(saved) ? saved : [];
+    } catch {
+      return [];
+    }
+  });
 
   const activeDay = useMemo(() => {
     return SEVEN_DAY_PLANS.find((d) => d.dayIndex === activeDayIndex) || SEVEN_DAY_PLANS[0];
   }, [activeDayIndex]);
+
+  // Merge active day meals with any user swaps
+  const currentMeals = useMemo(() => {
+    return activeDay.meals.map((m) => swappedMeals[m.id] || m);
+  }, [activeDay, swappedMeals]);
+
+  // Calculate real-time daily macro budget
+  const dailyTotals = useMemo(() => {
+    return currentMeals.reduce(
+      (acc, m) => ({
+        calories: acc.calories + m.calories,
+        protein: acc.protein + m.protein,
+        carbs: acc.carbs + m.carbs,
+        fats: acc.fats + m.fats,
+      }),
+      { calories: 0, protein: 0, carbs: 0, fats: 0 }
+    );
+  }, [currentMeals]);
 
   // 🗓️ Guaranteed synchronization with real-time calendar day on mount
   useEffect(() => {
@@ -614,7 +787,7 @@ export default function PlanMeal() {
     };
   }, [activeDayIndex]);
 
-  // Sarah Voice Coaching Toggle
+  // Sarah Voice Coaching Toggle with audio feedback
   const handleToggleSarahVoice = () => {
     triggerHaptic("medium");
     if (isSarahSpeaking) {
@@ -634,6 +807,94 @@ export default function PlanMeal() {
     }
   };
 
+  // 1-Tap Log a Single Meal to Food Diary
+  const handleLogSingleMeal = async (meal: DayPlanMeal, e?: React.MouseEvent) => {
+    if (e) e.stopPropagation();
+    triggerHaptic("success");
+    soundEffects.playCelebrationChord();
+
+    try {
+      const todayDate = new Date().toISOString().split("T")[0];
+      await createMealLog({
+        date: todayDate,
+        time: meal.time.split("-")[0].trim(),
+        mealType: meal.type,
+        foodName: meal.name,
+        calories: meal.calories,
+        protein: meal.protein,
+        carbs: meal.carbs,
+        fats: meal.fats,
+        bloodSugarImpact: meal.glycemicIndex.toLowerCase(),
+        notes: `7-Day Plan (${activeDay.dayName}): ${meal.clinicalBenefit}`,
+      });
+
+      const updated = Array.from(new Set([...loggedMealIds, meal.id]));
+      setLoggedMealIds(updated);
+      try {
+        localStorage.setItem(`mo_logged_meals_${todayDate}`, JSON.stringify(updated));
+      } catch {}
+
+      toast.success(`Logged ${meal.name} (${meal.calories} kcal) to your food diary! 🍲`);
+    } catch {
+      toast.error("Failed to log meal to diary");
+    }
+  };
+
+  // Interactive Swap Dish handler
+  const handleSwapMeal = (meal: DayPlanMeal, e: React.MouseEvent) => {
+    e.stopPropagation();
+    triggerHaptic("medium");
+    soundEffects.playTactileTick();
+
+    const alts = MEAL_ALTERNATIVES[meal.type] || [];
+    if (alts.length === 0) {
+      toast.info("No alternative swap available for this slot.");
+      return;
+    }
+
+    const currentAlt = swappedMeals[meal.id];
+    let nextAlt: DayPlanMeal;
+    if (!currentAlt) {
+      nextAlt = alts[0];
+    } else {
+      const currIdx = alts.findIndex((a) => a.id === currentAlt.id);
+      if (currIdx === -1 || currIdx === alts.length - 1) {
+        // Revert back to baseline menu item
+        const next = { ...swappedMeals };
+        delete next[meal.id];
+        setSwappedMeals(next);
+        toast.success(`Reverted to original ${meal.name}! 🔄`);
+        return;
+      } else {
+        nextAlt = alts[currIdx + 1];
+      }
+    }
+
+    setSwappedMeals((prev) => ({ ...prev, [meal.id]: nextAlt }));
+    toast.success(`Swapped to ${nextAlt.name}! 🥗`);
+  };
+
+  // 1-Tap Share / Copy Day's Menu (Formatted for WhatsApp/Family)
+  const handleShareDayPlan = () => {
+    triggerHaptic("light");
+    const text =
+      `🥗 *MealOptimiza 7-Day Plan: ${activeDay.dayName}*\nTheme: ${activeDay.theme}\n\n` +
+      currentMeals
+        .map(
+          (m) =>
+            `• *${m.type.toUpperCase()}* (${m.time}): ${m.name} (${m.calories} kcal, ${m.protein}g protein)\n  💡 Benefit: ${m.clinicalBenefit}`
+        )
+        .join("\n\n") +
+      `\n\nDaily Total: ${dailyTotals.calories} kcal • ${dailyTotals.protein}g Protein\nTracked with MealOptimiza 🥑`;
+
+    if (navigator.share) {
+      navigator.share({ title: `MealOptimiza: ${activeDay.dayName} Plan`, text }).catch(() => {});
+    } else {
+      navigator.clipboard.writeText(text);
+      toast.success("Meal plan copied to clipboard! Ready to paste into WhatsApp 📋");
+    }
+  };
+
   // 1-Tap Export All 7 Days to Grocery Checklist
   const handleExportWholeWeekToGrocery = () => {
     triggerHaptic("success");
@@ -641,7 +902,7 @@ export default function PlanMeal() {
 
     try {
       const allIngredients: { id: string; name: string; quantity: string; category: string; checked: boolean }[] = [];
-      
+
       SEVEN_DAY_PLANS.forEach((day) => {
         day.meals.forEach((meal) => {
           const list = diasporaMode ? meal.diasporaSwaps.concat(meal.ingredients) : meal.ingredients;
@@ -668,14 +929,14 @@ export default function PlanMeal() {
     }
   };
 
-  // 1-Tap Log Active Day Meals to Diary
+  // 1-Tap Log All 4 Meals of Active Day to Diary
   const handleLogActiveDayToDiary = async () => {
     triggerHaptic("success");
     triggerConfetti("cannons");
 
     try {
       const todayDate = new Date().toISOString().split("T")[0];
-      for (const meal of activeDay.meals) {
+      for (const meal of currentMeals) {
         await createMealLog({
           date: todayDate,
           time: meal.time.split("-")[0].trim(),
@@ -690,6 +951,13 @@ export default function PlanMeal() {
         });
       }
 
+      const allIds = currentMeals.map((m) => m.id);
+      const updated = Array.from(new Set([...loggedMealIds, ...allIds]));
+      setLoggedMealIds(updated);
+      try {
+        localStorage.setItem(`mo_logged_meals_${todayDate}`, JSON.stringify(updated));
+      } catch {}
+
       toast.success(`Logged all 4 meals for ${activeDay.dayName} to your food diary! 🎉`);
     } catch {
       toast.error("Failed to log day meals");
@@ -697,7 +965,7 @@ export default function PlanMeal() {
   };
 
   return (
-    <div className="min-h-screen pb-28 bg-gradient-to-b from-[#E8F5F5] via-slate-50 to-teal-50/40 dark:from-zinc-950 dark:via-zinc-900 dark:to-zinc-950 text-slate-900 dark:text-white">
+    <div className="min-h-screen pb-32 bg-gradient-to-b from-[#E8F5F5] via-slate-50 to-teal-50/40 dark:from-zinc-950 dark:via-zinc-900 dark:to-zinc-950 text-slate-900 dark:text-white">
       {/* Header */}
       <PageHeader
         title="7-Day Therapeutic Meal Plan"
@@ -705,9 +973,37 @@ export default function PlanMeal() {
         backTo="/home"
       />
 
-      <div className="px-4 sm:px-6 max-w-2xl mx-auto space-y-4 -mt-2">
+      <div className="px-4 sm:px-6 max-w-2xl mx-auto space-y-3.5 -mt-2">
+        {/* ⚡ JUMP TO TODAY BANNER (Shown when browsing another day) */}
+        {activeDayIndex !== todayDayIndex && (
+          <div className="flex items-center justify-between p-2.5 px-3.5 bg-amber-500/10 dark:bg-amber-500/20 border border-amber-300/40 dark:border-amber-700/40 rounded-2xl text-xs text-amber-900 dark:text-amber-200 animate-in fade-in slide-in-from-top-2">
+            <div className="flex items-center gap-2">
+              <Calendar size={14} className="text-amber-600 dark:text-amber-400" />
+              <span>
+                Browsing <strong>{activeDay.dayName}'s Menu</strong>
+              </span>
+            </div>
+            <button
+              type="button"
+              onClick={() => {
+                soundEffects.playTactileTick();
+                triggerHaptic("light");
+                setActiveDayIndex(todayDayIndex);
+              }}
+              className="px-2.5 py-1 bg-amber-500 hover:bg-amber-600 text-slate-950 font-black rounded-xl text-[11px] transition-all cursor-pointer shadow-xs active:scale-95 flex items-center gap-1"
+            >
+              <span>Back to Today ({SEVEN_DAY_PLANS.find((d) => d.dayIndex === todayDayIndex)?.dayName.slice(0, 3)})</span>
+              <Zap size={11} />
+            </button>
+          </div>
+        )}
+
         {/* 🎙️ SARAH 24/7 AI VOICE COACHING HERO CARD */}
-        <div className="bg-gradient-to-br from-[#126778] via-[#0f5462] to-[#0a232a] text-white rounded-3xl p-4 sm:p-5 shadow-xl border-2 border-teal-300/30 relative overflow-hidden">
+        <div className={`rounded-3xl p-4 sm:p-5 shadow-xl transition-all relative overflow-hidden text-white ${
+          isSarahSpeaking
+            ? "bg-gradient-to-br from-[#126778] via-[#0f5462] to-[#0a232a] border-2 border-amber-400 ring-4 ring-amber-400/20"
+            : "bg-gradient-to-br from-[#126778] via-[#0f5462] to-[#0a232a] border-2 border-teal-300/30"
+        }`}>
           <div className="flex items-center justify-between relative z-10">
             <div className="flex items-center gap-3">
               <div className="relative">
@@ -725,11 +1021,21 @@ export default function PlanMeal() {
               </div>
 
               <div>
-                <div className="flex items-center gap-1.5">
+                <div className="flex items-center gap-1.5 flex-wrap">
                   <span className="text-[9.5px] font-black uppercase tracking-wider bg-amber-400 text-slate-950 px-2 py-0.5 rounded-full shadow-2xs">
                     Sarah AI Voice Coach
                   </span>
                   <span className="text-[10px] text-teal-200 font-bold">{activeDay.dayName} Audio</span>
+
+                  {/* Animated Waveform Equalizer when speaking */}
+                  {isSarahSpeaking && (
+                    <div className="flex items-end gap-0.5 h-3 ml-1">
+                      <div className="w-0.5 bg-amber-300 rounded-full animate-pulse h-2" />
+                      <div className="w-0.5 bg-amber-400 rounded-full animate-bounce h-3" />
+                      <div className="w-0.5 bg-amber-300 rounded-full animate-pulse h-1.5" />
+                      <div className="w-0.5 bg-amber-400 rounded-full animate-bounce h-2.5" />
+                    </div>
+                  )}
                 </div>
                 <h3 className="text-sm sm:text-base font-black text-white leading-tight mt-0.5">
                   {activeDay.theme}
@@ -753,7 +1059,7 @@ export default function PlanMeal() {
             </button>
           </div>
 
-          <p className="text-xs text-teal-100/90 font-medium mt-3 leading-relaxed relative z-10 bg-white/10 p-3 rounded-2xl border border-white/10">
+          <p className="text-xs text-teal-100/90 font-medium mt-3 leading-relaxed relative z-10 bg-white/10 p-3 rounded-2xl border border-white/10 backdrop-blur-xs">
             "{activeDay.sarahAudioCoaching}"
           </p>
         </div>
@@ -767,19 +1073,22 @@ export default function PlanMeal() {
               <button
                 key={day.dayIndex}
                 onClick={() => {
+                  soundEffects.playTactileTick();
                   triggerHaptic("light");
                   setActiveDayIndex(day.dayIndex);
                 }}
                 className={`flex-1 min-w-[48px] py-2 px-1 rounded-2xl text-center transition-all cursor-pointer flex flex-col items-center gap-0.5 relative ${
                   isActive
-                    ? "bg-[#126778] text-white shadow-md scale-105 ring-2 ring-teal-400/40"
+                    ? "bg-gradient-to-b from-[#126778] to-[#0d4f5c] text-white shadow-lg scale-105 ring-2 ring-teal-400/50"
                     : "bg-white dark:bg-zinc-800 text-slate-600 dark:text-zinc-400 border border-slate-200/80 dark:border-zinc-700 hover:bg-teal-50/50"
                 }`}
               >
                 {isToday && (
-                  <span className={`text-[7px] font-black uppercase tracking-wider px-1.5 py-0.2 rounded-full leading-tight shadow-2xs ${
-                    isActive ? "bg-amber-400 text-slate-950 font-black" : "bg-emerald-600 text-white font-bold"
-                  }`}>
+                  <span
+                    className={`text-[7px] font-black uppercase tracking-wider px-1.5 py-0.2 rounded-full leading-tight shadow-2xs ${
+                      isActive ? "bg-amber-400 text-slate-950 font-black" : "bg-emerald-600 text-white font-bold"
+                    }`}
+                  >
                     Today
                   </span>
                 )}
@@ -793,91 +1102,220 @@ export default function PlanMeal() {
           })}
         </div>
 
-        {/* CONTROLS: Diaspora Swaps & Actions */}
-        <div className="flex items-center justify-between text-xs bg-white dark:bg-zinc-800 p-3 rounded-2xl border border-slate-200/80 dark:border-zinc-700">
-          <div className="flex items-center gap-2">
-            <Globe size={14} className="text-[#126778] dark:text-teal-300" />
-            <span className="font-bold text-slate-800 dark:text-slate-200">
-              {diasporaMode ? "🇬🇧/🇺🇸 Diaspora Supermarket Swaps" : "🇳🇬 Nigerian Local Markets"}
+        {/* 📊 DAILY NUTRITIONAL TARGET GAUGE */}
+        <div className="bg-white dark:bg-zinc-800/90 rounded-2xl p-3 sm:p-3.5 border border-slate-200/80 dark:border-zinc-700/80 shadow-xs">
+          <div className="flex items-center justify-between text-xs font-black mb-2">
+            <span className="text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
+              <Flame size={14} className="text-amber-500 fill-amber-500" />
+              <span>{activeDay.dayName} Target Nutrition</span>
+            </span>
+            <span className="text-[9.5px] font-black uppercase px-2 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/80 text-emerald-700 dark:text-emerald-300 border border-emerald-200/80 dark:border-emerald-800">
+              Low Glycemic Day 🟢
             </span>
           </div>
 
-          <button
-            type="button"
-            onClick={() => {
-              triggerHaptic("light");
-              setDiasporaMode(!diasporaMode);
-              toast.info(diasporaMode ? "Switched to Local Market ingredients" : "Switched to Diaspora Supermarket swaps");
-            }}
-            className="text-[11px] font-black text-[#126778] dark:text-teal-300 hover:underline cursor-pointer"
-          >
-            {diasporaMode ? "Switch to Local 🔄" : "Switch to Diaspora 🌍"}
-          </button>
+          <div className="grid grid-cols-4 gap-1.5 text-center">
+            <div className="bg-slate-50 dark:bg-zinc-900/60 p-2 rounded-xl border border-slate-100 dark:border-zinc-800">
+              <span className="text-[9px] font-bold text-slate-400 uppercase block">Calories</span>
+              <span className="text-xs sm:text-sm font-black text-slate-900 dark:text-white">
+                {dailyTotals.calories}
+              </span>
+              <span className="text-[8px] text-slate-400 font-semibold block">kcal budget</span>
+            </div>
+
+            <div className="bg-blue-50/60 dark:bg-blue-950/30 p-2 rounded-xl border border-blue-100 dark:border-blue-900/40">
+              <span className="text-[9px] font-bold text-blue-600 dark:text-blue-400 uppercase block">Protein</span>
+              <span className="text-xs sm:text-sm font-black text-blue-900 dark:text-blue-200">
+                {dailyTotals.protein}g
+              </span>
+              <span className="text-[8px] text-blue-500 font-semibold block">25% plate</span>
+            </div>
+
+            <div className="bg-emerald-50/60 dark:bg-emerald-950/30 p-2 rounded-xl border border-emerald-100 dark:border-emerald-900/40">
+              <span className="text-[9px] font-bold text-emerald-600 dark:text-emerald-400 uppercase block">Carbs</span>
+              <span className="text-xs sm:text-sm font-black text-emerald-900 dark:text-emerald-200">
+                {dailyTotals.carbs}g
+              </span>
+              <span className="text-[8px] text-emerald-600 font-semibold block">Complex</span>
+            </div>
+
+            <div className="bg-purple-50/60 dark:bg-purple-950/30 p-2 rounded-xl border border-purple-100 dark:border-purple-900/40">
+              <span className="text-[9px] font-bold text-purple-600 dark:text-purple-400 uppercase block">Healthy Fats</span>
+              <span className="text-xs sm:text-sm font-black text-purple-900 dark:text-purple-200">
+                {dailyTotals.fats}g
+              </span>
+              <span className="text-[8px] text-purple-500 font-semibold block">Omega-3</span>
+            </div>
+          </div>
+        </div>
+
+        {/* 🌍 INTERACTIVE DUAL-SEGMENTED SOURCING TOGGLE */}
+        <div className="bg-white dark:bg-zinc-800/90 p-1.5 rounded-2xl border border-slate-200/80 dark:border-zinc-700 shadow-xs">
+          <div className="grid grid-cols-2 gap-1 bg-slate-100 dark:bg-zinc-900/80 p-1 rounded-xl">
+            <button
+              type="button"
+              onClick={() => {
+                soundEffects.playTactileTick();
+                triggerHaptic("light");
+                setDiasporaMode(false);
+                toast.info("Switched to Local African Open Market ingredients 🇳🇬");
+              }}
+              className={`py-2 px-3 rounded-lg text-xs font-black transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
+                !diasporaMode
+                  ? "bg-white dark:bg-zinc-700 text-[#126778] dark:text-teal-300 shadow-xs font-black"
+                  : "text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-white"
+              }`}
+            >
+              <span>🇳🇬 Local African Markets</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => {
+                soundEffects.playTactileTick();
+                triggerHaptic("light");
+                setDiasporaMode(true);
+                toast.info("Switched to Diaspora Supermarket Swaps (Tesco/Walmart/Costco) 🇬🇧/🇺🇸");
+              }}
+              className={`py-2 px-3 rounded-lg text-xs font-black transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
+                diasporaMode
+                  ? "bg-white dark:bg-zinc-700 text-[#126778] dark:text-teal-300 shadow-xs font-black"
+                  : "text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-white"
+              }`}
+            >
+              <span>🇬🇧/🇺🇸 Diaspora Swaps</span>
+            </button>
+          </div>
         </div>
 
         {/* 🍲 4 DAILY MEAL CARDS (Breakfast, Lunch, Dinner, Snack) */}
         <div className="space-y-3">
-          {activeDay.meals.map((meal) => (
-            <div
-              key={meal.id}
-              onClick={() => {
-                triggerHaptic("light");
-                setSelectedMealDetail(meal);
-                setShowMealModal(true);
-              }}
-              className="bg-white dark:bg-zinc-800/90 rounded-3xl p-4 shadow-sm border border-slate-200/80 dark:border-zinc-700 hover:border-teal-400/50 transition-all cursor-pointer group"
-            >
-              <div className="flex items-center justify-between mb-2">
-                <div className="flex items-center gap-2">
-                  <span className="text-2xl p-1.5 bg-teal-50 dark:bg-zinc-700 rounded-xl group-hover:scale-110 transition-transform">
-                    {meal.emoji}
-                  </span>
-                  <div>
-                    <span className="text-[10px] font-black uppercase text-[#126778] dark:text-teal-300 tracking-wider">
-                      {meal.type} • {meal.time}
+          {currentMeals.map((meal) => {
+            const isLogged = loggedMealIds.includes(meal.id);
+            const isSwapped = Boolean(swappedMeals[meal.id]);
+
+            return (
+              <div
+                key={meal.id}
+                onClick={() => {
+                  soundEffects.playTactileTick();
+                  triggerHaptic("light");
+                  setSelectedMealDetail(meal);
+                  setCheckedIngredients({});
+                  setShowMealModal(true);
+                }}
+                className="bg-white dark:bg-zinc-800/90 rounded-3xl p-4 shadow-sm border border-slate-200/80 dark:border-zinc-700 hover:border-teal-400/50 transition-all cursor-pointer group relative overflow-hidden"
+              >
+                {/* Top Badge Strip */}
+                <div className="flex items-center justify-between mb-2">
+                  <div className="flex items-center gap-2.5 min-w-0">
+                    <span className="text-2xl p-2 bg-teal-50 dark:bg-zinc-700 rounded-2xl group-hover:scale-110 transition-transform shrink-0">
+                      {meal.emoji}
                     </span>
-                    <h4 className="text-xs sm:text-sm font-black text-slate-900 dark:text-white leading-tight">
-                      {meal.name}
-                    </h4>
+                    <div className="min-w-0">
+                      <div className="flex items-center gap-1.5 flex-wrap">
+                        <span className="text-[10px] font-black uppercase text-[#126778] dark:text-teal-300 tracking-wider">
+                          {meal.type} • {meal.time}
+                        </span>
+                        {isSwapped && (
+                          <span className="text-[8px] font-black bg-teal-100 dark:bg-teal-950 text-teal-800 dark:text-teal-300 px-1.5 py-0.2 rounded-full">
+                            Swapped 🥗
+                          </span>
+                        )}
+                      </div>
+                      <h4 className="text-xs sm:text-sm font-black text-slate-900 dark:text-white leading-tight truncate">
+                        {meal.name}
+                      </h4>
+                    </div>
+                  </div>
+
+                  <span className="text-[9.5px] font-black px-2 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/80 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 shrink-0">
+                    {meal.glycemicIndex} Spike 🟢
+                  </span>
+                </div>
+
+                {/* Macros Strip */}
+                <div className="grid grid-cols-4 gap-1.5 text-center text-[10.5px] bg-slate-50 dark:bg-zinc-900/60 p-2 rounded-2xl border border-slate-100 dark:border-zinc-700/60">
+                  <div>
+                    <span className="text-slate-400 block text-[9px]">Calories</span>
+                    <strong className="font-black text-slate-900 dark:text-white">{meal.calories} kcal</strong>
+                  </div>
+                  <div>
+                    <span className="text-blue-500 block text-[9px]">Protein</span>
+                    <strong className="font-black text-blue-700 dark:text-blue-400">{meal.protein}g</strong>
+                  </div>
+                  <div>
+                    <span className="text-emerald-500 block text-[9px]">Carbs</span>
+                    <strong className="font-black text-emerald-700 dark:text-emerald-400">{meal.carbs}g</strong>
+                  </div>
+                  <div>
+                    <span className="text-purple-500 block text-[9px]">Fats</span>
+                    <strong className="font-black text-purple-700 dark:text-purple-400">{meal.fats}g</strong>
                   </div>
                 </div>
 
-                <span className="text-[10px] font-black px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 shrink-0">
-                  {meal.glycemicIndex} Spike 🟢
-                </span>
-              </div>
+                {/* Benefit & Ingredients Chips */}
+                <div className="mt-2.5 space-y-1.5 text-xs">
+                  <p className="text-[11px] text-slate-600 dark:text-slate-300 font-medium">
+                    💡 <span className="font-bold">Clinical Benefit:</span> {meal.clinicalBenefit}
+                  </p>
 
-              {/* Macros Strip */}
-              <div className="grid grid-cols-4 gap-1.5 text-center text-[10.5px] bg-slate-50 dark:bg-zinc-900/60 p-2 rounded-2xl border border-slate-100 dark:border-zinc-700/60">
-                <div>
-                  <span className="text-slate-400 block text-[9px]">Calories</span>
-                  <strong className="font-black text-slate-900 dark:text-white">{meal.calories} kcal</strong>
+                  {/* Top 3 Ingredients Chips */}
+                  <div className="flex items-center gap-1.5 flex-wrap pt-0.5">
+                    {(diasporaMode ? meal.diasporaSwaps : meal.ingredients).slice(0, 3).map((ing, i) => (
+                      <span
+                        key={i}
+                        className="text-[9.5px] font-semibold bg-slate-100 dark:bg-zinc-700/60 text-slate-700 dark:text-zinc-300 px-2 py-0.5 rounded-lg truncate max-w-[130px]"
+                      >
+                        • {ing}
+                      </span>
+                    ))}
+                    {(diasporaMode ? meal.diasporaSwaps : meal.ingredients).length > 3 && (
+                      <span className="text-[9px] font-bold text-teal-600 dark:text-teal-400">
+                        +{(diasporaMode ? meal.diasporaSwaps : meal.ingredients).length - 3} more
+                      </span>
+                    )}
+                  </div>
                 </div>
-                <div>
-                  <span className="text-blue-500 block text-[9px]">Protein</span>
-                  <strong className="font-black text-blue-700 dark:text-blue-400">{meal.protein}g</strong>
-                </div>
-                <div>
-                  <span className="text-emerald-500 block text-[9px]">Carbs</span>
-                  <strong className="font-black text-emerald-700 dark:text-emerald-400">{meal.carbs}g</strong>
-                </div>
-                <div>
-                  <span className="text-purple-500 block text-[9px]">Fats</span>
-                  <strong className="font-black text-purple-700 dark:text-purple-400">{meal.fats}g</strong>
-                </div>
-              </div>
 
-              {/* Benefit & Chef Hack */}
-              <div className="mt-2.5 space-y-1 text-xs">
-                <p className="text-[11px] text-slate-600 dark:text-slate-300 font-medium">
-                  💡 <span className="font-bold">Clinical Benefit:</span> {meal.clinicalBenefit}
-                </p>
+                {/* Card Action Row: Swap Dish & Log Single Meal */}
+                <div className="mt-3 pt-2.5 border-t border-slate-100 dark:border-zinc-700/60 flex items-center justify-between gap-2">
+                  <button
+                    type="button"
+                    onClick={(e) => handleSwapMeal(meal, e)}
+                    className="px-2.5 py-1.5 rounded-xl bg-slate-100 hover:bg-teal-50 dark:bg-zinc-700 dark:hover:bg-zinc-600 text-slate-700 dark:text-slate-200 text-xs font-bold transition-all flex items-center gap-1 cursor-pointer active:scale-95"
+                    title="Swap for a clinically approved alternative"
+                  >
+                    <RefreshCw size={12} className="text-teal-600 dark:text-teal-400" />
+                    <span>Swap Dish</span>
+                  </button>
+
+                  <div className="flex items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={(e) => handleLogSingleMeal(meal, e)}
+                      disabled={isLogged}
+                      className={`px-3 py-1.5 rounded-xl text-xs font-black transition-all flex items-center gap-1 cursor-pointer active:scale-95 ${
+                        isLogged
+                          ? "bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 border border-emerald-300"
+                          : "bg-[#126778] hover:bg-[#0e515e] text-white shadow-xs"
+                      }`}
+                    >
+                      <CheckCircle2 size={13} className={isLogged ? "text-emerald-600" : "text-amber-300"} />
+                      <span>{isLogged ? "Logged ✓" : `Log ${meal.type}`}</span>
+                    </button>
+
+                    <span className="text-xs text-slate-400 group-hover:translate-x-0.5 transition-transform">
+                      <ChevronRight size={14} />
+                    </span>
+                  </div>
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
 
-                {/* 🍳 HEALTHY AFRICAN CHEF GEAR & PANTRY UTILITIES */}
+        {/* 🍳 HEALTHY AFRICAN CHEF GEAR & PANTRY UTILITIES */}
         <div className="bg-white dark:bg-zinc-800/90 rounded-3xl p-4 sm:p-5 shadow-sm border border-slate-200/80 dark:border-zinc-700 space-y-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
@@ -919,8 +1357,8 @@ export default function PlanMeal() {
           </div>
         </div>
 
-        {/* 🌟 2 BIG ACTION BUTTONS: EXPORT TO GROCERY & LOG TO DIARY */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-2">
+        {/* 🌟 3 ACTION BUTTONS: EXPORT, LOG ENTIRE DAY, SHARE */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1">
           <button
             type="button"
             onClick={handleExportWholeWeekToGrocery}
@@ -936,40 +1374,99 @@ export default function PlanMeal() {
             className="w-full py-3.5 bg-white dark:bg-zinc-800 text-slate-900 dark:text-white font-black text-xs rounded-2xl shadow-md hover:scale-102 active:scale-98 transition-all cursor-pointer flex items-center justify-center gap-2 border border-slate-200 dark:border-zinc-700"
           >
             <CheckCircle2 size={16} className="text-emerald-500" />
-            <span>Log {activeDay.dayName} Meals to Food Diary 🍲</span>
+            <span>Log All 4 Meals for {activeDay.dayName} 🍲</span>
           </button>
         </div>
+
+        {/* 📋 Share / WhatsApp Button */}
+        <button
+          type="button"
+          onClick={handleShareDayPlan}
+          className="w-full py-3 rounded-2xl bg-teal-50 dark:bg-zinc-800/80 hover:bg-teal-100/60 dark:hover:bg-zinc-700 border border-teal-200 dark:border-zinc-700 text-xs font-black text-[#126778] dark:text-teal-300 flex items-center justify-center gap-2 transition-all cursor-pointer active:scale-98 shadow-xs"
+        >
+          <Share2 size={14} />
+          <span>Share {activeDay.dayName}'s Menu with Family via WhatsApp / Copy 📋</span>
+        </button>
       </div>
 
-      {/* 🍲 MEAL DETAIL & COOKING HACK MODAL */}
+      {/* 🍲 ENHANCED MEAL DETAIL & INTERACTIVE COOKING MODAL */}
       <Dialog open={showMealModal} onOpenChange={setShowMealModal}>
-        <DialogContent className="sm:max-w-md rounded-3xl p-5 sm:p-6 bg-slate-950 text-white border border-teal-500/30">
+        <DialogContent className="sm:max-w-md rounded-3xl p-5 sm:p-6 bg-slate-950 text-white border border-teal-500/30 max-h-[90vh] overflow-y-auto">
           {selectedMealDetail && (
             <div className="space-y-4">
               <div className="flex items-center gap-3">
-                <span className="text-3xl p-2 bg-teal-500/20 rounded-2xl border border-teal-400/30">
+                <span className="text-3xl p-2.5 bg-teal-500/20 rounded-2xl border border-teal-400/30">
                   {selectedMealDetail.emoji}
                 </span>
                 <div>
                   <span className="text-[10px] font-black uppercase tracking-wider text-teal-300">
-                    {selectedMealDetail.type} • {selectedMealDetail.calories} kcal
+                    {selectedMealDetail.type} • {selectedMealDetail.calories} kcal • {selectedMealDetail.time}
                   </span>
-                  <h3 className="text-base font-black text-white leading-tight">
+                  <h3 className="text-base sm:text-lg font-black text-white leading-tight">
                     {selectedMealDetail.name}
                   </h3>
                 </div>
               </div>
 
-              {/* Ingredients List */}
-              <div className="p-3.5 bg-white/10 rounded-2xl border border-white/15 space-y-1.5">
-                <span className="text-[10px] font-black uppercase tracking-wider text-amber-300 block">
-                  Ingredients ({diasporaMode ? "Diaspora Swaps" : "Local Market"}):
+              {/* Macro Pills in Modal */}
+              <div className="grid grid-cols-4 gap-2 text-center text-xs bg-white/5 p-2.5 rounded-2xl border border-white/10">
+                <div>
+                  <span className="text-[9px] text-slate-400 block font-bold">Calories</span>
+                  <span className="font-black text-white">{selectedMealDetail.calories}</span>
+                </div>
+                <div>
+                  <span className="text-[9px] text-blue-400 block font-bold">Protein</span>
+                  <span className="font-black text-blue-300">{selectedMealDetail.protein}g</span>
+                </div>
+                <div>
+                  <span className="text-[9px] text-emerald-400 block font-bold">Carbs</span>
+                  <span className="font-black text-emerald-300">{selectedMealDetail.carbs}g</span>
+                </div>
+                <div>
+                  <span className="text-[9px] text-purple-400 block font-bold">Fats</span>
+                  <span className="font-black text-purple-300">{selectedMealDetail.fats}g</span>
+                </div>
+              </div>
+
+              {/* Interactive Ingredients Checklist */}
+              <div className="p-3.5 bg-white/10 rounded-2xl border border-white/15 space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-[10px] font-black uppercase tracking-wider text-amber-300">
+                    Ingredients ({diasporaMode ? "Diaspora Swaps" : "Local Open Market"}):
+                  </span>
+                  <span className="text-[9px] text-slate-300 font-semibold">Tap to check off pantry</span>
+                </div>
+                <div className="space-y-1.5">
+                  {(diasporaMode ? selectedMealDetail.diasporaSwaps : selectedMealDetail.ingredients).map((ing, idx) => {
+                    const isChecked = Boolean(checkedIngredients[ing]);
+                    return (
+                      <div
+                        key={idx}
+                        onClick={() => {
+                          triggerHaptic("light");
+                          soundEffects.playTactileTick();
+                          setCheckedIngredients((prev) => ({ ...prev, [ing]: !prev[ing] }));
+                        }}
+                        className={`p-2 rounded-xl text-xs flex items-center justify-between cursor-pointer transition-colors ${
+                          isChecked ? "bg-emerald-500/20 text-emerald-200 line-through" : "bg-white/5 text-slate-200 hover:bg-white/10"
+                        }`}
+                      >
+                        <span>• {ing}</span>
+                        <span className="text-xs">{isChecked ? "✅" : "⬜"}</span>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Clinical Mechanism */}
+              <div className="p-3 bg-teal-950/50 rounded-2xl border border-teal-500/30">
+                <span className="text-[10px] font-black uppercase tracking-wider text-teal-300 block">
+                  🧬 Clinical Metabolic Benefit:
                 </span>
-                {(diasporaMode ? selectedMealDetail.diasporaSwaps : selectedMealDetail.ingredients).map((ing, idx) => (
-                  <p key={idx} className="text-xs text-slate-200 font-medium">
-                    • {ing}
-                  </p>
-                ))}
+                <p className="text-xs text-teal-100 font-medium mt-0.5">
+                  {selectedMealDetail.clinicalBenefit}
+                </p>
               </div>
 
               {/* Chef Cooking Hack */}
@@ -982,12 +1479,24 @@ export default function PlanMeal() {
                 </p>
               </div>
 
-              <Button
-                onClick={() => setShowMealModal(false)}
-                className="w-full py-3 bg-[#126778] hover:bg-teal-700 text-white font-black text-xs rounded-2xl cursor-pointer"
-              >
-                Close Recipe
-              </Button>
+              {/* Modal Action Buttons */}
+              <div className="grid grid-cols-2 gap-2 pt-1">
+                <Button
+                  onClick={(e) => {
+                    handleLogSingleMeal(selectedMealDetail, e);
+                    setShowMealModal(false);
+                  }}
+                  className="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs rounded-2xl cursor-pointer"
+                >
+                  Log This Meal 🥣
+                </Button>
+                <Button
+                  onClick={() => setShowMealModal(false)}
+                  className="w-full py-3 bg-white/20 hover:bg-white/30 text-white font-black text-xs rounded-2xl cursor-pointer"
+                >
+                  Done
+                </Button>
+              </div>
             </div>
           )}
         </DialogContent>
