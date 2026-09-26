@@ -71,9 +71,9 @@ const SEVEN_DAY_PLANS: DaySchedule[] = [
   {
     dayIndex: 1,
     dayName: "Monday",
-    theme: "Glycemic Reset & Morning Sustained Energy ⚡",
+    theme: "Fresh Start & All-Day Energy ⚡",
     targetCalories: 1580,
-    sarahAudioCoaching: "Welcome to Monday! Today we focus on steady blood sugar. For breakfast, we have boiled plantain and eggs with spinach. For lunch, our grilled tilapia and viscous ewedu soup creates a natural fiber mesh in your intestines, preventing afternoon sluggishness. Stay hydrated with 2 liters of water!",
+    sarahAudioCoaching: "Welcome to Monday! Today is all about keeping your energy smooth and steady. For breakfast, we have boiled plantain and eggs with spinach. For lunch, fresh fish and delicious ewedu soup keeps you full without feeling heavy or sleepy. Remember to drink plenty of water today!",
     meals: [
       {
         id: "d1-m1",
@@ -86,99 +86,99 @@ const SEVEN_DAY_PLANS: DaySchedule[] = [
         carbs: 42,
         fats: 12,
         glycemicIndex: "Low",
-        ingredients: ["2 small fingers green plantain", "2 whole organic eggs", "1 cup chopped spinach/ugu", "1 fresh tomato & pepper sauce"],
-        diasporaSwaps: ["Collard greens instead of ugu", "Avocado oil instead of groundnut oil"],
-        clinicalBenefit: "High in resistant starch type 2, feeding gut microbiome with zero insulin spikes.",
-        cookingHack: "Boil plantains with the skin on first, then peel—this preserves resistant starch and B-vitamins!"
+        ingredients: ["2 small green plantains", "2 whole eggs", "1 cup chopped spinach or ugu", "Fresh tomato & pepper sauce"],
+        diasporaSwaps: ["Collard greens instead of ugu", "Olive oil instead of vegetable oil"],
+        clinicalBenefit: "Slow-burning natural carbs keep you full for hours with no sugar spikes or sudden tiredness.",
+        cookingHack: "Boil plantains with the skin on first, then peel—this preserves natural vitamins and healthy fiber!"
       },
       {
         id: "d1-m2",
         type: "lunch",
         time: "1:00 PM - 2:30 PM",
-        name: "Grilled Titus Fish with Viscous Ewedu & Oat Swallow",
+        name: "Grilled Titus Fish with Ewedu Soup & Oat Swallow",
         emoji: "🍲",
         calories: 520,
         protein: 38,
         carbs: 48,
         fats: 16,
         glycemicIndex: "Low",
-        ingredients: ["1 cup oat swallow", "150g grilled Atlantic mackerel (Titus)", "1 cup viscous Ewedu soup with locust beans (Iru)", "Light pepper stew"],
+        ingredients: ["1 cup oat swallow", "150g grilled Atlantic mackerel (Titus)", "1 cup fresh Ewedu soup with locust beans (Iru)", "Light pepper stew"],
         diasporaSwaps: ["Rolled oats milled fine", "Frozen jute leaves (Moluhiya)"],
-        clinicalBenefit: "Viscous mucilage in Ewedu creates a gel barrier, slowing glucose absorption by 40%.",
-        cookingHack: "Add a pinch of Iru (fermented locust beans) for natural umami and blood vessel elasticity."
+        clinicalBenefit: "Rich green ewedu coats your stomach to slow down digestion and keep your energy smooth all afternoon.",
+        cookingHack: "Add a pinch of Iru (locust beans) for rich natural flavor without artificial seasoning cubes."
       },
       {
         id: "d1-m3",
         type: "dinner",
         time: "6:30 PM - 8:00 PM",
-        name: "Spiced Catfish Pepper Soup with Scent Leaves",
+        name: "Spiced Catfish Pepper Soup with Fresh Scent Leaves",
         emoji: "🥣",
         calories: 360,
         protein: 35,
         carbs: 14,
         fats: 10,
         glycemicIndex: "Low",
-        ingredients: ["200g fresh catfish/tilapia", "Fresh scent leaf / basil", "Uda seed & calabash nutmeg broth", "Fresh ginger & garlic"],
-        diasporaSwaps: ["Thai holy basil or Italian basil", "Smoked trout"],
-        clinicalBenefit: "Aromatic eugenol in scent leaves relaxes arterial walls and eases evening digestion.",
-        cookingHack: "Simmer on low flame for 12 minutes to keep fish tender without losing omega-3 oils."
+        ingredients: ["200g fresh catfish or tilapia", "Fresh scent leaf or basil", "Traditional peppersoup spice broth", "Fresh ginger & garlic"],
+        diasporaSwaps: ["Italian basil or Thai basil", "Fresh cod or trout fillet"],
+        clinicalBenefit: "Warm scent leaf pepper soup helps relax your body and soothes digestion for a restful night.",
+        cookingHack: "Simmer on low heat for 12 minutes to keep fish tender and preserve its healthy natural oils."
       },
       {
         id: "d1-m4",
         type: "snack",
         time: "4:00 PM",
-        name: "Roasted Tiger Nuts & Fresh Coconut Flakes",
+        name: "Roasted Tiger Nuts & Fresh Coconut Slices",
         emoji: "🥥",
         calories: 180,
         protein: 4,
         carbs: 18,
         fats: 9,
         glycemicIndex: "Low",
-        ingredients: ["1/4 cup roasted tiger nuts (Ofio)", "2 thin slices fresh coconut meat"],
+        ingredients: ["1/4 cup roasted tiger nuts (Ofio)", "2 thin slices fresh coconut"],
         diasporaSwaps: ["Raw almonds or walnuts"],
-        clinicalBenefit: "Prebiotic fiber prevents 4pm sugar cravings.",
-        cookingHack: "Chew tiger nuts thoroughly to activate digestive salivary amylase."
+        clinicalBenefit: "Crunchy healthy snack that stops afternoon sweet cravings naturally.",
+        cookingHack: "Chew tiger nuts well to enjoy the sweet natural milk and make them easy to digest."
       }
     ]
   },
   {
     dayIndex: 2,
     dayName: "Tuesday",
-    theme: "Arterial Health & Polyphenol Infusion ❤️",
+    theme: "Healthy Heart & Natural Glow ❤️",
     targetCalories: 1620,
-    sarahAudioCoaching: "Happy Tuesday! Today is our heart health day. We infuse red hibiscus zobo bioflavonoids to naturally support healthy blood pressure. Lunch is our antioxidant-rich Efo Riro with lean beef, packed with iron and magnesium.",
+    sarahAudioCoaching: "Happy Tuesday! Today we focus on loving your heart. Enjoy natural unsweetened ginger zobo to help healthy blood flow, and a tasty plate of rich Efo Riro vegetable soup with tender beef to keep your body strong.",
     meals: [
       {
         id: "d2-m1",
         type: "breakfast",
         time: "7:30 AM - 9:00 AM",
-        name: "Steamed Moi Moi with Boiled Egg & Unsweetened Ginger Zobo",
+        name: "Steamed Moi Moi with Boiled Egg & Chilled Ginger Zobo",
         emoji: "🫘",
         calories: 410,
         protein: 26,
         carbs: 45,
         fats: 11,
         glycemicIndex: "Low",
-        ingredients: ["1 wrap steamed bean pudding (Moi Moi)", "1 boiled egg", "1/2 cup flaked mackerel", "Chilled ginger-infused Hibiscus tea (Zobo)"],
+        ingredients: ["1 wrap steamed bean pudding (Moi Moi)", "1 boiled egg", "1/2 cup flaked fish", "Chilled unsweetened ginger hibiscus tea (Zobo)"],
         diasporaSwaps: ["Black-eyed peas or brown beans", "Silicone muffin molds for steaming"],
-        clinicalBenefit: "Slow-digesting legume fiber gives 4 hours of steady focus without hunger.",
+        clinicalBenefit: "Hearty bean protein that keeps your tummy happy and satisfied all morning.",
         cookingHack: "Blend crayfish into the bean batter for savory depth without bouillon cubes."
       },
       {
         id: "d2-m2",
         type: "lunch",
         time: "1:00 PM - 2:30 PM",
-        name: "Efo Riro (Rich Spinach & Ugu Stir-In) with Grilled Chicken",
+        name: "Efo Riro (Rich Spinach & Ugu Soup) with Grilled Chicken",
         emoji: "🥬",
         calories: 490,
         protein: 42,
         carbs: 32,
         fats: 18,
         glycemicIndex: "Low",
-        ingredients: ["200g skinless chicken thigh/breast", "2 cups chopped ugu/spinach", "1 tbsp unbleached palm oil", "Locust beans & ground crayfish", "1/2 cup brown rice or fonio"],
+        ingredients: ["200g skinless chicken", "2 cups chopped ugu or spinach", "1 tbsp unbleached palm oil", "Locust beans & crayfish", "1/2 cup brown rice or fonio"],
         diasporaSwaps: ["Organic kale or collards", "Ancient Fonio grain"],
-        clinicalBenefit: "Rich in nitrates and tocotrienols that support nitric oxide production and blood flow.",
-        cookingHack: "Turn off heat before folding in vegetables so vitamins remain live and crunchy!"
+        clinicalBenefit: "Packed with dark green vegetables and iron to give you natural stamina and glowing skin.",
+        cookingHack: "Turn off heat before adding vegetables so they stay bright green, crunchy, and packed with vitamins!"
       },
       {
         id: "d2-m3",
@@ -191,16 +191,16 @@ const SEVEN_DAY_PLANS: DaySchedule[] = [
         carbs: 38,
         fats: 10,
         glycemicIndex: "Low",
-        ingredients: ["4 steamed garden eggs mashed", "1 small roasted orange sweet potato", "6 jumbo tiger prawns", "Fresh pepper & tomato salsa"],
-        diasporaSwaps: ["Italian eggplant or zucchini", "Wild-caught shrimp"],
-        clinicalBenefit: "Garden egg nasunin protects brain cell membranes from lipid peroxidation.",
-        cookingHack: "Roast sweet potatoes with the skin intact for double the potassium!"
+        ingredients: ["4 steamed garden eggs mashed", "1 small roasted sweet potato", "6 grilled tiger prawns", "Fresh pepper & tomato sauce"],
+        diasporaSwaps: ["Eggplant or zucchini", "Wild-caught shrimp"],
+        clinicalBenefit: "Garden eggs are gentle on digestion and keep your dinner light and nourishing.",
+        cookingHack: "Roast sweet potatoes with the skin on for extra potassium and natural fiber!"
       },
       {
         id: "d2-m4",
         type: "snack",
         time: "4:00 PM",
-        name: "Chilled Cucumber Slices with Ground Peanut Butter Dip",
+        name: "Crisp Cucumber Slices with Natural Peanut Butter",
         emoji: "🥒",
         calories: 150,
         protein: 6,
@@ -209,71 +209,71 @@ const SEVEN_DAY_PLANS: DaySchedule[] = [
         glycemicIndex: "Low",
         ingredients: ["1 whole cucumber sliced", "1 tbsp 100% pure roasted peanut butter"],
         diasporaSwaps: ["Almond butter"],
-        clinicalBenefit: "Electrolyte hydration with monounsaturated fats for satiety.",
-        cookingHack: "Sprinkle with a touch of cayenne pepper to ignite thermogenesis."
+        clinicalBenefit: "Cool crisp cucumbers with real peanut butter to satisfy hunger without heavy snacking.",
+        cookingHack: "A tiny pinch of pepper adds a nice kick and naturally warms up your body."
       }
     ]
   },
   {
     dayIndex: 3,
     dayName: "Wednesday",
-    theme: "Cellular Detox & Ancient Supergrain Power 🌾",
+    theme: "Clean Living & Supergrain Energy 🌾",
     targetCalories: 1590,
-    sarahAudioCoaching: "It's Wednesday! We power your cells with ancient West African Fonio, the world's fastest-cooking supergrain. It has a low glycemic index of 45 and is naturally gluten-free. For dinner, our medicinal bitter leaf soup cleanses liver pathways.",
+    sarahAudioCoaching: "It's Wednesday! Today we are enjoying quick-cooking African Fonio grain—it's light, gentle on the stomach, and won't make you feel bloated. For dinner, delicious bitter leaf soup helps refresh and cleanse your system naturally.",
     meals: [
       {
         id: "d3-m1",
         type: "breakfast",
         time: "7:30 AM - 9:00 AM",
-        name: "Fonio Porridge with Spiced Almond Milk, Chia & Papaya",
+        name: "Fonio Porridge with Warm Spiced Milk & Sweet Papaya",
         emoji: "🥣",
         calories: 360,
         protein: 16,
         carbs: 52,
         fats: 8,
         glycemicIndex: "Low",
-        ingredients: ["1/2 cup cooked Fonio grain", "1 cup warm unsweetened almond milk", "1 tbsp chia seeds", "1/2 cup fresh diced pawpaw (papaya)"],
-        diasporaSwaps: ["Quinoa flakes or steel-cut oats", "Blueberries"],
-        clinicalBenefit: "Methionine and cystine in Fonio promote liver glutathione synthesis.",
+        ingredients: ["1/2 cup cooked Fonio grain", "1 cup warm milk or almond milk", "1 tbsp chia seeds", "1/2 cup fresh diced pawpaw (papaya)"],
+        diasporaSwaps: ["Steel-cut oats or quinoa", "Fresh blueberries or mango"],
+        clinicalBenefit: "Naturally light, gluten-free ancient grain that is gentle on your stomach and quick to digest.",
         cookingHack: "Fonio cooks in only 3 minutes! Steam with boiling water and fluff with a fork."
       },
       {
         id: "d3-m2",
         type: "lunch",
         time: "1:00 PM - 2:30 PM",
-        name: "Party-Style Cauli-Jollof with Double Grilled Chicken Suya",
+        name: "Flavor-Packed Cauli-Jollof with Grilled Chicken Suya",
         emoji: "🍗",
         calories: 510,
         protein: 44,
         carbs: 28,
         fats: 18,
         glycemicIndex: "Low",
-        ingredients: ["2 cups riced cauliflower & 1/2 cup brown rice", "Rich roasted tomato-tatashe paste", "200g grilled suya-spiced chicken", "Steamed green beans"],
-        diasporaSwaps: ["Trader Joe's or Tesco riced cauliflower", "Smoked paprika & ginger rub"],
-        clinicalBenefit: "All the deep flavor of party Jollof with 65% fewer carbs and zero sugar spikes.",
+        ingredients: ["2 cups riced cauliflower & 1/2 cup brown rice", "Rich roasted tomato-pepper sauce", "200g grilled suya-spiced chicken", "Steamed green beans"],
+        diasporaSwaps: ["Supermarket riced cauliflower", "Smoked paprika & ginger rub"],
+        clinicalBenefit: "All the authentic party Jollof flavor you love, while keeping you light and energized.",
         cookingHack: "Brown the tomato paste in olive oil until sweet before adding the cauliflower rice."
       },
       {
         id: "d3-m3",
         type: "dinner",
         time: "6:30 PM - 8:00 PM",
-        name: "Medicinal Ofe Onugbu (Bitter Leaf Soup) with Lean Beef",
+        name: "Traditional Bitter Leaf Soup (Ofe Onugbu) with Lean Beef",
         emoji: "🍲",
         calories: 390,
         protein: 34,
         carbs: 22,
         fats: 14,
         glycemicIndex: "Low",
-        ingredients: ["Thoroughly washed bitter leaf", "150g lean beef & stockfish", "1 tbsp cocoyam paste for light thickening", "Crayfish & Ogbono blend"],
-        diasporaSwaps: ["Frozen pre-washed bitter leaf", "Achi or ground flaxseed thickener"],
-        clinicalBenefit: "Vernodalin glycosides in bitter leaf stimulate bile secretion and liver detoxification.",
-        cookingHack: "Boil washed bitter leaves with a slice of lemon to achieve the sweet-savory herbal balance."
+        ingredients: ["Washed bitter leaf", "150g lean beef & stockfish", "1 tbsp cocoyam paste for light thickening", "Crayfish & seasoning blend"],
+        diasporaSwaps: ["Frozen pre-washed bitter leaf", "Ground flaxseed thickener"],
+        clinicalBenefit: "Traditional bitter leaf soup naturally refreshes your body and supports healthy digestion.",
+        cookingHack: "Boil washed bitter leaves with a slice of lemon to balance the herbal bitterness."
       },
       {
         id: "d3-m4",
         type: "snack",
         time: "4:00 PM",
-        name: "Fresh Guava or Green Apple with Handful of Cashews",
+        name: "Crisp Green Apple with a Handful of Cashews",
         emoji: "🍏",
         calories: 160,
         protein: 4,
@@ -282,163 +282,163 @@ const SEVEN_DAY_PLANS: DaySchedule[] = [
         glycemicIndex: "Low",
         ingredients: ["1 crisp green apple or pink guava", "10 raw unsalted cashew nuts"],
         diasporaSwaps: ["Granny Smith apple"],
-        clinicalBenefit: "Pectin fiber binds to intestinal bile acids, supporting cholesterol excretion.",
-        cookingHack: "Eat fruit whole with the skin for optimal fiber."
+        clinicalBenefit: "Crisp fresh fruit and healthy nuts that help keep your heart healthy.",
+        cookingHack: "Eat fruit whole with the skin for optimal fiber and lasting fullness."
       }
     ]
   },
   {
     dayIndex: 4,
     dayName: "Thursday",
-    theme: "Kidney Filtration & Electrolyte Balance 💧",
+    theme: "Natural Hydration & Body Refresh 💧",
     targetCalories: 1570,
-    sarahAudioCoaching: "Thursday is here! Today we optimize kidney filtration and electrolyte balance. We pair high-potassium okra soup with antioxidant-rich grilled salmon. Let's keep our energy high and sodium balanced!",
+    sarahAudioCoaching: "Thursday is here! Today is all about natural hydration and staying light on your feet. Fresh okra soup and grilled fish give your body clean nourishment without excess salt. Stay energized and keep moving!",
     meals: [
       {
         id: "d4-m1",
         type: "breakfast",
         time: "7:30 AM - 9:00 AM",
-        name: "Scrambled Eggs with Sautéed Ugu, Tomatoes & 1 Slice Sourdough",
+        name: "Scrambled Eggs with Sautéed Ugu, Tomatoes & 1 Slice Whole Grain Toast",
         emoji: "🍞",
         calories: 390,
         protein: 22,
         carbs: 28,
         fats: 16,
         glycemicIndex: "Low",
-        ingredients: ["3 organic eggs scrambled", "1 cup fresh chopped ugu / spinach", "1 slice fermented rye/sourdough bread", "1/4 avocado"],
+        ingredients: ["3 eggs scrambled", "1 cup fresh chopped ugu or spinach", "1 slice sourdough or whole wheat bread", "1/4 avocado"],
         diasporaSwaps: ["Whole wheat sourdough", "Baby spinach"],
-        clinicalBenefit: "Fermented sourdough has slow starch breakdown, keeping morning insulin low.",
+        clinicalBenefit: "Real whole grain bread and eggs digest slowly, preventing morning sugar crashes.",
         cookingHack: "Whisk eggs with 1 tablespoon of water for extra fluffy texture without butter."
       },
       {
         id: "d4-m2",
         type: "lunch",
         time: "1:00 PM - 2:30 PM",
-        name: "Ila Alasepo (Seafood Okra Gumbo) with Plantain-Oat Swallow",
+        name: "Fresh Seafood Okra Soup with Plantain-Oat Swallow",
         emoji: "🥣",
         calories: 480,
         protein: 40,
         carbs: 42,
         fats: 12,
         glycemicIndex: "Low",
-        ingredients: ["2 cups freshly diced crunchy okra", "150g Atlantic salmon / tilapia", "Smoked prawns & crayfish", "1 small fist-sized Plantain-Oat swallow"],
-        diasporaSwaps: ["Fresh or frozen cut okra", "Atlantic cod / wild salmon"],
-        clinicalBenefit: "Okra mucilage soothes digestive lining and binds heavy metals for kidney health.",
-        cookingHack: "Cook okra for only 6 minutes so it stays bright green and nutrient-dense."
+        ingredients: ["2 cups freshly chopped crunchy okra", "150g fresh fish or salmon", "Smoked prawns & crayfish", "1 small fist-sized Plantain-Oat swallow"],
+        diasporaSwaps: ["Fresh or frozen cut okra", "Atlantic cod or salmon fillet"],
+        clinicalBenefit: "Smooth fresh okra is easy on your stomach and helps naturally flush out waste.",
+        cookingHack: "Cook okra for only 6 minutes so it stays bright green, crunchy, and nutrient-packed."
       },
       {
         id: "d4-m3",
         type: "dinner",
         time: "6:30 PM - 8:00 PM",
-        name: "Grilled Chicken Breast with Steamed Cabbage & Carrot Medley",
+        name: "Grilled Chicken Breast with Steamed Cabbage & Carrot Stir-Fry",
         emoji: "🥗",
         calories: 370,
         protein: 38,
         carbs: 18,
         fats: 10,
         glycemicIndex: "Low",
-        ingredients: ["200g skinless chicken breast marinated in ginger-garlic", "2 cups shredded green cabbage & carrots", "1 tbsp cold-pressed olive oil dressing"],
-        diasporaSwaps: ["Organic bagged coleslaw mix (raw)"],
-        clinicalBenefit: "Sulforaphane in cruciferous cabbage boosts phase-2 cellular defense enzymes.",
+        ingredients: ["200g skinless chicken breast with ginger-garlic", "2 cups shredded green cabbage & carrots", "1 tbsp olive oil"],
+        diasporaSwaps: ["Fresh bagged coleslaw mix (raw)"],
+        clinicalBenefit: "Crispy seasoned cabbage and lean chicken keep dinner light, clean, and satisfying.",
         cookingHack: "Sauté cabbage on high heat for 3 minutes with black pepper for a smoky stir-fry taste."
       },
       {
         id: "d4-m4",
         type: "snack",
         time: "4:00 PM",
-        name: "Warm Ginger & Lemongrass Herbal Tea + 5 Walnuts",
+        name: "Warm Ginger & Lemongrass Tea with 5 Walnuts",
         emoji: "🍵",
         calories: 140,
         protein: 3,
         carbs: 4,
         fats: 13,
         glycemicIndex: "Low",
-        ingredients: ["Freshly steeped ginger & lemongrass", "5 raw walnut halves"],
-        diasporaSwaps: ["Organic lemongrass tea bags"],
-        clinicalBenefit: "Plant sterols in walnuts support healthy endothelial function.",
-        cookingHack: "Steep crushed fresh ginger for 10 minutes for maximum anti-inflammatory gingerols."
+        ingredients: ["Freshly brewed ginger & lemongrass", "5 raw walnut halves"],
+        diasporaSwaps: ["Lemongrass herbal tea bags"],
+        clinicalBenefit: "Warm herbal tea and crunchy walnuts loaded with healthy oils for brain power.",
+        cookingHack: "Steep crushed fresh ginger for 10 minutes to bring out all its soothing warmth."
       }
     ]
   },
   {
     dayIndex: 5,
     dayName: "Friday",
-    theme: "Pre-Weekend Metabolic Shield & Energy Boost 🛡️",
+    theme: "Feel-Good Friday & Clean Energy 🛡️",
     targetCalories: 1640,
-    sarahAudioCoaching: "Happy Friday! Before the weekend festivities, we build your metabolic shield. For lunch, we have Nigerian Yam & Fish Porridge packed with iron. For dinner, our savory Asun salad satisfies your cravings naturally!",
+    sarahAudioCoaching: "Happy Friday! Get ready for the weekend with meals that make you feel great. Enjoy hearty Afang soup for lunch, and a mouth-watering grilled Asun salad for dinner so you can enjoy your favorites guilt-free!",
     meals: [
       {
         id: "d5-m1",
         type: "breakfast",
         time: "7:30 AM - 9:00 AM",
-        name: "Akara (Bean Cakes) Baked Air-Fryer Style with Warm Pap/Oat-Milk",
+        name: "Crispy Air-Fried Bean Cakes (Akara) with Warm Cinnamon Milk",
         emoji: "🧆",
         calories: 420,
         protein: 24,
         carbs: 48,
         fats: 10,
         glycemicIndex: "Low",
-        ingredients: ["4 air-fried or light-sautéed bean cakes", "1 cup fortified warm oat milk with cinnamon", "Fresh diced strawberries"],
-        diasporaSwaps: ["Air fryer silicone cups", "Soy or almond milk"],
-        clinicalBenefit: "Air frying eliminates 85% of oxidized cooking oil while preserving crispy bean cake crunch.",
-        cookingHack: "Brush tops of Akara with a few drops of coconut oil before air-frying at 180°C for 14 mins."
+        ingredients: ["4 air-fried or lightly cooked bean cakes", "1 cup warm oat milk or unsweetened pap", "Fresh strawberries or banana slices"],
+        diasporaSwaps: ["Air fryer silicone cups", "Almond or soy milk"],
+        clinicalBenefit: "Crispy, golden bean cakes prepared with 85% less oil for clean, guilt-free enjoyment.",
+        cookingHack: "Brush tops of Akara with a few drops of oil before air-frying for that authentic crunchy bite."
       },
       {
         id: "d5-m2",
         type: "lunch",
         time: "1:00 PM - 2:30 PM",
-        name: "Rich Afang Soup with Smoked Mackerel & Lean Beef",
+        name: "Rich Afang Soup with Smoked Mackerel & Lean Meat",
         emoji: "🍲",
         calories: 530,
         protein: 42,
         carbs: 36,
         fats: 20,
         glycemicIndex: "Low",
-        ingredients: ["Shredded wild Afang (Ukazi) leaves", "Waterleaf / spinach", "150g smoked mackerel & lean beef", "1 small wrap Fonio/Plantain swallow"],
+        ingredients: ["Shredded wild Afang (Ukazi) leaves", "Waterleaf or spinach", "150g smoked fish & lean beef", "1 small wrap Plantain or Fonio swallow"],
         diasporaSwaps: ["Dried Okazi leaves soaked in warm water", "Baby spinach for waterleaf"],
-        clinicalBenefit: "Afang leaves provide tough dietary insoluble fiber that optimizes transit time.",
-        cookingHack: "Pound soaked Ukazi finely with a dash of crayfish to release its dark green chlorophyll."
+        clinicalBenefit: "Hearty wild greens and tender fish that keep your bowel movements smooth and regular.",
+        cookingHack: "Pound soaked Ukazi finely with a dash of crayfish to release its dark green richness."
       },
       {
         id: "d5-m3",
         type: "dinner",
         time: "6:30 PM - 8:00 PM",
-        name: "Grilled Suya-Spiced Goat Meat (Asun) Salad Bowl",
+        name: "Grilled Suya-Spiced Goat Meat (Asun) Fresh Salad Bowl",
         emoji: "🥗",
         calories: 380,
         protein: 36,
         carbs: 16,
         fats: 14,
         glycemicIndex: "Low",
-        ingredients: ["150g tender lean goat meat grilled with yaji spice", "2 cups crisp romaine lettuce & sliced cucumbers", "1/2 cup roasted sweet corn & onions"],
-        diasporaSwaps: ["Lamb cubes or beef sirloin", "Authentic Northern suya spice"],
-        clinicalBenefit: "Lean goat meat is lower in saturated fat than chicken and beef, rich in bioavailable heme-iron.",
-        cookingHack: "Trim visible white fat from goat meat before grilling with onions and sweet peppers."
+        ingredients: ["150g tender lean goat meat grilled with pepper and onions", "2 cups crisp lettuce & sliced cucumbers", "Sweet corn & diced tomatoes"],
+        diasporaSwaps: ["Lean lamb or beef sirloin strips", "Authentic Northern suya spice"],
+        clinicalBenefit: "Lean, tender grilled goat meat delivers clean muscle fuel and iron without heavy grease.",
+        cookingHack: "Trim visible fat from meat before grilling with onions and sweet peppers."
       },
       {
         id: "d5-m4",
         type: "snack",
         time: "4:00 PM",
-        name: "Sparkling Lemon-Mint Water with Handful of Roasted Almonds",
+        name: "Sparkling Lemon-Mint Water with Roasted Almonds",
         emoji: "🍋",
         calories: 160,
         protein: 6,
         carbs: 6,
         fats: 14,
         glycemicIndex: "Low",
-        ingredients: ["Sparkling water with fresh lemon & mint leaves", "12 raw almonds"],
-        diasporaSwaps: ["Perrier or San Pellegrino with fresh lemon"],
-        clinicalBenefit: "Alkalizing citrus minerals reduce uric acid crystallization.",
-        cookingHack: "Muddle mint leaves at the bottom of the glass to unlock essential menthol aromatics."
+        ingredients: ["Sparkling water with fresh lemon slices & mint leaves", "12 raw almonds"],
+        diasporaSwaps: ["Perrier or sparkling water with fresh lemon"],
+        clinicalBenefit: "Refreshing lemon mint water with roasted almonds keeps your thirst quenched and energy high.",
+        cookingHack: "Crush mint leaves at the bottom of the glass to release their refreshing natural scent."
       }
     ]
   },
   {
     dayIndex: 6,
     dayName: "Saturday",
-    theme: "Weekend Celebration & Cultural Feasting 🥳",
+    theme: "Weekend Celebration & Party Balance 🥳",
     targetCalories: 1680,
-    sarahAudioCoaching: "It's Saturday! Time for social gatherings and family time. Remember our Owambe Protocol: start with 3 spoonfuls of vegetable soup before enjoying your party Jollof. Have fun, celebrate, and stay nourished!",
+    sarahAudioCoaching: "It's Saturday! Time to celebrate and enjoy family. Here is your party secret: eat your vegetables and meat first before digging into that delicious party Jollof rice. Enjoy your day and have fun!",
     meals: [
       {
         id: "d6-m1",
@@ -451,48 +451,48 @@ const SEVEN_DAY_PLANS: DaySchedule[] = [
         carbs: 34,
         fats: 22,
         glycemicIndex: "Low",
-        ingredients: ["2 slices artisan sourdough bread", "1/2 ripe avocado mashed with lime & chili", "2 soft-poached organic eggs", "Cherry tomatoes"],
-        diasporaSwaps: ["Ezekiel sprouted grain bread"],
-        clinicalBenefit: "Oleic acid from avocado improves cell membrane insulin receptor sensitivity.",
+        ingredients: ["2 slices whole grain or sourdough bread", "1/2 ripe avocado mashed with lime & pepper", "2 soft-poached eggs", "Cherry tomatoes"],
+        diasporaSwaps: ["Sprouted grain bread"],
+        clinicalBenefit: "Creamy avocado and eggs provide good fats that keep your skin glowing and hunger away.",
         cookingHack: "Add a splash of vinegar to simmering water to keep poached eggs perfectly shaped!"
       },
       {
         id: "d6-m2",
         type: "lunch",
         time: "1:30 PM - 3:00 PM",
-        name: "The Owambe Plate: Balanced Party Jollof & Grilled Chicken Breast",
+        name: "The Party Plate: Smokey Jollof Rice with Double Grilled Chicken & Greens",
         emoji: "🎉",
         calories: 560,
         protein: 45,
         carbs: 52,
         fats: 16,
         glycemicIndex: "Medium",
-        ingredients: ["1 cup party smoky Jollof rice", "Double portion grilled chicken breast", "1 cup Efo Riro vegetable buffer", "1 small piece baked plantain (Dodo)"],
+        ingredients: ["1 cup smokey party Jollof rice", "Double portion grilled chicken breast", "1 cup rich vegetable soup (Efo)", "1 small slice baked plantain"],
         diasporaSwaps: ["Parboiled long-grain rice with roasted peppers"],
-        clinicalBenefit: "Eating the vegetable and chicken FIRST reduces the glucose surge from the Jollof rice by 38%.",
-        cookingHack: "Follow our golden rule: Half the plate protein & greens, one quarter Jollof!"
+        clinicalBenefit: "Enjoy authentic party Jollof guilt-free by eating your chicken and greens first to prevent a food coma.",
+        cookingHack: "Follow our simple rule: Half the plate greens and protein, one quarter Jollof!"
       },
       {
         id: "d6-m3",
         type: "dinner",
         time: "7:00 PM - 8:30 PM",
-        name: "Light Snapper Fish Pepper Soup with Steamed Garden Greens",
+        name: "Light Fish Pepper Soup with Steamed Garden Greens",
         emoji: "🐟",
         calories: 340,
         protein: 36,
         carbs: 12,
         fats: 8,
         glycemicIndex: "Low",
-        ingredients: ["200g red snapper fillet", "Calabash nutmeg, ginger & alligator pepper broth", "Steamed sweet cabbage & scent leaf"],
+        ingredients: ["200g red snapper or tilapia fillet", "Warm pepper soup broth with ginger & scent leaf", "Steamed sweet cabbage"],
         diasporaSwaps: ["Cod or Halibut fillet"],
-        clinicalBenefit: "Light evening broth facilitates nocturnal glycogen replenishment without digestive burden.",
-        cookingHack: "A dash of crushed alligator pepper boosts digestion and speeds metabolism."
+        clinicalBenefit: "Warm, soothing fish pepper soup that is super light so you sleep comfortably.",
+        cookingHack: "A pinch of alligator pepper brings authentic aroma and helps calm your stomach."
       },
       {
         id: "d6-m4",
         type: "snack",
         time: "4:30 PM",
-        name: "Chilled Sliced Watermelon with Pumpkin Seeds (Pepitas)",
+        name: "Cold Sliced Watermelon with Crunchy Pumpkin Seeds",
         emoji: "🍉",
         calories: 150,
         protein: 5,
@@ -500,82 +500,82 @@ const SEVEN_DAY_PLANS: DaySchedule[] = [
         fats: 7,
         glycemicIndex: "Medium",
         ingredients: ["1 cup cold watermelon cubes", "1 tbsp raw pumpkin seeds"],
-        diasporaSwaps: ["Organic pepitas"],
-        clinicalBenefit: "L-citrulline in watermelon supports vascular dilation and recovery.",
-        cookingHack: "Always pair high-water fruits with seeds or nuts to blunt the fructose absorption rate."
+        diasporaSwaps: ["Shelled pumpkin seeds (pepitas)"],
+        clinicalBenefit: "Sweet cold watermelon paired with pumpkin seeds to keep you cool and satisfied.",
+        cookingHack: "Pair sweet fruit with seeds or nuts to stay full longer."
       }
     ]
   },
   {
     dayIndex: 7,
     dayName: "Sunday",
-    theme: "Family Harmony & Weekly Metabolic Rebalance 🍲",
+    theme: "Sunday Family Feasting & Recharge 🍲",
     targetCalories: 1600,
-    sarahAudioCoaching: "Blessed Sunday! Today we rebalance for the week ahead. We enjoy our beloved family soups with controlled swallow portions. Take time to relax, rest, and celebrate your wins for the week!",
+    sarahAudioCoaching: "Happy Sunday! Time to relax, spend time with loved ones, and recharge for the new week. Enjoy your favorite comfort soups, take a good rest, and be proud of your healthy week!",
     meals: [
       {
         id: "d7-m1",
         type: "breakfast",
         time: "8:30 AM - 10:00 AM",
-        name: "Boiled Yam & Sautéed Garden Egg Sauce with Mackerel",
+        name: "Boiled Yam & Garden Egg Sauce with Flaked Mackerel",
         emoji: "🍠",
         calories: 420,
         protein: 26,
         carbs: 48,
         fats: 12,
         glycemicIndex: "Low",
-        ingredients: ["2 thick slices white yam boiled soft", "Rich steamed garden egg sauce", "100g smoked mackerel flakes", "1 tsp unbleached palm oil"],
-        diasporaSwaps: ["White sweet potato or cassava", "Italian eggplant"],
-        clinicalBenefit: "Complex starch combined with garden egg fiber delivers steady morning satiety.",
+        ingredients: ["2 thick slices boiled soft yam", "Steamed garden egg sauce", "100g smoked mackerel flakes", "1 tsp healthy palm oil"],
+        diasporaSwaps: ["Sweet potato or cassava", "Italian eggplant"],
+        clinicalBenefit: "Classic Sunday morning comfort that keeps you full and fueled until lunchtime.",
         cookingHack: "Boil yam with a pinch of salt and leave in warm water until ready to serve for maximum softness."
       },
       {
         id: "d7-m2",
         type: "lunch",
         time: "1:30 PM - 3:00 PM",
-        name: "Medicinal Ofe Nsala (White Soup) with Titus Fish & Oat Swallow",
+        name: "Traditional White Soup (Ofe Nsala) with Fish & Oat Swallow",
         emoji: "🥣",
         calories: 520,
         protein: 42,
         carbs: 46,
         fats: 14,
         glycemicIndex: "Low",
-        ingredients: ["1 cup oat swallow", "200g fresh catfish or Titus", "Utazi leaf broth with yam paste thickener", "Ground crayfish and Uda"],
+        ingredients: ["1 cup oat swallow", "200g fresh catfish or Titus", "Utazi leaf and traditional herbs broth", "Ground crayfish & seasoning"],
         diasporaSwaps: ["Ground rolled oats", "Fresh whole trout"],
-        clinicalBenefit: "Utazi leaves (Gongronema latifolium) are scientifically proven to enhance insulin secretion.",
-        cookingHack: "Add shredded Utazi leaf during the last 2 minutes of cooking so its medicinal aroma stays fresh."
+        clinicalBenefit: "Fragrant traditional herbs add amazing flavor while helping your body process carbs with ease.",
+        cookingHack: "Add shredded Utazi leaf during the last 2 minutes so its aromatic herbal flavor stays fresh."
       },
       {
         id: "d7-m3",
         type: "dinner",
         time: "6:30 PM - 8:00 PM",
-        name: "Steamed Vegetable Egusi (No-Fry Method) with Grilled Turkey",
+        name: "Steamed Vegetable Egusi (Light & Oil-Free) with Grilled Turkey",
         emoji: "🥬",
         calories: 380,
         protein: 36,
         carbs: 18,
         fats: 16,
         glycemicIndex: "Low",
-        ingredients: ["1/4 cup ground melon seeds (Egusi)", "150g grilled skinless turkey breast", "2 cups chopped fresh Ugu & spinach", "Locust beans & crayfish"],
-        diasporaSwaps: ["Ground pumpkin seeds", "Skinless chicken thighs"],
-        clinicalBenefit: "Zinc and magnesium in melon seeds support nocturnal sleep quality and cellular repair.",
-        cookingHack: "Drop egusi in boiling broth without frying in oil—it creates juicy, tender curd balls!"
+        ingredients: ["1/4 cup ground melon seeds (Egusi)", "150g grilled turkey breast", "2 cups chopped fresh Ugu & spinach", "Locust beans & crayfish"],
+        diasporaSwaps: ["Ground pumpkin seeds", "Skinless chicken breasts"],
+        clinicalBenefit: "Tender melon seeds and fresh greens provide natural minerals that relax your muscles for deep sleep.",
+        cookingHack: "Drop egusi into boiling soup without frying in oil—it creates juicy, tender dumplings!"
       },
       {
         id: "d7-m4",
         type: "snack",
         time: "4:30 PM",
-        name: "Warm Golden Turmeric & Ginger Coconut Milk",
+        name: "Warm Golden Turmeric & Ginger Coconut Drink",
         emoji: "🥥",
         calories: 140,
         protein: 2,
         carbs: 6,
         fats: 12,
         glycemicIndex: "Low",
-        ingredients: ["1 cup light coconut milk", "1/2 tsp organic turmeric & black pepper", "Grated fresh ginger"],
-        diasporaSwaps: ["Unsweetened almond-coconut blend"],
-        clinicalBenefit: "Curcumin reduces whole-body inflammation and prepares your body for deep restorative sleep.",
-        cookingHack: "A pinch of black pepper increases curcumin bioavailability by 2,000%!"
+        ingredients: ["1 cup light coconut milk", "1/2 tsp turmeric powder & black pepper", "Grated fresh ginger"],
+        diasporaSwaps: ["Unsweetened almond milk"],
+        clinicalBenefit: "Warm golden spiced milk calms your stomach and prepares you for a peaceful night's rest.",
+        cookingHack: "A tiny pinch of black pepper helps your body absorb all the healthy goodness of turmeric!"
       }
     ]
   }
@@ -588,32 +588,32 @@ const MEAL_ALTERNATIVES: Record<string, DayPlanMeal[]> = {
       id: "alt-b1",
       type: "breakfast",
       time: "7:30 AM - 9:00 AM",
-      name: "Steamed Moi Moi with Boiled Egg & Unsweetened Zobo",
+      name: "Steamed Moi Moi with Boiled Egg & Chilled Zobo",
       emoji: "🫘",
       calories: 410,
       protein: 26,
       carbs: 45,
       fats: 11,
       glycemicIndex: "Low",
-      ingredients: ["1 wrap steamed bean pudding (Moi Moi)", "1 boiled egg", "1/2 cup flaked mackerel", "Chilled ginger Zobo tea"],
+      ingredients: ["1 wrap steamed bean pudding (Moi Moi)", "1 boiled egg", "1/2 cup flaked fish", "Chilled ginger Zobo tea"],
       diasporaSwaps: ["Black-eyed peas pudding", "Smoked trout fillet"],
-      clinicalBenefit: "Slow-digesting legume fiber gives 4 hours of steady focus without hunger or insulin spikes.",
+      clinicalBenefit: "Hearty bean protein that keeps your tummy happy and satisfied all morning.",
       cookingHack: "Blend crayfish into the bean batter for savory depth without salt.",
     },
     {
       id: "alt-b2",
       type: "breakfast",
       time: "8:00 AM - 9:30 AM",
-      name: "Steel-Cut Oat Porridge with Chia Seeds & Cinnamon",
+      name: "Warm Oat Porridge with Chia Seeds & Cinnamon",
       emoji: "🥣",
       calories: 360,
       protein: 18,
       carbs: 46,
       fats: 10,
       glycemicIndex: "Low",
-      ingredients: ["1 cup steel-cut oats", "1 tbsp organic chia seeds", "1/2 tsp Ceylon cinnamon", "Unsweetened almond milk"],
-      diasporaSwaps: ["Rolled whole oats", "Organic unsweetened soy milk"],
-      clinicalBenefit: "Beta-glucan fiber coats intestinal walls, attenuating post-breakfast glucose rise.",
+      ingredients: ["1 cup rolled oats", "1 tbsp chia seeds", "1/2 tsp cinnamon", "Unsweetened milk"],
+      diasporaSwaps: ["Rolled whole oats", "Unsweetened almond milk"],
+      clinicalBenefit: "Wholesome oats keep your tummy full and blood sugar smooth all morning without sugar crashes.",
       cookingHack: "Simmer with a whole cinnamon stick for natural sweetness without sugar.",
     },
   ],
@@ -622,7 +622,7 @@ const MEAL_ALTERNATIVES: Record<string, DayPlanMeal[]> = {
       id: "alt-l1",
       type: "lunch",
       time: "1:00 PM - 2:30 PM",
-      name: "Grilled Tilapia with Viscous Okra Soup & Oat Swallow",
+      name: "Grilled Fish with Fresh Okra Soup & Oat Swallow",
       emoji: "🍲",
       calories: 490,
       protein: 42,
@@ -631,23 +631,23 @@ const MEAL_ALTERNATIVES: Record<string, DayPlanMeal[]> = {
       glycemicIndex: "Low",
       ingredients: ["200g grilled tilapia fillet", "1.5 cups fresh diced okra soup", "1 cup oat swallow", "Locust beans & pepper"],
       diasporaSwaps: ["Frozen sliced okra", "Milled rolled oats"],
-      clinicalBenefit: "High soluble okra mucilage delays gastric emptying and stabilizes postprandial glucose.",
-      cookingHack: "Slit okra pods coarsely instead of pureeing to maximize slime viscosity!",
+      clinicalBenefit: "Rich okra fiber slows down digestion so you stay full and energized without feeling heavy.",
+      cookingHack: "Chop okra coarsely instead of blending to keep that delicious crunchy texture!",
     },
     {
       id: "alt-l2",
       type: "lunch",
       time: "1:30 PM - 3:00 PM",
-      name: "The Balanced Owambe Plate: Parboiled Rice, Grilled Chicken & Ugu",
+      name: "The Balanced Party Plate: Jollof Rice, Grilled Chicken & Greens",
       emoji: "🎉",
       calories: 540,
       protein: 46,
       carbs: 48,
       fats: 15,
       glycemicIndex: "Low",
-      ingredients: ["1 cup parboiled smoky Jollof rice", "Double portion grilled chicken breast", "1.5 cups Ugu vegetable stew"],
+      ingredients: ["1 cup smokey Jollof rice", "Double portion grilled chicken", "1.5 cups fresh vegetable stew"],
       diasporaSwaps: ["Basmati sella rice", "Collard greens stew"],
-      clinicalBenefit: "Eating the chicken and greens FIRST reduces glucose absorption rate by 38%.",
+      clinicalBenefit: "Starting with greens and chicken lets you enjoy rice without the dreaded afternoon food coma.",
       cookingHack: "Always start with 3 mouthfuls of vegetable soup before touching the rice.",
     },
   ],
@@ -663,26 +663,26 @@ const MEAL_ALTERNATIVES: Record<string, DayPlanMeal[]> = {
       carbs: 12,
       fats: 8,
       glycemicIndex: "Low",
-      ingredients: ["200g red snapper fillet", "Fresh scent leaf broth", "Calabash nutmeg and ginger"],
-      diasporaSwaps: ["Fresh cod or sea bass", "Thai holy basil"],
-      clinicalBenefit: "Warm aromatic eugenol relaxes vascular tone and promotes nocturnal cellular repair.",
-      cookingHack: "Add fresh scent leaf at the very end of boiling to retain medicinal terpenes.",
+      ingredients: ["200g red snapper fillet", "Fresh scent leaf broth", "Peppersoup spices and ginger"],
+      diasporaSwaps: ["Fresh cod or sea bass", "Italian basil"],
+      clinicalBenefit: "Light, soothing pepper soup that eases digestion and helps you unwind before bed.",
+      cookingHack: "Add fresh scent leaf at the very end of boiling to retain its fresh aroma.",
     },
     {
       id: "alt-d2",
       type: "dinner",
       time: "7:00 PM - 8:30 PM",
-      name: "Steamed Vegetable Egusi with Grilled Turkey Breast",
+      name: "Steamed Vegetable Egusi with Grilled Turkey",
       emoji: "🥬",
       calories: 380,
       protein: 38,
       carbs: 16,
       fats: 14,
       glycemicIndex: "Low",
-      ingredients: ["1/4 cup ground melon seeds (Egusi)", "150g grilled turkey breast", "2 cups chopped spinach & Ugu"],
+      ingredients: ["1/4 cup ground melon seeds (Egusi)", "150g grilled turkey", "2 cups chopped spinach & Ugu"],
       diasporaSwaps: ["Ground pumpkin seeds", "Skinless chicken breast"],
-      clinicalBenefit: "Zinc and magnesium in melon seeds improve deep REM restorative sleep.",
-      cookingHack: "Drop egusi paste directly into boiling broth without frying in oil.",
+      clinicalBenefit: "Nutrient-packed melon seeds and greens that calm your muscles and support deep, restful sleep.",
+      cookingHack: "Drop egusi paste directly into boiling soup without frying in oil.",
     },
   ],
   snack: [
@@ -690,7 +690,7 @@ const MEAL_ALTERNATIVES: Record<string, DayPlanMeal[]> = {
       id: "alt-s1",
       type: "snack",
       time: "4:00 PM",
-      name: "Crisp Cucumber Slices with Roasted Peanut Butter Dip",
+      name: "Crisp Cucumber Slices with Natural Peanut Butter",
       emoji: "🥒",
       calories: 140,
       protein: 6,
@@ -699,24 +699,24 @@ const MEAL_ALTERNATIVES: Record<string, DayPlanMeal[]> = {
       glycemicIndex: "Low",
       ingredients: ["1 whole cucumber sliced", "1 tbsp 100% roasted peanut butter"],
       diasporaSwaps: ["Almond butter"],
-      clinicalBenefit: "Electrolyte hydration with monounsaturated fats blunts afternoon sugar cravings.",
-      cookingHack: "Sprinkle cayenne pepper on cucumber slices to boost thermogenesis.",
+      clinicalBenefit: "Crisp cucumber and real peanut butter to crush 4 PM cravings without sugary snacks.",
+      cookingHack: "A tiny pinch of pepper on cucumber gives a nice refreshing kick.",
     },
     {
       id: "alt-s2",
       type: "snack",
       time: "4:30 PM",
-      name: "Warm Golden Turmeric & Ginger Coconut Milk",
+      name: "Warm Golden Turmeric & Ginger Coconut Drink",
       emoji: "🥥",
       calories: 130,
       protein: 2,
       carbs: 5,
       fats: 11,
       glycemicIndex: "Low",
-      ingredients: ["1 cup light coconut milk", "1/2 tsp organic turmeric & black pepper", "Grated ginger"],
+      ingredients: ["1 cup light coconut milk", "1/2 tsp turmeric powder & black pepper", "Grated ginger"],
       diasporaSwaps: ["Unsweetened almond milk"],
-      clinicalBenefit: "Curcumin calms whole-body inflammation and prepares the liver for overnight fasting.",
-      cookingHack: "Add a pinch of black pepper to boost curcumin absorption by 2,000%.",
+      clinicalBenefit: "Soothing warm drink that calms your tummy and helps you drift off to sleep.",
+      cookingHack: "Add a pinch of black pepper to help your body absorb the turmeric goodness.",
     },
   ],
 };
@@ -968,8 +968,8 @@ export default function PlanMeal() {
     <div className="min-h-screen pb-32 bg-gradient-to-b from-[#E8F5F5] via-slate-50 to-teal-50/40 dark:from-zinc-950 dark:via-zinc-900 dark:to-zinc-950 text-slate-900 dark:text-white">
       {/* Header */}
       <PageHeader
-        title="7-Day Therapeutic Meal Plan"
-        subtitle="Personalized African menus for blood sugar &amp; metabolic vitality"
+        title="7-Day Healthy African Meal Plan"
+        subtitle="Delicious, wholesome meals to keep your sugar balanced and energy high all day"
         backTo="/home"
       />
 
@@ -1023,7 +1023,7 @@ export default function PlanMeal() {
               <div>
                 <div className="flex items-center gap-1.5 flex-wrap">
                   <span className="text-[9.5px] font-black uppercase tracking-wider bg-amber-400 text-slate-950 px-2 py-0.5 rounded-full shadow-2xs">
-                    Sarah AI Voice Coach
+                    Sarah Voice Guide
                   </span>
                   <span className="text-[10px] text-teal-200 font-bold">{activeDay.dayName} Audio</span>
 
@@ -1110,7 +1110,7 @@ export default function PlanMeal() {
               <span>{activeDay.dayName} Target Nutrition</span>
             </span>
             <span className="text-[9.5px] font-black uppercase px-2 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/80 text-emerald-700 dark:text-emerald-300 border border-emerald-200/80 dark:border-emerald-800">
-              Low Glycemic Day 🟢
+              Sugar-Smart Day 🟢
             </span>
           </div>
 
@@ -1120,7 +1120,7 @@ export default function PlanMeal() {
               <span className="text-xs sm:text-sm font-black text-slate-900 dark:text-white">
                 {dailyTotals.calories}
               </span>
-              <span className="text-[8px] text-slate-400 font-semibold block">kcal budget</span>
+              <span className="text-[8px] text-slate-400 font-semibold block">Daily Goal</span>
             </div>
 
             <div className="bg-blue-50/60 dark:bg-blue-950/30 p-2 rounded-xl border border-blue-100 dark:border-blue-900/40">
@@ -1128,7 +1128,7 @@ export default function PlanMeal() {
               <span className="text-xs sm:text-sm font-black text-blue-900 dark:text-blue-200">
                 {dailyTotals.protein}g
               </span>
-              <span className="text-[8px] text-blue-500 font-semibold block">25% plate</span>
+              <span className="text-[8px] text-blue-500 font-semibold block">Target 25%</span>
             </div>
 
             <div className="bg-emerald-50/60 dark:bg-emerald-950/30 p-2 rounded-xl border border-emerald-100 dark:border-emerald-900/40">
@@ -1136,7 +1136,7 @@ export default function PlanMeal() {
               <span className="text-xs sm:text-sm font-black text-emerald-900 dark:text-emerald-200">
                 {dailyTotals.carbs}g
               </span>
-              <span className="text-[8px] text-emerald-600 font-semibold block">Complex</span>
+              <span className="text-[8px] text-emerald-600 font-semibold block">Whole & Natural</span>
             </div>
 
             <div className="bg-purple-50/60 dark:bg-purple-950/30 p-2 rounded-xl border border-purple-100 dark:border-purple-900/40">
@@ -1144,7 +1144,7 @@ export default function PlanMeal() {
               <span className="text-xs sm:text-sm font-black text-purple-900 dark:text-purple-200">
                 {dailyTotals.fats}g
               </span>
-              <span className="text-[8px] text-purple-500 font-semibold block">Omega-3</span>
+              <span className="text-[8px] text-purple-500 font-semibold block">Good Oils</span>
             </div>
           </div>
         </div>
@@ -1230,7 +1230,7 @@ export default function PlanMeal() {
                   </div>
 
                   <span className="text-[9.5px] font-black px-2 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/80 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 shrink-0">
-                    {meal.glycemicIndex} Spike 🟢
+                    {meal.glycemicIndex === "Low" ? "Sugar-Smart 🟢" : "Balanced 🟡"}
                   </span>
                 </div>
 
@@ -1257,7 +1257,7 @@ export default function PlanMeal() {
                 {/* Benefit & Ingredients Chips */}
                 <div className="mt-2.5 space-y-1.5 text-xs">
                   <p className="text-[11px] text-slate-600 dark:text-slate-300 font-medium">
-                    💡 <span className="font-bold">Clinical Benefit:</span> {meal.clinicalBenefit}
+                    💚 <span className="font-bold">Why It's Good:</span> {meal.clinicalBenefit}
                   </p>
 
                   {/* Top 3 Ingredients Chips */}
@@ -1284,7 +1284,7 @@ export default function PlanMeal() {
                     type="button"
                     onClick={(e) => handleSwapMeal(meal, e)}
                     className="px-2.5 py-1.5 rounded-xl bg-slate-100 hover:bg-teal-50 dark:bg-zinc-700 dark:hover:bg-zinc-600 text-slate-700 dark:text-slate-200 text-xs font-bold transition-all flex items-center gap-1 cursor-pointer active:scale-95"
-                    title="Swap for a clinically approved alternative"
+                    title="Swap for another healthy dish"
                   >
                     <RefreshCw size={12} className="text-teal-600 dark:text-teal-400" />
                     <span>Swap Dish</span>
@@ -1339,7 +1339,7 @@ export default function PlanMeal() {
             >
               <div className="min-w-0">
                 <span className="font-bold text-slate-800 dark:text-slate-200 block truncate">Ninja DualZone Air Fryer</span>
-                <span className="text-[10px] text-slate-400">85% less oxidized frying oil</span>
+                <span className="text-[10px] text-slate-400">Crispy taste with 85% less oil</span>
               </div>
               <ChevronRight size={14} className="text-slate-400 group-hover:translate-x-0.5 transition-transform shrink-0" />
             </div>
@@ -1350,7 +1350,7 @@ export default function PlanMeal() {
             >
               <div className="min-w-0">
                 <span className="font-bold text-slate-800 dark:text-slate-200 block truncate">Vitamix High-Power Blender</span>
-                <span className="text-[10px] text-slate-400">Smooth swallows &amp; tough leaves</span>
+                <span className="text-[10px] text-slate-400">Silky smooth swallows in seconds</span>
               </div>
               <ChevronRight size={14} className="text-slate-400 group-hover:translate-x-0.5 transition-transform shrink-0" />
             </div>
@@ -1459,10 +1459,10 @@ export default function PlanMeal() {
                 </div>
               </div>
 
-              {/* Clinical Mechanism */}
+              {/* Health Mechanism */}
               <div className="p-3 bg-teal-950/50 rounded-2xl border border-teal-500/30">
                 <span className="text-[10px] font-black uppercase tracking-wider text-teal-300 block">
-                  🧬 Clinical Metabolic Benefit:
+                  💚 Why Your Body Loves This:
                 </span>
                 <p className="text-xs text-teal-100 font-medium mt-0.5">
                   {selectedMealDetail.clinicalBenefit}
@@ -1472,7 +1472,7 @@ export default function PlanMeal() {
               {/* Chef Cooking Hack */}
               <div className="p-3 bg-emerald-950/40 rounded-2xl border border-emerald-500/30">
                 <span className="text-[10px] font-black uppercase tracking-wider text-emerald-300 block">
-                  👩🏾‍🍳 Sarah's Cooking Hack:
+                  👩🏾‍🍳 Sarah's Easy Kitchen Tip:
                 </span>
                 <p className="text-xs text-emerald-100 font-medium mt-0.5">
                   {selectedMealDetail.cookingHack}
