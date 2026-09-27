@@ -450,48 +450,48 @@ export function checkVoiceQuota(): { allowed: boolean; isPro: boolean; remaining
 // ============================================================================
 export const PRERECORDED_AUDIO_REGISTRY: Record<string, { en: string; pcm: string }> = {
   plan_monday: {
-    en: "/audio/sarah/plan_monday_en.mp3",
-    pcm: "/audio/sarah/plan_monday_pcm.mp3",
+    en: "/audio/sarah/plan_monday_en.wav",
+    pcm: "/audio/sarah/plan_monday_pcm.wav",
   },
   plan_tuesday: {
-    en: "/audio/sarah/plan_tuesday_en.mp3",
-    pcm: "/audio/sarah/plan_tuesday_pcm.mp3",
+    en: "/audio/sarah/plan_tuesday_en.wav",
+    pcm: "/audio/sarah/plan_tuesday_pcm.wav",
   },
   plan_wednesday: {
-    en: "/audio/sarah/plan_wednesday_en.mp3",
-    pcm: "/audio/sarah/plan_wednesday_pcm.mp3",
+    en: "/audio/sarah/plan_wednesday_en.wav",
+    pcm: "/audio/sarah/plan_wednesday_pcm.wav",
   },
   plan_thursday: {
-    en: "/audio/sarah/plan_thursday_en.mp3",
-    pcm: "/audio/sarah/plan_thursday_pcm.mp3",
+    en: "/audio/sarah/plan_thursday_en.wav",
+    pcm: "/audio/sarah/plan_thursday_pcm.wav",
   },
   plan_friday: {
-    en: "/audio/sarah/plan_friday_en.mp3",
-    pcm: "/audio/sarah/plan_friday_pcm.mp3",
+    en: "/audio/sarah/plan_friday_en.wav",
+    pcm: "/audio/sarah/plan_friday_pcm.wav",
   },
   plan_saturday: {
-    en: "/audio/sarah/plan_saturday_en.mp3",
-    pcm: "/audio/sarah/plan_saturday_pcm.mp3",
+    en: "/audio/sarah/plan_saturday_en.wav",
+    pcm: "/audio/sarah/plan_saturday_pcm.wav",
   },
   plan_sunday: {
-    en: "/audio/sarah/plan_sunday_en.mp3",
-    pcm: "/audio/sarah/plan_sunday_pcm.mp3",
+    en: "/audio/sarah/plan_sunday_en.wav",
+    pcm: "/audio/sarah/plan_sunday_pcm.wav",
   },
   concierge_welcome: {
-    en: "/audio/sarah/concierge_welcome_en.mp3",
-    pcm: "/audio/sarah/concierge_welcome_pcm.mp3",
+    en: "/audio/sarah/concierge_welcome_en.wav",
+    pcm: "/audio/sarah/concierge_welcome_pcm.wav",
   },
 };
 
 function detectAudioKeyFromText(text: string): string | null {
   const lower = text.toLowerCase();
-  if (lower.includes("welcome to monday")) return "plan_monday";
-  if (lower.includes("happy tuesday")) return "plan_tuesday";
-  if (lower.includes("wednesday")) return "plan_wednesday";
-  if (lower.includes("thursday")) return "plan_thursday";
-  if (lower.includes("happy friday")) return "plan_friday";
-  if (lower.includes("saturday")) return "plan_saturday";
-  if (lower.includes("happy sunday")) return "plan_sunday";
+  if (lower.includes("welcome to monday") || lower.includes("energy smooth and steady")) return "plan_monday";
+  if (lower.includes("happy tuesday") || lower.includes("loving your heart") || lower.includes("efo riro")) return "plan_tuesday";
+  if (lower.includes("wednesday") || lower.includes("fonio grain")) return "plan_wednesday";
+  if (lower.includes("thursday") || lower.includes("okra soup")) return "plan_thursday";
+  if (lower.includes("happy friday") || lower.includes("afang soup") || lower.includes("asun salad")) return "plan_friday";
+  if (lower.includes("saturday") || lower.includes("party jollof") || lower.includes("chop life")) return "plan_saturday";
+  if (lower.includes("happy sunday") || lower.includes("recharge for the new week") || lower.includes("comfort soups")) return "plan_sunday";
   if (lower.includes("personal clinical nutrition assistant") || lower.includes("personal food and nutrition doctor")) return "concierge_welcome";
   return null;
 }
@@ -501,12 +501,16 @@ function tryLoadPrerecordedAudio(url: string): Promise<HTMLAudioElement | null> 
     const audio = new Audio();
     let settled = false;
 
-    audio.oncanplaythrough = () => {
+    const onReady = () => {
       if (!settled) {
         settled = true;
         resolve(audio);
       }
     };
+
+    audio.oncanplay = onReady;
+    audio.oncanplaythrough = onReady;
+    audio.onloadeddata = onReady;
 
     audio.onerror = () => {
       if (!settled) {
@@ -518,13 +522,13 @@ function tryLoadPrerecordedAudio(url: string): Promise<HTMLAudioElement | null> 
     audio.src = url;
     audio.load();
 
-    // Fast check: max 350ms to detect if local audio exists
+    // Max 1000ms safety timeout
     setTimeout(() => {
       if (!settled) {
         settled = true;
         resolve(null);
       }
-    }, 350);
+    }, 1000);
   });
 }
 
