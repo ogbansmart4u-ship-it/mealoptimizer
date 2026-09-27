@@ -3,7 +3,7 @@
  * 100% Guaranteed Offline SPA Shell + Cache-First Static Assets
  */
 
-const CACHE_NAME = 'mealoptimiza-pwa-v10.19-prerecorded-sarah-quota-20260927';
+const CACHE_NAME = 'mealoptimiza-pwa-v10.20-pidgin-swap-sarah-20260927';
 
 const PRECACHE_ASSETS = [
   '/',

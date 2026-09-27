@@ -64,6 +64,7 @@ export interface DaySchedule {
   theme: string;
   targetCalories: number;
   sarahAudioCoaching: string;
+  sarahAudioCoachingPidgin?: string;
   meals: DayPlanMeal[];
 }
 
@@ -74,6 +75,7 @@ const SEVEN_DAY_PLANS: DaySchedule[] = [
     theme: "Fresh Start & All-Day Energy ⚡",
     targetCalories: 1580,
     sarahAudioCoaching: "Welcome to Monday! Today is all about keeping your energy smooth and steady. For breakfast, we have boiled plantain and eggs with spinach. For lunch, fresh fish and delicious ewedu soup keeps you full without feeling heavy or sleepy. Remember to drink plenty of water today!",
+    sarahAudioCoachingPidgin: "Welcome to Monday o! Today na to keep your energy high and steady. For morning, na boiled plantain and egg with spinach. For afternoon, fresh fish and sweet ewedu soup go make belle full well-well without making you sleepy. Make you drink plenty water today o!",
     meals: [
       {
         id: "d1-m1",
@@ -147,6 +149,7 @@ const SEVEN_DAY_PLANS: DaySchedule[] = [
     theme: "Healthy Heart & Natural Glow ❤️",
     targetCalories: 1620,
     sarahAudioCoaching: "Happy Tuesday! Today we focus on loving your heart. Enjoy natural unsweetened ginger zobo to help healthy blood flow, and a tasty plate of rich Efo Riro vegetable soup with tender beef to keep your body strong.",
+    sarahAudioCoachingPidgin: "Happy Tuesday my people! Today na to show your heart love. Enjoy natural zobo with ginger for better blood flow, and sweet Efo Riro vegetable soup with soft beef to make your body strong and agile.",
     meals: [
       {
         id: "d2-m1",
@@ -220,6 +223,7 @@ const SEVEN_DAY_PLANS: DaySchedule[] = [
     theme: "Clean Living & Supergrain Energy 🌾",
     targetCalories: 1590,
     sarahAudioCoaching: "It's Wednesday! Today we are enjoying quick-cooking African Fonio grain—it's light, gentle on the stomach, and won't make you feel bloated. For dinner, delicious bitter leaf soup helps refresh and cleanse your system naturally.",
+    sarahAudioCoachingPidgin: "Midweek Wednesday don reach! Today we dey enjoy African Fonio grain—e soft for belle, e light, and e no dey cause heavy stomach. For night, sweet bitterleaf soup go help wash your body natural-natural.",
     meals: [
       {
         id: "d3-m1",
@@ -293,6 +297,7 @@ const SEVEN_DAY_PLANS: DaySchedule[] = [
     theme: "Natural Hydration & Body Refresh 💧",
     targetCalories: 1570,
     sarahAudioCoaching: "Thursday is here! Today is all about natural hydration and staying light on your feet. Fresh okra soup and grilled fish give your body clean nourishment without excess salt. Stay energized and keep moving!",
+    sarahAudioCoachingPidgin: "Oya Thursday don enter! Today na to keep your body hydrated and sharp. Fresh okra soup and point-and-kill grilled fish go give your body correct nutrition without too much salt. Make you stay sharp!",
     meals: [
       {
         id: "d4-m1",
@@ -366,6 +371,7 @@ const SEVEN_DAY_PLANS: DaySchedule[] = [
     theme: "Feel-Good Friday & Clean Energy 🛡️",
     targetCalories: 1640,
     sarahAudioCoaching: "Happy Friday! Get ready for the weekend with meals that make you feel great. Enjoy hearty Afang soup for lunch, and a mouth-watering grilled Asun salad for dinner so you can enjoy your favorites guilt-free!",
+    sarahAudioCoachingPidgin: "Happy Friday o! Weekend don arrive with better food wey go make you smile. Enjoy rich Afang soup for afternoon, and sweet grilled Asun salad for night make you enjoy yourself without any fear!",
     meals: [
       {
         id: "d5-m1",
@@ -439,6 +445,7 @@ const SEVEN_DAY_PLANS: DaySchedule[] = [
     theme: "Weekend Celebration & Party Balance 🥳",
     targetCalories: 1680,
     sarahAudioCoaching: "It's Saturday! Time to celebrate and enjoy family. Here is your party secret: eat your vegetables and meat first before digging into that delicious party Jollof rice. Enjoy your day and have fun!",
+    sarahAudioCoachingPidgin: "Saturday don come! Time to chop life with family and friends. Hear your owambe secret: eat your salad and meat first before you touch that sweet party Jollof rice. Enjoy yourself!",
     meals: [
       {
         id: "d6-m1",
@@ -512,6 +519,7 @@ const SEVEN_DAY_PLANS: DaySchedule[] = [
     theme: "Sunday Family Feasting & Recharge 🍲",
     targetCalories: 1600,
     sarahAudioCoaching: "Happy Sunday! Time to relax, spend time with loved ones, and recharge for the new week. Enjoy your favorite comfort soups, take a good rest, and be proud of your healthy week!",
+    sarahAudioCoachingPidgin: "Happy Sunday my dear! Time to rest well, stay with family, and prepare for the new week. Chop your favorite soup, relax your mind, and be very proud of your healthy journey this week!",
     meals: [
       {
         id: "d7-m1",
@@ -730,13 +738,33 @@ function getTodayDayIndex(): number {
 export default function PlanMeal() {
   const navigate = useNavigate();
   const { profile } = useUser();
-  const { language, t } = useLanguage();
+  const { language, setLanguage, t } = useLanguage();
   const { selectedLocation } = useLocation();
 
   const todayDayIndex = useMemo(() => getTodayDayIndex(), []);
   const [activeDayIndex, setActiveDayIndex] = useState<number>(() => getTodayDayIndex());
   const [diasporaMode, setDiasporaMode] = useState(true);
   const [isSarahSpeaking, setIsSarahSpeaking] = useState(false);
+  const [audioVoiceLang, setAudioVoiceLang] = useState<"en" | "pcm">(() => {
+    return language === "pcm" ? "pcm" : "en";
+  });
+
+  // Sync if global language changes
+  useEffect(() => {
+    if (language === "pcm" || language === "en") {
+      setAudioVoiceLang(language as "en" | "pcm");
+    }
+  }, [language]);
+
+  const handleToggleVoiceLang = (lang: "en" | "pcm") => {
+    triggerHaptic("selection");
+    if (isSarahSpeaking) {
+      stopSarahSpeech();
+      setIsSarahSpeaking(false);
+    }
+    setAudioVoiceLang(lang);
+    setLanguage(lang as any);
+  };
   const [selectedMealDetail, setSelectedMealDetail] = useState<DayPlanMeal | null>(null);
   const [showMealModal, setShowMealModal] = useState(false);
   const [checkedIngredients, setCheckedIngredients] = useState<Record<string, boolean>>({});
@@ -796,8 +824,14 @@ export default function PlanMeal() {
     } else {
       stopSarahSpeech();
       setIsSarahSpeaking(true);
-      speakWithSarah(activeDay.sarahAudioCoaching, {
-        lang: language,
+      const textToSpeak =
+        audioVoiceLang === "pcm"
+          ? activeDay.sarahAudioCoachingPidgin || activeDay.sarahAudioCoaching
+          : activeDay.sarahAudioCoaching;
+
+      speakWithSarah(textToSpeak, {
+        lang: audioVoiceLang,
+        voiceId: audioVoiceLang === "pcm" ? "mama_bola" : "ngozi",
         audioKey: `plan_${activeDay.dayName.toLowerCase()}`,
         onStart: () => setIsSarahSpeaking(true),
         onEnd: () => {
@@ -1006,7 +1040,7 @@ export default function PlanMeal() {
             ? "bg-gradient-to-br from-[#126778] via-[#0f5462] to-[#0a232a] border-2 border-amber-400 ring-4 ring-amber-400/20"
             : "bg-gradient-to-br from-[#126778] via-[#0f5462] to-[#0a232a] border-2 border-teal-300/30"
         }`}>
-          <div className="flex items-center justify-between relative z-10">
+          <div className="flex items-center justify-between relative z-10 flex-wrap gap-2.5">
             <div className="flex items-center gap-3">
               <div className="relative">
                 <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-amber-400 to-teal-400 p-0.5 shadow-lg">
@@ -1024,8 +1058,8 @@ export default function PlanMeal() {
 
               <div>
                 <div className="flex items-center gap-1.5 flex-wrap">
-                  <span className="text-[9.5px] font-black uppercase tracking-wider bg-amber-400 text-slate-950 px-2 py-0.5 rounded-full shadow-2xs">
-                    {language === "pcm" ? "Sarah • Mama Bola (Pidgin)" : "Sarah • Ngozi (English)"}
+                  <span className="text-[9.5px] font-black uppercase tracking-wider bg-amber-400 text-slate-950 px-2.5 py-0.5 rounded-full shadow-2xs">
+                    {audioVoiceLang === "pcm" ? "Sarah (Pidgin)" : "Sarah (English)"}
                   </span>
                   <span className="text-[10px] text-teal-200 font-bold">{activeDay.dayName} Audio</span>
 
@@ -1045,24 +1079,57 @@ export default function PlanMeal() {
               </div>
             </div>
 
-            {/* Voice Trigger Button */}
-            <button
-              type="button"
-              onClick={handleToggleSarahVoice}
-              className={`p-3 rounded-2xl text-xs font-black shadow-lg transition-all cursor-pointer flex items-center gap-2 ${
-                isSarahSpeaking
-                  ? "bg-amber-400 text-slate-950 scale-105 animate-pulse"
-                  : "bg-white/20 hover:bg-white/30 text-white border border-white/25 active:scale-95"
-              }`}
-              title={isSarahSpeaking ? "Pause Sarah Voice" : "Listen to Sarah Voice Coaching"}
-            >
-              {isSarahSpeaking ? <Pause size={16} /> : <Volume2 size={16} />}
-              <span className="hidden sm:inline">{isSarahSpeaking ? "Pause" : "Listen"}</span>
-            </button>
+            {/* Right Controls: English / Pidgin Swap Pill + Voice Trigger Button */}
+            <div className="flex items-center gap-2 ml-auto">
+              {/* 🔄 Interactive English / Pidgin Swap Pill */}
+              <div className="flex items-center bg-black/40 p-1 rounded-2xl border border-white/20 shadow-inner">
+                <button
+                  type="button"
+                  onClick={() => handleToggleVoiceLang("en")}
+                  className={`px-2.5 py-1.5 rounded-xl text-[11px] font-black transition-all cursor-pointer flex items-center gap-1.5 ${
+                    audioVoiceLang === "en"
+                      ? "bg-amber-400 text-slate-950 shadow-md scale-102"
+                      : "text-teal-200 hover:text-white"
+                  }`}
+                  title="Switch to Sarah English Voice"
+                >
+                  <span>🇬🇧</span>
+                  <span>English</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleToggleVoiceLang("pcm")}
+                  className={`px-2.5 py-1.5 rounded-xl text-[11px] font-black transition-all cursor-pointer flex items-center gap-1.5 ${
+                    audioVoiceLang === "pcm"
+                      ? "bg-amber-400 text-slate-950 shadow-md scale-102"
+                      : "text-teal-200 hover:text-white"
+                  }`}
+                  title="Switch to Sarah Pidgin Voice"
+                >
+                  <span>🇳🇬</span>
+                  <span>Pidgin</span>
+                </button>
+              </div>
+
+              {/* Voice Trigger Button */}
+              <button
+                type="button"
+                onClick={handleToggleSarahVoice}
+                className={`p-3 rounded-2xl text-xs font-black shadow-lg transition-all cursor-pointer flex items-center gap-2 ${
+                  isSarahSpeaking
+                    ? "bg-amber-400 text-slate-950 scale-105 animate-pulse"
+                    : "bg-white/20 hover:bg-white/30 text-white border border-white/25 active:scale-95"
+                }`}
+                title={isSarahSpeaking ? "Pause Sarah Voice" : "Listen to Sarah Voice Coaching"}
+              >
+                {isSarahSpeaking ? <Pause size={16} /> : <Volume2 size={16} />}
+                <span className="hidden sm:inline">{isSarahSpeaking ? "Pause" : "Listen"}</span>
+              </button>
+            </div>
           </div>
 
           <p className="text-xs text-teal-100/90 font-medium mt-3 leading-relaxed relative z-10 bg-white/10 p-3 rounded-2xl border border-white/10 backdrop-blur-xs">
-            "{activeDay.sarahAudioCoaching}"
+            "{audioVoiceLang === "pcm" ? (activeDay.sarahAudioCoachingPidgin || activeDay.sarahAudioCoaching) : activeDay.sarahAudioCoaching}"
           </p>
         </div>
 
