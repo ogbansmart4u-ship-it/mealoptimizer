@@ -548,6 +548,31 @@ export const PRERECORDED_AUDIO_REGISTRY: Record<string, { en: string; pcm: strin
   },
 };
 
+// Register Academy Masterclass lessons (1 to 36) & Quizzes for instant zero-latency playback
+for (let i = 1; i <= 36; i++) {
+  PRERECORDED_AUDIO_REGISTRY[`academy_lesson_lesson-${i}`] = {
+    en: `/audio/sarah/academy_lesson_${i}_en.wav`,
+    pcm: `/audio/sarah/academy_lesson_${i}_pcm.wav`,
+  };
+  PRERECORDED_AUDIO_REGISTRY[`academy_quiz_q_lesson-${i}`] = {
+    en: `/audio/sarah/academy_quiz_q_${i}_en.wav`,
+    pcm: `/audio/sarah/academy_quiz_q_${i}_pcm.wav`,
+  };
+  PRERECORDED_AUDIO_REGISTRY[`academy_quiz_exp_lesson-${i}`] = {
+    en: `/audio/sarah/academy_quiz_exp_${i}_en.wav`,
+    pcm: `/audio/sarah/academy_quiz_exp_${i}_pcm.wav`,
+  };
+}
+
+PRERECORDED_AUDIO_REGISTRY["academy_bloom_story"] = {
+  en: "/audio/sarah/academy_bloom_story_en.wav",
+  pcm: "/audio/sarah/academy_bloom_story_pcm.wav",
+};
+PRERECORDED_AUDIO_REGISTRY["academy_bloom_quiz"] = {
+  en: "/audio/sarah/academy_bloom_quiz_en.wav",
+  pcm: "/audio/sarah/academy_bloom_quiz_pcm.wav",
+};
+
 function detectAudioKeyFromText(text: string): string | null {
   const lower = text.toLowerCase();
   if (lower.includes("welcome to monday") || lower.includes("energy smooth and steady")) return "plan_monday";

@@ -333,847 +333,1012 @@ export const CATEGORY_MEAL_PROTOCOLS: Record<string, TherapeuticMeal[]> = {
 // 🏆 36 CLINICAL MASTERCLASS LESSONS (4 PROGRESSIVE TIERS)
 // ============================================================================
 export const LESSONS: AcademyLesson[] = [
-  // --------------------------------------------------------------------------
-  // TIER 1: HERITAGE BIO-FOUNDATIONS (Lessons 1 - 9)
-  // --------------------------------------------------------------------------
   {
-    id: "lesson-1",
-    tier: 1,
-    tierName: "Daily Food Basics 🌱",
-    title: "The Clinical Food Sequencing Protocol",
-    category: "Glucose Science",
-    readTime: "90s Audio",
-    icon: "🥗",
-    headline: "The order in which you eat your African swallow cuts glucose spikes by 48%.",
-    audioScript: "Welcome to Lesson One of your Metabolic Masterclass. When eating traditional meals like pounded yam or rice, eating your vegetables and proteins first creates a protective fiber mesh in your small intestine. This slows down carbohydrate absorption and flattens your glucose curve by up to 48 milligrams per deciliter.",
-    storySlides: [
-      "Traditional African dining often starts with a giant swallow ball dipped in soup. Eating carbohydrates first triggers an immediate rush of glucose into your bloodstream.",
-      "By simply reversing the order—eating your leafy vegetables (Efo Riro, Ugwu, Waterleaf) and proteins (fish, lean meat) first—you coat your stomach lining with soluble fiber and stimulate GLP-1 satiety hormones.",
-      "When the starch finally enters your stomach 10 minutes later, gastric emptying is delayed, resulting in a gentle, sustained energy plateau rather than a sharp crash."
+    "id": "lesson-1",
+    "tier": 1,
+    "tierName": "Everyday Food Basics 🌱",
+    "title": "The 3-Spoon Soup Trick: Eat Soup First, Swallow Last",
+    "category": "Glucose Science",
+    "readTime": "60s Audio",
+    "icon": "🥗",
+    "headline": "Eating your vegetable soup and fish first stops your blood sugar from jumping high.",
+    "audioScript": "Welcome to Lesson One! Here is a simple kitchen secret: when you eat pounded yam or rice, eat a few spoons of your vegetable soup and fish first. The leafy greens make a soft net in your tummy that slows down sugar absorption so you stay full and energized without feeling heavy.",
+    "storySlides": [
+      "When we sit down to eat, we often dip a big ball of swallow straight into the soup and swallow first. But eating pure starch first can make your blood sugar jump up fast.",
+      "Here is the simple trick: eat 3 to 4 spoonfuls of your vegetable soup (like Efo Riro or Ugwu) and fish first before you take your first bite of swallow.",
+      "The vegetable greens coat your tummy like a soft shield. When the swallow finally enters, your body digests it slowly and smoothly with no afternoon tiredness!"
     ],
-    takeaway: "Always eat: 1st Leafy Greens 🥬 ➡️ 2nd Protein & Fats 🐟 ➡️ 3rd Complex Carbs last 🌾.",
-    quiz: {
-      question: "Which food should you consume FIRST during a traditional meal to flatten glucose spikes?",
-      options: ["The Swallow (Pounded Yam / Garri)", "Leafy Greens (Efo Riro / Ugwu)", "Sweetened Palm Wine or Soda", "Dessert or Fried Plantain"],
-      correctIndex: 1,
-      explanation: "Leafy vegetables provide viscous soluble fiber that lines the small intestine, slowing down starch digestion."
+    "takeaway": "Always eat: 1st Vegetable soup 🥬 ➡️ 2nd Fish or meat 🐟 ➡️ 3rd Swallow or rice last 🌾.",
+    "quiz": {
+      "question": "What should you eat FIRST during a meal to keep your energy smooth and steady?",
+      "options": [
+        "Your swallow (like Eba or Pounded Yam)",
+        "Your leafy vegetable soup (like Efo Riro or Ugwu)",
+        "A sweet soda drink",
+        "Fried plantain"
+      ],
+      "correctIndex": 1,
+      "explanation": "Vegetable greens coat your tummy with healthy fiber, helping your food digest slowly and smoothly!"
     }
   },
   {
-    id: "lesson-2",
-    tier: 1,
-    tierName: "Heritage Bio-Foundations",
-    title: "Mucilage Shields: The Science of Ewedu & Okra",
-    category: "Gut & Fiber",
-    readTime: "90s Audio",
-    icon: "🥣",
-    headline: "Traditional drawing soups form a physical biochemical barrier that traps sugar.",
-    audioScript: "Did you know that the viscous draw in Ewedu and Okra is actually a high-grade bioactive mucilage? This soluble polysaccharide forms a gel in your gut that physically traps starch molecules and prevents sudden insulin surges.",
-    storySlides: [
-      "The slimy, viscous texture of draw soups (Ewedu, Ogbono, and Okra) is caused by soluble mucilaginous polysaccharides.",
-      "In the gastrointestinal tract, this mucilage binds with water to create an impenetrable gel barrier along the microvilli of your intestines.",
-      "This slows carbohydrate enzyme breakdown (alpha-amylase) and feeds beneficial Akkermansia muciniphila bacteria in your colon."
+    "id": "lesson-2",
+    "tier": 1,
+    "tierName": "Everyday Food Basics 🌱",
+    "title": "Nature's Starch Blocker: The Miracle Draw of Ewedu & Okra",
+    "category": "Gut & Fiber",
+    "readTime": "60s Audio",
+    "icon": "🥣",
+    "headline": "Drawing soups like Ewedu and Okra act like a gentle shield that slows down sugar.",
+    "audioScript": "Did you know that the drawing texture in Ewedu and Okra is actually a natural super-shield? It forms a gentle gel in your tummy that traps starch and stops sugar rushes into your blood. Pair your swallow with drawing soups to feel light and active!",
+    "storySlides": [
+      "The slippery draw in Ewedu, Ogbono, and Okra is made of pure natural plant gel.",
+      "When this gel enters your tummy, it coats the inside like a soft sponge, trapping starch and sugar so your body absorbs them slowly.",
+      "This gentle slowdown prevents big sugar spikes and also feeds the friendly bacteria that keep your digestion happy!"
     ],
-    takeaway: "Pair high-glycemic swallows with draw soups to naturally lower effective glycemic load.",
-    quiz: {
-      question: "How does the mucilage in Okra and Ewedu protect your blood sugar?",
-      options: ["It converts all carbs into protein", "It forms a viscous gel that traps starch and slows sugar absorption", "It speeds up stomach emptying", "It destroys digestive enzymes permanently"],
-      correctIndex: 1,
-      explanation: "Mucilage polysaccharides form a viscous intestinal gel that slows enzymatic starch digestion."
+    "takeaway": "Enjoy swallow with drawing soups like Okra or Ewedu to keep blood sugar calm.",
+    "quiz": {
+      "question": "How does the drawing texture in Okra and Ewedu protect your body?",
+      "options": [
+        "It turns all carbs into water",
+        "It forms a gentle gel that traps starch and slows sugar down",
+        "It makes food rush through your body",
+        "It makes you thirsty"
+      ],
+      "correctIndex": 1,
+      "explanation": "The natural drawing gel slows down digestion so sugar enters your blood slowly and gently."
     }
   },
   {
-    id: "lesson-3",
-    tier: 1,
-    tierName: "Heritage Bio-Foundations",
-    title: "Resistant Starch: The Cook-and-Cool Hack",
-    category: "Cooking Hacks",
-    readTime: "90s Audio",
-    icon: "🍠",
-    headline: "Cooling boiled rice or yams in the fridge for 12 hours turns 30% of carbs into prebiotic fiber.",
-    audioScript: "Here is a powerful clinical kitchen hack. When you cook rice, yams, or potatoes and cool them overnight in the refrigerator, their starch molecules recrystallize into Type-3 Resistant Starch. Even after reheating, they deliver 30% fewer calories to your bloodstream.",
-    storySlides: [
-      "Freshly boiled starches are easily digested into simple glucose. But when starches cool down below 4°C, amylose chains undergo retrogradation.",
-      "Retrograded starch becomes resistant to digestive enzymes in the small intestine, traveling straight to the colon untouched.",
-      "In the colon, friendly bacteria ferment it into Short-Chain Fatty Acids (Butyrate), which repair gut walls and improve whole-body insulin sensitivity."
+    "id": "lesson-3",
+    "tier": 1,
+    "tierName": "Everyday Food Basics 🌱",
+    "title": "The Cold Yam Secret: How Cooling Food Overnight Cuts Calories",
+    "category": "Cooking Hacks",
+    "readTime": "60s Audio",
+    "icon": "🍠",
+    "headline": "Leaving boiled yams, sweet potatoes, or rice in the fridge overnight makes them gentler on blood sugar.",
+    "audioScript": "Here is an amazing cooking trick: when you boil yams, sweet potatoes, or rice, let them cool in the fridge overnight. The cooling turns part of the starch into gut-friendly fiber! Even when you warm them up the next day, they deliver fewer calories and keep you full longer.",
+    "storySlides": [
+      "Freshly boiled hot yams and rice digest very quickly into simple sugar in your body.",
+      "But when you let them cool down in the fridge overnight, the starch molecules link up tightly into resistant starch, which acts just like fiber!",
+      "Even when you reheat your food the next day, this special fiber bypasses quick digestion, saving you calories and keeping your sugar steady."
     ],
-    takeaway: "Batch-cook your brown rice, sweet potatoes, and fonio, cool overnight, and reheat before serving.",
-    quiz: {
-      question: "What happens when you cool cooked African starches in the refrigerator overnight?",
-      options: ["They turn into simple table sugar", "They crystallize into Type-3 Resistant Starch that feeds gut bacteria", "They lose all mineral content", "They become toxic to the liver"],
-      correctIndex: 1,
-      explanation: "Retrogradation converts digestible starches into prebiotic resistant starch that bypasses upper digestive absorption."
+    "takeaway": "Cook yams and rice ahead of time, let them cool overnight, and warm them up before eating.",
+    "quiz": {
+      "question": "What happens when you cool cooked yams or rice in the fridge overnight?",
+      "options": [
+        "They turn into plain white sugar",
+        "Part of the starch turns into healthy fiber that feeds good gut bacteria",
+        "They lose all their flavor",
+        "They turn into oil"
+      ],
+      "correctIndex": 1,
+      "explanation": "Cooling starches overnight turns them into resistant starch, which is a healthy fiber that keeps sugar steady!"
     }
   },
   {
-    id: "lesson-4",
-    tier: 1,
-    tierName: "Heritage Bio-Foundations",
-    title: "Glycemic Index vs. Glycemic Load in Swallows",
-    category: "Glucose Science",
-    readTime: "90s Audio",
-    icon: "⚖️",
-    headline: "Why portion geometry matters far more than simply cutting out your favorite swallow.",
-    audioScript: "Many people are told to stop eating swallow entirely. That is clinically unnecessary. Glycemic Index measures speed, but Glycemic Load measures total impact. Cutting your swallow portion by 35% and doubling your vegetable soup completely neutralizes the glycemic spike.",
-    storySlides: [
-      "A massive ball of Pounded Yam has a high Glycemic Load (GL > 35). But reducing the swallow size to fist-size drops the GL to under 15.",
-      "When combined with lean protein (Titus fish, goat meat) and high-potassium greens, your insulin response remains smooth and balanced.",
-      "You never need to give up your cultural heritage; you only need to re-engineer portion geometry."
+    "id": "lesson-4",
+    "tier": 1,
+    "tierName": "Everyday Food Basics 🌱",
+    "title": "The Swallow Portion Secret: More Soup, Less Swallow",
+    "category": "Glucose Science",
+    "readTime": "60s Audio",
+    "icon": "⚖️",
+    "headline": "You don't have to quit swallow—just make your swallow fist-sized and double your soup!",
+    "audioScript": "People often say you must stop eating swallow. That is not true! What matters most is your plate balance. Make your swallow ball the size of your fist, and take two big scoops of vegetable soup. That way you enjoy your favorite food with zero guilt!",
+    "storySlides": [
+      "Eating an oversized mountain of swallow can overload your body with quick energy.",
+      "The secret is simple: reduce your swallow ball to the size of your closed fist, and double the amount of vegetable soup on your plate.",
+      "With plenty of greens and a nice piece of fish or meat, you will feel completely full without any heavy afternoon crash."
     ],
-    takeaway: "Follow the 25-50-25 rule: 25% Swallow, 50% Fiber/Greens, 25% Lean African Protein.",
-    quiz: {
-      question: "What is the 25-50-25 cultural plate ratio for safe metabolic swallow dining?",
-      options: ["50% Meat, 50% Swallow", "25% Swallow, 50% Vegetables/Greens, 25% Lean Protein", "75% Starch, 25% Soup", "100% Raw Vegetables"],
-      correctIndex: 1,
-      explanation: "The 25-50-25 rule keeps carbohydrate load moderate while maximizing soluble fiber and muscle-preserving protein."
+    "takeaway": "Remember the plate rule: Fist-sized swallow, double soup, and plenty of fish or meat.",
+    "quiz": {
+      "question": "What is the best way to enjoy swallow safely without feeling heavy?",
+      "options": [
+        "Eat an extra-large mountain of swallow with very little soup",
+        "Make swallow fist-sized and double your vegetable soup",
+        "Stop eating food completely",
+        "Drink only sweet juice"
+      ],
+      "correctIndex": 1,
+      "explanation": "A smaller swallow with lots of vegetable soup gives you all the delicious flavor with steady energy."
     }
   },
   {
-    id: "lesson-5",
-    tier: 1,
-    tierName: "Heritage Bio-Foundations",
-    title: "Why Semolina & White Garri Cause Rapid Spikes",
-    category: "Glucose Science",
-    readTime: "90s Audio",
-    icon: "⚠️",
-    headline: "Refined swallow flours lack cellular matrix and absorb as fast as pure glucose.",
-    audioScript: "Ultra-processed swallow flours like industrial white semolina and finely sifted white garri have had their fibrous outer bran stripped away. In your stomach, they turn into glucose in under 20 minutes. Swapping to Plantain-Oat fufu or yellow cassava fermented with fiber protects your pancreas.",
-    storySlides: [
-      "Commercial semolina is milled from refined durum wheat endosperm with zero bran or germ fiber.",
-      "Without fiber to slow down gastric breakdown, digestive enzymes rapidly convert the refined starch into pure glucose.",
-      "Healthier alternatives: Whole oat flour blended with green unripe plantain, or fiber-rich fermented cassava with added flax/chia seeds."
+    "id": "lesson-5",
+    "tier": 1,
+    "tierName": "Everyday Food Basics 🌱",
+    "title": "Why White Semolina Spikes Sugar Faster Than Pounded Yam",
+    "category": "Glucose Science",
+    "readTime": "60s Audio",
+    "icon": "⚠️",
+    "headline": "Factory-milled white flours digest in minutes—try plantain flour or oat swallow instead!",
+    "audioScript": "Store-bought white semolina and white garri have had all their outer grain fiber removed in the factory. In your stomach, they turn into sugar very quickly. Swapping to unripe plantain flour or oat swallow keeps your energy steady all day.",
+    "storySlides": [
+      "White semolina is made from wheat that has been stripped of its natural brown outer shell.",
+      "Because there is no fiber to slow it down, your stomach turns it into sugar almost as fast as drinking sweetened water.",
+      "A much better choice is blending whole rolled oats with green plantain flour—it tastes wonderful and gives you hours of calm energy."
     ],
-    takeaway: "Upgrade refined white swallows with fiber-dense Plantain-Oat, Fonio, or Sprouted Millet flours.",
-    quiz: {
-      question: "Why does refined commercial semolina spike blood glucose faster than traditional pounded yam?",
-      options: ["It contains high levels of caffeine", "It is stripped of grain fiber and bran, allowing rapid enzymatic hydrolysis", "It has no carbohydrates", "It is fermented for too long"],
-      correctIndex: 1,
-      explanation: "Refined milling removes dietary fiber, enabling instant starch-to-sugar digestion in the upper gastrointestinal tract."
+    "takeaway": "Swap factory white semolina for unripe plantain fufu or oat swallow.",
+    "quiz": {
+      "question": "Why does white semolina digest into sugar faster than traditional swallows?",
+      "options": [
+        "It has coffee in it",
+        "Factory machines stripped out all the natural grain fiber",
+        "It has no carbohydrates",
+        "It is fermented for too long"
+      ],
+      "correctIndex": 1,
+      "explanation": "When fiber is removed during factory milling, starch breaks down into sugar in just minutes."
     }
   },
   {
-    id: "lesson-6",
-    tier: 1,
-    tierName: "Heritage Bio-Foundations",
-    title: "Why Bitter Leaf & Waterleaf are Superfoods",
-    category: "Gut & Fiber",
-    readTime: "90s Audio",
-    icon: "🌿",
-    headline: "Traditional African greens are packed with natural minerals that support liver health and digestion.",
-    audioScript: "Indigenous African leafy greens like Vernonia amygdalina (Bitter Leaf) and Talinum triangulare (Waterleaf) are powerhouses of andrographolide, quercetin, and luteolin. They stimulate liver bile production and lower systemic C-reactive protein markers.",
-    storySlides: [
-      "Bitter phytochemicals in Bitter Leaf trigger bitter taste receptors (TAS2Rs) in your gut, which stimulate insulin secretion and gastric GLP-1 release.",
-      "Waterleaf contains high concentrations of mucilage, pectin, and bioavailable calcium that soothe inflamed intestinal linings.",
-      "Combining both in traditional soups creates a potent synergy of antioxidant protection and cellular detoxification."
+    "id": "lesson-6",
+    "tier": 1,
+    "tierName": "Everyday Food Basics 🌱",
+    "title": "Bitter Leaf & Waterleaf: Ancient African Healing Greens",
+    "category": "Gut & Fiber",
+    "readTime": "60s Audio",
+    "icon": "🌿",
+    "headline": "Traditional greens clean your liver and support healthy digestion naturally.",
+    "audioScript": "Bitter Leaf and Waterleaf are true African treasures! The gentle bitter taste in Bitter Leaf wakes up your stomach to release natural digestion juices, while Waterleaf cools and soothes your tummy. Try eating traditional vegetable soups four times a week.",
+    "storySlides": [
+      "In traditional African wisdom, bitter foods are known to heal the body.",
+      "The natural bitter taste wakes up sensors on your tongue and in your stomach that help your body handle sugar better.",
+      "Meanwhile, soft Waterleaf provides gentle fiber and soothing minerals that keep your digestion smooth and comfortable."
     ],
-    takeaway: "Incorporate authentic indigenous greens at least 4 times per week in your soups and stews.",
-    quiz: {
-      question: "What unique compound in Bitter Leaf stimulates gut taste receptors to enhance insulin sensitivity?",
-      options: ["Refined Fructose", "Bitter phytochemical sesquiterpene lactones", "Sodium Chloride", "Trans-fatty acids"],
-      correctIndex: 1,
-      explanation: "Sesquiterpene lactones stimulate TAS2R bitter receptors to promote natural GLP-1 and insulin signaling."
+    "takeaway": "Eat authentic leafy soups like Bitter Leaf and Waterleaf at least 4 times a week.",
+    "quiz": {
+      "question": "What does the natural bitter taste in Bitter Leaf do for your body?",
+      "options": [
+        "It causes headaches",
+        "It wakes up your tummy to release natural digestion and sugar-balancing juices",
+        "It turns into bad fat",
+        "It has no effect at all"
+      ],
+      "correctIndex": 1,
+      "explanation": "Natural bitter greens tell your digestive system to balance insulin and digest food smoothly."
     }
   },
   {
-    id: "lesson-7",
-    tier: 1,
-    tierName: "Heritage Bio-Foundations",
-    title: "The Best Time to Drink Water with Meals",
-    category: "Gut & Fiber",
-    readTime: "90s Audio",
-    icon: "💧",
-    headline: "Drinking water before meals helps digestion, while sipping warm teas during dinner prevents bloating.",
-    audioScript: "Drinking large glasses of ice water while eating heavy swallows can chill the digestive tract and dilute hydrochloric acid enzymes. To optimize digestion, drink water 20 minutes before meals and sip warm water or herbal teas during dinner.",
-    storySlides: [
-      "Adequate stomach acid (pH 1.5 - 2.5) is required to break down dense proteins like goat meat and cow leg.",
-      "Chugging 500ml of ice-cold water during a heavy meal cools gastric enzymes and dilutes digestive juices, leading to bloating and sluggish transit.",
-      "Best clinical practice: Drink 2 glasses of room-temperature water 30 minutes before your meal, and sip warm Zobo or ginger tea post-meal."
+    "id": "lesson-7",
+    "tier": 1,
+    "tierName": "Everyday Food Basics 🌱",
+    "title": "The Best Time to Drink Water With Your Meals",
+    "category": "Cooking Hacks",
+    "readTime": "60s Audio",
+    "icon": "💧",
+    "headline": "Drink a glass of water 15 minutes before eating, and sip gently during meals.",
+    "audioScript": "Gulping lots of cold water right in the middle of a heavy meal can wash away your stomach's natural digestive acids. Try drinking a full glass of water 15 minutes before your food, and just sip a little warm water while eating. Your stomach will feel so much lighter!",
+    "storySlides": [
+      "Your stomach needs natural digestive juices to break down heavy swallows and meats.",
+      "If you drink huge cups of iced water during your meal, you wash those juices away, which can leave you feeling bloated.",
+      "Drink a big glass of clean water 15 minutes before you eat, and just take small sips while enjoying your food."
     ],
-    takeaway: "Hydrate ahead of mealtime; sip warm herbal liquids during and after heavy swallow dinners.",
-    quiz: {
-      question: "When is the optimal time to drink water for healthy metabolic digestion?",
-      options: ["Chug 1 liter of ice water while swallowing food", "Drink 20-30 minutes before meals, and sip warm fluids during eating", "Never drink water on days you eat swallow", "Only drink sugary sodas"],
-      correctIndex: 1,
-      explanation: "Hydrating 20-30 minutes before meals pre-activates gastric mucosa without diluting active digestive enzymes."
+    "takeaway": "Drink water 15 minutes before your meal, and only take small sips while eating.",
+    "quiz": {
+      "question": "When is the best time to drink a big glass of water around mealtime?",
+      "options": [
+        "Gulp 3 glasses in the middle of your swallow",
+        "15 minutes before eating your meal",
+        "Never drink water at all",
+        "Only with sweet soft drinks"
+      ],
+      "correctIndex": 1,
+      "explanation": "Drinking before meals helps prepare your tummy for digestion without washing away digestive juices."
     }
   },
   {
-    id: "lesson-8",
-    tier: 1,
-    tierName: "Heritage Bio-Foundations",
-    title: "The Perfect Plate: Half Veggies, Quarter Meat, Quarter Rice",
-    category: "Cooking Hacks",
-    readTime: "90s Audio",
-    icon: "🍽️",
-    headline: "How arranging your plate with plenty of vegetable soup prevents the afternoon food coma.",
-    audioScript: "A standard African party plate is often 70% Jollof rice or Swallow and 15% meat. By rearranging the plate into 25% Starch, 50% Leafy Stew, and 25% Protein, you instantly cut the glycemic spike by 40% while preserving every drop of cultural flavor.",
-    storySlides: [
-      "Visual portion distortion is the number one cause of post-meal fatigue and afternoon brain fog.",
-      "When 50% of your plate is occupied by rich, un-chopped leafy greens (Ugwu, Efo Tete, Afang), you consume massive micronutrients and fiber with low calorie density.",
-      "This balanced ratio keeps your hunger hormone ghrelin suppressed for over 4 to 5 hours."
+    "id": "lesson-8",
+    "tier": 1,
+    "tierName": "Everyday Food Basics 🌱",
+    "title": "The Balanced African Plate: Half Veggies, Quarter Meat, Quarter Starch",
+    "category": "Glucose Science",
+    "readTime": "60s Audio",
+    "icon": "🍽️",
+    "headline": "Fill half your plate with rich vegetable soup, one quarter with protein, and one quarter with starch.",
+    "audioScript": "Look at your plate like a peaceful garden! Fill half the plate with rich green vegetable soup like Efo Riro or Okra. Fill one quarter with fish, boiled eggs, or chicken. And save the last quarter for your rice or swallow. You will never feel bloated or sleepy after eating!",
+    "storySlides": [
+      "Traditional plates are often 80% starch and only 20% soup. Flipping this ratio changes everything!",
+      "Make 50% of your plate rich vegetable soup, 25% fish or lean meat, and 25% your favorite swallow or rice.",
+      "This simple division gives you all the delicious taste and comfort while keeping your blood sugar completely steady."
     ],
-    takeaway: "Fill half your plate with vegetable soup, one quarter with swallow/rice, and one quarter with grilled fish or lean meat.",
-    quiz: {
-      question: "What percentage of your dinner plate should be composed of vegetable soups or salads?",
-      options: ["10%", "50%", "85%", "0%"],
-      correctIndex: 1,
-      explanation: "Devoting 50% of the plate to leafy vegetables guarantees high fiber and micronutrient density."
+    "takeaway": "Follow the half-plate rule: 50% vegetables, 25% protein, 25% starch.",
+    "quiz": {
+      "question": "How much of your plate should be filled with rich vegetable soup?",
+      "options": [
+        "A tiny corner (10%)",
+        "Half of your plate (50%)",
+        "None at all",
+        "100% starch only"
+      ],
+      "correctIndex": 1,
+      "explanation": "Filling half your plate with vegetables keeps you light, full, and energized for hours!"
     }
   },
   {
-    id: "lesson-9",
-    tier: 1,
-    tierName: "Heritage Bio-Foundations",
-    title: "How African Fish, Eggs & Beans Keep You Full for Hours",
-    category: "Hormones & Longevity",
-    readTime: "90s Audio",
-    icon: "🐟",
-    headline: "Eating protein with fiber signals your brain that you are completely full and satisfied.",
-    audioScript: "GLP-1 is the satiety hormone that tells your brain you are completely full. African lean proteins like wild mackerel, boiled eggs, and soy Awara stimulate L-cells in your gut to release natural GLP-1 without expensive pharmaceutical injections.",
-    storySlides: [
-      "Dietary amino acids (leucine, glutamine) and omega-3 fatty acids bind to receptors on intestinal enteroendocrine L-cells.",
-      "This triggers a surge of Peptide YY (PYY) and Glucagon-Like Peptide-1 (GLP-1), which signal satiety centers in the hypothalamus.",
-      "Eating your protein alongside soluble fiber ensures your brain registers fullness 15 minutes faster."
+    "id": "lesson-9",
+    "tier": 1,
+    "tierName": "Everyday Food Basics 🌱",
+    "title": "African Fish, Eggs & Beans: Natural Food for All-Day Energy",
+    "category": "Glucose Science",
+    "readTime": "60s Audio",
+    "icon": "🐟",
+    "headline": "Protein from fish, eggs, and beans tells your brain you are full and happy.",
+    "audioScript": "Ever notice how quickly you get hungry after eating plain white rice? That is because it lacks protein! When you add Titus fish, boiled eggs, smoked mackerel, or steamed beans, your body releases fullness signals that stop unnecessary cravings for hours.",
+    "storySlides": [
+      "Meals that are only carbohydrates leave your stomach quickly, making you hungry again in just two hours.",
+      "Adding real African protein—like mackerel (Titus), catfish, boiled eggs, or brown beans—keeps food in your stomach longer.",
+      "This sends a clear message to your brain: You are well-fed, energetic, and do not need extra snacks!"
     ],
-    takeaway: "Include at least 25-30g of authentic protein (fish, poultry, beans, awara) in every main meal.",
-    quiz: {
-      question: "Which hormone is naturally stimulated by dietary protein and fiber to signal brain fullness?",
-      options: ["Cortisol", "Glucagon-Like Peptide-1 (GLP-1)", "Adrenaline", "Estrogen"],
-      correctIndex: 1,
-      explanation: "GLP-1 is secreted by intestinal L-cells in response to dietary proteins and soluble fibers."
-    }
-  },
-
-  // --------------------------------------------------------------------------
-  // TIER 2: ORGAN-SPECIFIC METABOLIC SHIELDS (Lessons 10 - 18)
-  // --------------------------------------------------------------------------
-  {
-    id: "lesson-10",
-    tier: 2,
-    tierName: "Healthy Heart & Sugar 🛡️",
-    title: "Zobo Tea: The Natural Way to Relax Blood Pressure",
-    category: "Heart & BP",
-    readTime: "90s Audio",
-    icon: "🌺",
-    headline: "Drinking unsweetened Zobo tea brewed with ginger helps support healthy, relaxed blood vessels.",
-    audioScript: "Zobo, brewed from Hibiscus sabdariffa petals, is rich in anthocyanins and delphinidins that act as natural Angiotensin-Converting Enzyme (ACE) inhibitors. However, patients on antihypertensive medications like Lisinopril must space consumption by 3 hours to prevent excessive blood pressure drops.",
-    storySlides: [
-      "Clinical trials confirm that organic Hibiscus tea exhibits potent vascular endothelium relaxation and mild diuretic action.",
-      "The active bioactives inhibit ACE enzymes, naturally opening up constricted blood vessels and lowering systolic pressure.",
-      "Safety rule: Always brew Zobo with ginger, cloves, and cinnamon instead of refined sugar, and maintain a 3-hour window from prescription ACE inhibitors."
-    ],
-    takeaway: "Drink unsweetened ginger-spiced Zobo for cardiovascular protection, separated from prescription BP meds.",
-    quiz: {
-      question: "Why should patients taking Lisinopril space their Zobo intake by at least 3 hours?",
-      options: ["Zobo turns Lisinopril into sugar", "Both have additive ACE-inhibiting effects that could cause hypotension", "Zobo eliminates kidney function", "It causes tooth decay"],
-      correctIndex: 1,
-      explanation: "Additive vasodilation from both hibiscus bioactives and prescription ACE inhibitors can cause blood pressure to drop too low."
+    "takeaway": "Always include fish, eggs, beans, or lean meat with every meal.",
+    "quiz": {
+      "question": "Why does adding fish, eggs, or beans to your meal keep you full longer?",
+      "options": [
+        "They make you sleep immediately",
+        "Protein sends fullness signals to your brain that stop cravings",
+        "They turn into pure water",
+        "They have zero nutrients"
+      ],
+      "correctIndex": 1,
+      "explanation": "Protein takes longer to digest and tells your brain that your body is fully satisfied!"
     }
   },
   {
-    id: "lesson-11",
-    tier: 2,
-    tierName: "Organ-Specific Metabolic Shields",
-    title: "Kidney Care: How to Cook Yams & Plantains Safely",
-    category: "Kidney Care",
-    readTime: "90s Audio",
-    icon: "🩺",
-    headline: "Soaking and boiling yams in fresh water removes excess minerals to protect sensitive kidneys.",
-    audioScript: "Patients with Chronic Kidney Disease or impaired renal clearance must limit high-potassium foods to prevent cardiac arrhythmias. By peeling, cubing, soaking, and double-boiling yams or plantains, up to 60% of potassium is safely leached out.",
-    storySlides: [
-      "African tubers like yam, cocoyam, and plantain are naturally dense in potassium. For healthy kidneys, this is great—for compromised kidneys, it can be dangerous.",
-      "KDIGO leaching protocol: 1) Peel and cut into small 1-inch cubes. 2) Soak in warm water for 2 hours. 3) Boil in fresh water, discard the water completely, and boil again.",
-      "This allows renal patients to enjoy traditional comfort meals safely without risking hyperkalemia."
+    "id": "lesson-10",
+    "tier": 2,
+    "tierName": "Heart & Blood Sugar Secrets ❤️",
+    "title": "Zobo Tea: Nature's Blood Pressure Relaxer",
+    "category": "Heart & BP",
+    "readTime": "60s Audio",
+    "icon": "🌺",
+    "headline": "Fresh homemade Zobo tea brewed with ginger gently relaxes your blood vessels.",
+    "audioScript": "Zobo tea, made from vibrant red Hibiscus flowers, is one of Africa's greatest gifts for healthy blood pressure! It helps your blood vessels relax and widen so blood flows smoothly. Brew it with fresh ginger and cloves, but leave out white sugar!",
+    "storySlides": [
+      "Natural red Hibiscus flowers contain special plant nutrients that tell tight blood vessels to open up and relax.",
+      "Studies show that drinking two cups of unsweetened Zobo tea daily supports calm, healthy blood pressure.",
+      "Remember: avoid adding commercial white sugar or sweet artificial flavorings—use fresh ginger and cloves for spicy sweetness!"
     ],
-    takeaway: "Double-boil and discard cooking water for yams and plantains if following a clinical renal protocol.",
-    quiz: {
-      question: "What is the primary clinical reason for double-boiling tubers in renal diets?",
-      options: ["To remove all carbohydrates", "To leach out excess potassium and prevent hyperkalemia", "To make the food sweeter", "To preserve vitamin C"],
-      correctIndex: 1,
-      explanation: "Double-boiling and discarding the water extracts water-soluble potassium to protect compromised kidneys."
+    "takeaway": "Drink fresh Zobo tea with ginger and cloves without white sugar for calm blood pressure.",
+    "quiz": {
+      "question": "What is the healthiest way to prepare Zobo tea for your heart?",
+      "options": [
+        "Boil it with 2 cups of white sugar",
+        "Brew it with natural ginger and cloves without white sugar",
+        "Drink it with sweetened condensed milk",
+        "Add artificial soda syrups"
+      ],
+      "correctIndex": 1,
+      "explanation": "Brewing Zobo naturally with ginger and cloves protects your heart without adding unwanted sugar!"
     }
   },
   {
-    id: "lesson-12",
-    tier: 2,
-    tierName: "Organ-Specific Metabolic Shields",
-    title: "Fatty Liver Reversal: Bitter Leaf & Choline",
-    category: "Liver & Detox",
-    readTime: "90s Audio",
-    icon: "🛡️",
-    headline: "Clear hepatic lipid buildup with bitter leaf polyphenols and wild egg yolk choline.",
-    audioScript: "Non-Alcoholic Fatty Liver Disease is driven by excess refined fructose, palm oil oxidation, and insulin resistance. The vernoniosides in Bitter Leaf alongside choline from boiled eggs stimulate Very Low-Density Lipoprotein export, clearing trapped fat from liver hepatocytes.",
-    storySlides: [
-      "The liver is your master metabolic engine. When overloaded with high-glycemic carbohydrates and alcohol, fat accumulates inside liver cells.",
-      "Vernonia amygdalina (Bitter Leaf) upregulates hepatic AMPK enzymes, stimulating fatty acid oxidation and reducing liver inflammation.",
-      "Dietary choline acts as a chemical transporter, packaging triglycerides into VLDL to export fat out of the liver safely."
+    "id": "lesson-11",
+    "tier": 2,
+    "tierName": "Heart & Blood Sugar Secrets ❤️",
+    "title": "Protecting Your Kidneys: Safe Cooking for Yams & Plantains",
+    "category": "Kidney Care",
+    "readTime": "60s Audio",
+    "icon": "🍠",
+    "headline": "Soaking and boiling yams in fresh water removes excess minerals to keep kidneys happy.",
+    "audioScript": "Your kidneys work hard every day to filter your blood. If you want to make yams and plantains extra gentle on your kidneys, peel and soak them in water for an hour, then boil in fresh water. This washes away excess minerals so your kidneys stay light and healthy.",
+    "storySlides": [
+      "Yams and plantains are rich in natural minerals like potassium, which is great for most people.",
+      "However, for anyone watching their kidney health, soaking sliced yams in water for an hour before boiling removes extra mineral load.",
+      "Always pour away the boiling water and serve with fresh, lightly cooked green vegetable soup."
     ],
-    takeaway: "Pair bitter leaf greens with whole eggs and cruciferous vegetables to support natural liver fat clearance.",
-    quiz: {
-      question: "Which essential nutrient is required by the liver to package and export trapped fat out of hepatocytes?",
-      options: ["Refined Sugar", "Choline", "Saturated animal grease", "Synthetic food coloring"],
-      correctIndex: 1,
-      explanation: "Choline is essential for phosphatidylcholine synthesis, which the liver uses to package and export fat."
+    "takeaway": "Peel, soak, and boil yams in fresh water to keep them gentle on your kidneys.",
+    "quiz": {
+      "question": "How does soaking sliced yams before boiling help your kidneys?",
+      "options": [
+        "It turns the yam into candy",
+        "It washes away excess mineral burden so kidneys work with ease",
+        "It removes all the good taste",
+        "It makes the yam oily"
+      ],
+      "correctIndex": 1,
+      "explanation": "Soaking and boiling in fresh water removes excess mineral load, keeping your kidneys healthy and relaxed."
     }
   },
   {
-    id: "lesson-13",
-    tier: 2,
-    tierName: "Organ-Specific Metabolic Shields",
-    title: "Peptic Ulcer Healing: Cabbage & Non-Acidic Ogi",
-    category: "Gut & Fiber",
-    readTime: "90s Audio",
-    icon: "🥣",
-    headline: "Natural L-Glutamine and fermented probiotics repair the gastric epithelial lining.",
-    audioScript: "Peptic ulcer disease requires protecting the stomach wall against corrosive gastric acid. Freshly simmered cabbage provides L-Glutamine and S-Methylmethionine (Vitamin U), which accelerate epithelial cell repair, while fermented millet pap coats and alkalizes the stomach.",
-    storySlides: [
-      "Gastric ulcers are painful sores in the lining of the stomach often exacerbated by H. pylori and NSAID painkillers.",
-      "Simmered cabbage and bone broth are exceptionally dense in L-Glutamine, the primary fuel for enterocyte mucosal repair.",
-      "Avoid raw hot scotch bonnet pepper during active flare-ups; season instead with ginger, turmeric, and soothing okra draw."
+    "id": "lesson-12",
+    "tier": 2,
+    "tierName": "Heart & Blood Sugar Secrets ❤️",
+    "title": "Helping Your Liver Stay Clean: Bitter Leaf & Healthy Fats",
+    "category": "Liver & Detox",
+    "readTime": "60s Audio",
+    "icon": "🛡️",
+    "headline": "Bitter leaf and good proteins wash away stubborn belly fat around your liver.",
+    "audioScript": "Your liver is your body's master cleaning machine. When we eat too much fried food and sugary drinks, fat can build up in the liver. Drinking natural bitter leaf water or eating bitter leaf soup helps clean out bad fats and restores your natural energy.",
+    "storySlides": [
+      "A sluggish liver causes tiredness, poor digestion, and stubborn belly fat.",
+      "Traditional Bitter Leaf tea and soup stimulate fresh bile flow, which washes away fat droplets trapped inside liver cells.",
+      "Pair this with boiled eggs and fresh fish to give your liver the building blocks it needs to repair itself."
     ],
-    takeaway: "Consume simmered cabbage soups and gentle fermented millet ogi to rapidly soothe and regenerate stomach tissue.",
-    quiz: {
-      question: "What amino acid in cooked cabbage and bone broth provides primary fuel for gut mucosal healing?",
-      options: ["L-Glutamine", "Trans-fat", "Aspartame", "Sucrose"],
-      correctIndex: 0,
-      explanation: "L-Glutamine is the primary cellular fuel used by mucosal enterocytes to rebuild and heal the gut lining."
+    "takeaway": "Drink fresh Bitter Leaf tea or eat Bitter Leaf soup to keep your liver clean and energized.",
+    "quiz": {
+      "question": "How does Bitter Leaf help keep your liver clean and healthy?",
+      "options": [
+        "It puts more fat into the liver",
+        "It stimulates natural bile flow to clear out stubborn fat",
+        "It stops the liver from working",
+        "It turns food into acid"
+      ],
+      "correctIndex": 1,
+      "explanation": "Bitter Leaf stimulates bile production, helping your liver flush out unwanted fat and waste."
     }
   },
   {
-    id: "lesson-14",
-    tier: 2,
-    tierName: "Organ-Specific Metabolic Shields",
-    title: "PCOS & Inositol in African Beans & Legumes",
-    category: "Hormones & Longevity",
-    readTime: "90s Audio",
-    icon: "🌸",
-    headline: "Myo-Inositol in black-eyed peas and brown beans restores ovarian insulin sensitivity.",
-    audioScript: "Polycystic Ovary Syndrome (PCOS) is fundamentally a metabolic disorder of cellular insulin resistance. Traditional African legumes like honey beans (Ewa Oloyin) and brown beans are dense in natural Myo-Inositol, which restores ovarian signaling and regulates ovulatory cycles.",
-    storySlides: [
-      "High insulin levels trigger the ovaries to produce excess testosterone, causing irregular periods, hormonal acne, and facial hair.",
-      "Myo-Inositol acts as an intracellular second messenger for insulin. African beans, fonio, and citrus fruits are packed with natural inositol isomers.",
-      "Eating steamed Moi Moi or sprouted beans stabilizes LH/FSH ratios and dramatically improves ovulatory regularity."
+    "id": "lesson-13",
+    "tier": 2,
+    "tierName": "Heart & Blood Sugar Secrets ❤️",
+    "title": "Soothing an Upset Stomach: Cabbage, Pap & Fresh Soups",
+    "category": "Gut & Fiber",
+    "readTime": "60s Audio",
+    "icon": "🥣",
+    "headline": "Warm pap (Ogi) and fresh cabbage soothe stomach ulcers and tummy pain.",
+    "audioScript": "If you struggle with stomach burns, ulcers, or acidity, raw cabbage juice and warm fermented pap (Ogi) are nature's soothing medicine. Fermented corn pap cools your stomach lining, while cabbage provides natural nutrients that heal tender tissues.",
+    "storySlides": [
+      "Stomach ulcers happen when tummy acid irritates the sensitive stomach lining.",
+      "Warm, freshly prepared traditional pap (Ogi or Akamu) creates a gentle protective blanket over irritated stomach walls.",
+      "Adding fresh blended cabbage juice provides special soothing nutrients that help tender tissues heal fast."
     ],
-    takeaway: "Eat high-inositol African beans (Moi Moi, Gbegiri) 3-4 times weekly to combat PCOS insulin resistance.",
-    quiz: {
-      question: "How does natural inositol in African legumes help women managing PCOS?",
-      options: ["It raises cortisol levels", "It acts as an insulin second messenger to improve ovarian hormone sensitivity", "It stops ovulation", "It increases body fat storage"],
-      correctIndex: 1,
-      explanation: "Myo-Inositol improves cellular insulin signaling, reducing excess ovarian androgen production."
+    "takeaway": "Sip warm pap (Akamu) and fresh cabbage soup to soothe an irritated stomach.",
+    "quiz": {
+      "question": "What is a gentle traditional food that soothes an irritated stomach wall?",
+      "options": [
+        "Spicy fried pepper with raw alcohol",
+        "Warm fermented pap (Akamu/Ogi)",
+        "Hot energy drinks",
+        "Deep-fried meat"
+      ],
+      "correctIndex": 1,
+      "explanation": "Warm fermented pap coats the stomach with a gentle protective layer that calms irritation."
     }
   },
   {
-    id: "lesson-15",
-    tier: 2,
-    tierName: "Organ-Specific Metabolic Shields",
-    title: "Prostate Health: 400% Lycopene Boost in Tomato Stew",
-    category: "Prostate Health",
-    readTime: "90s Audio",
-    icon: "🍅",
-    headline: "Simmering fresh tomatoes in olive or palm oil unlocks fat-soluble prostate antioxidants.",
-    audioScript: "Lycopene is the carotenoid proven to concentrate in prostate tissue and protect against cellular hyperplasia. Simmering tomatoes in healthy oils converts raw trans-lycopene into highly bioavailable cis-lycopene, increasing absorption by up to 400 percent.",
-    storySlides: [
-      "Raw tomatoes have tough cellular walls that trap lycopene. Heat and gentle cooking break down these cell membranes.",
-      "Because lycopene is fat-soluble, cooking it with healthy unbleached red palm oil or extra virgin olive oil allows your gut to absorb it effortlessly.",
-      "Pairing stew with zinc-rich pumpkin seeds (Egusi) provides double-action prostate cellular defense for men over 40."
+    "id": "lesson-14",
+    "tier": 2,
+    "tierName": "Heart & Blood Sugar Secrets ❤️",
+    "title": "Why Beans & Peas Are Great for Female Hormones",
+    "category": "Hormones & Longevity",
+    "readTime": "60s Audio",
+    "icon": "🌸",
+    "headline": "Black-eyed peas and brown beans have gentle plant nutrients that balance women's monthly cycles.",
+    "audioScript": "Brown beans and black-eyed peas are loaded with a natural nutrient called inositol. For women dealing with irregular periods, mood swings, or PCOS, eating beans three times a week helps balance hormones and supports calm blood sugar.",
+    "storySlides": [
+      "Hormone imbalances can cause irregular cycles, acne, and stubborn weight gain around the hips and belly.",
+      "African legumes like brown beans and cowpeas contain natural plant compounds that help your body handle sugar and hormone signals smoothly.",
+      "Enjoy them as steamed Moi Moi or boiled beans with a spoon of red palm oil and steamed fish!"
     ],
-    takeaway: "Simmer fresh tomato and pepper bases in healthy oil to maximize prostate-protective lycopene.",
-    quiz: {
-      question: "Why is cooked tomato stew superior to raw tomatoes for prostate lycopene absorption?",
-      options: ["Cooking destroys all antioxidants", "Heat and healthy fats convert lycopene into its bioavailable cis-isomer", "Raw tomatoes contain too much sodium", "Cooking adds synthetic vitamins"],
-      correctIndex: 1,
-      explanation: "Heat and dietary lipids break down plant cell walls and convert lycopene into easily absorbable cis-isomers."
+    "takeaway": "Eat brown beans or steamed Moi Moi at least 3 times a week for healthy hormones.",
+    "quiz": {
+      "question": "Why are African brown beans and Moi Moi beneficial for women's hormonal balance?",
+      "options": [
+        "They contain zero vitamins",
+        "They provide natural nutrients and fiber that balance hormone and sugar signals",
+        "They stop digestion completely",
+        "They cause sugar spikes"
+      ],
+      "correctIndex": 1,
+      "explanation": "Beans are rich in gentle plant nutrients and soluble fiber that help balance insulin and female hormones."
     }
   },
   {
-    id: "lesson-16",
-    tier: 2,
-    tierName: "Organ-Specific Metabolic Shields",
-    title: "Joint Mobility: Gingerol, Turmeric & Uziza Anti-Inflammatories",
-    category: "Arthritis & Joints",
-    readTime: "90s Audio",
-    icon: "🦴",
-    headline: "West African pepper soup spices inhibit inflammatory COX-2 and IL-6 cytokines.",
-    audioScript: "Traditional African Pepper Soup is more than comfort food—it is a clinical anti-inflammatory therapy. Spices like Uziza, Uda, fresh ginger, and turmeric inhibit the COX-2 enzyme pathway in a manner similar to low-dose ibuprofen, without irritating the stomach.",
-    storySlides: [
-      "Chronic joint pain and osteoarthritis are driven by circulating inflammatory cytokines (TNF-alpha and Interleukin-6).",
-      "Gingerols and piperine from Uziza seeds naturally downregulate the NF-kB inflammatory cascade.",
-      "When simmered with wild Titus mackerel or fresh catfish, the rich EPA/DHA omega-3 fatty acids lubricate synovial joint cartilage."
+    "id": "lesson-15",
+    "tier": 2,
+    "tierName": "Heart & Blood Sugar Secrets ❤️",
+    "title": "Cooking Tomatoes for Strong Heart & Prostate Health",
+    "category": "Prostate Health",
+    "readTime": "60s Audio",
+    "icon": "🍅",
+    "headline": "Cooking tomatoes with a little healthy oil unlocks 4 times more red nutrients to protect your heart and prostate.",
+    "audioScript": "Here is wonderful news for stew lovers: cooking fresh tomatoes with onions and a little healthy oil unlocks a powerful red nutrient called lycopene! In men, it protects the prostate, and in women, it keeps heart arteries clear and flexible.",
+    "storySlides": [
+      "Tomatoes are packed with a bright red nutrient that protects cells from aging and disease.",
+      "When eaten raw, your body only absorbs a small amount. But when gently simmered into a traditional stew with oil, absorption increases by 400%!",
+      "Cook your tomato stew on medium heat with onions and fish for a powerhouse health meal."
     ],
-    takeaway: "Enjoy authentic wild fish pepper soup with uziza and ginger twice a week for pain-free joint mobility.",
-    quiz: {
-      question: "Which traditional spice combination acts as a natural COX-2 enzyme inhibitor for joint health?",
-      options: ["White table sugar and flour", "Ginger, Turmeric, and Uziza pepper soup spices", "Monosodium glutamate (MSG)", "Hydrogenated margarine"],
-      correctIndex: 1,
-      explanation: "Gingerols, curcumin, and piperine in traditional pepper soup spices naturally inhibit pro-inflammatory prostaglandin synthesis."
+    "takeaway": "Simmer fresh tomatoes with a little oil to unlock deep cell-protecting nutrients.",
+    "quiz": {
+      "question": "What happens when you simmer fresh tomatoes with a little oil into traditional stew?",
+      "options": [
+        "All the nutrients are destroyed",
+        "Your body absorbs 4 times more red nutrients that protect the prostate and heart",
+        "The tomatoes turn into sugar",
+        "It removes all the vitamins"
+      ],
+      "correctIndex": 1,
+      "explanation": "Cooking tomatoes with oil unlocks fat-soluble lycopene, making it 4 times easier for your body to absorb!"
     }
   },
   {
-    id: "lesson-17",
-    tier: 2,
-    tierName: "Organ-Specific Metabolic Shields",
-    title: "Preeclampsia Prevention: Low-Sodium Herb Seasoning",
-    category: "Pregnancy Health",
-    readTime: "90s Audio",
-    icon: "🤰",
-    headline: "Replacing ultra-high sodium seasoning cubes with fermented Iru and herbs protects maternal arteries.",
-    audioScript: "During pregnancy, gestational hypertension and preeclampsia risk rise sharply with excess sodium intake. A single commercial seasoning cube can contain over 1,200 milligrams of sodium. Swapping to fermented Iru, crayfish, garlic, and thyme keeps maternal blood pressure safe.",
-    storySlides: [
-      "Commercial bouillon cubes are over 50% sodium chloride and MSG. Using 3 or 4 cubes in a family pot creates a massive vascular sodium load.",
-      "Excess sodium triggers fluid retention, increasing arterial shear stress against sensitive placental vessels.",
-      "Fermented locust bean (Iru) and ground crayfish deliver intense umami flavor and bioavailable zinc with under 10% of the sodium load."
+    "id": "lesson-16",
+    "tier": 2,
+    "tierName": "Heart & Blood Sugar Secrets ❤️",
+    "title": "Pepper Soup Spices for Aching Knees & Joints",
+    "category": "Arthritis & Joints",
+    "readTime": "60s Audio",
+    "icon": "🦴",
+    "headline": "Traditional spices like Uda, Uziza, and ginger naturally calm joint pain and swelling.",
+    "audioScript": "If your knees ache after walking or your fingers feel stiff in the morning, authentic African pepper soup is your friend! Spices like ginger, turmeric, Uziza seeds, and Uda pods contain natural plant oils that soothe joint swelling better than hot ointments.",
+    "storySlides": [
+      "Aching knees and stiff joints are usually caused by swelling inside the joint cushion.",
+      "The fragrant spices in Nigerian pepper soup—especially ginger, Uda pods, and black Uziza seeds—naturally cool down joint irritation.",
+      "Sip a warm bowl of fresh catfish or chicken pepper soup two to three times a week to keep your joints moving freely."
     ],
-    takeaway: "Build soup flavor with fermented Iru, ground crayfish, garlic, and onions to protect maternal cardiovascular health.",
-    quiz: {
-      question: "What is the safest culinary swap for commercial high-sodium bouillon cubes in pregnancy?",
-      options: ["Extra table salt", "Fermented locust beans (Iru), ground crayfish, and aromatic herbs", "Refined soy sauce", "Artificial MSG powder"],
-      correctIndex: 1,
-      explanation: "Fermented Iru and crayfish provide deep umami taste and trace minerals with minimal sodium."
+    "takeaway": "Enjoy warm pepper soup with ginger and Uziza seeds to soothe stiff, aching joints.",
+    "quiz": {
+      "question": "Which traditional pepper soup ingredients help soothe aching, stiff joints?",
+      "options": [
+        "Excess table salt and MSG cubes",
+        "Ginger, Uziza seeds, and Uda spices",
+        "Sweet fruit syrups",
+        "Fried palm shortening"
+      ],
+      "correctIndex": 1,
+      "explanation": "Spices like ginger, Uda, and Uziza contain natural soothing compounds that calm joint swelling."
     }
   },
   {
-    id: "lesson-18",
-    tier: 2,
-    tierName: "Organ-Specific Metabolic Shields",
-    title: "Menopause & Bone Density: Sesame & Ugwu Phytoestrogens",
-    category: "Hormones & Longevity",
-    readTime: "90s Audio",
-    icon: "🦴",
-    headline: "Protect bone mineral density after 45 with natural plant calcium and phytoestrogens.",
-    audioScript: "As estrogen declines during perimenopause and menopause, bone resorption accelerates. African sesame seeds (Beni-seed) and Ugwu leaves provide bioavailable plant calcium, magnesium, and gentle lignan phytoestrogens that support bone density and reduce night sweats.",
-    storySlides: [
-      "Postmenopausal bone loss can reach up to 2% per year if dietary calcium and vitamin K2 are insufficient.",
-      "Sesame seeds (Beni-seed) contain over 900mg of calcium per 100g—more than cow's milk—alongside natural phytoestrogens that gently bind estrogen receptors.",
-      "Ugwu greens supply vitamin K1, which activates osteocalcin to bind calcium directly into the skeletal matrix."
+    "id": "lesson-17",
+    "tier": 2,
+    "tierName": "Heart & Blood Sugar Secrets ❤️",
+    "title": "Cooking With Less Salt: Tasty Spice Secrets",
+    "category": "Heart & BP",
+    "readTime": "60s Audio",
+    "icon": "🧂",
+    "headline": "Swap salty seasoning cubes for locust beans (Iru), garlic, ginger, and crayfish for deep flavor!",
+    "audioScript": "You do not need four salty seasoning cubes to make soup taste delicious! Fermented locust beans (Iru), ground crayfish, garlic, ginger, and scent leaves deliver mouthwatering flavor while protecting your heart, kidneys, and blood pressure from too much salt.",
+    "storySlides": [
+      "Commercial seasoning cubes are often 60% pure industrial salt, which makes blood pressure rise and causes water retention.",
+      "Traditional West African seasonings like fermented Iru (Dawadawa) and dried crayfish give rich savory umami flavor with zero added salt.",
+      "Start by cutting seasoning cubes in half and adding an extra spoon of crayfish and iru—your family will love the rich taste!"
     ],
-    takeaway: "Add toasted sesame seeds (Beni-seed) to your porridge and eat fresh Ugwu soup 3 times a week.",
-    quiz: {
-      question: "Which traditional West African seed provides over 900mg of calcium per 100g to support bone health?",
-      options: ["White rice grain", "Sesame Seed (Beni-seed)", "Raw cassava peeling", "Commercial wheat flour"],
-      correctIndex: 1,
-      explanation: "Sesame (Beni-seed) is one of the world's densest plant sources of bone-building calcium and magnesium."
-    }
-  },
-
-  // --------------------------------------------------------------------------
-  // TIER 3: CULTURAL BIOCHEMISTRY & COOKING MASTERCLASS (Lessons 19 - 27)
-  // --------------------------------------------------------------------------
-  {
-    id: "lesson-19",
-    tier: 3,
-    tierName: "Cultural Biochemistry & Cooking",
-    title: "Palm Oil Science: Smoke Points & Tocopherols",
-    category: "Cooking Hacks",
-    readTime: "90s Audio",
-    icon: "🌴",
-    headline: "Unbleached red palm oil is the richest natural source of CoQ10 and Tocotrienols.",
-    audioScript: "Virgin unbleached red palm oil is an African superfood packed with beta-carotene and tocotrienols (Vitamin E). However, bleaching palm oil until it turns clear and smoking destroys these delicate antioxidants. Always cook palm oil on gentle medium heat without smoking.",
-    storySlides: [
-      "The deep red color of virgin palm oil comes from carotenes—15 times more than carrots and 44 times more than leafy greens.",
-      "When palm oil is heated past its smoke point (bleached), the beneficial tocotrienols oxidize into harmful lipid peroxides.",
-      "Proper technique: Add palm oil directly to simmering tomato or vegetable stock without pre-bleaching in a dry hot pot."
-    ],
-    takeaway: "Never bleach your red palm oil to smoke. Keep it vibrant orange-red to preserve potent Vitamin E tocotrienols.",
-    quiz: {
-      question: "Why should you avoid bleaching red palm oil until it turns clear and smoky?",
-      options: ["It makes the oil too sweet", "Bleaching oxidizes and destroys protective carotenoids and Vitamin E tocotrienols", "It increases vitamin C content", "It makes the soup freeze faster"],
-      correctIndex: 1,
-      explanation: "High-heat bleaching oxidizes healthy fatty acids and destroys heat-sensitive carotenoids."
+    "takeaway": "Flavor your soups with crayfish, iru, garlic, and ginger instead of multiple salt cubes.",
+    "quiz": {
+      "question": "What is the best natural swap to make soup savory without using extra salt cubes?",
+      "options": [
+        "Add double table salt",
+        "Use fermented locust beans (Iru) and dried crayfish",
+        "Add sugar",
+        "Use no spices at all"
+      ],
+      "correctIndex": 1,
+      "explanation": "Locust beans (Iru) and crayfish provide deep savory flavor that makes soups mouthwatering without salt."
     }
   },
   {
-    id: "lesson-20",
-    tier: 3,
-    tierName: "Cultural Biochemistry & Cooking",
-    title: "Fermented Superfoods: Iru, Ogiri & Dawadawa Probiotics",
-    category: "Gut & Fiber",
-    readTime: "90s Audio",
-    icon: "🧫",
-    headline: "Traditional fermented condiments cultivate Bacillus subtilis probiotics in your gut.",
-    audioScript: "Traditional African fermented seasonings—Iru from locust beans, Ogiri from melon/sesame seeds, and Dawadawa—are living fermentations. They contain Bacillus subtilis and prebiotic peptides that strengthen your gut microbiome, lower blood pressure, and boost immune resilience.",
-    storySlides: [
-      "Ancient African ancestral cooking always relied on biological alkaline fermentation to unlock bound amino acids.",
-      "Fermentation breaks down anti-nutrients (phytates and tannins) in raw seeds, releasing free zinc, iron, and magnesium for immediate absorption.",
-      "Bacillus subtilis probiotics survive harsh stomach acid to colonize the colon, producing natural antimicrobial bacteriocins."
+    "id": "lesson-18",
+    "tier": 2,
+    "tierName": "Heart & Blood Sugar Secrets ❤️",
+    "title": "Strong Bones After 45: Sesame Seeds & Green Ugwu",
+    "category": "Hormones & Longevity",
+    "readTime": "60s Audio",
+    "icon": "🦴",
+    "headline": "Sesame seeds (Beni-seed) and Ugwu leaves are loaded with natural calcium for strong bones and teeth.",
+    "audioScript": "As we pass age 45, our bones need extra calcium to stay strong and avoid fractures. Forget expensive dairy pills! African sesame seeds (Beni-seed) and fresh Ugwu leaves have more natural calcium than cow's milk. Sprinkle sesame seeds on your meals for rock-solid bones!",
+    "storySlides": [
+      "Bone loss happens quietly over the years, leading to backaches and weak posture.",
+      "Just two tablespoons of African sesame seeds (Beni-seed) contain more absorbable calcium than a whole glass of milk.",
+      "Cook Beni-seed soup or add crushed sesame seeds to your vegetable stews to keep your bones and teeth strong for life."
     ],
-    takeaway: "Use traditional fermented Iru, Ogiri, or Dawadawa as your primary soup flavoring foundation.",
-    quiz: {
-      question: "What beneficial probiotic microorganism is naturally cultivated during traditional locust bean (Iru) fermentation?",
-      options: ["Bacillus subtilis", "E. coli", "Salmonella", "Candida albicans"],
-      correctIndex: 0,
-      explanation: "Bacillus subtilis fermentation breaks down complex proteins and supports a healthy gut microbial barrier."
+    "takeaway": "Add sesame seeds (Beni-seed) and fresh Ugwu to your diet for strong bones after 45.",
+    "quiz": {
+      "question": "Which African seed is packed with natural calcium to protect your bones as you age?",
+      "options": [
+        "Bleached white rice",
+        "Sesame seeds (Beni-seed)",
+        "Crushed corn flakes",
+        "Fried plantain chips"
+      ],
+      "correctIndex": 1,
+      "explanation": "Sesame seeds are one of nature's richest plant sources of bone-strengthening calcium!"
     }
   },
   {
-    id: "lesson-21",
-    tier: 3,
-    tierName: "Cultural Biochemistry & Cooking",
-    title: "The Vascular Power of African Spices: Uda, Uziza & Ehuru",
-    category: "Heart & BP",
-    readTime: "90s Audio",
-    icon: "🌶️",
-    headline: "Ancient aromatic spices stimulate endothelial Nitric Oxide for smooth blood circulation.",
-    audioScript: "Spices like Uda (Negro pepper), Uziza (Piper guineense), and Ehuru (African nutmeg) contain rich essential oils (xylopic acid and alpha-pinene). They stimulate endothelial cells to release Nitric Oxide, promoting blood vessel dilation and reducing arterial stiffness.",
-    storySlides: [
-      "Traditional postpartum and wellness pepper soups were formulated for vascular regeneration and uterine muscle tone.",
-      "Xylopic acid in Uda displays potent antimicrobial, anti-inflammatory, and cardiovascular protective bioactivity.",
-      "Adding freshly ground Ehuru and Uziza to daily stews reduces reliance on table salt while invigorating peripheral blood circulation."
+    "id": "lesson-19",
+    "tier": 3,
+    "tierName": "Smart Kitchen & Cooking Tricks 🍲",
+    "title": "The Palm Oil Secret: Warm It Gently, Never Smoke It!",
+    "category": "Cooking Hacks",
+    "readTime": "60s Audio",
+    "icon": "🌴",
+    "headline": "Never bleach palm oil until smoke rises—unbleached red oil protects your eyes and heart!",
+    "audioScript": "Virgin red palm oil is one of the richest natural sources of Vitamin A and heart-protecting nutrients in the world. But when you bleach it until black smoke fills the kitchen, those precious vitamins are destroyed. Heat palm oil gently on low heat to keep all its healthy goodness!",
+    "storySlides": [
+      "Bright red palm oil gets its golden color from carotenoids, which are the same nutrients in carrots that protect your eyes and skin.",
+      "When oil is bleached on high heat until it smokes and turns clear, those healthy nutrients burn away into harmful smoke.",
+      "Warm your red palm oil gently on low heat, drop in your onions and iru, and keep all its natural heart-protecting vitamins!"
     ],
-    takeaway: "Season daily soups with ground Uda, Uziza, and Ehuru to naturally support nitric oxide vasodilation.",
-    quiz: {
-      question: "How do traditional African pepper soup spices like Uda and Uziza support cardiovascular health?",
-      options: ["They raise arterial resistance", "They stimulate endothelial Nitric Oxide production to dilate blood vessels", "They reduce heart rate to zero", "They eliminate oxygen from blood"],
-      correctIndex: 1,
-      explanation: "Essential oils in indigenous pepper soup spices promote endothelial vasodilation via nitric oxide release."
+    "takeaway": "Never bleach red palm oil until it smokes—keep it gently warmed and brightly colored.",
+    "quiz": {
+      "question": "Why should you avoid bleaching red palm oil until smoke rises?",
+      "options": [
+        "It makes the soup smell good",
+        "Smoking heat destroys all the natural heart and eye vitamins",
+        "It adds extra vitamins",
+        "It cools the kitchen down"
+      ],
+      "correctIndex": 1,
+      "explanation": "Bleaching palm oil on high heat burns away the red carotenoids and Vitamin E that protect your cells."
     }
   },
   {
-    id: "lesson-22",
-    tier: 3,
-    tierName: "Cultural Biochemistry & Cooking",
-    title: "Fonio & Ancient Grains: The Low-GI African Miracle",
-    category: "Glucose Science",
-    readTime: "90s Audio",
-    icon: "🌾",
-    headline: "Digitaria exilis (Fonio) has a lower glycemic index and 2x more sulfur amino acids than quinoa.",
-    audioScript: "Fonio is Africa’s oldest cultivated cereal. Naturally gluten-free, low-glycemic, and rich in methionine and cystine, it cooks in just 3 minutes. It is the ultimate super-grain replacement for high-glycemic white rice and refined couscous.",
-    storySlides: [
-      "Fonio grain has a low glycemic index (GI 49) due to its unique resistant starch matrix and high fiber structure.",
-      "It contains high concentrations of essential sulfur-containing amino acids (methionine and cysteine), which are deficient in wheat and corn.",
-      "You can steam Fonio like Jollof rice, make it into a breakfast porridge, or use it as a light, fluffy swallow."
+    "id": "lesson-20",
+    "tier": 3,
+    "tierName": "Smart Kitchen & Cooking Tricks 🍲",
+    "title": "Iru & Dawadawa: Ancient African Gut Helpers",
+    "category": "Gut & Fiber",
+    "readTime": "60s Audio",
+    "icon": "🧄",
+    "headline": "Fermented locust beans are packed with friendly tummy helpers that beat store-bought probiotics.",
+    "audioScript": "Before foreign probiotic yogurts existed, African grandmothers used Iru, Ogiri, and Dawadawa! The traditional fermentation process grows billions of friendly bacteria that heal your gut, stop bloating, and protect your heart arteries from calcium buildup.",
+    "storySlides": [
+      "Fermenting locust beans under banana leaves creates millions of beneficial spore-forming bacteria.",
+      "These friendly bacteria survive your strong stomach acid and travel deep into your intestines to clean out harmful germs.",
+      "Eating soups made with fresh Iru keeps your digestion regular, prevents gas, and supports whole-body health."
     ],
-    takeaway: "Swap white rice or couscous for nutrient-dense, low-glycemic African Fonio.",
-    quiz: {
-      question: "Why is Fonio an ideal staple grain for diabetics and metabolic health enthusiasts?",
-      options: ["It has zero nutrients", "It has a low glycemic index (GI ~49) and is rich in sulfur amino acids", "It converts immediately into glucose", "It requires 5 hours of cooking"],
-      correctIndex: 1,
-      explanation: "Fonio's low glycemic index and high prebiotic fiber content prevent postprandial glucose spikes."
+    "takeaway": "Add fermented Iru, Ogiri, or Dawadawa to your cooking for natural gut health.",
+    "quiz": {
+      "question": "What makes traditional fermented Iru so beneficial for your digestion?",
+      "options": [
+        "It is packed with friendly probiotic bacteria that heal your gut",
+        "It is full of sugar",
+        "It stops your stomach from working",
+        "It has no nutritional value"
+      ],
+      "correctIndex": 1,
+      "explanation": "Fermented locust beans are loaded with friendly probiotic bacteria that support healthy digestion!"
     }
   },
   {
-    id: "lesson-23",
-    tier: 3,
-    tierName: "Cultural Biochemistry & Cooking",
-    title: "Frying vs. Air-Frying: Advanced Glycation End-Products (AGEs)",
-    category: "Cooking Hacks",
-    readTime: "90s Audio",
-    icon: "🍌",
-    headline: "Deep-frying ripe plantain (Dodo) generates AGE toxins that stiffen blood vessels.",
-    audioScript: "When sweet ripe plantain is deep-fried in reused cooking oil at high temperatures, free fructose reacts with proteins to form Advanced Glycation End-products (AGEs). Air-frying or oven-roasting sweet plantain (Boli) reduces AGE formation by over 70 percent.",
-    storySlides: [
-      "Advanced Glycation End-products cross-link with vascular collagen, making arteries rigid and driving kidney microvascular damage.",
-      "Reusing vegetable oil multiple times at roadside stands creates toxic lipid peroxides and trans-fats.",
-      "Smarter alternatives: Oven-baked Boli with pepper sauce, or lightly air-fried plantain cubes brushed with virgin olive oil."
+    "id": "lesson-21",
+    "tier": 3,
+    "tierName": "Smart Kitchen & Cooking Tricks 🍲",
+    "title": "Aromatic Spices: Uda, Uziza & African Nutmeg",
+    "category": "Heart & BP",
+    "readTime": "60s Audio",
+    "icon": "✨",
+    "headline": "These rich traditional seeds open up blood flow and keep your heart pumping smoothly.",
+    "audioScript": "West African aromatic seeds like Uda pods, Uziza peppercorns, and Ehuru (Calabash Nutmeg) do more than make food smell incredible. They contain natural plant oils that help your arteries widen, making it easier for your heart to pump blood with less effort.",
+    "storySlides": [
+      "Traditional market spices were used for centuries as both seasoning and medicine.",
+      "Uziza seeds contain natural piperine, which boosts how well your body absorbs minerals from food.",
+      "Grind a blend of Ehuru, Uziza, and Uda into your weekend fish or vegetable stews for aromatic warmth and relaxed circulation."
     ],
-    takeaway: "Choose oven-roasted Boli or air-fried plantain over deep-fried dodo in reused commercial oil.",
-    quiz: {
-      question: "What harmful compounds are generated when sweet plantain is deep-fried in reused commercial oil?",
-      options: ["Advanced Glycation End-products (AGEs) and lipid peroxides", "Vitamin D3", "Omega-3 fatty acids", "Probiotics"],
-      correctIndex: 0,
-      explanation: "High-heat deep frying of sugars and proteins produces toxic AGEs that accelerate vascular aging."
+    "takeaway": "Cook with traditional Uda, Uziza, and Ehuru spices for relaxed blood vessels.",
+    "quiz": {
+      "question": "What is a major health benefit of adding Uziza and Uda spices to your cooking?",
+      "options": [
+        "They cause heartburn",
+        "They contain natural oils that help blood vessels relax and widen",
+        "They increase blood pressure",
+        "They replace all food"
+      ],
+      "correctIndex": 1,
+      "explanation": "Traditional aromatic seeds help your blood vessels stay relaxed and flexible for easy blood flow."
     }
   },
   {
-    id: "lesson-24",
-    tier: 3,
-    tierName: "Cultural Biochemistry & Cooking",
-    title: "Bone Broth & Collagen: Cow Leg & Fish Pepper Soup",
-    category: "Arthritis & Joints",
-    readTime: "90s Audio",
-    icon: "🥣",
-    headline: "Slow-simmered cow leg and bone cartilage provide natural Type-II collagen and glycine.",
-    audioScript: "Traditional slow-cooked pepper soups made with cow foot (Nkwobi base), goat bone, and fish heads extract rich Type-I and Type-II collagen into the broth. Consuming glycine from bone broth repairs the gut mucosal barrier and improves joint elasticity.",
-    storySlides: [
-      "Slow simmering over 3 to 4 hours dissolves connective collagen into easily absorbed bioavailable gelatin peptides.",
-      "Glycine is an inhibitory neurotransmitter that promotes deeper non-REM sleep, lowers nighttime body temperature, and protects gut integrity.",
-      "Skim excess floating saturated fat from the surface while keeping the gelatin-rich, mineral-dense broth."
+    "id": "lesson-22",
+    "tier": 3,
+    "tierName": "Smart Kitchen & Cooking Tricks 🍲",
+    "title": "Fonio: The Ancient African Super-Grain",
+    "category": "Glucose Science",
+    "readTime": "60s Audio",
+    "icon": "🌾",
+    "headline": "Fonio cooks in 3 minutes, tastes like couscous, and won't spike your sugar like white rice!",
+    "audioScript": "Meet Fonio, Africa's oldest cultivated grain! It cooks in just 3 minutes, tastes fluffy and nutty, and has twice the healthy fiber of white rice. Because it digests slowly, people with blood sugar concerns can enjoy it without any afternoon crashes.",
+    "storySlides": [
+      "Fonio has been grown in West Africa for over 5,000 years, often called 'the seed of the universe'.",
+      "Unlike modern polished white rice, Fonio is naturally gluten-free and packed with natural sulfur amino acids that keep hair and nails strong.",
+      "Steam it just like couscous or Jollof rice for a delicious, light dinner that keeps your sugar perfectly calm."
     ],
-    takeaway: "Slow-simmer traditional bone broths for rich natural collagen, glycine, and joint lubrication.",
-    quiz: {
-      question: "What key amino acid in slow-simmered bone broth supports gut repair and restful sleep?",
-      options: ["Glycine", "Caffeine", "MSG", "Sucrose"],
-      correctIndex: 0,
-      explanation: "Glycine supports connective tissue collagen synthesis, gut epithelial repair, and sleep quality."
+    "takeaway": "Try swapping white rice for Fonio once or twice a week for calm, steady energy.",
+    "quiz": {
+      "question": "Why is Fonio an excellent alternative to white rice?",
+      "options": [
+        "It has lots of refined sugar",
+        "It has twice the fiber, digests slowly, and doesn't cause big sugar spikes",
+        "It takes 2 hours to cook",
+        "It has no taste"
+      ],
+      "correctIndex": 1,
+      "explanation": "Fonio is rich in gentle fiber that digests slowly, keeping blood sugar smooth and steady."
     }
   },
   {
-    id: "lesson-25",
-    tier: 3,
-    tierName: "Cultural Biochemistry & Cooking",
-    title: "Plantain Maturity Stages: Green vs. Yellow Biochemistry",
-    category: "Glucose Science",
-    readTime: "90s Audio",
-    icon: "🍌",
-    headline: "Green plantain is 80% resistant starch; ripe yellow plantain is 80% simple free sugars.",
-    audioScript: "The metabolic impact of plantain changes completely as it ripens. Unripe green plantain is packed with prebiotic resistant starch that stabilizes blood sugar. Over-ripe yellow plantain converts almost all its starch into fast-absorbing sucrose, fructose, and glucose.",
-    storySlides: [
-      "Unripe green plantain has a Glycemic Index of ~40. It feeds beneficial Bifidobacteria in your colon and produces zero sugar spike.",
-      "As enzymes break down starch during ripening, the GI climbs above 70 in soft, spotted yellow plantain.",
-      "Clinical strategy: If you have diabetes or insulin resistance, prioritize green plantain flour, boiled green plantain, or semi-ripe plantain."
+    "id": "lesson-23",
+    "tier": 3,
+    "tierName": "Smart Kitchen & Cooking Tricks 🍲",
+    "title": "Frying vs Baking: Better Ways to Cook Dodo",
+    "category": "Cooking Hacks",
+    "readTime": "60s Audio",
+    "icon": "🍌",
+    "headline": "Deep-frying plantains in burnt oil makes them heavy; light pan-tossing keeps them light and sweet!",
+    "audioScript": "We all love fried plantain (Dodo)! But when ripe plantains are soaked in deep, burnt oil, they soak up hundreds of extra fat calories and inflammatory toxins. Try slicing them into an air-fryer or lightly brushing them with oil in an oven. You get all the sweet taste with none of the grease!",
+    "storySlides": [
+      "Ripe yellow plantains are sweet because their natural starch has turned into sugar.",
+      "When dropped into very hot bubbling oil, that sugar browns quickly, soaking up oil like a sponge.",
+      "Brushing plantain cubes with just one teaspoon of oil and baking or air-frying them keeps them sweet, golden, and super light on your tummy."
     ],
-    takeaway: "Choose unripe green or semi-ripe plantain for diabetes management and gut microbiome health.",
-    quiz: {
-      question: "What happens to the carbohydrate structure of plantain as it ripens from green to yellow?",
-      options: ["It turns into pure protein", "Prebiotic resistant starch converts into fast-absorbing simple sugars", "The fiber triples", "It loses all calories"],
-      correctIndex: 1,
-      explanation: "Enzymatic ripening converts complex resistant starch chains into simple fructose and glucose."
+    "takeaway": "Bake or air-fry ripe plantain slices with a drop of oil instead of deep-frying in grease.",
+    "quiz": {
+      "question": "What is the healthiest way to prepare sweet golden Dodo?",
+      "options": [
+        "Soak it in re-used black motor oil",
+        "Air-fry or oven-bake slices with a light brush of healthy oil",
+        "Eat it raw with sugar",
+        "Deep-fry it for 30 minutes"
+      ],
+      "correctIndex": 1,
+      "explanation": "Baking or air-frying with a little oil gives you sweet golden plantain without excess burnt grease."
     }
   },
   {
-    id: "lesson-26",
-    tier: 3,
-    tierName: "Cultural Biochemistry & Cooking",
-    title: "Wild Herbs & Micronutrients: Afang, Utazi & Oha Leaves",
-    category: "Gut & Fiber",
-    readTime: "90s Audio",
-    icon: "🍃",
-    headline: "Indigenous African wild leaves contain up to 8x more zinc, iron, and polyphenols.",
-    audioScript: "Afang (Gnetum africanum), Utazi (Gongronema latifolium), and Oha (Pterocarpus soyauxii) are wild-harvested forest leaves with incredible therapeutic properties. Utazi contains natural hypoglycemic saponins, while Afang is dense in insoluble dietary fiber.",
-    storySlides: [
-      "Cultivated hybrid vegetables often lose micronutrient density. Wild African greens maintain rich mineral concentrations.",
-      "Gongronema latifolium (Utazi) is traditionally chewed after meals to stimulate digestive bile and reduce postprandial hyperglycemia.",
-      "Oha leaves provide natural mucilaginous fiber and potent flavonoid antioxidants (quercetin and kaempferol)."
+    "id": "lesson-24",
+    "tier": 3,
+    "tierName": "Smart Kitchen & Cooking Tricks 🍲",
+    "title": "Cow Leg & Fish Pepper Soup for Strong Knees",
+    "category": "Arthritis & Joints",
+    "readTime": "60s Audio",
+    "icon": "🍲",
+    "headline": "Slow-cooked cow leg and fish heads make rich natural broth that cushions your knees and hips.",
+    "audioScript": "Did you know that traditional Nigerian bone broths are full of natural collagen? When you slow-simmer cow leg, fish heads, or bone broth with peppersoup spices, the joints release gelatin that helps rebuild the cushions between your knees and hips.",
+    "storySlides": [
+      "Cartilage between your bones naturally wears down over time, causing knee stiffness.",
+      "Simmering bone joints and cow leg gently on low heat draws out natural collagen and minerals into the broth.",
+      "Sipping this delicious warm broth feeds your joints from the inside out, keeping your skin firm and your walk springy!"
     ],
-    takeaway: "Diversify your soups with authentic wild leaves like Afang, Utazi, and Oha for micronutrient defense.",
-    quiz: {
-      question: "Which bitter wild leaf is traditionally used across West Africa for its blood sugar lowering saponins?",
-      options: ["Utazi (Gongronema latifolium)", "Iceberg Lettuce", "White Cabbage", "Cucumber skin"],
-      correctIndex: 0,
-      explanation: "Utazi leaves are packed with bioactive saponins and flavonoids that improve insulin sensitivity."
+    "takeaway": "Sip slow-simmered bone or fish pepper soup to naturally nourish your joint cushions.",
+    "quiz": {
+      "question": "What natural joint-soothing nutrient is found in slow-simmered cow leg and bone broth?",
+      "options": [
+        "Refined table sugar",
+        "Natural collagen and gelatin that cushion joint bones",
+        "Artificial chemical coloring",
+        "Motor oil"
+      ],
+      "correctIndex": 1,
+      "explanation": "Slow-cooked bone broth releases natural collagen and gelatin that support healthy, pain-free joints!"
     }
   },
   {
-    id: "lesson-27",
-    tier: 3,
-    tierName: "Cultural Biochemistry & Cooking",
-    title: "Safe Salt Swaps: Potassium Salt & Herbal Seasoning Blends",
-    category: "Heart & BP",
-    readTime: "90s Audio",
-    icon: "🧂",
-    headline: "Reducing dietary sodium by 1,000mg daily drops stroke risk by 23%.",
-    audioScript: "Excess sodium intake is the single largest dietary driver of stroke and hypertension across the African diaspora. By blending potassium-rich salt substitutes with dried garlic, ginger, crayfish, and rosemary, you maintain full savory flavor without raising your blood pressure.",
-    storySlides: [
-      "The body requires a balanced 2:1 Potassium-to-Sodium ratio. Modern processed diets have inverted this to 1:4 Sodium-to-Potassium.",
-      "Low-sodium mineral salts replace 50% of sodium chloride with potassium chloride, delivering direct arterial relaxation.",
-      "Herbal seasonings (thyme, rosemary, dried bay leaf, crushed Ehuru) trick taste buds by enhancing aroma and umami perception."
+    "id": "lesson-25",
+    "tier": 3,
+    "tierName": "Smart Kitchen & Cooking Tricks 🍲",
+    "title": "Green Plantain vs Sweet Yellow Plantain",
+    "category": "Glucose Science",
+    "readTime": "60s Audio",
+    "icon": "🍌",
+    "headline": "Green unripe plantain is nature's fiber champion; enjoy ripe yellow plantain in small portions!",
+    "audioScript": "Here is an easy rule for plantains: the greener it is, the more healthy fiber it has! Green unripe plantain doesn't spike your blood sugar at all because it is packed with resistant starch. Ripe yellow plantain is delicious, but treat it like a sweet treat in smaller portions.",
+    "storySlides": [
+      "As a plantain ripens and turns yellow with black spots, its starch turns into simple fruit sugar.",
+      "Green unripe plantain is almost 80% resistant starch—it acts like a broom in your digestive tract and keeps your blood sugar flat.",
+      "Boil green plantain with fish and vegetables for dinner, and save sweet fried dodo for special weekend lunches!"
     ],
-    takeaway: "Use potassium-enhanced mineral salts and rich herbal seasonings to protect your cardiovascular system.",
-    quiz: {
-      question: "What is the healthy ideal dietary ratio of Potassium to Sodium for blood pressure regulation?",
-      options: ["10:1 Sodium to Potassium", "2:1 Potassium to Sodium", "1:100 Potassium to Sodium", "Zero Potassium"],
-      correctIndex: 1,
-      explanation: "Consuming twice as much potassium as sodium prompts kidneys to excrete excess fluid and relax arterial walls."
-    }
-  },
-
-  // --------------------------------------------------------------------------
-  // TIER 4: LONGEVITY, FASTING & CIRCADIAN BIO-HACKING (Lessons 28 - 36)
-  // --------------------------------------------------------------------------
-  {
-    id: "lesson-28",
-    tier: 4,
-    tierName: "Longevity, Fasting & Circadian Bio-Hacking",
-    title: "Taming the Dawn Phenomenon: The High-Protein Bedtime Snack",
-    category: "Glucose Science",
-    readTime: "90s Audio",
-    icon: "🌅",
-    headline: "Why your morning fasting blood sugar is high even when you didn't eat dinner.",
-    audioScript: "The Dawn Phenomenon occurs when your liver releases stored glucose (glycogenolysis) between 4 AM and 8 AM triggered by morning cortisol surges. Eating a small high-protein snack before bed—like 1 boiled egg or 3 spoons of Greek yogurt—signals the liver to suppress overnight glucose output.",
-    storySlides: [
-      "Many diabetics wake up to fasting glucose numbers of 140+ mg/dL despite eating zero carbs the night before.",
-      "During early morning hours, cortisol, growth hormone, and glucagon surge to prepare you for waking, prompting the liver to dump glucose.",
-      "Consuming 10g of clean protein with healthy fats 45 minutes before sleep keeps basal insulin steady and prevents liver hepatic glucose dumps."
-    ],
-    takeaway: "Try a bedtime snack of 1 boiled egg or a spoonful of almond butter to blunt morning fasting glucose spikes.",
-    quiz: {
-      question: "What organ is responsible for dumping stored glucose during early morning hours in the Dawn Phenomenon?",
-      options: ["The Liver (via hepatic glycogenolysis)", "The Lungs", "The Spleen", "The Gallbladder"],
-      correctIndex: 0,
-      explanation: "The liver releases stored glycogen in response to morning cortisol and growth hormone surges."
+    "takeaway": "Choose green unripe plantains for steady blood sugar, and enjoy ripe plantains in moderation.",
+    "quiz": {
+      "question": "Which type of plantain has the most fiber and the lowest impact on blood sugar?",
+      "options": [
+        "Overripe sweet yellow plantain",
+        "Green unripe plantain",
+        "Plantain fried in old oil",
+        "Candied plantain"
+      ],
+      "correctIndex": 1,
+      "explanation": "Green unripe plantain is full of resistant starch that bypasses quick sugar absorption."
     }
   },
   {
-    id: "lesson-29",
-    tier: 4,
-    tierName: "Longevity, Fasting & Circadian Bio-Hacking",
-    title: "16/8 Intermittent Fasting with African Dishes",
-    category: "Hormones & Longevity",
-    readTime: "90s Audio",
-    icon: "⏳",
-    headline: "Aligning your 8-hour eating window triggers autophagy and cellular mitochondrial renewal.",
-    audioScript: "Intermittent Fasting (16 hours fasting, 8 hours eating) gives your digestive system a break, lowering baseline insulin and activating cellular autophagy. An ideal African fasting window is 11 AM to 7 PM, breaking your fast with protein-rich Akara or boiled eggs rather than heavy starch.",
-    storySlides: [
-      "During the 16-hour fasting window, liver glycogen depletes and your body switches to burning visceral body fat for fuel (ketogenesis).",
-      "Autophagy cleans out damaged cellular proteins, misfolded enzymes, and senescent zombie cells.",
-      "Break your fast gently: Start with water, bone broth, or egg and avocado. Save your complex swallow or rice for your second meal."
+    "id": "lesson-26",
+    "tier": 3,
+    "tierName": "Smart Kitchen & Cooking Tricks 🍲",
+    "title": "Afang, Utazi & Oha: Forest Greens for Strong Blood",
+    "category": "Gut & Fiber",
+    "readTime": "60s Audio",
+    "icon": "🍃",
+    "headline": "These wild forest leaves have way more iron and zinc than imported lettuce!",
+    "audioScript": "African forest leaves like Afang (Okazi), Oha, and Utazi are packed with minerals that build strong blood and fight tiredness. They contain up to eight times more iron and zinc than imported iceberg lettuce! Eat your indigenous greens with pride.",
+    "storySlides": [
+      "Many people think imported vegetables are healthier, but African wild greens are true nutritional kings.",
+      "Afang leaves are tough and fibrous, giving your gut a powerful workout and delivering rich iron for energy.",
+      "Toss shredded Utazi or Oha leaves into your soups at the very end of cooking to preserve their vibrant green vitamins."
     ],
-    takeaway: "Fast for 16 hours, eat within an 8-hour window, and break your fast with clean protein and fiber.",
-    quiz: {
-      question: "What cellular rejuvenation process is triggered during a 16-hour intermittent fast?",
-      options: ["Autophagy (cellular cleanup and recycling)", "Immediate muscle wasting", "Permanent dehydration", "Glycogen overload"],
-      correctIndex: 0,
-      explanation: "Autophagy clears out dysfunctional cellular debris and enhances mitochondrial metabolic efficiency."
+    "takeaway": "Enjoy wild greens like Afang, Oha, and Utazi for strong blood and natural iron.",
+    "quiz": {
+      "question": "Why are indigenous greens like Afang and Oha superior to imported pale lettuce?",
+      "options": [
+        "They have no vitamins at all",
+        "They contain up to 8 times more iron, zinc, and fiber for strong blood",
+        "They turn into sugar",
+        "They are too soft"
+      ],
+      "correctIndex": 1,
+      "explanation": "Wild African greens are packed with rich iron, zinc, and active plant nutrients that keep blood strong."
     }
   },
   {
-    id: "lesson-30",
-    tier: 4,
-    tierName: "Longevity, Fasting & Circadian Bio-Hacking",
-    title: "The 10-Minute Post-Swallow Walk: GLUT-4 Muscle Uptake",
-    category: "Glucose Science",
-    readTime: "90s Audio",
-    icon: "🚶‍♂️",
-    headline: "Walking for just 10 minutes right after your swallow meal pulls glucose into muscles without insulin.",
-    audioScript: "When you walk immediately after eating a meal, your contracting leg muscles activate GLUT-4 glucose transporters directly. This pulls glucose out of your bloodstream independent of insulin, cutting postprandial glucose spikes by up to 35 percent.",
-    storySlides: [
-      "Sitting on the couch or sleeping immediately after a heavy swallow meal traps glucose in your bloodstream.",
-      "Muscle contraction acts like an insulin bypass: mechanical tension translocates GLUT-4 channels to cell membranes.",
-      "A simple 10-minute leisurely stroll around your compound or living room is clinically as effective as oral diabetes medication."
+    "id": "lesson-27",
+    "tier": 3,
+    "tierName": "Smart Kitchen & Cooking Tricks 🍲",
+    "title": "Natural Seasoning Secrets: Deep Flavor Without High Salt",
+    "category": "Heart & BP",
+    "readTime": "60s Audio",
+    "icon": "🧂",
+    "headline": "Blend dry crayfish, iru, onion powder, and ginger to replace commercial salt cubes.",
+    "audioScript": "Want a secret blend that makes every pot of soup taste like a luxury restaurant? Blend dry crayfish, fermented iru, garlic powder, onion powder, and a touch of black pepper into an airtight jar. Use a spoonful in place of commercial salt cubes—your heart will thank you!",
+    "storySlides": [
+      "Most commercial stock cubes are loaded with hidden sodium that makes your blood pressure climb silently.",
+      "By blending dried crayfish, dried iru, onion, garlic, and dried rosemary, you create an all-natural savory powder.",
+      "It adds rich golden color and deep Nigerian flavor to rice, beans, and soups with only a fraction of the salt."
     ],
-    takeaway: "Commit to a 10-minute post-meal walk after your largest meal of the day.",
-    quiz: {
-      question: "How does a 10-minute walk immediately after eating lower blood sugar without extra insulin?",
-      options: ["It burns all calories instantly", "Muscle contractions mechanically activate GLUT-4 glucose transporters", "It freezes the stomach", "It eliminates stomach acid"],
-      correctIndex: 1,
-      explanation: "Contracting skeletal muscles translocate GLUT-4 transporters to cell surfaces, absorbing glucose without insulin."
+    "takeaway": "Make your own homemade jar of crayfish and iru seasoning to cut excess salt.",
+    "quiz": {
+      "question": "What natural ingredients can you blend together to replace salty commercial seasoning cubes?",
+      "options": [
+        "White sugar and white flour",
+        "Dry crayfish, fermented Iru, garlic, onion, and black pepper",
+        "Pure salt crystals",
+        "Soft drinks"
+      ],
+      "correctIndex": 1,
+      "explanation": "Blending crayfish, iru, garlic, and onion gives you rich natural flavor without dangerous high sodium."
     }
   },
   {
-    id: "lesson-31",
-    tier: 4,
-    tierName: "Longevity, Fasting & Circadian Bio-Hacking",
-    title: "Cortisol & Night Swallows: Why Late Heavy Eba Disrupts Deep Sleep",
-    category: "Hormones & Longevity",
-    readTime: "90s Audio",
-    icon: "🌙",
-    headline: "Eating massive carbohydrate meals past 8:30 PM halts nighttime growth hormone and Melatonin.",
-    audioScript: "Digestive thermogenesis from heavy starches late at night elevates core body temperature and spikes insulin. This suppresses natural nocturnal Melatonin and Human Growth Hormone (HGH) release, causing micro-awakenings, poor sleep quality, and high morning blood pressure.",
-    storySlides: [
-      "Deep Stage-3 slow-wave sleep requires core body temperature to drop by approximately 1°C.",
-      "Digesting a massive ball of Eba or Pounded Yam at 9:30 PM forces the gastrointestinal tract to generate heat and elevates heart rate by 10-15 beats per minute.",
-      "Solution: Eat dinner at least 3 hours before sleep. If eating late, choose light fish pepper soup, steamed vegetables, or grilled chicken."
+    "id": "lesson-28",
+    "tier": 4,
+    "tierName": "Healthy Habits for Long Life 👑",
+    "title": "Why Morning Blood Sugar Rises & The Bedtime Egg Trick",
+    "category": "Glucose Science",
+    "readTime": "60s Audio",
+    "icon": "🥚",
+    "headline": "Eating a boiled egg or a spoonful of peanut butter before bed prevents morning sugar spikes!",
+    "audioScript": "Have you ever woken up with high blood sugar even when you didn't eat dinner? That is your liver releasing stored sugar around 4 AM to wake you up! A simple trick to keep it calm is eating one boiled egg or a spoonful of peanut butter right before bed.",
+    "storySlides": [
+      "In the early hours before dawn, your liver releases a burst of glucose to give your body morning energy.",
+      "If your liver is running on empty, it over-reacts and dumps too much sugar into your blood by 7 AM.",
+      "Eating a boiled egg or a spoon of pure peanut butter at bedtime provides slow, gentle protein that keeps your liver calm all night."
     ],
-    takeaway: "Finish heavy starch swallows by 7:00 PM; keep late-night dining light and protein-focused.",
-    quiz: {
-      question: "Why does eating a heavy swallow dinner immediately before bed harm sleep quality?",
-      options: ["It turns you into an early bird", "It elevates core body temperature and spikes nighttime insulin, suppressing deep sleep", "It permanently cures insomnia", "It lowers blood pressure to zero"],
-      correctIndex: 1,
-      explanation: "Late digestion elevates core body temperature and heart rate, preventing restorative slow-wave sleep."
+    "takeaway": "Eat a boiled egg or a spoonful of peanut butter before bed to keep morning sugar steady.",
+    "quiz": {
+      "question": "Why does a boiled egg before bedtime help keep morning blood sugar calm?",
+      "options": [
+        "It makes you stay awake all night",
+        "Its slow protein and healthy fat keep your liver from dumping excess sugar before dawn",
+        "It turns into candy",
+        "It does nothing"
+      ],
+      "correctIndex": 1,
+      "explanation": "A small high-protein snack before bed keeps your liver steady, preventing the early morning sugar spike."
     }
   },
   {
-    id: "lesson-32",
-    tier: 4,
-    tierName: "Longevity, Fasting & Circadian Bio-Hacking",
-    title: "GLP-1 & Peptide Cascades with African Fish & Awara",
-    category: "Hormones & Longevity",
-    readTime: "90s Audio",
-    icon: "🐟",
-    headline: "How bioavailable marine peptides and soy Awara trigger natural gastric slowing.",
-    audioScript: "Pharmaceutical GLP-1 agonists mimic natural gut hormones. You can stimulate your body's own GLP-1, Cholecystokinin (CCK), and PYY by pairing intact dietary proteins like grilled Titus fish, catfish, and Awara with soluble mucilage fibers.",
-    storySlides: [
-      "Marine peptides from wild African fish trigger intense enteroendocrine signaling along the ileum.",
-      "When combined with viscous vegetable fiber, gastric transit slows down naturally, keeping you full for 5+ hours with zero food noise.",
-      "This natural peptide surge preserves lean muscle mass while accelerating visceral belly fat reduction."
+    "id": "lesson-29",
+    "tier": 4,
+    "tierName": "Healthy Habits for Long Life 👑",
+    "title": "Simple Fasting With African Dishes: The 8-Hour Eating Window",
+    "category": "Cooking Hacks",
+    "readTime": "60s Audio",
+    "icon": "⏰",
+    "headline": "Giving your tummy a 14-to-16 hour rest overnight lets your body clean out old cells and burn fat.",
+    "audioScript": "Intermittent fasting is not about starving—it simply means giving your tummy a peaceful break! Try eating your meals within an 8-hour window, like 11 AM to 7 PM. During the 16 hours of rest overnight, your body cleans out old cells and burns stored belly fat.",
+    "storySlides": [
+      "When we constantly snack late into the night, our digestion never gets a chance to rest and repair.",
+      "Fast overnight for 14 to 16 hours (for example, stop eating by 7 PM and break your fast at 11 AM next day).",
+      "During this resting window, your cells perform natural housekeeping, cleaning out waste and restoring insulin sensitivity."
     ],
-    takeaway: "Build every meal around a solid anchor of African fish, lean poultry, or soy Awara.",
-    quiz: {
-      question: "What combination of nutrients produces the strongest natural satiety peptide (GLP-1/PYY) response?",
-      options: ["Pure table sugar and alcohol", "Intact dietary protein combined with soluble mucilage fiber", "Refined white flour alone", "Zero-protein high-fat snacks"],
-      correctIndex: 1,
-      explanation: "Amino acids combined with viscous soluble fiber maximize enteroendocrine L-cell hormone secretion."
+    "takeaway": "Eat between 11 AM and 7 PM, and let your digestive system rest overnight.",
+    "quiz": {
+      "question": "What is the main benefit of resting your digestive system for 14-16 hours overnight?",
+      "options": [
+        "You lose all muscle",
+        "Your body gets a chance to clean out old cell waste and burn stored fat",
+        "Your stomach stops working permanently",
+        "You become dehydrated"
+      ],
+      "correctIndex": 1,
+      "explanation": "Overnight fasting gives your body the quiet time it needs to repair cells and balance your metabolism."
     }
   },
   {
-    id: "lesson-33",
-    tier: 4,
-    tierName: "Longevity, Fasting & Circadian Bio-Hacking",
-    title: "Gut Microbiome Diversity: The 30+ African Plant Variety Rule",
-    category: "Gut & Fiber",
-    readTime: "90s Audio",
-    icon: "🌱",
-    headline: "People who eat 30 different plant varieties per week have 5x more longevity-associated gut flora.",
-    audioScript: "The American Gut Project proved that the single greatest predictor of a healthy microbiome is plant diversity. Across West Africa, our culinary heritage provides dozens of wild leaves, spices, beans, seeds, and tubers. Eating 30 unique plants weekly fuels diverse bacterial species that produce longevity metabolites.",
-    storySlides: [
-      "Every plant contains unique polyphenols, insoluble fibers, and resistant starches that feed specific bacterial strains.",
-      "African heritage ingredients make hitting 30 easy: Ugwu, Bitter leaf, Okra, Ogbono, Egusi, Iru, Ginger, Garlic, Uda, Uziza, Ehuru, Fonio, Brown beans, Sweet potato, and Zobo count toward your weekly total.",
-      "A diverse microbiome strengthens the intestinal epithelial wall and dramatically lowers systemic chronic inflammation."
+    "id": "lesson-30",
+    "tier": 4,
+    "tierName": "Healthy Habits for Long Life 👑",
+    "title": "The 10-Minute Walk After Swallow Meals",
+    "category": "Glucose Science",
+    "readTime": "60s Audio",
+    "icon": "🚶‍♂️",
+    "headline": "A relaxed 10-minute walk right after your eba or rice uses up food energy before it turns to fat.",
+    "audioScript": "Here is the easiest health secret in the world: after you finish your lunch or dinner swallow, do not lie down on the sofa immediately! Take a gentle 10-minute stroll around your compound or living room. Your leg muscles will soak up the food sugar without needing extra insulin!",
+    "storySlides": [
+      "Sitting or sleeping immediately after a heavy meal allows glucose to build up in your bloodstream.",
+      "When you walk for just 10 minutes, your leg muscles act like sponges, soaking up sugar directly from your blood to use as walking fuel.",
+      "This simple walk cuts your post-meal blood sugar by up to 30% and completely prevents that heavy afternoon food coma."
     ],
-    takeaway: "Count your plant diversity weekly; aim for 30 distinct African vegetables, spices, grains, and seeds.",
-    quiz: {
-      question: "What weekly dietary goal is most strongly linked to rich gut bacterial diversity and longevity?",
-      options: ["Eating only 1 single food item every day", "Consuming 30 or more diverse plant foods (greens, herbs, spices, seeds) weekly", "Drinking 10 liters of soda", "Avoiding all vegetables"],
-      correctIndex: 1,
-      explanation: "Consuming 30+ diverse plant varieties feeds diverse microbial colonies in the colon."
+    "takeaway": "Take a calm 10-minute walk immediately after your main meals.",
+    "quiz": {
+      "question": "Why does walking for 10 minutes right after eating swallow meals help your body?",
+      "options": [
+        "It makes you hungry immediately",
+        "Your working muscles soak up blood sugar for energy without straining your system",
+        "It makes food spoil in your stomach",
+        "It has no purpose"
+      ],
+      "correctIndex": 1,
+      "explanation": "Active muscles pull sugar straight out of your bloodstream to use as fuel, stopping glucose spikes!"
     }
   },
   {
-    id: "lesson-34",
-    tier: 4,
-    tierName: "Longevity, Fasting & Circadian Bio-Hacking",
-    title: "Blood Pressure Circadian Rhythms: Morning vs. Evening Potassium",
-    category: "Heart & BP",
-    readTime: "90s Audio",
-    icon: "❤️",
-    headline: "Optimizing the timing of your potassium-rich meals to prevent nocturnal non-dipping hypertension.",
-    audioScript: "Healthy blood pressure should naturally dip by 10 to 20% during sleep. In individuals with 'non-dipping' hypertension, nighttime blood pressure remains high. Consuming potassium-rich vegetables (Ugwu and Waterleaf) at dinner prompts nighttime renal sodium excretion, restoring healthy nocturnal dipping.",
-    storySlides: [
-      "Non-dipping hypertension is a major risk factor for early morning hemorrhagic strokes and heart failure.",
-      "Kidneys follow a strict circadian clock: evening potassium prompts distal tubules to dump sodium while you sleep.",
-      "Enjoying a rich vegetable-dense dinner lowers vascular tension and protects cerebral vessels overnight."
+    "id": "lesson-31",
+    "tier": 4,
+    "tierName": "Healthy Habits for Long Life 👑",
+    "title": "Why Late-Night Eba Ruins Deep Sleep",
+    "category": "Cooking Hacks",
+    "readTime": "60s Audio",
+    "icon": "🌙",
+    "headline": "Eating heavy swallow past 8:30 PM makes your stomach work overtime while you sleep—eat lighter at night!",
+    "audioScript": "Eating a massive ball of swallow at 9 PM forces your stomach and heart to work hard all night long while you try to sleep! This raises your resting pulse and leaves you waking up tired and heavy. If you eat late, choose light pepper soup or steamed fish with vegetables instead.",
+    "storySlides": [
+      "Your body temperature and digestion naturally slow down at night to prepare for deep, healing sleep.",
+      "Dumping heavy starchy swallows into your stomach late at night keeps your body temperature hot and disrupts deep sleep.",
+      "Eat your heavy swallows for lunch, and enjoy lighter soups, steamed fish, or light pap if you eat dinner late."
     ],
-    takeaway: "Front-load rich leafy green vegetables in your evening dinner to support healthy nocturnal BP dipping.",
-    quiz: {
-      question: "What is 'nocturnal dipping' in healthy blood pressure circadian biology?",
-      options: ["A 10-20% natural reduction in blood pressure during nighttime sleep", "Blood pressure spiking to 200 mmHg at midnight", "Complete stopping of blood circulation", "A drop in body weight"],
-      correctIndex: 0,
-      explanation: "Healthy cardiovascular circadian biology features a 10-20% drop in blood pressure during sleep."
+    "takeaway": "Eat heavy swallows earlier in the day, and keep dinner light and soup-based after 8 PM.",
+    "quiz": {
+      "question": "What is the best type of meal to eat if you are eating dinner late at night?",
+      "options": [
+        "Two giant wraps of pounded yam with extra oil",
+        "A light bowl of fish pepper soup or steamed vegetable soup",
+        "A plate of deep-fried dough",
+        "Lots of sweet soda"
+      ],
+      "correctIndex": 1,
+      "explanation": "Light soups and steamed fish digest easily so your body can rest deeply throughout the night."
     }
   },
   {
-    id: "lesson-35",
-    tier: 4,
-    tierName: "Longevity, Fasting & Circadian Bio-Hacking",
-    title: "Longevity Bio-Markers: Fasting Insulin, Triglycerides & eA1c",
-    category: "Glucose Science",
-    readTime: "90s Audio",
-    icon: "📊",
-    headline: "The Triglyceride-to-HDL ratio is a more accurate predictor of cardiovascular health than total cholesterol.",
-    audioScript: "Standard fasting blood sugar tests often miss early insulin resistance by up to 10 years. By tracking your Fasting Insulin, Triglyceride-to-HDL ratio (target under 2.0), and estimated A1c, you catch metabolic dysfunction at the cellular level decades before symptoms arise.",
-    storySlides: [
-      "Fasting glucose can remain 'normal' for years because the pancreas works overtime pumping out massive insulin to keep it down.",
-      "Measuring Fasting Insulin alongside Fasting Glucose gives you your HOMA-IR score (Homeostatic Model Assessment of Insulin Resistance).",
-      "A Triglyceride to HDL ratio under 1.5 indicates clean insulin sensitivity and healthy small-dense LDL particle size."
+    "id": "lesson-32",
+    "tier": 4,
+    "tierName": "Healthy Habits for Long Life 👑",
+    "title": "Fish & Tofu (Awara): Delicious Protein That Stops Snacking",
+    "category": "Glucose Science",
+    "readTime": "60s Audio",
+    "icon": "🍲",
+    "headline": "High-protein African fish and soya awara keep hunger locked away for 5 full hours.",
+    "audioScript": "Soya bean curds, popular across Northern Nigeria as Awara or Beske, are a wonderful plant protein! When combined with mackerel or catfish, they trigger natural fullness signals in your gut that keep you energized and stop mindless snacking between meals.",
+    "storySlides": [
+      "Constant snacking on biscuits and sweet breads happens when meals do not contain enough clean protein.",
+      "Traditional Awara (tofu made from fresh soya beans) gives you clean protein with zero cholesterol.",
+      "Pan-sear cubes of Awara with pepper, onions, and steamed fish for a satisfying lunch that keeps you full until dinner."
     ],
-    takeaway: "Request Fasting Insulin and a full lipid panel annually to monitor true metabolic longevity.",
-    quiz: {
-      question: "What Triglyceride-to-HDL ratio target indicates optimal insulin sensitivity and vascular health?",
-      options: ["Over 10.0", "Under 2.0 (ideally under 1.5)", "Exactly 50.0", "Negative 5.0"],
-      correctIndex: 1,
-      explanation: "A Triglyceride-to-HDL ratio under 2.0 reflects healthy insulin sensitivity and low small-dense atherogenic LDL."
+    "takeaway": "Enjoy soya Awara and fish to stay naturally full and satisfied for hours.",
+    "quiz": {
+      "question": "How does adding soya Awara or fish to your meal prevent unnecessary snacking?",
+      "options": [
+        "It makes you thirsty for soda",
+        "It triggers natural fullness signals in your stomach that last for hours",
+        "It has no nutritional effect",
+        "It makes you crave sugar"
+      ],
+      "correctIndex": 1,
+      "explanation": "Clean protein triggers natural satiety signals that tell your brain your body is full and content."
     }
   },
   {
-    id: "lesson-36",
-    tier: 4,
-    tierName: "Longevity, Fasting & Circadian Bio-Hacking",
-    title: "Becoming a Certified Metabolic Champion: The Lifelong Blueprint",
-    category: "Hormones & Longevity",
-    readTime: "90s Audio",
-    icon: "👑",
-    headline: "The complete synthesis: Combining African culinary heritage with cutting-edge metabolic medicine.",
-    audioScript: "Congratulations on reaching the final masterclass lesson! You now hold the clinical knowledge to master your blood sugar, protect your cardiovascular system, and optimize your longevity—all while celebrating the rich culinary heritage of Africa. You are officially a Certified African Metabolic Champion.",
-    storySlides: [
-      "You have mastered the 4 Core Pillars: 1) Food Sequencing, 2) Portion Geometry, 3) Organ Shields, and 4) Circadian Lifestyle Timing.",
-      "Cultural food is not the enemy of health; unbuffered refined processing was the problem. You now possess the scientific blueprint to thrive.",
-      "Share your knowledge with your family circle, inspire your community, and live a vibrant, energized life."
+    "id": "lesson-33",
+    "tier": 4,
+    "tierName": "Healthy Habits for Long Life 👑",
+    "title": "The 30-Plant Variety Game: Build a Strong Gut",
+    "category": "Gut & Fiber",
+    "readTime": "60s Audio",
+    "icon": "🌿",
+    "headline": "Eating 30 different African plants, herbs, and spices across the week makes your immune system bulletproof!",
+    "audioScript": "Here is a fun food challenge for your family: try to eat 30 different plants every single week! Count your onions, garlic, ginger, ugwu, okra, crayfish, beans, tomatoes, and pepper soup spices. The more plant varieties you eat, the stronger your immune system becomes!",
+    "storySlides": [
+      "Your gut is home to trillions of friendly bacteria that love eating different types of plant fibers.",
+      "People who eat at least 30 different plants, seeds, and spices each week have much stronger digestion and fewer infections.",
+      "African cooking makes this so easy: a single pot of Egusi or Afang soup with spices already contains 8 to 10 different plants!"
     ],
-    takeaway: "You are a Certified African Metabolic Champion! Share your certification credential with pride.",
-    quiz: {
-      question: "What is the ultimate core philosophy of MealOptimiza?",
-      options: ["Abandon all African food forever", "Harmonize authentic African culinary heritage with clinical metabolic science for lifelong vitality", "Eat only raw kale and lettuce", "Never eat dinner"],
-      correctIndex: 1,
-      explanation: "MealOptimiza empowers you to master blood sugar and longevity while celebrating authentic cultural heritage."
+    "takeaway": "Aim to eat 30 different African plants, herbs, and spices every week for strong immunity.",
+    "quiz": {
+      "question": "Why is eating a wide variety of different plants and herbs good for your body?",
+      "options": [
+        "It confuses your stomach",
+        "Different plant fibers feed different friendly gut bacteria to build a strong immune shield",
+        "It takes too long to cook",
+        "It has no benefit"
+      ],
+      "correctIndex": 1,
+      "explanation": "Different plant fibers nourish different friendly gut helpers, keeping your immune system robust and resilient!"
+    }
+  },
+  {
+    "id": "lesson-34",
+    "tier": 4,
+    "tierName": "Healthy Habits for Long Life 👑",
+    "title": "Eating on Time: Morning Meals vs Evening Meals",
+    "category": "Heart & BP",
+    "readTime": "60s Audio",
+    "icon": "☀️",
+    "headline": "Eat your biggest meals when the sun is up, and keep dinner light and soup-rich for calm blood pressure.",
+    "audioScript": "Your body has its own internal clock that follows the sun. Your metabolism is strongest during the daylight hours from 10 AM to 3 PM. Eat your hearty swallow or rice during the day when you are active, and keep your evening meal light. Your blood pressure will stay calm and steady.",
+    "storySlides": [
+      "Your body handles carbohydrates and sugars much more efficiently in the daytime than in the dark.",
+      "Make lunch your main power meal where you enjoy your favorite swallow, rice, and soups.",
+      "At night, choose lighter meals like vegetable soup with fish, boiled eggs, or warm pap so your heart rests easily while you sleep."
+    ],
+    "takeaway": "Eat your hearty meals for lunch and keep your evening dinner light and soup-based.",
+    "quiz": {
+      "question": "When is your body's metabolism best equipped to handle hearty swallow meals?",
+      "options": [
+        "At midnight right before sleep",
+        "During the daytime when you are active and the sun is up",
+        "Only while sleeping",
+        "Early at 3 AM"
+      ],
+      "correctIndex": 1,
+      "explanation": "Your body digests carbohydrates and burns energy best during daytime hours when you are awake and active."
+    }
+  },
+  {
+    "id": "lesson-35",
+    "tier": 4,
+    "tierName": "Healthy Habits for Long Life 👑",
+    "title": "3 Simple Numbers for a Long, Healthy Life",
+    "category": "Hormones & Longevity",
+    "readTime": "60s Audio",
+    "icon": "📊",
+    "headline": "Keep track of your morning sugar, your blood pressure, and your waistline for peace of mind.",
+    "audioScript": "Staying healthy doesn't require complicated hospital medical tests! Just remember three simple numbers: check that your morning fasting sugar is under 100, your blood pressure is around 120 over 80, and your waistline stays comfortable. Tracking these gives you lifelong vitality and confidence.",
+    "storySlides": [
+      "You don't need a medical degree to understand your body's vital health signals.",
+      "Number One: Morning fasting sugar under 100 mg/dL means your metabolism is smooth and calm.",
+      "Number Two: Resting blood pressure around 120/80 means your heart is relaxed. Number Three: A comfortable waistline shows your liver is clear and healthy!"
+    ],
+    "takeaway": "Check your morning sugar, resting blood pressure, and waistline regularly for peace of mind.",
+    "quiz": {
+      "question": "What is an ideal morning fasting blood sugar target for a healthy, calm metabolism?",
+      "options": [
+        "Over 300 mg/dL",
+        "Under 100 mg/dL (or under 5.6 mmol/L)",
+        "Zero",
+        "500 mg/dL"
+      ],
+      "correctIndex": 1,
+      "explanation": "A morning fasting blood sugar under 100 mg/dL means your body is resting in a calm, balanced zone."
+    }
+  },
+  {
+    "id": "lesson-36",
+    "tier": 4,
+    "tierName": "Healthy Habits for Long Life 👑",
+    "title": "You Are Now a Master of African Food Wisdom!",
+    "category": "Hormones & Longevity",
+    "readTime": "60s Audio",
+    "icon": "👑",
+    "headline": "You now know how to combine our delicious heritage food with smart science to live long and strong!",
+    "audioScript": "Congratulations on completing all 36 daily lessons! You now hold the practical food wisdom to keep your blood sugar steady, protect your heart, and enjoy our rich African dishes with pride and joy. You are officially a Master of African Food Wisdom!",
+    "storySlides": [
+      "You have learned that you never need to give up your cultural African foods to be healthy.",
+      "By using simple secrets—like eating soup first, choosing drawing soups, cooling your yams, using iru and crayfish, and walking for 10 minutes—you protect your body every day.",
+      "Share these delicious food secrets with your family and community, and wear your certified badge with pride!"
+    ],
+    "takeaway": "Celebrate your heritage food with wisdom, eat with joy, and live a long, vibrant life!",
+    "quiz": {
+      "question": "What is the core message of MealOptimiza's African Food Wisdom?",
+      "options": [
+        "Stop eating all African foods forever",
+        "Celebrate authentic African meals with smart, simple food habits for lifelong health",
+        "Eat only imported salad leaves",
+        "Never eat dinner"
+      ],
+      "correctIndex": 1,
+      "explanation": "MealOptimiza helps you enjoy our rich African cultural dishes safely and deliciously for lifelong vitality!"
     }
   }
 ];
@@ -1353,8 +1518,18 @@ export default function AvoAcademy() {
   const [quizSubmitted, setQuizSubmitted] = useState(false);
   const [playingAudioLessonId, setPlayingAudioLessonId] = useState<string | null>(null);
   const [isAudioPlaying, setIsAudioPlaying] = useState(false);
+  const [isQuizAudioPlaying, setIsQuizAudioPlaying] = useState(false);
   const [showCertificateModal, setShowCertificateModal] = useState(false);
   const [certificateTier, setCertificateTier] = useState<AcademyTier>(1);
+
+  // Preferred Voice Language (English or Pidgin)
+  const [academyLang, setAcademyLang] = useState<"en" | "pcm">(() => {
+    try {
+      return (localStorage.getItem("mealoptimizer_preferred_voice_lang") as "en" | "pcm") || "en";
+    } catch {
+      return "en";
+    }
+  });
 
   // Persistence for completed lessons & XP
   const [completedLessonIds, setCompletedLessonIds] = useState<string[]>(() => {
@@ -1439,12 +1614,17 @@ export default function AvoAcademy() {
       setPlayingAudioLessonId(null);
     } else {
       stopSarahSpeech();
+      setIsQuizAudioPlaying(false);
       setPlayingAudioLessonId(lesson.id);
       setIsAudioPlaying(true);
 
       const scriptToRead = `${lesson.title}. ${lesson.audioScript} Key Clinical Takeaway: ${lesson.takeaway}`;
 
       speakWithSarah(scriptToRead, {
+        voiceId: academyLang === "pcm" ? "mama_bola" : "ngozi",
+        audioKey: `academy_lesson_${lesson.id}`,
+        lang: academyLang,
+        rate: 0.96,
         onStart: () => setIsAudioPlaying(true),
         onEnd: () => {
           setIsAudioPlaying(false);
@@ -1460,6 +1640,59 @@ export default function AvoAcademy() {
     }
   };
 
+  // Play Quiz Question & Options with Sarah AI
+  const handlePlayQuizQuestion = (lesson: AcademyLesson) => {
+    triggerHaptic("light");
+    if (isQuizAudioPlaying) {
+      stopSarahSpeech();
+      setIsQuizAudioPlaying(false);
+      return;
+    }
+    stopSarahSpeech();
+    setIsAudioPlaying(false);
+    setIsQuizAudioPlaying(true);
+
+    const questionScript =
+      academyLang === "pcm"
+        ? `Quick Quiz question: ${lesson.quiz.question}. Choice A: ${lesson.quiz.options[0]}. Choice B: ${lesson.quiz.options[1]}. Which one correct?`
+        : `Quick Quiz question: ${lesson.quiz.question}. Option A: ${lesson.quiz.options[0]}. Option B: ${lesson.quiz.options[1]}. What is your answer?`;
+
+    speakWithSarah(questionScript, {
+      voiceId: academyLang === "pcm" ? "mama_bola" : "ngozi",
+      audioKey: `academy_quiz_q_${lesson.id}`,
+      lang: academyLang,
+      rate: 0.96,
+      onStart: () => setIsQuizAudioPlaying(true),
+      onEnd: () => setIsQuizAudioPlaying(false),
+      onError: () => setIsQuizAudioPlaying(false),
+    });
+  };
+
+  // Play Quiz Explanation & Takeaway with Sarah AI
+  const handlePlayQuizExplanation = (lesson: AcademyLesson, isCorrect: boolean) => {
+    stopSarahSpeech();
+    setIsAudioPlaying(false);
+    setIsQuizAudioPlaying(true);
+
+    const expScript = isCorrect
+      ? (academyLang === "pcm"
+          ? `Spot on! 100% correct! ${lesson.quiz.explanation} Key Clinical Takeaway: ${lesson.takeaway}`
+          : `Spot on! That is 100% correct! ${lesson.quiz.explanation} Key Clinical Takeaway: ${lesson.takeaway}`)
+      : (academyLang === "pcm"
+          ? `Good effort! See the clinical reason: ${lesson.quiz.explanation} Key Clinical Takeaway: ${lesson.takeaway}`
+          : `Good effort! Here is the clinical explanation: ${lesson.quiz.explanation} Key Clinical Takeaway: ${lesson.takeaway}`);
+
+    speakWithSarah(expScript, {
+      voiceId: academyLang === "pcm" ? "mama_bola" : "ngozi",
+      audioKey: `academy_quiz_exp_${lesson.id}`,
+      lang: academyLang,
+      rate: 0.96,
+      onStart: () => setIsQuizAudioPlaying(true),
+      onEnd: () => setIsQuizAudioPlaying(false),
+      onError: () => setIsQuizAudioPlaying(false),
+    });
+  };
+
   // Next slide
   const handleNextSlide = () => {
     triggerHaptic("light");
@@ -1469,6 +1702,8 @@ export default function AvoAcademy() {
     } else {
       // Move to quiz phase
       setCurrentSlideIndex(activeLesson.storySlides.length);
+      // Auto-narrate quiz question
+      handlePlayQuizQuestion(activeLesson);
     }
   };
 
@@ -1485,6 +1720,9 @@ export default function AvoAcademy() {
     setQuizSubmitted(true);
 
     const isCorrect = selectedAnswer === activeLesson.quiz.correctIndex;
+    // Play celebratory/feedback explanation audio
+    handlePlayQuizExplanation(activeLesson, isCorrect);
+
     if (isCorrect) {
       triggerHaptic("success");
       triggerConfetti();
@@ -1890,14 +2128,14 @@ export default function AvoAcademy() {
             <div>
               <div className="flex items-center gap-2">
                 <span className="text-xs sm:text-sm font-bold text-stone-900 dark:text-white uppercase tracking-wider">
-                  Daily African Food Masterclass 🥑
+                  Daily African Food Wisdom 🥑
                 </span>
                 <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-amber-100 text-amber-900 dark:bg-amber-950 dark:text-amber-300">
                   4 Tiers
                 </span>
               </div>
               <p className="text-xs text-stone-500 dark:text-stone-400 font-medium mt-0.5">
-                Master 36 evidence-based cultural meal lessons & clinical shields
+                36 simple daily food tricks to balance sugar, protect your heart, and enjoy your meals
               </p>
             </div>
           </div>
@@ -1939,10 +2177,10 @@ export default function AvoAcademy() {
             className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 relative"
           >
             {[
-              { tier: 1 as AcademyTier, label: "1. Food Basics", subtitle: "Foundations & Sequencing", icon: "🌱" },
-              { tier: 2 as AcademyTier, label: "2. Heart & Sugar", subtitle: "Organ Metabolic Shields", icon: "🛡️" },
-              { tier: 3 as AcademyTier, label: "3. Kitchen Secrets", subtitle: "Culinary Biochemistry", icon: "🍲" },
-              { tier: 4 as AcademyTier, label: "4. Long Life", subtitle: "Circadian Bio-Hacking", icon: "👑" },
+              { tier: 1 as AcademyTier, label: "1. Food Basics", subtitle: "How to Eat Your Meals", icon: "🌱" },
+              { tier: 2 as AcademyTier, label: "2. Heart & Sugar", subtitle: "Daily Health Secrets", icon: "❤️" },
+              { tier: 3 as AcademyTier, label: "3. Kitchen Tricks", subtitle: "Tasty Food Swaps", icon: "🍲" },
+              { tier: 4 as AcademyTier, label: "4. Long Life", subtitle: "Eating for Long Life", icon: "👑" },
             ].map((t) => {
               const isSelected = selectedTier === t.tier;
               const stat = tierStats[t.tier];
@@ -2014,14 +2252,52 @@ export default function AvoAcademy() {
           <div className="flex items-center justify-between gap-2 px-1 mb-3">
             <div className="flex items-center gap-1.5 min-w-0">
               <span className="text-xs font-bold uppercase tracking-wider text-stone-800 dark:text-stone-200 truncate">
-                {selectedTier === 1 && "Tier 1: Cultural Food Foundations (9 Lessons)"}
-                {selectedTier === 2 && "Tier 2: Organ Metabolic Shields (9 Lessons)"}
-                {selectedTier === 3 && "Tier 3: Culinary Biochemistry (9 Lessons)"}
-                {selectedTier === 4 && "Tier 4: Circadian Longevity (9 Lessons)"}
+                {selectedTier === 1 && "Tier 1: Everyday Food Basics (9 Lessons)"}
+                {selectedTier === 2 && "Tier 2: Heart & Blood Sugar Secrets (9 Lessons)"}
+                {selectedTier === 3 && "Tier 3: Smart Kitchen & Cooking Tricks (9 Lessons)"}
+                {selectedTier === 4 && "Tier 4: Healthy Habits for Long Life (9 Lessons)"}
               </span>
             </div>
 
             <div className="flex items-center gap-1.5 shrink-0">
+              {/* Voice Language Toggle */}
+              <div className="inline-flex items-center bg-stone-100 dark:bg-stone-800 p-0.5 rounded-xl border border-stone-200/80 dark:border-stone-700 text-xs">
+                <button
+                  type="button"
+                  onClick={() => {
+                    triggerHaptic("selection");
+                    setAcademyLang("en");
+                    try { localStorage.setItem("mealoptimizer_preferred_voice_lang", "en"); } catch {}
+                    toast.success("Sarah Voice: English 🇬🇧");
+                  }}
+                  className={`px-2 py-1 rounded-lg font-bold flex items-center gap-1 cursor-pointer transition-all ${
+                    academyLang === "en"
+                      ? "bg-white dark:bg-stone-900 text-[#164E3D] dark:text-emerald-400 shadow-2xs"
+                      : "text-stone-500 hover:text-stone-800 dark:text-stone-400"
+                  }`}
+                  title="English Nutritionist Voice"
+                >
+                  <span>🇬🇧 En</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    triggerHaptic("selection");
+                    setAcademyLang("pcm");
+                    try { localStorage.setItem("mealoptimizer_preferred_voice_lang", "pcm"); } catch {}
+                    toast.success("Sarah Voice: Nigerian Pidgin 🇳🇬");
+                  }}
+                  className={`px-2 py-1 rounded-lg font-bold flex items-center gap-1 cursor-pointer transition-all ${
+                    academyLang === "pcm"
+                      ? "bg-white dark:bg-stone-900 text-[#164E3D] dark:text-emerald-400 shadow-2xs"
+                      : "text-stone-500 hover:text-stone-800 dark:text-stone-400"
+                  }`}
+                  title="Nigerian Pidgin Mother Voice"
+                >
+                  <span>🇳🇬 Pidgin</span>
+                </button>
+              </div>
+
               {tierStats[selectedTier].completed === tierStats[selectedTier].total && (
                 <button
                   type="button"
@@ -2396,9 +2672,23 @@ export default function AvoAcademy() {
               /* QUIZ PHASE */
               <div className="space-y-4">
                 <div className="bg-amber-50 dark:bg-amber-950/40 p-4 rounded-2xl border border-amber-200 dark:border-amber-900">
-                  <div className="flex items-center gap-1.5 text-xs font-bold text-amber-800 dark:text-amber-300 mb-1">
-                    <Sparkles size={13} />
-                    <span>10-Second Quick Quiz 🎯</span>
+                  <div className="flex items-center justify-between gap-1.5 mb-1.5">
+                    <div className="flex items-center gap-1.5 text-xs font-bold text-amber-800 dark:text-amber-300">
+                      <Sparkles size={13} />
+                      <span>10-Second Quick Quiz 🎯</span>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => handlePlayQuizQuestion(activeLesson)}
+                      className={`px-2.5 py-1 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1 border ${
+                        isQuizAudioPlaying
+                          ? "bg-amber-400 text-stone-950 animate-bounce border-amber-300"
+                          : "bg-white/80 dark:bg-stone-800 text-stone-800 dark:text-stone-200 border-stone-200/80 hover:bg-stone-100"
+                      }`}
+                    >
+                      {isQuizAudioPlaying ? <VolumeX size={12} /> : <Volume2 size={12} />}
+                      <span>{isQuizAudioPlaying ? "Stop" : "Listen to Question 🎙️"}</span>
+                    </button>
                   </div>
                   <h4 className="text-xs sm:text-sm font-bold text-stone-900 dark:text-white">
                     {activeLesson.quiz.question}
@@ -2477,6 +2767,19 @@ export default function AvoAcademy() {
                     )}
 
                     <div className="p-3 bg-stone-50 dark:bg-stone-800/80 rounded-2xl border border-stone-200 dark:border-stone-700 text-xs space-y-2">
+                      <div className="flex items-center justify-between">
+                        <span className="font-bold text-stone-800 dark:text-stone-100">
+                          Scientific Explanation:
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() => handlePlayQuizExplanation(activeLesson, selectedAnswer === activeLesson.quiz.correctIndex)}
+                          className="px-2.5 py-0.5 rounded-lg text-xs font-bold text-emerald-800 dark:text-emerald-300 bg-emerald-100/70 hover:bg-emerald-200 dark:bg-emerald-950 dark:hover:bg-emerald-900 flex items-center gap-1 cursor-pointer transition-all border border-emerald-200/60 dark:border-emerald-800/60"
+                        >
+                          <Volume2 size={11} />
+                          <span>Replay Voice 🎙️</span>
+                        </button>
+                      </div>
                       <p className="font-bold text-stone-800 dark:text-stone-100 leading-relaxed">
                         {activeLesson.quiz.explanation}
                       </p>

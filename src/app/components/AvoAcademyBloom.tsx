@@ -12,10 +12,13 @@ import {
   Award,
   ArrowRight,
   RotateCcw,
+  Volume2,
+  VolumeX,
 } from "lucide-react";
 import Mascot from "./Mascot";
 import { soundEffects } from "../utils/soundEffects";
 import { triggerConfetti, triggerHaptic } from "../utils/celebration";
+import { speakWithSarah, stopSarahSpeech } from "../services/voiceService";
 
 interface StorySlide {
   title: string;
@@ -57,6 +60,8 @@ export default function AvoAcademyBloom() {
   const [streakDays, setStreakDays] = useState(4);
   const [xpEarned, setXpEarned] = useState(false);
 
+  const [isQuizAudioPlaying, setIsQuizAudioPlaying] = useState(false);
+
   const handleOpenCapsule = () => {
     try {
       soundEffects.playBubblePop();
@@ -70,6 +75,26 @@ export default function AvoAcademyBloom() {
     setIsOpen(true);
   };
 
+  const handlePlayBloomQuestion = () => {
+    triggerHaptic("light");
+    if (isQuizAudioPlaying) {
+      stopSarahSpeech();
+      setIsQuizAudioPlaying(false);
+      return;
+    }
+    stopSarahSpeech();
+    setIsQuizAudioPlaying(true);
+    speakWithSarah(
+      "Quick check: What is the golden order for swallow meals? Option A: Eat all your swallow fufu first, then finish with soup. Option B: Eat 3 spoons of soup or veggies first as a fiber buffer.",
+      {
+        audioKey: "academy_bloom_quiz_q",
+        onStart: () => setIsQuizAudioPlaying(true),
+        onEnd: () => setIsQuizAudioPlaying(false),
+        onError: () => setIsQuizAudioPlaying(false),
+      }
+    );
+  };
+
   const handleNextSlide = () => {
     try {
       soundEffects.playTactileTick();
@@ -77,10 +102,16 @@ export default function AvoAcademyBloom() {
     try {
       triggerHaptic("light");
     } catch {}
-    setCurrentSlide((prev) => Math.min(prev + 1, DAILY_STORIES.length));
+    const nextIdx = Math.min(currentSlide + 1, DAILY_STORIES.length);
+    setCurrentSlide(nextIdx);
+    if (nextIdx === DAILY_STORIES.length) {
+      handlePlayBloomQuestion();
+    }
   };
 
   const handlePrevSlide = () => {
+    stopSarahSpeech();
+    setIsQuizAudioPlaying(false);
     try {
       soundEffects.playTactileTick();
     } catch {}
@@ -88,10 +119,18 @@ export default function AvoAcademyBloom() {
   };
 
   const handleAnswer = (index: number) => {
+    stopSarahSpeech();
+    setIsQuizAudioPlaying(false);
     setAnswered(index);
     if (index === 1) {
       setIsCorrect(true);
       setXpEarned(true);
+      speakWithSarah(
+        "Spot on! That is 100% correct! +50 XP! Always eat 3 spoons of soup or vegetables first before taking your first swallow bite to buffer glucose spikes.",
+        {
+          audioKey: "academy_bloom_quiz_exp",
+        }
+      );
       try {
         soundEffects.playCelebrationChime();
       } catch {}
@@ -104,6 +143,12 @@ export default function AvoAcademyBloom() {
       setStreakDays((prev) => Math.min(prev + 1, 7));
     } else {
       setIsCorrect(false);
+      speakWithSarah(
+        "Good effort! Eating soup or fiber first creates a natural protective shield in your stomach that prevents sudden sugar spikes.",
+        {
+          audioKey: "academy_bloom_quiz_exp",
+        }
+      );
       try {
         triggerHaptic("heavy");
       } catch {}
@@ -111,6 +156,8 @@ export default function AvoAcademyBloom() {
   };
 
   const handleReset = () => {
+    stopSarahSpeech();
+    setIsQuizAudioPlaying(false);
     setIsOpen(false);
     setCurrentSlide(0);
   };
@@ -247,11 +294,25 @@ export default function AvoAcademyBloom() {
           ) : (
             /* Slide 3: 1-Tap Quick Quiz */
             <div className="space-y-3 py-1">
-              <div className="flex items-center gap-2">
-                <Mascot gesture="wave" size={36} className="shrink-0" />
-                <h4 className="text-xs sm:text-sm font-bold text-amber-300">
-                  Quick Check: What is the golden order for swallow meals?
-                </h4>
+              <div className="flex items-center justify-between gap-2">
+                <div className="flex items-center gap-2">
+                  <Mascot gesture="wave" size={36} className="shrink-0" />
+                  <h4 className="text-xs sm:text-sm font-bold text-amber-300">
+                    Quick Check: What is the golden order for swallow meals?
+                  </h4>
+                </div>
+                <button
+                  type="button"
+                  onClick={handlePlayBloomQuestion}
+                  className={`px-2.5 py-1 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1 border shrink-0 ${
+                    isQuizAudioPlaying
+                      ? "bg-amber-400 text-stone-950 animate-bounce border-amber-300"
+                      : "bg-white/10 hover:bg-white/20 text-white border-white/20"
+                  }`}
+                >
+                  {isQuizAudioPlaying ? <VolumeX size={12} /> : <Volume2 size={12} />}
+                  <span>{isQuizAudioPlaying ? "Stop" : "Listen 🎙️"}</span>
+                </button>
               </div>
 
               <div className="grid grid-cols-1 gap-2">
