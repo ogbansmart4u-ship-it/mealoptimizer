@@ -544,12 +544,13 @@ export default function SmartVideoConcierge({
   );
 
   // Fluid Multilingual Speech function with lip-sync and dynamic voice selection
-  const speakText = (text: string, lang: string = selectedLanguage) => {
+  const speakText = (text: string, lang: string = selectedLanguage, audioKey?: string) => {
     if (isMuted) return;
     const isWelcome = text === currentUi.welcomeText;
+    const resolvedKey = audioKey || (isWelcome ? "concierge_welcome" : undefined);
     speakWithSarah(text, {
       voiceId: lang === "pcm" ? "mama_bola" : "ngozi",
-      audioKey: isWelcome ? "concierge_welcome" : undefined,
+      audioKey: resolvedKey,
       lang: lang,
       rate: speechRate,
       pitch: 1.02,
@@ -621,29 +622,40 @@ export default function SmartVideoConcierge({
     const q = query.toLowerCase();
     const langKb = MULTILINGUAL_KNOWLEDGE_BASE[selectedLanguage] || MULTILINGUAL_KNOWLEDGE_BASE.en;
     let answer = "";
+    let matchedKey: string | undefined = keyHint;
 
     if (keyHint && langKb[keyHint]) {
       answer = langKb[keyHint];
     } else if (q.includes("profile") || q.includes("setup") || q.includes("start") || q.includes("why") || q.includes("bayani") || q.includes("nkowa") || q.includes("nkọwa") || q.includes("kí ló dé") || q.includes("pourquoi")) {
       answer = langKb.profile_importance;
+      matchedKey = "profile_importance";
     } else if (q.includes("app") || q.includes("superpower") || q.includes("help") || q.includes("what") || q.includes("ọrụ") || q.includes("taimako") || q.includes("ẹrọ") || q.includes("fonctionnalite")) {
       answer = langKb.app_superpowers;
+      matchedKey = "app_superpowers";
     } else if (q.includes("market") || q.includes("grocery") || q.includes("shopping") || q.includes("store") || q.includes("ahịa") || q.includes("ahia") || q.includes("ọjà") || q.includes("oja") || q.includes("kasuwa") || q.includes("courses")) {
       answer = langKb.grocery;
+      matchedKey = "grocery";
     } else if (q.includes("swallow") || q.includes("amala") || q.includes("fufu") || q.includes("garri") || q.includes("yam") || q.includes("carb") || q.includes("tuwo") || q.includes("ọka") || q.includes("oka") || q.includes("feculent")) {
       answer = langKb.swallow;
+      matchedKey = "swallow";
     } else if (q.includes("bp") || q.includes("pressure") || q.includes("hypertension") || q.includes("salt") || q.includes("maggi") || q.includes("iru") || q.includes("ọbara") || q.includes("obara") || q.includes("ẹ̀jẹ̀") || q.includes("eje") || q.includes("hawan jini") || q.includes("tension")) {
       answer = langKb.bp;
+      matchedKey = "bp";
     } else if (q.includes("zobo") || q.includes("hibiscus") || q.includes("tea") || q.includes("drink") || q.includes("shayi") || q.includes("mmiri zobo") || q.includes("bissap") || q.includes("infusion")) {
       answer = langKb.zobo;
+      matchedKey = "zobo";
     } else if (q.includes("fast") || q.includes("fasting") || q.includes("autophagy") || q.includes("break") || q.includes("àwẹ̀") || q.includes("awe") || q.includes("azum") || q.includes("ọnụ") || q.includes("onu") || q.includes("jeune")) {
       answer = langKb.fasting;
+      matchedKey = "fasting";
     } else if (q.includes("sequence") || q.includes("order") || q.includes("first") || q.includes("plate") || q.includes("ofe") || q.includes("miya") || q.includes("ọbẹ̀") || q.includes("obe") || q.includes("sequencage")) {
       answer = langKb.sequencing;
+      matchedKey = "sequencing";
     } else if (q.includes("gain") || q.includes("weight") || q.includes("muscle") || q.includes("bulk") || q.includes("ƙiba") || q.includes("kiba") || q.includes("ibu") || q.includes("sanra") || q.includes("poids")) {
       answer = langKb.weight_gain;
+      matchedKey = "weight_gain";
     } else if (q.includes("fruit") || q.includes("garden egg") || q.includes("agbalumo") || q.includes("udara") || q.includes("ube") || q.includes("guava") || q.includes("èso") || q.includes("eso") || q.includes("mkpụrụ") || q.includes("mkpuru") || q.includes("'ya'yan itace") || q.includes("fruits")) {
       answer = langKb.fruit;
+      matchedKey = "fruit";
     } else {
       if (selectedLanguage === "pcm") {
         answer = `Better question regarding ${query}! To get 100% correct advice, check your Health Profile. When you chop your food with drawing vegetable soups like Ewedu, Okra, or Ugwu, your blood sugar go stay balanced!`;
@@ -663,7 +675,7 @@ export default function SmartVideoConcierge({
     setTimeout(() => {
       setIsThinking(false);
       setAiResponse(answer);
-      speakText(answer, selectedLanguage);
+      speakText(answer, selectedLanguage, matchedKey ? `faq_${matchedKey}` : undefined);
     }, 400);
   };
 

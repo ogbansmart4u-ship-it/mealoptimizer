@@ -506,6 +506,46 @@ export const PRERECORDED_AUDIO_REGISTRY: Record<string, { en: string; pcm: strin
     en: "/audio/sarah/concierge_welcome_en.wav",
     pcm: "/audio/sarah/concierge_welcome_pcm.wav",
   },
+  faq_profile_importance: {
+    en: "/audio/sarah/faq_profile_importance_en.wav",
+    pcm: "/audio/sarah/faq_profile_importance_pcm.wav",
+  },
+  faq_app_superpowers: {
+    en: "/audio/sarah/faq_app_superpowers_en.wav",
+    pcm: "/audio/sarah/faq_app_superpowers_pcm.wav",
+  },
+  faq_grocery: {
+    en: "/audio/sarah/faq_grocery_en.wav",
+    pcm: "/audio/sarah/faq_grocery_pcm.wav",
+  },
+  faq_swallow: {
+    en: "/audio/sarah/faq_swallow_en.wav",
+    pcm: "/audio/sarah/faq_swallow_pcm.wav",
+  },
+  faq_bp: {
+    en: "/audio/sarah/faq_bp_en.wav",
+    pcm: "/audio/sarah/faq_bp_pcm.wav",
+  },
+  faq_zobo: {
+    en: "/audio/sarah/faq_zobo_en.wav",
+    pcm: "/audio/sarah/faq_zobo_pcm.wav",
+  },
+  faq_fasting: {
+    en: "/audio/sarah/faq_fasting_en.wav",
+    pcm: "/audio/sarah/faq_fasting_pcm.wav",
+  },
+  faq_sequencing: {
+    en: "/audio/sarah/faq_sequencing_en.wav",
+    pcm: "/audio/sarah/faq_sequencing_pcm.wav",
+  },
+  faq_weight_gain: {
+    en: "/audio/sarah/faq_weight_gain_en.wav",
+    pcm: "/audio/sarah/faq_weight_gain_pcm.wav",
+  },
+  faq_fruit: {
+    en: "/audio/sarah/faq_fruit_en.wav",
+    pcm: "/audio/sarah/faq_fruit_pcm.wav",
+  },
 };
 
 function detectAudioKeyFromText(text: string): string | null {
@@ -525,6 +565,16 @@ function detectAudioKeyFromText(text: string): string | null {
   ) {
     return "concierge_welcome";
   }
+  if (lower.includes("health profile is super easy") || lower.includes("fill your health profile")) return "faq_profile_importance";
+  if (lower.includes("how mealoptimiza helps you every day") || lower.includes("see how mealoptimiza dey help")) return "faq_app_superpowers";
+  if (lower.includes("smart grocery list makes shopping easy") || lower.includes("smart market list dey make shopping")) return "faq_grocery";
+  if (lower.includes("not have to give up swallow") || lower.includes("no need stop your swallow")) return "faq_swallow";
+  if (lower.includes("keep your heart strong and blood pressure") || lower.includes("keep blood pressure calm")) return "faq_bp";
+  if (lower.includes("zobo tea is delicious and naturally") || lower.includes("zobo tea dey sweet")) return "faq_zobo";
+  if (lower.includes("when breaking a fast, start gentle") || lower.includes("when you dey break fast")) return "faq_fasting";
+  if (lower.includes("simple kitchen trick: eat a few spoons") || lower.includes("simple kitchen secret: chop 3")) return "faq_sequencing";
+  if (lower.includes("build healthy weight and strong muscle") || lower.includes("gain solid weight and muscle")) return "faq_weight_gain";
+  if (lower.includes("whole african fruits like garden egg") || lower.includes("chop complete fruit like garden egg")) return "faq_fruit";
   return null;
 }
 
