@@ -730,7 +730,7 @@ function getTodayDayIndex(): number {
 export default function PlanMeal() {
   const navigate = useNavigate();
   const { profile } = useUser();
-  const { t } = useLanguage();
+  const { language, t } = useLanguage();
   const { selectedLocation } = useLocation();
 
   const todayDayIndex = useMemo(() => getTodayDayIndex(), []);
@@ -797,6 +797,7 @@ export default function PlanMeal() {
       stopSarahSpeech();
       setIsSarahSpeaking(true);
       speakWithSarah(activeDay.sarahAudioCoaching, {
+        lang: language,
         onStart: () => setIsSarahSpeaking(true),
         onEnd: () => {
           setIsSarahSpeaking(false);
@@ -1023,7 +1024,7 @@ export default function PlanMeal() {
               <div>
                 <div className="flex items-center gap-1.5 flex-wrap">
                   <span className="text-[9.5px] font-black uppercase tracking-wider bg-amber-400 text-slate-950 px-2 py-0.5 rounded-full shadow-2xs">
-                    Sarah Voice Guide
+                    {language === "pcm" ? "Sarah • Mama Bola (Pidgin)" : "Sarah • Ngozi (English)"}
                   </span>
                   <span className="text-[10px] text-teal-200 font-bold">{activeDay.dayName} Audio</span>
 

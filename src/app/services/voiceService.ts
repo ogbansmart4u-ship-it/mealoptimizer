@@ -263,15 +263,140 @@ export function getBestNaturalVoice(targetLang: string = "en"): SpeechSynthesisV
 }
 
 /**
- * Speaks text naturally using ElevenLabs or strictly female Web Speech API
+ * Converts raw 16-bit linear PCM audio into a standard playable WAV Blob with a RIFF header.
+ */
+function pcmToWavBlob(
+  pcmData: Uint8Array,
+  sampleRate: number = 24000,
+  numChannels: number = 1,
+  bitsPerSample: number = 16
+): Blob {
+  const dataSize = pcmData.length;
+  const buffer = new ArrayBuffer(44 + dataSize);
+  const view = new DataView(buffer);
+
+  // RIFF Chunk Descriptor
+  view.setUint32(0, 0x52494646, false); // "RIFF"
+  view.setUint32(4, 36 + dataSize, true); // ChunkSize
+  view.setUint32(8, 0x57415645, false); // "WAVE"
+
+  // "fmt " Sub-chunk
+  view.setUint32(12, 0x666d7420, false); // "fmt "
+  view.setUint32(16, 16, true); // Subchunk1Size (16 for PCM)
+  view.setUint16(20, 1, true); // AudioFormat (1 = PCM)
+  view.setUint16(22, numChannels, true); // NumChannels
+  view.setUint32(24, sampleRate, true); // SampleRate
+  view.setUint32(28, (sampleRate * numChannels * bitsPerSample) / 8, true); // ByteRate
+  view.setUint16(32, (numChannels * bitsPerSample) / 8, true); // BlockAlign
+  view.setUint16(34, bitsPerSample, true); // BitsPerSample
+
+  // "data" Sub-chunk
+  view.setUint32(36, 0x64617461, false); // "data"
+  view.setUint32(40, dataSize, true); // Subchunk2Size
+
+  // Write PCM payload
+  new Uint8Array(buffer, 44).set(pcmData);
+
+  return new Blob([buffer], { type: "audio/wav" });
+}
+
+function base64ToUint8Array(base64: string): Uint8Array {
+  const binaryString = atob(base64);
+  const len = binaryString.length;
+  const bytes = new Uint8Array(len);
+  for (let i = 0; i < len; i++) {
+    bytes[i] = binaryString.charCodeAt(i);
+  }
+  return bytes;
+}
+
+/**
+ * Synthesizes ultra-natural Nigerian speech using Gemini Audio Engine:
+ * - Ngozi for English (Aoede: polished, articulate, professional Nigerian nutritionist)
+ * - Mama Bola for Pidgin (Kore: warm, maternal, joyful Nigerian food mother)
+ */
+async function synthesizeWithGeminiNaijaVoice(
+  sanitizedText: string,
+  lang: string = "en",
+  specificVoiceId?: string,
+  apiKey?: string
+): Promise<string | null> {
+  const key =
+    apiKey ||
+    (import.meta as any).env?.VITE_GEMINI_API_KEY ||
+    (typeof window !== "undefined" ? localStorage.getItem("mo_gemini_api_key") : null);
+  if (!key) return null;
+
+  const isPidgin = specificVoiceId === "mama_bola" || (!specificVoiceId && (lang === "pcm" || lang.includes("pidgin")));
+  const personaName = isPidgin ? "Mama Bola" : "Ngozi";
+  const geminiVoice = isPidgin ? "Kore" : "Aoede";
+
+  const personaPrompt = isPidgin
+    ? `[Voice: Mama Bola | Style: Warm Nigerian mother, lively Nigerian Pidgin, joyful, encouraging, caring food wisdom] ${sanitizedText}`
+    : `[Voice: Ngozi | Style: Professional Nigerian female nutritionist, authentic Nigerian accent, clear, confident, warm] ${sanitizedText}`;
+
+  const cacheKey = `gemini_${isPidgin ? "mamabola" : "ngozi"}_${sanitizedText}`;
+  if (audioCache.has(cacheKey)) {
+    return audioCache.get(cacheKey)!;
+  }
+
+  // Model cascade: gemini-3.8-flash-lite-tts -> gemini-2.5-flash-preview-tts
+  const models = ["gemini-3.8-flash-lite-tts", "gemini-2.5-flash-preview-tts"];
+
+  for (const model of models) {
+    try {
+      const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${key}`;
+      const response = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          contents: [
+            {
+              parts: [{ text: personaPrompt }],
+            },
+          ],
+          generationConfig: {
+            responseModalities: ["AUDIO"],
+            speechConfig: {
+              voiceConfig: {
+                prebuiltVoiceConfig: {
+                  voiceName: geminiVoice,
+                },
+              },
+            },
+          },
+        }),
+      });
+
+      if (!response.ok) {
+        continue;
+      }
+
+      const data = await response.json();
+      const base64Pcm = data?.candidates?.[0]?.content?.parts?.[0]?.inlineData?.data;
+      if (base64Pcm) {
+        const pcmBytes = base64ToUint8Array(base64Pcm);
+        const wavBlob = pcmToWavBlob(pcmBytes, 24000, 1, 16);
+        const audioUrl = URL.createObjectURL(wavBlob);
+        audioCache.set(cacheKey, audioUrl);
+        return audioUrl;
+      }
+    } catch (err) {
+      console.warn(`Gemini Audio error with model ${model}:`, err);
+    }
+  }
+
+  return null;
+}
+
+/**
+ * Speaks text naturally using Google Gemini NaijaVoice Studio (Ngozi for English, Mama Bola for Pidgin),
+ * with graceful fallback to ElevenLabs or strictly female Web Speech API.
  */
 export async function speakWithSarah(
   rawText: string,
   options: SpeakOptions = {}
 ): Promise<void> {
-  const voiceId = options.voiceId || (import.meta as any).env?.VITE_ELEVENLABS_VOICE_ID || DEFAULT_ELEVENLABS_VOICE_ID;
-  const apiKey = options.apiKey || (import.meta as any).env?.VITE_ELEVENLABS_API_KEY;
-
   stopSarahSpeech();
   isCancelled = false;
 
@@ -282,18 +407,51 @@ export async function speakWithSarah(
     return;
   }
 
-  // 1. Try ElevenLabs Neural TTS if API key is configured
-  if (apiKey) {
+  // 1. TOP PRIORITY: Gemini NaijaVoice Studio (Ngozi for English, Mama Bola for Pidgin)
+  try {
+    const geminiAudioUrl = await synthesizeWithGeminiNaijaVoice(
+      sanitized,
+      targetLang,
+      options.voiceId,
+      options.apiKey
+    );
+
+    if (geminiAudioUrl && !isCancelled) {
+      const audio = new Audio(geminiAudioUrl);
+      currentAudio = audio;
+
+      audio.onplay = () => options.onStart?.();
+      audio.onended = () => {
+        options.onEnd?.();
+        currentAudio = null;
+      };
+      audio.onerror = () => {
+        currentAudio = null;
+        speakNaturalWebSpeech(sanitized, options);
+      };
+
+      await audio.play();
+      return;
+    }
+  } catch (err) {
+    console.warn("Gemini NaijaVoice synthesis failed, falling back:", err);
+  }
+
+  // 2. Secondary fallback: ElevenLabs Neural TTS if configured
+  const elevenVoiceId = options.voiceId || (import.meta as any).env?.VITE_ELEVENLABS_VOICE_ID || DEFAULT_ELEVENLABS_VOICE_ID;
+  const elevenApiKey = (import.meta as any).env?.VITE_ELEVENLABS_API_KEY;
+
+  if (elevenApiKey) {
     try {
-      const cacheKey = `${voiceId}_${sanitized}`;
+      const cacheKey = `${elevenVoiceId}_${sanitized}`;
       let audioUrl = audioCache.get(cacheKey);
 
       if (!audioUrl) {
-        const response = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${voiceId}`, {
+        const response = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${elevenVoiceId}`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            "xi-api-key": apiKey,
+            "xi-api-key": elevenApiKey,
           },
           body: JSON.stringify({
             text: sanitized,
@@ -316,6 +474,8 @@ export async function speakWithSarah(
         audioCache.set(cacheKey, audioUrl);
       }
 
+      if (isCancelled) return;
+
       const audio = new Audio(audioUrl);
       currentAudio = audio;
 
@@ -336,7 +496,7 @@ export async function speakWithSarah(
     }
   }
 
-  // 2. Ultra-Natural Web Speech API with sentence-by-sentence fluid stream
+  // 3. Last fallback: Fluid sentence-by-sentence Web Speech API
   speakNaturalWebSpeech(sanitized, options);
 }
 
