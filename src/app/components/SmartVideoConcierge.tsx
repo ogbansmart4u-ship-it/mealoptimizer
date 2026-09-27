@@ -547,7 +547,7 @@ export default function SmartVideoConcierge({
   const speakText = (text: string, lang: string = selectedLanguage) => {
     if (isMuted) return;
     speakWithSarah(text, {
-      voiceId: "YIgPmt6aTfZFf6mjP9RC",
+      voiceId: lang === "pcm" ? "mama_bola" : "ngozi",
       lang: lang,
       rate: speechRate,
       pitch: 1.02,
@@ -848,7 +848,7 @@ export default function SmartVideoConcierge({
                 {/* Language Switcher Bar: English & Pidgin Only */}
                 <div className="flex items-center gap-2 justify-center">
                   {[
-                    { id: "en", label: "English 🇬🇧" },
+                    { id: "en", label: "English NGN" },
                     { id: "pcm", label: "Pidgin 🇳🇬" },
                   ].map((lang) => (
                     <button

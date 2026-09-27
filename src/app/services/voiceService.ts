@@ -327,7 +327,10 @@ async function synthesizeWithGeminiNaijaVoice(
     (typeof window !== "undefined" ? localStorage.getItem("mo_gemini_api_key") : null);
   if (!key) return null;
 
-  const isPidgin = specificVoiceId === "mama_bola" || (!specificVoiceId && (lang === "pcm" || lang.includes("pidgin")));
+  const isPidgin =
+    specificVoiceId === "mama_bola" ||
+    lang === "pcm" ||
+    lang.toLowerCase().includes("pidgin");
   const personaName = isPidgin ? "Mama Bola" : "Ngozi";
   const geminiVoice = isPidgin ? "Kore" : "Aoede";
 
