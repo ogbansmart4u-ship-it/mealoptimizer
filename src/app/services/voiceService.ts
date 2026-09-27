@@ -517,7 +517,14 @@ function detectAudioKeyFromText(text: string): string | null {
   if (lower.includes("happy friday") || lower.includes("afang soup") || lower.includes("asun salad")) return "plan_friday";
   if (lower.includes("saturday") || lower.includes("party jollof") || lower.includes("chop life")) return "plan_saturday";
   if (lower.includes("happy sunday") || lower.includes("recharge for the new week") || lower.includes("comfort soups")) return "plan_sunday";
-  if (lower.includes("personal clinical nutrition assistant") || lower.includes("personal food and nutrition doctor")) return "concierge_welcome";
+  if (
+    lower.includes("welcome to mealoptimiza") ||
+    lower.includes("friendly food companion") ||
+    lower.includes("personal clinical nutrition assistant") ||
+    lower.includes("personal food and nutrition doctor")
+  ) {
+    return "concierge_welcome";
+  }
   return null;
 }
 

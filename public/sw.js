@@ -3,7 +3,7 @@
  * 100% Guaranteed Offline SPA Shell + Cache-First Static Assets
  */
 
-const CACHE_NAME = 'mealoptimiza-pwa-v10.22-gemini-instant-qa-fix-20260927';
+const CACHE_NAME = 'mealoptimiza-pwa-v10.23-instant-concierge-welcome-20260927';
 
 const PRECACHE_ASSETS = [
   '/',

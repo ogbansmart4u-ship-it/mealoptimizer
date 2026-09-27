@@ -546,8 +546,10 @@ export default function SmartVideoConcierge({
   // Fluid Multilingual Speech function with lip-sync and dynamic voice selection
   const speakText = (text: string, lang: string = selectedLanguage) => {
     if (isMuted) return;
+    const isWelcome = text === currentUi.welcomeText;
     speakWithSarah(text, {
       voiceId: lang === "pcm" ? "mama_bola" : "ngozi",
+      audioKey: isWelcome ? "concierge_welcome" : undefined,
       lang: lang,
       rate: speechRate,
       pitch: 1.02,
