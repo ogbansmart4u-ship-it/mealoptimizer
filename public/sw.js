@@ -3,7 +3,7 @@
  * 100% Guaranteed Offline SPA Shell + Cache-First Static Assets
  */
 
-const CACHE_NAME = 'mealoptimiza-pwa-v10.17-english-ngn-20260927';
+const CACHE_NAME = 'mealoptimiza-pwa-v10.18-global-sarah-voice-20260927';
 
 const PRECACHE_ASSETS = [
   '/',

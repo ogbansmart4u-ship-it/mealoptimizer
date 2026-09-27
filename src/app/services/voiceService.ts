@@ -403,7 +403,8 @@ export async function speakWithSarah(
   stopSarahSpeech();
   isCancelled = false;
 
-  const targetLang = options.lang || "en";
+  const savedLang = typeof window !== "undefined" ? localStorage.getItem("language") : null;
+  const targetLang = options.lang || savedLang || "en";
   const sanitized = sanitizeTextForSpeech(rawText, targetLang);
   if (!sanitized) {
     options.onEnd?.();
