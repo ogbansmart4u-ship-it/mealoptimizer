@@ -798,6 +798,7 @@ export default function PlanMeal() {
       setIsSarahSpeaking(true);
       speakWithSarah(activeDay.sarahAudioCoaching, {
         lang: language,
+        audioKey: `plan_${activeDay.dayName.toLowerCase()}`,
         onStart: () => setIsSarahSpeaking(true),
         onEnd: () => {
           setIsSarahSpeaking(false);

@@ -1,5 +1,7 @@
 // Voice Synthesis Service for Sarah, The Nutrition Assistant
 // Ultra-Natural Conversational Voice Engine with STRICT Female Voice Enforcement
+import { getSubscriptionStatus } from "../../lib/payment";
+import { toast } from "sonner";
 
 const DEFAULT_ELEVENLABS_VOICE_ID = "YIgPmt6aTfZFf6mjP9RC";
 const audioCache = new Map<string, string>();
@@ -14,6 +16,7 @@ export interface SpeakOptions {
   rate?: number;
   pitch?: number;
   lang?: "en" | "pcm" | "yo" | "ig" | "ha" | "fr" | string;
+  audioKey?: string; // Pre-recorded clip identifier (e.g. "plan_monday", "concierge_welcome")
   onStart?: () => void;
   onEnd?: () => void;
   onError?: (err: any) => void;
@@ -392,9 +395,147 @@ async function synthesizeWithGeminiNaijaVoice(
   return null;
 }
 
+// ============================================================================
+// DAILY FREE USER QUOTA & ABUSE REGULATION (Protects $20 Budget)
+// ============================================================================
+export const DAILY_FREE_VOICE_LIMIT = 5;
+
+export function getDailyVoiceUsage(): { count: number; date: string; remaining: number } {
+  if (typeof window === "undefined") return { count: 0, date: "", remaining: DAILY_FREE_VOICE_LIMIT };
+  const today = new Date().toISOString().split("T")[0];
+  try {
+    const saved = localStorage.getItem("mo_daily_voice_usage");
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      if (parsed.date === today) {
+        const count = typeof parsed.count === "number" ? parsed.count : 0;
+        return {
+          count,
+          date: today,
+          remaining: Math.max(0, DAILY_FREE_VOICE_LIMIT - count),
+        };
+      }
+    }
+  } catch (e) {}
+  return { count: 0, date: today, remaining: DAILY_FREE_VOICE_LIMIT };
+}
+
+export function incrementDailyVoiceUsage(): number {
+  if (typeof window === "undefined") return 0;
+  const today = new Date().toISOString().split("T")[0];
+  const current = getDailyVoiceUsage();
+  const nextCount = (current.date === today ? current.count : 0) + 1;
+  try {
+    localStorage.setItem("mo_daily_voice_usage", JSON.stringify({ date: today, count: nextCount }));
+  } catch (e) {}
+  return nextCount;
+}
+
+export function checkVoiceQuota(): { allowed: boolean; isPro: boolean; remaining: number } {
+  const sub = getSubscriptionStatus();
+  if (sub.isPro) {
+    return { allowed: true, isPro: true, remaining: 9999 };
+  }
+  const usage = getDailyVoiceUsage();
+  return {
+    allowed: usage.count < DAILY_FREE_VOICE_LIMIT,
+    isPro: false,
+    remaining: usage.remaining,
+  };
+}
+
+// ============================================================================
+// PRE-RECORDED STUDIO AUDIO REGISTRY (0.0s Delay, $0.00 Cost, Works Offline)
+// Drop matching .mp3 or .wav files into /public/audio/sarah/
+// ============================================================================
+export const PRERECORDED_AUDIO_REGISTRY: Record<string, { en: string; pcm: string }> = {
+  plan_monday: {
+    en: "/audio/sarah/plan_monday_en.mp3",
+    pcm: "/audio/sarah/plan_monday_pcm.mp3",
+  },
+  plan_tuesday: {
+    en: "/audio/sarah/plan_tuesday_en.mp3",
+    pcm: "/audio/sarah/plan_tuesday_pcm.mp3",
+  },
+  plan_wednesday: {
+    en: "/audio/sarah/plan_wednesday_en.mp3",
+    pcm: "/audio/sarah/plan_wednesday_pcm.mp3",
+  },
+  plan_thursday: {
+    en: "/audio/sarah/plan_thursday_en.mp3",
+    pcm: "/audio/sarah/plan_thursday_pcm.mp3",
+  },
+  plan_friday: {
+    en: "/audio/sarah/plan_friday_en.mp3",
+    pcm: "/audio/sarah/plan_friday_pcm.mp3",
+  },
+  plan_saturday: {
+    en: "/audio/sarah/plan_saturday_en.mp3",
+    pcm: "/audio/sarah/plan_saturday_pcm.mp3",
+  },
+  plan_sunday: {
+    en: "/audio/sarah/plan_sunday_en.mp3",
+    pcm: "/audio/sarah/plan_sunday_pcm.mp3",
+  },
+  concierge_welcome: {
+    en: "/audio/sarah/concierge_welcome_en.mp3",
+    pcm: "/audio/sarah/concierge_welcome_pcm.mp3",
+  },
+};
+
+function detectAudioKeyFromText(text: string): string | null {
+  const lower = text.toLowerCase();
+  if (lower.includes("welcome to monday")) return "plan_monday";
+  if (lower.includes("happy tuesday")) return "plan_tuesday";
+  if (lower.includes("wednesday")) return "plan_wednesday";
+  if (lower.includes("thursday")) return "plan_thursday";
+  if (lower.includes("happy friday")) return "plan_friday";
+  if (lower.includes("saturday")) return "plan_saturday";
+  if (lower.includes("happy sunday")) return "plan_sunday";
+  if (lower.includes("personal clinical nutrition assistant") || lower.includes("personal food and nutrition doctor")) return "concierge_welcome";
+  return null;
+}
+
+function tryLoadPrerecordedAudio(url: string): Promise<HTMLAudioElement | null> {
+  return new Promise((resolve) => {
+    const audio = new Audio();
+    let settled = false;
+
+    audio.oncanplaythrough = () => {
+      if (!settled) {
+        settled = true;
+        resolve(audio);
+      }
+    };
+
+    audio.onerror = () => {
+      if (!settled) {
+        settled = true;
+        resolve(null);
+      }
+    };
+
+    audio.src = url;
+    audio.load();
+
+    // Fast check: max 350ms to detect if local audio exists
+    setTimeout(() => {
+      if (!settled) {
+        settled = true;
+        resolve(null);
+      }
+    }, 350);
+  });
+}
+
 /**
- * Speaks text naturally using Google Gemini NaijaVoice Studio (Ngozi for English, Mama Bola for Pidgin),
- * with graceful fallback to ElevenLabs or strictly female Web Speech API.
+ * Speaks text naturally with multi-tier priority:
+ * 1. Pre-recorded studio audio files (0.0s delay, $0.00 cost)
+ * 2. In-memory cached audio ($0.00 cost, instant replay)
+ * 3. Daily Free Quota enforcement (5 plays/day for free users, unlimited for Pro)
+ * 4. Google Gemini NaijaVoice Studio (Ngozi for English, Mama Bola for Pidgin)
+ * 5. ElevenLabs Neural TTS (if configured)
+ * 6. Native strictly-female Web Speech API ($0.00 cost)
  */
 export async function speakWithSarah(
   rawText: string,
@@ -405,13 +546,74 @@ export async function speakWithSarah(
 
   const savedLang = typeof window !== "undefined" ? localStorage.getItem("language") : null;
   const targetLang = options.lang || savedLang || "en";
+  const isPidgin =
+    options.voiceId === "mama_bola" ||
+    targetLang === "pcm" ||
+    targetLang.toLowerCase().includes("pidgin");
+
   const sanitized = sanitizeTextForSpeech(rawText, targetLang);
   if (!sanitized) {
     options.onEnd?.();
     return;
   }
 
-  // 1. TOP PRIORITY: Gemini NaijaVoice Studio (Ngozi for English, Mama Bola for Pidgin)
+  // 1. TIER 1: PRE-RECORDED STUDIO AUDIO (Instant 0.0s playback, $0.00 cost, works offline)
+  const audioKey = options.audioKey || detectAudioKeyFromText(rawText);
+  if (audioKey && PRERECORDED_AUDIO_REGISTRY[audioKey]) {
+    const reg = PRERECORDED_AUDIO_REGISTRY[audioKey];
+    const candidatePath = isPidgin ? reg.pcm : reg.en;
+    // Check both .mp3 and .wav extensions
+    const fileVariants = [candidatePath, candidatePath.replace(/\.mp3$/, ".wav")];
+
+    for (const fileUrl of fileVariants) {
+      try {
+        const loadedAudio = await tryLoadPrerecordedAudio(fileUrl);
+        if (loadedAudio && !isCancelled) {
+          currentAudio = loadedAudio;
+          loadedAudio.onplay = () => options.onStart?.();
+          loadedAudio.onended = () => {
+            options.onEnd?.();
+            currentAudio = null;
+          };
+          loadedAudio.onerror = () => {
+            currentAudio = null;
+          };
+          await loadedAudio.play();
+          return;
+        }
+      } catch (err) {
+        // Pre-recorded audio not uploaded yet or play blocked, seamlessly continue
+      }
+    }
+  }
+
+  // 2. TIER 2: SESSION IN-MEMORY CACHE (Instant replay, $0.00 cost)
+  const personaPrefix = isPidgin ? "mamabola" : "ngozi";
+  const cacheKey = `gemini_${personaPrefix}_${sanitized}`;
+  if (audioCache.has(cacheKey)) {
+    const cachedUrl = audioCache.get(cacheKey)!;
+    if (!isCancelled) {
+      const audio = new Audio(cachedUrl);
+      currentAudio = audio;
+      audio.onplay = () => options.onStart?.();
+      audio.onended = () => {
+        options.onEnd?.();
+        currentAudio = null;
+      };
+      await audio.play();
+      return;
+    }
+  }
+
+  // 3. TIER 3: FREE USER QUOTA CHECK (Protects $20 budget from abuse)
+  const quota = checkVoiceQuota();
+  if (!quota.allowed) {
+    toast.info("Daily AI voice limit reached (5/5). Playing with standard voice. Upgrade to PRO for unlimited natural Sarah coaching! 🥑✨");
+    speakNaturalWebSpeech(sanitized, options);
+    return;
+  }
+
+  // 4. TIER 4: LIVE GEMINI NAIJAVOICE SYNTHESIS (Paid Tier)
   try {
     const geminiAudioUrl = await synthesizeWithGeminiNaijaVoice(
       sanitized,
@@ -421,6 +623,9 @@ export async function speakWithSarah(
     );
 
     if (geminiAudioUrl && !isCancelled) {
+      // Record usage for free tier user
+      incrementDailyVoiceUsage();
+
       const audio = new Audio(geminiAudioUrl);
       currentAudio = audio;
 
