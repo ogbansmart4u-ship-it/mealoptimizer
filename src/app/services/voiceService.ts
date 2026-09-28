@@ -265,7 +265,24 @@ export function getBestNaturalVoice(targetLang: string = "en"): SpeechSynthesisV
     if (ngFemale) return ngFemale;
   }
 
-  // 4. Premium Female English Voices (Top Priority across all OS platforms)
+  // 4. Nigerian English / African Regional Female Voice (TOP PRIORITY for African Health Companion Sarah)
+  const ngFemale = pool.find(
+    (v) =>
+      (v.lang.toLowerCase().includes("en-ng") ||
+        v.name.toLowerCase().includes("nigeria") ||
+        v.name.toLowerCase().includes("ezinne") ||
+        v.name.toLowerCase().includes("chioma") ||
+        v.name.toLowerCase().includes("ngozi")) &&
+      isStrictlyFemale(v)
+  );
+  if (ngFemale) return ngFemale;
+
+  const africanFemale = pool.find(
+    (v) => (v.lang.toLowerCase().includes("en-za") || v.lang.toLowerCase().includes("en-gh")) && isStrictlyFemale(v)
+  );
+  if (africanFemale) return africanFemale;
+
+  // 5. Premium Female English Voices (Fallback if no African female voice on device)
   const priorityFemaleNames = [
     // iOS / Mac Safari Enhanced Voices
     "Samantha (Enhanced)",
@@ -285,13 +302,13 @@ export function getBestNaturalVoice(targetLang: string = "en"): SpeechSynthesisV
     "Microsoft Zira",
     "Zira",
     // Google Chrome Neural Female Voices
-    "Google UK English Female",
     "Google US English Female",
     "Google US English",
-    "en-GB-Neural2-F",
     "en-US-Neural2-F",
     "en-US-Wavenet-F",
     "en-US-Standard-F",
+    "Google UK English Female",
+    "en-GB-Neural2-F",
   ];
 
   for (const name of priorityFemaleNames) {
@@ -332,6 +349,8 @@ export function getBestNaturalVoice(targetLang: string = "en"): SpeechSynthesisV
 
 /**
  * Converts raw 16-bit linear PCM audio into a standard playable WAV Blob with a RIFF header.
+ * Applies a smooth 50ms raised-cosine fade-out to digital zero at the audio tail
+ * to eliminate DC-offset pops, chirps, or click artifacts at end-of-file.
  */
 function pcmToWavBlob(
   pcmData: Uint8Array,
@@ -340,7 +359,30 @@ function pcmToWavBlob(
   bitsPerSample: number = 16
 ): Blob {
   const dataSize = pcmData.length;
-  const buffer = new ArrayBuffer(44 + dataSize);
+  const cleanPcm = new Uint8Array(pcmData);
+
+  // Apply smooth raised-cosine fade-out to zero on the tail (last 50ms)
+  const bytesPerSample = bitsPerSample / 8;
+  const totalSamples = Math.floor(dataSize / (bytesPerSample * numChannels));
+  const fadeDurationMs = 50;
+  const fadeSamples = Math.min(totalSamples, Math.floor((sampleRate * fadeDurationMs) / 1000));
+
+  if (fadeSamples > 1 && bitsPerSample === 16) {
+    const int16View = new Int16Array(cleanPcm.buffer, cleanPcm.byteOffset, cleanPcm.byteLength / 2);
+    const startIndex = int16View.length - fadeSamples;
+    for (let i = 0; i < fadeSamples; i++) {
+      const idx = startIndex + i;
+      const progress = i / fadeSamples;
+      const gain = 0.5 * (1 + Math.cos(Math.PI * progress));
+      int16View[idx] = Math.round(int16View[idx] * gain);
+    }
+    // Hard clamp the final 4 samples to zero
+    for (let i = Math.max(0, int16View.length - 4); i < int16View.length; i++) {
+      int16View[i] = 0;
+    }
+  }
+
+  const buffer = new ArrayBuffer(44 + cleanPcm.length);
   const view = new DataView(buffer);
 
   // RIFF Chunk Descriptor
@@ -363,7 +405,7 @@ function pcmToWavBlob(
   view.setUint32(40, dataSize, true); // Subchunk2Size
 
   // Write PCM payload
-  new Uint8Array(buffer, 44).set(pcmData);
+  new Uint8Array(buffer, 44).set(cleanPcm);
 
   return new Blob([buffer], { type: "audio/wav" });
 }
@@ -611,6 +653,30 @@ export const PRERECORDED_AUDIO_REGISTRY: Record<string, { en: string; pcm: strin
     en: "/audio/sarah/faq_fruit_en.wav",
     pcm: "/audio/sarah/faq_fruit_pcm.wav",
   },
+  tour_step_1: {
+    en: "/audio/sarah/tour_step_1_en.mp3",
+    pcm: "/audio/sarah/tour_step_1_pcm.mp3",
+  },
+  tour_step_2: {
+    en: "/audio/sarah/tour_step_2_en.mp3",
+    pcm: "/audio/sarah/tour_step_2_pcm.mp3",
+  },
+  tour_step_3: {
+    en: "/audio/sarah/tour_step_3_en.mp3",
+    pcm: "/audio/sarah/tour_step_3_pcm.mp3",
+  },
+  tour_step_4: {
+    en: "/audio/sarah/tour_step_4_en.mp3",
+    pcm: "/audio/sarah/tour_step_4_pcm.mp3",
+  },
+  tour_step_5: {
+    en: "/audio/sarah/tour_step_5_en.mp3",
+    pcm: "/audio/sarah/tour_step_5_pcm.mp3",
+  },
+  tour_step_6: {
+    en: "/audio/sarah/tour_step_6_en.mp3",
+    pcm: "/audio/sarah/tour_step_6_pcm.mp3",
+  },
 };
 
 // Register Academy Masterclass lessons (1 to 36) & Quizzes for instant zero-latency playback
@@ -640,6 +706,14 @@ PRERECORDED_AUDIO_REGISTRY["academy_bloom_quiz"] = {
 
 function detectAudioKeyFromText(text: string): string | null {
   const lower = text.toLowerCase();
+  // 30s Spotlight Onboarding Tour Steps (Priority matching before generic strings)
+  if (lower.includes("meet sarah, your ai food companion") || lower.includes("personal food doctor")) return "tour_step_1";
+  if (lower.includes("one-tap cultural meal logging") || lower.includes("one-tap food recording")) return "tour_step_2";
+  if (lower.includes("fifty percent divided plate rule") || lower.includes("fifty percent plate secret")) return "tour_step_3";
+  if (lower.includes("hydration and pressure shield") || lower.includes("water and blood pressure shield")) return "tour_step_4";
+  if (lower.includes("ai camera, voice, and whatsapp logging") || lower.includes("ai camera, voice, and whatsapp food recording")) return "tour_step_5";
+  if (lower.includes("daily african food wisdom")) return "tour_step_6";
+
   if (lower.includes("welcome to monday") || lower.includes("energy smooth and steady")) return "plan_monday";
   if (lower.includes("happy tuesday") || lower.includes("loving your heart") || lower.includes("efo riro")) return "plan_tuesday";
   if (lower.includes("wednesday") || lower.includes("fonio grain")) return "plan_wednesday";
@@ -706,6 +780,18 @@ function tryLoadPrerecordedAudio(url: string): Promise<HTMLAudioElement | null> 
 
 export function detectTitleFromText(rawText: string, audioKey?: string): string {
   if (audioKey) {
+    if (audioKey.startsWith("tour_step_")) {
+      const stepNum = audioKey.replace("tour_step_", "");
+      const titles: Record<string, string> = {
+        "1": "Meet Sarah • Quick Guide 👩🏾‍💼",
+        "2": "1-Tap Meal Logging 🍲",
+        "3": "50% Divided Plate Rule 🥗",
+        "4": "Hydration & Kidney Care 💧",
+        "5": "Camera & Voice Logging 📸",
+        "6": "Daily African Food Wisdom 🥑",
+      };
+      return titles[stepNum] || `Quick Guide • Step ${stepNum} 🥑`;
+    }
     if (audioKey.startsWith("plan_")) {
       const day = audioKey.replace("plan_", "");
       return `${day.charAt(0).toUpperCase() + day.slice(1)} Meal Plan 🥑`;
@@ -905,13 +991,15 @@ export async function speakWithSarah(
   // 1. TIER 1: PRE-RECORDED STUDIO AUDIO (Instant 0.0s playback, $0.00 cost, works offline)
   const audioKey = options.audioKey || detectAudioKeyFromText(rawText);
   const displayTitle = options.title || detectTitleFromText(rawText, audioKey);
-  const displaySubtitle = options.subtitle || (isPidgin ? "Mama Bola (Pidgin 🇳🇬)" : "Dr. Ngozi (English 🇬🇧)");
+  const displaySubtitle = options.subtitle || (isPidgin ? "Mama Bola (Pidgin 🇳🇬)" : "Dr. Ngozi (English 🇳🇬)");
 
   if (audioKey && PRERECORDED_AUDIO_REGISTRY[audioKey]) {
     const reg = PRERECORDED_AUDIO_REGISTRY[audioKey];
     const candidatePath = isPidgin ? reg.pcm : reg.en;
     // Check both .mp3 and .wav extensions
-    const fileVariants = [candidatePath, candidatePath.replace(/\.mp3$/, ".wav")];
+    const mp3Path = candidatePath.replace(/\.(wav|mp3)$/, ".mp3");
+    const wavPath = candidatePath.replace(/\.(wav|mp3)$/, ".wav");
+    const fileVariants = [mp3Path, wavPath];
 
     for (const fileUrl of fileVariants) {
       try {
@@ -1079,7 +1167,7 @@ function speakNaturalWebSpeech(text: string, options: SpeakOptions = {}) {
     isPlaying: true,
     isPaused: false,
     title: options.title || detectTitleFromText(text),
-    subtitle: options.subtitle || (targetLang === "pcm" ? "Mama Bola (Pidgin 🇳🇬)" : "Dr. Ngozi (English 🇬🇧)"),
+    subtitle: options.subtitle || (targetLang === "pcm" ? "Mama Bola (Pidgin 🇳🇬)" : "Dr. Ngozi (English 🇳🇬)"),
     playbackRate: isNaN(savedRate) || savedRate <= 0 ? 1.0 : savedRate,
     lang: targetLang,
     duration: sentences.length * 3.5,

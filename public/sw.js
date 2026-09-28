@@ -3,7 +3,7 @@
  * 100% Guaranteed Offline SPA Shell + Cache-First Static Assets
  */
 
-const CACHE_NAME = 'mealoptimiza-pwa-v10.27-persistent-voice-player-20260928';
+const CACHE_NAME = 'mealoptimiza-pwa-v10.28-tour-audio-pop-fix-20260928';
 
 const PRECACHE_ASSETS = [
   '/',
