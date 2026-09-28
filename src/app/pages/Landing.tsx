@@ -123,13 +123,19 @@ export default function Landing() {
           ) : (
             <>
               <Link
+                to="/home?demo=true&tour=true"
+                className="hidden sm:inline-flex text-xs font-bold text-emerald-800 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200/80 px-3 py-1.5 rounded-full transition-colors"
+              >
+                Live Demo
+              </Link>
+              <Link
                 to="/login"
                 className="text-xs font-bold text-[#164E3D] hover:text-[#113E30] px-3 py-1.5 rounded-full transition-colors"
               >
                 Sign In
               </Link>
               <Link
-                to="/signup"
+                to="/onboarding"
                 className="text-xs font-black bg-[#164E3D] hover:bg-[#113E30] text-white px-4 py-2 rounded-full shadow-sm shadow-emerald-950/20 transition-all active:scale-95"
               >
                 Get Started
@@ -281,17 +287,25 @@ export default function Landing() {
           ) : (
             <>
               <Link
-                to="/signup"
-                className="block w-full bg-[#164E3D] hover:bg-[#113E30] text-white rounded-2xl py-3.5 text-center font-black text-sm shadow-md shadow-emerald-950/20 transition-all active:scale-98"
+                to="/onboarding"
+                className="block w-full bg-gradient-to-r from-[#164E3D] via-[#115e59] to-[#0d9488] hover:opacity-95 text-white rounded-2xl py-4 text-center font-black text-sm sm:text-base shadow-lg shadow-emerald-950/20 transition-all active:scale-98 flex items-center justify-center gap-2"
               >
-                Create Free Account
+                <Sparkles size={16} className="text-amber-300" />
+                <span>Start 60s Health Quiz &amp; Custom Plan 🥑</span>
+                <ArrowRight size={16} />
               </Link>
               <Link
-                to="/login"
-                className="block w-full bg-white text-[#164E3D] border border-emerald-200/80 rounded-2xl py-3.5 text-center font-bold text-sm hover:bg-emerald-50/50 transition-all active:scale-98"
+                to="/home?demo=true&tour=true"
+                className="block w-full bg-emerald-50 hover:bg-emerald-100/90 text-[#164E3D] border border-emerald-300/80 rounded-2xl py-3.5 text-center font-bold text-sm transition-all active:scale-98 flex items-center justify-center gap-2"
               >
-                Sign In with Existing Account
+                <span>Explore Live Demo &amp; 30s Guided Tour ✨</span>
               </Link>
+              <div className="flex items-center justify-center gap-2 pt-1 text-xs text-stone-500 font-medium">
+                <span>Already have an account?</span>
+                <Link to="/login" className="font-bold text-[#164E3D] hover:underline">
+                  Sign In
+                </Link>
+              </div>
             </>
           )}
         </div>

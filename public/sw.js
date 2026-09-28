@@ -3,7 +3,7 @@
  * 100% Guaranteed Offline SPA Shell + Cache-First Static Assets
  */
 
-const CACHE_NAME = 'mealoptimiza-pwa-v10.29-tour-tri-language-20260928';
+const CACHE_NAME = 'mealoptimiza-pwa-v10.30-onboarding-incognito-ux-20260928';
 
 const PRECACHE_ASSETS = [
   '/',

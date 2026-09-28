@@ -20,6 +20,7 @@ import { motion, AnimatePresence, useReducedMotion } from "motion/react";
 import { useAppMode } from "../contexts/AppModeContext";
 import { useLocation } from "../contexts/LocationContext";
 import { useUser } from "../contexts/UserContext";
+import { useAuth } from "../contexts/AuthContext";
 import { useLanguage } from "../contexts/LanguageContext";
 import { useMascot } from "../hooks/useMascot";
 import Mascot from "../components/Mascot";
@@ -113,6 +114,11 @@ export default function Home() {
   const reduce = useReducedMotion();
   const { selectedLocation, getRegionalKey } = useLocation();
   const { userName, profilePicture, profile } = useUser();
+  const { user } = useAuth();
+  const isGuest =
+    !user ||
+    profile?.id === "guest-user" ||
+    (typeof window !== "undefined" && localStorage.getItem("mealoptimiza_guest_mode") === "true");
   const { mode } = useAppMode();
   const { t } = useLanguage();
   const mascot = useMascot();
@@ -136,18 +142,14 @@ export default function Home() {
   const [foodAnalysisResult, setFoodAnalysisResult] = useState<Record<string, any> | null>(null);
   const [showLocalFoodScanner, setShowLocalFoodScanner] = useState(false);
   const [showWhatsAppModal, setShowWhatsAppModal] = useState(false);
-  const [showHealthWizard, setShowHealthWizard] = useState(() => {
+  const [hasAcceptedDisclaimer, setHasAcceptedDisclaimer] = useState<boolean>(() => {
     try {
-      const isDisclaimerAccepted = localStorage.getItem("mealoptimiza_medical_disclaimer_accepted") === "true";
-      const isQuestionnaireDone =
-        localStorage.getItem("mealoptimiza_questionnaire_completed") === "true" ||
-        localStorage.getItem("onboardingComplete") === "true";
-      // Disclaimer shows first; if already accepted previously, show questionnaire directly if incomplete
-      return isDisclaimerAccepted && !isQuestionnaireDone;
+      return localStorage.getItem("mealoptimiza_medical_disclaimer_accepted") === "true";
     } catch {
       return false;
     }
   });
+  const [showHealthWizard, setShowHealthWizard] = useState(false);
   const [showSpotlightTour, setShowSpotlightTour] = useState(false);
   const [showVoiceLogger, setShowVoiceLogger] = useState(false);
   const [showSwallowSwapModal, setShowSwallowSwapModal] = useState(false);
@@ -222,22 +224,38 @@ export default function Home() {
     initializeSampleData();
   }, []);
 
-  // 🎯 30-Second First-Time Onboarding Tour Auto-Trigger & Listener
+  // 🎯 30-Second First-Time Onboarding Tour & Modal Sequence Orchestrator
   useEffect(() => {
-    const hasSeenTour = localStorage.getItem("hasSeenSpotlightTour");
+    const hasSeenTour = localStorage.getItem("hasSeenSpotlightTour") === "true";
     const urlParams = new URLSearchParams(window.location.search);
     const forceTour = urlParams.get("tour") === "true";
 
-    if (!hasSeenTour || forceTour) {
-      if (forceTour) {
-        window.history.replaceState({}, document.title, window.location.pathname);
-      }
-      const timer = setTimeout(() => {
-        setShowSpotlightTour(true);
-      }, 1200);
-      return () => clearTimeout(timer);
+    if (forceTour) {
+      window.history.replaceState({}, document.title, window.location.pathname);
     }
-  }, []);
+
+    // Modal sequence rule:
+    // If the safety disclaimer has NOT been accepted yet, MedicalDisclaimerModal displays first.
+    // The tour is launched strictly upon disclaimer acceptance to prevent modal collision or audio overlap.
+    if (hasAcceptedDisclaimer) {
+      if (!hasSeenTour || forceTour) {
+        const timer = setTimeout(() => {
+          setShowSpotlightTour(true);
+        }, 700);
+        return () => clearTimeout(timer);
+      } else {
+        const isDone =
+          localStorage.getItem("mealoptimiza_questionnaire_completed") === "true" ||
+          localStorage.getItem("onboardingComplete") === "true";
+        if (!isDone) {
+          const timer = setTimeout(() => {
+            setShowHealthWizard(true);
+          }, 700);
+          return () => clearTimeout(timer);
+        }
+      }
+    }
+  }, [hasAcceptedDisclaimer]);
 
   useEffect(() => {
     const handleStartTour = () => {
@@ -638,8 +656,25 @@ export default function Home() {
       {/* 🌿 Gentle Ambient Light Accents for Natural Depth */}
       <div className="absolute top-0 -left-20 w-96 h-96 rounded-full bg-emerald-600/5 dark:bg-emerald-500/5 blur-3xl pointer-events-none" />
       <div className="absolute top-48 -right-20 w-96 h-96 rounded-full bg-amber-500/5 dark:bg-amber-500/5 blur-3xl pointer-events-none" />
-      <div className="absolute top-[800px] left-1/4 w-80 h-80 rounded-full bg-emerald-600/5 dark:bg-emerald-500/5 blur-3xl pointer-events-none" />
-      
+      {/* 🥑 Guest Live Demo Mode Conversion Banner */}
+      {isGuest && (
+        <div className="bg-gradient-to-r from-emerald-800 via-teal-800 to-emerald-900 text-white px-4 sm:px-6 py-2.5 text-xs sm:text-sm font-medium flex items-center justify-between gap-3 shadow-md relative z-30 border-b border-emerald-700/60">
+          <div className="flex items-center gap-2 min-w-0">
+            <span className="flex h-2 w-2 rounded-full bg-emerald-400 animate-pulse shrink-0" />
+            <span className="truncate">
+              <strong>Live Guest Preview</strong> &bull; Exploring MealOptimiza freely.
+            </span>
+          </div>
+          <button
+            onClick={() => navigate("/signup")}
+            className="px-3.5 py-1.5 bg-emerald-400 hover:bg-emerald-300 text-stone-950 rounded-full font-bold text-xs shrink-0 transition-all shadow-xs flex items-center gap-1 active:scale-95"
+          >
+            <span>Save Your Plan & Sign Up</span>
+            <ChevronRight size={13} />
+          </button>
+        </div>
+      )}
+
       {/* Header */}
       <div className="bg-white/80 dark:bg-[#171E1B]/80 backdrop-blur-xl px-4 sm:px-6 pt-9 pb-4 border-b border-stone-200/60 dark:border-stone-800/60 shadow-[0_2px_12px_rgba(0,0,0,0.02)] relative z-20">
         {/* Top Brand & Profile Avatar Bar */}
@@ -1545,11 +1580,24 @@ export default function Home() {
         isOpen={showHealthWizard}
         onComplete={() => {
           setShowHealthWizard(false);
-          setShowSpotlightTour(true);
         }}
       />
 
-      <SpotlightTour isOpen={showSpotlightTour} onClose={() => setShowSpotlightTour(false)} />
+      <SpotlightTour
+        isOpen={showSpotlightTour}
+        onClose={() => {
+          setShowSpotlightTour(false);
+          // Sequence Step 3: When tour concludes or is closed, if health questionnaire is not done, offer health wizard
+          const isDone =
+            localStorage.getItem("mealoptimiza_questionnaire_completed") === "true" ||
+            localStorage.getItem("onboardingComplete") === "true";
+          if (!isDone) {
+            setTimeout(() => {
+              setShowHealthWizard(true);
+            }, 450);
+          }
+        }}
+      />
       <VoiceFoodLogger
         isOpen={showVoiceLogger}
         onClose={() => setShowVoiceLogger(false)}
@@ -1862,11 +1910,22 @@ export default function Home() {
       {/* Clinical Governance & Medical Regulatory Disclaimer Modal */}
       <MedicalDisclaimerModal
         onAccept={() => {
+          setHasAcceptedDisclaimer(true);
+          const hasSeenTour = localStorage.getItem("hasSeenSpotlightTour") === "true";
           const isDone =
             localStorage.getItem("mealoptimiza_questionnaire_completed") === "true" ||
             localStorage.getItem("onboardingComplete") === "true";
-          if (!isDone) {
-            setShowHealthWizard(true);
+
+          if (!hasSeenTour) {
+            // Sequence Step 2: Launch 30s Spotlight Tour with Sarah after safety disclaimer
+            setTimeout(() => {
+              setShowSpotlightTour(true);
+            }, 350);
+          } else if (!isDone) {
+            // Sequence Step 3: Launch Health Profile Wizard if tour was already completed
+            setTimeout(() => {
+              setShowHealthWizard(true);
+            }, 350);
           }
         }}
       />

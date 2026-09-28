@@ -6,12 +6,29 @@ export default function ProtectedRoute({ children }: { children: React.ReactNode
   const { user, loading } = useAuth();
   const navigate = useNavigate();
 
+  const isGuestMode = typeof window !== "undefined" && (
+    localStorage.getItem("mealoptimiza_guest_mode") === "true" ||
+    new URLSearchParams(window.location.search).get("demo") === "true" ||
+    new URLSearchParams(window.location.search).get("tour") === "true"
+  );
+
   useEffect(() => {
-    // Only redirect after loading is complete and we know there's no user
-    if (!loading && !user) {
+    if (typeof window !== "undefined") {
+      const search = new URLSearchParams(window.location.search);
+      if (search.get("demo") === "true" || search.get("tour") === "true") {
+        try {
+          localStorage.setItem("mealoptimiza_guest_mode", "true");
+        } catch {}
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    // Only redirect after loading is complete and we know there's no user and not in guest demo mode
+    if (!loading && !user && !isGuestMode) {
       navigate("/login", { replace: true });
     }
-  }, [user, loading, navigate]);
+  }, [user, loading, navigate, isGuestMode]);
 
   // Show loading state while checking auth
   if (loading) {
@@ -22,8 +39,8 @@ export default function ProtectedRoute({ children }: { children: React.ReactNode
     );
   }
 
-  // Don't render children if not authenticated
-  if (!user) {
+  // Allow children if authenticated OR in guest demo mode
+  if (!user && !isGuestMode) {
     return null;
   }
 
