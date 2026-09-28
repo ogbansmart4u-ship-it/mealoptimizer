@@ -228,6 +228,21 @@ export function getBestNaturalVoice(targetLang: string = "en"): SpeechSynthesisV
     if (anyFrenchFemale) return anyFrenchFemale;
   }
 
+  // 1b. British English Female Voice Selection
+  if (l === "en-gb" || l === "gb" || l.includes("gb") || l.includes("uk")) {
+    const gbFemale = pool.find(
+      (v) =>
+        v.lang.toLowerCase().includes("en-gb") &&
+        isStrictlyFemale(v) &&
+        (v.name.toLowerCase().includes("uk") ||
+          v.name.toLowerCase().includes("sonia") ||
+          v.name.toLowerCase().includes("libby") ||
+          v.name.toLowerCase().includes("natural") ||
+          v.name.toLowerCase().includes("female"))
+    ) || pool.find((v) => v.lang.toLowerCase().includes("en-gb") && isStrictlyFemale(v));
+    if (gbFemale) return gbFemale;
+  }
+
   // 2. Nigerian Pidgin / African Regional Female Voice Selection
   if (l === "pcm" || l === "en-ng" || l.includes("ng")) {
     const ngFemale = pool.find(
@@ -580,7 +595,7 @@ export function checkVoiceQuota(): { allowed: boolean; isPro: boolean; remaining
 // PRE-RECORDED STUDIO AUDIO REGISTRY (0.0s Delay, $0.00 Cost, Works Offline)
 // Drop matching .mp3 or .wav files into /public/audio/sarah/
 // ============================================================================
-export const PRERECORDED_AUDIO_REGISTRY: Record<string, { en: string; pcm: string }> = {
+export const PRERECORDED_AUDIO_REGISTRY: Record<string, { en: string; pcm: string; gb?: string; ng?: string }> = {
   plan_monday: {
     en: "/audio/sarah/plan_monday_en.wav",
     pcm: "/audio/sarah/plan_monday_pcm.wav",
@@ -655,26 +670,38 @@ export const PRERECORDED_AUDIO_REGISTRY: Record<string, { en: string; pcm: strin
   },
   tour_step_1: {
     en: "/audio/sarah/tour_step_1_en.mp3",
+    gb: "/audio/sarah/tour_step_1_gb.mp3",
+    ng: "/audio/sarah/tour_step_1_ng.mp3",
     pcm: "/audio/sarah/tour_step_1_pcm.mp3",
   },
   tour_step_2: {
     en: "/audio/sarah/tour_step_2_en.mp3",
+    gb: "/audio/sarah/tour_step_2_gb.mp3",
+    ng: "/audio/sarah/tour_step_2_ng.mp3",
     pcm: "/audio/sarah/tour_step_2_pcm.mp3",
   },
   tour_step_3: {
     en: "/audio/sarah/tour_step_3_en.mp3",
+    gb: "/audio/sarah/tour_step_3_gb.mp3",
+    ng: "/audio/sarah/tour_step_3_ng.mp3",
     pcm: "/audio/sarah/tour_step_3_pcm.mp3",
   },
   tour_step_4: {
     en: "/audio/sarah/tour_step_4_en.mp3",
+    gb: "/audio/sarah/tour_step_4_gb.mp3",
+    ng: "/audio/sarah/tour_step_4_ng.mp3",
     pcm: "/audio/sarah/tour_step_4_pcm.mp3",
   },
   tour_step_5: {
     en: "/audio/sarah/tour_step_5_en.mp3",
+    gb: "/audio/sarah/tour_step_5_gb.mp3",
+    ng: "/audio/sarah/tour_step_5_ng.mp3",
     pcm: "/audio/sarah/tour_step_5_pcm.mp3",
   },
   tour_step_6: {
     en: "/audio/sarah/tour_step_6_en.mp3",
+    gb: "/audio/sarah/tour_step_6_gb.mp3",
+    ng: "/audio/sarah/tour_step_6_ng.mp3",
     pcm: "/audio/sarah/tour_step_6_pcm.mp3",
   },
 };
@@ -991,11 +1018,26 @@ export async function speakWithSarah(
   // 1. TIER 1: PRE-RECORDED STUDIO AUDIO (Instant 0.0s playback, $0.00 cost, works offline)
   const audioKey = options.audioKey || detectAudioKeyFromText(rawText);
   const displayTitle = options.title || detectTitleFromText(rawText, audioKey);
-  const displaySubtitle = options.subtitle || (isPidgin ? "Mama Bola (Pidgin 🇳🇬)" : "Dr. Ngozi (English 🇳🇬)");
+  const isGb = targetLang === "en-gb" || targetLang === "gb";
+  const isNg = targetLang === "en-ng" || targetLang === "ng";
+  const displaySubtitle =
+    options.subtitle ||
+    (isPidgin
+      ? "Mama Bola (Pidgin 🇳🇬)"
+      : isGb
+      ? "Dr. Sarah (British English 🇬🇧)"
+      : "Dr. Ngozi (Nigerian English 🇳🇬)");
 
   if (audioKey && PRERECORDED_AUDIO_REGISTRY[audioKey]) {
     const reg = PRERECORDED_AUDIO_REGISTRY[audioKey];
-    const candidatePath = isPidgin ? reg.pcm : reg.en;
+    let candidatePath = reg.en;
+    if (isPidgin && reg.pcm) {
+      candidatePath = reg.pcm;
+    } else if (isGb && reg.gb) {
+      candidatePath = reg.gb;
+    } else if (isNg && reg.ng) {
+      candidatePath = reg.ng;
+    }
     // Check both .mp3 and .wav extensions
     const mp3Path = candidatePath.replace(/\.(wav|mp3)$/, ".mp3");
     const wavPath = candidatePath.replace(/\.(wav|mp3)$/, ".wav");

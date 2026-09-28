@@ -20,11 +20,27 @@ export interface TourStep {
   title: string;
   subtitle: string;
   description: string;
+  descriptionPcm: string;
   narrationEn: string;
   narrationPcm: string;
   mascotGesture: "wave" | "thumbsup" | "dancing" | "neutral" | "drink";
   position?: "top" | "bottom";
 }
+
+export type TourVoiceLanguage = "en-ng" | "en-gb" | "pcm";
+
+interface VoiceLangOption {
+  id: TourVoiceLanguage;
+  badge: string;
+  name: string;
+  subtitle: string;
+}
+
+export const TOUR_VOICE_LANGUAGES: VoiceLangOption[] = [
+  { id: "en-ng", badge: "🇳🇬 English (NG)", name: "Nigerian English", subtitle: "Dr. Ngozi (Nigerian English 🇳🇬)" },
+  { id: "en-gb", badge: "🇬🇧 English (GB)", name: "British English", subtitle: "Dr. Sarah (British English 🇬🇧)" },
+  { id: "pcm", badge: "🇳🇬 Pidgin", name: "Nigerian Pidgin", subtitle: "Mama Bola (Nigerian Pidgin 🇳🇬)" },
+];
 
 const TOUR_STEPS: TourStep[] = [
   {
@@ -32,6 +48,7 @@ const TOUR_STEPS: TourStep[] = [
     title: "Meet Sarah, Your AI Food Companion 👩🏾‍💼",
     subtitle: "Clinical Nutrition at Your Fingertips",
     description: "Got questions about portion sizes, blood sugar spikes, or healthy swallow swaps? Tap Ask Sarah anytime to chat or speak with me in English or Nigerian Pidgin!",
+    descriptionPcm: "You get question about your portion size, blood sugar, or healthy swallow swap? Tap Ask Sarah anytime to talk with me for English or Nigerian Pidgin!",
     narrationEn: "Meet Sarah, Your AI Food Companion. Got questions about portion sizes, blood sugar spikes, or healthy swallow swaps? Tap Ask Sarah anytime to chat or speak with me in English or Nigerian Pidgin!",
     narrationPcm: "Meet Sarah, your personal food doctor! You get question about your portion size, blood sugar, or healthy swallow swap? Tap Ask Sarah anytime to talk with me for English or Nigerian Pidgin!",
     mascotGesture: "wave",
@@ -42,6 +59,7 @@ const TOUR_STEPS: TourStep[] = [
     title: "1-Tap Cultural Meal Logging 🍲",
     subtitle: "Zero Tedious Calorie Counting",
     description: "No tedious typing! Tap any West African staple like Akamu, Moi Moi, Jollof, or Efo Riro to instantly record calories and balanced macros in one single tap.",
+    descriptionPcm: "One-tap food recording! No need to type anything! Just tap any of our sweet Nigerian food like Akamu, Moi Moi, Jollof, or Efo Riro to record your plate with one tap!",
     narrationEn: "One-tap cultural meal logging. No tedious typing! Tap any West African staple like Akamu, Moi Moi, Jollof, or Efo Riro to instantly record calories and balanced macros in one single tap.",
     narrationPcm: "One-tap food recording! No need to type anything! Just tap any of our sweet Nigerian food like Akamu, Moi Moi, Jollof, or Efo Riro to record your plate with one tap!",
     mascotGesture: "thumbsup",
@@ -52,7 +70,8 @@ const TOUR_STEPS: TourStep[] = [
     title: "The 50% Divided Plate Rule 🥗",
     subtitle: "The Secret to Flat Blood Sugar",
     description: "Our golden rule for steady energy: fill 50% of your plate with vegetables & drawing soups, 25% clean protein, and 25% swallow or carbs to prevent blood sugar spikes.",
-    narrationEn: "The fifty percent divided plate rule. Our golden rule for steady energy: fill fifty percent of your plate with vegetables and drawing soups, twenty-five percent clean protein, and twenty-five percent swallow or carbs to prevent blood sugar spikes.",
+    descriptionPcm: "See our fifty percent plate secret for good health! Fill half of your plate with fresh vegetables and draw soup, quarter with clean protein, and quarter with swallow to keep your sugar calm!",
+    narrationEn: "The fifty percent divided plate rule. Our golden rule for steady energy: fill fifty percent of your plate with vegetables and drawing soups, twenty-five clean protein, and twenty-five percent swallow or carbs to prevent blood sugar spikes.",
     narrationPcm: "See our fifty percent plate secret for good health! Fill half of your plate with fresh vegetables and draw soup, quarter with clean protein, and quarter with swallow to keep your sugar calm!",
     mascotGesture: "thumbsup",
     position: "bottom",
@@ -62,6 +81,7 @@ const TOUR_STEPS: TourStep[] = [
     title: "Hydration & Pressure Shield 💧",
     subtitle: "Protect Your Kidneys & Blood Pressure",
     description: "Tap +1 Water with each cup you drink. Staying hydrated naturally flushes excess sodium, supports kidney filtration, and keeps your blood pressure relaxed and steady.",
+    descriptionPcm: "Water and blood pressure shield! Tap plus one water with every cup you drink. Drinking clean water flushes excess salt, protects your kidneys, and keeps your blood pressure calm and relaxed!",
     narrationEn: "Hydration and pressure shield. Tap plus one water with each cup you drink. Staying hydrated naturally flushes excess sodium, supports kidney filtration, and keeps your blood pressure relaxed and steady.",
     narrationPcm: "Water and blood pressure shield! Tap plus one water with every cup you drink. Drinking clean water flushes excess salt, protects your kidneys, and keeps your blood pressure calm and relaxed!",
     mascotGesture: "drink",
@@ -72,6 +92,7 @@ const TOUR_STEPS: TourStep[] = [
     title: "AI Camera, Voice & WhatsApp Logging 📸",
     subtitle: "Log Food Anytime, Anywhere",
     description: "Tap the floating (+) button to snap food photos with our AI camera, speak what you ate with your voice, or message our WhatsApp assistant on the go!",
+    descriptionPcm: "AI camera, voice, and WhatsApp food recording! Tap this plus button anytime to snap your plate with camera, talk am with your voice, or log am straight on WhatsApp!",
     narrationEn: "AI camera, voice, and WhatsApp logging. Tap the floating plus button to snap food photos with our AI camera, speak what you ate with your voice, or message our WhatsApp assistant on the go!",
     narrationPcm: "AI camera, voice, and WhatsApp food recording! Tap this plus button anytime to snap your plate with camera, talk am with your voice, or log am straight on WhatsApp!",
     mascotGesture: "dancing",
@@ -82,6 +103,7 @@ const TOUR_STEPS: TourStep[] = [
     title: "Daily African Food Wisdom 🥑",
     subtitle: "60-Second Lessons & Voice Quizzes",
     description: "Master the secrets of African food in quick 60-second lessons and fun voice quizzes with me. Earn badges and level up your health every single day!",
+    descriptionPcm: "Daily African food wisdom! Learn all the sweet secrets of our cultural food with my sixty-second lessons and fun quizzes. You don ready to level up your health every day!",
     narrationEn: "Daily African food wisdom. Master the secrets of African food in quick sixty-second lessons and fun voice quizzes with me. Earn badges and level up your health every single day!",
     narrationPcm: "Daily African food wisdom! Learn all the sweet secrets of our cultural food with my sixty-second lessons and fun quizzes. You don ready to level up your health every day!",
     mascotGesture: "dancing",
@@ -98,15 +120,19 @@ export default function SpotlightTour({ isOpen, onClose }: SpotlightTourProps) {
   const [currentStep, setCurrentStep] = useState(0);
   const [rect, setRect] = useState<DOMRect | null>(null);
   const [voiceEnabled, setVoiceEnabled] = useState(true);
-  const [isPidgin, setIsPidgin] = useState(() => {
+  const [voiceLang, setVoiceLang] = useState<TourVoiceLanguage>(() => {
     if (typeof window !== "undefined") {
-      return localStorage.getItem("sarah_language") === "pcm";
+      const saved = localStorage.getItem("sarah_language");
+      if (saved === "en-gb" || saved === "gb") return "en-gb";
+      if (saved === "pcm" || saved === "pidgin") return "pcm";
+      if (saved === "en-ng" || saved === "ng") return "en-ng";
     }
-    return false;
+    return "en-ng";
   });
   const [isPlayingAudio, setIsPlayingAudio] = useState(false);
 
   const step = TOUR_STEPS[currentStep];
+  const currentLangConfig = TOUR_VOICE_LANGUAGES.find((l) => l.id === voiceLang) || TOUR_VOICE_LANGUAGES[0];
 
   // Update target rect with scroll handling
   useEffect(() => {
@@ -146,19 +172,20 @@ export default function SpotlightTour({ isOpen, onClose }: SpotlightTourProps) {
     };
   }, [isOpen, currentStep, step.targetId]);
 
-  // Voice narration triggers on step change
+  // Voice narration triggers on step change or voice language change
   useEffect(() => {
     if (!isOpen) return;
 
     if (voiceEnabled) {
       stopSarahSpeech();
+      const isPidgin = voiceLang === "pcm";
       const textToSpeak = isPidgin ? step.narrationPcm : step.narrationEn;
       setIsPlayingAudio(true);
       speakWithSarah(textToSpeak, { 
-        lang: isPidgin ? "pcm" : "en",
+        lang: voiceLang,
         audioKey: `tour_step_${currentStep + 1}`,
         title: step.title,
-        subtitle: isPidgin ? "Mama Bola (Pidgin 🇳🇬)" : "Dr. Ngozi (English 🇳🇬)"
+        subtitle: currentLangConfig.subtitle
       })
         .then(() => setIsPlayingAudio(false))
         .catch(() => setIsPlayingAudio(false));
@@ -170,7 +197,7 @@ export default function SpotlightTour({ isOpen, onClose }: SpotlightTourProps) {
     return () => {
       stopSarahSpeech();
     };
-  }, [isOpen, currentStep, voiceEnabled, isPidgin]);
+  }, [isOpen, currentStep, voiceEnabled, voiceLang]);
 
   // Keyboard navigation
   useEffect(() => {
@@ -223,11 +250,13 @@ export default function SpotlightTour({ isOpen, onClose }: SpotlightTourProps) {
     }
   };
 
-  const toggleLanguage = () => {
+  const cycleLanguage = () => {
     triggerHaptic("light");
-    const nextPidgin = !isPidgin;
-    setIsPidgin(nextPidgin);
-    localStorage.setItem("sarah_language", nextPidgin ? "pcm" : "en");
+    const order: TourVoiceLanguage[] = ["en-ng", "en-gb", "pcm"];
+    const nextIdx = (order.indexOf(voiceLang) + 1) % order.length;
+    const nextLang = order[nextIdx];
+    setVoiceLang(nextLang);
+    localStorage.setItem("sarah_language", nextLang);
   };
 
   // Determine whether dialog should be placed at top or bottom
@@ -282,14 +311,15 @@ export default function SpotlightTour({ isOpen, onClose }: SpotlightTourProps) {
             </div>
 
             <div className="flex items-center gap-1.5">
-              {/* Language Switcher */}
+              {/* 3-Way Voice Language Switcher: English NG / English GB / Nigerian Pidgin */}
               <button
                 type="button"
-                onClick={toggleLanguage}
-                className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-stone-100 hover:bg-stone-200 dark:bg-stone-800 dark:hover:bg-stone-700 text-stone-700 dark:text-stone-300 transition-colors cursor-pointer border border-stone-200/60 dark:border-stone-700"
-                title="Switch voice language"
+                onClick={cycleLanguage}
+                className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-stone-100 hover:bg-stone-200 dark:bg-stone-800 dark:hover:bg-stone-700 text-stone-700 dark:text-stone-300 transition-colors cursor-pointer border border-stone-200/60 dark:border-stone-700 flex items-center gap-1"
+                title={`Current voice: ${currentLangConfig.name}. Tap to switch between Nigerian English, British English, and Nigerian Pidgin`}
               >
-                {isPidgin ? "🇳🇬 Pidgin" : "🇬🇧 English"}
+                <span>{currentLangConfig.badge}</span>
+                <span className="text-[8px] text-stone-400 font-normal">▼</span>
               </button>
 
               {/* Voice Guide Toggle */}
@@ -336,7 +366,7 @@ export default function SpotlightTour({ isOpen, onClose }: SpotlightTourProps) {
                 {step.subtitle}
               </p>
               <p className="text-xs text-stone-600 dark:text-stone-300 mt-1.5 leading-relaxed">
-                {step.description}
+                {voiceLang === "pcm" ? step.descriptionPcm : step.description}
               </p>
             </div>
           </div>
