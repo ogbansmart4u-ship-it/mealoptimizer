@@ -3,7 +3,7 @@
  * 100% Guaranteed Offline SPA Shell + Cache-First Static Assets
  */
 
-const CACHE_NAME = 'mealoptimiza-pwa-v10.25-academy-food-wisdom-audio-20260927';
+const CACHE_NAME = 'mealoptimiza-pwa-v10.26-onboarding-tour-and-audio-20260928';
 
 const PRECACHE_ASSETS = [
   '/',

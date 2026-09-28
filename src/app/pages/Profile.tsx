@@ -39,6 +39,7 @@ import {
   Globe,
   Settings,
   Trash2,
+  Compass,
 } from "lucide-react";
 import BottomNav from "../components/BottomNav";
 import AmbientBackground from "../components/AmbientBackground";
@@ -985,6 +986,33 @@ export default function Profile() {
         {/* 5. Account Settings & Customization */}
         <div className="bg-white dark:bg-stone-900 rounded-3xl p-5 shadow-sm border border-stone-200/80 dark:border-stone-800 divide-y divide-stone-100 dark:divide-stone-800">
           <h3 className="font-bold text-sm text-stone-900 dark:text-white pb-3">Account &amp; Preferences</h3>
+
+          {/* 🎯 30-Second App Guided Tour */}
+          <button
+            type="button"
+            onClick={() => {
+              triggerHaptic("medium");
+              localStorage.removeItem("hasSeenSpotlightTour");
+              navigate("/home?tour=true");
+            }}
+            className="w-full flex items-center justify-between py-3.5 hover:bg-emerald-50/50 dark:hover:bg-emerald-950/30 px-2 rounded-2xl transition-colors cursor-pointer text-left"
+          >
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-emerald-100 dark:bg-emerald-950/80 text-emerald-800 dark:text-emerald-300 rounded-xl">
+                <Compass className="h-4 w-4" />
+              </div>
+              <div>
+                <div className="flex items-center gap-2">
+                  <p className="text-xs font-bold text-stone-900 dark:text-stone-100">30-Second App Tour</p>
+                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300">
+                    Voice Guided 🎙️
+                  </span>
+                </div>
+                <p className="text-xs text-stone-500 dark:text-stone-400 font-medium">Replay Sarah's guided tour of meals, plate balance &amp; water</p>
+              </div>
+            </div>
+            <ChevronRight className="h-4 w-4 text-stone-400 dark:text-stone-500" />
+          </button>
 
           {/* Personal Info */}
           <Dialog open={editingPersonal} onOpenChange={setEditingPersonal}>

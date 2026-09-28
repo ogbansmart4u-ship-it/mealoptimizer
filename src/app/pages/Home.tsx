@@ -222,6 +222,31 @@ export default function Home() {
     initializeSampleData();
   }, []);
 
+  // 🎯 30-Second First-Time Onboarding Tour Auto-Trigger & Listener
+  useEffect(() => {
+    const hasSeenTour = localStorage.getItem("hasSeenSpotlightTour");
+    const urlParams = new URLSearchParams(window.location.search);
+    const forceTour = urlParams.get("tour") === "true";
+
+    if (!hasSeenTour || forceTour) {
+      if (forceTour) {
+        window.history.replaceState({}, document.title, window.location.pathname);
+      }
+      const timer = setTimeout(() => {
+        setShowSpotlightTour(true);
+      }, 1200);
+      return () => clearTimeout(timer);
+    }
+  }, []);
+
+  useEffect(() => {
+    const handleStartTour = () => {
+      setShowSpotlightTour(true);
+    };
+    window.addEventListener("startAppTour", handleStartTour);
+    return () => window.removeEventListener("startAppTour", handleStartTour);
+  }, []);
+
   // Load this account's real meal logs
   const [weekLogs, setWeekLogs] = useState<any[]>([]);
   useEffect(() => {
@@ -627,6 +652,7 @@ export default function Home() {
           {/* Top Right: Ask Sarah & Avatar */}
           <div className="flex items-center gap-2">
             <button
+              id="tour-ask-sarah"
               type="button"
               onClick={() => {
                 triggerHaptic("medium");
@@ -738,6 +764,7 @@ export default function Home() {
           </button>
 
           <button
+            id="tour-food-wisdom"
             onClick={() => setActiveHomeTab("academy")}
             className={`flex-1 py-2 sm:py-2.5 px-2 sm:px-3 rounded-xl font-semibold text-xs sm:text-sm flex items-center justify-center gap-1.5 transition-all cursor-pointer truncate ${
               activeHomeTab === "academy"
@@ -863,7 +890,9 @@ export default function Home() {
             {/* 🌟 2. DAILY TIME REMINDER & BALANCED AFRICAN PLATE */}
             <CircadianEnergyWave />
 
-            <AfricanPlateSilhouette />
+            <div id="tour-plate-target">
+              <AfricanPlateSilhouette />
+            </div>
 
             {/* 🌟 ZONE 1: YAZIO-GRADE GLANCEABLE DAILY ENERGY GAUGE */}
             {dashboardPrefs.showEnergy && (
