@@ -1,4 +1,4 @@
-import React, { useState, lazy, Suspense } from "react";
+import React, { useState, useEffect, lazy, Suspense } from "react";
 import { Camera, MessageSquare, Mic, X, Sparkles } from "lucide-react";
 import { useNavigate } from "react-router";
 import WhatsAppConnectDialog from "./WhatsAppConnectDialog";
@@ -7,6 +7,7 @@ import LocalFoodScanner from "./LocalFoodScanner";
 import SmartVideoConcierge from "./SmartVideoConcierge";
 import { triggerHaptic, triggerConfetti } from "../utils/celebration";
 import { toast } from "sonner";
+import { subscribeVoicePlayer } from "../services/voiceService";
 
 const PlateScannerModal = lazy(() =>
   import("./PlateScannerModal").then((m) => ({ default: m.PlateScannerModal }))
@@ -19,6 +20,14 @@ const GlycemicSimulatorModal = lazy(() =>
 export default function QuickActionsFAB() {
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
+  const [isVoiceActive, setIsVoiceActive] = useState(false);
+
+  useEffect(() => {
+    const unsub = subscribeVoicePlayer((state) => {
+      setIsVoiceActive(state.isActive);
+    });
+    return () => unsub();
+  }, []);
   const [showWhatsAppModal, setShowWhatsAppModal] = useState(false);
   const [showVoiceModal, setShowVoiceModal] = useState(false);
   const [showScannerModal, setShowScannerModal] = useState(false);
@@ -34,7 +43,12 @@ export default function QuickActionsFAB() {
   return (
     <>
       {/* 🌟 10X FLOATING ACTION BUTTON CONTAINER */}
-      <div id="tour-fab-actions" className="fixed bottom-22 right-4 sm:right-6 z-[60] select-none">
+      <div 
+        id="tour-fab-actions" 
+        className={`fixed right-4 sm:right-6 z-[60] select-none transition-all duration-300 ${
+          isVoiceActive ? "bottom-36 sm:bottom-40" : "bottom-22"
+        }`}
+      >
         {/* Expanded 3 Curated Glassmorphic Action Items */}
         {isOpen && (
           <div className="absolute bottom-16 right-0 flex flex-col gap-2.5 mb-2 items-end z-10">

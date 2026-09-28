@@ -17,9 +17,74 @@ export interface SpeakOptions {
   pitch?: number;
   lang?: "en" | "pcm" | "yo" | "ig" | "ha" | "fr" | string;
   audioKey?: string; // Pre-recorded clip identifier (e.g. "plan_monday", "concierge_welcome")
+  title?: string; // Human-friendly track title for the persistent mini-player
+  subtitle?: string; // Human-friendly subtitle (e.g. "Dr. Ngozi" or "Mama Bola")
   onStart?: () => void;
   onEnd?: () => void;
   onError?: (err: any) => void;
+}
+
+export interface VoicePlayerState {
+  isActive: boolean;
+  isPlaying: boolean;
+  isPaused: boolean;
+  title: string;
+  subtitle: string;
+  duration: number;
+  currentTime: number;
+  progress: number; // 0 to 100
+  playbackRate: number;
+  lang: string;
+}
+
+let playerState: VoicePlayerState = {
+  isActive: false,
+  isPlaying: false,
+  isPaused: false,
+  title: "Sarah AI Voice",
+  subtitle: "Clinical Food Companion",
+  duration: 0,
+  currentTime: 0,
+  progress: 0,
+  playbackRate: typeof window !== "undefined" ? parseFloat(localStorage.getItem("sarah_playback_rate") || "1.0") || 1.0 : 1.0,
+  lang: "en",
+};
+
+type VoiceListener = (state: VoicePlayerState) => void;
+const voiceListeners = new Set<VoiceListener>();
+
+export function getVoicePlayerState(): VoicePlayerState {
+  return { ...playerState };
+}
+
+export function subscribeVoicePlayer(listener: VoiceListener): () => void {
+  voiceListeners.add(listener);
+  try {
+    listener(getVoicePlayerState());
+  } catch (e) {
+    console.warn("Error invoking voice listener:", e);
+  }
+  return () => {
+    voiceListeners.delete(listener);
+  };
+}
+
+export function updateVoicePlayerState(patch: Partial<VoicePlayerState>) {
+  playerState = { ...playerState, ...patch };
+  if (playerState.duration > 0) {
+    playerState.progress = Math.min(100, Math.max(0, (playerState.currentTime / playerState.duration) * 100));
+  }
+  const snapshot = getVoicePlayerState();
+  voiceListeners.forEach((fn) => {
+    try {
+      fn(snapshot);
+    } catch (e) {
+      console.warn("Voice listener notification error:", e);
+    }
+  });
+  if (typeof window !== "undefined") {
+    window.dispatchEvent(new CustomEvent("sarah-voice-player-update", { detail: snapshot }));
+  }
 }
 
 // In-memory voices cache for fast synchronous access
@@ -639,6 +704,175 @@ function tryLoadPrerecordedAudio(url: string): Promise<HTMLAudioElement | null> 
   });
 }
 
+export function detectTitleFromText(rawText: string, audioKey?: string): string {
+  if (audioKey) {
+    if (audioKey.startsWith("plan_")) {
+      const day = audioKey.replace("plan_", "");
+      return `${day.charAt(0).toUpperCase() + day.slice(1)} Meal Plan 🥑`;
+    }
+    if (audioKey === "concierge_welcome") return "Welcome to MealOptimiza 👩🏾‍💼";
+    if (audioKey.startsWith("faq_")) {
+      const topic = audioKey.replace("faq_", "").replace(/_/g, " ");
+      return `${topic.charAt(0).toUpperCase() + topic.slice(1)} Advice 🥑`;
+    }
+    if (audioKey.startsWith("academy_lesson_")) {
+      const num = audioKey.replace("academy_lesson_lesson-", "").replace("academy_lesson_", "");
+      return `Food Wisdom • Lesson ${num} 🥑`;
+    }
+    if (audioKey.startsWith("academy_quiz_q_")) {
+      const num = audioKey.replace("academy_quiz_q_lesson-", "").replace("academy_quiz_q_", "");
+      return `Food Wisdom • Quiz ${num} 🧠`;
+    }
+    if (audioKey.startsWith("academy_quiz_exp_")) {
+      const num = audioKey.replace("academy_quiz_exp_lesson-", "").replace("academy_quiz_exp_", "");
+      return `Quiz Explanation • Lesson ${num} 💡`;
+    }
+    if (audioKey.includes("bloom")) {
+      return "Today's 60s Food Secret 🌱";
+    }
+  }
+
+  const lower = rawText.toLowerCase();
+  if (lower.includes("welcome to mealoptimiza")) return "Welcome to MealOptimiza 👩🏾‍💼";
+  if (lower.includes("spot on") || lower.includes("correct well well") || lower.includes("100% correct")) return "Food Wisdom Quiz Explanation 💡";
+  if (lower.includes("quick quiz")) return "Daily Food Wisdom Quiz 🧠";
+  if (lower.includes("key takeaway") || lower.includes("takeaway")) return "Daily Food Takeaway 🥑";
+  if (lower.includes("zobo")) return "Hibiscus Zobo Blood Pressure Secret ❤️";
+  if (lower.includes("water") || lower.includes("hydrate")) return "Hydration & Kidney Care 💧";
+  if (lower.includes("swallow") || lower.includes("eba") || lower.includes("amala")) return "African Swallow Wisdom 🍲";
+  if (lower.includes("plantain") || lower.includes("dodo")) return "Plantain & Glucose Science 🍌";
+  if (lower.includes("bitter leaf")) return "Bitter Leaf Liver Cleanse 🌿";
+  if (lower.includes("palm oil")) return "Pure Red Palm Oil Wisdom 🥘";
+  if (lower.includes("fonio") || lower.includes("acha")) return "Fonio Ancient Supergrain 🌾";
+  if (lower.includes("plate") || lower.includes("fifty percent") || lower.includes("50%")) return "The 50% Divided Plate Rule 🥗";
+
+  const cleanSnippet = rawText.replace(/[*_#[\]()]/g, "").trim();
+  if (cleanSnippet.length > 35) {
+    return cleanSnippet.slice(0, 32) + "...";
+  }
+  return cleanSnippet || "Sarah AI Voice Companion 🥑";
+}
+
+function attachAudioListeners(
+  audio: HTMLAudioElement,
+  options: SpeakOptions,
+  title: string,
+  subtitle: string,
+  lang: string
+) {
+  const savedRate = typeof window !== "undefined" ? parseFloat(localStorage.getItem("sarah_playback_rate") || "1.0") : 1.0;
+  audio.playbackRate = isNaN(savedRate) || savedRate <= 0 ? 1.0 : savedRate;
+
+  updateVoicePlayerState({
+    isActive: true,
+    isPlaying: true,
+    isPaused: false,
+    title,
+    subtitle,
+    playbackRate: audio.playbackRate,
+    lang,
+    currentTime: 0,
+    duration: audio.duration || 0,
+    progress: 0,
+  });
+
+  audio.onloadedmetadata = () => {
+    updateVoicePlayerState({
+      duration: audio.duration || 0,
+    });
+  };
+
+  audio.ontimeupdate = () => {
+    updateVoicePlayerState({
+      currentTime: audio.currentTime || 0,
+      duration: audio.duration || playerState.duration || 0,
+    });
+  };
+
+  audio.onplay = () => {
+    updateVoicePlayerState({ isPlaying: true, isPaused: false });
+    options.onStart?.();
+  };
+
+  audio.onpause = () => {
+    if (!isCancelled && !audio.ended) {
+      updateVoicePlayerState({ isPlaying: false, isPaused: true });
+    }
+  };
+
+  audio.onended = () => {
+    updateVoicePlayerState({ isActive: false, isPlaying: false, isPaused: false, currentTime: 0, progress: 0 });
+    currentAudio = null;
+    options.onEnd?.();
+  };
+
+  audio.onerror = (e) => {
+    console.warn("Audio playback error:", e);
+    updateVoicePlayerState({ isActive: false, isPlaying: false, isPaused: false });
+    currentAudio = null;
+    options.onError?.(e);
+  };
+}
+
+export function pauseSarahSpeech() {
+  if (currentAudio) {
+    currentAudio.pause();
+  }
+  if (typeof window !== "undefined" && "speechSynthesis" in window && window.speechSynthesis.speaking) {
+    window.speechSynthesis.pause();
+  }
+  updateVoicePlayerState({ isPlaying: false, isPaused: true });
+}
+
+export function resumeSarahSpeech() {
+  if (currentAudio) {
+    currentAudio.play().catch(() => {});
+  }
+  if (typeof window !== "undefined" && "speechSynthesis" in window && window.speechSynthesis.paused) {
+    window.speechSynthesis.resume();
+  }
+  updateVoicePlayerState({ isPlaying: true, isPaused: false });
+}
+
+export function toggleSarahPlayPause() {
+  if (playerState.isPlaying) {
+    pauseSarahSpeech();
+  } else {
+    resumeSarahSpeech();
+  }
+}
+
+export function setSarahPlaybackRate(rate: number) {
+  const clamped = Math.max(0.75, Math.min(2.0, rate));
+  if (currentAudio) {
+    currentAudio.playbackRate = clamped;
+  }
+  if (typeof window !== "undefined") {
+    localStorage.setItem("sarah_playback_rate", clamped.toString());
+  }
+  updateVoicePlayerState({ playbackRate: clamped });
+}
+
+export function seekSarahSpeech(secondsOffset: number) {
+  if (currentAudio) {
+    const dur = currentAudio.duration || playerState.duration || 0;
+    const target = Math.max(0, Math.min(dur, currentAudio.currentTime + secondsOffset));
+    currentAudio.currentTime = target;
+    updateVoicePlayerState({ currentTime: target });
+  }
+}
+
+export function seekSarahToPercentage(percent: number) {
+  if (currentAudio) {
+    const dur = currentAudio.duration || playerState.duration || 0;
+    if (dur > 0) {
+      const target = (percent / 100) * dur;
+      currentAudio.currentTime = target;
+      updateVoicePlayerState({ currentTime: target, progress: percent });
+    }
+  }
+}
+
 /**
  * Speaks text naturally with multi-tier priority:
  * 1. Pre-recorded studio audio files (0.0s delay, $0.00 cost)
@@ -670,6 +904,9 @@ export async function speakWithSarah(
 
   // 1. TIER 1: PRE-RECORDED STUDIO AUDIO (Instant 0.0s playback, $0.00 cost, works offline)
   const audioKey = options.audioKey || detectAudioKeyFromText(rawText);
+  const displayTitle = options.title || detectTitleFromText(rawText, audioKey);
+  const displaySubtitle = options.subtitle || (isPidgin ? "Mama Bola (Pidgin 🇳🇬)" : "Dr. Ngozi (English 🇬🇧)");
+
   if (audioKey && PRERECORDED_AUDIO_REGISTRY[audioKey]) {
     const reg = PRERECORDED_AUDIO_REGISTRY[audioKey];
     const candidatePath = isPidgin ? reg.pcm : reg.en;
@@ -681,14 +918,7 @@ export async function speakWithSarah(
         const loadedAudio = await tryLoadPrerecordedAudio(fileUrl);
         if (loadedAudio && !isCancelled) {
           currentAudio = loadedAudio;
-          loadedAudio.onplay = () => options.onStart?.();
-          loadedAudio.onended = () => {
-            options.onEnd?.();
-            currentAudio = null;
-          };
-          loadedAudio.onerror = () => {
-            currentAudio = null;
-          };
+          attachAudioListeners(loadedAudio, options, displayTitle, displaySubtitle, targetLang);
           await loadedAudio.play();
           return;
         }
@@ -706,11 +936,7 @@ export async function speakWithSarah(
     if (!isCancelled) {
       const audio = new Audio(cachedUrl);
       currentAudio = audio;
-      audio.onplay = () => options.onStart?.();
-      audio.onended = () => {
-        options.onEnd?.();
-        currentAudio = null;
-      };
+      attachAudioListeners(audio, options, displayTitle, displaySubtitle, targetLang);
       await audio.play();
       return;
     }
@@ -720,7 +946,7 @@ export async function speakWithSarah(
   const quota = checkVoiceQuota();
   if (!quota.allowed) {
     toast.info("Daily AI voice limit reached (5/5). Playing with standard voice. Upgrade to PRO for unlimited natural Sarah coaching! 🥑✨");
-    speakNaturalWebSpeech(sanitized, options);
+    speakNaturalWebSpeech(sanitized, { ...options, title: displayTitle, subtitle: displaySubtitle });
     return;
   }
 
@@ -739,17 +965,7 @@ export async function speakWithSarah(
 
       const audio = new Audio(geminiAudioUrl);
       currentAudio = audio;
-
-      audio.onplay = () => options.onStart?.();
-      audio.onended = () => {
-        options.onEnd?.();
-        currentAudio = null;
-      };
-      audio.onerror = () => {
-        currentAudio = null;
-        speakNaturalWebSpeech(sanitized, options);
-      };
-
+      attachAudioListeners(audio, options, displayTitle, displaySubtitle, targetLang);
       await audio.play();
       return;
     }
@@ -798,17 +1014,7 @@ export async function speakWithSarah(
 
       const audio = new Audio(audioUrl);
       currentAudio = audio;
-
-      audio.onplay = () => options.onStart?.();
-      audio.onended = () => {
-        options.onEnd?.();
-        currentAudio = null;
-      };
-      audio.onerror = () => {
-        currentAudio = null;
-        speakNaturalWebSpeech(sanitized, options);
-      };
-
+      attachAudioListeners(audio, options, displayTitle, displaySubtitle, targetLang);
       await audio.play();
       return;
     } catch (err) {
@@ -817,7 +1023,7 @@ export async function speakWithSarah(
   }
 
   // 3. Last fallback: Fluid sentence-by-sentence Web Speech API
-  speakNaturalWebSpeech(sanitized, options);
+  speakNaturalWebSpeech(sanitized, { ...options, title: displayTitle, subtitle: displaySubtitle });
 }
 
 /**
@@ -867,6 +1073,20 @@ function speakNaturalWebSpeech(text: string, options: SpeakOptions = {}) {
   let currentIndex = 0;
   options.onStart?.();
 
+  const savedRate = typeof window !== "undefined" ? parseFloat(localStorage.getItem("sarah_playback_rate") || "1.0") : 1.0;
+  updateVoicePlayerState({
+    isActive: true,
+    isPlaying: true,
+    isPaused: false,
+    title: options.title || detectTitleFromText(text),
+    subtitle: options.subtitle || (targetLang === "pcm" ? "Mama Bola (Pidgin 🇳🇬)" : "Dr. Ngozi (English 🇬🇧)"),
+    playbackRate: isNaN(savedRate) || savedRate <= 0 ? 1.0 : savedRate,
+    lang: targetLang,
+    duration: sentences.length * 3.5,
+    currentTime: 0,
+    progress: 0,
+  });
+
   const speakNextSentence = () => {
     // If user cancelled, or a newer session started, terminate immediately!
     if (isCancelled || thisSessionId !== currentSessionId || currentIndex >= sentences.length) {
@@ -875,6 +1095,13 @@ function speakNaturalWebSpeech(text: string, options: SpeakOptions = {}) {
           clearInterval(keepAliveTimer);
           keepAliveTimer = null;
         }
+        updateVoicePlayerState({
+          isActive: false,
+          isPlaying: false,
+          isPaused: false,
+          currentTime: 0,
+          progress: 0,
+        });
         options.onEnd?.();
       }
       return;
@@ -882,7 +1109,7 @@ function speakNaturalWebSpeech(text: string, options: SpeakOptions = {}) {
 
     const sentence = sentences[currentIndex];
     const utterance = new SpeechSynthesisUtterance(sentence);
-    utterance.rate = options.rate || 0.94; // Warm, relaxed human conversational pace
+    utterance.rate = (options.rate || 0.94) * (playerState.playbackRate || 1.0); // Warm, relaxed human conversational pace scaled by user playback rate
     utterance.pitch = options.pitch || 1.06; // Warm, pleasant female clinical pitch
     utterance.volume = 1.0;
 
@@ -897,6 +1124,10 @@ function speakNaturalWebSpeech(text: string, options: SpeakOptions = {}) {
     utterance.onend = () => {
       if (thisSessionId !== currentSessionId || isCancelled) return;
       currentIndex++;
+      updateVoicePlayerState({
+        currentTime: currentIndex * 3.5,
+        progress: Math.min(100, (currentIndex / sentences.length) * 100),
+      });
       if (currentIndex < sentences.length) {
         setTimeout(() => {
           if (!isCancelled && thisSessionId === currentSessionId) {
@@ -908,6 +1139,13 @@ function speakNaturalWebSpeech(text: string, options: SpeakOptions = {}) {
           clearInterval(keepAliveTimer);
           keepAliveTimer = null;
         }
+        updateVoicePlayerState({
+          isActive: false,
+          isPlaying: false,
+          isPaused: false,
+          currentTime: 0,
+          progress: 0,
+        });
         options.onEnd?.();
       }
     };
@@ -917,6 +1155,10 @@ function speakNaturalWebSpeech(text: string, options: SpeakOptions = {}) {
       if (thisSessionId !== currentSessionId || isCancelled) return;
       // Skip failed chunk and advance with the SAME female voice
       currentIndex++;
+      updateVoicePlayerState({
+        currentTime: currentIndex * 3.5,
+        progress: Math.min(100, (currentIndex / sentences.length) * 100),
+      });
       if (currentIndex < sentences.length) {
         speakNextSentence();
       } else {
@@ -924,6 +1166,13 @@ function speakNaturalWebSpeech(text: string, options: SpeakOptions = {}) {
           clearInterval(keepAliveTimer);
           keepAliveTimer = null;
         }
+        updateVoicePlayerState({
+          isActive: false,
+          isPlaying: false,
+          isPaused: false,
+          currentTime: 0,
+          progress: 0,
+        });
         options.onEnd?.();
       }
     };
@@ -954,6 +1203,13 @@ export function stopSarahSpeech() {
   if (typeof window !== "undefined" && "speechSynthesis" in window) {
     window.speechSynthesis.cancel();
   }
+  updateVoicePlayerState({
+    isActive: false,
+    isPlaying: false,
+    isPaused: false,
+    currentTime: 0,
+    progress: 0,
+  });
 }
 
 export const stopSpeaking = stopSarahSpeech;
